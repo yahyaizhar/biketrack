@@ -172,6 +172,6 @@ Route::group([
     Route::delete('/newComer/delete/{newComer_id}','NewComerController@delete_new_comer')->name('NewCome.delete');
     Route::get('/newComer/Edit/{id}','NewComerController@newComer_edit')->name('NewComer.edit');
     Route::post('/newComer/{id}/update', 'NewComerController@updateNewComer')->name('NewComer.updatenewComer');
-   Route::get('/newComer/popup/{newComer_id}','NewComerController@newComer_popup')->name('NewComer.popup');
+   Route::get('/oldComer/popup/{newComer_id}','NewComerController@newComer_popup')->name('NewComer.popup');
 });
 
