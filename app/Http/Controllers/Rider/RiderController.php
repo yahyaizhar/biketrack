@@ -27,6 +27,15 @@ class RiderController extends Controller
         $location->longitude = $request->longitude;
         $location->save();
     }
+    public function get_reports(Request $r) 
+    {
+        $rider = Rider::find($r->rider_id);
+        $rider_reports=$rider->Rider_Report()->whereDate('created_at','=',Carbon::parse($r->date)->toDateString())->get();
+        return response()->json([
+            'reports'=>$rider_reports,
+            'status' => "success"
+        ]);
+    }
     public function getLatestData(Rider $rider)
     {
         $client_details = $rider->clients;

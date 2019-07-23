@@ -51,7 +51,7 @@ class Rider extends Authenticatable
     {
         return $this->hasMany(Rider_Location::class, 'rider_id');
     }
-    public function reports()
+    public function Rider_Report()
     {
         return $this->hasMany(Rider_Report::class, 'rider_id');
     }
