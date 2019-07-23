@@ -179,6 +179,7 @@ class AjaxController extends Controller
             </span>
         </span>';
         })
+      
         // <a class="dropdown-item" href="'.route('bike.bike_assigned', $bike).'"><i class="fa fa-eye"></i> View Bikes</a>
         // <a class="dropdown-item" href="'.route('bike.bike_assignRiders', $bike).'"><i class="fa fa-edit"></i> Assign Bikes</a>
                     
@@ -235,8 +236,37 @@ class AjaxController extends Controller
             </span>
         </span>';
         })
+        ->addColumn('date_of_joining', function($riders){
+            $rider_detail =$riders->Rider_detail()->get()->first();
+           return $rider_detail->date_of_joining;
+        })
+        ->addColumn('official_given_number', function($riders){
+            $rider_detail =$riders->Rider_detail()->get()->first();
+           return $rider_detail->official_given_number;
+        })
+        ->addColumn('passport_expiry', function($riders){
+            $rider_detail =$riders->Rider_detail()->get()->first();
+           return $rider_detail->passport_expiry;
+        })
+        ->addColumn('visa_expiry', function($riders){
+            $rider_detail =$riders->Rider_detail()->get()->first();
+           return $rider_detail->visa_expiry;
+        })
+        ->addColumn('licence_expiry', function($riders){
+            $rider_detail =$riders->Rider_detail()->get()->first();
+           return $rider_detail->licence_expiry;
+        })
+        ->addColumn('mulkiya_expiry', function($riders){
+            $rider_detail =$riders->Rider_detail()->get()->first();
+           return $rider_detail->mulkiya_expiry;
+        })
+        ->addColumn('official_sim_given_date', function($riders){
+            $rider_detail =$riders->Rider_detail()->get()->first();
+           return $rider_detail->official_sim_given_date;
+        })
+        
         // <a class="dropdown-item" href="'.route('Rider.salary', $riders).'"><i class="fa fa-money-bill-wave"></i> Salaries</a> 
-        ->rawColumns(['new_name', 'new_email', 'new_phone', 'actions', 'status'])
+        ->rawColumns(['new_name','mulkiya_expiry','official_sim_given_date','licence_expiry','visa_expiry','passport_expiry','official_given_number', 'new_email','date_of_joining', 'new_phone', 'actions', 'status'])
         ->make(true);
     }
 
@@ -653,7 +683,14 @@ public function getRidersDetails()
         ->make(true);
     }
    
+       public function testing1($id){
+           $riders=Rider::find($id);
+        $c =Rider_detail::all();
+       foreach ($c as $a) {
+        return $a->date_of_joining;
+       }
        
+       }
       
     
 }

@@ -19,6 +19,7 @@ class CreateRiderDetailsTable extends Migration
             $table->string('date_of_joining')->nullable();
             $table->string('official_given_number')->nullable();
             $table->string('official_sim_given_date')->nullable();
+            $table->string('passport_collected')->nullable();
             $table->string('passport_image')->nullable();
             $table->string('passport_expiry')->nullable();
             $table->string('visa_image')->nullable();
@@ -27,6 +28,7 @@ class CreateRiderDetailsTable extends Migration
             $table->string('licence_expiry')->nullable();
             $table->string('mulkiya_image')->nullable();
             $table->string('mulkiya_expiry')->nullable();
+            $table->string('other_details')->nullable();
             $table->string('others')->nullable();
             $table->string('status')->nullable();
             $table->timestamps();

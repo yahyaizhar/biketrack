@@ -32,12 +32,17 @@
                 </div>
             </div>
         </div>
-        <div class="kt-portlet__body">
-
+        <div class="checkbox checkbox-danger">
+                <input id="check_id" class="checkbox checkbox-danger" type="checkbox">
+                <label for="check_id">
+                   Detailed View
+                </label>
+        </div>
             <!--begin: Datatable -->
             <table class="table table-striped table-hover table-checkable table-condensed" id="riders-table">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>ID</th>
                         <th>Name</th>
                         <th>Email</th>
@@ -78,18 +83,67 @@ $(function() {
         },
         ajax: '{!! route('admin.riders.data') !!}',
         columns: [
-            { data: 'new_id', name: 'new_id' },
-            { data: 'new_name', name: 'name' },
-            { data: 'new_email', name: 'email' },
-            { data: 'new_phone', name: 'phone' },
-            { data: 'address', name: 'address' },
-            { data: 'status', name: 'status' },
-            { data: 'actions', name: 'actions' }
+            {
+                "className":      'details-control',
+                "orderable":      false,
+                "data":           null,
+                "defaultContent": ''
+            },
+            { "data": 'new_id', "name": 'new_id' },
+            { "data": 'new_name', "name": 'name' },
+            { "data": 'new_email', "name": 'email' },
+            { "data": 'new_phone', "name": 'phone' },
+            { "data": 'address', "name": 'address' },
+            { "data": 'status', "name": 'status' },
+            { "data": 'actions', "name": 'actions' }
         ],
         responsive:true,
         order:[0,'desc']
     });
+    $('#riders-table tbody').on('click', 'td.details-control', function () {
+        var tr = $(this).closest('tr');
+        var row = riders_table.row( tr );
+ 
+        if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+        }
+        else {
+            // Open this row
+            row.child( format(row.data()) ).show();
+            tr.addClass('shown');
+        }
+    } );
+    function format ( data ) {
+        // `d` is the original data object for the row
+        return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+                '<tr>'+
+                '<td colspan="1"; style="font-weight:900;">Date Of Joining:</td>'+
+                '<td colspan="2";>'+data.date_of_joining+'</td>'+
+                '<td colspan="2"; style="font-weight:900;" >Official Sim Given Date:</td>'+
+                '<td colspan="2";>'+data.official_sim_given_date+'</td>'+
+                '<td colspan="2"; style="font-weight:900;">Official Given Number:</td>'+
+                '<td colspan="4"; >'+data.official_given_number+'</td>'+
+               '</tr>'+
+               '<tr>'+
+                '<td colspan="1"; style="font-weight:900;">Passport Expiry:</td>'+
+                '<td colspan="2";>'+data.passport_expiry+'</td>'+
+                '<td colspan="1"; style="font-weight:900;" >Visa Expiry:</td>'+
+                '<td colspan="2"; >'+data.visa_expiry+'</td>'+
+                '<td style="font-weight:900;">Licence Exiry:</td>'+
+                '<td colspan="2";>'+data.licence_expiry+'</td>'+
+                '<td colspan="1"; style="font-weight:900;" >Mulkiya Expiry:</td>'+
+                '<td colspan="2";>'+data.mulkiya_expiry+'</td>'+
+               '</tr>'+
+             
+                
+
+            
+           '</table>';
+    }
 });
+
 function deleteRider(id){
     var url = "{{ url('admin/riders') }}"+ "/" + id;
     sendDeleteRequest(url, false, null, riders_table);
@@ -145,4 +199,21 @@ function updateStatus(rider_id)
     });
 }
 </script>
+<script>
+$(document).ready(function(){
+$("#check_id").change(function(){
+$("td.details-control").click();
+});
+});
+</script>
+<style>
+   
+        td.details-control {
+            background: url('https://biketrack-dev.solutionwin.net/details_open.png') no-repeat center center;
+            cursor: pointer;
+        }
+        tr.shown td.details-control {
+            background: url('https://biketrack-dev.solutionwin.net/details_close.png') no-repeat center center;
+        }
+        </style>
 @endsection

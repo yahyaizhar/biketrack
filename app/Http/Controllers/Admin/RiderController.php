@@ -91,6 +91,11 @@ class RiderController extends Controller
        $rider_detail->date_of_joining = $request->date_of_joining;
        $rider_detail->official_given_number = $request->official_given_number;
        $rider_detail->official_sim_given_date = $request->official_sim_given_date;
+       $rider_detail->other_details = $request->other_details;
+       if($request->passport_collected)
+       $rider_detail->passport_collected = 'yes';
+   else
+       $rider_detail->passport_collected = 'no';
        if($request->hasFile('passport_image'))
         {
             // return 'yes';
@@ -210,6 +215,11 @@ class RiderController extends Controller
         $rider_detail->date_of_joining = $request->date_of_joining;
         $rider_detail->official_given_number = $request->official_given_number;
         $rider_detail->official_sim_given_date = $request->official_sim_given_date;
+        $rider_detail->other_details = $request->other_details;
+        if($request->passport_collected)
+        $rider_detail->passport_collected = 'yes';
+    else
+        $rider_detail->passport_collected = 'no';
         if($request->hasFile('passport_image'))
         {
             if($rider_detail->passport_image)

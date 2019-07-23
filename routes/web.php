@@ -173,8 +173,6 @@ Route::group([
     Route::get('/newComer/Edit/{id}','NewComerController@newComer_edit')->name('NewComer.edit');
     Route::post('/newComer/{id}/update', 'NewComerController@updateNewComer')->name('NewComer.updatenewComer');
    Route::get('/newComer/popup/{newComer_id}','NewComerController@newComer_popup')->name('NewComer.popup');
-  Route::get('/new/route',function(){
-return 123;
-  });
+  Route::get('/new/new/{id}','AjaxController@testing1');
 });
-
+  

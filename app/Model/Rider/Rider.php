@@ -79,7 +79,4 @@ class Rider extends Authenticatable
         return $this->hasMany('App\Model\Accounts\Rider_salary','rider_id');
   
       }
-      public function Rider_Report(){
-return $this->hasMany('App\Model\Rider\Rider_Report','rider_id');
-      }
 }

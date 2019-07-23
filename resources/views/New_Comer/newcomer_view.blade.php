@@ -35,6 +35,12 @@
         </div>
         <div class="kt-portlet__body">
 <h1 class="jhgjhg" style="display:none;" >a</h1>
+<div class="checkbox checkbox-danger">
+        <input id="check_id" class="checkbox checkbox-danger" type="checkbox">
+        <label for="check_id">
+           Detailed View
+        </label>
+</div>
             <!--begin: Datatable -->
             <table class="table table-striped- table-hover table-checkable table-condensed" id="newComer-table">
                 <thead>
@@ -221,4 +227,11 @@ tr.shown td.details-control {
     background: url('https://biketrack-dev.solutionwin.net/details_close.png') no-repeat center center;
 }
 </style>
+<script>
+        $(document).ready(function(){
+        $("#check_id").change(function(){
+        $("td.details-control").click();
+        });
+        });
+        </script>
 @endsection

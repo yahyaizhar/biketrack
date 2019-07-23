@@ -156,6 +156,12 @@
         <span class="form-text text-muted">Please enter your Official Sim Date</span>
     @endif
 </div>
+<div class="form-group">
+        <label>Is Passport Collected:</label>
+        <div>
+            <input data-switch="true" name="passport_collected" id="passport_collected" type="checkbox" checked="checked" data-on-text="Yes" data-handle-width="70" data-off-text="No" data-on-color="brand">
+        </div>
+    </div>
 <div class="row">
 <div class="col-lg-6 col-md-6 col-sm-12">
 <div class="form-group">
@@ -253,7 +259,12 @@
         </div>
     </div>
     </div>
+
     </div>
+    <div class="form-group">
+            <label>Other Details:</label>
+            <textarea type="text"  rows="8" autocomplete="off" class="form-control @if($errors->has('other_details')) invalid-field @endif" name="other_details" placeholder="Enter Further Details" ></textarea>
+        </div>
  </div>
                     <div class="kt-portlet__foot">
                         <div class="kt-form__actions kt-form__actions--right">
