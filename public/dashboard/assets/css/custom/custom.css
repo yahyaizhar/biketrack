@@ -1,0 +1,107 @@
+.invalid-field {
+    border-color: #e3342f !important;
+}
+.invalid-response {
+    /* display: none; */
+    width: 100%;
+    margin-top: .25rem;
+    font-size: 80%;
+    color: #e3342f !important;
+}
+.profile-logo {
+    width:200px;
+    height:200px;
+}
+.mtr-10 {
+    margin-top: 10%;
+    margin-right: 10%;
+}
+.mtr-15 {
+    margin-top: 15%;
+    margin-right: 7%;
+}
+@media (min-width:769px)
+{
+    .mt-minus-60 {
+        margin-top: -60px;
+    }
+}
+.margin-zero{
+    margin: 0px !important;
+}
+
+.loading{
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: rgba(0, 0, 0, 0.3);
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    z-index: 999;
+}
+
+.loader {
+    border: 5px solid #f3f3f3; /* Light grey */
+    border-top: 5px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 2s linear infinite;
+    position: fixed;
+    left: 0;
+    right: 0;
+    margin: auto;
+    top: 50%;   
+}
+
+
+.map-box{
+    margin:0px;
+    padding: 3px;
+}
+.map-box ul{
+    list-style: none;
+    margin: 0px;
+    padding: 1px;
+}
+.map-box li{
+    padding: 5px;
+    border-bottom: 1px solid;
+    font-size: 15px;
+}
+.map-box li:hover{
+    background: gray;
+}
+
+.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+.inputfile + label {
+    font-size: 1.25em;
+    font-weight: 500;
+    font-family: sans-serif;
+    margin-top: 1%;
+    color: blue;
+    background-color: #E0E0E0;
+    display: inline-block;
+    padding: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 0px 0px 0 rgba(0, 0, 0, 0.19);
+}
+
+.inputfile:focus + label,
+.inputfile + label:hover {
+    background-color: #D8D8D8;
+}
+.inputfile + label {
+	cursor: pointer; /* "hand" cursor */
+}
+.inputfile:focus + label {
+	outline: 1px dotted #000;
+	outline: -webkit-focus-ring-color auto 5px;
+}
