@@ -88,7 +88,7 @@
                          </ul>
                     </div>
                 </li>
-                <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "admin/account") !== false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle">
+                <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "Salary") !== false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle">
                     <span class="kt-menu__link-icon"><i class="fa fa-motorcycle"></i>    
                 </span><span class="kt-menu__link-text">Accounts</span><i class="kt-menu__ver-arrow la la-angle-right"></i></a>
                     <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
@@ -96,7 +96,6 @@
                             <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text">Accounts</span></span></li>
                             <li class="kt-menu__item @if(strpos(Request::url(), "/Add/Salary") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('account.new_salary') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add New Salary</span></a></li>
                             <li class="kt-menu__item @if(strpos(Request::url(), "/Month/Salary") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('account.month_salary') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Salary By Month</span></a></li>
-                            
                             <li class="kt-menu__item @if(strpos(Request::url(), "/Developer/Salary") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('account.developer_salary') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Salary By Developer</span></a></li>
                             {{-- <li class="kt-menu__item @if(strpos(Request::url(), "/Developer/Salary") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Salary By Developer</span></a></li> --}}
                             
