@@ -84,6 +84,9 @@
 						#hover_Checkbox:hover{
 							background-color: white;
 						}
+						#hover_Checkbox1:hover{
+							background-color: white;
+						}
 						#hover_Checkbox{
 							width:18%;
 							margin-left:82%;
