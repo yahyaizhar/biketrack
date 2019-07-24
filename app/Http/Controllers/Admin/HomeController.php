@@ -11,6 +11,8 @@ use App\Model\Client\Client_Rider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Model\Rider\Rider_area;
+use App\Model\Rider\Rider_detail;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -39,8 +41,30 @@ class HomeController extends Controller
 
         $latest_riders = Rider::orderBy('created_at', 'DESC')->take(5)->get();
         $latest_clients = Client::orderBy('created_at', 'DESC')->take(5)->get();
-        // return $latest_riders;
-        return view('admin.home', compact('riders', 'clients', 'online_riders', 'clients_online', 'latest_riders', 'latest_clients'));
+
+        $all_riders = Rider::with('Rider_detail')->get();
+        $current_date = Carbon::parse(Carbon::now());
+        $after2_dt=Carbon::now()->addMonths(2);
+        $ve__riders=Rider_detail::whereDate('visa_expiry', '<=', $after2_dt->toDateString())
+        ->whereDate('visa_expiry', '>', $current_date->toDateString())
+        ->orderBy('visa_expiry', 'DESC')
+        ->get();
+
+        $pe__riders=Rider_detail::whereDate('passport_expiry', '<=', $after2_dt->toDateString())
+        ->whereDate('passport_expiry', '>', $current_date->toDateString())
+        ->orderBy('passport_expiry', 'DESC')
+        ->get();
+
+        $me__riders=Rider_detail::whereDate('mulkiya_expiry', '<=', $after2_dt->toDateString())
+        ->whereDate('mulkiya_expiry', '>', $current_date->toDateString())
+        ->orderBy('mulkiya_expiry', 'DESC')
+        ->get();
+
+        $le__riders=Rider_detail::whereDate('licence_expiry', '<=', $after2_dt->toDateString())
+        ->whereDate('licence_expiry', '>', $current_date->toDateString())
+        ->orderBy('licence_expiry', 'DESC')
+        ->get();
+        return view('admin.home', compact('ve__riders','pe__riders','me__riders','le__riders','riders', 'clients', 'online_riders', 'clients_online', 'latest_riders', 'latest_clients'));
     }
 
     public function livemap()
