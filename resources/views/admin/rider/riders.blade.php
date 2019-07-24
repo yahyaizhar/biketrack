@@ -32,17 +32,20 @@
                 </div>
             </div>
         </div>
-        <div class="checkbox checkbox-danger">
+        <div class="kt-portlet__body">
+            <div class="row">
+            <div class="checkbox checkbox-danger btn btn-default btn-elevate btn-icon-sm" id="hover_Checkbox">
                 <input id="check_id" class="checkbox checkbox-danger" type="checkbox">
-                <label for="check_id">
+                <label for="check_id" >
                    Detailed View
                 </label>
         </div>
+    </div>
             <!--begin: Datatable -->
             <table class="table table-striped table-hover table-checkable table-condensed" id="riders-table">
                 <thead>
                     <tr>
-                        <th></th>
+                    
                         <th>ID</th>
                         <th>Name</th>
                         <th>Email</th>
@@ -74,7 +77,7 @@
 <script>
 var riders_table;
 $(function() {
-    riders_table = $('#riders-table').DataTable({
+    var _settings = {
         processing: true,
         serverSide: true,
         'language': {
@@ -82,39 +85,85 @@ $(function() {
             'processing': $('.loading').show()
         },
         ajax: '{!! route('admin.riders.data') !!}',
-        columns: [
+        columns: null,
+        responsive:true,
+        order:[0,'desc']
+    };
+    if(window.outerWidth>=720){
+        //visa_expiry
+        $('#riders-table thead tr').prepend('<th></th>');
+        _settings.columns=[
             {
-                "className":      'details-control',
-                "orderable":      false,
-                "data":           null,
-                "defaultContent": ''
-            },
-            { "data": 'new_id', "name": 'new_id' },
+            "className":      'details-control',
+            "orderable":      false,
+            "data":           null,
+            "defaultContent": ''
+        },
+        { "data": 'new_id', "name": 'new_id' },
             { "data": 'new_name', "name": 'name' },
             { "data": 'new_email', "name": 'email' },
             { "data": 'new_phone', "name": 'phone' },
             { "data": 'address', "name": 'address' },
             { "data": 'status', "name": 'status' },
             { "data": 'actions', "name": 'actions' }
-        ],
-        responsive:true,
-        order:[0,'desc']
-    });
-    $('#riders-table tbody').on('click', 'td.details-control', function () {
-        var tr = $(this).closest('tr');
-        var row = riders_table.row( tr );
- 
-        if ( row.child.isShown() ) {
-            // This row is already open - close it
-            row.child.hide();
-            tr.removeClass('shown');
-        }
-        else {
-            // Open this row
-            row.child( format(row.data()) ).show();
-            tr.addClass('shown');
-        }
-    } );
+        ];
+      
+        _settings.responsive=false;
+
+        
+    }
+    else{
+        $('#riders-table thead tr th').eq(6).before('<th>Date Of Joining</th>');
+        $('#riders-table thead tr th').eq(7).before('<th>Official Given Number</th>');
+        $('#riders-table thead tr th').eq(8).before('<th>Official Sim GIven Date</th>');
+        $('#riders-table thead tr th').eq(9).before('<th>Passport Expiry</th>');
+        $('#riders-table thead tr th').eq(10).before('<th>Visa Expiry</th>');
+        $('#riders-table thead tr th').eq(11).before('<th>Licence Expiry</th>');
+        $('#riders-table thead tr th').eq(12).before('<th>Mulkiya Expiry</th>');
+        
+        _settings.columns=[
+        { "data": 'new_id', "name": 'new_id' },
+            { "data": 'new_name', "name": 'name' },
+            { "data": 'new_email', "name": 'email' },
+            { "data": 'new_phone', "name": 'phone' },
+            { "data": 'address', "name": 'address' },
+            { "data": 'status', "name": 'status' },
+            { "data": 'date_of_joining', "name": 'date_of_joining' },
+            { "data": 'official_given_number', "name": 'official_given_number' },
+            { "data": 'official_sim_given_date', "name": 'official_sim_given_date' },
+            { "data": 'passport_expiry', "name": 'passport_expiry' },
+            { "data": 'visa_expiry', "name": 'visa_expiry' },
+            { "data": 'licence_expiry', "name": 'licence_expiry' },
+            { "data": 'mulkiya_expiry', "name": 'mulkiya_expiry' },
+            { "data": 'actions', "name": 'actions' }
+        ];
+     
+    }
+    riders_table = $('#riders-table').DataTable(_settings);
+
+    if(window.outerWidth>=720){
+        $('#riders-table tbody').on('click', 'td.details-control', function () {
+            var tr = $(this).closest('tr');
+            var row = riders_table.row( tr );
+            if ( row.child.isShown() ) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            }
+            else {
+                // Open this row
+                row.child( format(row.data()) ).show();
+                tr.addClass('shown');
+            }
+        });
+    }
+    // {
+    //             "className":      'details-control',
+    //             "orderable":      false,
+    //             "data":           null,
+    //             "defaultContent": ''
+    //         },
+    
     function format ( data ) {
         // `d` is the original data object for the row
         return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
@@ -199,13 +248,6 @@ function updateStatus(rider_id)
     });
 }
 </script>
-<script>
-$(document).ready(function(){
-$("#check_id").change(function(){
-$("td.details-control").click();
-});
-});
-</script>
 <style>
    
         td.details-control {
@@ -216,4 +258,55 @@ $("td.details-control").click();
             background: url('https://biketrack-dev.solutionwin.net/details_close.png') no-repeat center center;
         }
         </style>
+<script>
+$(document).ready(function(){
+    if(window.outerWidth>=720){
+        $("#check_id").change(function(){
+            
+            if($("#check_id").prop("checked") == true){
+                           
+                           $("td.details-control").each(function(){
+                            if (!$(this).parent().hasClass("shown")) {
+                                $(this).trigger("click");
+                            }  
+                           });
+                          
+                            }
+            if($("#check_id"). prop("checked") == false){
+                           
+                           $("td.details-control").each(function(){
+                            if ($(this).parent().hasClass("shown")) {
+                                $(this).trigger("click");
+                            }  
+                           });
+                          
+                       }
+                     });
+               }
+                  else if(window.outerWidth<720){
+                  $("#check_id").change(function(){
+                   if($("#check_id").prop("checked") == true){
+                           
+                           $("td.sorting_1").each(function(){
+                            if (!$(this).parent().hasClass("parent")) {
+                                $(this).trigger("click");
+                            }  
+                           });
+                          
+                            }
+            if($("#check_id"). prop("checked") == false){
+                           
+                           $("td.sorting_1").each(function(){
+                            if ($(this).parent().hasClass("parent")) {
+                                $(this).trigger("click");
+                            }  
+                           });
+                          
+                       }
+               
+                   });
+                  }
+});
+</script>
+
 @endsection

@@ -358,12 +358,12 @@
           <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <script>
             $(document).ready(function(){
-                $('#datepicker1').datepicker({format: "dd.mm.yyyy"}); 
-                $('#datepicker2').datepicker({format: "dd.mm.yyyy"}); 
-                $('#datepicker3').datepicker({format: "dd.mm.yyyy"}); 
-                $('#datepicker4').datepicker({format: "dd.mm.yyyy"}); 
-                $('#datepicker5').datepicker({format: "dd.mm.yyyy"}); 
-                $('#datepicker6').datepicker({format: "dd.mm.yyyy"}); 
+                $('#datepicker1').datepicker({dateFormat: 'yy-mm-dd'}); 
+        $('#datepicker2').datepicker({dateFormat: 'yy-mm-dd'}); 
+        $('#datepicker3').datepicker({dateFormat: 'yy-mm-dd'}); 
+        $('#datepicker4').datepicker({dateFormat: 'yy-mm-dd'});  
+        $('#datepicker5').datepicker({dateFormat: 'yy-mm-dd'}); 
+        $('#datepicker6').datepicker({dateFormat: 'yy-mm-dd'}); 
             });
         
         </script>

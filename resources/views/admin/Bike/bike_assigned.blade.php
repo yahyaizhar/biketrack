@@ -45,7 +45,7 @@
                             <div class="kt-widget__content">
                                 <div class="kt-widget__head">
                                     <a class="kt-widget__username">
-                                      <h4>  {{ $bike_id['model'] }}</h4>
+                                      <h4> {{$bike_id['brand']}}-{{ $bike_id['model'] }}</h4>
                                         <button class="btn btn-label-success btn-sm btn-upper"><span class="label label-success">Active</span></button>
                                         
                                     </a>

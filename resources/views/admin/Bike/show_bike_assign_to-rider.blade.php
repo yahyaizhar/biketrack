@@ -46,7 +46,7 @@
                                 <div class="kt-widget__content">
                                     <div class="kt-widget__head">
                                         <a class="kt-widget__username">
-                                            {{ $bikes['model'] }}
+                                                {{$bike_id['brand']}}-{{ $bikes['model'] }}
                                         </a>
                 
                                         <div class="kt-widget__action">

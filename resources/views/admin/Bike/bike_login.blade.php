@@ -122,6 +122,17 @@
                                 </span>
                             @endif
                         </div>
+                        <div class="form-group">
+                                <label>Brand:</label>
+                                <input type="text" class="form-control @if($errors->has('brand')) invalid-field @endif" name="brand" placeholder="Enter Brand" value="{{ old('brand') }}">
+                                @if ($errors->has('brand'))
+                                    <span class="invalid-response" role="alert">
+                                        <strong>
+                                            {{$errors->first('brand')}}
+                                        </strong>
+                                    </span>
+                                @endif
+                            </div>
                      
                        
                         <div class="form-group">
@@ -135,11 +146,28 @@
                                 </span>
                             @endif
                         </div>
+                        <div class="form-group">
+                                <label>Mulkiya Number:</label>
+                                <input type="text" class="form-control @if($errors->has('mulkiya_number')) invalid-field @endif" name="mulkiya_number" placeholder="Enter Mulkiya Nnumber" value="{{ old('mulkiya_number') }}">
+                                @if ($errors->has('mulkiya_number'))
+                                    <span class="invalid-response" role="alert">
+                                        <strong>
+                                            {{$errors->first('mulkiya_number')}}
+                                        </strong>
+                                    </span>
+                                @endif
+                            </div>
+                            <div class="form-group">
+                                    <div class="custom-file">
+                                        <input type="file" name="mulkiya_picture" class="custom-file-input" id="mulkiya_picture">
+                                        <label class="custom-file-label" for="mulkiya_picture">Choose Mulkiya Picture</label>
+                                    </div>
+                                </div>
                          
                         <div class="form-group">
                             <div class="custom-file">
                                 <input type="file" name="profile_picture" class="custom-file-input" id="profile_picture">
-                                <label class="custom-file-label" for="profile_picture">Choose Picture</label>
+                                <label class="custom-file-label" for="profile_picture">Choose Profile Picture</label>
                             </div>
                         </div>
                         

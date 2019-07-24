@@ -51,9 +51,18 @@
                                         <span class="form-text text-muted">We Want your Bike Number</span>
                                     @endif
                                 </div>
+                          
+                        <div class="form-group">
+                                <label>Brand:</label>
+                                <input type="text" class="form-control @if($errors->has('brand')) invalid-field @endif" name="brand" placeholder="Enter Brand" value="{{ $bike->brand }}">
+                                @if ($errors->has('brand'))
+                                    <span class="invalid-response" role="alert">
+                                        <strong>
+                                            {{$errors->first('brand')}}
+                                        </strong>
+                                    </span>
+                                @endif
                             </div>
-                           
-                        </div>
                         <div class="form-group">
                             <label>Availability:</label>
                             <input type="text" class="form-control @if($errors->has('availability')) invalid-field @endif" name="availability" placeholder="yes or no" value="{{ $bike->availability }}">
@@ -68,11 +77,41 @@
                             @endif
                         </div>
                         <div class="form-group">
+                                <label>Mulkiya Number:</label>
+                                <input type="text" class="form-control @if($errors->has('mulkiya_number')) invalid-field @endif" name="mulkiya_number" placeholder="Enter Mulkiya Nnumber" value="{{ $bike->mulkiya_number }}">
+                                @if ($errors->has('mulkiya_number'))
+                                    <span class="invalid-response" role="alert">
+                                        <strong>
+                                            {{$errors->first('mulkiya_number')}}
+                                        </strong>
+                                    </span>
+                                @endif
+                            </div> </div>
+                           
+                        </div>
+                        <div class="col-lg-7 col-md-7 col-sm-12">
+                                <div class="form-group col-md-6 pull-right mtr-15">
+                                        <div class="custom-file">
+                                            <input type="file" name="mulkiya_picture" class="custom-file-input" id="mulkiya_picture">
+                                            <label class="custom-file-label" for="mulkiya_picture">Choose Mulkiya Picture</label>
+                                        </div>
+                                        <span class="form-text text-muted">Select if you want to update Mulkiya picture</span>
+                                    </div>    
+                            @if($bike->mulkiya_picture)
+                                    <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($bike->mulkiya_picture)) }}" alt="image">
+                                @else
+                                    <img class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                                @endif
+                               
+                            </div>
+                        
+                        <div class="form-group">
                             <label>Status:</label>
                             <div>
                                 <input data-switch="true" name="status" id="status" type="checkbox" {!! $bike->status ==  1 ? 'checked' : '' !!} data-on-text="Enabled" data-handle-width="70" data-off-text="Disabled" data-on-color="brand">
                             </div>
                         </div>
+                        
                     </div>
                     <div class="kt-portlet__foot">
                         <div class="kt-form__actions kt-form__actions--right">
