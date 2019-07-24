@@ -132,7 +132,7 @@
                                         
                                     </p>
                                     <p>
-                                        Expires: <strong>{{Carbon\Carbon::parse($rider_detail->visa_expiry)->format('F d, Y')}}</strong>
+                                        Expires: <strong>{{Carbon\Carbon::parse($rider_detail->visa_expiry)->diffInDays(Carbon\Carbon::now())}} Days remaining</strong>
                                     </p>							 		 
                                 </div>						 
                                 <a href="{{ route('admin.rider.profile', $rider->id) }}" class="btn btn-sm btn-label-brand btn-bold">View</a>						 
@@ -181,7 +181,7 @@
                                         
                                     </p>
                                     <p>
-                                        Expires: <strong>{{Carbon\Carbon::parse($rider_detail->passport_expiry)->format('F d, Y')}}</strong>
+                                        Expires: <strong>{{Carbon\Carbon::parse($rider_detail->passport_expiry)->diffInDays(Carbon\Carbon::now())}} Days remaining</strong>
                                     </p>							 		 
                                 </div>						 
                                 <a href="{{ route('admin.rider.profile', $rider->id) }}" class="btn btn-sm btn-label-brand btn-bold">View</a>						 
@@ -208,10 +208,20 @@
                 </div>
                 <div class="kt-portlet__body">
                     <div class="kt-widget4">
-                        @if(count($me__riders) > 0)
-                        @foreach ($me__riders as $rider_detail)
                         @php
-                            $rider = App\Model\Rider\Rider::find($rider_detail->rider_id);
+                        $__me_count = 0;
+                            foreach ($me__bikes as $bike) {
+                                $__assign_bike = $bike->Assign_bike()->where('status', 'active')->get()->count();
+                                if($__assign_bike > 0){
+                                    $__me_count++;
+                                }
+                            }
+                        @endphp
+                        @if($__me_count > 0)
+                        @foreach ($me__bikes as $bike)
+                        @php
+                        $assign_bike = $bike->Assign_bike()->where('status', 'active')->get()->first();
+                            $rider = App\Model\Rider\Rider::find($assign_bike->rider_id);
                         @endphp
                             <div class="kt-widget4__item">
                                 <div class="kt-widget4__pic kt-widget4__pic--pic">
@@ -230,7 +240,7 @@
                                         
                                     </p>
                                     <p>
-                                        Expires: <strong>{{Carbon\Carbon::parse($rider_detail->mulkiya_expiry)->format('F d, Y')}}</strong>
+                                        Expires: <strong>{{Carbon\Carbon::parse($bike->mulkiya_expiry)->diffInDays(Carbon\Carbon::now())}} Days remaining</strong>
                                     </p>							 		 
                                 </div>						 
                                 <a href="{{ route('admin.rider.profile', $rider->id) }}" class="btn btn-sm btn-label-brand btn-bold">View</a>						 
@@ -279,7 +289,7 @@
                                         
                                     </p>
                                     <p>
-                                        Expires: <strong>{{Carbon\Carbon::parse($rider_detail->licence_expiry)->format('F d, Y')}}</strong>
+                                        Expires: <strong>{{Carbon\Carbon::parse($rider_detail->licence_expiry)->diffInDays(Carbon\Carbon::now())}} Days remaining</strong>
                                     </p>							 		 
                                 </div>						 
                                 <a href="{{ route('admin.rider.profile', $rider->id) }}" class="btn btn-sm btn-label-brand btn-bold">View</a>						 

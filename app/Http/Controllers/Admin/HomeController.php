@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Model\Rider\Rider_area;
 use App\Model\Rider\Rider_detail;
+use App\Model\Bikes\bike;
 use Carbon\Carbon;
 
 class HomeController extends Controller
@@ -55,16 +56,16 @@ class HomeController extends Controller
         ->orderBy('passport_expiry', 'DESC')
         ->get();
         // return $pe__riders;
-        $me__riders=Rider_detail::whereDate('mulkiya_expiry', '<=', $after2_dt->toDateString())
+        
+        $me__bikes=bike::whereDate('mulkiya_expiry', '<=', $after2_dt->toDateString())
         ->whereDate('mulkiya_expiry', '>', $current_date->toDateString())
         ->orderBy('mulkiya_expiry', 'DESC')
         ->get();
-
         $le__riders=Rider_detail::whereDate('licence_expiry', '<=', $after2_dt->toDateString())
         ->whereDate('licence_expiry', '>', $current_date->toDateString())
         ->orderBy('licence_expiry', 'DESC')
         ->get();
-        return view('admin.home', compact('ve__riders','pe__riders','me__riders','le__riders','riders', 'clients', 'online_riders', 'clients_online', 'latest_riders', 'latest_clients'));
+        return view('admin.home', compact('ve__riders','pe__riders','me__bikes','le__riders','riders', 'clients', 'online_riders', 'clients_online', 'latest_riders', 'latest_clients'));
     }
 
     public function livemap()
