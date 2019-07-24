@@ -3,7 +3,7 @@
 <div class="kt-subheader   kt-grid__item" id="kt_subheader">
     <div class="kt-subheader__main">
         
-        <h3 class="kt-subheader__title">{{ $bike_id->model }}</h3>
+        <h3 class="kt-subheader__title">{{ $bike_id->brand }}</h3>
 
         <span class="kt-subheader__separator kt-subheader__separator--v"></span>
 

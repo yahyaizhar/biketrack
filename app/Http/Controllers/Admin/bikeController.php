@@ -32,7 +32,25 @@ class bikeController extends Controller
       return view('admin.Bike.bike_view');
     }
     public function create_bike(Request $r){
-      $bike_object=bike::create($r->all());
+      $bike_object=new bike;
+      $bike_object->model = $r->model;
+      $bike_object->bike_number = $r->bike_number;
+      $bike_object->mulkiya_number = $r->mulkiya_number;
+      $bike_object->brand = $r->brand;
+      if($r->status)
+            $bike_object->status = 1;
+        else
+            $bike_object->status = 0;
+            if($r->hasFile('mulkiya_picture'))
+            {
+                // return 'yes';
+                $filename = $r->mulkiya_picture->getClientOriginalName();
+                $filesize = $r->mulkiya_picture->getClientSize();
+                // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
+                $filepath = Storage::putfile('public/uploads/riders/mulkiya_pictures', $r->file('mulkiya_picture'));
+                $bike_object->mulkiya_picture = $filepath;
+            }
+            $bike_object->save();
       $bike_detail = $bike_object->Bike_detail()->create([
       'registration_number'=> $r->get('registration_number'),
         
@@ -65,13 +83,25 @@ class bikeController extends Controller
     $bike->model = $request->model;
     $bike->bike_number = $request->bike_number;
     $bike->availability = $request->availability;
-    
-    
+    $bike->brand = $request->brand;
+    $bike->mulkiya_number = $request->mulkiya_number;
     if($request->status)
         $bike->status = 1;
     else
         $bike->status = 0;
-   
+        if($request->hasFile('mulkiya_picture'))
+        {
+            // return 'yes';
+            if($bike->mulkiya_picture)
+            {
+                Storage::delete($bike->mulkiya_picture);
+            }
+            $filename = $request->mulkiya_picture->getClientOriginalName();
+            $filesize = $request->mulkiya_picture->getClientSize();
+            // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
+            $filepath = Storage::putfile('public/uploads/riders/mulkiya_pictures', $request->file('mulkiya_picture'));
+            $bike->mulkiya_picture = $filepath;
+        }
     $bike->update();
    
     return redirect(route('bike.bike_view'))->with('message', 'Record Updated Successfully.');

@@ -35,9 +35,10 @@
         </div>
         <div class="kt-portlet__body">
 <h1 class="jhgjhg" style="display:none;" >a</h1>
-<div class="checkbox checkbox-danger">
+
+<div class="checkbox checkbox-danger btn btn-default btn-elevate btn-icon-sm" id="hover_Checkbox1" >
         <input id="check_id" class="checkbox checkbox-danger" type="checkbox">
-        <label for="check_id">
+        <label for="check_id" >
            Detailed View
         </label>
 </div>
@@ -48,7 +49,7 @@
                         {{-- <th>
                             <input type="checkbox" id="select_all" >
                         </th> --}}
-                        <th></th>
+                      
                         <th>Name</th>
                         <th>Phone Number</th>
                         <th>Nationality</th>
@@ -78,8 +79,8 @@
 <!--end::Page Scripts -->
 <script>
 var newcomer_table;
-$(function() {
-    newcomer_table = $('#newComer-table').DataTable({
+$(function() { 
+    var _settings =  {
         processing: true,
         serverSide: true,
         'language': {
@@ -87,7 +88,14 @@ $(function() {
             'processing': $('.loading').show()
         },
         ajax: "{!! route('NewComer.view_ajax') !!}",
-        columns: [
+        columns:null, 
+        responsive:true,
+        order:[0,'desc'],
+    };
+    if(window.outerWidth>=686){
+        //visa_expiry
+        $('#newComer-table thead tr').prepend('<th></th>');
+        _settings.columns=[
             //  { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
             {
                 "className":      'details-control',
@@ -102,10 +110,39 @@ $(function() {
             { "data": 'interview_status', "name": 'interview_status' },
             { "data": 'actions', "name": 'actions' },
         ],
-        responsive:true,
-        order:[0,'desc'],
-    });
+      
+        _settings.responsive=false;
 
+        
+    }
+    else{
+        $('#newComer-table thead tr th').eq(5).after('<th>Source Of Contact</th>');
+        $('#newComer-table thead tr th').eq(6).after('<th>Experiance Input</th>');
+        $('#newComer-table thead tr th').eq(7).after('<th>Passport Status</th>');
+        $('#newComer-table thead tr th').eq(8).after('<th>Passport Reason</th>');
+        $('#newComer-table thead tr th').eq(9).after('<th>Kingriders Interview</th>');
+        $('#newComer-table thead tr th').eq(10).after('<th>Interview</th>');
+        $('#newComer-table thead tr th').eq(11).after('<th>Overall Remarks</th>');
+        
+        _settings.columns=[
+            { "data": 'name', "name": 'name' },
+            { "data": 'phone_number', "name": 'phone_number' },
+            { "data": 'nationality', "name": 'nationality' },
+            { "data": 'experience', "name": 'experience' },
+            { "data": 'interview_status', "name": 'interview_status' },
+            { "data": 'actions', "name": 'actions' },
+            { "data": 'source_of_contact', "name": 'source_of_contact' },
+            { "data": 'experience_input', "name": 'experience_input' },
+            { "data": 'passport_status', "name": 'passport_status' },
+            { "data": 'passport_reason', "name": 'passport_reason' },
+            { "data": 'kingriders_interview', "name": 'kingriders_interview' },
+            { "data": 'interview', "name": 'interview' },
+            { "data": 'overall_remarks', "name": 'overall_remarks'},
+        ];
+     
+    }
+    newcomer_table = $('#newComer-table').DataTable(_settings);
+    if(window.outerWidth>=686){
     $('#newComer-table tbody').on('click', 'td.details-control', function () {
         var tr = $(this).closest('tr');
         var row = newcomer_table.row( tr );
@@ -121,9 +158,10 @@ $(function() {
             tr.addClass('shown');
         }
     } );
+}
     function format ( d ) {
         // `d` is the original data object for the row
-        return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+        return '<table cellpadding="5" cellspacing="0" id="new_comertable" border="0" style="padding-left:50px;">'+
             '<tr>'+
                 '<td style="font-weight:900;">Source of Contact:</td>'+
                 '<td colspan="2";>'+d.source_of_contact+'</td>'+
@@ -226,12 +264,57 @@ td.details-control {
 tr.shown td.details-control {
     background: url('https://biketrack-dev.solutionwin.net/details_close.png') no-repeat center center;
 }
+
+
 </style>
 <script>
         $(document).ready(function(){
-        $("#check_id").change(function(){
-        $("td.details-control").click();
-        });
-        });
-        </script>
+        if(window.outerWidth>=686){
+            $("#check_id").change(function(){
+            
+            if($("#check_id").prop("checked") == true){
+                           
+                           $("td.details-control").each(function(){
+                            if (!$(this).parent().hasClass("shown")) {
+                                $(this).trigger("click");
+                            }  
+                           });
+                          
+                            }
+            if($("#check_id"). prop("checked") == false){
+                           
+                           $("td.details-control").each(function(){
+                            if ($(this).parent().hasClass("shown")) {
+                                $(this).trigger("click");
+                            }  
+                           });
+                          
+                       }
+                     });
+               }
+                  else if(window.outerWidth<686){
+                  $("#check_id").change(function(){
+                   if($("#check_id").prop("checked") == true){
+                           
+                           $("td.sorting_1").each(function(){
+                            if (!$(this).parent().hasClass("parent")) {
+                                $(this).trigger("click");
+                            }  
+                           });
+                          
+                            }
+            if($("#check_id"). prop("checked") == false){
+                           
+                           $("td.sorting_1").each(function(){
+                            if ($(this).parent().hasClass("parent")) {
+                                $(this).trigger("click");
+                            }  
+                           });
+                          
+                       }
+               
+                   });
+                  }
+            });
+</script>
 @endsection
