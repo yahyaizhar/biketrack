@@ -49,12 +49,12 @@ class HomeController extends Controller
         ->whereDate('visa_expiry', '>', $current_date->toDateString())
         ->orderBy('visa_expiry', 'DESC')
         ->get();
-
+        
         $pe__riders=Rider_detail::whereDate('passport_expiry', '<=', $after2_dt->toDateString())
         ->whereDate('passport_expiry', '>', $current_date->toDateString())
         ->orderBy('passport_expiry', 'DESC')
         ->get();
-
+        // return $pe__riders;
         $me__riders=Rider_detail::whereDate('mulkiya_expiry', '<=', $after2_dt->toDateString())
         ->whereDate('mulkiya_expiry', '>', $current_date->toDateString())
         ->orderBy('mulkiya_expiry', 'DESC')

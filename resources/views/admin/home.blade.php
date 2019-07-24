@@ -181,7 +181,7 @@
                                         
                                     </p>
                                     <p>
-                                        Expires: <strong>{{Carbon\Carbon::parse($rider_detail->visa_expiry)->format('F d, Y')}}</strong>
+                                        Expires: <strong>{{Carbon\Carbon::parse($rider_detail->passport_expiry)->format('F d, Y')}}</strong>
                                     </p>							 		 
                                 </div>						 
                                 <a href="{{ route('admin.rider.profile', $rider->id) }}" class="btn btn-sm btn-label-brand btn-bold">View</a>						 
@@ -230,7 +230,7 @@
                                         
                                     </p>
                                     <p>
-                                        Expires: <strong>{{Carbon\Carbon::parse($rider_detail->visa_expiry)->format('F d, Y')}}</strong>
+                                        Expires: <strong>{{Carbon\Carbon::parse($rider_detail->mulkiya_expiry)->format('F d, Y')}}</strong>
                                     </p>							 		 
                                 </div>						 
                                 <a href="{{ route('admin.rider.profile', $rider->id) }}" class="btn btn-sm btn-label-brand btn-bold">View</a>						 
@@ -279,7 +279,7 @@
                                         
                                     </p>
                                     <p>
-                                        Expires: <strong>{{Carbon\Carbon::parse($rider_detail->visa_expiry)->format('F d, Y')}}</strong>
+                                        Expires: <strong>{{Carbon\Carbon::parse($rider_detail->licence_expiry)->format('F d, Y')}}</strong>
                                     </p>							 		 
                                 </div>						 
                                 <a href="{{ route('admin.rider.profile', $rider->id) }}" class="btn btn-sm btn-label-brand btn-bold">View</a>						 
