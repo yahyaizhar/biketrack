@@ -126,16 +126,8 @@ class RiderController extends Controller
            $rider_detail->licence_image = $filepath;
        }
        $rider_detail->licence_expiry= $request->licence_expiry;
-       if($request->hasFile('mulkiya_image'))
-       {
-           // return 'yes';
-           $filename = $request->mulkiya_image->getClientOriginalName();
-           $filesize = $request->mulkiya_image->getClientSize();
-           // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
-           $filepath = Storage::putfile('public/uploads/riders/mulkiya_image', $request->file('mulkiya_image'));
-           $rider_detail->mulkiya_image = $filepath;
-       }
-       $rider_detail->mulkiya_expiry = $request->mulkiya_expiry;
+       
+      
        $rider_detail->save();
         return redirect(route('admin.riders.index'))->with('message', 'Rider created successfully.');
     }
@@ -260,19 +252,7 @@ class RiderController extends Controller
            $rider_detail->licence_image = $filepath;
        }
        $rider_detail->licence_expiry= $request->licence_expiry;
-       if($request->hasFile('mulkiya_image'))
-       {
-        if($rider_detail->mulkiya_image)
-        {
-            Storage::delete($rider_detail->mulkiya_image);
-        }
-           $filename = $request->mulkiya_image->getClientOriginalName();
-           $filesize = $request->mulkiya_image->getClientSize();
-           // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
-           $filepath = Storage::putfile('public/uploads/riders/mulkiya_image', $request->file('mulkiya_image'));
-           $rider_detail->mulkiya_image = $filepath;
-       }
-       $rider_detail->mulkiya_expiry = $request->mulkiya_expiry;
+       
        $rider_detail->update();
         return redirect(route('admin.riders.index'))->with('message', 'Record Updated Successfully.');
     }

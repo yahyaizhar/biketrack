@@ -86,7 +86,19 @@
                                         </strong>
                                     </span>
                                 @endif
-                            </div> </div>
+                            </div> 
+                            <div class="form-group">
+                                    <label>Mulkiya Expiry:</label>
+                                    <input type="text" id="datepicker" autocomplete="off" class="form-control @if($errors->has('mulkiya_expiry')) invalid-field @endif" name="mulkiya_expiry" placeholder="Enter Mulkiya Expiry" value="{{ $bike->mulkiya_expiry}}">
+                                    @if ($errors->has('mulkiya_expiry'))
+                                        <span class="invalid-response" role="alert">
+                                            <strong>
+                                                {{$errors->first('mulkiya_expiry')}}
+                                            </strong>
+                                        </span>
+                                    @endif
+                                </div>
+                        </div>
                            
                         </div>
                         <div class="col-lg-7 col-md-7 col-sm-12">
@@ -141,5 +153,16 @@
             $('#password-fields').fadeToggle();
         });
     });
+</script>
+ <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+ <link rel="stylesheet" href="/resources/demos/style.css">
+
+ <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+   $(document).ready(function(){
+       $('#datepicker').datepicker({dateFormat: 'yy-mm-dd'}); 
+
+   });
+
 </script>
 @endsection

@@ -158,6 +158,17 @@
                                 @endif
                             </div>
                             <div class="form-group">
+                                    <label>Mulkiya Expiry:</label>
+                                    <input type="text" id="datepicker" autocomplete="off" class="form-control @if($errors->has('mulkiya_expiry')) invalid-field @endif" name="mulkiya_expiry" placeholder="Enter Mulkiya Expiry" value="{{ old('mulkiya_expiry') }}">
+                                    @if ($errors->has('mulkiya_expiry'))
+                                        <span class="invalid-response" role="alert">
+                                            <strong>
+                                                {{$errors->first('mulkiya_expiry')}}
+                                            </strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            <div class="form-group">
                                     <div class="custom-file">
                                         <input type="file" name="mulkiya_picture" class="custom-file-input" id="mulkiya_picture">
                                         <label class="custom-file-label" for="mulkiya_picture">Choose Mulkiya Picture</label>
@@ -214,5 +225,15 @@
 @section('foot')
     
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/bootstrap-switch.js') }}" type="text/javascript"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
 
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+  $(document).ready(function(){
+      $('#datepicker').datepicker({dateFormat: 'yy-mm-dd'}); 
+
+  });
+
+</script>
 @endsection

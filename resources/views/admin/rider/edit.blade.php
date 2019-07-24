@@ -273,38 +273,7 @@
                                                 </div>
                                               
                                         </div>
-                                                <div class="row">
-                                                        <div class="col-lg-6 col-md-6 col-sm-12">
-                                                                <div class="form-group">
-                                                                        <label>Mulkiya Expiry:</label>
-                                                                        <input type="text" id="datepicker6" autocomplete="off" class="form-control @if($errors->has('mulkiya_expiry')) invalid-field @endif" name="mulkiya_expiry" placeholder="Enter Mulkiya Expiry" value="{{ $rider_detail->mulkiya_expiry }}">
-                                                                        @if ($errors->has('mulkiya_expiry'))
-                                                                            <span class="invalid-response" role="alert">
-                                                                                <strong>
-                                                                                    {{ $errors->first('mulkiya_expiry') }}
-                                                                                </strong>
-                                                                            </span>
-                                                                        @else
-                                                                            <span class="form-text text-muted">Please enter your Mulkiya Expiry Date</span>
-                                                                        @endif
-                                                                    </div>
-                                                                </div>
-                                                <div class="col-lg-6 col-md-6 col-sm-12">
-                                                        @if($rider_detail->mulkiya_image)
-                                                            <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_detail->mulkiya_image)) }}" alt="image">
-                                                        @else
-                                                            <img class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
-                                                        @endif
-                                                        <div class="form-group col-md-6 pull-right mtr-15">
-                                                            <div class="custom-file">
-                                                                <input type="file" name="mulkiya_image" class="custom-file-input" id="mulkiya_image">
-                                                                <label class="custom-file-label" for="mulkiya_image">Choose Mulkiya Picture</label>
-                                                            </div>
-                                                            <span class="form-text text-muted">Select if you want to update Mulkiya picture</span>
-                                                        </div>
-                                                    </div>
-                                                  
-                                            </div>
+                                               
                             
                                             <div class="form-group">
                                                     <label>Other Details:</label>
