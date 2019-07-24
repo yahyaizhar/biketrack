@@ -9,3 +9,13 @@
 - Run `php artisan key:generate` 
 - Run `php artisan migrate`
 - Run `php artisan db:seed` to run seeders, if any.
+- Run `php artisan storage:link` to link storage.
+- Run `mkdir storage/app`.
+- Run `mkdir storage/framework`.
+- Run `mkdir storage/framework/cache`.
+- Run `mkdir storage/framework/cache/data`.
+- Run `mkdir storage/framework/sessions`.
+- Run `mkdir storage/framework/views`.
+
+- Run `php artisan cache:clear`.
+- Run `php artisan config:cache`.
