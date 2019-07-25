@@ -17,6 +17,8 @@ use App\Model\Accounts\Rider_salary;
 use carbon\carbon;
 use App\Model\Rider\Rider_detail;
 use App\New_comer;
+use App\Model\Rider\Rider_Report;
+
 
 class AjaxController extends Controller
 {
@@ -272,16 +274,38 @@ class AjaxController extends Controller
         ->rawColumns(['new_name','mulkiya_expiry','official_sim_given_date','licence_expiry','visa_expiry','passport_expiry','official_given_number', 'new_email','date_of_joining', 'new_phone', 'actions', 'status'])
         ->make(true);
     }
+  public function  gettest(Rider $rider,$id){
+    // $reports = $rider->reports;
+   
 
-    public function getRidesReport(Rider $rider)
-    {
-        $reports = $rider->reports;
+    return $rider_report;
+  }
+    public function getRidesReport($id)
+    {  $rider=Rider::find($id);
+        $reports=$rider->Rider_Report()->get();
+        // $reports = $rider->reports;
+        
         return DataTables::of($reports)
         ->addColumn('rider_name', function($reports){
             return $reports->rider->name;
         })
         ->editColumn('created_at', function($reports){
             return $reports->created_at->diffForHumans();
+        })
+        ->editColumn('online_hours', function($reports){
+            return $reports->online_hours;
+        })
+        ->editColumn('no_of_trips', function($reports){
+            return $reports->no_of_trips;
+        })
+        ->editColumn('no_of_hours', function($reports){
+            return $reports->no_of_hours;
+        })
+        ->editColumn('mileage', function($reports){
+            return $reports->mileage;
+        })
+        ->editColumn('id', function($reports){
+            return $reports->id;
         })
         ->addColumn('actions', function($reports){
             return '<span class="dtr-data">
@@ -295,7 +319,7 @@ class AjaxController extends Controller
             </span>
         </span>';
         })
-        ->rawColumns(['actions'])
+        ->rawColumns(['actions','id','mileage','no_of_hours','no_of_trips','online_hours','created_at','rider_name'])
         ->make(true);
     }
 

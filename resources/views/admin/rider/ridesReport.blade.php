@@ -42,7 +42,8 @@
                         <th>Rider Name</th>
                         <th>Online Hours</th>
                         <th>No of Trips</th>
-                        <th>Location</th>
+                        <th>No of Hours</th>
+                        <th>Mileage</th>
                         <th>Created at</th>
                         <th>Actions</th>
                     </tr>
@@ -82,7 +83,8 @@ $(function() {
             { data: 'rider_name', name: 'rider_name' },
             { data: 'online_hours', name: 'online_hours' },
             { data: 'no_of_trips', name: 'no_of_trips' },
-            { data: 'location', name: 'location' },
+            { data: 'no_of_hours', name: 'no_of_hours' },
+            { data: 'mileage', name: 'mileage' },
             { data: 'created_at', name: 'created_at' },
             { data: 'actions', name: 'actions' }
         ],
