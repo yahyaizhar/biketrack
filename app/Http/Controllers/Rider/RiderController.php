@@ -131,14 +131,14 @@ class RiderController extends Controller
             }
             return response()->json([
                 'status' => "success",
-                'status_code'=>1
+                'status_code'=>200
             ]);
         } 
         else{
             return response()->json([
                 'error' => 'Rider not found',
                 'status' => "error",
-                'status_code'=>2
+                'status_code'=>404
             ]);
         }
         
@@ -184,14 +184,14 @@ class RiderController extends Controller
                 'restaurant_latitude' => $restaurant_latitude,
                 'restaurant_longitude' => $restaurant_longitude,
                 'status' => "success",
-                'status_code'=>1
+                'status_code'=>200
             ]);
         }
         else{
             return response()->json([
                 'error' => 'Rider not found',
                 'status' => "error",
-                'status_code'=>2
+                'status_code'=>404
             ]);
         }
 
