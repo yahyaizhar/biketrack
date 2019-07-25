@@ -56,7 +56,7 @@ class RiderController extends Controller
     }
     public function getLatestData(Rider $rider)
     {
-        if($rider->status==='0'){
+        if($rider->status=='0' || $rider->status==0){
             return response()->json([
                 'error' => 'Rider inactive',
                 'status' => "error",
