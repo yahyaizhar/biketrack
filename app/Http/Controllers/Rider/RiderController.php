@@ -30,14 +30,39 @@ class RiderController extends Controller
     public function get_reports(Request $r) 
     {
         $rider = Rider::find($r->rider_id);
-        $rider_reports=$rider->Rider_Report()->whereDate('created_at','=',Carbon::parse($r->date)->toDateString())->get();
-        return response()->json([
-            'reports'=>$rider_reports,
-            'status' => "success"
-        ]);
+        if($rider){
+            if($rider->status==='0'){
+                return response()->json([
+                    'error' => 'Rider inactive',
+                    'status' => "error",
+                    'status_code'=>404
+                ]);
+            }
+            $rider_reports=$rider->Rider_Report()->whereDate('created_at','=',Carbon::parse($r->date)->toDateString())->get();
+            return response()->json([
+                'reports'=>$rider_reports,
+                'status' => "success",
+                'status_code'=>200
+            ]);
+        }
+        else{
+            return response()->json([
+                'error' => 'Rider not found',
+                'status' => "error",
+                'status_code'=>404
+            ]);
+        }
+        
     }
     public function getLatestData(Rider $rider)
     {
+        if($rider->status==='0'){
+            return response()->json([
+                'error' => 'Rider inactive',
+                'status' => "error",
+                'status_code'=>404
+            ]);
+        }
         $client_details = $rider->clients;
         // return $client_details;
         if(count($client_details)>0)
@@ -110,6 +135,13 @@ class RiderController extends Controller
     { 
         $rider = Rider::find($request->rider_id);
         if($rider){
+            if($rider->status==='0'){
+                return response()->json([
+                    'error' => 'Rider inactive',
+                    'status' => "error",
+                    'status_code'=>404
+                ]);
+            }
             $start = Carbon::parse($request->started_at);
             $end = Carbon::parse(Carbon::now());
             $minutes = $end->diffInMinutes($start);
@@ -146,7 +178,16 @@ class RiderController extends Controller
     public function startday(Request $r)
     {
         $rider = Rider::find($r->rider_id);
+        
+        
         if($rider){
+            if($rider->status==='0'){
+                return response()->json([
+                    'error' => 'Rider inactive',
+                    'status' => "error",
+                    'status_code'=>404
+                ]);
+            }
             $client_details = $rider->clients;
             // return $client_details;
             if(count($client_details)>0)
@@ -170,7 +211,7 @@ class RiderController extends Controller
             $online_time->rider_id = $rider->id;
             $online_time->online_time = Carbon::now();
             $online_time->save();
-
+            
             return response()->json([
                 'user_id' => $rider->id,
                 'rider_id' => $rider->id,
