@@ -108,38 +108,39 @@ class RiderController extends Controller
     }
     public function saveRideDetailsAndEndday(Request $request)
     { 
-        $start = Carbon::parse($request->started_at);
-        $end = Carbon::parse(Carbon::now());
-        $minutes = $end->diffInMinutes($start);
-        // return response()->json([
-        //     'status'=>'success',
-        //     'm'=>$minutes,
-        //     '$end'=>$end,
-        //     '$start'=>$start
-        // ]);
         $rider = Rider::find($request->rider_id);
-        $rider->online = $request->status;
-        $rider->update();
-        $report = new Rider_Report();
-        $report->rider_id = $request->rider_id;
-        $report->online_hours = round($minutes/60, 2);
-        $report->no_of_trips = $request->no_of_trips;
-        $report->started_location=$request->start_loc;
-        $report->ended_location=$request->end_loc;
-        $report->no_of_hours=$request->no_of_hours;
-        $report->mileage=$request->mileage;
-        $report->save();
-        $times = Rider_Online_Time::where('rider_id', $request->driver_id)->get();
-        foreach($times as $time)
-        {
-            $time->delete();
+        if($rider){
+            $start = Carbon::parse($request->started_at);
+            $end = Carbon::parse(Carbon::now());
+            $minutes = $end->diffInMinutes($start);
+            $rider->online = $request->status;
+            $rider->update();
+            $report = new Rider_Report();
+            $report->rider_id = $request->rider_id;
+            $report->online_hours = round($minutes/60, 2);
+            $report->no_of_trips = $request->no_of_trips;
+            $report->started_location=$request->start_loc;
+            $report->ended_location=$request->end_loc;
+            $report->no_of_hours=$request->no_of_hours;
+            $report->mileage=$request->mileage;
+            $report->save();
+            $times = Rider_Online_Time::where('rider_id', $request->driver_id)->get();
+            foreach($times as $time)
+            {
+                $time->delete();
+            }
+            return response()->json([
+                'status' => "success",
+                'status_code'=>1
+            ]);
+        } 
+        else{
+            return response()->json([
+                'error' => 'Rider not found',
+                'status' => "error",
+                'status_code'=>2
+            ]);
         }
-        return response()->json([
-            'm'=>$minutes,
-            's'=>Carbon::now(),
-            'status' => "success"
-        ]); 
-        
         
     }
     public function startday(Request $r)
@@ -182,13 +183,15 @@ class RiderController extends Controller
                 'restaurant_address' => $restaurant_address,
                 'restaurant_latitude' => $restaurant_latitude,
                 'restaurant_longitude' => $restaurant_longitude,
-                'status' => "success"
+                'status' => "success",
+                'status_code'=>1
             ]);
         }
         else{
             return response()->json([
                 'error' => 'Rider not found',
-                'status' => "error"
+                'status' => "error",
+                'status_code'=>2
             ]);
         }
 
