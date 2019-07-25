@@ -21,85 +21,14 @@
                     {{ csrf_field() }}
                     <div class="kt-portlet__body">
                                 
-                        <div class="form-group">
-                            <label>Full Name:</label>
-                            <input type="text" class="form-control @if($errors->has('name')) invalid-field @endif" name="name" placeholder="Enter full name" value="{{ old('name') }}">
-                            @if ($errors->has('name'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{ $errors->first('name') }}
-                                    </strong>
-                                </span>
-                            @else
-                                <span class="form-text text-muted">Please enter your full name</span>
-                            @endif
-                        </div>
-                        <div class="form-group">
-                            <label>Email address:</label>
-                            <input type="email" class="form-control @if($errors->has('email')) invalid-field @endif" name="email" placeholder="Enter email" value="{{ old('email') }}">
-                            @if ($errors->has('email'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{ $errors->first('email') }}
-                                    </strong>
-                                </span>
-                            @else
-                                <span class="form-text text-muted">We'll never share your email with anyone else</span>
-                            @endif
-                        </div>
-                        <div class="form-group">
-                            <label>Phone:</label>
-                            <input type="text" class="form-control @if($errors->has('phone')) invalid-field @endif" name="phone" placeholder="Enter phone number" value="{{ old('phone') }}">
-                            @if ($errors->has('phone'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{ $errors->first('phone') }}
-                                    </strong>
-                                </span>
-                            @else
-                                <span class="form-text text-muted">Please enter your phone number</span>
-                            @endif
-                        </div>
-                        <div class="form-group">
-                            <label>Password:</label>
-                            <input type="password" class="form-control @if($errors->has('passsword')) invalid-field @endif" name="password" placeholder="Enter password">
-                            @if ($errors->has('password'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>{{ $errors->first('password') }}</strong>
-                                </span>
-                            @else
-                                <span class="form-text text-muted">Please enter your password</span>
-                            @endif
-                        </div>
-                        <div class="form-group">
-                            <label>Confirm Password:</label>
-                            <input type="password" class="form-control @if($errors->has('passsword')) invalid-field @endif" name="password_confirmation" placeholder="Enter confirm password">
-                        </div>
-                        <div class="form-group">
-                            <label for="vehicle_number">Vehicle Registration Number:</label>
-                            <input class="form-control @if($errors->has('vehicle_number')) invalid-field @endif" id="vehicle_number" name="vehicle_number" rows="3" placeholder="Enter vehicle registration number"  value="{{ old('vehicle_number') }}" />
-                            @if ($errors->has('vehicle_number'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{ $errors->first('vehicle_number') }}
-                                    </strong>
-                                </span>
-                            @else
-                                <span class="form-text text-muted">Please enter your vehicle registration number</span>
-                            @endif
-                        </div>
+                       
+                      
+                     
+                       
                         
-                        <div class="form-group">
-                            <label>City:</label>
-                            <input type="text" class="form-control @if($errors->has('address')) invalid-field @endif" name="address" placeholder="Enter city" value="{{ old('address') }}">
-                            @if ($errors->has('address'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{$errors->first('address')}}
-                                    </strong>
-                                </span>
-                            @endif
-                        </div>
+                       
+                        
+                      
                         <div class="form-group">
                             <label>Model:</label>
                             <input type="text" class="form-control @if($errors->has('model')) invalid-field @endif" name="model" placeholder="Enter model" value="{{ old('model') }}">
@@ -135,17 +64,7 @@
                             </div>
                      
                        
-                        <div class="form-group">
-                            <label>Availability:</label>
-                            <input type="text" class="form-control @if($errors->has('availability')) invalid-field @endif" name="availability" placeholder="yes or no" value="yes" disabled>
-                            @if ($errors->has('availability'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{$errors->first('availability')}}
-                                    </strong>
-                                </span>
-                            @endif
-                        </div>
+                      
                         <div class="form-group">
                                 <label>Mulkiya Number:</label>
                                 <input type="text" class="form-control @if($errors->has('mulkiya_number')) invalid-field @endif" name="mulkiya_number" placeholder="Enter Mulkiya Nnumber" value="{{ old('mulkiya_number') }}">
@@ -175,12 +94,7 @@
                                     </div>
                                 </div>
                          
-                        <div class="form-group">
-                            <div class="custom-file">
-                                <input type="file" name="profile_picture" class="custom-file-input" id="profile_picture">
-                                <label class="custom-file-label" for="profile_picture">Choose Profile Picture</label>
-                            </div>
-                        </div>
+                     
                         
                         <div class="form-group">
                             <label>Status:</label>
@@ -190,7 +104,7 @@
                         </div>
                     </div>
                     
-                    <div class="kt-portlet__body">
+                    {{-- <div class="kt-portlet__body">
                             <h1>Bike Registration Detail</h1>
                             <div class="form-group">
                                     <label>Registration Number:</label>
@@ -204,7 +118,7 @@
                                     @endif
                                 </div>
                                
-                    </div>
+                    </div> --}}
 
                     <div class="kt-portlet__foot">
                         <div class="kt-form__actions kt-form__actions--right">

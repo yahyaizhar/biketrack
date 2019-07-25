@@ -103,7 +103,7 @@
     <script src="{{ asset('dashboard/assets/js/custom/ajax-functions.js') }}" type="text/javascript"></script>
 
     <script src="{{ asset('dashboard/assets/vendors/custom/gmaps/gmaps.js') }}" type="text/javascript"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/eonasdan-bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
     <!--end::Page Vendors -->
     @section('foot')
         

@@ -101,19 +101,7 @@
                                 <input type="password" class="form-control @if($errors->has('passsword')) invalid-field @endif" name="password_confirmation" placeholder="Enter confirm password">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="vehicle_number">Vehicle Registration Number:</label>
-                            <input class="form-control @if($errors->has('vehicle_number')) invalid-field @endif" id="vehicle_number" name="vehicle_number" rows="3" placeholder="Enter vehicle registration number" value="{{ $rider->vehicle_number }}" />
-                            @if ($errors->has('vehicle_number'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{ $errors->first('vehicle_number') }}
-                                    </strong>
-                                </span>
-                            @else
-                                <span class="form-text text-muted">Please enter your vehicle registration number</span>
-                            @endif
-                        </div>
+                        
                         <div class="form-group">
                             <label>City:</label>
                             <input type="text" class="form-control @if($errors->has('address')) invalid-field @endif" name="address" placeholder="Enter city" value="{{ $rider->address }}">
@@ -125,14 +113,63 @@
                                 </span>
                             @endif
                         </div>
-                        <div class="form-group">
-                            <label>Status:</label>
-                            <div>
-                                <input data-switch="true" name="status" id="status" type="checkbox" {!! $rider->status ==  1 ? 'checked' : '' !!} data-on-text="Enabled" data-handle-width="70" data-off-text="Disabled" data-on-color="brand">
+                      
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                             <div class="form-group">
+                                 <label>Start Time:</label>
+                                 <input type="text" autocomplete="off" id="timepicker1" class="form-control @if($errors->has('start_time')) invalid-field @endif" name="start_time" placeholder="Start Time" value="{{ $rider->start_time }}">
+                                 @if ($errors->has('start_time'))
+                                     <span class="invalid-response" role="alert">
+                                         <strong>
+                                             {{$errors->first('start_time')}}
+                                         </strong>
+                                     </span>
+                                 @endif
+                             </div>
                             </div>
-                            
-                        </div>
-                        <h3>Edit Rider Further Detail</h3>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                             <div class="form-group">
+                                 <label>End Time:</label>
+                                 <input type="text" autocomplete="off" id="timepicker2" class="form-control @if($errors->has('end_time')) invalid-field @endif" name="end_time" placeholder="End Time" value="{{ $rider->end_time }}">
+                                 @if ($errors->has('end_time'))
+                                     <span class="invalid-response" role="alert">
+                                         <strong>
+                                             {{$errors->first('end_time')}}
+                                         </strong>
+                                     </span>
+                                 @endif
+                             </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                             <div class="form-group">
+                                 <label>Break Start Time:</label>
+                                 <input type="text" autocomplete="off" id="timepicker3" class="form-control @if($errors->has('break_start_time')) invalid-field @endif" name="break_start_time" placeholder="Break Start Time" value="{{ $rider->break_start_time }}">
+                                 @if ($errors->has('break_start_time'))
+                                     <span class="invalid-response" role="alert">
+                                         <strong>
+                                             {{$errors->first('break_start_time')}}
+                                         </strong>
+                                     </span>
+                                 @endif
+                             </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                             <div class="form-group">
+                                 <label>Break End Time:</label>
+                                 <input type="text" autocomplete="off" id="timepicker4" class="form-control @if($errors->has('break_end_time')) invalid-field @endif" name="break_end_time" placeholder="Break End Time" value="{{ $rider->break_end_time }}">
+                                 @if ($errors->has('break_end_time'))
+                                     <span class="invalid-response" role="alert">
+                                         <strong>
+                                             {{$errors->first('break_end_time')}}
+                                         </strong>
+                                     </span>
+                                 @endif
+                             </div>
+                            </div>
+                             </div>
+                      
+            
                       <div class="form-group">
                                 <label>Date of Joining:</label>
                                 <input type="text" id="datepicker1" autocomplete="off" class="form-control @if($errors->has('date_of_joining')) invalid-field @endif" name="date_of_joining" placeholder="Enter joining Date" value="{{ $rider_detail->date_of_joining }}">
@@ -279,6 +316,13 @@
                                                     <label>Other Details:</label>
                                                     <textarea type="text" rows="8"  autocomplete="off" class="form-control @if($errors->has('other_details')) invalid-field @endif" name="other_details" placeholder="Enter Further Details" >{{ $rider_detail->other_details }}</textarea>
                                                 </div>
+                                                <div class="form-group">
+                                                        <label>Status:</label>
+                                                        <div>
+                                                            <input data-switch="true" name="status" id="status" type="checkbox" {!! $rider->status ==  1 ? 'checked' : '' !!} data-on-text="Enabled" data-handle-width="70" data-off-text="Disabled" data-on-color="brand">
+                                                        </div>
+                                                        
+                                                    </div>
                     </div>
                     <div class="kt-portlet__foot">
                         <div class="kt-form__actions kt-form__actions--right">
@@ -286,6 +330,7 @@
                             <span class="kt-margin-l-10">or <a href="{{ route('admin.riders.index') }}" class="kt-link kt-font-bold">Cancel</a></span>
                         </div>
                     </div>
+                    
                 </form>
 
                 <!--end::Form-->
@@ -296,6 +341,21 @@
 </div>
 @endsection
 @section('foot')
+{{-- timepicker --}}
+<link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
+ 
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
+ 
+ {{-- end time picker --}}
+ <script>
+      $(document).ready(function(){
+        $('#timepicker1').fdatepicker({ format: 'hh:ii',startView:1,maxView:0,pickTime: true,});
+        $('#timepicker2').fdatepicker({ format: 'hh:ii',startView:1,maxView:0,pickTime: true});
+        $('#timepicker3').fdatepicker({ format: 'hh:ii',startView:1,maxView:0,pickTime: true});
+        $('#timepicker4').fdatepicker({ format: 'hh:ii',startView:1,maxView:0,pickTime: true});
+	 });
+ </script>
     
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/bootstrap-switch.js') }}" type="text/javascript"></script>
 <script>
@@ -327,12 +387,12 @@
           <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <script>
             $(document).ready(function(){
-                $('#datepicker1').datepicker({dateFormat: 'yy-mm-dd'}); 
-        $('#datepicker2').datepicker({dateFormat: 'yy-mm-dd'}); 
-        $('#datepicker3').datepicker({dateFormat: 'yy-mm-dd'}); 
-        $('#datepicker4').datepicker({dateFormat: 'yy-mm-dd'});  
-        $('#datepicker5').datepicker({dateFormat: 'yy-mm-dd'}); 
-        $('#datepicker6').datepicker({dateFormat: 'yy-mm-dd'}); 
+                $('#datepicker1').fdatepicker({dateFormat: 'yy-mm-dd'}); 
+                $('#datepicker2').fdatepicker({dateFormat: 'yy-mm-dd'}); 
+                $('#datepicker3').fdatepicker({dateFormat: 'yy-mm-dd'}); 
+                $('#datepicker4').fdatepicker({dateFormat: 'yy-mm-dd'});  
+                $('#datepicker5').fdatepicker({dateFormat: 'yy-mm-dd'}); 
+                $('#datepicker6').fdatepicker({dateFormat: 'yy-mm-dd'}); 
             });
         
         </script>

@@ -121,6 +121,7 @@ $(function() {
         $('#riders-table thead tr th').eq(11).before('<th>Licence Expiry</th>');
         $('#riders-table thead tr th').eq(12).before('<th>Mulkiya Expiry</th>');
         
+        
         _settings.columns=[
         { "data": 'new_id', "name": 'new_id' },
             { "data": 'new_name', "name": 'name' },
@@ -184,8 +185,13 @@ $(function() {
                 '<td colspan="2";>'+data.licence_expiry+'</td>'+
                 '<td colspan="1"; style="font-weight:900;" >Mulkiya Expiry:</td>'+
                 '<td colspan="2";>'+data.mulkiya_expiry+'</td>'+
+               
                '</tr>'+
-             
+               '<tr>'+
+              
+                '<td colspan="3"; style="font-weight:900;" >Assign Bike Number:</td>'+
+                '<td colspan="12";>'+data.bike_number+'</td>'+
+               '</tr>'+
                 
 
             

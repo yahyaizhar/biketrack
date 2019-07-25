@@ -23,6 +23,8 @@ class RiderReports extends Migration
             $table->string('ended_location')->nullable();
             $table->string('mileage')->nullable();
             $table->string('no_of_hours')->nullable();
+            $table->string('start_time')->nullable();
+            $table->string('end_time')->nullable();
 
             $table->foreign('rider_id')->references('id')->on('riders')->onDelete('cascade');
             $table->timestamps();

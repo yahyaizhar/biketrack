@@ -45,9 +45,12 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('phone')->nullable();
             $table->text('address')->nullable();
-            $table->string('vehicle_number')->nullable();
             $table->string('profile_picture')->nullable();
             $table->string('password');
+            $table->string('start_time')->nullable();
+            $table->string('end_time')->nullable();
+            $table->string('break_start_time')->nullable();
+            $table->string('break_end_time')->nullable();
             $table->boolean('online')->nullable();
             $table->boolean('status')->nullable();
             $table->timestamp('email_verified_at')->nullable();
