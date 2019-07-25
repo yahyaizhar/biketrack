@@ -80,6 +80,7 @@ class RiderController extends Controller
             $restaurant_longitude = "";
         }
         return response()->json([
+            'rider'=>$rider,
             'user_id' => $rider->id,
             'rider_id' => $rider->id,
             'email' => $rider->email,
