@@ -132,7 +132,10 @@
                                         
                                     </p>
                                     <p>
-                                        Expires: <strong>{{Carbon\Carbon::parse($rider_detail->visa_expiry)->diffInDays(Carbon\Carbon::now())}} Days remaining</strong>
+                                        @php
+                                            $remaining_days = Carbon\Carbon::parse($rider_detail->visa_expiry)->diffInDays(Carbon\Carbon::now());
+                                        @endphp
+                                        Expires: <strong>{{$remaining_days}} {{Str::plural('day', $remaining_days)}} remaining</strong>
                                     </p>							 		 
                                 </div>						 
                                 <a href="{{ route('admin.rider.profile', $rider->id) }}" class="btn btn-sm btn-label-brand btn-bold">View</a>						 
@@ -181,7 +184,10 @@
                                         
                                     </p>
                                     <p>
-                                        Expires: <strong>{{Carbon\Carbon::parse($rider_detail->passport_expiry)->diffInDays(Carbon\Carbon::now())}} Days remaining</strong>
+                                        @php
+                                            $remaining_days = Carbon\Carbon::parse($rider_detail->passport_expiry)->diffInDays(Carbon\Carbon::now());
+                                        @endphp
+                                        Expires: <strong>{{$remaining_days}} {{Str::plural('day', $remaining_days)}} remaining</strong>
                                     </p>							 		 
                                 </div>						 
                                 <a href="{{ route('admin.rider.profile', $rider->id) }}" class="btn btn-sm btn-label-brand btn-bold">View</a>						 
@@ -240,7 +246,10 @@
                                         
                                     </p>
                                     <p>
-                                        Expires: <strong>{{Carbon\Carbon::parse($bike->mulkiya_expiry)->diffInDays(Carbon\Carbon::now())}} Days remaining</strong>
+                                        @php
+                                            $remaining_days = Carbon\Carbon::parse($bike->mulkiya_expiry)->diffInDays(Carbon\Carbon::now());
+                                        @endphp
+                                        Expires: <strong>{{$remaining_days}} {{Str::plural('day', $remaining_days)}} remaining</strong>
                                     </p>							 		 
                                 </div>						 
                                 <a href="{{ route('admin.rider.profile', $rider->id) }}" class="btn btn-sm btn-label-brand btn-bold">View</a>						 
@@ -289,7 +298,10 @@
                                         
                                     </p>
                                     <p>
-                                        Expires: <strong>{{Carbon\Carbon::parse($rider_detail->licence_expiry)->diffInDays(Carbon\Carbon::now())}} Days remaining</strong>
+                                        @php
+                                            $remaining_days = Carbon\Carbon::parse($rider_detail->licence_expiry)->diffInDays(Carbon\Carbon::now());
+                                        @endphp
+                                        Expires: <strong>{{$remaining_days}} {{Str::plural('day', $remaining_days)}} remaining</strong>
                                     </p>							 		 
                                 </div>						 
                                 <a href="{{ route('admin.rider.profile', $rider->id) }}" class="btn btn-sm btn-label-brand btn-bold">View</a>						 
