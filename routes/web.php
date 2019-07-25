@@ -52,6 +52,7 @@ Route::group([
     Route::get('/clients/data', 'AjaxController@getClients')->name('admin.clients.data');
     Route::get('/riders/data', 'AjaxController@getRiders')->name('admin.riders.data');
     Route::get('/riders/{rider}/ridesReport/data', 'AjaxController@getRidesReport')->name('admin.ridesReport.data');
+   Route::get('/test/ajax/{id}','AjaxController@gettest');
     // Route::get('/rider/{rider}/messages/data', 'AjaxController@getMessages')->name('admin.rider.messages.data');
     
     Route::resource('/riders', 'RiderController', [

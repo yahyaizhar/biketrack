@@ -19,7 +19,6 @@ class RiderReports extends Migration
             $table->bigInteger('rider_id')->unsigned()->index()->nullable();
             $table->string('online_hours')->nullable();
             $table->string('no_of_trips')->nullable();
-            $table->string('location')->nullable();
             $table->string('started_location')->nullable();
             $table->string('ended_location')->nullable();
             $table->string('mileage')->nullable();
