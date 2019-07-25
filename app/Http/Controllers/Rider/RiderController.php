@@ -31,7 +31,7 @@ class RiderController extends Controller
     {
         $rider = Rider::find($r->rider_id);
         if($rider){
-            if($rider->status==='0'){
+            if($rider->status=='0' || $rider->status==0){
                 return response()->json([
                     'error' => 'Rider inactive',
                     'status' => "error",
@@ -80,7 +80,6 @@ class RiderController extends Controller
             $restaurant_longitude = "";
         }
         return response()->json([
-            'rider'=>$rider,
             'user_id' => $rider->id,
             'rider_id' => $rider->id,
             'email' => $rider->email,
@@ -136,7 +135,7 @@ class RiderController extends Controller
     { 
         $rider = Rider::find($request->rider_id);
         if($rider){
-            if($rider->status==='0'){
+            if($rider->status=='0' || $rider->status==0){
                 return response()->json([
                     'error' => 'Rider inactive',
                     'status' => "error",
@@ -180,9 +179,8 @@ class RiderController extends Controller
     {
         $rider = Rider::find($r->rider_id);
         
-        
         if($rider){
-            if($rider->status==='0'){
+            if($rider->status=='0' || $rider->status==0){
                 return response()->json([
                     'error' => 'Rider inactive',
                     'status' => "error",
