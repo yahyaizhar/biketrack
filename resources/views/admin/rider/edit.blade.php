@@ -119,7 +119,7 @@
                              <div class="form-group">
                                  <label>Start Time:</label>
                                  <input type="hidden" id="start_timer1" name="start_time" value="{{ $rider->start_time }}">
-                                 <input type="text" autocomplete="off" id="timepicker1" class="form-control @if($errors->has('start_time')) invalid-field @endif" placeholder="Start Time" value="{{ $rider->start_time }}">
+                                 <input type="text" data-local-format="HH:MM" data-utc-to-local="{{Carbon\Carbon::parse($rider->start_time)->format('H:i:s')}}" autocomplete="off" id="timepicker1" class="form-control @if($errors->has('start_time')) invalid-field @endif" placeholder="Start Time" value="{{ $rider->start_time }}">
                                  @if ($errors->has('start_time'))
                                      <span class="invalid-response" role="alert">
                                          <strong>

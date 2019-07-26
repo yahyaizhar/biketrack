@@ -207,12 +207,30 @@
  		now.setMinutes(dStr.substr(dStr.indexOf(":")+1));
  		now.setSeconds(0);
  		return now;
-	}else 
+	}else if (format == "h:m:s") {
+ 		now.setHours(dStr.split(':')[0]);
+ 		now.setMinutes(dStr.split(':')[1]);
+ 		now.setSeconds(dStr.split(':')[2]);
+ 		return now;
+	}
+    else 
 		return "Invalid Format";
 }
 String.prototype.toDate = function (format) {
     return toDate(this,format);
 };
+
+document.querySelectorAll('[data-utc-to-local]').forEach(function(elem){
+    var _time = elem.getAttribute('data-utc-to-local');
+    if(_time !== ""){
+        var _format = elem.getAttribute('data-local-format');
+        var _converted = new Date((_time).toDate('h:m:s').format('yyyy-mm-dd HH:MM:ss')+' UTC').format(_format);
+        elem.textContent=_converted;
+        elem.value=_converted;
+        elem.removeAttribute('data-utc-to-local');
+        elem.removeAttribute('data-local-format');
+    }
+})
 </script>
     <!--end:: Global Optional Vendors -->
 

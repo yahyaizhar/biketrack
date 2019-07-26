@@ -127,7 +127,7 @@
                                         {{$rider->name}}
                                     </a>
                                     <p class="kt-widget4__text"> 
-                                        Start time: {{Carbon\Carbon::parse($rider->start_time, 'UTC')->setTimezone('Asia/Dubai')->format('h:i A')}}
+                                        Start time: <span data-local-format="hh:MM TT" data-utc-to-local="{{Carbon\Carbon::parse($rider->start_time)->format('H:i:s')}}"><span>
                                         
                                     </p>
                                     <p>
