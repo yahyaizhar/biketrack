@@ -37,6 +37,7 @@
 		<!--end:: Global Mandatory Vendors -->
 
 		<!--begin:: Global Optional Vendors -->
+		
 		<style>
 				/*Checkboxes styles*/
 						input[type="checkbox"] { display: none; }

@@ -60,7 +60,10 @@ class RiderController extends Controller
             'email' => 'required | email | unique:riders',
             'phone' => 'required | string | max:255',
             'password' => 'required | string | confirmed',
-            'vehicle_number' => 'required | string',
+            'start_time' => 'required | string',
+            'end_time' => 'required | string',
+            'break_start_time' => 'required | string',
+            'break_end_time' => 'required | string',
             'address' => 'required | string',
         ]);
         $rider = new Rider();
@@ -68,8 +71,11 @@ class RiderController extends Controller
         $rider->email = $request->email;
         $rider->phone = $request->phone;
         $rider->password = Hash::make($request->password);
-        $rider->vehicle_number = $request->vehicle_number;
         $rider->address = $request->address;
+        $rider->start_time = $request->start_time;
+        $rider->end_time = $request->end_time;
+        $rider->break_start_time = $request->break_start_time;
+        $rider->break_end_time = $request->break_end_time;
         if($request->status)
             $rider->status = 1;
         else
@@ -164,14 +170,18 @@ class RiderController extends Controller
      */
     public function update(Request $request, Rider $rider)
     {
-        
+       
         $this->validate($request, [
             'name' => 'required | string | max:255',
             'email' => 'required | email',
             'phone' => 'required | string | max:255',
-            'vehicle_number' => 'required | string',
+            'start_time' => 'required | string',
+            'end_time' => 'required | string',
+            'break_start_time' => 'required | string',
+            'break_end_time' => 'required | string',
             'address' => 'required | string',
         ]);
+        
         if($request->change_password)
         {
             $this->validate($request, [
@@ -182,8 +192,11 @@ class RiderController extends Controller
         $rider->name = $request->name;
         $rider->email = $request->email;
         $rider->phone = $request->phone;
-        $rider->vehicle_number = $request->vehicle_number;
         $rider->address = $request->address;
+        $rider->start_time = $request->start_time;
+        $rider->end_time = $request->end_time;
+        $rider->break_start_time = $request->break_start_time;
+        $rider->break_end_time = $request->break_end_time;
         if($request->status)
             $rider->status = 1;
         else
@@ -254,7 +267,8 @@ class RiderController extends Controller
        $rider_detail->licence_expiry= $request->licence_expiry;
        
        $rider_detail->update();
-        return redirect(route('admin.riders.index'))->with('message', 'Record Updated Successfully.');
+    
+       return redirect(route('admin.riders.index'))->with('message', 'Record Updated Successfully.');
     }
 
     /**

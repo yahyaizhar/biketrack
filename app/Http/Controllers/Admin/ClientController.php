@@ -351,10 +351,14 @@ return redirect()->route('bike.bike_assigned', ['id'=>$rider->id]) ;
     $bikes_availability->save();
     
 }
-$record->delete();
+$record->status='deactive';
+$record->save();
+
+
     return response()->json([
         'status' => true
     ]);
+   
   }
   public function mutlipleDeleteBike(Request $request)
   {
@@ -388,7 +392,18 @@ $bike_id=bike::find($id);
   return view('admin.Bike.rider_history',compact('bike_id','riders','assign_rider','assign_rider_id_count','hasRider','rider_id'));
   // return $hasRider;
 }
+public function bike_profile($bike_id,$rider_id){
 
+$rider=Rider::find($rider_id);
+$bike=bike::find($bike_id);
+
+$assign_bike=$rider->Assign_bike()->where('status','active')->get()->first();
+if($assign_bike){
+$bike_profile=bike::find($assign_bike->bike_id);
+return view('admin.Bike.bike_profile',compact('bike_profile','rider','assign_bike','bike'));
+}
+return redirect('admin/riders');
+}
 
 
 // end bikeController

@@ -269,17 +269,24 @@ class AjaxController extends Controller
             $rider_detail =$riders->Rider_detail()->get()->first();
            return $rider_detail->official_sim_given_date;
         })
+        ->addColumn('bike_number', function($riders){
+           $a=$riders->Assign_bike()->where('status', 'active')->get()->first();
+            // 
+            if ($a) {
+                $bike=bike::find($a->bike_id);
+                return '<a href="'.url('admin/bike/'.$bike->id.'/profile'.'/'.$riders->id) .'">'.$bike->bike_number.'</a>';
+            }
+            else{
+               return 'Bike is not assigned to Rider';
+            }
+        
+        })
         
         // <a class="dropdown-item" href="'.route('Rider.salary', $riders).'"><i class="fa fa-money-bill-wave"></i> Salaries</a> 
-        ->rawColumns(['new_name','mulkiya_expiry','official_sim_given_date','licence_expiry','visa_expiry','passport_expiry','official_given_number', 'new_email','date_of_joining', 'new_phone', 'actions', 'status'])
+        ->rawColumns(['new_name','mulkiya_expiry','bike_number','official_sim_given_date','licence_expiry','visa_expiry','passport_expiry','official_given_number', 'new_email','date_of_joining', 'new_phone', 'actions', 'status'])
         ->make(true);
     }
-  public function  gettest(Rider $rider,$id){
-    // $reports = $rider->reports;
-   
 
-    return $rider_report;
-  }
     public function getRidesReport($id)
     {  $rider=Rider::find($id);
         $reports=$rider->Rider_Report()->get();

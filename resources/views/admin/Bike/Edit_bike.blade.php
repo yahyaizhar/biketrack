@@ -63,19 +63,7 @@
                                     </span>
                                 @endif
                             </div>
-                        <div class="form-group">
-                            <label>Availability:</label>
-                            <input type="text" class="form-control @if($errors->has('availability')) invalid-field @endif" name="availability" placeholder="yes or no" value="{{ $bike->availability }}">
-                            @if ($errors->has('availability'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{ $errors->first('availability') }}
-                                    </strong>
-                                </span>
-                            @else
-                                <span class="form-text text-muted">Is Bike is available or not?</span>
-                            @endif
-                        </div>
+                      
                         <div class="form-group">
                                 <label>Mulkiya Number:</label>
                                 <input type="text" class="form-control @if($errors->has('mulkiya_number')) invalid-field @endif" name="mulkiya_number" placeholder="Enter Mulkiya Nnumber" value="{{ $bike->mulkiya_number }}">
