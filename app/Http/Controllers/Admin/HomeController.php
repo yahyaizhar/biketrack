@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Model\Rider\Rider_area;
 use App\Model\Rider\Rider_detail;
+use App\Model\Rider\Rider_Online_Time;
 use App\Model\Bikes\bike;
 use Carbon\Carbon;
 
@@ -34,7 +35,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $riders = Rider::all()->count();
+        $all_riders = Rider::all();
+        $riders = $all_riders->count();
         $clients = Client::all()->count();
         $online_riders = Rider::where('status', 1)->get()->count();
         $clients_online = Client::where('status', 1)->get()->count();
@@ -43,7 +45,7 @@ class HomeController extends Controller
         $latest_riders = Rider::orderBy('created_at', 'DESC')->take(5)->get();
         $latest_clients = Client::orderBy('created_at', 'DESC')->take(5)->get();
 
-        $all_riders = Rider::with('Rider_detail')->get();
+        
         $current_date = Carbon::parse(Carbon::now());
         $after2_dt=Carbon::now()->addMonths(2);
         $ve__riders=Rider_detail::whereDate('visa_expiry', '<=', $after2_dt->toDateString())
@@ -65,7 +67,31 @@ class HomeController extends Controller
         ->whereDate('licence_expiry', '>', $current_date->toDateString())
         ->orderBy('licence_expiry', 'DESC')
         ->get();
-        return view('admin.home', compact('ve__riders','pe__riders','me__bikes','le__riders','riders', 'clients', 'online_riders', 'clients_online', 'latest_riders', 'latest_clients'));
+
+        $logged_rider=[];
+        $notlogged_rider=[];
+
+        foreach ($all_riders as $rider) {
+            $online_record = Rider_Online_Time::where('rider_id', $rider->id)->whereNull('offline_time')->first();
+            $rider_startTime = $rider->start_time;
+
+            if($online_record && $rider_startTime){ // logged in
+                $rider_startTime = Carbon::createFromFormat('H:i',$rider_startTime);
+                $online_time=Carbon::parse($online_record->online_time)->diffForHumans();
+                array_push($logged_rider,array('rider'=>$rider,'online_time'=>$online_time));
+            }
+            else if($rider_startTime){ //not log in yet
+                $rider_startTime = Carbon::createFromFormat('H:i',$rider_startTime)->addMinutes(15);
+                $current_time=Carbon::now();
+                if($current_time->greaterThanOrEqualTo($rider_startTime)){ // late
+                    array_push($notlogged_rider,$rider);
+                }
+            }
+            
+
+        }
+        // return $notlogged_rider;
+        return view('admin.home', compact('logged_rider','notlogged_rider','ve__riders','pe__riders','me__bikes','le__riders','riders', 'clients', 'online_riders', 'clients_online', 'latest_riders', 'latest_clients'));
     }
 
     public function livemap()

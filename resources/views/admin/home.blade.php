@@ -1,15 +1,17 @@
 @extends('admin.layouts.app')
 @section('main-content')
 <!-- begin:: Content -->
+
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
 
     <!--Begin::Dashboard 1-->
     <!-- begin:: Content -->
     <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
-
+        
         <!--begin:: Widgets/Stats-->
         <div class="kt-portlet">
             <div class="kt-portlet__body  kt-portlet__body--fit">
+                
                 <div class="row row-no-padding row-col-separator-xl">
                     
                     <div class="col-md-12 col-lg-3 col-xl-3">
@@ -104,6 +106,98 @@
                 <div class="kt-portlet__head">
                     <div class="kt-portlet__head-label">
                         <h3 class="kt-portlet__head-title">
+                            Rider - Not logged in yet
+                        </h3>
+                    </div>
+                </div>
+                <div class="kt-portlet__body">
+                    <div class="kt-widget4">
+                        @if(count($notlogged_rider) > 0)
+                        @foreach ($notlogged_rider as $rider)
+                            <div class="kt-widget4__item">
+                                <div class="kt-widget4__pic kt-widget4__pic--pic">
+                                    @if($rider->profile_picture)
+                                        <img src="{{ asset(Storage::url($rider->profile_picture)) }}" alt="">
+                                    @else
+                                        <img src="{{ asset('dashboard/assets/media/users/default.jpg') }}" alt="">
+                                    @endif
+                                </div>
+                                <div class="kt-widget4__info">
+                                    <a href="{{ route('admin.rider.profile', $rider->id) }}" class="kt-widget4__username">
+                                        {{$rider->name}}
+                                    </a>
+                                    <p class="kt-widget4__text"> 
+                                        Start time: {{Carbon\Carbon::parse($rider->start_time, 'UTC')->setTimezone('Asia/Dubai')->format('h:i A')}}
+                                        
+                                    </p>
+                                    <p>
+                                        {{$rider->phone}}    
+                                    </p>							 		 
+                                </div>						 
+                                <a href="{{ route('admin.rider.profile', $rider->id) }}" class="btn btn-sm btn-label-brand btn-bold">View</a>						 
+                            </div> 
+                        @endforeach	
+                        @else
+                            <div class="alert alert-info">No Riders Available</div>
+                        @endif				 
+                    </div>             
+                </div>
+            </div>
+            <!--end:: Widgets/New Users-->	
+        </div>
+
+        <div class="col-md-6 col-lg-6 col-xl-6">
+            <!--begin:: Widgets/New Users-->
+            <div class="kt-portlet kt-portlet--tabs kt-portlet--height-fluid">
+                <div class="kt-portlet__head">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title">
+                            Rider - Logged in
+                        </h3>
+                    </div>
+                </div>
+                <div class="kt-portlet__body">
+                    <div class="kt-widget4">
+                        @if(count($logged_rider) > 0)
+                        @foreach ($logged_rider as $rider_data)
+                            @php
+                                $rider = $rider_data['rider'];
+                            @endphp
+                            <div class="kt-widget4__item">
+                                <div class="kt-widget4__pic kt-widget4__pic--pic">
+                                    @if($rider->profile_picture)
+                                        <img src="{{ asset(Storage::url($rider->profile_picture)) }}" alt="">
+                                    @else
+                                        <img src="{{ asset('dashboard/assets/media/users/default.jpg') }}" alt="">
+                                    @endif
+                                </div>
+                                <div class="kt-widget4__info">
+                                    <a href="{{ route('admin.rider.profile', $rider->id) }}" class="kt-widget4__username">
+                                        {{$rider->name}}
+                                    </a>
+                                    <p class="kt-widget4__text">
+                                        {{$rider_data['online_time']}}
+                                        
+                                    </p>							 		 
+                                </div>						 
+                                <a href="{{ route('admin.rider.profile', $rider->id) }}" class="btn btn-sm btn-label-brand btn-bold">View</a>						 
+                            </div> 
+                        @endforeach	
+                        @else
+                            <div class="alert alert-info">No Riders Available</div>
+                        @endif				 
+                    </div>             
+                </div>
+            </div>
+            <!--end:: Widgets/New Users-->	
+        </div>
+
+        <div class="col-md-6 col-lg-6 col-xl-6">
+            <!--begin:: Widgets/New Users-->
+            <div class="kt-portlet kt-portlet--tabs kt-portlet--height-fluid">
+                <div class="kt-portlet__head">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title">
                             Rider - Visa expiry
                         </h3>
                     </div>
@@ -135,7 +229,11 @@
                                         @php
                                             $remaining_days = Carbon\Carbon::parse($rider_detail->visa_expiry)->diffInDays(Carbon\Carbon::now());
                                         @endphp
+                                        @if ($remaining_days==0)
+                                        <strong>Expires today</strong>
+                                        @else
                                         Expires: <strong>{{$remaining_days}} {{Str::plural('day', $remaining_days)}} remaining</strong>
+                                        @endif
                                     </p>							 		 
                                 </div>						 
                                 <a href="{{ route('admin.rider.profile', $rider->id) }}" class="btn btn-sm btn-label-brand btn-bold">View</a>						 
@@ -187,7 +285,12 @@
                                         @php
                                             $remaining_days = Carbon\Carbon::parse($rider_detail->passport_expiry)->diffInDays(Carbon\Carbon::now());
                                         @endphp
+                                        @if ($remaining_days==0)
+                                        <strong>Expires today</strong>
+                                        @else
                                         Expires: <strong>{{$remaining_days}} {{Str::plural('day', $remaining_days)}} remaining</strong>
+                                        @endif
+                                        
                                     </p>							 		 
                                 </div>						 
                                 <a href="{{ route('admin.rider.profile', $rider->id) }}" class="btn btn-sm btn-label-brand btn-bold">View</a>						 
@@ -208,7 +311,7 @@
                 <div class="kt-portlet__head">
                     <div class="kt-portlet__head-label">
                         <h3 class="kt-portlet__head-title">
-                            Rider - Mulkia expiry
+                            Bike - Mulkia expiry
                         </h3>
                     </div>
                 </div>
@@ -223,40 +326,45 @@
                                 }
                             }
                         @endphp
-                        @if($__me_count > 0)
+                        @if(count($me__bikes) > 0)
                         @foreach ($me__bikes as $bike)
+                        
                         @php
-                        $assign_bike = $bike->Assign_bike()->where('status', 'active')->get()->first();
-                            $rider = App\Model\Rider\Rider::find($assign_bike->rider_id);
+                        // $assign_bike = $bike->Assign_bike()->where('status', 'active')->get()->first();
+                            // $rider = App\Model\Rider\Rider::find($assign_bike->rider_id);
                         @endphp
                             <div class="kt-widget4__item">
                                 <div class="kt-widget4__pic kt-widget4__pic--pic">
-                                    @if($rider->profile_picture)
-                                        <img src="{{ asset(Storage::url($rider->profile_picture)) }}" alt="">
+                                    @if($bike->profile_picture)
+                                        <img src="{{ asset(Storage::url($bike->profile_picture)) }}" alt="">
                                     @else
                                         <img src="{{ asset('dashboard/assets/media/users/default.jpg') }}" alt="">
                                     @endif
                                 </div>
                                 <div class="kt-widget4__info">
-                                    <a href="{{ route('admin.rider.profile', $rider->id) }}" class="kt-widget4__username">
-                                        {{$rider->name}}
+                                    <a href="{{ route('admin.rider.profile', $bike->id) }}" class="kt-widget4__username">
+                                        {{$bike->brand}} - {{$bike->model}}
                                     </a>
                                     <p class="kt-widget4__text">
-                                        {{$rider->email}}
+                                        {{$bike->bike_number}}
                                         
                                     </p>
                                     <p>
                                         @php
                                             $remaining_days = Carbon\Carbon::parse($bike->mulkiya_expiry)->diffInDays(Carbon\Carbon::now());
                                         @endphp
+                                        @if ($remaining_days==0)
+                                        <strong>Expires today</strong>
+                                        @else
                                         Expires: <strong>{{$remaining_days}} {{Str::plural('day', $remaining_days)}} remaining</strong>
+                                        @endif
                                     </p>							 		 
                                 </div>						 
                                 <a href="{{ route('admin.rider.profile', $rider->id) }}" class="btn btn-sm btn-label-brand btn-bold">View</a>						 
                             </div> 
                         @endforeach	
                         @else
-                            <div class="alert alert-info">No Riders Available</div>
+                            <div class="alert alert-info">No Bikes Available</div>
                         @endif				 
                     </div>             
                 </div>
@@ -301,7 +409,11 @@
                                         @php
                                             $remaining_days = Carbon\Carbon::parse($rider_detail->licence_expiry)->diffInDays(Carbon\Carbon::now());
                                         @endphp
+                                        @if ($remaining_days==0)
+                                        <strong>Expires today</strong>
+                                        @else
                                         Expires: <strong>{{$remaining_days}} {{Str::plural('day', $remaining_days)}} remaining</strong>
+                                        @endif
                                     </p>							 		 
                                 </div>						 
                                 <a href="{{ route('admin.rider.profile', $rider->id) }}" class="btn btn-sm btn-label-brand btn-bold">View</a>						 

@@ -41,14 +41,6 @@ class LoginController extends Controller
                     $restaurant_latitude = "";
                     $restaurant_longitude = "";
                 }
-                $attempt->online = 1;
-                $attempt->update();
-
-                $online_time = new Rider_Online_Time();
-                $online_time->rider_id = $attempt->id;
-                $online_time->online_time = Carbon::now();
-                $online_time->save();
-
                 return response()->json([
                     'user_id' => $attempt->id,
                     'rider_id' => $attempt->id,

@@ -144,19 +144,25 @@ class RiderController extends Controller
             }
             $start = Carbon::parse($request->started_at);
             $end = Carbon::parse(Carbon::now());
-            $minutes = $end->diffInMinutes($start);
+            $seconds = $end->diffInSeconds($start);
+            
+            //$online_record = Rider_Online_Time::where('rider_id', $request->driver_id)->whereNull('offline_time')->first();
+
             $rider->online = $request->status;
             $rider->update();
             $report = new Rider_Report();
-            $report->rider_id = $request->rider_id;
-            $report->online_hours = round($minutes/60, 2);
+            $report->rider_id = $rider->id;
+            $report->online_hours = $seconds;
             $report->no_of_trips = $request->no_of_trips;
             $report->started_location=$request->start_loc;
+            $report->start_time=$start->format('Y-m-d H:i:s');
+            $report->end_time=$end->format('Y-m-d H:i:s');
+            
             $report->ended_location=$request->end_loc;
             $report->no_of_hours=$request->no_of_hours;
             $report->mileage=$request->mileage;
             $report->save();
-            $times = Rider_Online_Time::where('rider_id', $request->driver_id)->get();
+            $times = Rider_Online_Time::where('rider_id', $rider->id)->get();
             foreach($times as $time)
             {
                 $time->delete();
