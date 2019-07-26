@@ -208,7 +208,7 @@
                 <div class="kt-portlet__head">
                     <div class="kt-portlet__head-label">
                         <h3 class="kt-portlet__head-title">
-                            Rider - Mulkia expiry
+                            Bike - Mulkia expiry
                         </h3>
                     </div>
                 </div>
@@ -223,26 +223,27 @@
                                 }
                             }
                         @endphp
-                        @if($__me_count > 0)
+                        @if(count($me__bikes) > 0)
                         @foreach ($me__bikes as $bike)
+                        
                         @php
-                        $assign_bike = $bike->Assign_bike()->where('status', 'active')->get()->first();
-                            $rider = App\Model\Rider\Rider::find($assign_bike->rider_id);
+                        // $assign_bike = $bike->Assign_bike()->where('status', 'active')->get()->first();
+                            // $rider = App\Model\Rider\Rider::find($assign_bike->rider_id);
                         @endphp
                             <div class="kt-widget4__item">
                                 <div class="kt-widget4__pic kt-widget4__pic--pic">
-                                    @if($rider->profile_picture)
-                                        <img src="{{ asset(Storage::url($rider->profile_picture)) }}" alt="">
+                                    @if($bike->profile_picture)
+                                        <img src="{{ asset(Storage::url($bike->profile_picture)) }}" alt="">
                                     @else
                                         <img src="{{ asset('dashboard/assets/media/users/default.jpg') }}" alt="">
                                     @endif
                                 </div>
                                 <div class="kt-widget4__info">
-                                    <a href="{{ route('admin.rider.profile', $rider->id) }}" class="kt-widget4__username">
-                                        {{$rider->name}}
+                                    <a href="{{ route('admin.rider.profile', $bike->id) }}" class="kt-widget4__username">
+                                        {{$bike->brand}} - {{$bike->model}}
                                     </a>
                                     <p class="kt-widget4__text">
-                                        {{$rider->email}}
+                                        {{$bike->bike_number}}
                                         
                                     </p>
                                     <p>
@@ -256,7 +257,7 @@
                             </div> 
                         @endforeach	
                         @else
-                            <div class="alert alert-info">No Riders Available</div>
+                            <div class="alert alert-info">No Bikes Available</div>
                         @endif				 
                     </div>             
                 </div>
