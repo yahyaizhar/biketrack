@@ -113,9 +113,8 @@
                                 </span>
                             @endif
                         </div>
-                      
-                        <div class="row">
-                            <div class="col-lg-3 col-md-3 col-sm-12">
+                      <div class="row">
+                             <div class="col-lg-3 col-md-3 col-sm-12">
                              <div class="form-group">
                                  <label>Start Time:</label>
                                  <input type="hidden" id="start_timer1" name="start_time" value="{{ $rider->start_time }}">
@@ -348,29 +347,47 @@
 {{-- start_timer , timepicker1 --}}
 <script>
 $(document).ready(function(){
+    // time 1
     $('#timepicker1').change(function(){
     var a = $('#timepicker1').val();
     var getUTC_date=new Date(a.toDate('h:m')).format('HH:MM',true);
     $("#start_timer1").val(getUTC_date);
     });
-
+    
+    var b = $('#start_timer1').val();
+    var getlocal_date=new Date((b).toDate('h:m').format('yyyy-mm-dd HH:MM:ss')+' UTC').format('HH:MM');
+    $('#timepicker1').val(getlocal_date);
+    // end time 1
+    // time 2
     $('#timepicker2').change(function(){
     var a = $('#timepicker2').val();
     var getUTC_date=new Date(a.toDate('h:m')).format('HH:MM',true);
     $("#start_timer2").val(getUTC_date);
     });
-
+    var b = $('#start_timer2').val();
+    var getlocal_date=new Date((b).toDate('h:m').format('yyyy-mm-dd HH:MM:ss')+' UTC').format('HH:MM');
+    $('#timepicker2').val(getlocal_date);
+    // end time 2
+    // time 3
     $('#timepicker3').change(function(){
     var a = $('#timepicker3').val();
     var getUTC_date=new Date(a.toDate('h:m')).format('HH:MM',true);
     $("#start_timer3").val(getUTC_date);
     });
-
+    var b = $('#start_timer3').val();
+    var getlocal_date=new Date((b).toDate('h:m').format('yyyy-mm-dd HH:MM:ss')+' UTC').format('HH:MM');
+    $('#timepicker3').val(getlocal_date);
+    // end time 3
+    // time 4
     $('#timepicker4').change(function(){
     var a = $('#timepicker4').val();
     var getUTC_date=new Date(a.toDate('h:m')).format('HH:MM',true);
     $("#start_timer4").val(getUTC_date);
     });
+    var b = $('#start_timer4').val();
+    var getlocal_date=new Date((b).toDate('h:m').format('yyyy-mm-dd HH:MM:ss')+' UTC').format('HH:MM');
+    $('#timepicker4').val(getlocal_date);
+    // end time 4
     
  
 
