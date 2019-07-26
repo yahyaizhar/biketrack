@@ -107,6 +107,7 @@ Route::group([
     // Route::get('/bike/assigned/show/','ClientController@bike_is_show')->name('bike.bike_show');
     Route::get('/riders/{rider}/history','ClientController@Bike_assigned_to_riders_history')->name('Bike.assignedToRiders_History');
     Route::get('/bike/{bike_id}/history','ClientController@rider_history')->name('bike.rider_history');
+    Route::get('/bike/{bike_id}/profile/{rider_id}','ClientController@bike_profile')->name('bike.bike_profile');
     // end Bike
 });
 

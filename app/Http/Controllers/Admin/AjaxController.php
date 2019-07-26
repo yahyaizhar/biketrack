@@ -274,7 +274,7 @@ class AjaxController extends Controller
             // 
             if ($a) {
                 $bike=bike::find($a->bike_id);
-                return $bike->bike_number;
+                return '<a href="'.url('admin/bike/'.$bike->id.'/profile'.'/'.$riders->id) .'">'.$bike->bike_number.'</a>';
             }
             else{
                return 'Bike is not assigned to Rider';

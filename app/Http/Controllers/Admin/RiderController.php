@@ -71,9 +71,8 @@ class RiderController extends Controller
         $rider->email = $request->email;
         $rider->phone = $request->phone;
         $rider->password = Hash::make($request->password);
-        $rider->vehicle_number = $request->vehicle_number;
         $rider->address = $request->address;
-        $rider->start_time = Carbon::parse($request->start_time);
+        $rider->start_time = $request->start_time;
         $rider->end_time = $request->end_time;
         $rider->break_start_time = $request->break_start_time;
         $rider->break_end_time = $request->break_end_time;

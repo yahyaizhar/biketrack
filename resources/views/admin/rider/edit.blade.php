@@ -118,7 +118,8 @@
                             <div class="col-lg-3 col-md-3 col-sm-12">
                              <div class="form-group">
                                  <label>Start Time:</label>
-                                 <input type="text" autocomplete="off" id="timepicker1" class="form-control @if($errors->has('start_time')) invalid-field @endif" name="start_time" placeholder="Start Time" value="{{ $rider->start_time }}">
+                                 <input type="hidden" id="start_timer1" name="start_time">
+                                 <input type="text" autocomplete="off" id="timepicker1" class="form-control @if($errors->has('start_time')) invalid-field @endif" placeholder="Start Time" value="{{ $rider->start_time }}">
                                  @if ($errors->has('start_time'))
                                      <span class="invalid-response" role="alert">
                                          <strong>
@@ -131,7 +132,8 @@
                             <div class="col-lg-3 col-md-3 col-sm-12">
                              <div class="form-group">
                                  <label>End Time:</label>
-                                 <input type="text" autocomplete="off" id="timepicker2" class="form-control @if($errors->has('end_time')) invalid-field @endif" name="end_time" placeholder="End Time" value="{{ $rider->end_time }}">
+                                 <input type="hidden" id="start_timer2" name="end_time">
+                                 <input type="text" autocomplete="off" id="timepicker2" class="form-control @if($errors->has('end_time')) invalid-field @endif"  placeholder="End Time" value="{{ $rider->end_time }}">
                                  @if ($errors->has('end_time'))
                                      <span class="invalid-response" role="alert">
                                          <strong>
@@ -144,7 +146,8 @@
                             <div class="col-lg-3 col-md-3 col-sm-12">
                              <div class="form-group">
                                  <label>Break Start Time:</label>
-                                 <input type="text" autocomplete="off" id="timepicker3" class="form-control @if($errors->has('break_start_time')) invalid-field @endif" name="break_start_time" placeholder="Break Start Time" value="{{ $rider->break_start_time }}">
+                                 <input type="hidden" id="start_timer3" name="break_start_time">
+                                 <input type="text" autocomplete="off" id="timepicker3" class="form-control @if($errors->has('break_start_time')) invalid-field @endif"  placeholder="Break Start Time" value="{{ $rider->break_start_time }}">
                                  @if ($errors->has('break_start_time'))
                                      <span class="invalid-response" role="alert">
                                          <strong>
@@ -157,7 +160,8 @@
                             <div class="col-lg-3 col-md-3 col-sm-12">
                              <div class="form-group">
                                  <label>Break End Time:</label>
-                                 <input type="text" autocomplete="off" id="timepicker4" class="form-control @if($errors->has('break_end_time')) invalid-field @endif" name="break_end_time" placeholder="Break End Time" value="{{ $rider->break_end_time }}">
+                                 <input type="hidden" id="start_timer4" name="break_end_time">
+                                 <input type="text" autocomplete="off" id="timepicker4" class="form-control @if($errors->has('break_end_time')) invalid-field @endif"  placeholder="Break End Time" value="{{ $rider->break_end_time }}">
                                  @if ($errors->has('break_end_time'))
                                      <span class="invalid-response" role="alert">
                                          <strong>
@@ -341,9 +345,40 @@
 </div>
 @endsection
 @section('foot')
+{{-- start_timer , timepicker1 --}}
+<script>
+$(document).ready(function(){
+    $('#timepicker1').change(function(){
+    var a = $('#timepicker1').val();
+    var getUTC_date=new Date(a.toDate('h:m')).format('HH:MM',true);
+    $("#start_timer1").val(getUTC_date);
+    });
+
+    $('#timepicker2').change(function(){
+    var a = $('#timepicker2').val();
+    var getUTC_date=new Date(a.toDate('h:m')).format('HH:MM',true);
+    $("#start_timer2").val(getUTC_date);
+    });
+
+    $('#timepicker3').change(function(){
+    var a = $('#timepicker3').val();
+    var getUTC_date=new Date(a.toDate('h:m')).format('HH:MM',true);
+    $("#start_timer3").val(getUTC_date);
+    });
+
+    $('#timepicker4').change(function(){
+    var a = $('#timepicker4').val();
+    var getUTC_date=new Date(a.toDate('h:m')).format('HH:MM',true);
+    $("#start_timer4").val(getUTC_date);
+    });
+    
+ 
+
+});
+</script>
 {{-- timepicker --}}
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
- 
+  
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
  
