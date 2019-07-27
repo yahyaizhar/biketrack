@@ -244,6 +244,30 @@
     </div>
     </div>
  </div>
+
+ <div class="row">
+ <div class="col-lg-6 col-md-6 col-sm-12">
+    <div class="form-group">
+        <label>Emirates ID:</label>
+        <input type="text"  class="form-control @if($errors->has('emirate_id')) invalid-field @endif" name="emirate_id" placeholder="Enter Emirate ID">
+        @if ($errors->has('emirate_id'))
+            <span class="invalid-response" role="alert">
+                <strong>{{ $errors->first('emirate_id') }}</strong>
+            </span>
+        @else
+            <span class="form-text text-muted">Please enter your Emirate ID.</span>
+        @endif
+    </div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="form-group">
+            <div class="custom-file" style="    margin-top: 26px;">
+                <input type="file" name="emirate_image" class="custom-file-input" id="emirate_image">
+                <label class="custom-file-label" for="emirate_image">Choose Emirates Picture</label>
+            </div>
+        </div>
+        </div>
+     </div>
 <div class="row">
 
 <div class="col-lg-6 col-md-6 col-sm-12">

@@ -24,6 +24,8 @@ class CreateRiderDetailsTable extends Migration
             $table->string('passport_expiry')->nullable();
             $table->string('visa_image')->nullable();
             $table->string('visa_expiry')->nullable();
+            $table->string('emirate_image')->nullable();
+            $table->string('emirate_id')->nullable();
             $table->string('licence_image')->nullable();
             $table->string('licence_expiry')->nullable();
             $table->string('other_details')->nullable();

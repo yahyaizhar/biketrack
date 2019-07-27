@@ -282,6 +282,35 @@
                                         
                                     </div>
                                     <div class="row">
+                                        <div class="col-lg-6 col-md-6 col-sm-12">
+                                           <div class="form-group">
+                                               <label>Emirates ID:</label>
+                                               <input type="text"  class="form-control @if($errors->has('emirate_id')) invalid-field @endif" name="emirate_id" placeholder="Enter Emirate ID" value="{{ $rider_detail->emirate_id }}">
+                                               @if ($errors->has('emirate_id'))
+                                                   <span class="invalid-response" role="alert">
+                                                       <strong>{{ $errors->first('emirate_id') }}</strong>
+                                                   </span>
+                                               @else
+                                                   <span class="form-text text-muted">Please enter your Emirate ID.</span>
+                                               @endif
+                                           </div>
+                                           </div>
+                                           <div class="col-lg-6 col-md-6 col-sm-12">
+                                            @if($rider_detail->emirate_image)
+                                            <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_detail->emirate_image)) }}" alt="image">
+                                        @else
+                                            <img class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                                        @endif
+                                        <div class="form-group col-md-6 pull-right mtr-15">
+                                            <div class="custom-file">
+                                                <input type="file" name="emirate_image" class="custom-file-input" id="emirate_image">
+                                                <label class="custom-file-label" for="emirate_image">Choose Emirate Picture</label>
+                                            </div>
+                                            <span class="form-text text-muted">Select if you want to update Emirate picture</span>
+                                        </div>
+                                               </div>
+                                            </div>
+                                    <div class="row">
                                             <div class="col-lg-6 col-md-6 col-sm-12">
                                                     <div class="form-group">
                                                             <label>Licence Expiry:</label>

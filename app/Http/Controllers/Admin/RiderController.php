@@ -98,6 +98,7 @@ class RiderController extends Controller
        $rider_detail->official_given_number = $request->official_given_number;
        $rider_detail->official_sim_given_date = $request->official_sim_given_date;
        $rider_detail->other_details = $request->other_details;
+       $rider_detail->emirate_id = $request->emirate_id;
        if($request->passport_collected)
        $rider_detail->passport_collected = 'yes';
    else
@@ -122,6 +123,15 @@ class RiderController extends Controller
            $rider_detail->visa_image = $filepath;
        }
        $rider_detail->visa_expiry = $request->visa_expiry;
+       if($request->hasFile('emirate_image'))
+       {
+           // return 'yes';
+           $filename = $request->emirate_image->getClientOriginalName();
+           $filesize = $request->emirate_image->getClientSize();
+           // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
+           $filepath = Storage::putfile('public/uploads/riders/emirate_image', $request->file('emirate_image'));
+           $rider_detail->emirate_image = $filepath;
+       }
        if($request->hasFile('licence_image'))
        {
            // return 'yes';
@@ -221,6 +231,7 @@ class RiderController extends Controller
         $rider_detail->official_given_number = $request->official_given_number;
         $rider_detail->official_sim_given_date = $request->official_sim_given_date;
         $rider_detail->other_details = $request->other_details;
+        $rider_detail->emirate_id = $request->emirate_id;
         if($request->passport_collected)
         $rider_detail->passport_collected = 'yes';
     else
@@ -252,6 +263,19 @@ class RiderController extends Controller
            $rider_detail->visa_image = $filepath;
        }
        $rider_detail->visa_expiry = $request->visa_expiry;
+       if($request->hasFile('emirate_image'))
+       {
+           // return 'yes';
+           if($rider_detail->emirate_image)
+           {
+               Storage::delete($rider_detail->emirate_image);
+           }
+           $filename = $request->emirate_image->getClientOriginalName();
+           $filesize = $request->emirate_image->getClientSize();
+           // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
+           $filepath = Storage::putfile('public/uploads/riders/emirate_image', $request->file('emirate_image'));
+           $rider_detail->emirate_image = $filepath;
+       }
        if($request->hasFile('licence_image'))
        {
         if($rider_detail->licence_image)

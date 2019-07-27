@@ -305,7 +305,7 @@ class AjaxController extends Controller
         ->editColumn('no_of_trips', function($reports){
             return $reports->no_of_trips;
         })
-        ->editColumn('no_of_hours', function($reports){
+        ->editColumn('no_of_hours', function($reports){ 
             return $reports->no_of_hours;
         })
         ->editColumn('mileage', function($reports){
