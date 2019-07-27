@@ -9,7 +9,7 @@
                 <div class="kt-portlet__head">
                     <div class="" style="padding-top:15px;">
                         <h3 class="kt-portlet__head-title">
-                            Assign Bike To: <a href="">{{$rider->name}}</a>
+                          Assign Bike To: <a href="{{route('admin.rider.profile', $rider->id)}}">{{$rider->name}}</a>
                         </h3>
                         @if ($assign_bike<=0)
                         @else
