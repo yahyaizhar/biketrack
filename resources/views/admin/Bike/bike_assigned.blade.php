@@ -10,10 +10,10 @@
         <span class="kt-subheader__desc">Bikes</span>
 
         <a href="{{ route('bike.bike_assignRiders', $rider->id) }}" class="btn btn-label-warning btn-bold btn-sm btn-icon-h kt-margin-l-10">
-            Assign Another Bike
+            Assign another bike
         </a>
         <a href="{{ route('Bike.assignedToRiders_History', $rider->id) }}" class="btn btn-label-danger btn-bold btn-sm btn-icon-h kt-margin-l-10">
-        Bike_history.
+        Bike history
         </a>
 
         <div class="kt-input-icon kt-input-icon--right kt-subheader__search kt-hidden">

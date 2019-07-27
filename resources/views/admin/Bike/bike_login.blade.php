@@ -67,7 +67,7 @@
                       
                         <div class="form-group">
                                 <label>Mulkiya Number:</label>
-                                <input type="text" class="form-control @if($errors->has('mulkiya_number')) invalid-field @endif" name="mulkiya_number" placeholder="Enter Mulkiya Nnumber" value="{{ old('mulkiya_number') }}">
+                                <input type="text" class="form-control @if($errors->has('mulkiya_number')) invalid-field @endif" name="mulkiya_number" placeholder="Enter Mulkiya Number" value="{{ old('mulkiya_number') }}">
                                 @if ($errors->has('mulkiya_number'))
                                     <span class="invalid-response" role="alert">
                                         <strong>

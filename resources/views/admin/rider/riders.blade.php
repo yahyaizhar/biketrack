@@ -189,8 +189,11 @@ $(function() {
                '</tr>'+
                '<tr>'+
               
-                '<td colspan="3"; style="font-weight:900;" >Assign Bike Number:</td>'+
-                '<td colspan="12";>'+data.bike_number+'</td>'+
+                '<td colspan="1"; style="font-weight:900;" >Assign Bike Number:</td>'+
+                '<td colspan="2";>'+data.bike_number+'</td>'+
+                '<td colspan="1"; style="font-weight:900;" >Emirate ID:</td>'+
+                '<td colspan="7";>'+data.emirate_id+'</td>'+
+                
                '</tr>'+
                 
 

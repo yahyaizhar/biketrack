@@ -7,14 +7,15 @@
         <!--begin::Portlet-->
             <div class="kt-portlet">
                 <div class="kt-portlet__head">
-                    <div class="kt-portlet__head-label">
+                    <div class="" style="padding-top:15px;">
                         <h3 class="kt-portlet__head-title">
-                        Assign Bike To- <a href="">{{$rider->name}}</a>
+                            Assign Bike To: <a href="">{{$rider->name}}</a>
+                        </h3>
                         @if ($assign_bike<=0)
                         @else
-                        <h3 style="color:#5867e4;font-size: 1.2rem;margin-top: 8px;margin-left: 5px;">has already assigned _bike</h3>
+                        <span style="color: #5867e4;display: block;width: 100%;font-weight: bold;">This Rider have already an active bike</span>
                         @endif
-                        </h3>
+                        
                     </div>
                 </div>
 
@@ -79,7 +80,7 @@
                     <div class="kt-portlet__foot">
                         <div class="kt-form__actions kt-form__actions--right">
                             <button type="submit" class="btn btn-primary">Submit</button>
-                            <span class="kt-margin-l-10">or <a href="" class="kt-link kt-font-bold">Cancel</a></span>
+                            <span class="kt-margin-l-10">or <a href="{{url('/admin/riders')}}" class="kt-link kt-font-bold">Cancel</a></span>
                         </div>
                     </div>
                 </form>

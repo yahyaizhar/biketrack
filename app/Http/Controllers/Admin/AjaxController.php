@@ -281,9 +281,13 @@ class AjaxController extends Controller
             }
         
         })
+        ->addColumn('emirate_id', function($riders){
+            $rider_detail =$riders->Rider_detail()->get()->first();
+           return $rider_detail->emirate_id;
+        })
         
         // <a class="dropdown-item" href="'.route('Rider.salary', $riders).'"><i class="fa fa-money-bill-wave"></i> Salaries</a> 
-        ->rawColumns(['new_name','mulkiya_expiry','bike_number','official_sim_given_date','licence_expiry','visa_expiry','passport_expiry','official_given_number', 'new_email','date_of_joining', 'new_phone', 'actions', 'status'])
+        ->rawColumns(['new_name','emirate_id','mulkiya_expiry','bike_number','official_sim_given_date','licence_expiry','visa_expiry','passport_expiry','official_given_number', 'new_email','date_of_joining', 'new_phone', 'actions', 'status'])
         ->make(true);
     }
 
