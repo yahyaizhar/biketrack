@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Model\Rider\Rider_Report;
 use App\Model\Rider\Rider_Online_Time;
 use Carbon\Carbon;
+use App\Model\Bikes\bike;
 
 class RiderController extends Controller
 {
@@ -79,6 +80,15 @@ class RiderController extends Controller
             $restaurant_latitude = "";
             $restaurant_longitude = "";
         }
+        $assign_bike=$rider->Assign_bike()->where('status','active')->get()->first();
+        if($assign_bike){
+        $bike=bike::find($assign_bike->bike_id);
+        $_showbike=$bike->bike_number;
+    }
+    else{
+        $_showbike='No Bike';
+    }
+        // return $bike;
         return response()->json([
             'user_id' => $rider->id,
             'rider_id' => $rider->id,
@@ -86,7 +96,7 @@ class RiderController extends Controller
             'full_name' => $rider->name,
             'mobile' => $rider->phone,
             'driver_pic' => $rider->profile_picture ? asset(Storage::url($rider->profile_picture)) : asset('dashboard/assets/media/users/default.jpg'),
-            'vehicle_number' => $rider->vehicle_number,
+            'vehicle_number' => $_showbike,
             'restaurant_name' => $restaurant_name,
             'restaurant_address' => $restaurant_address,
             'restaurant_latitude' => $restaurant_latitude,

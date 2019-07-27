@@ -300,7 +300,10 @@ class AjaxController extends Controller
             return $reports->created_at->diffForHumans();
         })
         ->editColumn('online_hours', function($reports){
-            return $reports->online_hours;
+            $time = Carbon::now(); 
+            $time =$time->diffForHumans($time->copy()->addSeconds($reports->online_hours), true);
+            return $time;
+            // return $reports->online_hours;
         })
         ->editColumn('no_of_trips', function($reports){
             return $reports->no_of_trips;

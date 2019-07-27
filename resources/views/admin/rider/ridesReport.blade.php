@@ -40,7 +40,7 @@
                     <tr>
                         <th>ID</th>
                         <th>Rider Name</th>
-                        <th>Online Hours</th>
+                        <th>Online Time</th>
                         <th>No of Trips</th>
                         <th>No of Hours</th>
                         <th>Mileage</th>
