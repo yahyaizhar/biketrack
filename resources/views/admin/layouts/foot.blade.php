@@ -220,17 +220,27 @@ String.prototype.toDate = function (format) {
     return toDate(this,format);
 };
 
-document.querySelectorAll('[data-utc-to-local]').forEach(function(elem){
-    var _time = elem.getAttribute('data-utc-to-local');
-    if(_time !== ""){
-        var _format = elem.getAttribute('data-local-format');
-        var _converted = new Date((_time).toDate('h:m:s').format('yyyy-mm-dd HH:MM:ss')+' UTC').format(_format);
-        elem.textContent=_converted;
-        elem.value=_converted;
-        elem.removeAttribute('data-utc-to-local');
-        elem.removeAttribute('data-local-format');
-    }
-})
+var time_conversion= function(){
+    document.querySelectorAll('[data-utc-to-local]').forEach(function(elem){
+        var _time = elem.getAttribute('data-utc-to-local');
+        if(_time !== ""){
+            var _format = elem.getAttribute('data-local-format');
+            var _converted = "";
+            if(_format==="yyyy-mm-dd HH:MM:ss"){
+                _converted = new Date(_time+' UTC').format(_format);
+            }
+            else{
+                _converted = new Date((_time).toDate('h:m:s').format('yyyy-mm-dd HH:MM:ss')+' UTC').format(_format);
+            }
+            
+            elem.textContent=_converted;
+            elem.value=_converted;
+            elem.removeAttribute('data-utc-to-local');
+            elem.removeAttribute('data-local-format');
+        }
+    })
+}
+time_conversion();
 </script>
     <!--end:: Global Optional Vendors -->
 
