@@ -50,7 +50,7 @@
                         <th>Name</th>
                         <th>Email</th>
                         <th>Phone</th>
-                        <th>City</th>
+                        <th>Missing Fields</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
@@ -103,7 +103,7 @@ $(function() {
             { "data": 'new_name', "name": 'name' },
             { "data": 'new_email', "name": 'email' },
             { "data": 'new_phone', "name": 'phone' },
-            { "data": 'address', "name": 'address' },
+            { "data": 'missing_fields', "name": 'missing_fields' },
             { "data": 'status', "name": 'status' },
             { "data": 'actions', "name": 'actions' }
         ];
