@@ -207,7 +207,7 @@ class ClientController extends Controller
         // ->get();
 
         $riders = DB::table('riders')
-        ->select('riders.id', 'riders.name', 'riders.vehicle_number')
+        ->select('riders.id', 'riders.name')
         ->leftJoin('client_riders', 'riders.id', '=', 'client_riders.rider_id')
         ->where('riders.status', '=', '1')
         ->whereNull('client_riders.id')

@@ -48,8 +48,8 @@
                     
                         <th>ID</th>
                         <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
+                        <th>Assigned To</th>
+                        <th>Phone Number</th>
                         <th>Missing Fields</th>
                         <th>Status</th>
                         <th>Actions</th>
@@ -101,8 +101,9 @@ $(function() {
         },
         { "data": 'new_id', "name": 'new_id' },
             { "data": 'new_name', "name": 'name' },
-            { "data": 'new_email', "name": 'email' },
+            { "data": 'client_name', "name": 'client_name' },
             { "data": 'new_phone', "name": 'phone' },
+            { "data": 'adress', "name": 'address' },
             { "data": 'missing_fields', "name": 'missing_fields' },
             { "data": 'status', "name": 'status' },
             { "data": 'actions', "name": 'actions' }
@@ -120,6 +121,8 @@ $(function() {
         $('#riders-table thead tr th').eq(10).before('<th>Visa Expiry</th>');
         $('#riders-table thead tr th').eq(11).before('<th>Licence Expiry</th>');
         $('#riders-table thead tr th').eq(12).before('<th>Mulkiya Expiry</th>');
+       
+        
         
         
         _settings.columns=[
@@ -191,8 +194,13 @@ $(function() {
               
                 '<td colspan="1"; style="font-weight:900;" >Assign Bike Number:</td>'+
                 '<td colspan="2";>'+data.bike_number+'</td>'+
-                '<td colspan="1"; style="font-weight:900;" >Emirate ID:</td>'+
-                '<td colspan="7";>'+data.emirate_id+'</td>'+
+                '<td colspan="1"; style="font-weight:900;" >Emerate ID:</td>'+
+                '<td colspan="1";>'+data.emirate_id+'</td>'+
+                '<td colspan="1"; style="font-weight:900;" >Email:</td>'+
+                '<td colspan="1";>'+data.email+'</td>'+
+                '<td colspan="1"; style="font-weight:900;" >Visa Picture:</td>'+
+                '<td colspan="4";><img style="width:150px;height:150px;" class="profile-logo img img-thumbnail" src="'+data.visa_image+'" width:100px,height:100px></td>'+
+                
                 
                '</tr>'+
                 

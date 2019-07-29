@@ -32,7 +32,7 @@
                                                 selected = "selected"
                                             @endif
                                         @endforeach --}}
-                                    >{{ $rider->name }} - {{ $rider->vehicle_number }}</option>
+                                    >{{ $rider->name }} </option>
                                 @endforeach
                                 </select>
                             </div>

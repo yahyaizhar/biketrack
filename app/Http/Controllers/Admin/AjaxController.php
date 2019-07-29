@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Client\Client;
+use App\Model\Client\Client_Rider;
 use Yajra\DataTables\DataTables;
 use App\Model\Rider\Rider;
 use App\Http\Resources\RiderLocationResourceCollection;
@@ -18,6 +19,7 @@ use carbon\carbon;
 use App\Model\Rider\Rider_detail;
 use App\New_comer;
 use App\Model\Rider\Rider_Report;
+use Illuminate\Support\Facades\Storage;
 
 
 class AjaxController extends Controller
@@ -203,8 +205,20 @@ class AjaxController extends Controller
             return '<a href="'.route('admin.rider.profile', $riders->id).'">'.$riders->name.'</a>';
         })
         ->addColumn('new_email', function($riders){
-            return '<a href="'.route('admin.rider.profile', $riders->id).'">'.$riders->email.'</a>';
+            return $riders->email;
         })
+        ->addColumn('client_name', function($riders){
+            
+            $client_rider=$riders->clients()->get()->first();
+            if($client_rider){
+            return '<a href="'.route('admin.clients.riders', $client_rider).'">' .$client_rider->name.'</a>';
+        }
+        else{
+            return "Rider has no client";
+        }
+            
+        })
+        
         ->addColumn('new_phone', function($riders){
             return '<a href="'.route('admin.rider.profile', $riders->id).'">'.$riders->phone.'</a>';
         })
@@ -242,6 +256,25 @@ class AjaxController extends Controller
                 $data.='*Official sim given date <br />';
             }
             return '<a style="color:red;" href="'.url('admin/riders/'.$riders->id.'/edit').'">'.$data.'</a>';
+        })        
+    ->addColumn('adress', function($riders){
+            if($riders->address){
+            return '<a href="'.route('admin.rider.profile', $riders->id).'">'.$riders->address.'</a>';
+        }
+        else{
+            $rider_detail =$riders->Rider_detail()->get()->first();
+           $emerate=$rider_detail->emirate_id.'';
+           $phone   =$riders->phone;
+           $_hasimage=asset(Storage::url($rider_detail->visa_image));
+        //    <img style="width:150px;height:150px;" class="profile-logo img img-thumbnail" src="'+data.visa_image+'" width:100px,height:100px>
+           $_notimage=asset('dashboard/assets/media/users/default.jpg');
+           if($rider_detail->visa_image){
+            return $emerate.$phone ;
+        }else{
+            return $emerate.$phone ; 
+        }
+                       
+        }
         })
         ->addColumn('status', function($riders){
             if($riders->status == 1)
@@ -320,9 +353,18 @@ class AjaxController extends Controller
             $rider_detail =$riders->Rider_detail()->get()->first();
            return $rider_detail->emirate_id;
         })
+        ->addColumn('visa_image', function($riders){
+            $rider_detail =$riders->Rider_detail()->get()->first();
+            if($rider_detail->visa_image){
+            return asset(Storage::url($rider_detail->visa_image)) ;
+        }else{
+            return asset('dashboard/assets/media/users/default.jpg') ; 
+        }
+          
+        })
         
         // <a class="dropdown-item" href="'.route('Rider.salary', $riders).'"><i class="fa fa-money-bill-wave"></i> Salaries</a> 
-        ->rawColumns(['new_name','missing_fields','emirate_id','mulkiya_expiry','bike_number','official_sim_given_date','licence_expiry','visa_expiry','passport_expiry','official_given_number', 'new_email','date_of_joining', 'new_phone', 'actions', 'status'])
+        ->rawColumns(['new_name','missing_fields','adress','client_name','emirate_id','mulkiya_expiry','bike_number','official_sim_given_date','licence_expiry','visa_expiry','passport_expiry','official_given_number', 'new_email','date_of_joining', 'new_phone', 'actions', 'status'])
         ->make(true);
     }
 
@@ -337,6 +379,9 @@ class AjaxController extends Controller
         })
         ->editColumn('created_at', function($reports){
             return $reports->created_at->diffForHumans();
+        })
+        ->editColumn('start_time', function($reports){
+            return '<span data-local-format="yyyy-mm-dd HH:MM:ss" data-utc-to-local="' .$reports->start_time.'"></span>';
         })
         ->editColumn('online_hours', function($reports){
             $time = Carbon::now(); 
@@ -353,6 +398,15 @@ class AjaxController extends Controller
         ->editColumn('mileage', function($reports){
             return $reports->mileage;
         })
+        ->editColumn('start/end-location', function($reports){
+            return '<span>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">See location on map</button>
+
+      </span>';
+        })
+        ->editColumn('end_time', function($reports){
+            return '<span data-local-format="yyyy-mm-dd HH:MM:ss" data-utc-to-local="' .$reports->end_time.'"></span>';
+        })
         ->editColumn('id', function($reports){
             return $reports->id;
         })
@@ -368,7 +422,7 @@ class AjaxController extends Controller
             </span>
         </span>';
         })
-        ->rawColumns(['actions','id','mileage','no_of_hours','no_of_trips','online_hours','created_at','rider_name'])
+        ->rawColumns(['actions','id','start/end-location','mileage','start_time','end_time','no_of_hours','no_of_trips','online_hours','created_at','rider_name'])
         ->make(true);
     }
 
@@ -767,6 +821,7 @@ public function getRidersDetails()
        }
        
        }
+   public function client_name($id){
       
-    
+   }
 }
