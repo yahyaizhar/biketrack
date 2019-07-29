@@ -103,7 +103,6 @@ $(function() {
             { "data": 'new_name', "name": 'name' },
             { "data": 'client_name', "name": 'client_name' },
             { "data": 'new_phone', "name": 'phone' },
-            { "data": 'adress', "name": 'address' },
             { "data": 'missing_fields', "name": 'missing_fields' },
             { "data": 'status', "name": 'status' },
             { "data": 'actions', "name": 'actions' }
@@ -198,10 +197,7 @@ $(function() {
                 '<td colspan="1";>'+data.emirate_id+'</td>'+
                 '<td colspan="1"; style="font-weight:900;" >Email:</td>'+
                 '<td colspan="1";>'+data.email+'</td>'+
-                '<td colspan="1"; style="font-weight:900;" >Visa Picture:</td>'+
-                '<td colspan="4";><img style="width:150px;height:150px;" class="profile-logo img img-thumbnail" src="'+data.visa_image+'" width:100px,height:100px></td>'+
-                
-                
+               
                '</tr>'+
                 
 

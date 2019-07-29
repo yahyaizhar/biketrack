@@ -353,15 +353,6 @@ class AjaxController extends Controller
             $rider_detail =$riders->Rider_detail()->get()->first();
            return $rider_detail->emirate_id;
         })
-        ->addColumn('visa_image', function($riders){
-            $rider_detail =$riders->Rider_detail()->get()->first();
-            if($rider_detail->visa_image){
-            return asset(Storage::url($rider_detail->visa_image)) ;
-        }else{
-            return asset('dashboard/assets/media/users/default.jpg') ; 
-        }
-          
-        })
         
         // <a class="dropdown-item" href="'.route('Rider.salary', $riders).'"><i class="fa fa-money-bill-wave"></i> Salaries</a> 
         ->rawColumns(['new_name','missing_fields','adress','client_name','emirate_id','mulkiya_expiry','bike_number','official_sim_given_date','licence_expiry','visa_expiry','passport_expiry','official_given_number', 'new_email','date_of_joining', 'new_phone', 'actions', 'status'])
