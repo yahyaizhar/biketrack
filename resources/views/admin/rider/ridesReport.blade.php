@@ -10,6 +10,8 @@
 @include('admin.includes.message')
 <!-- begin:: Content -->
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
+
+      
     <div class="kt-portlet kt-portlet--mobile">
         <div class="kt-portlet__head kt-portlet__head--lg">
             <div class="kt-portlet__head-label">
@@ -17,7 +19,7 @@
                     <i class="kt-font-brand fa fa-motorcycle"></i>
                 </span>
                 <h3 class="kt-portlet__head-title">
-                    Rides Reports
+                    Rides Reports 
                </h3>
                 
             </div>
@@ -69,7 +71,7 @@
           <button type="button" class="close" data-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <div id="locations_map"></div>
+          <div id="locations_map" style="width:100%;height:300px;"></div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -126,17 +128,70 @@ function deleteRecord(id){
 }
 
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnbON5DNhSRBH3Nc58doNBU_Fsb1tlOjk&libraries=places"></script>
-<script>
-$(document).ready(function(){
-   var   map = new google.maps.Map(document.getElementById('locations_map'), {
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBovpIsxtSqMTpBMysndin00-26bcWy3YM&callback=initMap"
+async defer></script>
+<script> 
+    function initMap() {
+
+        var get_attr_start;
+        var get_attr_end;
+var start_marker;
+var end_marker;
+ var  map = new google.maps.Map(document.getElementById('locations_map'), {
             mapTypeControl: false,
             center: {lat: 25.2048, lng: 55.2708},
             zoom: 10,
         });
+        if (start_marker=="" && end_marker==""){
+            deleteMarkers();
+        }
+        $("#myModal").on('shown.bs.modal', function (event) {
+            var get_attr_start=$(event.relatedTarget).attr("data_start").replace(/\'/g, '"'); 
+            var get_attr_end=$(event.relatedTarget).attr("data_end").replace(/\'/g, '"'); 
+            console.log(get_attr_end);
+
+            end_marker = new google.maps.Marker(
+                {position:JSON.parse(get_attr_end),
+                // animation: google.maps.Animation.DROP,
+                icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
+                map: map,
+                title:"Ended Location"
+                // label: {color: 'blue', fontSize: '14px', text: vehicle_number}
+            });
+             start_marker = new google.maps.Marker(
+                {
+                position: JSON.parse(get_attr_start),
+                // animation: google.maps.Animation.DROP,
+                icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                map: map,
+                title:"Started Location"
+                // label: {color: 'blue', fontSize: '14px', text: vehicle_number}
+            }); 
+            function setMapOnAll(map) {
+        for (var i = 0; i < mapMarkers.length; i++) {
+            mapMarkers[i].setMap(map);
+        }
+    }
+            function clearMarkers() {
+        setMapOnAll(null);
+    }
+            function deleteMarkers() {
+        clearMarkers();
+        mapMarkers = [];
+        infoWindowContent = [];
+        info_count = 0;
+        
+    }
+        
+           });
+        
+        
+        
+    }
+   
       
 
-});
+
 
 </script>
 @endsection

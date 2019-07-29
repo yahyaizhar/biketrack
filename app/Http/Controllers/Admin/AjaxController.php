@@ -390,10 +390,13 @@ class AjaxController extends Controller
             return $reports->mileage;
         })
         ->editColumn('start/end-location', function($reports){
+          $start=$reports->started_location;
+          $end=$reports->ended_location;
+          $start=str_replace('"',"'", $start);
+          $end=str_replace('"',"'", $end);
             return '<span>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">See location on map</button>
-
-      </span>';
+            <a href="" style="width:55%;" data-toggle="modal" data_start="'.$start.'" data_end="'.$end.'" data-target="#myModal">Click to see</a>
+</span>';
         })
         ->editColumn('end_time', function($reports){
             return '<span data-local-format="yyyy-mm-dd HH:MM:ss" data-utc-to-local="' .$reports->end_time.'"></span>';
