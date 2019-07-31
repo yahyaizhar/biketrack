@@ -20,6 +20,8 @@ use App\Model\Rider\Rider_detail;
 use App\New_comer;
 use App\Model\Rider\Rider_Report;
 use Illuminate\Support\Facades\Storage;
+use App\Model\Sim\Sim;
+use App\Model\Sim\Sim_Transaction;
 
 
 class AjaxController extends Controller
@@ -79,6 +81,117 @@ class AjaxController extends Controller
         ->rawColumns(['new_name', 'new_email', 'new_phone', 'actions', 'status'])
         ->make(true);
     }
+    public function getSims()
+    {
+        $sim = Sim::orderByDesc('created_at')->get();
+        // return $clients;
+        return DataTables::of($sim)
+        ->addColumn('status', function($sim){
+            if($sim->status == 1)
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
+            }
+            else
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
+            }
+        })
+        ->addColumn('id', function($sim){
+            return '1000'.$sim->id;
+        })
+        ->addColumn('checkbox', function($sim){
+            // return '<input type="checkbox" name="client_checkbox[]" class="client_checkbox" value="'.$clients->id.'">';
+            // return '<label class="kt-checkbox kt-checkbox--brand">
+            //             <input type="checkbox name="client_checkbox[]" class="client_checkbox" value="'.$clients->id.'"">
+            //             <span></span>
+            //         </label>';
+        })
+        ->addColumn('sim_number', function($sim){
+            return $sim->sim_number;
+        })
+        ->addColumn('sim_company', function($sim){
+            return $sim->sim_company;
+        })
+        ->addColumn('actions', function($sim){
+            $status_text = $sim->status == 1 ? 'Inactive' : 'Active';
+            return '<span class="dtr-data">
+            <span class="dropdown">
+                <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+                <i class="la la-ellipsis-h"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="'.route('Sim.edit_sim', $sim).'"><i class="fa fa-edit"></i> Edit</a>
+                    <button class="dropdown-item" onclick="updateStatus('.$sim->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
+                    <button class="dropdown-item" onclick="deleteSim('.$sim->id.');"><i class="fa fa-trash"></i> Delete</button>
+                </div>
+            </span>
+        </span>';
+        })
+        ->rawColumns([ 'sim_company', 'sim_number', 'actions', 'status'])
+        ->make(true);
+    }
+
+    public function getSimTransaction()
+    {
+        $simTransaction = Sim_Transaction::orderByDesc('created_at')->get();
+        // return $clients;
+        return DataTables::of($simTransaction)
+        ->addColumn('status', function($simTransaction){
+            if($simTransaction->status == 1)
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
+            }
+            else
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
+            }
+        })
+        ->addColumn('id', function($simTransaction){
+            return '1000'.$simTransaction->id;
+        })
+        ->addColumn('checkbox', function($simTransaction){
+            // return '<input type="checkbox" name="client_checkbox[]" class="client_checkbox" value="'.$clients->id.'">';
+            // return '<label class="kt-checkbox kt-checkbox--brand">
+            //             <input type="checkbox name="client_checkbox[]" class="client_checkbox" value="'.$clients->id.'"">
+            //             <span></span>
+            //         </label>';
+        })
+        ->addColumn('month_year', function($simTransaction){
+            return $simTransaction->month_year;
+        })
+        ->addColumn('bill_amount', function($simTransaction){
+            return $simTransaction->bill_amount;
+        })
+        ->addColumn('extra_usage_amount', function($simTransaction){
+            return $simTransaction->extra_usage_amount;
+        })
+        ->addColumn('extra_usage_payment_status', function($simTransaction){
+            return $simTransaction->extra_usage_payment_status;
+        })
+        ->addColumn('bill_status', function($simTransaction){
+            return $simTransaction->bill_status;
+        })
+        
+        ->addColumn('actions', function($simTransaction){
+            $status_text = $simTransaction->status == 1 ? 'Inactive' : 'Active';
+            return '<span class="dtr-data">
+            <span class="dropdown">
+                <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+                <i class="la la-ellipsis-h"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="'.route('SimTransaction.edit_sim', $simTransaction).'"><i class="fa fa-edit"></i> Edit</a>
+                    <button class="dropdown-item" onclick="updateStatus('.$simTransaction->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
+                    <button class="dropdown-item" onclick="deleteSimTransaction('.$simTransaction->id.');"><i class="fa fa-trash"></i> Delete</button>
+                </div>
+            </span>
+        </span>';
+        })
+        ->rawColumns([ 'month_year', 'bill_status','extra_usage_payment_status','extra_usage_amount','bill_amount', 'actions', 'status'])
+        ->make(true);
+    }
+
+
     public function getBikes()
     {
         $bike = bike::orderByDesc('created_at')->get();
@@ -303,7 +416,10 @@ class AjaxController extends Controller
                     <button class="dropdown-item" onclick="deleteRider('.$riders->id.')"><i class="fa fa-trash"></i> Delete</button>
                     <a class="dropdown-item" href="'.route('Bike.assignedToRiders_History', $riders).'"><i class="fa fa-eye"></i>View Bikes History</a>
                     <a class="dropdown-item" href="'.route('bike.bike_assignRiders', $riders).'"><i class="fa fa-eye"></i> Assign Bike</a> 
-                    <a class="dropdown-item" href="'.route('admin.area_assign_to_rider', $riders).'"><i class="fa fa-eye"></i> Assign Area</a> </div>
+                    <a class="dropdown-item" href="'.route('admin.area_assign_to_rider', $riders).'"><i class="fa fa-eye"></i> Assign Area</a>
+                    <a class="dropdown-item" href="'.route('SimHistory.addsim', $riders).'"><i class="fa fa-eye"></i> Assign Sim</a>
+                      
+                    </div>
                     
                     </div>
             </span>

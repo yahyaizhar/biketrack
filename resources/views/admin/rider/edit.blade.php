@@ -186,12 +186,14 @@
                                     <span class="form-text text-muted">Please enter your Joining Date</span>
                                 @endif
                             </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-12">
                             <div class="form-group">
                                     <label>Official Given Number:</label>
-                                    <input type="text" class="form-control @if($errors->has('official_given_number')) invalid-field @endif" name="official_given_number" placeholder="Enter official number" value="{{ $rider_detail->official_given_number }}">
+                                    <input type="text" class="form-control @if($errors->has('official_given_number')) invalid-field @endif" name="official_given_number" placeholder="Enter official number" value="{{ $sim_number->sim_number }}" disabled> 
                                     @if ($errors->has('official_given_number'))
                                         <span class="invalid-response" role="alert">
-                                            <strong>
+                                            <strong> 
                                                 {{ $errors->first('official_given_number') }}
                                             </strong>
                                         </span>
@@ -199,6 +201,17 @@
                                         <span class="form-text text-muted">Please enter your official phone number</span>
                                     @endif
                                 </div>
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-sm-12">
+                                        <button type="button" style="margin-top:26px;width:100px;" class="btn btn-danger" data-toggle="modal" data-target="#form">
+                                                EDIT                                             </button> 
+                                              </div> 
+                                {{-- <div class="col-lg-2 col-md-2 col-sm-12">
+                                        <button style="margin-top:26px;width:100px;" class="btn btn-success">Remove</button>
+                                    </div> --}}
+                                
+                            </div>
+                               
                                 <div class="form-group">
                                         <label>Official Sim Given Date:</label>
                                         <input type="text" id="datepicker2" autocomplete="off" class="form-control @if($errors->has('official_sim_given_date')) invalid-field @endif" name="official_sim_given_date" placeholder="Enter official sim given Date" value="{{ $rider_detail->official_sim_given_date }}">
@@ -371,6 +384,62 @@
         <!--end::Portlet-->
     </div>
 </div>
+<div>
+        
+              
+              <div class="modal fade" id="form" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header border-bottom-0">
+                      <h5 class="modal-title" id="exampleModalLabel">Create Account</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <form class="kt-form" id="form_dates"  enctype="multipart/form-data">
+                          
+                        <div class="modal-body">
+                            
+                            
+                                <div class="form-group">
+                                        <label>Given Date:</label>
+                                <input type="text" id="datepicker_given" autocomplete="off" class="form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter given Date" value="{{$sim_date->given_date}}" >
+                                        @if ($errors->has('given_date'))
+                                            <span class="invalid-response" role="alert">
+                                                <strong>
+                                                    {{ $errors->first('given_date') }}
+                                                </strong>
+                                            </span>
+                                        @else
+                                            <span class="form-text text-muted">Please enter your Given Date</span>
+                                        @endif
+                                    </div>
+                                    <div class="form-group">
+                                            <label>Return Date:</label>
+                                    <input type="text" id="datepicker_return" autocomplete="off" class="form-control @if($errors->has('return_date')) invalid-field @endif" name="return_date" placeholder="Enter Return Date" value="{{$sim_date->return_date}}">
+                                            @if ($errors->has('return_date'))
+                                                <span class="invalid-response" role="alert">
+                                                    <strong>
+                                                        {{ $errors->first('return_date') }}
+                                                    </strong>
+                                                </span>
+                                            @else
+                                                <span class="form-text text-muted">Please enter your Return Date</span>
+                                            @endif
+                                        </div>
+                       
+                       
+                       
+                      </div>
+                      <div class="modal-footer border-top-0 d-flex justify-content-center">
+                        <button type="submit" id="submit_btn_dates" class="btn btn-success">Submit</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+    
+</div>
 @endsection
 @section('foot')
 {{-- start_timer , timepicker1 --}}
@@ -463,7 +532,6 @@ $(document).ready(function(){
         });
         </script>
         <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-          <link rel="stylesheet" href="/resources/demos/style.css">
        
           <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <script>
@@ -477,4 +545,41 @@ $(document).ready(function(){
             });
         
         </script>
+         
+         <script>
+             $(document).ready(function(){
+                 $('#datepicker_given').fdatepicker({dateFormat: 'yy-mm-dd'}); 
+                 $('#datepicker_return').fdatepicker({dateFormat: 'yy-mm-dd'}); 
+                
+             });
+         
+         </script>
+{{-- edit_sim_number --}}
+<script>
+    $(document).ready(function(){
+        // submit_btn_dates
+        $('#form_dates').submit(function(e){
+            e.preventDefault();
+            var form=$(this);
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+       $.ajax({
+                url:"{{route('SimHistory.update',$rider->id)}}",  
+                data: form.serializeArray(),
+                method: "POST"
+            })
+            .done(function(data) {  
+                console.log(data);
+                $('#form').modal('toggle');
+
+            });
+            
+        });
+    });
+</script>
+
+
 @endsection
