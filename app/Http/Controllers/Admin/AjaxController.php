@@ -15,6 +15,7 @@ use App\Http\Resources\ClientLocationResourceCollection;
 use App\Model\Bikes\bike;
 use App\Model\Bikes\bike_detail;
 use App\Model\Accounts\Rider_salary;
+use App\Model\Mobile\Mobile;
 use carbon\carbon;
 use App\Model\Rider\Rider_detail;
 use App\New_comer;
@@ -358,7 +359,55 @@ class AjaxController extends Controller
         ->rawColumns(['new_name','missing_fields','adress','client_name','emirate_id','mulkiya_expiry','bike_number','official_sim_given_date','licence_expiry','visa_expiry','passport_expiry','official_given_number', 'new_email','date_of_joining', 'new_phone', 'actions', 'status'])
         ->make(true);
     }
-
+    public function getMobiles(){
+        $mobile=Mobile::orderByDesc('created_at')->get();
+        
+        return DataTables::of($mobile)
+        ->addColumn('model', function($mobile){
+            return $mobile->model;
+        })
+        ->addColumn('imei', function($mobile){
+            return $mobile->imei;
+        })
+        ->addColumn('purchase_price', function($mobile){
+            return $mobile->purchase_price;
+        })
+        ->addColumn('sale_price', function($mobile){
+            return $mobile->sale_price;
+        })
+        ->addColumn('payment_type', function($mobile){
+            return $mobile->payment_type;
+        })
+        ->addColumn('status', function($mobile){
+            if($mobile->status == 1)
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
+            }
+            else
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
+            }
+        })
+        ->addColumn('actions', function($mobile){
+            $status_text = $mobile->status == 1 ? 'Inactive' : 'Active';
+            return '<span class="dtr-data">
+            <span class="dropdown">
+                <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+                <i class="la la-ellipsis-h"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <button class="dropdown-item" onclick="updateStatus('.$mobile->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
+                    
+                    <a class="dropdown-item" href="'.route('mobile.edit', $mobile).'"><i class="fa fa-edit"></i> Edit</a>
+                    <button class="dropdown-item" onclick="deleteRider('.$mobile->id.')"><i class="fa fa-trash"></i> Delete</button>
+                    
+                    </div>
+            </span>
+        </span>';
+        })
+        ->rawColumns(['model','imei','purchase_price','sale_price','payment_type','actions', 'status'])
+        ->make(true);
+    }
     public function getRidesReport($id)
     {  $rider=Rider::find($id);
         $reports=$rider->Rider_Report()->get();

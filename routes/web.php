@@ -123,6 +123,14 @@ Route::group([
     Route::get('/Add/Salary','AccountsController@add_new_salary_create')->name('account.new_salary');
     Route::post('/Salary/Added','AccountsController@new_salary_added')->name('account.added_salary');
     // end_add_new_salary
+
+    //Mobiles
+    Route::get('/mobile/create','HomeController@create_mobile_GET')->name('mobile.create_mobile_GET');
+    Route::post('/mobile/create','HomeController@create_mobile_POST')->name('mobile.create_mobile_POST');
+    Route::get('/mobiles','HomeController@mobiles')->name('mobile.show');
+    Route::get('/mobile/{mobile}/edit','HomeController@update_mobile_GET')->name('mobile.edit');
+    Route::get('/mobile/data','AjaxController@getMobiles')->name('mobile.getMobiles');
+    //end Mobiles
     
     Route::delete('/month/{month_id}', 'AccountsController@DeleteMonth')->name('account.DeleteMonth');
     Route::get('/Month/Salary','AccountsController@salary_by_month_create')->name('account.month_salary');

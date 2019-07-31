@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Model\Rider\Rider_area;
 use App\Model\Rider\Rider_detail;
+use App\Model\Mobile\Mobile;
 use App\Model\Rider\Rider_Online_Time;
 use App\Model\Bikes\bike;
 use Carbon\Carbon;
@@ -102,6 +103,41 @@ class HomeController extends Controller
     {
         $user = Auth::user();
         return view('admin.profile.edit', compact('user'));
+    }
+    public function create_mobile_GET()
+    {
+        return view('admin.rider.mobile.create');
+    }
+    public function create_mobile_POST(Request $r)
+    {
+        $this->validate($r, [
+            'model' => 'required | string | max:255',
+            'imei' => 'required | numeric',
+            'purchase_price' => 'required | numeric',
+            'sale_price' => 'required | numeric',
+            'payment_type' => 'required',
+            'amount_received' => 'required | numeric',
+            'per_month_installment_amount' => 'required | numeric',
+        ]);
+        $mobile = new Mobile;
+        $mobile->model=$r->model;
+        $mobile->imei=$r->imei;
+        $mobile->purchase_price=$r->purchase_price;
+        $mobile->sale_price=$r->sale_price;
+        $mobile->payment_type=$r->payment_type;
+        $mobile->amount_received=$r->amount_received;
+        $mobile->installment_starting_month=$r->installment_starting_month;
+        $mobile->per_month_installment_amount=$r->per_month_installment_amount;
+        $mobile->save();
+        return redirect(route('mobile.show'))->with('message', 'Record Added Successfully.');
+        
+    }
+    public function mobiles(){
+        $mobiles=Mobile::all();
+        return view('admin.rider.mobile.mobiles', compact('mobiles'));
+    }
+    public function update_mobile_GET($mobile){
+        return view('admin.rider.mobile.edit', compact('mobile'));
     }
     public function updateProfile(Request $request)
     {
