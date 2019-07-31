@@ -184,4 +184,45 @@ Route::group([
    Route::get('/newComer/popup/{newComer_id}','NewComerController@newComer_popup')->name('NewComer.popup');
   Route::get('/map/testing/{id}','AjaxController@client_name');
 });
+
+
+Route::group([
+    'prefix' => 'admin',
+    'namespace' => 'Admin'
+], function(){
+    // accounts
+    Route::resource('/Sim', 'SimController', [
+        'as' => 'admin'
+    ]);
+
+ //    Start Sim Section    
+Route::get('/create/Sim','SimController@add_sim')->name('Sim.new_sim');
+Route::post('/store/Sim','SimController@store_sim')->name('Sim.store_sim');
+Route::get('/view/records/Sim','SimController@view_records_sim')->name('Sim.view_records');
+Route::get('get/ajax/Sim','AjaxController@getSims')->name('Sim.ajax_sim');
+Route::get('/edit/{id}/Sim','SimController@edit_sim')->name('Sim.edit_sim');
+Route::post('/update/{id}/Sim','SimController@update_sim')->name('Sim.update_sim');
+Route::post('/sim/{sim_id}/updateStatus','SimController@updateStatusSim')->name('Sim.updateStatus_sim');
+Route::delete('/sim/{sim_id}', 'SimController@DeleteSim')->name('Sim.DeleteSim');
+     // End Sim Section  
+
+
+// Start Sim Transaction Section
+Route::get('/create/Transaction/Sim','SimController@add_simTransaction')->name('SimTransaction.create_sim');
+Route::post('/store/Transaction/Sim','SimController@store_simTransaction')->name('SimTransaction.store_simTransaction');
+Route::get('/view/Transaction/Sim','SimController@view_sim_transaction_records')->name('SimTransaction.view_records');
+Route::get('/get/ajax/Transaction/Sim','AjaxController@getSimTransaction')->name('SimTransaction.ajax_simTransaction');
+Route::get('edit/Transaction/{id}/Sim','SimController@edit_simTransaction')->name('SimTransaction.edit_sim');
+Route::post('/update/Transaction/{id}/Sim','SimController@update_simTransaction')->name('SimTransaction.update');
+Route::post('/simTransaction/{id}/updateStatus','SimController@updateStatusSimTransaction')->name('SimTransaction.updateStatus');
+Route::delete('/simTransaction/{sim_id}', 'SimController@DeleteSimTransaction')->name('SimTransaction.DeleteSim');
+// End Sim Transaction Section
+
+
+// start Sim history section
+Route::get('/create/history/Sim/{rider_id}','SimController@add_simHistory')->name('SimHistory.addsim');
+Route::post('/store/history/Sim/{rider_id}','SimController@store_simHistory')->name('SimHistory.store_simHistory');
+Route::post('/update/History/{id}/Sim','SimController@update_simHistory')->name('SimHistory.update');
+// end Sim history section
+});
   

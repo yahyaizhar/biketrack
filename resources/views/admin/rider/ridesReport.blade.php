@@ -48,7 +48,7 @@
                         <th>Online Time</th>
                         {{-- <th>No of Trips</th>
                         <th>No of Hours</th> --}}
-                        <th>Created at</th>
+                        {{-- <th>Created at</th> --}}
                         <th>Starting/Ending-location</th>
                         {{-- <th>Mileage</th> --}}
                         
@@ -114,7 +114,7 @@ $(function() {
             { data: 'end_time', name: 'end_time' },
             { data: 'online_hours', name: 'online_hours' },
             // { data: 'no_of_trips', name: 'no_of_trips' },
-            { data: 'no_of_hours', name: 'no_of_hours' },
+            // { data: 'no_of_hours', name: 'no_of_hours' },
             { data: 'start/end-location', name: 'start/end-location' },
             { data: 'actions', name: 'actions' }
         ],

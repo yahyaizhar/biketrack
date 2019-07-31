@@ -34,11 +34,18 @@
         </div>
         <div class="kt-portlet__body">
             <div class="row">
+                
             <div class="checkbox checkbox-danger btn btn-default btn-elevate btn-icon-sm" id="hover_Checkbox">
                 <input id="check_id" class="checkbox checkbox-danger" type="checkbox">
                 <label for="check_id" >
                    Detailed View
                 </label>
+        </div>
+    </div>
+    <div class="row">
+                
+            <div  id="hover_Checkbox">
+                    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for further details.." >
         </div>
     </div>
             <!--begin: Datatable -->
@@ -321,5 +328,10 @@ $(document).ready(function(){
                   }
 });
 </script>
-
+<script>
+        function myFunction() {
+            
+          
+        }
+        </script>
 @endsection

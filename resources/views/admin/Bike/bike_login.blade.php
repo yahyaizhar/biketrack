@@ -20,18 +20,22 @@
                 <form class="kt-form" action="{{ route('bike.bike_create') }}" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="kt-portlet__body">
-                                
-                       
-                      
-                     
-                       
                         
-                       
-                        
-                      
                         <div class="form-group">
-                            <label>Model:</label>
-                            <input type="text" class="form-control @if($errors->has('model')) invalid-field @endif" name="model" placeholder="Enter model" value="{{ old('model') }}">
+                            <label>Model(2015):</label>
+                            {{-- <input  autocomplete="off" list="model" class="form-control @if($errors->has('model')) invalid-field @endif" name="model"  > --}}
+                            <select class="form-control @if($errors->has('model')) invalid-field @endif kt-select2" id="kt_select2_3" name="model" placeholder="Enter model" value="{{ old('model') }}">
+                                    <option value="2010">2010</option>
+                                    <option value="2011">2011</option>
+                                    <option value="2012">2012</option>
+                                    <option value="2013">2013</option>
+                                    <option value="2014">2014</option>
+                                    <option value="2015">2015</option>
+                                    <option value="2016">2016</option>
+                                    <option value="2017">2017</option>
+                                    <option value="2018">2018</option>
+                                    <option value="2019">2019</option>
+                                    </select> 
                             @if ($errors->has('model'))
                                 <span class="invalid-response" role="alert">
                                     <strong>
@@ -41,8 +45,8 @@
                             @endif
                         </div>
                         <div class="form-group">
-                            <label>Bike Number:</label>
-                            <input type="text" class="form-control @if($errors->has('bike_number')) invalid-field @endif" name="bike_number" placeholder="Enter Bike_Number" value="{{ old('bike_number') }}">
+                            <label>Bike Number(etc K-3102):</label>
+                            <input type="text" class="form-control @if($errors->has('bike_number')) invalid-field @endif" name="bike_number" placeholder="Enter Bike_Number (etc K-3102)" value="{{ old('bike_number') }}">
                             @if ($errors->has('bike_number'))
                                 <span class="invalid-response" role="alert">
                                     <strong>
@@ -52,8 +56,12 @@
                             @endif
                         </div>
                         <div class="form-group">
-                                <label>Brand:</label>
-                                <input type="text" class="form-control @if($errors->has('brand')) invalid-field @endif" name="brand" placeholder="Enter Brand" value="{{ old('brand') }}">
+                                <label>Brand(etc Honda):</label>
+                                {{-- <input type="text" class="form-control @if($errors->has('brand')) invalid-field @endif" name="brand" placeholder="Enter Brand (etc Honda)" value="{{ old('brand') }}"> --}}
+                                <select class="form-control @if($errors->has('brand')) invalid-field @endif kt-select2" id="kt_select2_3" name="brand" placeholder="Enter Brand (etc Honda)" value="{{ old('brand') }}" >
+                                        <option value="Honda Unicorn">Honda Unicorn</option>
+                                        <option value="Pulsar">Pulsar</option>
+                                        </select> 
                                 @if ($errors->has('brand'))
                                     <span class="invalid-response" role="alert">
                                         <strong>

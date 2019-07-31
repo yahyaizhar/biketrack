@@ -168,7 +168,9 @@ class RiderController extends Controller
     public function edit(Rider $rider,Request $request,Rider_detail $rider_detail)
     {    
         $rider_detail=$rider->Rider_detail()->get()->first();
-        return view('admin.rider.edit', compact('rider','rider_detail'));
+        $sim_date=$rider->Sim_History()->where('status','active')->get()->first();
+        $sim_number=$sim_date->Sim()->get()->first();
+        return view('admin.rider.edit', compact('rider','rider_detail','sim_date','sim_number'));
     }
 
     /**

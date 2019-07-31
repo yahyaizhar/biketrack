@@ -79,4 +79,7 @@ class Rider extends Authenticatable
         return $this->hasMany('App\Model\Accounts\Rider_salary','rider_id');
   
       }
+      public function Sim_History(){
+        return $this->hasMany('App\Model\Sim\Sim_History');
+    }
 }

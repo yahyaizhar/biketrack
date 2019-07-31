@@ -78,13 +78,13 @@ class bikeController extends Controller
       $this->validate($request, [
         'model' => 'required | string | max:255',
         'bike_number' => 'required | string |max:255',
-        'availability' => 'required | string | max:255',
+        
     ]);
     $bike_id_array =$request->id;
     $bike = bike::find($bike_id_array);
     $bike->model = $request->model;
     $bike->bike_number = $request->bike_number;
-    $bike->availability = $request->availability;
+    // $bike->availability = $request->availability;
     $bike->brand = $request->brand;
     $bike->mulkiya_number = $request->mulkiya_number;
     $bike->mulkiya_expiry = $request->mulkiya_expiry;
