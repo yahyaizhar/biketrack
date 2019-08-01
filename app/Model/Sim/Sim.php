@@ -14,9 +14,12 @@ use Illuminate\Database\Eloquent\Model;
 class Sim extends Authenticatable
 {
     protected $fillable = [
-        'sim_number','sim_company','status',
-       ];
-       public function Sim_History(){
+    'sim_number','sim_company','status',
+    ];
+    public function Sim_History(){
         return $this->hasMany('App\Model\Sim\Sim_History');
+    }
+    public function Sim_Transaction(){
+        return $this->hasMany('App\Model\Sim\Sim_Transaction');
     }
 }

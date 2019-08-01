@@ -185,6 +185,30 @@ public function update_simTransaction(Request $request, $id){
             'status' => true
         ]);
 }
+    public function edit_inline_simTransaction(Request $r){
+        $action = $r->action;
+        $id = $r->data['id'];
+
+        if($action=="edit"){
+            $data=$r->data;
+            $sim_trans = Sim_transaction::firstOrCreate([
+                'id'=>$id
+            ]);
+            $sim_trans->sim_id=$data['sim_id'];
+            $sim_trans->bill_amount=$data['bill_amount'];
+            $sim_trans->extra_usage_payment_status=$data['extra_usage_payment_status'];
+            $sim_trans->bill_status=$data['bill_status'];
+            $sim_trans->status=1;
+            $sim_trans->month_year=$data['filterMonth'];
+            $sim_trans->save();
+        }
+
+        return response()->json([
+            'status' => true
+        ]);
+    }
+
+
 
     // End Sim Transaction Section
 // Start Sim history Section
@@ -218,6 +242,7 @@ public function update_simHistory(Request $request,$id){
       $sim_history->update();
     // return $sim_history;
 }
+
 
 
 // end Sim history Section

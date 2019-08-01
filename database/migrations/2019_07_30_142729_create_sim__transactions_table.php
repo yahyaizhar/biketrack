@@ -15,7 +15,6 @@ class CreateSimTransactionsTable extends Migration
     {
         Schema::create('sim__transactions', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('rider_id')->nullable();
             $table->integer('sim_id')->nullable();
             $table->string('month_year')->nullable();
             $table->string('bill_amount')->nullable();

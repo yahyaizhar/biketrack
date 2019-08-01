@@ -14,5 +14,8 @@ class Sim_Transaction extends Authenticatable
 {
     protected $fillable = [
         'sim_id','rider_id','month_year','bill_amount','extra_usage_amount','extra_usage_payment_status','bill_status','status',
-       ];
+    ];
+    public function Sim(){
+        return $this->belongsTo(Sim::class);
+    }
 }

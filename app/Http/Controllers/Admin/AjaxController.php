@@ -134,11 +134,17 @@ class AjaxController extends Controller
 
     public function getSimTransaction()
     {
-        $simTransaction = Sim_Transaction::orderByDesc('created_at')->get();
+        $sims = Sim::orderByDesc('created_at')->get();
         // return $clients;
-        return DataTables::of($simTransaction)
-        ->addColumn('status', function($simTransaction){
-            if($simTransaction->status == 1)
+        //array_push($sims,array('month'=>$month));
+        return DataTables::of($sims)
+        ->addColumn('status', function($sims){
+            $sim_tran = $sims->Sim_Transaction()->get()->first();
+            $status = 0;
+            if(isset($sim_tran)){
+                $status = 1;
+            }
+            if($status === 1)
             {
                 return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
             }
@@ -147,30 +153,76 @@ class AjaxController extends Controller
                 return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
             }
         })
-        ->addColumn('id', function($simTransaction){
-            return '1000'.$simTransaction->id;
+        ->addColumn('sim_id', function($sims){
+            return $sims->id;
         })
-        ->addColumn('checkbox', function($simTransaction){
-            // return '<input type="checkbox" name="client_checkbox[]" class="client_checkbox" value="'.$clients->id.'">';
-            // return '<label class="kt-checkbox kt-checkbox--brand">
-            //             <input type="checkbox name="client_checkbox[]" class="client_checkbox" value="'.$clients->id.'"">
-            //             <span></span>
-            //         </label>';
+        ->addColumn('id', function($sims){
+            $sim_tran = $sims->Sim_Transaction()->get()->first();
+            if(isset($sim_tran)){
+                return $sim_tran->id;
+            }
+            return null;
         })
-        ->addColumn('month_year', function($simTransaction){
-            return $simTransaction->month_year;
+        ->addColumn('sim_number', function($sims){
+            return $sims->sim_number;
         })
-        ->addColumn('bill_amount', function($simTransaction){
-            return $simTransaction->bill_amount;
+        ->addColumn('month', function($sims){
+            $sim_tran = $sims->Sim_Transaction()->get()->first();
+            if(isset($sim_tran)){
+                return Carbon::parse($sim_tran->month_year)->format('F Y');
+            }
+            return Carbon::now()->format('F Y');
         })
-        ->addColumn('extra_usage_amount', function($simTransaction){
-            return $simTransaction->extra_usage_amount;
+        ->addColumn('usage_limit', function($sims){
+            $sim_history = $sims->Sim_history()->where('status', 'active')->get()->first();
+            if(isset($sim_history)){
+                return $sim_history->allowed_balance;
+            }
+            return 105;
         })
-        ->addColumn('extra_usage_payment_status', function($simTransaction){
-            return $simTransaction->extra_usage_payment_status;
+        ->addColumn('bill_amount', function($sims){
+            $sim_tran = $sims->Sim_Transaction()->get()->first();
+            $sim_history = $sims->Sim_history()->where('status', 'active')->get()->first();
+            if(isset($sim_tran)){
+                return $sim_tran->bill_amount;
+            }
+            if(isset($sim_history)){
+                return $sim_history->allowed_balance;
+            }
+            return 105;
         })
-        ->addColumn('bill_status', function($simTransaction){
-            return $simTransaction->bill_status;
+        ->addColumn('extra_usage_amount', function($sims){
+            $sim_tran = $sims->Sim_Transaction()->get()->first();
+            $sim_history = $sims->Sim_history()->where('status', 'active')->get()->first();
+            $bill_amt=105;
+            $usage_limit=105;
+            if(isset($sim_history)){
+                $bill_amt = $sim_history->allowed_balance;
+                $usage_limit=$sim_history->allowed_balance;
+            }
+            if(isset($sim_tran)){
+                $bill_amt = $sim_tran->bill_amount;
+            }
+            $extra = $bill_amt - $usage_limit ;
+            if($extra<0){
+                $extra=0;
+            }
+            
+            return $extra;
+        })
+        ->addColumn('extra_usage_payment_status', function($sims){
+            $sim_tran = $sims->Sim_Transaction()->get()->first();
+            if(!isset($sim_tran)){
+                return 'Pending';
+            }
+            return $sim_tran->extra_usage_payment_status;
+        })
+        ->addColumn('bill_status', function($sims){
+            $sim_tran = $sims->Sim_Transaction()->get()->first();
+            if(!isset($sim_tran)){
+                return 'Pending';
+            }
+            return $sim_tran->bill_status;
         })
         
         ->addColumn('actions', function($simTransaction){
@@ -188,7 +240,7 @@ class AjaxController extends Controller
             </span>
         </span>';
         })
-        ->rawColumns([ 'month_year', 'bill_status','extra_usage_payment_status','extra_usage_amount','bill_amount', 'actions', 'status'])
+        ->rawColumns(['usage_limit','sim_number','bill_amount', 'actions', 'status'])
         ->make(true);
     }
 
@@ -339,9 +391,10 @@ class AjaxController extends Controller
         ->addColumn('missing_fields', function($riders){
             $data='';
             $rider_detail =$riders->Rider_detail;
-            $a=$riders->Assign_bike()->where('status', 'active')->get()->first();
+            $assign_bike=$riders->Assign_bike()->where('status', 'active')->get()->first();
+
             // 
-            if ($a) {}
+            if ($assign_bike) {}
             else{
                 $data.='*No bike assigned yet <br />';
             }
@@ -363,8 +416,11 @@ class AjaxController extends Controller
             if(!isset($rider_detail->date_of_joining)){
                 $data.='*Date of joining <br />';
             }
-            if(!isset($rider_detail->mulkiya_expiry)){
-                $data.='*Mulkiya Expiry <br />';
+            if(isset($assign_bike)){
+                $bike = $assign_bike->Bike;
+                if(!isset($bike->mulkiya_expiry)){
+                     $data.='*Mulkiya Expiry <br />';
+                }
             }
             if(!isset($rider_detail->official_sim_given_date)){
                 $data.='*Official sim given date <br />';
@@ -447,8 +503,14 @@ class AjaxController extends Controller
            return $rider_detail->licence_expiry;
         })
         ->addColumn('mulkiya_expiry', function($riders){
-            $rider_detail =$riders->Rider_detail()->get()->first();
-           return $rider_detail->mulkiya_expiry;
+            $assign_bike=$riders->Assign_bike()->where('status', 'active')->get()->first();
+            if(isset($assign_bike)){
+                $bike = $assign_bike->Bike;
+                if(isset($bike->mulkiya_expiry)){
+                    return $bike->mulkiya_expiry;
+                }
+            }
+           return "No mulkiya expirty";
         })
         ->addColumn('official_sim_given_date', function($riders){
             $rider_detail =$riders->Rider_detail()->get()->first();

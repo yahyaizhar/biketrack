@@ -213,6 +213,7 @@ Route::post('/store/Transaction/Sim','SimController@store_simTransaction')->name
 Route::get('/view/Transaction/Sim','SimController@view_sim_transaction_records')->name('SimTransaction.view_records');
 Route::get('/get/ajax/Transaction/Sim','AjaxController@getSimTransaction')->name('SimTransaction.ajax_simTransaction');
 Route::get('edit/Transaction/{id}/Sim','SimController@edit_simTransaction')->name('SimTransaction.edit_sim');
+Route::post('sim_transaction/inline_edit','SimController@edit_inline_simTransaction')->name('SimTransaction.edit_sim_inline');
 Route::post('/update/Transaction/{id}/Sim','SimController@update_simTransaction')->name('SimTransaction.update');
 Route::post('/simTransaction/{id}/updateStatus','SimController@updateStatusSimTransaction')->name('SimTransaction.updateStatus');
 Route::delete('/simTransaction/{sim_id}', 'SimController@DeleteSimTransaction')->name('SimTransaction.DeleteSim');
