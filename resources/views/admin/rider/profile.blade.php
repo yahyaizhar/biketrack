@@ -39,7 +39,12 @@
                                 <div class="kt-widget__subhead">
                                     <a href="mailto:{{ $rider->email }}"><i class="flaticon2-new-email"></i>{{ $rider->email }}</a>
                                     <a><i class="flaticon2-calendar-3"></i>{{ $rider->phone }} </a>
-                                    <a><i class="fa fa-motorcycle"></i>{{ $bike->bike_number }}</a>
+                                    @if ($bike==null)
+                                    <a><i class="fa fa-motorcycle"></i>No Bike assigned to this rider</a>     
+                                    @else
+                                    <a><i class="fa fa-motorcycle"></i>{{ $bike->bike_number }}</a> 
+                                    @endif
+                                   
                                 </div>
             
                                 <div class="kt-widget__info">
@@ -75,7 +80,12 @@
                                     </div>
                                     <div class="kt-widget__desc">  
                                             <label style="font-weight:900;">Official Given Number:</label>
-                                          <a>{{ $sim->sim_number }}</a>
+                                          @if ($sim==null)
+                                          <a>Sim is not assigned yet</a>
+                                          @else
+                                          <a>{{ $sim->sim_number }}</a>  
+                                          @endif
+                                            
                                         </div>
                     </div>
                     <div class="kt-widget__subhead col-md-4">
@@ -130,6 +140,8 @@
                                     <img style="width:150px;height:150px;display:block;" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
                                 @endif
                                     </div>
+                                    @if ($bike==null)
+                                    @else
                                     <div class="kt-widget__desc">
                                             <label style="font-weight:900;">Mulkiya Expiry:</label>
                                         {{ $bike->mulkiya_expiry }} 
@@ -138,7 +150,9 @@
                                 @else
                                     <img style="width:150px;height:150px;display:block;" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
                                 @endif
-                                    </div>
+                                    </div> 
+                                    @endif
+                                 
                                     <div class="kt-widget__desc">
                                             <label style="font-weight:900;">Emerate ID:</label>
                                         {{ $rider_details->emirate_id }} 
