@@ -128,9 +128,22 @@ Route::group([
     Route::get('/mobile/create','HomeController@create_mobile_GET')->name('mobile.create_mobile_GET');
     Route::post('/mobile/create','HomeController@create_mobile_POST')->name('mobile.create_mobile_POST');
     Route::get('/mobiles','HomeController@mobiles')->name('mobile.show');
-    Route::get('/mobile/{mobile}/edit','HomeController@update_mobile_GET')->name('mobile.edit');
+    Route::get('/mobile/{mobile}/edit','MobileController@update_mobile_GET')->name('mobile.edit');
     Route::get('/mobile/data','AjaxController@getMobiles')->name('mobile.getMobiles');
+    Route::delete('/mobile/delete/{mobile_id}','MobileController@delete_mobile')->name('Mobile.delete_mobile');
+    Route::post('/mobile/{id}/updateStatus','MobileController@updateStatusMobile')->name('Mobile.updatetatus');
+    Route::post('/mobile/{id}/update','MobileController@update_mobile')->name('Mobile.update');
     //end Mobiles
+    // mobile installement
+    Route::get('/mobile/installment/create','MobileController@create_mobileInstallment')->name('MobileInstallment.create');
+    Route::post('/mobile/installment/insert','MobileController@store_mobileInstallment')->name('MobileInstallment.store');
+    Route::get('/mobile/installment/data','AjaxController@getMobileInstallment')->name('MobileInstallment.getinstallments');
+    Route::get('/mobile/installment/show','MobileController@show_mobileInstallmenet')->name('MobileInstallment.show');
+    Route::get('/mobile/installment/{mobile}/edit','MobileController@edit_mobileInstallment')->name('MobileInstallment.edit');
+    Route::post('/mobile/installment/{id}/update','MobileController@update_mobileInstallment')->name('MobileInstallment.update');
+    Route::delete('/mobile/installment/delete/{mobile_id}','MobileController@delete_mobileInstallment')->name('MobileInstallment.delete');
+    // end mobile installement
+    Route::get('/a/{id}','AjaxController@rider_name');
     
     Route::delete('/month/{month_id}', 'AccountsController@DeleteMonth')->name('account.DeleteMonth');
     Route::get('/Month/Salary','AccountsController@salary_by_month_create')->name('account.month_salary');

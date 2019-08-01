@@ -23,6 +23,7 @@ use App\Model\Rider\Rider_Report;
 use Illuminate\Support\Facades\Storage;
 use App\Model\Sim\Sim;
 use App\Model\Sim\Sim_Transaction;
+use App\Model\Mobile\Mobile_installment;
 
 
 class AjaxController extends Controller
@@ -263,6 +264,21 @@ class AjaxController extends Controller
         ->addColumn('id', function($bike){
             return '1000'.$bike->id;
         })
+        ->addColumn('assigned_to', function($bike){
+            $assign_bike=$bike->Assign_bike()->where('status','active')->get()->first();
+       
+      if($assign_bike){
+        
+        $rider=Rider::find($assign_bike->rider_id);
+       $rider_profile='<a href="'.route('admin.rider.profile', $rider->id).'">'.$rider->name.'</a>';
+        return $rider_profile;
+       }
+       else{
+           return "Bike is free to assign";
+       }
+       
+      
+        })
         ->addColumn('checkbox', function($bike){
             // return '<input type="checkbox" name="client_checkbox[]" class="client_checkbox" value="'.$clients->id.'">';
             // return '<label class="kt-checkbox kt-checkbox--brand">
@@ -299,7 +315,7 @@ class AjaxController extends Controller
         // <a class="dropdown-item" href="'.route('bike.bike_assigned', $bike).'"><i class="fa fa-eye"></i> View Bikes</a>
         // <a class="dropdown-item" href="'.route('bike.bike_assignRiders', $bike).'"><i class="fa fa-edit"></i> Assign Bikes</a>
                     
-        ->rawColumns(['model','brand', 'Bike_number', 'detail', 'assigned_to_rider','availability', 'status'])
+        ->rawColumns(['model','brand', 'Bike_number', 'detail', 'assigned_to','availability', 'status'])
         ->make(true);
     }
     public function getSalary_by_developer()
@@ -356,7 +372,7 @@ class AjaxController extends Controller
         // <a class="dropdown-item" href="'.route('bike.bike_assigned', $bike).'"><i class="fa fa-eye"></i> View Bikes</a>
         // <a class="dropdown-item" href="'.route('bike.bike_assignRiders', $bike).'"><i class="fa fa-edit"></i> Assign Bikes</a>
                     
-        ->rawColumns(['month', 'salary', 'status', 'created_at','paid_by','actions'])
+        ->rawColumns(['month', 'salary','assigned_to', 'status', 'created_at','paid_by','actions'])
         ->make(true);
     }
 
@@ -577,7 +593,7 @@ class AjaxController extends Controller
                     <button class="dropdown-item" onclick="updateStatus('.$mobile->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                     
                     <a class="dropdown-item" href="'.route('mobile.edit', $mobile).'"><i class="fa fa-edit"></i> Edit</a>
-                    <button class="dropdown-item" onclick="deleteRider('.$mobile->id.')"><i class="fa fa-trash"></i> Delete</button>
+                    <button class="dropdown-item" onclick="deletemobile('.$mobile->id.')"><i class="fa fa-trash"></i> Delete</button>
                     
                     </div>
             </span>
@@ -586,6 +602,48 @@ class AjaxController extends Controller
         ->rawColumns(['model','imei','purchase_price','sale_price','payment_type','actions', 'status'])
         ->make(true);
     }
+
+    public function getMobileInstallment(){
+        $installment=Mobile_installment::orderByDesc('created_at')->get();
+        return DataTables::of($installment)
+        ->addColumn('installment_month', function($installment){
+            return $installment->installment_month;
+        })
+        ->addColumn('installment_amount', function($installment){
+            return $installment->installment_amount;
+        })
+        // ->addColumn('status', function($installment){
+        //     if($installment->status == 1)
+        //     {
+        //         return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
+        //     }
+        //     else
+        //     {
+        //         return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
+        //     }
+        // })
+        ->addColumn('actions', function($installment){
+            $status_text = $installment->status == 1 ? 'Inactive' : 'Active';
+            return '<span class="dtr-data">
+            <span class="dropdown">
+                <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+                <i class="la la-ellipsis-h"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    
+                    <a class="dropdown-item" href="'.route('MobileInstallment.edit', $installment).'"><i class="fa fa-edit"></i> Edit</a>
+                    <button class="dropdown-item" onclick="deletemobileInstallment('.$installment->id.')"><i class="fa fa-trash"></i> Delete</button>
+                    
+                    </div>
+            </span>
+        </span>';
+        })
+        // <button class="dropdown-item" onclick="updateStatus('.$installment->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
+                    
+        ->rawColumns(['installment_month','installment_amount','status','actions',])
+        ->make(true);
+    }
+
     public function getRidesReport($id)
     {  $rider=Rider::find($id);
         $reports=$rider->Rider_Report()->get();
@@ -1042,7 +1100,7 @@ public function getRidersDetails()
        }
        
        }
-   public function client_name($id){
-      
+   public function rider_name($id){
+       
    }
 }

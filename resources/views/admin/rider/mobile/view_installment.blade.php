@@ -16,7 +16,7 @@
                     <i class="kt-font-brand fa fa-hotel"></i>
                 </span>
                 <h3 class="kt-portlet__head-title">
-                    Mobiles
+                    Mobile Installment
                 </h3>
             </div>
             <div class="kt-portlet__head-toolbar">
@@ -24,7 +24,7 @@
                     <div class="kt-portlet__head-actions">
                         {{-- <button class="btn btn-danger btn-elevate btn-icon-sm" id="bulk_delete">Delete Selected</button> --}}
                         &nbsp;
-                        <a href="{{ route('mobile.create_mobile_GET') }}" class="btn btn-brand btn-elevate btn-icon-sm">
+                        <a href="{{ route('MobileInstallment.create') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
                             New Record
                         </a>
@@ -35,19 +35,16 @@
         <div class="kt-portlet__body">
 
             <!--begin: Datatable -->
-            <table class="table table-striped- table-hover table-checkable table-condensed" id="mobile-table">
+            <table class="table table-striped- table-hover table-checkable table-condensed" id="Installment-table">
                 <thead>
                     <tr>
                         {{-- <th>
                             <input type="checkbox" id="select_all" >
                         </th> --}}
                         <th>ID</th>
-                        <th>Model</th>
-                        <th>IMEI</th>
-                        <th>Purchase Price</th>
-                        <th>Sale Price</th>
-                        <th>Payment type</th>
-                        <th>Status</th>
+                        <th>Installment Month</th>
+                        <th>Installment Amount</th>
+                        {{-- <th>Status</th> --}}
                         <th>Actions</th>                        
                     </tr>
                 </thead>
@@ -58,7 +55,7 @@
     </div>
 </div>
 
-<!-- end:: Content -->
+<!-- end:: Content --> 
 @endsection
 @section('foot')
 <!--begin::Page Vendors(used by this page) -->
@@ -71,25 +68,22 @@
 
 <!--end::Page Scripts -->
 <script>
-var mobile_table;
+var installment_table;
 $(function() {
-    mobile_table = $('#mobile-table').DataTable({
+    installment_table = $('#Installment-table').DataTable({
         processing: true,
         serverSide: true,
         'language': {
             'loadingRecords': '&nbsp;',
             'processing': $('.loading').show()
         },
-        ajax: "{!! route('mobile.getMobiles') !!}",
+        ajax: "{!! route('MobileInstallment.getinstallments') !!}",
         columns: [
             //  { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
             { data: 'id', name: 'id' },          
-            { data: 'model', name: 'model' },
-            { data: 'imei', name: 'imei' },
-            { data: 'purchase_price', name: 'purchase_price' },
-            { data: 'sale_price', name: 'sale_price' },
-            { data: 'payment_type', name: 'payment_type' },
-            { data: 'status', name: 'status' },
+            { data: 'installment_month', name: 'installment_month' },
+            { data: 'installment_amount', name: 'installment_amount' },
+            // { data: 'status', name: 'status' },
             { data: 'actions', name: 'actions' },
         ],
         responsive:true,
@@ -107,15 +101,15 @@ $(function() {
         order:[0,'desc'],
     });
 });
-function deletemobile(mobile_id)
+function deletemobileInstallment(installment_id)
 {
-    var url = "{{ url('admin/mobile/delete') }}"+ "/" + mobile_id ;
+    var url = "{{ url('admin/mobile/installment/delete/') }}"+ "/" + installment_id ;
     console.log(url,true);
-    sendDeleteRequest(url, false, null, mobile_table);
+    sendDeleteRequest(url, false, null, installment_table);
 }
 function updateStatus(mobile_id)
 {
-    var url = "{{ url('admin/mobile') }}" + "/" + mobile_id + "/updateStatus";
+    var url = "{{ url('admin/mobile') }}" + "/" + installment_id + "/updateStatus";
     console.log(url,true);
     swal.fire({
         title: 'Are you sure?',
@@ -147,7 +141,7 @@ function updateStatus(mobile_id)
                         showConfirmButton: false,
                         timer: 1500
                     });
-                    mobile_table.ajax.reload(null, false);
+                    installment_table.ajax.reload(null, false);
                 },
                 error: function(error){
                     swal.fire({

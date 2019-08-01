@@ -39,7 +39,7 @@
                                 <div class="kt-widget__subhead">
                                     <a href="mailto:{{ $rider->email }}"><i class="flaticon2-new-email"></i>{{ $rider->email }}</a>
                                     <a><i class="flaticon2-calendar-3"></i>{{ $rider->phone }} </a>
-                                    <a><i class="fa fa-motorcycle"></i>{{ $rider->vehicle_number }}</a>
+                                    <a><i class="fa fa-motorcycle"></i>{{ $bike->bike_number }}</a>
                                 </div>
             
                                 <div class="kt-widget__info">
@@ -47,7 +47,110 @@
                                     <div class="kt-widget__desc">
                                         {{ $rider->address }}
                                     </div>
+                                 
                                 </div>
+                            </div>
+                        </div>
+                        <div class="kt-widget__top" style="margin-top: 25px;margin-right: 100px;margin-left: -22px;">
+                           <div class="kt-widget__content">
+                                <div class="kt-widget__head">
+                                    <a class="kt-widget__username">
+                                        Rider details
+                                    </a>
+                                </div>
+            <div class="row">
+                    <div class="kt-widget__subhead col-md-4">
+                            <div class="kt-widget__desc">  
+                                    <label style="font-weight:900;">Date Of Joining:</label>
+                                 <a >{{ $rider_details->date_of_joining }}</a>
+                                </div>
+                            
+                            <div class="kt-widget__desc">  
+                                    <label style="font-weight:900;">Is passport collected:</label>
+                                  <a>{{ $rider_details->passport_collected }}</a>
+                                </div>
+                                <div class="kt-widget__desc">  
+                                        <label style="font-weight:900;">Other Details:</label>
+                                      <a>{{ $rider_details->other_details }}</a>
+                                    </div>
+                                    <div class="kt-widget__desc">  
+                                            <label style="font-weight:900;">Official Given Number:</label>
+                                          <a>{{ $sim->sim_number }}</a>
+                                        </div>
+                    </div>
+                    <div class="kt-widget__subhead col-md-4">
+                                   
+                            <div class="kt-widget__desc">
+                                <label style="font-weight:900;">Start Time:</label>
+                                {{ $rider->start_time }}
+                              </div>
+                            <div class="kt-widget__desc">
+                                    <label style="font-weight:900;">End Time:</label>
+                                {{ $rider->end_time }}
+                            </div>
+                            <div class="kt-widget__desc">
+                                    <label style="font-weight:900;">Break Start Time:</label>
+                                {{ $rider->break_start_time }}
+                            </div>
+                            <div class="kt-widget__desc">
+                                    <label style="font-weight:900;">Break End Time:</label>
+                                {{ $rider->break_end_time }} 
+                            </div>
+                            
+                         
+                        </div>
+                    
+                    </div>
+                                <div class="kt-widget__info">
+                                   
+                                    <div class="kt-widget__desc">
+                                        <label style="font-weight:900;">Passport Expiry:</label>
+                                        {{ $rider_details->passport_expiry }}
+                                        @if($rider_details->passport_image)
+                                    <img style="width:150px;height:150px; display:block;" src="{{ asset(Storage::url($rider_details->passport_image)) }}" alt="image">
+                                @else
+                                    <img src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                                @endif
+                                      </div>
+                                    <div class="kt-widget__desc">
+                                            <label style="font-weight:900;">Licence Expiry:</label>
+                                        {{ $rider_details->licence_expiry }}
+                                        @if($rider_details->licence_image)
+                                    <img style="width:150px;height:150px;display:block;"  src="{{ asset(Storage::url($rider_details->licence_image)) }}" alt="image">
+                                @else
+                                    <img src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                                @endif 
+                                    </div>
+                                    <div class="kt-widget__desc">
+                                            <label style="font-weight:900;">Visa Expiry:</label>
+                                        {{ $rider_details->visa_expiry }}
+                                        @if($rider_details->visa_image)
+                                    <img style="width:150px;height:150px; display:block;"  src="{{ asset(Storage::url($rider_details->visa_image)) }}" alt="image">
+                                @else
+                                    <img src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                                @endif
+                                    </div>
+                                    <div class="kt-widget__desc">
+                                            <label style="font-weight:900;">Mulkiya Expiry:</label>
+                                        {{ $bike->mulkiya_expiry }} 
+                                        @if($bike->mulkiya_picture)
+                                    <img style="width:150px;height:150px;display:block;"  src="{{ asset(Storage::url($bike->mulkiya_picture)) }}" alt="image">
+                                @else
+                                    <img src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                                @endif
+                                    </div>
+                                    <div class="kt-widget__desc">
+                                            <label style="font-weight:900;">Emerate ID:</label>
+                                        {{ $rider_details->emirate_id }} 
+                                        @if($rider_details->emirate_image)
+                                    <img style="width:150px;height:150px;display:block;"  src="{{ asset(Storage::url($rider_details->emirate_image)) }}" alt="image">
+                                @else
+                                    <img src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                                @endif
+                                    </div>
+                                 
+                                </div>
+                               
                             </div>
                         </div>
                         

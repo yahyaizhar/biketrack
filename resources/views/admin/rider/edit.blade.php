@@ -212,7 +212,7 @@
                                 
                             </div>
                                
-                                <div class="form-group">
+                                {{-- <div class="form-group">
                                         <label>Official Sim Given Date:</label>
                                         <input type="text" id="datepicker2" autocomplete="off" class="form-control @if($errors->has('official_sim_given_date')) invalid-field @endif" name="official_sim_given_date" placeholder="Enter official sim given Date" value="{{ $rider_detail->official_sim_given_date }}">
                                         @if ($errors->has('official_sim_given_date'))
@@ -224,7 +224,7 @@
                                         @else
                                             <span class="form-text text-muted">Please enter your Official Sim Date</span>
                                         @endif
-                                    </div>
+                                    </div> --}}
                                     <div class="form-group">
                                             <label>Is Passport Collected:</label>
                                             <div>
@@ -399,9 +399,18 @@
                     <form class="kt-form" id="form_dates"  enctype="multipart/form-data">
                           
                         <div class="modal-body">
-                            
-                            
                                 <div class="form-group">
+                                        <label>Allowed Balance:</label>
+                                        <input type="text" class="form-control @if($errors->has('allowed_balance')) invalid-field @endif" name="allowed_balance" placeholder="Allowed Balance " value="{{$sim_date->allowed_balance}}">
+                                        @if ($errors->has('allowed_balance'))
+                                            <span class="invalid-response" role="alert">
+                                                <strong>
+                                                    {{$errors->first('allowed_balance')}}
+                                                </strong>
+                                            </span>
+                                        @endif
+                                    </div>
+                               <div class="form-group">
                                         <label>Given Date:</label>
                                 <input type="text" id="datepicker_given" autocomplete="off" class="form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter given Date" value="{{$sim_date->given_date}}" >
                                         @if ($errors->has('given_date'))

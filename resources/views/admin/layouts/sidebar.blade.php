@@ -122,12 +122,27 @@
                                     <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text">Sims</span></span></li>
                                     <li class="kt-menu__item @if(strpos(Request::url(), "/create/Sim") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('Sim.new_sim') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add New Sim</span></a></li>
                                     <li class="kt-menu__item @if(strpos(Request::url(), "/view/records/Sim") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('Sim.view_records') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Sim List</span></a></li>
-                                    <li class="kt-menu__item @if(strpos(Request::url(), "/create/Transaction/Sim") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('SimTransaction.create_sim') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add Sim Transaction</span></a></li>
+                                    {{-- <li class="kt-menu__item @if(strpos(Request::url(), "/create/Transaction/Sim") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('SimTransaction.create_sim') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add Sim Transaction</span></a></li> --}}
                                     <li class="kt-menu__item @if(strpos(Request::url(), "/view/Transaction/Sim") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('SimTransaction.view_records') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">View Transaction Records</span></a></li>
                                     
                                  </ul>
                             </div>
                         </li>
+
+                        <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "mobile") !== false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle">
+                                <span class="kt-menu__link-icon"><i class="fa fa-motorcycle"></i>    
+                            </span><span class="kt-menu__link-text">Mobile</span><i class="kt-menu__ver-arrow la la-angle-right"></i></a>
+                                <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
+                                    <ul class="kt-menu__subnav">
+                                        <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text">Sims</span></span></li>
+                                        <li class="kt-menu__item @if(strpos(Request::url(), "/mobile/create") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('mobile.create_mobile_GET') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add New Mobile</span></a></li>
+                                        <li class="kt-menu__item @if(strpos(Request::url(), "/mobiles") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('mobile.show') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Mobiles List</span></a></li>
+                                        <li class="kt-menu__item @if(strpos(Request::url(), "/mobile/installment/create") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('MobileInstallment.create') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Installment</span></a></li>
+                                        <li class="kt-menu__item @if(strpos(Request::url(), "/mobile/installment/show") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('MobileInstallment.show') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">View Installments</span></a></li>
+                                        
+                                     </ul>
+                                </div>
+                            </li>
 
                 <li class="kt-menu__item @if(strpos(Request::url(), "admin/emails") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.emails.index') }}" class="kt-menu__link "><span class="kt-menu__link-icon">
                     <i class="fa fa-envelope"></i>

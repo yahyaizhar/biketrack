@@ -12,6 +12,11 @@ use App\Model\Rider\Rider_Message;
 use Illuminate\Support\Facades\Auth;
 use App\Model\Rider\Rider_Report;
 use App\Model\Rider\Rider_detail;
+use App\Model\Bikes\bike;
+use App\Model\Sim\Sim;
+use App\Model\Sim\Sim_Transaction;
+use App\Model\Sim\Sim_History;
+
 
 class RiderController extends Controller
 {
@@ -330,7 +335,12 @@ class RiderController extends Controller
     }
     public function showRiderProfile(Rider $rider)
     {
-        return view('admin.rider.profile', compact('rider'));
+        $rider_details=$rider->Rider_detail()->get()->first();
+        $assign_bike=$rider->Assign_bike()->where('status','active')->get()->first();
+        $bike=bike::find($assign_bike->bike_id);
+        $sim_history=$rider->Sim_History()->where('status','active')->get()->first();
+        $sim=Sim::find($sim_history->sim_id);
+        return view('admin.rider.profile', compact('rider','rider_details','bike','sim'));
     }
     
     public function sendSMS(Rider $rider, Request $request)

@@ -166,7 +166,7 @@
         <span class="form-text text-muted">Please enter your Joining Date</span>
     @endif
 </div>
-<div class="form-group">
+{{-- <div class="form-group">
     <label>Official Given Number:</label>
     <input type="text" class="form-control @if($errors->has('official_given_number')) invalid-field @endif" name="official_given_number" placeholder="Enter official number" value="{{ old('official_given_number') }}">
     @if ($errors->has('official_given_number'))
@@ -178,8 +178,8 @@
     @else
         <span class="form-text text-muted">Please enter your official phone number</span>
     @endif
-</div>
-<div class="form-group">
+</div> --}}
+{{-- <div class="form-group">
     <label>Official Sim Given Date:</label>
     <input type="text" id="datepicker2" autocomplete="off" class="form-control @if($errors->has('official_sim_given_date')) invalid-field @endif" name="official_sim_given_date" placeholder="Enter official sim given Date">
     @if ($errors->has('official_sim_given_date'))
@@ -189,7 +189,7 @@
     @else
         <span class="form-text text-muted">Please enter your Official Sim Date</span>
     @endif
-</div>
+</div> --}}
 <div class="form-group">
         <label>Is Passport Collected:</label>
         <div>
