@@ -210,7 +210,7 @@ function updateStatus(sim_id)
     var url = "{{ url('admin/simTransaction') }}" + "/" + sim_id + "/updateStatus";
     swal.fire({
         title: 'Are you sure?',
-        text: "You want udpate status!",
+        text: "You want update status!",
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes!'
@@ -245,7 +245,7 @@ function updateStatus(sim_id)
                         position: 'center',
                         type: 'error',
                         title: 'Oops...',
-                        text: 'Unable to udpate.',
+                        text: 'Unable to update.',
                         showConfirmButton: false,
                         timer: 1500
                     });

@@ -221,14 +221,20 @@ public function add_simHistory($id){
 public function store_simHistory(Request $request,$id){
     $rider=Rider::find($id);
     $sim=Sim::find($request->get('sim_id'));
-      $sim_history=$rider->Sim_History()->create([
+    $old_histories = $rider->Sim_History()->where('status', 'active')->get();
+    foreach($old_histories as $old_history)
+    {
+        $old_history->status='deactive';
+        $old_history->save();
+    }
+    $sim_history=$rider->Sim_History()->create([
         'allowed_balance'=>$request->get('allowed_balance'),
         'given_date'=>$request->get('given_date'),
         'return_date'=>$request->get('return_date'),
         'rider_id'=>$request->get('rider_id'),
         'sim_id'=>$request->get('sim_id'),
         'status'=>'active',
-        ]);
+    ]);
     
     $sim_history->save();
     return redirect(url('/admin/riders'))->with('message', 'Sim Assigned successfully.');

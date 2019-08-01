@@ -85,9 +85,9 @@ class AjaxController extends Controller
     }
     public function getSims()
     {
-        $sim = Sim::orderByDesc('created_at')->get();
+        $sims = Sim::orderByDesc('created_at')->get();
         // return $clients;
-        return DataTables::of($sim)
+        return DataTables::of($sims)
         ->addColumn('status', function($sim){
             if($sim->status == 1)
             {
@@ -114,6 +114,14 @@ class AjaxController extends Controller
         ->addColumn('sim_company', function($sim){
             return $sim->sim_company;
         })
+        ->addColumn('assigned_to', function($sim){
+            $sim_history = $sim->Sim_history()->where('status', 'active')->get()->first();
+            if(isset($sim_history)){
+                $rider = $sim_history->Rider;
+                return '<a href="'.route('admin.rider.profile', $rider->id).'">'.$rider->name.'</a>';
+            }
+            return 'This SIM is not assigned to any rider';
+        })
         ->addColumn('actions', function($sim){
             $status_text = $sim->status == 1 ? 'Inactive' : 'Active';
             return '<span class="dtr-data">
@@ -129,7 +137,7 @@ class AjaxController extends Controller
             </span>
         </span>';
         })
-        ->rawColumns([ 'sim_company', 'sim_number', 'actions', 'status'])
+        ->rawColumns([ 'sim_company','assigned_to', 'sim_number', 'actions', 'status'])
         ->make(true);
     }
 
@@ -489,7 +497,6 @@ class AjaxController extends Controller
                     <button class="dropdown-item" onclick="deleteRider('.$riders->id.')"><i class="fa fa-trash"></i> Delete</button>
                     <a class="dropdown-item" href="'.route('Bike.assignedToRiders_History', $riders).'"><i class="fa fa-eye"></i>View Bikes History</a>
                     <a class="dropdown-item" href="'.route('bike.bike_assignRiders', $riders).'"><i class="fa fa-eye"></i> Assign Bike</a> 
-                    <a class="dropdown-item" href="'.route('admin.area_assign_to_rider', $riders).'"><i class="fa fa-eye"></i> Assign Area</a>
                     <a class="dropdown-item" href="'.route('SimHistory.addsim', $riders).'"><i class="fa fa-eye"></i> Assign Sim</a>
                       
                     </div>

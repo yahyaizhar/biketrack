@@ -45,10 +45,10 @@
                                     }
                                  @endphp
 
-                                 @if ($temp)
-                                 <option value="{{ $sims->id }}" 
-                                >
-                                {{ $sims->sim_company }}-{{ $sims->sim_number}}</option>    
+                                 @if ($temp && $sims->status==1)
+                                 <option value="{{ $sims->id }}">
+                                    {{ $sims->sim_company }}-{{ $sims->sim_number}}
+                                </option>  
                                 @endif
                                 @endforeach 
                             </select> 

@@ -44,6 +44,7 @@
                         <th>ID</th>
                         <th>Sim Number</th>
                         <th>Sim Company</th>
+                        <th>Assigned to</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
@@ -83,6 +84,7 @@ $(function() {
             { data: 'id', name: 'id' },
             { data: 'sim_number', name: 'sim_number' },
             { data: 'sim_company', name: 'sim_comapny' },
+            { data: 'assigned_to', name: 'assigned_to' },
             { data: 'status', name: 'status' },
             { data: 'actions', name: 'actions', orderable: false, searchable: false }
         ],
@@ -101,7 +103,7 @@ function updateStatus(sim_id)
     var url = "{{ url('admin/sim') }}" + "/" + sim_id + "/updateStatus";
     swal.fire({
         title: 'Are you sure?',
-        text: "You want udpate status!",
+        text: "You want update status!",
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes!'
@@ -136,7 +138,7 @@ function updateStatus(sim_id)
                         position: 'center',
                         type: 'error',
                         title: 'Oops...',
-                        text: 'Unable to udpate.',
+                        text: 'Unable to update.',
                         showConfirmButton: false,
                         timer: 1500
                     });

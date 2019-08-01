@@ -51,7 +51,7 @@
                 <i class="fa fa-map-marker-alt"></i>
             </span><span class="kt-menu__link-text">Live Map</span></a></li>
                 <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "admin/rider") !== false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle">
-                    <span class="kt-menu__link-icon"><i class="fa fa-motorcycle"></i>    
+                    <span class="kt-menu__link-icon"><i class="fa fa-users"></i>    
                 </span><span class="kt-menu__link-text">Riders</span><i class="kt-menu__ver-arrow la la-angle-right"></i></a>
                     <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
                         <ul class="kt-menu__subnav">
@@ -89,7 +89,7 @@
                     </div>
                 </li>
                 <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "Salary") !== false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle">
-                    <span class="kt-menu__link-icon"><i class="fa fa-motorcycle"></i>    
+                    <span class="kt-menu__link-icon"><i class="fa fa-file-invoice"></i>    
                 </span><span class="kt-menu__link-text">Accounts</span><i class="kt-menu__ver-arrow la la-angle-right"></i></a>
                     <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
                         <ul class="kt-menu__subnav">
@@ -103,7 +103,7 @@
                     </div>
                 </li>
                 <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "admin/NewComer") !== false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle"><span class="kt-menu__link-icon">
-                    <i class="fa fa-hotel"></i>    
+                    <i class="fa fa-user-plus"></i>    
                     </span><span class="kt-menu__link-text">New Comer</span><i class="kt-menu__ver-arrow la la-angle-right"></i></a>
                         <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
                             <ul class="kt-menu__subnav">
@@ -115,7 +115,7 @@
                     </li> 
 
                     <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "Sim") !== false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle">
-                            <span class="kt-menu__link-icon"><i class="fa fa-motorcycle"></i>    
+                            <span class="kt-menu__link-icon"><i class="fa fa-sim-card"></i>    
                         </span><span class="kt-menu__link-text">Sims</span><i class="kt-menu__ver-arrow la la-angle-right"></i></a>
                             <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
                                 <ul class="kt-menu__subnav">
@@ -130,7 +130,7 @@
                         </li>
 
                         <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "mobile") !== false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle">
-                                <span class="kt-menu__link-icon"><i class="fa fa-motorcycle"></i>    
+                                <span class="kt-menu__link-icon"><i class="fa fa-mobile-alt"></i>    
                             </span><span class="kt-menu__link-text">Mobile</span><i class="kt-menu__ver-arrow la la-angle-right"></i></a>
                                 <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
                                     <ul class="kt-menu__subnav">

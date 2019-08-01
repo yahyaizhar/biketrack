@@ -9,7 +9,7 @@
                 <div class="kt-portlet__head">
                     <div class="" style="padding-top:15px;">
                         <h3 class="kt-portlet__head-title">
-                          Assign Bike To: <a href="{{route('admin.rider.profile', $rider->id)}}">{{$rider->name}}</a>
+                          Assign bike to: <a href="{{route('admin.rider.profile', $rider->id)}}">{{$rider->name}}</a>
                         </h3>
                         @if ($assign_bike<=0)
                         @else
@@ -32,14 +32,14 @@
                     {{ csrf_field() }}
                     <div class="kt-portlet__body">
                         <div class="form-group">
-                            <label>Bikes:</label>
+                            <label>Select bike:</label>
                             
                             
                             @if ($assign_bike<=0)
                            <div>
                                  <select class="form-control kt-select2" id="kt_select2_3" name="bike_id" >
                                 @foreach ($bikes as $bike)
-                                @if ($bike->availability=='yes')
+                                @if ($bike->availability=='yes' && $bike->status==1)
                                 <option value="{{ $bike->id }}" 
                                     {{-- @if ($current_bike !== null)
                                     hidden
