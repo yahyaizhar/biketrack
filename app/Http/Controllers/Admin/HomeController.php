@@ -127,6 +127,7 @@ class HomeController extends Controller
         $mobile->payment_type=$r->payment_type;
         $mobile->amount_received=$r->amount_received;
         $mobile->installment_starting_month=$r->installment_starting_month;
+        $mobile->installment_ending_month=$r->installment_ending_month;
         $mobile->per_month_installment_amount=$r->per_month_installment_amount;
         $mobile->save();
         return redirect(route('mobile.show'))->with('message', 'Record Added Successfully.');
@@ -136,9 +137,7 @@ class HomeController extends Controller
         $mobiles=Mobile::all();
         return view('admin.rider.mobile.mobiles', compact('mobiles'));
     }
-    public function update_mobile_GET($mobile){
-        return view('admin.rider.mobile.edit', compact('mobile'));
-    }
+   
     public function updateProfile(Request $request)
     {
         $user = Auth::user();

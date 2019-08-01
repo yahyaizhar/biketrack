@@ -45,6 +45,7 @@
                         <th>Brand</th>
                         <th>Model</th>
                         <th>Bike Number</th>
+                        <th>Assigned To</th>
                         <th>Status</th>
                         <th>Actions</th>                        
                     </tr>
@@ -85,6 +86,7 @@ $(function() {
             { data: 'brand', name: 'brand' },            
             { data: 'model', name: 'model' },
             { data: 'bike_number', name: 'bike_number' },
+            { data: 'assigned_to', name: 'assigned_to' },
             { data: 'status', name: 'status' },
             { data: 'availability', name: 'availability' },
         ],

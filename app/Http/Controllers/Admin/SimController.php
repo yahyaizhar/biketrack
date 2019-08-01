@@ -215,6 +215,7 @@ public function update_simHistory(Request $request,$id){
       
       $sim_history->given_date=$request->given_date;
       $sim_history->return_date=$request->return_date;
+      $sim_history->allowed_balance=$request->allowed_balance;
       $sim_history->update();
     // return $sim_history;
 }

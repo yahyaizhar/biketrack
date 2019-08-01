@@ -121,12 +121,10 @@ $(function() {
     }
     else{
         $('#riders-table thead tr th').eq(6).before('<th>Date Of Joining</th>');
-        $('#riders-table thead tr th').eq(7).before('<th>Official Given Number</th>');
-        $('#riders-table thead tr th').eq(8).before('<th>Official Sim GIven Date</th>');
-        $('#riders-table thead tr th').eq(9).before('<th>Passport Expiry</th>');
-        $('#riders-table thead tr th').eq(10).before('<th>Visa Expiry</th>');
-        $('#riders-table thead tr th').eq(11).before('<th>Licence Expiry</th>');
-        $('#riders-table thead tr th').eq(12).before('<th>Mulkiya Expiry</th>');
+        $('#riders-table thead tr th').eq(7).before('<th>Passport Expiry</th>');
+        $('#riders-table thead tr th').eq(8).before('<th>Visa Expiry</th>');
+        $('#riders-table thead tr th').eq(9).before('<th>Licence Expiry</th>');
+        $('#riders-table thead tr th').eq(10).before('<th>Mulkiya Expiry</th>');
        
         
         
@@ -139,8 +137,6 @@ $(function() {
             { "data": 'address', "name": 'address' },
             { "data": 'status', "name": 'status' },
             { "data": 'date_of_joining', "name": 'date_of_joining' },
-            { "data": 'official_given_number', "name": 'official_given_number' },
-            { "data": 'official_sim_given_date', "name": 'official_sim_given_date' },
             { "data": 'passport_expiry', "name": 'passport_expiry' },
             { "data": 'visa_expiry', "name": 'visa_expiry' },
             { "data": 'licence_expiry', "name": 'licence_expiry' },
@@ -180,10 +176,13 @@ $(function() {
                 '<tr>'+
                 '<td colspan="1"; style="font-weight:900;">Date Of Joining:</td>'+
                 '<td colspan="2";>'+data.date_of_joining+'</td>'+
-                '<td colspan="2"; style="font-weight:900;" >Official Sim Given Date:</td>'+
-                '<td colspan="2";>'+data.official_sim_given_date+'</td>'+
-                '<td colspan="2"; style="font-weight:900;">Official Given Number:</td>'+
-                '<td colspan="4"; >'+data.official_given_number+'</td>'+
+                '<td colspan="1"; style="font-weight:900;" >Assign Bike Number:</td>'+
+                '<td colspan="2";>'+data.bike_number+'</td>'+
+                '<td colspan="1"; style="font-weight:900;" >Emerate ID:</td>'+
+                '<td colspan="1";>'+data.emirate_id+'</td>'+
+                '<td colspan="1"; style="font-weight:900;" >Email:</td>'+
+                '<td colspan="1";>'+data.email+'</td>'+
+               
                '</tr>'+
                '<tr>'+
                 '<td colspan="1"; style="font-weight:900;">Passport Expiry:</td>'+
@@ -195,15 +194,9 @@ $(function() {
                 '<td colspan="1"; style="font-weight:900;" >Mulkiya Expiry:</td>'+
                 '<td colspan="2";>'+data.mulkiya_expiry+'</td>'+
                
-               '</tr>'+
-               '<tr>'+
+               
               
-                '<td colspan="1"; style="font-weight:900;" >Assign Bike Number:</td>'+
-                '<td colspan="2";>'+data.bike_number+'</td>'+
-                '<td colspan="1"; style="font-weight:900;" >Emerate ID:</td>'+
-                '<td colspan="1";>'+data.emirate_id+'</td>'+
-                '<td colspan="1"; style="font-weight:900;" >Email:</td>'+
-                '<td colspan="1";>'+data.email+'</td>'+
+               
                
                '</tr>'+
                 
