@@ -10,6 +10,10 @@
                     <div class="" style="padding-top:15px;">
                         <h3 class="kt-portlet__head-title">
                           Assign Sim To: <a href="">{{$rider_id->name}}</a>
+                          @if ($sim_val<=0)
+                            @else
+                            <span style="font-size: 15px;color: #5867e4;display: block;width: 100%;font-weight: bold;">This Rider have already an active Sim</span>
+                            @endif
                         </h3>
                         {{-- @if ($assign_bike<=0)
                         @else --}}

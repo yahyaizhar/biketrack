@@ -4,14 +4,20 @@
     <div class="kt-subheader__main">
        
         <h3 class="kt-subheader__title">{{ $rider->name }}</h3>
+        
 
         <span class="kt-subheader__separator kt-subheader__separator--v"></span>
 
         <span class="kt-subheader__desc">Sims</span>
-
-        {{-- <a href="{{ route('bike.bike_assignRiders', $rider->id) }}" class="btn btn-label-warning btn-bold btn-sm btn-icon-h kt-margin-l-10">
-            Assign another bike
-        </a> --}}
+        @if($sim_count > 0)
+        <a href="{{ route('SimHistory.addsim', $rider->id) }}" class="btn btn-label-warning btn-bold btn-sm btn-icon-h kt-margin-l-10">
+            Assign another Sim
+        </a> 
+        @else
+        <a href="{{ route('SimHistory.addsim', $rider->id) }}" class="btn btn-label-warning btn-bold btn-sm btn-icon-h kt-margin-l-10">
+                Assign Sim
+            </a>
+        @endif
         {{-- <a href="{{ route('Bike.assignedToRiders_History', $rider->id) }}" class="btn btn-label-danger btn-bold btn-sm btn-icon-h kt-margin-l-10">
         Bike history
         </a> --}}

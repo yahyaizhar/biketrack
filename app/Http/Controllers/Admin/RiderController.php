@@ -337,9 +337,15 @@ class RiderController extends Controller
     {
         $rider_details=$rider->Rider_detail()->get()->first();
         $assign_bike=$rider->Assign_bike()->where('status','active')->get()->first();
+        $bike=[];
+        if(isset($assign_bike)){
         $bike=bike::find($assign_bike->bike_id);
+        }     
         $sim_history=$rider->Sim_History()->where('status','active')->get()->first();
+        $sim=null;
+        if(isset($sim_history)){
         $sim=Sim::find($sim_history->sim_id);
+        }
         return view('admin.rider.profile', compact('rider','rider_details','bike','sim'));
     }
     

@@ -215,8 +215,13 @@ public function update_simTransaction(Request $request, $id){
 public function add_simHistory($id){
     $rider_id=Rider::find($id);
     $sim=Sim::all();
-     
-    return view("SIM.create_simHistory",compact('rider_id','sim'));
+     $sim_history=$rider_id->Sim_History()->where('status','active')->get()->first();
+     $sim_val=0;
+     if (isset($sim_history)) {
+         $sim_val=1;
+         $sim_history->status='active'; 
+     }
+    return view("SIM.create_simHistory",compact('rider_id','sim','sim_history','sim_val'));
 }
 public function store_simHistory(Request $request,$id){
     $rider=Rider::find($id);
