@@ -231,7 +231,7 @@ public function store_simHistory(Request $request,$id){
         ]);
     
     $sim_history->save();
-    return redirect(url('/admin/riders'))->with('message', 'Sim Assigned successfully.');
+    return redirect(url('admin/view/Sim/'.$id))->with('message', 'Sim Assigned successfully.');
 }
 public function update_simHistory(Request $request,$id){
     $rider=Rider::find($id);
@@ -247,5 +247,29 @@ public function update_simHistory(Request $request,$id){
 
 
 // end Sim history Section
+
+
+public function view_assigned_sim($id){
+    $rider=Rider::find($id);
+    $sim_history=$rider->Sim_History()->where('status','active')->get()->first();
+    $sim_count=0;
+    $sim=null;
+    if (isset($sim_history)) {
+        $sim_count=1;
+    $sim=Sim::find($sim_history->sim_id);
+    }
+    
+    return view('SIM.view_assigned_sim',compact('rider','sim','sim_history','sim_count')); 
+}
+public function removeSim($sim_id,$rider_id){
+
+    $delete_active_sim =Sim_History::where('sim_id', $sim_id)->where('rider_id', $rider_id)->orderBy('created_at', 'desc')->first();
+    $delete_active_sim->status='deactive';
+    $delete_active_sim->save();
+    return response()->json([
+        'status' => true
+    ]);
+   
+  }
 
 }

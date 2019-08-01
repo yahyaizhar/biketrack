@@ -237,6 +237,9 @@ Route::delete('/simTransaction/{sim_id}', 'SimController@DeleteSimTransaction')-
 Route::get('/create/history/Sim/{rider_id}','SimController@add_simHistory')->name('SimHistory.addsim');
 Route::post('/store/history/Sim/{rider_id}','SimController@store_simHistory')->name('SimHistory.store_simHistory');
 Route::post('/update/History/{id}/Sim','SimController@update_simHistory')->name('SimHistory.update');
+Route::get('/view/Sim/{id}','SimController@view_assigned_sim')->name('Sim.view_assigned');
+Route::delete('/sim/{rider_id}/removeSim/{sim_id}', 'SimController@removeSim')->name('Sim.removeSim');
+    
 // end Sim history section
 });
   
