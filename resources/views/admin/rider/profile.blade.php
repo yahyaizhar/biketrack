@@ -109,7 +109,7 @@
                                         @if($rider_details->passport_image)
                                     <img style="width:150px;height:150px; display:block;" src="{{ asset(Storage::url($rider_details->passport_image)) }}" alt="image">
                                 @else
-                                    <img src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                                    <img style="width:150px;height:150px;display:block;" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
                                 @endif
                                       </div>
                                     <div class="kt-widget__desc">
@@ -118,7 +118,7 @@
                                         @if($rider_details->licence_image)
                                     <img style="width:150px;height:150px;display:block;"  src="{{ asset(Storage::url($rider_details->licence_image)) }}" alt="image">
                                 @else
-                                    <img src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                                    <img style="width:150px;height:150px;display:block;" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
                                 @endif 
                                     </div>
                                     <div class="kt-widget__desc">
@@ -127,7 +127,7 @@
                                         @if($rider_details->visa_image)
                                     <img style="width:150px;height:150px; display:block;"  src="{{ asset(Storage::url($rider_details->visa_image)) }}" alt="image">
                                 @else
-                                    <img src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                                    <img style="width:150px;height:150px;display:block;" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
                                 @endif
                                     </div>
                                     <div class="kt-widget__desc">
@@ -136,7 +136,7 @@
                                         @if($bike->mulkiya_picture)
                                     <img style="width:150px;height:150px;display:block;"  src="{{ asset(Storage::url($bike->mulkiya_picture)) }}" alt="image">
                                 @else
-                                    <img src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                                    <img style="width:150px;height:150px;display:block;" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
                                 @endif
                                     </div>
                                     <div class="kt-widget__desc">
@@ -145,7 +145,7 @@
                                         @if($rider_details->emirate_image)
                                     <img style="width:150px;height:150px;display:block;"  src="{{ asset(Storage::url($rider_details->emirate_image)) }}" alt="image">
                                 @else
-                                    <img src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                                    <img style="width:150px;height:150px;display:block;" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
                                 @endif
                                     </div>
                                  
