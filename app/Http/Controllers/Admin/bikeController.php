@@ -52,6 +52,15 @@ class bikeController extends Controller
                 $filepath = Storage::putfile('public/uploads/riders/mulkiya_pictures', $r->file('mulkiya_picture'));
                 $bike_object->mulkiya_picture = $filepath;
             }
+            if($r->hasFile('mulkiya_picture_back'))
+            {
+                // return 'yes';
+                $filename = $r->mulkiya_picture_back->getClientOriginalName();
+                $filesize = $r->mulkiya_picture_back->getClientSize();
+                // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
+                $filepath = Storage::putfile('public/uploads/riders/mulkiya_picture_back', $r->file('mulkiya_picture_back'));
+                $bike_object->mulkiya_picture_back = $filepath;
+            }
             $bike_object->save();
       $bike_detail = $bike_object->Bike_detail()->create([
       'registration_number'=> $r->get('registration_number'),
@@ -104,6 +113,19 @@ class bikeController extends Controller
             // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
             $filepath = Storage::putfile('public/uploads/riders/mulkiya_pictures', $request->file('mulkiya_picture'));
             $bike->mulkiya_picture = $filepath;
+        }
+        if($request->hasFile('mulkiya_picture_back'))
+        {
+            // return 'yes';
+            if($bike->mulkiya_picture_back)
+            {
+                Storage::delete($bike->mulkiya_picture_back);
+            }
+            $filename = $request->mulkiya_picture_back->getClientOriginalName();
+            $filesize = $request->mulkiya_picture_back->getClientSize();
+            // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
+            $filepath = Storage::putfile('public/uploads/riders/mulkiya_picture_back', $request->file('mulkiya_picture_back'));
+            $bike->mulkiya_picture_back = $filepath;
         }
     $bike->update();
    

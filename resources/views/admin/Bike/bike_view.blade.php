@@ -117,7 +117,7 @@ function updateStatus(bike_id)
     console.log(url,true);
     swal.fire({
         title: 'Are you sure?',
-        text: "You want udpate status!",
+        text: "You want update status!",
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes!'
@@ -152,7 +152,7 @@ function updateStatus(bike_id)
                         position: 'center',
                         type: 'error',
                         title: 'Oops...',
-                        text: 'Unable to udpate.',
+                        text: 'Unable to update.',
                         showConfirmButton: false,
                         timer: 1500
                     });

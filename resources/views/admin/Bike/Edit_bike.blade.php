@@ -108,13 +108,14 @@
                         </div>
                            
                         </div>
-                        <div class="col-lg-7 col-md-7 col-sm-12">
+                        <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="form-group col-md-6 pull-right mtr-15">
                                         <div class="custom-file">
                                             <input type="file" name="mulkiya_picture" class="custom-file-input" id="mulkiya_picture">
                                             <label class="custom-file-label" for="mulkiya_picture">Choose Mulkiya Picture</label>
                                         </div>
-                                        <span class="form-text text-muted">Select if you want to update Mulkiya picture</span>
+                                        <span class="form-text text-muted">Select Front Picture</span>
                                     </div>    
                             @if($bike->mulkiya_picture)
                                     <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($bike->mulkiya_picture)) }}" alt="image">
@@ -123,6 +124,22 @@
                                 @endif
                                
                             </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group col-md-6 pull-right mtr-15">
+                                        <div class="custom-file">
+                                            <input type="file" name="mulkiya_picture_back" class="custom-file-input" id="mulkiya_picture_back">
+                                            <label class="custom-file-label" for="mulkiya_picture_back">Choose Mulkiya Picture</label>
+                                        </div>
+                                        <span class="form-text text-muted">Select Back Picture</span>
+                                    </div>    
+                            @if($bike->mulkiya_picture_back)
+                                    <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($bike->mulkiya_picture_back)) }}" alt="image">
+                                @else
+                                    <img class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                                @endif
+                               
+                            </div>
+                        </div> 
                         
                         <div class="form-group">
                             <label>Status:</label>

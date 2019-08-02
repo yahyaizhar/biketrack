@@ -88,6 +88,7 @@
     <script src="{{ asset('dashboard/assets/vendors/general/jquery.repeater/src/jquery.input.js') }}" type="text/javascript"></script>
     <script src="{{ asset('dashboard/assets/vendors/general/jquery.repeater/src/repeater.js') }}" type="text/javascript"></script>
     <script src="{{ asset('dashboard/assets/vendors/general/dompurify/dist/purify.js') }}" type="text/javascript"></script>
+    <script src="//cdn.rawgit.com/noelboss/featherlight/1.7.13/release/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
 <script>
  var dateFormat = function () {
         var    token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g,

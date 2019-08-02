@@ -15,7 +15,7 @@ use App\Assign_bike;
 class bike extends Authenticatable
 {
     protected $fillable = [
-        'model','brand','mulkiya_number','mulkiya_expiry','mulkiya_picture','bike_number','rider_id','availability','other','status',
+        'model','brand','mulkiya_number','mulkiya_expiry','mulkiya_picture','mulkiya_picture_back','bike_number','rider_id','availability','other','status',
        ];
    
        
