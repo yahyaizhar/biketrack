@@ -409,18 +409,27 @@ class AjaxController extends Controller
             
         })
         
-        ->addColumn('new_phone', function($riders){
+        ->addColumn('phone', function($riders){
             return '<a href="'.route('admin.rider.profile', $riders->id).'">'.$riders->phone.'</a>';
+        })
+        ->addColumn('sim_number', function($rider){
+            $sim_history = $rider->Sim_history()->where('status', 'active')->get()->first();
+            if(isset($sim_history)){
+                $sim = $sim_history->Sim;
+                return '<a href="'.route('Sim.simHistory', $rider->id).'">'.$sim->sim_number.'</a>';
+            }
+            return '<a href="'.route('SimHistory.addsim', $rider->id).'">No sim</a>';
         })
         ->addColumn('missing_fields', function($riders){
             $data='';
             $rider_detail =$riders->Rider_detail;
             $assign_bike=$riders->Assign_bike()->where('status', 'active')->get()->first();
-
+            $sim_history = $riders->Sim_history()->where('status', 'active')->get()->first();
+            
             // 
             if ($assign_bike) {}
             else{
-                $data.='*No bike assigned yet <br />';
+                $data.='*No bike assigned <br />';
             }
             if(!isset($riders->name)){
                 $data.='*Name <br />';
@@ -446,8 +455,8 @@ class AjaxController extends Controller
                      $data.='*Mulkiya Expiry <br />';
                 }
             }
-            if(!isset($rider_detail->official_sim_given_date)){
-                $data.='*Official sim given date <br />';
+            if(!isset($sim_history)){
+                $data.='*No SIM assigned <br />';
             }
             return '<a style="color:red;" href="'.url('admin/riders/'.$riders->id.'/edit').'">'.$data.'</a>';
         })        
@@ -558,7 +567,7 @@ class AjaxController extends Controller
         })
         
         // <a class="dropdown-item" href="'.route('Rider.salary', $riders).'"><i class="fa fa-money-bill-wave"></i> Salaries</a> 
-        ->rawColumns(['new_name','missing_fields','adress','client_name','emirate_id','mulkiya_expiry','bike_number','official_sim_given_date','licence_expiry','visa_expiry','passport_expiry','official_given_number', 'new_email','date_of_joining', 'new_phone', 'actions', 'status'])
+        ->rawColumns(['new_name','sim_number','missing_fields','adress','client_name','emirate_id','mulkiya_expiry','bike_number','official_sim_given_date','licence_expiry','visa_expiry','passport_expiry','official_given_number', 'new_email','date_of_joining', 'phone', 'actions', 'status'])
         ->make(true);
     }
     public function getMobiles(){

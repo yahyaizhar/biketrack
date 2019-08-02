@@ -42,7 +42,7 @@ class MobileController extends Controller
             'amount_received' => 'required | numeric',
             'per_month_installment_amount' => 'required | numeric',
         ]);
-        $mobile_update->model=$request->model;
+        $mobile_update->model=$request->brand.' '.$request->model;
         $mobile_update->imei=$request->imei;
         $mobile_update->purchase_price=$request->purchase_price;
         $mobile_update->sale_price=$request->sale_price;
@@ -74,7 +74,39 @@ class MobileController extends Controller
             'status' => true
         ]);
     }
-
+    public function create_mobile_GET()
+    {
+        return view('admin.rider.mobile.create');
+    }
+    public function create_mobile_POST(Request $r)
+    {
+        $this->validate($r, [
+            'model' => 'required | string | max:255',
+            'imei' => 'required | numeric',
+            'purchase_price' => 'required | numeric',
+            'sale_price' => 'required | numeric',
+            'payment_type' => 'required',
+            'amount_received' => 'required | numeric',
+            'per_month_installment_amount' => 'required | numeric',
+        ]);
+        $mobile = new Mobile;
+        $mobile->model=$r->brand.' '.$r->model;
+        $mobile->imei=$r->imei;
+        $mobile->purchase_price=$r->purchase_price;
+        $mobile->sale_price=$r->sale_price;
+        $mobile->payment_type=$r->payment_type;
+        $mobile->amount_received=$r->amount_received;
+        $mobile->installment_starting_month=$r->installment_starting_month;
+        $mobile->installment_ending_month=$r->installment_ending_month;
+        $mobile->per_month_installment_amount=$r->per_month_installment_amount;
+        $mobile->save();
+        return redirect(route('mobile.show'))->with('message', 'Record Added Successfully.');
+        
+    }
+    public function mobiles(){
+        $mobiles=Mobile::all();
+        return view('admin.rider.mobile.mobiles', compact('mobiles'));
+    }
     public function delete_mobile(Request $request,$id){
         $mobile_delete=Mobile::find($id);
         

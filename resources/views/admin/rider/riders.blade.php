@@ -56,7 +56,7 @@
                         <th>ID</th>
                         <th>Name</th>
                         <th>Assigned To</th>
-                        <th>Phone Number</th>
+                        <th>Sim Number</th>
                         <th>Missing Fields</th>
                         <th>Status</th>
                         <th>Actions</th>
@@ -109,7 +109,7 @@ $(function() {
         { "data": 'new_id', "name": 'new_id' },
             { "data": 'new_name', "name": 'name' },
             { "data": 'client_name', "name": 'client_name' },
-            { "data": 'new_phone', "name": 'phone' },
+            { "data": 'sim_number', "name": 'sim_number' },
             { "data": 'missing_fields', "name": 'missing_fields' },
             { "data": 'status', "name": 'status' },
             { "data": 'actions', "name": 'actions' }
@@ -133,7 +133,7 @@ $(function() {
         { "data": 'new_id', "name": 'new_id' },
             { "data": 'new_name', "name": 'name' },
             { "data": 'new_email', "name": 'email' },
-            { "data": 'new_phone', "name": 'phone' },
+            { "data": 'sim_number', "name": 'sim_number' },
             { "data": 'address', "name": 'address' },
             { "data": 'status', "name": 'status' },
             { "data": 'date_of_joining', "name": 'date_of_joining' },
@@ -178,6 +178,8 @@ $(function() {
                 '<td colspan="2";>'+data.date_of_joining+'</td>'+
                 '<td colspan="1"; style="font-weight:900;" >Assign Bike Number:</td>'+
                 '<td colspan="2";>'+data.bike_number+'</td>'+
+                '<td colspan="1"; style="font-weight:900;" >Phone Number:</td>'+
+                '<td colspan="1";>'+data.phone+'</td>'+
                 '<td colspan="1"; style="font-weight:900;" >Emerate ID:</td>'+
                 '<td colspan="1";>'+data.emirate_id+'</td>'+
                 '<td colspan="1"; style="font-weight:900;" >Email:</td>'+

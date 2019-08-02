@@ -22,26 +22,33 @@
                     {{ csrf_field() }}
                     <div class="kt-portlet__body">
                         <div class="form-group">
-                            <label>Select Model:</label>
-                          <div>
-                            <select class="form-control kt-select2" id="kt_select2_3" name="model" >
-                                <option value="samsung">Samsung</option>
-                                <option value="huawei">Huawei</option>
-                                <option value="google">Google</option>
-                                <option value="sony">Sony</option>
-                                <option value="nokia">Nokia</option>
-                                <option value="lg">LG</option>
-                                <option value="oneplus">OnePlus</option>
-                                <option value="doro">Doro</option>
-                                <option value="motorola">Motorola</option>
-                                <option value="blackberry">BlackBerry</option>
-                                <option value="xiaomi">Xiaomi</option>
-                                <option value="acer">Acer</option>
-                                <option value="oppo">Oppo</option>
-                                
-                            </select> 
-                             </div> 
+                            <label>Select Brand:</label>
+                            <div>
+                                <select class="form-control kt-select2" id="kt_select2_3" name="brand" >
+                                    <option value="Samsung">Samsung</option>
+                                    <option value="huawei">Huawei</option>
+                                    <option value="Google">Google</option>
+                                    <option value="Sony">Sony</option>
+                                    <option value="Nokia">Nokia</option>
+                                    <option value="LG">LG</option>
+                                    <option value="OnePlus">OnePlus</option>
+                                    <option value="Doro">Doro</option>
+                                    <option value="Motorola">Motorola</option>
+                                    <option value="BlackBerry">BlackBerry</option>
+                                    <option value="Xiaomi">Xiaomi</option>
+                                    <option value="Acer">Acer</option>
+                                    <option value="Oppo">Oppo</option>
+                                </select> 
+                                <span class="form-text text-muted">Like <strong>Samsung</strong>.</span>
                             </div>
+                            
+                        </div>
+
+                        <div class="form-group">
+                            <label>Model:</label>
+                            <input type="text" class="form-control @if($errors->has('model')) invalid-field @endif" name="model" placeholder="Enter Model " value="{{ old('model') }}">
+                            <span class="form-text text-muted">Like <strong>Galaxy S9</strong>.</span> 
+                        </div>
                            
                         <div class="form-group">
                             <label>IMEI:</label>

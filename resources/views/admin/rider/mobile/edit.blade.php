@@ -23,26 +23,15 @@
                     <div class="kt-portlet__body">
                         <div class="form-group">
                             <label>Select Model:</label>
-                          <div>
-                            <select class="form-control kt-select2" id="kt_select2_3" name="model" >
-                                <option value="{{$mobile_edit->model}}">{{$mobile_edit->model}}</option>
-                                <option value="samsung">Samsung</option>
-                                <option value="huawei">Huawei</option>
-                                <option value="google">Google</option>
-                                <option value="sony">Sony</option>
-                                <option value="nokia">Nokia</option>
-                                <option value="lg">LG</option>
-                                <option value="oneplus">OnePlus</option>
-                                <option value="doro">Doro</option>
-                                <option value="motorola">Motorola</option>
-                                <option value="blackberry">BlackBerry</option>
-                                <option value="xiaomi">Xiaomi</option>
-                                <option value="acer">Acer</option>
-                                <option value="oppo">Oppo</option>
-                                
-                            </select> 
-                             </div> 
-                            </div>
+                            <input type="text" class="form-control @if($errors->has('model')) invalid-field @endif" name="model" placeholder="Enter Model number " value="{{$mobile_edit->model}}">
+                            @if ($errors->has('model'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{$errors->first('model')}}
+                                    </strong>
+                                </span>
+                            @endif
+                        </div>
                            
                         <div class="form-group">
                             <label>IMEI:</label>

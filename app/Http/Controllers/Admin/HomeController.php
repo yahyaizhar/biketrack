@@ -73,25 +73,29 @@ class HomeController extends Controller
         $notlogged_rider=[];
 
         foreach ($all_riders as $rider) {
-            $online_record = Rider_Online_Time::where('rider_id', $rider->id)->whereNull('offline_time')->first();
+            $online_record_all = Rider_Online_Time::where('rider_id', $rider->id)->whereDate('online_time', Carbon::now()->toDateString());
+            $online_record_null = Rider_Online_Time::where('rider_id', $rider->id)->whereDate('online_time', Carbon::now()->toDateString())->whereNull('offline_time')->get()->first();
+            $online_record = Rider_Online_Time::where('rider_id', $rider->id)->whereDate('online_time', Carbon::now()->toDateString())->get()->first();
             $rider_startTime = $rider->start_time;
 
-            if($online_record && $rider_startTime){ // logged in
+            if($online_record_null && $rider_startTime){ // logged in
                 $rider_startTime = Carbon::createFromFormat('H:i',$rider_startTime);
-                $online_time=Carbon::parse($online_record->online_time)->diffForHumans();
+                $online_time=Carbon::parse($online_record_null->online_time)->diffForHumans();
                 array_push($logged_rider,array('rider'=>$rider,'online_time'=>$online_time));
             }
             else if($rider_startTime){ //not log in yet
-                $rider_startTime = Carbon::createFromFormat('H:i',$rider_startTime)->addMinutes(15);
-                $current_time=Carbon::now();
-                if($current_time->greaterThanOrEqualTo($rider_startTime)){ // late
-                    array_push($notlogged_rider,$rider);
+                if(!isset($online_record)){
+                    $rider_startTime = Carbon::createFromFormat('H:i',$rider_startTime)->addMinutes(15);
+                    $current_time=Carbon::now();
+                    if($current_time->greaterThanOrEqualTo($rider_startTime)){ // late
+                        array_push($notlogged_rider,$rider);
+                    }
                 }
             }
             
 
         }
-        // return $notlogged_rider;
+        // return $logged_rider;
         return view('admin.home', compact('logged_rider','notlogged_rider','ve__riders','pe__riders','me__bikes','le__riders','riders', 'clients', 'online_riders', 'clients_online', 'latest_riders', 'latest_clients'));
     }
 
@@ -104,39 +108,7 @@ class HomeController extends Controller
         $user = Auth::user();
         return view('admin.profile.edit', compact('user'));
     }
-    public function create_mobile_GET()
-    {
-        return view('admin.rider.mobile.create');
-    }
-    public function create_mobile_POST(Request $r)
-    {
-        $this->validate($r, [
-            'model' => 'required | string | max:255',
-            'imei' => 'required | numeric',
-            'purchase_price' => 'required | numeric',
-            'sale_price' => 'required | numeric',
-            'payment_type' => 'required',
-            'amount_received' => 'required | numeric',
-            'per_month_installment_amount' => 'required | numeric',
-        ]);
-        $mobile = new Mobile;
-        $mobile->model=$r->model;
-        $mobile->imei=$r->imei;
-        $mobile->purchase_price=$r->purchase_price;
-        $mobile->sale_price=$r->sale_price;
-        $mobile->payment_type=$r->payment_type;
-        $mobile->amount_received=$r->amount_received;
-        $mobile->installment_starting_month=$r->installment_starting_month;
-        $mobile->installment_ending_month=$r->installment_ending_month;
-        $mobile->per_month_installment_amount=$r->per_month_installment_amount;
-        $mobile->save();
-        return redirect(route('mobile.show'))->with('message', 'Record Added Successfully.');
-        
-    }
-    public function mobiles(){
-        $mobiles=Mobile::all();
-        return view('admin.rider.mobile.mobiles', compact('mobiles'));
-    }
+    
    
     public function updateProfile(Request $request)
     {

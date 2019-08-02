@@ -125,9 +125,9 @@ Route::group([
     // end_add_new_salary
 
     //Mobiles
-    Route::get('/mobile/create','HomeController@create_mobile_GET')->name('mobile.create_mobile_GET');
-    Route::post('/mobile/create','HomeController@create_mobile_POST')->name('mobile.create_mobile_POST');
-    Route::get('/mobiles','HomeController@mobiles')->name('mobile.show');
+    Route::get('/mobile/create','MobileController@create_mobile_GET')->name('mobile.create_mobile_GET');
+    Route::post('/mobile/create','MobileController@create_mobile_POST')->name('mobile.create_mobile_POST');
+    Route::get('/mobiles','MobileController@mobiles')->name('mobile.show');
     Route::get('/mobile/{mobile}/edit','MobileController@update_mobile_GET')->name('mobile.edit');
     Route::get('/mobile/data','AjaxController@getMobiles')->name('mobile.getMobiles');
     Route::delete('/mobile/delete/{mobile_id}','MobileController@delete_mobile')->name('Mobile.delete_mobile');

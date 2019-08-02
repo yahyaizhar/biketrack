@@ -39,12 +39,8 @@
 <div class="section banner-full">
 	<div class="container">
 		<div class="row">
-			<div class="col-lg-4 justify-content-xs-center">
-				<div class="image"  data-aos="flip-right">
-					<img class="img-fluid" src="{{ asset('landing-page/images/feature/iphone-black.png') }}" alt="Iphone-Black">
-				</div>
-			</div>
-			<div class="col-lg-8 align-self-center">
+			
+			<div class="col-lg-12 align-self-center text-center">
 				<div class="block">
 					<div class="logo">
 						<a href="{{ url('/') }}"><img src="{{ asset('landing-page/images/logo/company-logo.png') }}" alt="logo"></a>
