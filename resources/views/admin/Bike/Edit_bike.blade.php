@@ -28,18 +28,17 @@
                                 <div class="form-group">
                                     <label>Model(2015):</label>
                                     {{-- <input type="text" class="form-control @if($errors->has('model')) invalid-field @endif" name="model" placeholder="Model" value="{{ $bike->model }}"> --}}
-                                    <select class="form-control @if($errors->has('model')) invalid-field @endif kt-select2" id="kt_select2_3" name="model" placeholder="Enter model" value="{{ $bike->model }}">
-                                            <option value="{{ $bike->model }}">{{ $bike->model }}</option>
-                                            <option value="2010">2010</option>
-                                            <option value="2011">2011</option>
-                                            <option value="2012">2012</option>
-                                            <option value="2013">2013</option>
-                                            <option value="2014">2014</option>
-                                            <option value="2015">2015</option>
-                                            <option value="2016">2016</option>
-                                            <option value="2017">2017</option>
-                                            <option value="2018">2018</option>
-                                            <option value="2019">2019</option>
+                                    <select class="form-control @if($errors->has('model')) invalid-field @endif kt-select2" id="kt_select2_3" name="model" placeholder="Enter model" >
+                                            <option @if ($bike->model=="2010") selected @endif value="2010">2010</option>
+                                            <option @if ($bike->model=="2011") selected @endif value="2011">2011</option>
+                                            <option @if ($bike->model=="2012") selected @endif value="2012">2012</option>
+                                            <option @if ($bike->model=="2013") selected @endif value="2013">2013</option>
+                                            <option @if ($bike->model=="2014") selected @endif value="2014">2014</option>
+                                            <option @if ($bike->model=="2015") selected @endif value="2015">2015</option>
+                                            <option @if ($bike->model=="2016") selected @endif value="2016">2016</option>
+                                            <option @if ($bike->model=="2017") selected @endif value="2017">2017</option>
+                                            <option @if ($bike->model=="2018") selected @endif value="2018">2018</option>
+                                            <option @if ($bike->model=="2019") selected @endif value="2019">2019</option>
                                             </select>
                                     @if ($errors->has('model'))
                                         <span class="invalid-response" role="alert">
@@ -67,12 +66,11 @@
                                 </div> 
                           
                         <div class="form-group">
-                                <label>Brand(etc Honda):</label>
+                                <label>Brand(etc Honda):</label> 
                                 {{-- <input type="text" class="form-control @if($errors->has('brand')) invalid-field @endif" name="brand" placeholder="Enter Brand (etc Honda)" value="{{ $bike->brand }}"> --}}
-                                <select class="form-control @if($errors->has('brand')) invalid-field @endif kt-select2" id="kt_select2_3" name="brand" placeholder="Enter Brand (etc Honda)" value="{{ $bike->brand }}" >
-                                        <option value="{{ $bike->brand }}">{{ $bike->brand }}</option>
-                                        <option value="Honda Unicorn">Honda Unicorn</option>
-                                        <option value="Pulsar">Pulsar</option>
+                                <select class="form-control @if($errors->has('brand')) invalid-field @endif kt-select2" id="kt_select2_3" name="brand" placeholder="Enter Brand (etc Honda)" >
+                                        <option value="Honda Unicorn" @if ($bike->brand=="Honda Unicorn") selected @endif>Honda Unicorn</option>
+                                        <option value="Pulsar" @if ($bike->brand=="Pulsar") selected @endif>Pulsar</option>
                                         </select> 
                                 @if ($errors->has('brand'))
                                     <span class="invalid-response" role="alert">

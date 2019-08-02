@@ -135,8 +135,8 @@ async defer></script>
 
         var get_attr_start;
         var get_attr_end;
-var start_marker;
-var end_marker;
+var start_marker=null;
+var end_marker=null;
  var  map = new google.maps.Map(document.getElementById('locations_map'), {
             mapTypeControl: false,
             center: {lat: 25.2048, lng: 55.2708},
@@ -149,7 +149,12 @@ var end_marker;
             var get_attr_start=$(event.relatedTarget).attr("data_start").replace(/\'/g, '"'); 
             var get_attr_end=$(event.relatedTarget).attr("data_end").replace(/\'/g, '"'); 
             console.log(get_attr_end);
-
+if(start_marker!=null){
+    start_marker.setMap(null);
+}
+if(end_marker!=null){
+    end_marker.setMap(null);
+}
             end_marker = new google.maps.Marker(
                 {position:JSON.parse(get_attr_end),
                 // animation: google.maps.Animation.DROP,
@@ -167,21 +172,7 @@ var end_marker;
                 title:"Started Location"
                 // label: {color: 'blue', fontSize: '14px', text: vehicle_number}
             }); 
-            function setMapOnAll(map) {
-        for (var i = 0; i < mapMarkers.length; i++) {
-            mapMarkers[i].setMap(map);
-        }
-    }
-            function clearMarkers() {
-        setMapOnAll(null);
-    }
-            function deleteMarkers() {
-        clearMarkers();
-        mapMarkers = [];
-        infoWindowContent = [];
-        info_count = 0;
-        
-    }
+           
         
            });
         
