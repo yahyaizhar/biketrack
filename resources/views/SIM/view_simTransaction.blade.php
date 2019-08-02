@@ -37,7 +37,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Filter by month</label>
-                        <input type="text" readonly id="datepicker" class="form-control @if($errors->has('month_year')) invalid-field @endif" name="month_year" placeholder="Enter Month_Year" value="">
+                        <input type="text" readonly id="datepicker" class="form-control @if($errors->has('month_year')) invalid-field @endif" placeholder="Enter Month" value="">
                     </div>
                 
                 </div>
@@ -57,7 +57,6 @@
                         <th>Extra Usage Payment Status</th>
                         <th>Bill Status</th>
                         <th>Status</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
             </table>
@@ -118,7 +117,6 @@ $(function() {
             { data: 'extra_usage_payment_status', name: 'extra_usage_payment_status' },
             { data: 'bill_status', name: 'bill_status' },
             { data: 'status', name: 'status' },
-            { data: 'actions', name: 'actions', orderable: false, searchable: false }
         ],
         responsive:true,
         columnDefs:[

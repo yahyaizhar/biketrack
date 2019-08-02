@@ -174,7 +174,10 @@ class RiderController extends Controller
     {    
         $rider_detail=$rider->Rider_detail()->get()->first();
         $sim_date=$rider->Sim_History()->where('status','active')->get()->first();
-        $sim_number=$sim_date->Sim()->get()->first();
+        $sim_number=null;
+        if(isset($sim_date)){
+            $sim_number=$sim_date->Sim()->get()->first();
+        }
         return view('admin.rider.edit', compact('rider','rider_detail','sim_date','sim_number'));
     }
 

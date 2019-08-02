@@ -234,22 +234,22 @@ class AjaxController extends Controller
             return $sim_tran->bill_status;
         })
         
-        ->addColumn('actions', function($simTransaction){
-            $status_text = $simTransaction->status == 1 ? 'Inactive' : 'Active';
-            return '<span class="dtr-data">
-            <span class="dropdown">
-                <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
-                <i class="la la-ellipsis-h"></i>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="'.route('SimTransaction.edit_sim', $simTransaction).'"><i class="fa fa-edit"></i> Edit</a>
-                    <button class="dropdown-item" onclick="updateStatus('.$simTransaction->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
-                    <button class="dropdown-item" onclick="deleteSimTransaction('.$simTransaction->id.');"><i class="fa fa-trash"></i> Delete</button>
-                </div>
-            </span>
-        </span>';
-        })
-        ->rawColumns(['usage_limit','sim_number','bill_amount', 'actions', 'status'])
+        // ->addColumn('actions', function($simTransaction){
+        //     $status_text = $simTransaction->status == 1 ? 'Inactive' : 'Active';
+        //     return '<span class="dtr-data">
+        //     <span class="dropdown">
+        //         <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+        //         <i class="la la-ellipsis-h"></i>
+        //         </a>
+        //         <div class="dropdown-menu dropdown-menu-right">
+        //             <a class="dropdown-item" href="'.route('SimTransaction.edit_sim', $simTransaction).'"><i class="fa fa-edit"></i> Edit</a>
+        //             <button class="dropdown-item" onclick="updateStatus('.$simTransaction->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
+        //             <button class="dropdown-item" onclick="deleteSimTransaction('.$simTransaction->id.');"><i class="fa fa-trash"></i> Delete</button>
+        //         </div>
+        //     </span>
+        // </span>';
+        // })
+        ->rawColumns(['usage_limit','sim_number','bill_amount', 'status'])
         ->make(true);
     }
 

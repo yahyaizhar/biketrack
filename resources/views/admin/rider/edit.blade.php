@@ -187,29 +187,46 @@
                                 @endif
                             </div>
                             <div class="row">
-                                <div class="col-lg-6 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                    <label>Official Given Number:</label>
-                                    <input type="text" class="form-control @if($errors->has('official_given_number')) invalid-field @endif" name="official_given_number" placeholder="Enter official number" value="{{ $sim_number->sim_number }}" disabled> 
-                                    @if ($errors->has('official_given_number'))
-                                        <span class="invalid-response" role="alert">
-                                            <strong> 
-                                                {{ $errors->first('official_given_number') }}
-                                            </strong>
-                                        </span>
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    @isset($sim_number)
+                                    
+                                    <div class="form-group">
+                                        
+                                        <label>Official Given Number:</label>
+                                        <div class="row">
+                                        <div class="col-md-6 ">
+                                            <input type="text" class="form-control @if($errors->has('official_given_number')) invalid-field @endif" name="official_given_number" placeholder="Enter official number" value="{{ $sim_number!==null?$sim_number->sim_number:'' }}" disabled> 
+                                            @if ($errors->has('official_given_number'))
+                                                <span class="invalid-response" role="alert">
+                                                    <strong> 
+                                                        {{ $errors->first('official_given_number') }}
+                                                    </strong>
+                                                </span>
+                                            @else
+                                                <span class="form-text text-muted">Please enter your official phone number</span>
+                                            @endif
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button type="button" style="width:100px;" class="btn btn-danger" data-toggle="modal" data-target="#form">
+                                                EDIT                                             
+                                            </button>
+                                        </div>
+                                    </div>
+                                    </div>
                                     @else
-                                        <span class="form-text text-muted">Please enter your official phone number</span>
-                                    @endif
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="h5">No sim is assigned to this rider.</div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <a href="{{route('SimHistory.addsim', $rider->id)}}" style="margin-bottom: 15px;width:100px;" class="btn btn-danger">
+                                                Assign                                              
+                                            </a> 
+                                        </div>
+                                    </div>
+                                    @endisset
+                                    
                                 </div>
-                                </div>
-                                <div class="col-lg-2 col-md-2 col-sm-12">
-                                        <button type="button" style="margin-top:26px;width:100px;" class="btn btn-danger" data-toggle="modal" data-target="#form">
-                                                EDIT                                             </button> 
-                                              </div> 
-                                {{-- <div class="col-lg-2 col-md-2 col-sm-12">
-                                        <button style="margin-top:26px;width:100px;" class="btn btn-success">Remove</button>
-                                    </div> --}}
-                                
                             </div>
                                
                                 {{-- <div class="form-group">
@@ -386,7 +403,8 @@
 </div>
 <div>
         
-              
+           @isset($sim_date)
+               
               <div class="modal fade" id="form" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                   <div class="modal-content">
@@ -401,7 +419,7 @@
                         <div class="modal-body">
                                 <div class="form-group">
                                         <label>Allowed Balance:</label>
-                                        <input type="text" class="form-control @if($errors->has('allowed_balance')) invalid-field @endif" name="allowed_balance" placeholder="Allowed Balance " value="{{$sim_date->allowed_balance}}">
+                                        <input type="text" class="form-control @if($errors->has('allowed_balance')) invalid-field @endif" name="allowed_balance" placeholder="Allowed Balance " value="{{$sim_date?$sim_date->allowed_balance:''}}">
                                         @if ($errors->has('allowed_balance'))
                                             <span class="invalid-response" role="alert">
                                                 <strong>
@@ -412,7 +430,7 @@
                                     </div>
                                <div class="form-group">
                                         <label>Given Date:</label>
-                                <input type="text" id="datepicker_given" autocomplete="off" class="form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter given Date" value="{{$sim_date->given_date}}" >
+                                <input type="text" id="datepicker_given" autocomplete="off" class="form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter given Date" value="{{$sim_date?$sim_date->given_date:''}}" >
                                         @if ($errors->has('given_date'))
                                             <span class="invalid-response" role="alert">
                                                 <strong>
@@ -425,7 +443,7 @@
                                     </div>
                                     <div class="form-group">
                                             <label>Return Date:</label>
-                                    <input type="text" id="datepicker_return" autocomplete="off" class="form-control @if($errors->has('return_date')) invalid-field @endif" name="return_date" placeholder="Enter Return Date" value="{{$sim_date->return_date}}">
+                                    <input type="text" id="datepicker_return" autocomplete="off" class="form-control @if($errors->has('return_date')) invalid-field @endif" name="return_date" placeholder="Enter Return Date" value="{{$sim_date?$sim_date->return_date:''}}">
                                             @if ($errors->has('return_date'))
                                                 <span class="invalid-response" role="alert">
                                                     <strong>
@@ -447,6 +465,7 @@
                   </div>
                 </div>
               </div>
+              @endisset 
     
 </div>
 @endsection
