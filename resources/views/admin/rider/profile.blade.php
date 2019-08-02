@@ -64,7 +64,7 @@
                                     </a>
                                 </div>
             <div class="row">
-                    <div class="kt-widget__subhead col-md-4">
+                    <div class="kt-widget__subhead col-md-8">
                             <div class="kt-widget__desc">  
                                     <label style="font-weight:900;">Date Of Joining:</label>
                                  <a >{{ $rider_details->date_of_joining }}</a>
@@ -108,73 +108,152 @@
                             </div>
                             
                          
+                        </div></div>
+                        <div class="row">
+                        <div class="kt-widget__subhead col-md-4">
+                            <div class="kt-widget__desc">
+                                <label style="font-weight:900;">Passport Expiry:</label>
+                                {{ $rider_details->passport_expiry }}
+                             </div>
+                             <div class="kt-widget__desc">
+                                <label style="font-weight:900;">Passport Image Front:</label>
+                                  @if($rider_details->passport_image)
+                                  <a href="#" data-featherlight="{{ asset(Storage::url($rider_details->passport_image)) }}">Click To See </a>
+                                @else
+                            <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}">Click To See  </a>
+                             @endif
+                             </div>
+                             <div class="kt-widget__desc">
+                                <label style="font-weight:900;">Passport Image Back:</label>
+                                @if($rider_details->passport_image_back)
+                                <a href="#" data-featherlight="{{ asset(Storage::url($rider_details->passport_image_back)) }}">Click To See </a>
+                              @else
+                          <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}">Click To See  </a>
+                           @endif
+                             </div>    
+                        
+                            </div>
+
+                            <div class="kt-widget__subhead col-md-4">
+                                <div class="kt-widget__desc">
+                                    <label style="font-weight:900;">Licence Expiry:</label>
+                                {{ $rider_details->licence_expiry }}
+                              
+                            </div>
+                            <div class="kt-widget__desc">
+                                <label style="font-weight:900;">Licence Front Image:</label>
+                                @if($rider_details->licence_image)
+                                <a href="#" data-featherlight="{{ asset(Storage::url($rider_details->licence_image)) }}">Click To See </a>
+                             
+                                @else
+                                <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}">Click To See </a>
+                                @endif  
+                           
                         </div>
-                    
-                    </div>
-                                <div class="kt-widget__info">
-                                   
-                                    <div class="kt-widget__desc">
-                                        <label style="font-weight:900;">Passport Expiry:</label>
-                                        {{ $rider_details->passport_expiry }}
-                                        @if($rider_details->passport_image)
-                                    <img style="width:150px;height:150px; display:block;" src="{{ asset(Storage::url($rider_details->passport_image)) }}" alt="image">
-                                @else
-                                    <img style="width:150px;height:150px;display:block;" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
-                                @endif
-                                      </div>
-                                    <div class="kt-widget__desc">
-                                            <label style="font-weight:900;">Licence Expiry:</label>
-                                        {{ $rider_details->licence_expiry }}
-                                        @if($rider_details->licence_image)
-                                    <img style="width:150px;height:150px;display:block;"  src="{{ asset(Storage::url($rider_details->licence_image)) }}" alt="image">
-                                @else
-                                    <img style="width:150px;height:150px;display:block;" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
-                                @endif 
-                                    </div>
-                                    <div class="kt-widget__desc">
-                                            <label style="font-weight:900;">Visa Expiry:</label>
-                                        {{ $rider_details->visa_expiry }}
-                                        @if($rider_details->visa_image)
-                                    <img style="width:150px;height:150px; display:block;"  src="{{ asset(Storage::url($rider_details->visa_image)) }}" alt="image">
-                                @else
-                                    <img style="width:150px;height:150px;display:block;" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
-                                @endif
-                                    </div>
-                                    @if ($bike==null)
-                                    @else
-                                    <div class="kt-widget__desc">
-                                            <label style="font-weight:900;">Mulkiya Expiry:</label>
-                                        {{ $bike->mulkiya_expiry }} 
-                                        @if($bike->mulkiya_picture)
-                                    <img style="width:150px;height:150px;display:block;"  src="{{ asset(Storage::url($bike->mulkiya_picture)) }}" alt="image">
-                                @else
-                                    <img style="width:150px;height:150px;display:block;" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
-                                @endif
-                                    </div> 
-                                    @endif
-                                 
-                                    <div class="kt-widget__desc">
-                                            <label style="font-weight:900;">Emerate ID:</label>
-                                        {{ $rider_details->emirate_id }} 
-                                        @if($rider_details->emirate_image)
-                                    <img style="width:150px;height:150px;display:block;"  src="{{ asset(Storage::url($rider_details->emirate_image)) }}" alt="image">
-                                @else
-                                    <img style="width:150px;height:150px;display:block;" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
-                                @endif
-                                    </div>
-                                 
-                                </div>
+                        <div class="kt-widget__desc">
+                            <label style="font-weight:900;">Licence Back Image:</label>
+                            @if($rider_details->licence_image_back)
+                            <a href="#" data-featherlight="{{ asset(Storage::url($rider_details->licence_image_back)) }}">Click To See </a>
+                         
+                            @else
+                            <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}">Click To See </a>
+                            @endif  
+                       
+                    </div></div>
+
+                            <div class="kt-widget__subhead col-md-4">
+                                <div class="kt-widget__desc">
+                                    <label style="font-weight:900;">Visa Expiry:</label>
+                                {{ $rider_details->visa_expiry }}
                                
                             </div>
+                            <div class="kt-widget__desc">
+                                <label style="font-weight:900;">Visa Front Image:</label>
+                            @if($rider_details->visa_image)
+                            <a href="#" data-featherlight="{{ asset(Storage::url($rider_details->visa_image)) }}">Click To See </a>
+                           
+                             @else
+                             <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}">Click To See </a>
+                           
+                             @endif
                         </div>
-                        
-                        <div class="kt-widget__bottom">
+                        <div class="kt-widget__desc">
+                            <label style="font-weight:900;">Visa Back Image:</label>
+                            @if($rider_details->visa_image_back)
+                            <a href="#" data-featherlight="{{ asset(Storage::url($rider_details->visa_image_back)) }}">Click To See </a>
+                           
+                             @else
+                             <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}">Click To See </a>
+                           
+                             @endif
+                    </div>  
+                          </div>
+                        </div>
+                        <div class="row">
+                            <div class="kt-widget__subhead col-md-4">
+                                <div class="kt-widget__desc">
+                                    <label style="font-weight:900;">Emerate ID:</label>
+                                {{ $rider_details->emirate_id }} 
+                              
+                            </div>
+                            <div class="kt-widget__desc">
+                                <label style="font-weight:900;">Emerate_ID Front Image:</label>
+                                  @if($rider_details->emirate_image)
+                            <a href="#" data-featherlight="{{ asset(Storage::url($rider_details->emirate_image)) }}">Click To See </a>
+                           
+                            @else
+                        <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}">Click To See </a>
+                        @endif
+                        </div>
+                        <div class="kt-widget__desc">
+                            <label style="font-weight:900;">Emerate_ID Back Image:</label>
+                            @if($rider_details->emirate_image_back)
+                            <a href="#" data-featherlight="{{ asset(Storage::url($rider_details->emirate_image_back)) }}">Click To See </a>
+                           
+                            @else
+                        <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}">Click To See </a>
+                        @endif
+                      
+                    </div>
+                         </div>
+                            @if ($bike==null)
+                            @else
+                            <div class="kt-widget__subhead col-md-4">
+                                <div class="kt-widget__desc">
+                                    <label style="font-weight:900;">Mulkiya Expiry:</label>
+                                {{ $bike->mulkiya_expiry }} 
+        
+                            </div> 
+                            <div class="kt-widget__desc">
+                                <label style="font-weight:900;">Mulkiya Front Image:</label>
+                            @if($bike->mulkiya_picture)
+                            <a href="#" data-featherlight="{{ asset(Storage::url($bike->mulkiya_picture)) }}">Click To See </a>
+                            @else
+                        <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}">Click To See </a>
+                        @endif
+                        </div> 
+                        <div class="kt-widget__desc">
+                            <label style="font-weight:900;">Mulkiya Back Image:</label>
+                            @if($bike->mulkiya_picture_back)
+                            <a href="#" data-featherlight="{{ asset(Storage::url($bike->mulkiya_picture_back)) }}">Click To See </a>
+                            @else
+                        <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}">Click To See </a>
+                        @endif
+                    </div>     
+                      </div>
+                            @endif
+                            </div>
+                     </div>
+                     </div>
+                        </div>
+                        <div class="row">
                             <div class="kt-widget__item col-md-10">
                                 <textarea class="form-control" id="message_{{ $rider->id }}" name="message_{{ $rider->id }}" placeholder="Enter message here"></textarea>
                             </div>
-                            <div class="kt-widget__item">
+                            <div class="kt-widget__item col-md-2" >
                                 <button onclick="sendSMS({{$rider->id}})" class="btn btn-label-success btn-sm btn-upper">Send SMS</button>&nbsp;
                             </div>
+                        
                         </div>
                     </div>
                 </div>

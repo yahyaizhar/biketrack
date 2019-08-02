@@ -114,6 +114,7 @@
 						
 
 						</style>
+						<link href="//cdn.rawgit.com/noelboss/featherlight/1.7.13/release/featherlight.min.css" type="text/css" rel="stylesheet" />
 		<link href="{{ asset('dashboard/assets/vendors/general/tether/dist/css/tether.css') }}" rel="stylesheet" type="text/css" />
 		<link href="{{ asset('dashboard/assets/vendors/general/bootstrap-datepicker/dist/css/bootstrap-datepicker3.css') }}" rel="stylesheet" type="text/css" />
 		<link href="{{ asset('dashboard/assets/vendors/general/bootstrap-datetime-picker/css/bootstrap-datetimepicker.css') }}" rel="stylesheet" type="text/css" />

@@ -218,7 +218,7 @@ function updateStatus(rider_id)
     var url = "{{ url('admin/rider') }}" + "/" + rider_id + "/updateStatus";
     swal.fire({
         title: 'Are you sure?',
-        text: "You want udpate status!",
+        text: "You want update status!",
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes!'
@@ -253,7 +253,7 @@ function updateStatus(rider_id)
                         position: 'center',
                         type: 'error',
                         title: 'Oops...',
-                        text: 'Unable to udpate.',
+                        text: 'Unable to update.',
                         showConfirmButton: false,
                         timer: 1500
                     });

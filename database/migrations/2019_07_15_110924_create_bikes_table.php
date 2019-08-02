@@ -21,6 +21,7 @@ class CreateBikesTable extends Migration
             $table->string('mulkiya_number')->nullable();
             $table->string('mulkiya_picture')->nullable();
             $table->string('mulkiya_expiry')->nullable();
+            $table->string('mulkiya_picture_back')->nullable();
             $table->string('availability')->default('yes');
             $table->timestamps();
             $table->string('status')->nullable();

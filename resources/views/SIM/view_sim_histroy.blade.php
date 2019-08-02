@@ -57,7 +57,7 @@
         
                                 <div class="kt-widget__action">
                                   
-                                    <button onclick="deleteBike({{$rider->id}},{{$hasSim['id']}})" class="btn btn-label-info btn-sm btn-upper">Remove</button>&nbsp;
+                                    <button onclick="deleteSim({{$rider->id}},{{$hasSim['id']}})" class="btn btn-label-info btn-sm btn-upper">Remove</button>&nbsp;
                                 {{-- <button class="btn btn-label-success btn-sm btn-upper"><span class="label label-success">{{$bike_id['status']}}</span></button> --}}
                                  </div>
                             </div>
@@ -121,7 +121,7 @@
         
                                 <div class="kt-widget__action">
                                   
-                                    <button onclick="deleteBike({{$rider->id}},{{$hasSim['id']}})" class="btn btn-label-info btn-sm btn-upper">Remove</button>&nbsp;
+                                    {{-- <button onclick="deleteBike({{$rider->id}},{{$hasSim['id']}})" class="btn btn-label-info btn-sm btn-upper">Remove</button>&nbsp; --}}
                                 {{-- <button class="btn btn-label-success btn-sm btn-upper"><span class="label label-success">{{$bike_id['status']}}</span></button> --}}
                                  </div>
                             </div>
@@ -197,12 +197,12 @@
             $(textbox_id).val('');
         }
     }
-    function deleteBike(rider_id, bike_id)
-    {
-        // console.log(client_id + ' , ' + rider_id);
-        var url = "{{ url('admin/rider') }}" + "/" + rider_id + "/removeBike/"+bike_id ;
-        console.log(url);
-        sendDeleteRequest(url, true);
-    }
+    function deleteSim(sim_id, rider_id)
+        {
+            // console.log(client_id + ' , ' + rider_id);
+            var url = "{{ url('admin/sim') }}" + "/" + rider_id + "/removeSim/"+sim_id ;
+            console.log(url);
+            sendDeleteRequest(url, true);
+        }
 </script>
 @endsection

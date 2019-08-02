@@ -117,6 +117,15 @@ class RiderController extends Controller
             $filepath = Storage::putfile('public/uploads/riders/passport_image', $request->file('passport_image'));
             $rider_detail->passport_image = $filepath;
         }
+        if($request->hasFile('passport_image_back'))
+        {
+            // return 'yes';
+            $filename = $request->passport_image_back->getClientOriginalName();
+            $filesize = $request->passport_image_back->getClientSize();
+            // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
+            $filepath = Storage::putfile('public/uploads/riders/passport_image_back', $request->file('passport_image_back'));
+            $rider_detail->passport_image_back = $filepath;
+        }
        $rider_detail->passport_expiry = $request->passport_expiry;
        if($request->hasFile('visa_image'))
        {
@@ -126,6 +135,15 @@ class RiderController extends Controller
            // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
            $filepath = Storage::putfile('public/uploads/riders/visa_image', $request->file('visa_image'));
            $rider_detail->visa_image = $filepath;
+       }
+       if($request->hasFile('visa_image_back'))
+       {
+           // return 'yes';
+           $filename = $request->visa_image_back->getClientOriginalName();
+           $filesize = $request->visa_image_back->getClientSize();
+           // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
+           $filepath = Storage::putfile('public/uploads/riders/visa_image_back', $request->file('visa_image_back'));
+           $rider_detail->visa_image_back = $filepath;
        }
        $rider_detail->visa_expiry = $request->visa_expiry;
        if($request->hasFile('emirate_image'))
@@ -137,6 +155,15 @@ class RiderController extends Controller
            $filepath = Storage::putfile('public/uploads/riders/emirate_image', $request->file('emirate_image'));
            $rider_detail->emirate_image = $filepath;
        }
+       if($request->hasFile('emirate_image_back'))
+       {
+           // return 'yes';
+           $filename = $request->emirate_image_back->getClientOriginalName();
+           $filesize = $request->emirate_image_back->getClientSize();
+           // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
+           $filepath = Storage::putfile('public/uploads/riders/emirate_image_back', $request->file('emirate_image_back'));
+           $rider_detail->emirate_image_back = $filepath;
+       }
        if($request->hasFile('licence_image'))
        {
            // return 'yes';
@@ -145,6 +172,15 @@ class RiderController extends Controller
            // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
            $filepath = Storage::putfile('public/uploads/riders/licence_image', $request->file('licence_image'));
            $rider_detail->licence_image = $filepath;
+       }
+       if($request->hasFile('licence_image_back'))
+       {
+           // return 'yes';
+           $filename = $request->licence_image_back->getClientOriginalName();
+           $filesize = $request->licence_image_back->getClientSize();
+           // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
+           $filepath = Storage::putfile('public/uploads/riders/licence_image_back', $request->file('licence_image_back'));
+           $rider_detail->licence_image_back = $filepath;
        }
        $rider_detail->licence_expiry= $request->licence_expiry;
        
@@ -258,6 +294,18 @@ class RiderController extends Controller
             $filepath = Storage::putfile('public/uploads/riders/passport_image', $request->file('passport_image'));
             $rider_detail->passport_image = $filepath;
         }
+        if($request->hasFile('passport_image_back'))
+        {
+            if($rider_detail->passport_image_back)
+           {
+               Storage::delete($rider_detail->passport_image_back);
+           }
+            $filename = $request->passport_image_back->getClientOriginalName();
+            $filesize = $request->passport_image_back->getClientSize();
+            // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
+            $filepath = Storage::putfile('public/uploads/riders/passport_image_back', $request->file('passport_image_back'));
+            $rider_detail->passport_image_back = $filepath;
+        }
        $rider_detail->passport_expiry = $request->passport_expiry;
        if($request->hasFile('visa_image'))
        {
@@ -271,6 +319,19 @@ class RiderController extends Controller
            // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
            $filepath = Storage::putfile('public/uploads/riders/visa_image', $request->file('visa_image'));
            $rider_detail->visa_image = $filepath;
+       }
+       if($request->hasFile('visa_image_back'))
+       {
+           // return 'yes';
+           if($rider_detail->visa_image_back)
+           {
+               Storage::delete($rider_detail->visa_image_back);
+           }
+           $filename = $request->visa_image_back->getClientOriginalName();
+           $filesize = $request->visa_image_back->getClientSize();
+           // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
+           $filepath = Storage::putfile('public/uploads/riders/visa_image_back', $request->file('visa_image_back'));
+           $rider_detail->visa_image_back = $filepath;
        }
        $rider_detail->visa_expiry = $request->visa_expiry;
        if($request->hasFile('emirate_image'))
@@ -286,6 +347,19 @@ class RiderController extends Controller
            $filepath = Storage::putfile('public/uploads/riders/emirate_image', $request->file('emirate_image'));
            $rider_detail->emirate_image = $filepath;
        }
+       if($request->hasFile('emirate_image_back'))
+       {
+           // return 'yes';
+           if($rider_detail->emirate_image_back)
+           {
+               Storage::delete($rider_detail->emirate_image_back);
+           }
+           $filename = $request->emirate_image_back->getClientOriginalName();
+           $filesize = $request->emirate_image_back->getClientSize();
+           // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
+           $filepath = Storage::putfile('public/uploads/riders/emirate_image_back', $request->file('emirate_image_back'));
+           $rider_detail->emirate_image_back = $filepath;
+       }
        if($request->hasFile('licence_image'))
        {
         if($rider_detail->licence_image)
@@ -297,6 +371,18 @@ class RiderController extends Controller
            // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
            $filepath = Storage::putfile('public/uploads/riders/licence_image', $request->file('licence_image'));
            $rider_detail->licence_image = $filepath;
+       }
+       if($request->hasFile('licence_image_back'))
+       {
+        if($rider_detail->licence_image_back)
+        {
+            Storage::delete($rider_detail->licence_image_back);
+        }
+           $filename = $request->licence_image_back->getClientOriginalName();
+           $filesize = $request->licence_image_back->getClientSize();
+           // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
+           $filepath = Storage::putfile('public/uploads/riders/licence_image_back', $request->file('licence_image_back'));
+           $rider_detail->licence_image_back = $filepath;
        }
        $rider_detail->licence_expiry= $request->licence_expiry;
        

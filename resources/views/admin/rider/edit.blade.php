@@ -249,8 +249,8 @@
                                             </div>
                                             
                                         </div>
-                                    <div class="row">
-                                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                    
+                                           
                                                     <div class="form-group">
                                                             <label>Passport Expiry:</label>
                                                             <input type="text" id="datepicker3" autocomplete="off" class="form-control @if($errors->has('passport_expiry')) invalid-field @endif" name="passport_expiry" placeholder="Enter Passport Expiry" value="{{ $rider_detail->passport_expiry }}">
@@ -264,7 +264,8 @@
                                                                 <span class="form-text text-muted">Please enter your Passport Expiry Date</span>
                                                             @endif
                                                         </div>
-                                                    </div>
+                                                   
+                                                    <div class="row">
                                     <div class="col-lg-6 col-md-6 col-sm-12">
                                             @if($rider_detail->passport_image)
                                                 <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_detail->passport_image)) }}" alt="image">
@@ -276,11 +277,25 @@
                                                     <input type="file" name="passport_image" class="custom-file-input" id="passport_image">
                                                     <label class="custom-file-label" for="passport_image">Choose Passport Picture</label>
                                                 </div>
-                                                <span class="form-text text-muted">Select if you want to update Passport picture</span>
+                                                <span class="form-text text-muted">Select Front Image</span>
                                             </div>
                                         </div>
-                                    </div> <div class="row">
-                                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <div class="col-lg-6 col-md-6 col-sm-12">
+                                            @if($rider_detail->passport_image_back)
+                                                <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_detail->passport_image_back)) }}" alt="image">
+                                            @else
+                                                <img class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                                            @endif
+                                            <div class="form-group col-md-6 pull-right mtr-15">
+                                                <div class="custom-file">
+                                                    <input type="file" name="passport_image_back" class="custom-file-input" id="passport_image_back">
+                                                    <label class="custom-file-label" for="passport_image_back">Choose Passport Picture</label>
+                                                </div>
+                                                <span class="form-text text-muted">Select Back Image</span>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                           
                                                     <div class="form-group">
                                                             <label>Visa Expiry:</label>
                                                             <input type="text" id="datepicker4" autocomplete="off" class="form-control @if($errors->has('visa_expiry')) invalid-field @endif" name="visa_expiry" placeholder="Enter Visa Expiry" value="{{ $rider_detail->visa_expiry }}">
@@ -294,7 +309,8 @@
                                                                 <span class="form-text text-muted">Please enter your Visa Expiry Date</span>
                                                             @endif
                                                         </div>
-                                                    </div>
+                                                    
+                                                    <div class="row">
                                         <div class="col-lg-6 col-md-6 col-sm-12">
                                                 @if($rider_detail->visa_image)
                                                     <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_detail->visa_image)) }}" alt="image">
@@ -306,13 +322,27 @@
                                                         <input type="file" name="visa_image" class="custom-file-input" id="visa_image">
                                                         <label class="custom-file-label" for="visa_image">Choose Visa Picture</label>
                                                     </div>
-                                                    <span class="form-text text-muted">Select if you want to update Visa picture</span>
+                                                    <span class="form-text text-muted">Select Front Image</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                                @if($rider_detail->visa_image_back)
+                                                    <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_detail->visa_image_back)) }}" alt="image">
+                                                @else
+                                                    <img class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                                                @endif
+                                                <div class="form-group col-md-6 pull-right mtr-15">
+                                                    <div class="custom-file">
+                                                        <input type="file" name="visa_image_back" class="custom-file-input" id="visa_image_back">
+                                                        <label class="custom-file-label" for="visa_image_back">Choose Visa Picture</label>
+                                                    </div>
+                                                    <span class="form-text text-muted">Select Back Image</span>
                                                 </div>
                                             </div>
                                         
                                     </div>
-                                    <div class="row">
-                                        <div class="col-lg-6 col-md-6 col-sm-12">
+                                   
+                                        
                                            <div class="form-group">
                                                <label>Emirates ID:</label>
                                                <input type="text"  class="form-control @if($errors->has('emirate_id')) invalid-field @endif" name="emirate_id" placeholder="Enter Emirate ID" value="{{ $rider_detail->emirate_id }}">
@@ -324,7 +354,8 @@
                                                    <span class="form-text text-muted">Please enter your Emirate ID.</span>
                                                @endif
                                            </div>
-                                           </div>
+                                          
+                                           <div class="row">
                                            <div class="col-lg-6 col-md-6 col-sm-12">
                                             @if($rider_detail->emirate_image)
                                             <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_detail->emirate_image)) }}" alt="image">
@@ -336,12 +367,26 @@
                                                 <input type="file" name="emirate_image" class="custom-file-input" id="emirate_image">
                                                 <label class="custom-file-label" for="emirate_image">Choose Emirate Picture</label>
                                             </div>
-                                            <span class="form-text text-muted">Select if you want to update Emirate picture</span>
+                                            <span class="form-text text-muted">Select Front Image</span>
                                         </div>
                                                </div>
+                                               <div class="col-lg-6 col-md-6 col-sm-12">
+                                                @if($rider_detail->emirate_image_back)
+                                                <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_detail->emirate_image_back)) }}" alt="image">
+                                            @else
+                                                <img class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                                            @endif
+                                            <div class="form-group col-md-6 pull-right mtr-15">
+                                                <div class="custom-file">
+                                                    <input type="file" name="emirate_image_back" class="custom-file-input" id="emirate_image_back">
+                                                    <label class="custom-file-label" for="emirate_image_back">Choose Emirate Picture</label>
+                                                </div>
+                                                <span class="form-text text-muted">Select Back Image</span>
                                             </div>
-                                    <div class="row">
-                                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                                   </div>
+                                            </div>
+                                   
+                                        
                                                     <div class="form-group">
                                                             <label>Licence Expiry:</label>
                                                             <input type="text" id="datepicker5" autocomplete="off" class="form-control @if($errors->has('licence_expiry')) invalid-field @endif" name="licence_expiry" placeholder="Enter Licence Expiry" value="{{ $rider_detail->licence_expiry }}">
@@ -355,7 +400,8 @@
                                                                 <span class="form-text text-muted">Please enter your Licence Expiry Date</span>
                                                             @endif
                                                         </div>
-                                                    </div>
+                                                   
+                                                    <div class="row">
                                             <div class="col-lg-6 col-md-6 col-sm-12">
                                                     @if($rider_detail->licence_image)
                                                         <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_detail->licence_image)) }}" alt="image">
@@ -367,7 +413,21 @@
                                                             <input type="file" name="licence_image" class="custom-file-input" id="licence_image">
                                                             <label class="custom-file-label" for="licence_image">Choose Licence Picture</label>
                                                         </div>
-                                                        <span class="form-text text-muted">Select if you want to update Licence picture</span>
+                                                        <span class="form-text text-muted">Select Front Image</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                                    @if($rider_detail->licence_image_back)
+                                                        <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_detail->licence_image_back)) }}" alt="image">
+                                                    @else
+                                                        <img class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                                                    @endif
+                                                    <div class="form-group col-md-6 pull-right mtr-15">
+                                                        <div class="custom-file">
+                                                            <input type="file" name="licence_image_back" class="custom-file-input" id="licence_image_back">
+                                                            <label class="custom-file-label" for="licence_image_back">Choose Licence Picture</label>
+                                                        </div>
+                                                        <span class="form-text text-muted">Select Back Image</span>
                                                     </div>
                                                 </div>
                                               
