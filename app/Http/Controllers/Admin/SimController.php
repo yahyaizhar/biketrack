@@ -282,5 +282,15 @@ public function removeSim($sim_id,$rider_id){
     ]);
    
   }
+  public function sim_History($id){
+$rider=Rider::find($id);
+$sim=Sim::find($id);
+$sim_history=$rider->Sim_History()->get();
+$simHistory_count=$sim_history->count();
+// $hasRider=Rider::find($assign_rider->pluck('rider_id'));
+// $hasSim=Sim::find($sim_history->pluck('sim_id'));
+// return $simHistory_count; 
+return view('SIM.view_sim_histroy',compact('rider','sim_history','simHistory_count','sim'));
+  }
 
 }

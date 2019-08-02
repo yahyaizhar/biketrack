@@ -498,7 +498,7 @@ class AjaxController extends Controller
                     <a class="dropdown-item" href="'.route('Bike.assignedToRiders_History', $riders).'"><i class="fa fa-eye"></i>View Bikes History</a>
                     <a class="dropdown-item" href="'.route('bike.bike_assignRiders', $riders).'"><i class="fa fa-eye"></i> Assign Bike</a> 
                     <a class="dropdown-item" href="'.route('SimHistory.addsim', $riders).'"><i class="fa fa-eye"></i> Assign Sim</a>
-                    <a class="dropdown-item" href="'.route('Sim.view_assigned', $riders).'"><i class="fa fa-eye"></i> View Sim</a>
+                    <a class="dropdown-item" href="'.route('Sim.simHistory', $riders).'"><i class="fa fa-eye"></i> View Sim History</a>
                       
                     </div>
                     
