@@ -251,7 +251,7 @@
                                         </div>
                                     
                                            
-                                                    <div class="form-group">
+                                                    <div class="form-group" style="margin-bottom:0px;">
                                                             <label>Passport Expiry:</label>
                                                             <input type="text" id="datepicker3" autocomplete="off" class="form-control @if($errors->has('passport_expiry')) invalid-field @endif" name="passport_expiry" placeholder="Enter Passport Expiry" value="{{ $rider_detail->passport_expiry }}">
                                                             @if ($errors->has('passport_expiry'))
@@ -277,7 +277,7 @@
                                                     <input type="file" name="passport_image" class="custom-file-input" id="passport_image">
                                                     <label class="custom-file-label" for="passport_image">Choose Passport Picture</label>
                                                 </div>
-                                                <span class="form-text text-muted">Select Front Image</span>
+                                                <span class="form-text text-muted">Select Passport Front Image</span>
                                             </div>
                                         </div>
                                         <div class="col-lg-6 col-md-6 col-sm-12">
@@ -291,12 +291,12 @@
                                                     <input type="file" name="passport_image_back" class="custom-file-input" id="passport_image_back">
                                                     <label class="custom-file-label" for="passport_image_back">Choose Passport Picture</label>
                                                 </div>
-                                                <span class="form-text text-muted">Select Back Image</span>
+                                                <span class="form-text text-muted">Select Passport Back Image</span>
                                             </div>
                                         </div>
                                     </div> 
                                            
-                                                    <div class="form-group">
+                                                    <div class="form-group" style="margin-bottom:0px;margin-top:25px;">
                                                             <label>Visa Expiry:</label>
                                                             <input type="text" id="datepicker4" autocomplete="off" class="form-control @if($errors->has('visa_expiry')) invalid-field @endif" name="visa_expiry" placeholder="Enter Visa Expiry" value="{{ $rider_detail->visa_expiry }}">
                                                             @if ($errors->has('visa_expiry'))
@@ -322,7 +322,7 @@
                                                         <input type="file" name="visa_image" class="custom-file-input" id="visa_image">
                                                         <label class="custom-file-label" for="visa_image">Choose Visa Picture</label>
                                                     </div>
-                                                    <span class="form-text text-muted">Select Front Image</span>
+                                                    <span class="form-text text-muted">Select Visa Front Image</span>
                                                 </div>
                                             </div>
                                             <div class="col-lg-6 col-md-6 col-sm-12">
@@ -336,14 +336,14 @@
                                                         <input type="file" name="visa_image_back" class="custom-file-input" id="visa_image_back">
                                                         <label class="custom-file-label" for="visa_image_back">Choose Visa Picture</label>
                                                     </div>
-                                                    <span class="form-text text-muted">Select Back Image</span>
+                                                    <span class="form-text text-muted">Select Visa Back Image</span>
                                                 </div>
                                             </div>
                                         
                                     </div>
                                    
                                         
-                                           <div class="form-group">
+                                           <div class="form-group" style="margin-bottom:0px;margin-top:25px;">
                                                <label>Emirates ID:</label>
                                                <input type="text"  class="form-control @if($errors->has('emirate_id')) invalid-field @endif" name="emirate_id" placeholder="Enter Emirate ID" value="{{ $rider_detail->emirate_id }}">
                                                @if ($errors->has('emirate_id'))
@@ -367,7 +367,7 @@
                                                 <input type="file" name="emirate_image" class="custom-file-input" id="emirate_image">
                                                 <label class="custom-file-label" for="emirate_image">Choose Emirate Picture</label>
                                             </div>
-                                            <span class="form-text text-muted">Select Front Image</span>
+                                            <span class="form-text text-muted">Select Emirate Front Image</span>
                                         </div>
                                                </div>
                                                <div class="col-lg-6 col-md-6 col-sm-12">
@@ -381,13 +381,13 @@
                                                     <input type="file" name="emirate_image_back" class="custom-file-input" id="emirate_image_back">
                                                     <label class="custom-file-label" for="emirate_image_back">Choose Emirate Picture</label>
                                                 </div>
-                                                <span class="form-text text-muted">Select Back Image</span>
+                                                <span class="form-text text-muted">Select Emirate Back Image</span>
                                             </div>
                                                    </div>
                                             </div>
                                    
                                         
-                                                    <div class="form-group">
+                                                    <div class="form-group" style="margin-bottom:0px;margin-top:25px;">
                                                             <label>Licence Expiry:</label>
                                                             <input type="text" id="datepicker5" autocomplete="off" class="form-control @if($errors->has('licence_expiry')) invalid-field @endif" name="licence_expiry" placeholder="Enter Licence Expiry" value="{{ $rider_detail->licence_expiry }}">
                                                             @if ($errors->has('licence_expiry'))
@@ -413,7 +413,7 @@
                                                             <input type="file" name="licence_image" class="custom-file-input" id="licence_image">
                                                             <label class="custom-file-label" for="licence_image">Choose Licence Picture</label>
                                                         </div>
-                                                        <span class="form-text text-muted">Select Front Image</span>
+                                                        <span class="form-text text-muted">Select Licence Front Image</span>
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-6 col-md-6 col-sm-12">
@@ -427,14 +427,14 @@
                                                             <input type="file" name="licence_image_back" class="custom-file-input" id="licence_image_back">
                                                             <label class="custom-file-label" for="licence_image_back">Choose Licence Picture</label>
                                                         </div>
-                                                        <span class="form-text text-muted">Select Back Image</span>
+                                                        <span class="form-text text-muted">Select Licence Back Image</span>
                                                     </div>
                                                 </div>
                                               
                                         </div>
                                                
                             
-                                            <div class="form-group">
+                                            <div class="form-group"style="margin-top:25px;">
                                                     <label>Other Details:</label>
                                                     <textarea type="text" rows="8"  autocomplete="off" class="form-control @if($errors->has('other_details')) invalid-field @endif" name="other_details" placeholder="Enter Further Details" >{{ $rider_detail->other_details }}</textarea>
                                                 </div>
@@ -448,7 +448,7 @@
                     </div>
                     <div class="kt-portlet__foot">
                         <div class="kt-form__actions kt-form__actions--right">
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-primary">Submit</button> 
                             <span class="kt-margin-l-10">or <a href="{{ route('admin.riders.index') }}" class="kt-link kt-font-bold">Cancel</a></span>
                         </div>
                     </div>

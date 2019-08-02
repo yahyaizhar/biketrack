@@ -101,15 +101,15 @@
                                     <div class="custom-file">
                                         <input type="file" name="mulkiya_picture" class="custom-file-input" id="mulkiya_picture">
                                         <label class="custom-file-label" for="mulkiya_picture">Choose Mulkiya Picture</label>
-                                        <span class="form-text text-muted">Choose Front Side</span>
-                                    </div>
+                                        <span class="form-text text-muted">Choose Mulkiya Front Side</span>
+                                    </div> 
                                 </div></div>
                                 <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <div class="custom-file">
                                         <input type="file" name="mulkiya_picture_back" class="custom-file-input" id="mulkiya_picture_back">
                                         <label class="custom-file-label" for="mulkiya_picture_back">Choose Mulkiya Picture</label>
-                                        <span class="form-text text-muted">Choose Back Side</span>
+                                        <span class="form-text text-muted">Choose Mulkiya Back Side</span>
                                     </div>
                                 </div></div>
                             </div>

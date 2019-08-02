@@ -115,7 +115,7 @@
                                             <input type="file" name="mulkiya_picture" class="custom-file-input" id="mulkiya_picture">
                                             <label class="custom-file-label" for="mulkiya_picture">Choose Mulkiya Picture</label>
                                         </div>
-                                        <span class="form-text text-muted">Select Front Picture</span>
+                                        <span class="form-text text-muted">Select Mulkiya Front Picture</span>
                                     </div>    
                             @if($bike->mulkiya_picture)
                                     <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($bike->mulkiya_picture)) }}" alt="image">
@@ -130,7 +130,7 @@
                                             <input type="file" name="mulkiya_picture_back" class="custom-file-input" id="mulkiya_picture_back">
                                             <label class="custom-file-label" for="mulkiya_picture_back">Choose Mulkiya Picture</label>
                                         </div>
-                                        <span class="form-text text-muted">Select Back Picture</span>
+                                        <span class="form-text text-muted">Select Mulkiya Back Picture</span>
                                     </div>    
                             @if($bike->mulkiya_picture_back)
                                     <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($bike->mulkiya_picture_back)) }}" alt="image">

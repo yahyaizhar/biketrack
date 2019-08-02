@@ -215,7 +215,7 @@
     <div class="custom-file" style="    margin-top: 26px;">
         <input type="file" name="passport_image" class="custom-file-input" id="passport_image">
         <label class="custom-file-label" for="passport_image">Choose Passport Picture</label>
-        <span class="form-text text-muted">Choose Front Side</span>
+        <span class="form-text text-muted">Choose Passport Front Image</span>
     </div>
     </div>
 </div>
@@ -224,7 +224,7 @@
         <div class="custom-file" style="    margin-top: 26px;">
             <input type="file" name="passport_image_back" class="custom-file-input" id="passport_image_back">
             <label class="custom-file-label" for="passport_image_back">Choose Passport Picture</label>
-            <span class="form-text text-muted">Choose Back Side</span>
+            <span class="form-text text-muted">Choose Passport Back Image</span>
         </div>
         </div>
     </div>
@@ -250,7 +250,7 @@
         <div class="custom-file" style="    margin-top: 26px;">
             <input type="file" name="visa_image" class="custom-file-input" id="visa_image">
             <label class="custom-file-label" for="visa_image">Choose Visa Picture</label>
-            <span class="form-text text-muted">Choose Front Side</span>
+            <span class="form-text text-muted">Choose Visa Front Image</span>
         </div>
     </div>
     </div>
@@ -259,7 +259,7 @@
             <div class="custom-file" style="    margin-top: 26px;">
                 <input type="file" name="visa_image_back" class="custom-file-input" id="visa_image_back">
                 <label class="custom-file-label" for="visa_image_back">Choose Visa Picture</label>
-                <span class="form-text text-muted">Choose Back Side</span>
+                <span class="form-text text-muted">Choose Visa Back Image</span>
             </div>
         </div>
         </div>
@@ -284,7 +284,7 @@
             <div class="custom-file" style="    margin-top: 26px;">
                 <input type="file" name="emirate_image" class="custom-file-input" id="emirate_image">
                 <label class="custom-file-label" for="emirate_image">Choose Emirates Picture</label>
-                <span class="form-text text-muted">Choose Front Side</span>
+                <span class="form-text text-muted">Choose Emirate Front Image</span>
             </div>
         </div>
         </div>
@@ -293,7 +293,7 @@
                 <div class="custom-file" style="    margin-top: 26px;">
                     <input type="file" name="emirate_image_back" class="custom-file-input" id="emirate_image_back">
                     <label class="custom-file-label" for="emirate_image_back">Choose Emirates Picture</label>
-                    <span class="form-text text-muted">Choose Back Side</span>
+                    <span class="form-text text-muted">Choose Emirate Back Image</span>
                 </div>
             </div>
             </div>
@@ -318,7 +318,7 @@
         <div class="custom-file" style="    margin-top: 26px;">
             <input type="file" name="licence_image" class="custom-file-input" id="licence_image">
             <label class="custom-file-label" for="licence_image">Choose Licence Picture</label>
-            <span class="form-text text-muted">Choose Front Side</span>
+            <span class="form-text text-muted">Choose Licence Front Image</span>
         </div>
     </div>
     </div>
@@ -327,7 +327,7 @@
             <div class="custom-file" style="    margin-top: 26px;">
                 <input type="file" name="licence_image_back" class="custom-file-input" id="licence_image_back">
                 <label class="custom-file-label" for="licence_image_back">Choose Licence Picture</label>
-                <span class="form-text text-muted">Choose Back Side</span>
+                <span class="form-text text-muted">Choose Licence Back Image</span>
             </div>
         </div>
         </div>
