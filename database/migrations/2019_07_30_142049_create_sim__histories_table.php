@@ -18,8 +18,8 @@ class CreateSimHistoriesTable extends Migration
             $table->integer('sim_id')->nullable();
             $table->integer('rider_id')->nullable();
             $table->string('allowed_balance')->nullable();
-            $table->integer('given_date')->nullable();
-            $table->integer('return_date')->nullable();
+            $table->string('given_date')->nullable();
+            $table->string('return_date')->nullable();
             $table->string('status')->nullable();
             $table->timestamps();
         });

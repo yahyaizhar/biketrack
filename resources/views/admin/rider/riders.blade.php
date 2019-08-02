@@ -42,12 +42,12 @@
                 </label>
         </div>
     </div>
-    <div class="row">
+    {{-- <div class="row">
                 
             <div  id="hover_Checkbox">
                     <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for further details.." >
         </div>
-    </div>
+    </div> --}}
             <!--begin: Datatable -->
             <table class="table table-striped table-hover table-checkable table-condensed" id="riders-table">
                 <thead>
