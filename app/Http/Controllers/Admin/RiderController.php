@@ -437,7 +437,7 @@ class RiderController extends Controller
         if(isset($sim_history)){
         $sim=Sim::find($sim_history->sim_id);
         }
-        return view('admin.rider.profile', compact('rider','rider_details','bike','sim'));
+        return view('admin.rider.profile', compact('rider','rider_details','bike','sim','sim_history'));
     }
     
     public function sendSMS(Rider $rider, Request $request)
