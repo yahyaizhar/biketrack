@@ -427,13 +427,13 @@
  </script>
 <script>
     $(document).ready(function(){
-        $('#datepicker1').fdatepicker({dateFormat: 'yy-mm-dd'}); 
-        $('#datepicker2').fdatepicker({dateFormat: 'yy-mm-dd'}); 
-        $('#datepicker3').fdatepicker({dateFormat: 'yy-mm-dd'}); 
-        $('#datepicker4').fdatepicker({dateFormat: 'yy-mm-dd'}); 
-        $('#datepicker5').fdatepicker({dateFormat: 'yy-mm-dd'}); 
-        $('#datepicker6').fdatepicker({dateFormat: 'yy-mm-dd'}); 
-        $('#date_of_birth').fdatepicker({dateFormat: 'yy-mm-dd'}); 
+        $('#datepicker1').fdatepicker({format: 'dd-mm-yyyy'}); 
+        $('#datepicker2').fdatepicker({format: 'dd-mm-yyyy'}); 
+        $('#datepicker3').fdatepicker({format: 'dd-mm-yyyy'}); 
+        $('#datepicker4').fdatepicker({format: 'dd-mm-yyyy'}); 
+        $('#datepicker5').fdatepicker({format: 'dd-mm-yyyy'}); 
+        $('#datepicker6').fdatepicker({format: 'dd-mm-yyyy'}); 
+        $('#date_of_birth').fdatepicker({format: 'dd-mm-yyyy'}); 
      });
 </script>  
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/bootstrap-switch.js') }}" type="text/javascript"></script>

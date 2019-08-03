@@ -118,17 +118,17 @@
                              <div class="kt-widget__desc">
                                 <label style="font-weight:900;">Passport Image Front:</label>
                                   @if($rider_details->passport_image)
-                                  <a href="#" data-featherlight="{{ asset(Storage::url($rider_details->passport_image)) }}">Click To See </a>
+                                  <a href="#" id="passport_image_front" data-featherlight="{{ asset(Storage::url($rider_details->passport_image)) }}"> <img style="width:150px;height:150px;" class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_details->passport_image)) }}" alt="image"></a>
                                 @else
-                            <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}">Click To See  </a>
+                            <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}"><img style="width:150px;height:150px;"  class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" /></a>
                              @endif
                              </div>
                              <div class="kt-widget__desc">
                                 <label style="font-weight:900;">Passport Image Back:</label>
                                 @if($rider_details->passport_image_back)
-                                <a href="#" data-featherlight="{{ asset(Storage::url($rider_details->passport_image_back)) }}">Click To See </a>
+                                <a href="#" data-featherlight="{{ asset(Storage::url($rider_details->passport_image_back)) }}"><img style="width:150px;height:150px;" style="width:150px;height:150px;" class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_details->passport_image_back)) }}" alt="image"></a>
                               @else
-                          <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}">Click To See  </a>
+                          <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}"><img style="width:150px;height:150px;" style="width:150px;height:150px;" class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" /></a>
                            @endif
                              </div>    
                         
@@ -143,20 +143,20 @@
                             <div class="kt-widget__desc">
                                 <label style="font-weight:900;">Licence Front Image:</label>
                                 @if($rider_details->licence_image)
-                                <a href="#" data-featherlight="{{ asset(Storage::url($rider_details->licence_image)) }}">Click To See </a>
+                                <a href="#" data-featherlight="{{ asset(Storage::url($rider_details->licence_image)) }}"><img style="width:150px;height:150px;" class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_details->licence_image)) }}" alt="image"></a>
                              
                                 @else
-                                <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}">Click To See </a>
+                                <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}"><img style="width:150px;height:150px;" class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" /></a>
                                 @endif  
                            
                         </div>
                         <div class="kt-widget__desc">
                             <label style="font-weight:900;">Licence Back Image:</label>
                             @if($rider_details->licence_image_back)
-                            <a href="#" data-featherlight="{{ asset(Storage::url($rider_details->licence_image_back)) }}">Click To See </a>
+                            <a href="#" data-featherlight="{{ asset(Storage::url($rider_details->licence_image_back)) }}"><img style="width:150px;height:150px;" class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_details->licence_image_back)) }}" alt="image"></a>
                          
                             @else
-                            <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}">Click To See </a>
+                            <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}"><img style="width:150px;height:150px;" class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" /></a>
                             @endif  
                        
                     </div></div>
@@ -170,20 +170,20 @@
                             <div class="kt-widget__desc">
                                 <label style="font-weight:900;">Visa Front Image:</label>
                             @if($rider_details->visa_image)
-                            <a href="#" data-featherlight="{{ asset(Storage::url($rider_details->visa_image)) }}">Click To See </a>
+                            <a href="#" data-featherlight="{{ asset(Storage::url($rider_details->visa_image)) }}"><img style="width:150px;height:150px;" class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_details->visa_image)) }}" alt="image"></a>
                            
                              @else
-                             <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}">Click To See </a>
+                             <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}"><img style="width:150px;height:150px;" class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" /></a>
                            
                              @endif
                         </div>
                         <div class="kt-widget__desc">
                             <label style="font-weight:900;">Visa Back Image:</label>
                             @if($rider_details->visa_image_back)
-                            <a href="#" data-featherlight="{{ asset(Storage::url($rider_details->visa_image_back)) }}">Click To See </a>
+                            <a href="#" data-featherlight="{{ asset(Storage::url($rider_details->visa_image_back)) }}"><img style="width:150px;height:150px;" class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_details->visa_image_back)) }}" alt="image"></a>
                            
                              @else
-                             <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}">Click To See </a>
+                             <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}"><img style="width:150px;height:150px;" class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" /></a>
                            
                              @endif
                     </div>  
@@ -199,19 +199,19 @@
                             <div class="kt-widget__desc">
                                 <label style="font-weight:900;">Emerate_ID Front Image:</label>
                                   @if($rider_details->emirate_image)
-                            <a href="#" data-featherlight="{{ asset(Storage::url($rider_details->emirate_image)) }}">Click To See </a>
+                            <a href="#" data-featherlight="{{ asset(Storage::url($rider_details->emirate_image)) }}"><img style="width:150px;height:150px;" class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_details->emirate_image)) }}" alt="image"></a>
                            
                             @else
-                        <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}">Click To See </a>
+                        <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}"><img style="width:150px;height:150px;" class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" /></a>
                         @endif
                         </div>
                         <div class="kt-widget__desc">
                             <label style="font-weight:900;">Emerate_ID Back Image:</label>
                             @if($rider_details->emirate_image_back)
-                            <a href="#" data-featherlight="{{ asset(Storage::url($rider_details->emirate_image_back)) }}">Click To See </a>
+                            <a href="#" data-featherlight="{{ asset(Storage::url($rider_details->emirate_image_back)) }}"><img style="width:150px;height:150px;" class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_details->emirate_image_back)) }}" alt="image"></a>
                            
                             @else
-                        <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}">Click To See </a>
+                        <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}"><img style="width:150px;height:150px;"  class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" /></a>
                         @endif
                       
                     </div>
@@ -227,17 +227,17 @@
                             <div class="kt-widget__desc">
                                 <label style="font-weight:900;">Mulkiya Front Image:</label>
                             @if($bike->mulkiya_picture)
-                            <a href="#" data-featherlight="{{ asset(Storage::url($bike->mulkiya_picture)) }}">Click To See </a>
+                            <a href="#" data-featherlight="{{ asset(Storage::url($bike->mulkiya_picture)) }}"><img style="width:150px;height:150px;" class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($bike->mulkiya_picture)) }}" alt="image"> </a>
                             @else
-                        <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}">Click To See </a>
+                        <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}"><img style="width:150px;height:150px;" class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" /></a>
                         @endif
                         </div> 
                         <div class="kt-widget__desc">
                             <label style="font-weight:900;">Mulkiya Back Image:</label>
                             @if($bike->mulkiya_picture_back)
-                            <a href="#" data-featherlight="{{ asset(Storage::url($bike->mulkiya_picture_back)) }}">Click To See </a>
+                            <a href="#" data-featherlight="{{ asset(Storage::url($bike->mulkiya_picture_back)) }}"><img style="width:150px;height:150px;" class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($bike->mulkiya_picture_back)) }}" alt="image"></a>
                             @else
-                        <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}">Click To See </a>
+                        <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}"><img style="width:150px;height:150px;" class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" /></a>
                         @endif
                     </div>     
                       </div>
@@ -246,7 +246,7 @@
                      </div>
                      </div>
                         </div>
-                        <div class="row">
+                        <div class="row"> 
                             <div class="kt-widget__item col-md-10">
                                 <textarea class="form-control" id="message_{{ $rider->id }}" name="message_{{ $rider->id }}" placeholder="Enter message here"></textarea>
                             </div>
@@ -265,6 +265,22 @@
 <!-- end:: Content -->
 @endsection
 @section('foot')
+<script>
+$(document).ready(function(){
+  var image_url = $('#passport_image_front').attr('data-featherlight');
+  $('[data-featherlight]').on('click', function(){
+      var imgURL = $(this).attr('data-featherlight');
+      setTimeout(function(){
+        $('.featherlight .featherlight-image').wrap('<div />').parent().zoom({
+            url: imgURL,
+            magnify:2
+            });
+      },500);
+      
+  })
+  
+});
+</script>
     <script>
         function sendSMS(id)
         {

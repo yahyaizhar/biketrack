@@ -89,6 +89,8 @@
     <script src="{{ asset('dashboard/assets/vendors/general/jquery.repeater/src/repeater.js') }}" type="text/javascript"></script>
     <script src="{{ asset('dashboard/assets/vendors/general/dompurify/dist/purify.js') }}" type="text/javascript"></script>
     <script src="//cdn.rawgit.com/noelboss/featherlight/1.7.13/release/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="{{ asset('dashboard/assets/js/jquery.zoom.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('dashboard/assets/js/jquery.zoom.min.js') }}" type="text/javascript"></script>
 <script>
  var dateFormat = function () {
         var    token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g,
@@ -247,6 +249,7 @@ time_conversion();
 
     <!--begin::Global Theme Bundle(used by all pages) -->
     <script src="{{ asset('dashboard/assets/js/demo1/scripts.bundle.js') }}" type="text/javascript"></script>
+   
 
     <!--end::Global Theme Bundle -->
 
