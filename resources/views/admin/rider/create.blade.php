@@ -62,6 +62,19 @@
                                 <span class="form-text text-muted">Please enter your phone number</span>
                             @endif
                         </div>
+                        <div class="form-group"> 
+                            <label>Date Of Birth:</label>
+                            <input type="text" id="date_of_birth" autocomplete="off" class="form-control @if($errors->has('date_of_birth')) invalid-field @endif" name="date_of_birth" placeholder="Enter Date Of Birth" value="{{ old('date_of_birth') }}">
+                            @if ($errors->has('date_of_birth'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('date_of_birth') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter your Date Of Birth</span>
+                            @endif
+                        </div>
                         <div class="form-group">
                             <label>Password:</label>
                             <input type="password" class="form-control @if($errors->has('passsword')) invalid-field @endif" name="password" placeholder="Enter password">
@@ -420,6 +433,7 @@
         $('#datepicker4').fdatepicker({dateFormat: 'yy-mm-dd'}); 
         $('#datepicker5').fdatepicker({dateFormat: 'yy-mm-dd'}); 
         $('#datepicker6').fdatepicker({dateFormat: 'yy-mm-dd'}); 
+        $('#date_of_birth').fdatepicker({dateFormat: 'yy-mm-dd'}); 
      });
 </script>  
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/bootstrap-switch.js') }}" type="text/javascript"></script>

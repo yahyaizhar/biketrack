@@ -75,6 +75,7 @@ class RiderController extends Controller
         $rider->name = $request->name;
         $rider->email = $request->email;
         $rider->phone = $request->phone;
+        $rider->date_of_birth = $request->date_of_birth;
         $rider->password = Hash::make($request->password);
         $rider->address = $request->address;
         $rider->start_time = $request->start_time;
@@ -248,6 +249,7 @@ class RiderController extends Controller
         $rider->name = $request->name;
         $rider->email = $request->email;
         $rider->phone = $request->phone;
+        $rider->date_of_birth = $request->date_of_birth;
         $rider->address = $request->address;
         $rider->start_time = $request->start_time;
         $rider->end_time = $request->end_time;
