@@ -18,6 +18,9 @@ class CreateNewComersTable extends Migration
             $table->string('name')->nullable();
             $table->string('phone_number')->nullable();
             $table->string('nationality')->nullable();
+            $table->string('whatsapp_number')->nullable();
+            $table->string('education')->nullable();
+            $table->string('licence_issue_date')->nullable();
             $table->string('source_of_contact')->nullable();
             $table->string('experiance')->nullable();
             $table->string('experience_input')->nullable();

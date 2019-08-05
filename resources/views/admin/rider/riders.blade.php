@@ -324,9 +324,11 @@ $(document).ready(function(){
 });
 </script>
 <script>
-        function myFunction() {
-            
+        $(document).ready(function(){
+            alert("ab kya karo yar waila nae baitha ja raha");  
           
-        }
+        });
+          
+    
         </script>
 @endsection

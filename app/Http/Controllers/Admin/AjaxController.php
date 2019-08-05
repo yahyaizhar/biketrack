@@ -1093,6 +1093,15 @@ public function getRidersDetails()
         ->addColumn('kingriders_interview',function($newComer){
             return $newComer->kingriders_interview;
         })
+        ->addColumn('whatsapp_number',function($newComer){
+            return $newComer->whatsapp_number;
+        })
+        ->addColumn('licence_issue_date',function($newComer){
+            return $newComer->licence_issue_date;
+        })
+        ->addColumn('education',function($newComer){
+            return $newComer->education;
+        })
         ->addColumn('interview',function($newComer){
             return $newComer->interview;
         })
@@ -1105,7 +1114,7 @@ public function getRidersDetails()
         // <a class="dropdown-item" href="'.route('bike.bike_assigned', $bike).'"><i class="fa fa-eye"></i> View Bikes</a>
         // <a class="dropdown-item" href="'.route('bike.bike_assignRiders', $bike).'"><i class="fa fa-edit"></i> Assign Bikes</a>
                     
-        ->rawColumns(['name','passport_status','overall_remarks','interview','kingriders_interview','passport_reason', 'nationality','experience_input', 'phone_number','experience', 'source_of_contact','actions', 'status','interview_status',])
+        ->rawColumns(['name','passport_status','education','whatsapp_number','licence_issue_date','overall_remarks','interview','kingriders_interview','passport_reason', 'nationality','experience_input', 'phone_number','experience', 'source_of_contact','actions', 'status','interview_status',])
         ->make(true);
     }
    

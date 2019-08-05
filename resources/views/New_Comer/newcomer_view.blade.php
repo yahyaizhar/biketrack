@@ -188,8 +188,14 @@ $(function() {
                 '<tr>'+
                 '<td style="font-weight:900;">Overall Remarks:</td>'+
                 '<td colspan="2"; style="width:50%;">'+d.overall_remarks+'</td>'+
-                '<td style="font-weight:900;"></td>'+
-                '<td colspan="2"; style="width:50%;"></td>'+
+                '<td style="font-weight:900;">Whatsapp Number:</td>'+
+                '<td colspan="2"; style="width:50%;">'+((d.whatsapp_number==null)?'Not given':d.whatsapp_number)+'</td>'+
+                '</tr>'+
+                '<tr>'+
+                '<td style="font-weight:900;">Education:</td>'+
+                '<td colspan="2"; style="width:50%;">'+((d.education==null)?'Unfilled':d.education)+'</td>'+
+                '<td style="font-weight:900;">Licence Issue Date:</td>'+
+                '<td colspan="2"; style="width:50%;">'+((d.licence_issue_date==null) ? 'No Date is issued':d.licence_issue_date)+'</td>'+
                 '</tr>'+
            '</table>';
     }

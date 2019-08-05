@@ -52,6 +52,9 @@ class NewComerController extends Controller
         $newcomer=New_comer::find($newComer_id);
       $newcomer->name = $request->name;
       $newcomer->nationality = $request->nationality;
+      $newcomer->whatsapp_number = $request->whatsapp_number;
+      $newcomer->education = $request->education;
+      $newcomer->licence_issue_date = $request->licence_issue_date;
       $newcomer->phone_number = $request->phone_number;
       $newcomer->overall_remarks = $request->overall_remarks;
       $newcomer->interview_date = $request->interview_date;
