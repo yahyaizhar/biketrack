@@ -62,6 +62,19 @@
                                 <span class="form-text text-muted">Please enter your phone number</span>
                             @endif
                         </div>
+                        <div class="form-group"> 
+                            <label>Date Of Birth:</label>
+                            <input type="text" id="date_of_birth" autocomplete="off" class="form-control @if($errors->has('date_of_birth')) invalid-field @endif" name="date_of_birth" placeholder="Enter Date Of Birth" value="{{ old('date_of_birth') }}">
+                            @if ($errors->has('date_of_birth'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('date_of_birth') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter your Date Of Birth</span>
+                            @endif
+                        </div>
                         <div class="form-group">
                             <label>Password:</label>
                             <input type="password" class="form-control @if($errors->has('passsword')) invalid-field @endif" name="password" placeholder="Enter password">
@@ -399,9 +412,7 @@
 
 {{-- timepicker --}}
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
- 
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
  
  {{-- end time picker --}}
  <script>
@@ -414,12 +425,13 @@
  </script>
 <script>
     $(document).ready(function(){
-        $('#datepicker1').fdatepicker({dateFormat: 'yy-mm-dd'}); 
-        $('#datepicker2').fdatepicker({dateFormat: 'yy-mm-dd'}); 
-        $('#datepicker3').fdatepicker({dateFormat: 'yy-mm-dd'}); 
-        $('#datepicker4').fdatepicker({dateFormat: 'yy-mm-dd'}); 
-        $('#datepicker5').fdatepicker({dateFormat: 'yy-mm-dd'}); 
-        $('#datepicker6').fdatepicker({dateFormat: 'yy-mm-dd'}); 
+        $('#datepicker1').fdatepicker({format: 'dd-mm-yyyy'}); 
+        $('#datepicker2').fdatepicker({format: 'dd-mm-yyyy'}); 
+        $('#datepicker3').fdatepicker({format: 'dd-mm-yyyy'}); 
+        $('#datepicker4').fdatepicker({format: 'dd-mm-yyyy'}); 
+        $('#datepicker5').fdatepicker({format: 'dd-mm-yyyy'}); 
+        $('#datepicker6').fdatepicker({format: 'dd-mm-yyyy'}); 
+        $('#date_of_birth').fdatepicker({format: 'dd-mm-yyyy'}); 
      });
 </script>  
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/bootstrap-switch.js') }}" type="text/javascript"></script>

@@ -2,7 +2,11 @@
 @section('head')
     <!--begin::Page Vendors Styles(used by this page) -->
     <link href="{{ asset('dashboard/assets/vendors/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />
-
+    <style>
+        .highlighted{
+            background-color: #FFFF88;
+        }
+        </style>
     <!--end::Page Vendors Styles -->
 @endsection
 @section('main-content')
@@ -41,6 +45,8 @@
         <label for="check_id" >
            Detailed View
         </label>
+        <input type="search" class="form-control" placeholder="Search" id="search_details" style="border:1px solid lightblue;font-size:14px;">
+        
 </div>
             <!--begin: Datatable -->
             <table class="table table-striped- table-hover table-checkable table-condensed" id="newComer-table">
@@ -75,10 +81,12 @@
 
 <!--begin::Page Scripts(used by this page) -->
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/datatables/basic/basic.js') }}" type="text/javascript"></script>
+<script src="{{ asset('https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js') }}" type="text/javascript"></script>
 
 <!--end::Page Scripts -->
 <script>
 var newcomer_table;
+var newcomer_data = [];
 $(function() { 
     var _settings =  {
         processing: true,
@@ -86,6 +94,15 @@ $(function() {
         'language': {
             'loadingRecords': '&nbsp;',
             'processing': $('.loading').show()
+        },
+        drawCallback:function(data){
+            var api = this.api();
+            var _data = api.data();
+            var keys = Object.keys(_data).filter(function(x){return !isNaN(parseInt(x))});
+            keys.forEach(function(_d,_i) {
+                var __data = JSON.parse(JSON.stringify(_data[_d]).toLowerCase());
+                newcomer_data.push(__data);
+            });
         },
         ajax: "{!! route('NewComer.view_ajax') !!}",
         columns:null, 
@@ -188,8 +205,14 @@ $(function() {
                 '<tr>'+
                 '<td style="font-weight:900;">Overall Remarks:</td>'+
                 '<td colspan="2"; style="width:50%;">'+d.overall_remarks+'</td>'+
-                '<td style="font-weight:900;"></td>'+
-                '<td colspan="2"; style="width:50%;"></td>'+
+                '<td style="font-weight:900;">Whatsapp Number:</td>'+
+                '<td colspan="2"; style="width:50%;">'+((d.whatsapp_number==null)?'Not given':d.whatsapp_number)+'</td>'+
+                '</tr>'+
+                '<tr>'+
+                '<td style="font-weight:900;">Education:</td>'+
+                '<td colspan="2"; style="width:50%;">'+((d.education==null)?'Unfilled':d.education)+'</td>'+
+                '<td style="font-weight:900;">Licence Issue Date:</td>'+
+                '<td colspan="2"; style="width:50%;">'+((d.licence_issue_date==null) ? 'No Date is issued':d.licence_issue_date)+'</td>'+
                 '</tr>'+
            '</table>';
     }
@@ -316,5 +339,59 @@ tr.shown td.details-control {
                    });
                   }
             });
+</script>
+<script>
+$(document).ready(function(){
+    $("#search_details").on("keyup", function() {
+        var _val = $(this).val().trim().toLowerCase();
+         $("#newComer-table tbody > tr:visible").each(function(){
+                            $(this).removeClass("shown");
+                           });
+    $('#newComer-table tbody > tr').show();
+    if (newcomer_data.length > 0) {
+        
+            var _res = newcomer_data.filter(function(x) {
+                return JSON.stringify(x).indexOf(_val) !== -1
+            });
+            if (_res.length > 0) {
+                $("#newComer-table tbody > tr").filter(function(index) {
+                    var _name = $(this).find("td").eq(1).text().trim().toLowerCase();
+                    if (_res.findIndex(function(x) {
+                         console.log('isTrue: ', x.name == _name);
+                            return x.name == _name
+                        }) === -1) {
+                        $(this).hide();
+                    }
+
+                });
+                if(_val !== ''){
+                $('tr.shown').next().remove();
+                $("#newComer-table tbody > tr:visible").removeClass("shown");
+                $("#newComer-table tbody > tr:visible").each(function() {
+                    $(this).find('td.details-control').trigger('click');
+                });
+            }
+            $("#newComer-table tbody").unmark({
+                done: function() {
+                    $("#newComer-table tbody").mark(_val, {
+                        "element": "span",
+                        "className": "highlighted"
+                    });
+                }
+            });
+            //  $("#newComer-table tbody > tr:visible").each(function(){
+            //                 $(this).addClass("shown")
+            //                  $(this).find("td.details-control").trigger("click");
+            //                });
+               
+            }
+            else{
+                $("#newComer-table tbody > tr").hide();
+            }
+        
+    }
+});
+
+});
 </script>
 @endsection

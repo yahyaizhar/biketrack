@@ -59,6 +59,42 @@
                             
                             @endif
                         </div>
+                        <div class="form-group">
+                            <label>WhatsApp Number:</label>
+                            <input type="text" class="form-control @if($errors->has('whatsapp_number')) invalid-field @endif" name="whatsapp_number" placeholder="Whatsapp Number" value="{{ old('whatsapp_number') }}" required> 
+                            @if ($errors->has('whatsapp_number'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('whatsapp_number') }}
+                                    </strong>
+                                </span>
+                            
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Education:</label>
+                            <input type="text" class="form-control @if($errors->has('education')) invalid-field @endif" name="education" placeholder="Education" value="{{ old('education') }}" required> 
+                            @if ($errors->has('education'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('education') }}
+                                    </strong>
+                                </span>
+                            
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Licence Issue Date:</label>
+                            <input type="text" id="licence_date" autocomplete="off" class="form-control @if($errors->has('licence_issue_date')) invalid-field @endif" name="licence_issue_date" placeholder="Licence Issue Date" value="{{ old('licence_issue_date') }}" required> 
+                            @if ($errors->has('licence_issue_date'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('licence_issue_date') }}
+                                    </strong>
+                                </span>
+                            
+                            @endif
+                        </div>
                       
                         
                         <div class="form-group">
@@ -228,5 +264,14 @@ $('#source_of_contact_phone_call').change(function(){
 
 
     });
+        </script>
+        <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
+        
+        <script>
+            $(document).ready(function(){
+                $('#licence_date').fdatepicker({format: 'dd-mm-yyyy'}); 
+               
+             });
         </script>
 @endsection
