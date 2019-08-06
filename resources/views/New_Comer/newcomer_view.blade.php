@@ -2,7 +2,11 @@
 @section('head')
     <!--begin::Page Vendors Styles(used by this page) -->
     <link href="{{ asset('dashboard/assets/vendors/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />
-
+    <style>
+        .highlighted{
+            background-color: #FFFF88;
+        }
+        </style>
     <!--end::Page Vendors Styles -->
 @endsection
 @section('main-content')
@@ -77,6 +81,7 @@
 
 <!--begin::Page Scripts(used by this page) -->
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/datatables/basic/basic.js') }}" type="text/javascript"></script>
+<script src="{{ asset('https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js') }}" type="text/javascript"></script>
 
 <!--end::Page Scripts -->
 <script>
@@ -338,9 +343,13 @@ tr.shown td.details-control {
 <script>
 $(document).ready(function(){
     $("#search_details").on("keyup", function() {
+        var _val = $(this).val().trim().toLowerCase();
+         $("#newComer-table tbody > tr:visible").each(function(){
+                            $(this).removeClass("shown");
+                           });
     $('#newComer-table tbody > tr').show();
     if (newcomer_data.length > 0) {
-        var _val = $(this).val().trim().toLowerCase();
+        
             var _res = newcomer_data.filter(function(x) {
                 return JSON.stringify(x).indexOf(_val) !== -1
             });
@@ -355,11 +364,29 @@ $(document).ready(function(){
                     }
 
                 });
+                if(_val !== ''){
+                $('tr.shown').next().remove();
+                $("#newComer-table tbody > tr:visible").removeClass("shown");
+                $("#newComer-table tbody > tr:visible").each(function() {
+                    $(this).find('td.details-control').trigger('click');
+                });
+            }
+            $("#newComer-table tbody").unmark({
+                done: function() {
+                    $("#newComer-table tbody").mark(_val, {
+                        "element": "span",
+                        "className": "highlighted"
+                    });
+                }
+            });
             //  $("#newComer-table tbody > tr:visible").each(function(){
             //                 $(this).addClass("shown")
             //                  $(this).find("td.details-control").trigger("click");
             //                });
                
+            }
+            else{
+                $("#newComer-table tbody > tr").hide();
             }
         
     }
