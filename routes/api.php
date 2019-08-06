@@ -28,6 +28,9 @@ Route::group([
     Route::post('/startday', 'RiderController@startday');
     Route::post('/endday', 'RiderController@saveRideDetailsAndEndday'); 
     Route::post('/get-reports', 'RiderController@get_reports'); 
+    Route::post('/get-trips', 'RiderController@get_trips'); 
+    Route::post('/add-trip', 'RiderController@add_trip'); 
+    Route::post('/update-trip', 'RiderController@update_trip'); 
 });
 
 Route::get('/admin/liveLocations', 'Admin\AjaxController@loadLocations')->name('api.admin.live.locations');

@@ -39,7 +39,7 @@ class RiderController extends Controller
                     'status_code'=>404
                 ]);
             }
-            $rider_reports=$rider->Rider_Report()->whereDate('created_at','=',Carbon::parse($r->date)->toDateString())->get();
+            $rider_reports=$rider->Rider_Report()->whereDate('created_at','=',Carbon::parse($r->date)->toDateString())->get()->first();
             return response()->json([
                 'reports'=>$rider_reports,
                 'status' => "success",
@@ -54,6 +54,93 @@ class RiderController extends Controller
             ]);
         }
         
+    }
+    public function get_trips(Request $r) 
+    {
+        $rider = Rider::find($r->rider_id);
+        if($rider){
+            if($rider->status=='0' || $rider->status==0){
+                return response()->json([
+                    'error' => 'Rider inactive',
+                    'status' => "error",
+                    'status_code'=>404
+                ]);
+            }
+            $rider_trips=$rider->Rider_Report()->whereDate('created_at','=',Carbon::parse($r->date)->toDateString())->whereNotNull('no_of_trips')->get()->first();
+            return response()->json([
+                'reports'=>$rider_trips,
+                'status' => "success",
+                'status_code'=>200
+            ]);
+        }
+        else{
+            return response()->json([
+                'error' => 'Rider not found',
+                'status' => "error",
+                'status_code'=>404
+            ]);
+        }
+        
+    }
+    public function add_trip(Request $r) 
+    {
+        $rider = Rider::find($r->rider_id);
+        if($rider){
+            if($rider->status=='0' || $rider->status==0){
+                return response()->json([
+                    'error' => 'Rider inactive',
+                    'status' => "error",
+                    'status_code'=>404
+                ]);
+            }
+            $rider_trips = new Rider_Report;
+            $rider_trips->rider_id=$r->rider_id;
+            $rider_trips->no_of_trips=$r->no_of_trips;
+            $rider_trips->created_at=$r->date;
+            $rider_trips->save();
+            return response()->json([
+                'reports'=>$rider_trips,
+                'status' => "success",
+                'status_code'=>200
+            ]);
+        }
+        else{
+            return response()->json([
+                'error' => 'Rider not found',
+                'status' => "error",
+                'status_code'=>404
+            ]);
+        }
+    }
+    public function update_trip(Request $r) 
+    {
+        $rider = Rider::find($r->rider_id);
+        if($rider){
+            if($rider->status=='0' || $rider->status==0){
+                return response()->json([
+                    'error' => 'Rider inactive',
+                    'status' => "error",
+                    'status_code'=>404
+                ]);
+            }
+            $rider_trips = Rider_Report::find($r->trip_id);
+            $rider_trips->rider_id=$r->rider_id;
+            $rider_trips->no_of_trips=$r->no_of_trips;
+            $rider_trips->created_at=$r->date;
+            $rider_trips->update();
+            return response()->json([
+                'reports'=>$rider_trips,
+                'status' => "success",
+                'status_code'=>200
+            ]);
+        }
+        else{
+            return response()->json([
+                'error' => 'Rider not found',
+                'status' => "error",
+                'status_code'=>404
+            ]);
+        }
     }
     public function getLatestData(Rider $rider)
     {

@@ -37,6 +37,18 @@ class Handler extends ExceptionHandler
     {
         parent::report($exception);
     }
+    
+    /**
+     * Determine if the current request is asking for JSON in return.
+     *
+     * @return bool
+     */
+    public function wantsJson($r)
+    {
+        $acceptable = $r->getAcceptableContentTypes();
+
+        return isset($acceptable[0]) && $acceptable[0] == 'application/json';
+    }
 
     /**
      * Render an exception into an HTTP response.
@@ -45,9 +57,37 @@ class Handler extends ExceptionHandler
      * @param  \Exception  $exception
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $exception)
+    public function render($request, Exception $e)
     {
-        return parent::render($request, $exception);
+        
+        // If the request wants JSON (AJAX doesn't always want JSON)
+        // Define the response
+        $response = [
+            'errors' => 'Sorry, something went wrong.'
+        ];
+
+        // If the app is in debug mode
+        if (true) {
+            // Add the exception class name, message and stack trace to response
+            $response['exception'] = get_class($e); // Reflection might be better here
+            $response['message'] = $e->getMessage();
+            $response['trace'] = $e->getTrace();
+        }
+
+        // Default response of 400
+        $status = 400;
+
+        // If this exception is an instance of HttpException
+        if ($this->isHttpException($e)) {
+            // Grab the HTTP status code from the Exception
+            $status = $e->getStatusCode();
+        }
+
+        // Return a JSON response with the response array and status code
+        return response()->json($response, $status);
+
+        // Default to the parent class' implementation of handler
+        // return parent::render($request, $e);
     }
     /**
      * Convert an authentication exception into a response.
