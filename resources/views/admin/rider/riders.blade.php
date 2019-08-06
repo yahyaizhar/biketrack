@@ -19,6 +19,9 @@
                 <h3 class="kt-portlet__head-title">
                     Riders
                 </h3>
+               
+                    
+                
             </div>
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-wrapper">
@@ -40,7 +43,10 @@
                 <label for="check_id" >
                    Detailed View
                 </label>
+                <input type="search" class="form-control" placeholder="Search" id="search_details" style="border:1px solid lightblue;font-size:14px;">
+        
         </div>
+        
     </div>
     {{-- <div class="row">
                 
@@ -83,6 +89,7 @@
 <!--end::Page Scripts -->
 <script>
 var riders_table;
+var riders_data = [];
 $(function() {
     var _settings = {
         processing: true,
@@ -90,6 +97,16 @@ $(function() {
         'language': {
             'loadingRecords': '&nbsp;',
             'processing': $('.loading').show()
+        },
+        drawCallback:function(data){
+            var api = this.api();
+            var _data = api.data();
+            var keys = Object.keys(_data).filter(function(x){return !isNaN(parseInt(x))});
+            keys.forEach(function(_d,_i) {
+                var __data = JSON.parse(JSON.stringify(_data[_d]).toLowerCase());
+                riders_data.push(__data);
+            });
+            
         },
         ajax: '{!! route('admin.riders.data') !!}',
         columns: null,
@@ -324,11 +341,28 @@ $(document).ready(function(){
 });
 </script>
 <script>
-        $(document).ready(function(){
-            alert("ab kya karo yar waila nae baitha ja raha");  
-          
-        });
-          
-    
-        </script>
+$(document).ready(function() {
+    $("#search_details").on("keyup", function() {
+        $('#riders-table tbody > tr').show();
+        if (riders_data.length > 0) {
+            var _val = $(this).val().trim().toLowerCase();
+            var _res = riders_data.filter(function(x) {
+                return JSON.stringify(x).indexOf(_val) !== -1
+            });
+            if (_res.length > 0) {
+                $("#riders-table tbody > tr").filter(function(index) {
+                    var _id = $(this).find("td").eq(1).text().trim().toLowerCase();
+                    if (_res.findIndex(function(x) {
+                            console.log('isTrue: ' + parseInt("1000" + x.id) == parseInt(_id));
+                            return "1000" + x.id == _id
+                        }) === -1) {
+                        $(this).hide();
+                    }
+
+                });
+            }
+        }
+    });
+});
+</script>
 @endsection

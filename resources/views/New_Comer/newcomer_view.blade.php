@@ -41,6 +41,8 @@
         <label for="check_id" >
            Detailed View
         </label>
+        <input type="search" class="form-control" placeholder="Search" id="search_details" style="border:1px solid lightblue;font-size:14px;">
+        
 </div>
             <!--begin: Datatable -->
             <table class="table table-striped- table-hover table-checkable table-condensed" id="newComer-table">
@@ -79,6 +81,7 @@
 <!--end::Page Scripts -->
 <script>
 var newcomer_table;
+var newcomer_data = [];
 $(function() { 
     var _settings =  {
         processing: true,
@@ -86,6 +89,15 @@ $(function() {
         'language': {
             'loadingRecords': '&nbsp;',
             'processing': $('.loading').show()
+        },
+        drawCallback:function(data){
+            var api = this.api();
+            var _data = api.data();
+            var keys = Object.keys(_data).filter(function(x){return !isNaN(parseInt(x))});
+            keys.forEach(function(_d,_i) {
+                var __data = JSON.parse(JSON.stringify(_data[_d]).toLowerCase());
+                newcomer_data.push(__data);
+            });
         },
         ajax: "{!! route('NewComer.view_ajax') !!}",
         columns:null, 
@@ -322,5 +334,37 @@ tr.shown td.details-control {
                    });
                   }
             });
+</script>
+<script>
+$(document).ready(function(){
+    $("#search_details").on("keyup", function() {
+    $('#newComer-table tbody > tr').show();
+    if (newcomer_data.length > 0) {
+        var _val = $(this).val().trim().toLowerCase();
+            var _res = newcomer_data.filter(function(x) {
+                return JSON.stringify(x).indexOf(_val) !== -1
+            });
+            if (_res.length > 0) {
+                $("#newComer-table tbody > tr").filter(function(index) {
+                    var _name = $(this).find("td").eq(1).text().trim().toLowerCase();
+                    if (_res.findIndex(function(x) {
+                         console.log('isTrue: ', x.name == _name);
+                            return x.name == _name
+                        }) === -1) {
+                        $(this).hide();
+                    }
+
+                });
+            //  $("#newComer-table tbody > tr:visible").each(function(){
+            //                 $(this).addClass("shown")
+            //                  $(this).find("td.details-control").trigger("click");
+            //                });
+               
+            }
+        
+    }
+});
+
+});
 </script>
 @endsection

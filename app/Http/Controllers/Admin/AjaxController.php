@@ -543,7 +543,7 @@ class AjaxController extends Controller
                     return $bike->mulkiya_expiry;
                 }
             }
-           return "No mulkiya expirty";
+           return "No mulkiya expiry";
         })
         ->addColumn('official_sim_given_date', function($riders){
             $rider_detail =$riders->Rider_detail()->get()->first();
