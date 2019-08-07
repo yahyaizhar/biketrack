@@ -87,7 +87,7 @@ class Handler extends ExceptionHandler
         // return response()->json($response, $status);
 
         // Default to the parent class' implementation of handler
-     return parent::render($request, $e);
+         return parent::render($request, $e);
     }
     /**
      * Convert an authentication exception into a response.
