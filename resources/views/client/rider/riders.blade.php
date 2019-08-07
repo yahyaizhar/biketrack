@@ -49,9 +49,14 @@
                                             <i class="flaticon2-correct"></i>                                            
                                         @endif
                                     </a>
-            
+                                    @php
+                                    $client_id=Auth::user()->id;
+                                    $client_rider=App\Model\Client\Client_Rider::where('client_id',$client_id)->where('rider_id',$rider->id)->get()->first();
+                                @endphp
+                                
+                                
                                     <div class="kt-widget__action">
-                                        {{-- <a href="{{ route('client.rider.location', $rider->id) }}" class="btn btn-label-success btn-sm btn-upper">View Location</a>&nbsp; --}}
+                                    <a href="" data-toggle="modal" data-target="#form" data-rider-id="{{$rider->id}}"  data-client-rider-id="{{$client_rider->client_rider_id}}" class="btn btn-label-success btn-sm btn-upper">Add Rider ID</a>&nbsp;
                                     </div>
                                 </div>
             
@@ -158,5 +163,78 @@
     </div>
     @endforeach
 </div>
+
+<div>
+ <div class="modal fade" id="form" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-dialog-centered" role="document">
+           <div class="modal-content">
+             <div class="modal-header border-bottom-0">
+               <h5 class="modal-title" id="exampleModalLabel">Assigned Rider Id</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                 <span aria-hidden="true">&times;</span>
+               </button>
+             </div>
+             <form class="kt-form" id="form_dates"  enctype="multipart/form-data">
+                 <div class="modal-body">
+                     <div class="form-group">
+<input type="hidden" name="rider_id" id="rider_id">
+                     </div>
+                         <div class="form-group">
+                                 <label>Rider Id:</label>
+                         <input type="text" id="body_value" class="form-control @if($errors->has('client_rider_id')) invalid-field @endif" name="client_rider_id" placeholder="Client Assign Rider Id"  >
+                                </div>
+                        </div>
+                       
+               <div class="modal-footer border-top-0 d-flex justify-content-center">
+                 <button type="submit" id="submit_btn_dates" class="btn btn-success">Assign Id</button>
+               </div>
+             </form>
+           </div>
+         </div>
+       </div>
+    </div>
 <!-- end:: Content -->
+@endsection
+@section('foot')
+<script>
+    var current_open_target=null;
+     $("#form").on('shown.bs.modal', function (event){
+        // 
+        current_open_target=$(event.relatedTarget);
+          var client_rider_id_val=$(event.relatedTarget).attr("data-client-rider-id"); 
+          $('#body_value').val(client_rider_id_val);
+          var rider_id_val=$(event.relatedTarget).attr("data-rider-id"); 
+          $('#rider_id').val(rider_id_val);
+
+       });
+    $(document).ready(function(){
+       // submit_btn_dates
+        $('#form_dates').submit(function(e){
+            e.preventDefault();
+            var form=$(this);
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+       $.ajax({
+        headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }, 
+                url:"{{route('ClientRiders.update')}}",
+                data: form.serializeArray(),
+                method: "POST"
+            })
+            .done(function(data) {  
+                console.log(data);
+                $('#form').modal('toggle');
+                if(current_open_target){
+                    current_open_target.attr("data-client-rider-id", data.client_rider_id);
+                }
+            });
+            
+        });
+    });
+</script>
+
 @endsection

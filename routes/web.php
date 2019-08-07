@@ -33,6 +33,7 @@ Route::group([
     Route::put('/profile', 'ProfileController@update')->name('client.profile.update');
     Route::get('/messageToSupport', 'ProfileController@messageToSupport')->name('client.messageToSupport');
     Route::post('/messageToSupport', 'ProfileController@sendMessageToSupport')->name('client.sendMessageToSupport');
+    Route::post('/update/client/riders','RiderController@update_ClientRiders')->name('ClientRiders.update');
 });
 
 Route::group([
