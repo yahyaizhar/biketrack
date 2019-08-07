@@ -28,8 +28,7 @@
                             <i class="la la-plus"></i>
                             New Record
                         </a> --}}
-                        <a href="" data-toggle="modal" data-target="#import_data"  class="btn btn-label-success btn-sm btn-upper">Import Zomato Data</a>&nbsp;
-                    </div>
+                        </div>
                 </div>
             </div>
         </div>
@@ -56,30 +55,7 @@
         </div>
     </div>
 </div>
-<div>
-        <div class="modal fade" id="import_data" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header border-bottom-0">
-                      <h5 class="modal-title" id="exampleModalLabel"></h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <form class="kt-form" id="form_dates"  enctype="multipart/form-data">
-                        <div class="modal-body">
-                           
-                               
-                               </div>
-                              
-                      <div class="modal-footer border-top-0 d-flex justify-content-center">
-                        
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-           </div>
+
 
 <!-- end:: Content -->
 @endsection
