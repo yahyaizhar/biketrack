@@ -26,6 +26,7 @@
                 <h3 class="kt-portlet__head-title">
                     Riders
                 </h3>
+
             </div>
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-wrapper">
@@ -67,14 +68,17 @@
         </div>
     </div>
 </div>
-
+<div class="UppyDragDrop"></div>
+<button class="upload-button">Upload</button>
 <!-- end:: Content -->
 @endsection
 @section('foot')
+<link href="https://transloadit.edgly.net/releases/uppy/v1.3.0/uppy.min.css" rel="stylesheet">
 <!--begin::Page Vendors(used by this page) -->
 <script src="{{ asset('dashboard/assets/vendors/custom/datatables/datatables.bundle.js') }}" type="text/javascript"></script>
 <script src="{{ asset('https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js') }}" type="text/javascript"></script>
-
+<script src="https://transloadit.edgly.net/releases/uppy/v1.3.0/uppy.min.js"></script>
+<script src="{{ asset('js/papaparse.js') }}" type="text/javascript"></script>
 
 <!--end::Page Vendors -->
 
@@ -83,6 +87,38 @@
 
 <!--end::Page Scripts -->
 <script>
+     var uppy = Uppy.Core();
+  uppy.use(Uppy.DragDrop, { 
+      target: '.UppyDragDrop',
+      autoProceed: false,
+        allowMultipleUploads: false,
+      allowedFileTypes: ['.csv']
+  
+   });
+  const uploadBtn = document.querySelector('button.upload-button')
+    uploadBtn.addEventListener('click', function () {
+        alert('asdasd');
+        var files = uppy.getFiles();
+        Papa.parse(files[0].data, {
+            header:true,
+            beforeFirstChunk: function( chunk ) {
+                var rows = chunk.split( /\r\n|\r|\n/ );
+                var headings = rows[0].split( ',' );console.warn(headings);
+                headings.forEach(function(_d, _i){
+                headings[_i]=_d.trim().replace(/ /g, '_').toLowerCase();
+                });
+                rows[0] = headings.join();
+                return rows.join( '\n' );
+            },
+            error: function(err, file, inputElem, reason){ console.log(err); },
+            complete: function(results, file){ 
+                console.log( results);
+                
+            }
+        });
+        // uppy.upload()
+    })
+
 var riders_table;
 var riders_data = [];
 $(function() {
