@@ -34,7 +34,7 @@ class CreateRelationshipTables extends Migration
             $table->increments('id');
             $table->bigInteger('client_id')->unsigned()->index()->nullable();
             $table->bigInteger('rider_id')->unsigned()->index()->nullable();
-            $table->bigInteger('client_rider_id')->unsigned()->index()->nullable();
+            $table->string('client_rider_id')->nullable();
             $table->boolean('status')->nullable();
             $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
             $table->foreign('rider_id')->references('id')->on('riders')->onDelete('cascade');

@@ -47,6 +47,10 @@ class Rider extends Authenticatable
     {
         return $this->hasMany(Rider_Message::class, 'rider_id');
     }
+    public function Rider_Performance_Zomato()
+    {
+        return $this->hasMany(Rider_Performance_Zomato::class, 'rider_id');
+    }
     public function locations()
     {
         return $this->hasMany(Rider_Location::class, 'rider_id');

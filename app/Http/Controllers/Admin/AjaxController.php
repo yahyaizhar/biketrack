@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Model\Sim\Sim;
 use App\Model\Sim\Sim_Transaction;
 use App\Model\Mobile\Mobile_installment;
+use App\Model\Rider\Rider_Performance_Zomato;
 
 
 class AjaxController extends Controller
@@ -501,7 +502,7 @@ class AjaxController extends Controller
                     <a class="dropdown-item" href="'.route('admin.rider.ridesReport', $riders->id).'"><i class="fa fa-eye"></i> View Rides Report</a>
                     <button class="dropdown-item" onclick="updateStatus('.$riders->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                     <a class="dropdown-item" href="'.route('admin.rider.location', $riders->id).'"><i class="fa fa-map-marker-alt"></i> View Location</a>
-                    
+                    <a class="dropdown-item" href="'.route('admin.riderPerformance', $riders->id).'"><i class="fa fa-eye"></i>Rider Performance</a>
                     <a class="dropdown-item" href="'.route('admin.riders.edit', $riders).'"><i class="fa fa-edit"></i> Edit</a>
                     <button class="dropdown-item" onclick="deleteRider('.$riders->id.')"><i class="fa fa-trash"></i> Delete</button>
                     <a class="dropdown-item" href="'.route('Bike.assignedToRiders_History', $riders).'"><i class="fa fa-eye"></i>View Bikes History</a>
@@ -1126,7 +1127,55 @@ public function getRidersDetails()
        }
        
        }
-   public function rider_name($id){
-       
-   }
+
+       public function getRiderPerformance($id)
+       {   $rider=Rider::find($id);
+           $performance =$rider->Rider_Performance_Zomato()->orderByDesc('created_at')->get();
+           // return $clients;
+           return DataTables::of($performance)
+           ->addColumn('status', function($performance){
+               if($performance->status == 1)
+               {
+                   return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
+               }
+               else
+               {
+                   return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
+               }
+           })
+         ->addColumn('feid', function($performance){
+               return $performance->feid;
+           })
+           ->addColumn('date', function($performance){
+            return $performance->date;
+        })
+        ->addColumn('cod_orders', function($performance){
+            return $performance->cod_orders;
+        })
+        ->addColumn('cod_amount', function($performance){
+            return $performance->cod_amount;
+        })
+        ->addColumn('trips', function($performance){
+            return $performance->trips;
+        })
+        
+           ->addColumn('actions', function($performance){
+               $status_text = $performance->status == 1 ? 'Inactive' : 'Active';
+               return '<span class="dtr-data">
+               <span class="dropdown">
+                   <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+                   <i class="la la-ellipsis-h"></i>
+                   </a>
+                   <div class="dropdown-menu dropdown-menu-right">
+                       <a class="dropdown-item" href="'.route('Sim.edit_sim', $performance).'"><i class="fa fa-edit"></i> Edit</a>
+                       <button class="dropdown-item" onclick="updateStatus('.$performance->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
+                       <button class="dropdown-item" onclick="deleteSim('.$performance->id.');"><i class="fa fa-trash"></i> Delete</button>
+                   </div>
+               </span>
+           </span>';
+           })
+           ->rawColumns([ 'feid','date','cod_orders','cod_amount','trips', 'actions', 'status'])
+           ->make(true);
+       }
+
 }
