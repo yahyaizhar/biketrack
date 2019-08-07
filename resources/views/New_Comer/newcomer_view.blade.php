@@ -2,11 +2,14 @@
 @section('head')
     <!--begin::Page Vendors Styles(used by this page) -->
     <link href="{{ asset('dashboard/assets/vendors/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />
-    <style>
-        .highlighted{
-            background-color: #FFFF88;
-        }
-        </style>
+<style>
+    .highlighted{
+        background-color: #FFFF88;
+    }
+    .dataTables_filter{
+        display:none;
+    }
+</style>
     <!--end::Page Vendors Styles -->
 @endsection
 @section('main-content')
@@ -27,9 +30,15 @@
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
-                        {{-- <button class="btn btn-danger btn-elevate btn-icon-sm" id="bulk_delete">Delete Selected</button> --}}
                         &nbsp;
-                        <a href="{{ route('NewComer.form') }}" class="btn btn-brand btn-elevate btn-icon-sm">
+                        <div class="checkbox checkbox-danger btn btn-default btn-elevate btn-icon-sm">
+                            <input id="check_id" class="checkbox checkbox-danger" type="checkbox">
+                            <label for="check_id" >
+                               Detailed View
+                            </label>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Search" id="search_details" style="display: inline-block;width: auto;">
+                        <a href="{{ route('admin.riders.create') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
                             New Record
                         </a>
@@ -38,16 +47,6 @@
             </div>
         </div>
         <div class="kt-portlet__body">
-<h1 class="jhgjhg" style="display:none;" >a</h1>
-
-<div class="checkbox checkbox-danger btn btn-default btn-elevate btn-icon-sm" id="hover_Checkbox1" >
-        <input id="check_id" class="checkbox checkbox-danger" type="checkbox">
-        <label for="check_id" >
-           Detailed View
-        </label>
-        <input type="search" class="form-control" placeholder="Search" id="search_details" style="border:1px solid lightblue;font-size:14px;">
-        
-</div>
             <!--begin: Datatable -->
             <table class="table table-striped- table-hover table-checkable table-condensed" id="newComer-table">
                 <thead>
@@ -216,7 +215,113 @@ $(function() {
                 '</tr>'+
            '</table>';
     }
+
+    $("#search_details").on("keyup", function() {
+        var _val = $(this).val().trim().toLowerCase();
+        $('#newComer-table tbody > tr').show();
+        if(_val===''){
+            $("#newComer-table tbody").unmark();
+            $("#newComer-table tbody > tr:visible").each(function() {
+                var tr = $(this);
+                var row = newcomer_table.row( tr );
+                if ( row.child.isShown() ) {
+                    // This row is already open - close it
+                    row.child.remove();
+                    tr.removeClass('shown');
+                }
+            });
+            return;
+        }
+        // $("#riders-table tbody > tr:visible").each(function() {
+        //     $(this).removeClass("shown");
+        // });
+        
+        if (newcomer_data.length > 0) {
+            
+            var _res = newcomer_data.filter(function(x) {
+            
+                return JSON.stringify(x).indexOf(_val) !== -1;
+            });
+            
+            if (_res.length > 0) {
+                $("#newComer-table tbody > tr").filter(function(index) {
+
+                    var _name = $(this).find("td").eq(1).text().trim().toLowerCase();
+                    if (_res.findIndex(function(x) {
+                            return x.name == _name
+                        }) === -1) {
+                        $(this).hide();
+                    }
+                });
+                if(_val !== ''){
+                    $("#newComer-table tbody > tr:visible").each(function() {
+                        var tr = $(this);
+                        var row = newcomer_table.row( tr );
+                        // console.warn("isShon: ",row.child.isShown());
+                        if ( row.child.isShown() ) {
+                            // This row is already open - close it
+                            row.child.remove();
+                            tr.removeClass('shown');
+                        }
+                            // This row is already open - close it
+                            var _arow = row.child( format(row.data()) ); 
+                            _arow.show();
+                            tr.addClass('shown');
+                    });
+                }
+                $("#newComer-table tbody").unmark({
+                    done: function() {
+                        $("#newComer-table tbody").mark(_val, {
+                            "element": "span",
+                            "className": "highlighted"
+                        });
+                    }
+                });
+            } else {
+                $("#newComer-table tbody > tr").hide();
+            }
+        }
+    }); 
+    if(window.outerWidth>=720){
+        $("#check_id").change(function(){
+
+            if($("#check_id").prop("checked") == true){
+                $("td.details-control").each(function(){
+                    if (!$(this).parent().hasClass("shown")) {
+                        $(this).trigger("click");
+                    }  
+                });
+            }
+            if($("#check_id"). prop("checked") == false){
+                $("td.details-control").each(function(){
+                    if ($(this).parent().hasClass("shown")) {
+                        $(this).trigger("click");
+                    }
+                });
+            }
+        });
+    }
+    else if(window.outerWidth<720){
+        $("#check_id").change(function(){
+            if($("#check_id").prop("checked") == true){
+                $("td.sorting_1").each(function(){
+                    if (!$(this).parent().hasClass("parent")) {
+                        $(this).trigger("click");
+                    }  
+                });
+            }
+            if($("#check_id"). prop("checked") == false){
+                $("td.sorting_1").each(function(){
+                    if ($(this).parent().hasClass("parent")) {
+                        $(this).trigger("click");
+                    }  
+                });
+            }
+        });
+    }
 });
+
+
 
 function deleteNewComer(newComer_id)
 {
@@ -290,108 +395,4 @@ tr.shown td.details-control {
 
 
 </style>
-<script>
-        $(document).ready(function(){
-        if(window.outerWidth>=686){
-            $("#check_id").change(function(){
-            
-            if($("#check_id").prop("checked") == true){
-                           
-                           $("td.details-control").each(function(){
-                            if (!$(this).parent().hasClass("shown")) {
-                                $(this).trigger("click");
-                            }  
-                           });
-                          
-                            }
-            if($("#check_id"). prop("checked") == false){
-                           
-                           $("td.details-control").each(function(){
-                            if ($(this).parent().hasClass("shown")) {
-                                $(this).trigger("click");
-                            }  
-                           });
-                          
-                       }
-                     });
-               }
-                  else if(window.outerWidth<686){
-                  $("#check_id").change(function(){
-                   if($("#check_id").prop("checked") == true){
-                           
-                           $("td.sorting_1").each(function(){
-                            if (!$(this).parent().hasClass("parent")) {
-                                $(this).trigger("click");
-                            }  
-                           });
-                          
-                            }
-            if($("#check_id"). prop("checked") == false){
-                           
-                           $("td.sorting_1").each(function(){
-                            if ($(this).parent().hasClass("parent")) {
-                                $(this).trigger("click");
-                            }  
-                           });
-                          
-                       }
-               
-                   });
-                  }
-            });
-</script>
-<script>
-$(document).ready(function(){
-    $("#search_details").on("keyup", function() {
-        var _val = $(this).val().trim().toLowerCase();
-         $("#newComer-table tbody > tr:visible").each(function(){
-                            $(this).removeClass("shown");
-                           });
-    $('#newComer-table tbody > tr').show();
-    if (newcomer_data.length > 0) {
-        
-            var _res = newcomer_data.filter(function(x) {
-                return JSON.stringify(x).indexOf(_val) !== -1
-            });
-            if (_res.length > 0) {
-                $("#newComer-table tbody > tr").filter(function(index) {
-                    var _name = $(this).find("td").eq(1).text().trim().toLowerCase();
-                    if (_res.findIndex(function(x) {
-                         console.log('isTrue: ', x.name == _name);
-                            return x.name == _name
-                        }) === -1) {
-                        $(this).hide();
-                    }
-
-                });
-                if(_val !== ''){
-                $('tr.shown').next().remove();
-                $("#newComer-table tbody > tr:visible").removeClass("shown");
-                $("#newComer-table tbody > tr:visible").each(function() {
-                    $(this).find('td.details-control').trigger('click');
-                });
-            }
-            $("#newComer-table tbody").unmark({
-                done: function() {
-                    $("#newComer-table tbody").mark(_val, {
-                        "element": "span",
-                        "className": "highlighted"
-                    });
-                }
-            });
-            //  $("#newComer-table tbody > tr:visible").each(function(){
-            //                 $(this).addClass("shown")
-            //                  $(this).find("td.details-control").trigger("click");
-            //                });
-               
-            }
-            else{
-                $("#newComer-table tbody > tr").hide();
-            }
-        
-    }
-});
-
-});
-</script>
 @endsection

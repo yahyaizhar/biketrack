@@ -59,7 +59,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        
+         
         // If the request wants JSON (AJAX doesn't always want JSON)
         // Define the response
         // $response = [

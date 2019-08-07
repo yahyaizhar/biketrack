@@ -6,6 +6,9 @@
 .highlighted{
     background-color: #FFFF88;
 }
+.dataTables_filter{
+    display:none;
+}
 </style>
     <!--end::Page Vendors Styles -->
 @endsection
@@ -23,14 +26,18 @@
                 <h3 class="kt-portlet__head-title">
                     Riders
                 </h3>
-               
-                    
-                
             </div>
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
                         &nbsp;
+                        <div class="checkbox checkbox-danger btn btn-default btn-elevate btn-icon-sm">
+                            <input id="check_id" class="checkbox checkbox-danger" type="checkbox">
+                            <label for="check_id" >
+                               Detailed View
+                            </label>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Search" id="search_details" style="display: inline-block;width: auto;">
                         <a href="{{ route('admin.riders.create') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
                             New Record
@@ -40,24 +47,6 @@
             </div>
         </div>
         <div class="kt-portlet__body">
-            <div class="row">
-                
-            <div class="checkbox checkbox-danger btn btn-default btn-elevate btn-icon-sm" id="hover_Checkbox">
-                <input id="check_id" class="checkbox checkbox-danger" type="checkbox">
-                <label for="check_id" >
-                   Detailed View
-                </label>
-                <input type="search" class="form-control" placeholder="Search" id="search_details" style="border:1px solid lightblue;font-size:14px;">
-        
-        </div>
-        
-    </div>
-    {{-- <div class="row">
-                
-            <div  id="hover_Checkbox">
-                    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for further details.." >
-        </div>
-    </div> --}}
             <!--begin: Datatable -->
             <table class="table table-striped table-hover table-checkable table-condensed" id="riders-table">
                 <thead>
@@ -137,10 +126,7 @@ $(function() {
             { "data": 'status', "name": 'status' },
             { "data": 'actions', "name": 'actions' }
         ];
-      
         _settings.responsive=false;
-
-        
     }
     else{
         $('#riders-table thead tr th').eq(6).before('<th>Date Of Joining</th>');
@@ -148,10 +134,6 @@ $(function() {
         $('#riders-table thead tr th').eq(8).before('<th>Visa Expiry</th>');
         $('#riders-table thead tr th').eq(9).before('<th>Licence Expiry</th>');
         $('#riders-table thead tr th').eq(10).before('<th>Mulkiya Expiry</th>');
-       
-        
-        
-        
         _settings.columns=[
         { "data": 'new_id', "name": 'new_id' },
             { "data": 'new_name', "name": 'name' },
@@ -194,41 +176,136 @@ $(function() {
     //             "defaultContent": ''
     //         },
     
-    function format ( data ) {
-        // `d` is the original data object for the row
-        return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
-                '<tr>'+
-                '<td colspan="1"; style="font-weight:900;">Date Of Joining:</td>'+
-                '<td colspan="2";>'+data.date_of_joining+'</td>'+
-                '<td colspan="1"; style="font-weight:900;" >Assign Bike Number:</td>'+
-                '<td colspan="2";>'+data.bike_number+'</td>'+
-                '<td colspan="1"; style="font-weight:900;" >Phone Number:</td>'+
-                '<td colspan="1";>'+data.phone+'</td>'+
-                '<td colspan="1"; style="font-weight:900;" >Emerate ID:</td>'+
-                '<td colspan="1";>'+data.emirate_id+'</td>'+
-                '<td colspan="1"; style="font-weight:900;" >Email:</td>'+
-                '<td colspan="1";>'+data.email+'</td>'+
-               
-               '</tr>'+
-               '<tr>'+
-                '<td colspan="1"; style="font-weight:900;">Passport Expiry:</td>'+
-                '<td colspan="2";>'+data.passport_expiry+'</td>'+
-                '<td colspan="1"; style="font-weight:900;" >Visa Expiry:</td>'+
-                '<td colspan="2"; >'+data.visa_expiry+'</td>'+
-                '<td style="font-weight:900;">Licence Exiry:</td>'+
-                '<td colspan="2";>'+data.licence_expiry+'</td>'+
-                '<td colspan="1"; style="font-weight:900;" >Mulkiya Expiry:</td>'+
-                '<td colspan="2";>'+data.mulkiya_expiry+'</td>'+
-               
-               
-              
-               
-               
-               '</tr>'+
-                
-
+function format ( data ) {
+    // `d` is the original data object for the row
+    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+            '<tr>'+
+            '<td colspan="1"; style="font-weight:900;">Date Of Joining:</td>'+
+            '<td colspan="2";>'+data.date_of_joining+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Assign Bike Number:</td>'+
+            '<td colspan="2";>'+data.bike_number+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Phone Number:</td>'+
+            '<td colspan="1";>'+data.phone+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Emerate ID:</td>'+
+            '<td colspan="1";>'+data.emirate_id+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Email:</td>'+
+            '<td colspan="1";>'+data.email+'</td>'+
             
-           '</table>';
+            '</tr>'+
+            '<tr>'+
+            '<td colspan="1"; style="font-weight:900;">Passport Expiry:</td>'+
+            '<td colspan="2";>'+data.passport_expiry+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Visa Expiry:</td>'+
+            '<td colspan="2"; >'+data.visa_expiry+'</td>'+
+            '<td style="font-weight:900;">Licence Exiry:</td>'+
+            '<td colspan="2";>'+data.licence_expiry+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Mulkiya Expiry:</td>'+
+            '<td colspan="2";>'+data.mulkiya_expiry+'</td>'+
+            '</tr>'+
+        '</table>';
+}
+
+$("#search_details").on("keyup", function() {
+    var _val = $(this).val().trim().toLowerCase();
+    if(_val===''){
+        $("#riders-table tbody").unmark();
+        $("#riders-table tbody > tr:visible").each(function() {
+            var tr = $(this);
+            var row = riders_table.row( tr );
+            if ( row.child.isShown() ) {
+                // This row is already open - close it
+                row.child.remove();
+                tr.removeClass('shown');
+            }
+        });
+        return;
+    }
+    // $("#riders-table tbody > tr:visible").each(function() {
+    //     $(this).removeClass("shown");
+    // });
+    $('#riders-table tbody > tr').show();
+    if (riders_data.length > 0) {
+        
+        var _res = riders_data.filter(function(x) {
+          
+            return JSON.stringify(x).indexOf(_val) !== -1;
+        });
+        
+        if (_res.length > 0) {
+            $("#riders-table tbody > tr").filter(function(index) {
+
+                var _id = $(this).find("td").eq(1).text().trim().toLowerCase();
+                if (_res.findIndex(function(x) {
+                        return "1000" + x.id == _id
+                    }) === -1) {
+                    $(this).hide();
+                }
+            });
+            if(_val !== ''){
+                $("#riders-table tbody > tr:visible").each(function() {
+                    var tr = $(this);
+                    var row = riders_table.row( tr );
+                    // console.warn("isShon: ",row.child.isShown());
+                    if ( row.child.isShown() ) {
+                        // This row is already open - close it
+                        row.child.remove();
+                        tr.removeClass('shown');
+                    }
+                        // This row is already open - close it
+                        var _arow = row.child( format(row.data()) );
+                        _arow.show();
+                        tr.addClass('shown');
+                });
+            }
+            $("#riders-table tbody").unmark({
+                done: function() {
+                    $("#riders-table tbody").mark(_val, {
+                        "element": "span",
+                        "className": "highlighted"
+                    });
+                }
+            });
+        } else {
+            $("#riders-table tbody > tr").hide();
+        }
+    }
+    }); 
+    if(window.outerWidth>=720){
+        $("#check_id").change(function(){
+
+            if($("#check_id").prop("checked") == true){
+                $("td.details-control").each(function(){
+                    if (!$(this).parent().hasClass("shown")) {
+                        $(this).trigger("click");
+                    }  
+                });
+            }
+            if($("#check_id"). prop("checked") == false){
+                $("td.details-control").each(function(){
+                    if ($(this).parent().hasClass("shown")) {
+                        $(this).trigger("click");
+                    }  
+                });
+            }
+        });
+    }
+    else if(window.outerWidth<720){
+        $("#check_id").change(function(){
+            if($("#check_id").prop("checked") == true){
+                $("td.sorting_1").each(function(){
+                    if (!$(this).parent().hasClass("parent")) {
+                        $(this).trigger("click");
+                    }  
+                });
+            }
+            if($("#check_id"). prop("checked") == false){
+                $("td.sorting_1").each(function(){
+                    if ($(this).parent().hasClass("parent")) {
+                        $(this).trigger("click");
+                    }  
+                });
+            }
+        });
     }
 });
 
@@ -288,114 +365,12 @@ function updateStatus(rider_id)
 }
 </script>
 <style>
-   
-        td.details-control {
-            background: url('https://biketrack-dev.solutionwin.net/details_open.png') no-repeat center center;
-            cursor: pointer;
-        }
-        tr.shown td.details-control {
-            background: url('https://biketrack-dev.solutionwin.net/details_close.png') no-repeat center center;
-        }
-        </style>
-<script>
-$(document).ready(function(){
-    if(window.outerWidth>=720){
-        $("#check_id").change(function(){
-            
-            if($("#check_id").prop("checked") == true){
-                           
-                           $("td.details-control").each(function(){
-                            if (!$(this).parent().hasClass("shown")) {
-                                $(this).trigger("click");
-                            }  
-                           });
-                          
-                            }
-            if($("#check_id"). prop("checked") == false){
-                           
-                           $("td.details-control").each(function(){
-                            if ($(this).parent().hasClass("shown")) {
-                                $(this).trigger("click");
-                            }  
-                           });
-                          
-                       }
-                     });
-               }
-                  else if(window.outerWidth<720){
-                  $("#check_id").change(function(){
-                   if($("#check_id").prop("checked") == true){
-                           
-                           $("td.sorting_1").each(function(){
-                            if (!$(this).parent().hasClass("parent")) {
-                                $(this).trigger("click");
-                            }  
-                           });
-                          
-                            }
-            if($("#check_id"). prop("checked") == false){
-                           
-                           $("td.sorting_1").each(function(){
-                            if ($(this).parent().hasClass("parent")) {
-                                $(this).trigger("click");
-                            }  
-                           });
-                          
-                       }
-               
-                   });
-                  }
-});
-</script>
-<script>
-$(document).ready(function() {
-    $("#search_details").on("keyup", function() {
-    var _val = $(this).val().trim().toLowerCase();
-   
-
-    $("#riders-table tbody > tr:visible").each(function() {
-        
-        $(this).removeClass("shown");
-    });
-    $('#riders-table tbody > tr').show();
-    if (riders_data.length > 0) {
-        
-        var _res = riders_data.filter(function(x) {
-          
-            return JSON.stringify(x).indexOf(_val) !== -1;
-        });
-        
-        if (_res.length > 0) {
-            $("#riders-table tbody > tr").filter(function(index) {
-
-                var _id = $(this).find("td").eq(1).text().trim().toLowerCase();
-                if (_res.findIndex(function(x) {
-                        console.log('isTrue: ' + parseInt("1000" + x.id) == parseInt(_id));
-                        return "1000" + x.id == _id
-                    }) === -1) {
-                    $(this).hide();
-                }
-            });
-            if(_val !== ''){
-                $('tr.shown').next().remove();
-                $("#riders-table tbody > tr:visible").removeClass("shown");
-                $("#riders-table tbody > tr:visible").each(function() {
-                    $(this).find('td.details-control').trigger('click');
-                });
-            }
-            $("#riders-table tbody").unmark({
-                done: function() {
-                    $("#riders-table tbody").mark(_val, {
-                        "element": "span",
-                        "className": "highlighted"
-                    });
-                }
-            });
-        } else {
-            $("#riders-table tbody > tr").hide();
-        }
+    td.details-control {
+        background: url('https://biketrack-dev.solutionwin.net/details_open.png') no-repeat center center;
+        cursor: pointer;
     }
-    });    
-});
-</script>
+    tr.shown td.details-control {
+        background: url('https://biketrack-dev.solutionwin.net/details_close.png') no-repeat center center;
+    }
+</style>
 @endsection
