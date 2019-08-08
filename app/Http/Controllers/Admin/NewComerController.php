@@ -32,7 +32,8 @@ class NewComerController extends Controller
 
 
     public function new_comer_view(){
-        return view('New_Comer.newcomer_view');
+        $newComer_count=New_comer::all()->count();
+        return view('New_Comer.newcomer_view',compact('newComer_count'));
     }
     public function delete_new_comer(Request $request){
         $newComer_id=$request->newComer_id;

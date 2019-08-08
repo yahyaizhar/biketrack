@@ -105,7 +105,8 @@ class MobileController extends Controller
     }
     public function mobiles(){
         $mobiles=Mobile::all();
-        return view('admin.rider.mobile.mobiles', compact('mobiles'));
+        $mobile_count=$mobiles->count();
+        return view('admin.rider.mobile.mobiles', compact('mobiles','mobile_count'));
     }
     public function delete_mobile(Request $request,$id){
         $mobile_delete=Mobile::find($id);
@@ -131,7 +132,8 @@ class MobileController extends Controller
     }
 
     public function show_mobileInstallmenet(){
-        return view('admin.rider.mobile.view_installment');
+        $installment_count=Mobile_installment::all()->count();
+        return view('admin.rider.mobile.view_installment',compact('installment_count'));
     }
     public function edit_mobileInstallment($id){
         $installment=Mobile_installment::find($id);

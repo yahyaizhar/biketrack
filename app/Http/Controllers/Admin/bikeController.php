@@ -28,8 +28,8 @@ class bikeController extends Controller
     }
     public function bike_view(){
 
-      
-      return view('admin.Bike.bike_view');
+      $bike_count=bike::all()->count();
+      return view('admin.Bike.bike_view',compact('bike_count'));
     }
     public function create_bike(Request $r){
       $bike_object=new bike;

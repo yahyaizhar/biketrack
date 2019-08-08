@@ -35,8 +35,8 @@
                                         <label>Sim Company:</label>
                                         {{-- <input type="text" class="form-control @if($errors->has('sim_company')) invalid-field @endif" name="sim_company" placeholder="Enter Sim Company" value="{{ old('sim_company') }}"> --}}
                                         <select class="form-control @if($errors->has('sim_company')) invalid-field @endif kt-select2" id="kt_select2_3" name="sim_company" placeholder="Enter Sim Company" value="{{ old('sim_company') }}">
-                                            <option value="DU">DU</option>
                                             <option value="Ethisalat">Ethisalat</option>
+                                            <option value="DU">DU</option>
                                             </select> 
                                         @if ($errors->has('sim_company'))
                                             <span class="invalid-response" role="alert">

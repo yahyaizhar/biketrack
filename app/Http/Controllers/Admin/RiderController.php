@@ -40,8 +40,8 @@ class RiderController extends Controller
      */
     public function index()
     {
-        //
-        return view('admin.rider.riders');
+        $rider_count=Rider::all()->count();
+        return view('admin.rider.riders',compact('rider_count'));
     }
 
     /**
@@ -556,7 +556,8 @@ public function destroyer(Rider $rider,$id){
   
    public function RiderPerformance(){
     //    $rider=Rider::find($id);
-       return view('admin.rider.rider_performance');
+    $performance_count=Rider_Performance_Zomato::all()->count();
+       return view('admin.rider.rider_performance',compact('performance_count'));
 
    }
 }

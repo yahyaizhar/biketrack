@@ -9,6 +9,17 @@
 .dataTables_filter{
     display:none;
 }
+
+.dataTables_length{
+   display: block;   
+}
+.total_entries{
+display: inline-block;
+margin-left: 10px;
+}
+.dataTables_info{
+    display:none;
+}
 </style>
     <!--end::Page Vendors Styles -->
 @endsection
@@ -31,6 +42,7 @@
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
+                       
                         &nbsp;
                         <div class="checkbox checkbox-danger btn btn-default btn-elevate btn-icon-sm">
                             <input id="check_id" class="checkbox checkbox-danger" type="checkbox">
@@ -43,8 +55,7 @@
                             <i class="la la-plus"></i>
                             New Record
                         </a>
-                        <a style="padding:8.45px 13px;" href="" data-toggle="modal" data-target="#import_data"  class="btn btn-label-success btn-sm btn-upper">Import Zomato Data</a>
-                    </div>
+                         </div>
                 </div>
             </div>
         </div>
@@ -71,36 +82,14 @@
 </div>
 
 <!-- end:: Content -->
-<div>
-<div class="modal fade" id="import_data" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-            <div class="modal-header border-bottom-0">
-                <h5 class="modal-title" id="exampleModalLabel"></h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form class="kt-form" id="form_dates"  enctype="multipart/form-data">
-                <div class="modal-body">
-                    <div class="UppyDragDrop"></div>   
-                </div> 
-                <div class="modal-footer border-top-0 d-flex justify-content-center">
-                    <button class="upload-button btn btn-success">Import</button>
-                </div>
-            </form>
-            </div>
-        </div>
-        </div>
-    </div>
+
 @endsection
 @section('foot')
-<link href="https://transloadit.edgly.net/releases/uppy/v1.3.0/uppy.min.css" rel="stylesheet">
+
 <!--begin::Page Vendors(used by this page) -->
 <script src="{{ asset('dashboard/assets/vendors/custom/datatables/datatables.bundle.js') }}" type="text/javascript"></script>
 <script src="{{ asset('https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js') }}" type="text/javascript"></script>
-<script src="https://transloadit.edgly.net/releases/uppy/v1.3.0/uppy.min.js"></script>
-<script src="{{ asset('js/papaparse.js') }}" type="text/javascript"></script>
+
 
 <!--end::Page Vendors -->
 
@@ -108,108 +97,9 @@
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/datatables/basic/basic.js') }}" type="text/javascript"></script>
 
 <!--end::Page Scripts -->
-@php
-    $client_riders=App\Model\Client\Client_Rider::all();
-@endphp
+
 <script>
     
-    var client_riders = {!! json_encode($client_riders) !!};
-     var uppy = Uppy.Core({
-    debug: true,
-    autoProceed: false,
-    allowMultipleUploads: false,
-    restrictions: {
-        allowedFileTypes: ['.csv']
-    }
-});
-  uppy.use(Uppy.DragDrop, { 
-      target: '.UppyDragDrop',
-        
-   });
-   uppy.on('restriction-failed', (file, error) => {
-    // do some customized logic like showing system notice to users
-    console.log(error);
-    alert(error);
-    
-    })
-  
-    $('.upload-button').on('click', function (e) {
-        e.preventDefault();
-
-        var files = uppy.getFiles();
-        if(files.length<=0){
-            alert('Choose .csv file first');
-            return;
-        }
-        Papa.parse(files[0].data, {
-            header:true,
-            dynamicTyping: true,
-            beforeFirstChunk: function( chunk ) {
-                var rows = chunk.split( /\r\n|\r|\n/ );
-                var headings = rows[0].split( ',' );console.warn(headings);
-                headings.forEach(function(_d, _i){
-                headings[_i]=_d.trim().replace(/ /g, '_').replace(/[0-9]/g, '').toLowerCase();
-                });
-                rows[0] = headings.join();
-                return rows.join( '\n' );
-            },
-            error: function(err, file, inputElem, reason){ console.log(err); },
-            complete: function(results, file){ 
-                console.log( results);
-                // ajax to import data
-               var import_data = results.data;
-               import_data.forEach(function(data, i){
-                    var client_rider=client_riders.find(function(x){return x.client_rider_id===data.feid});
-                    // delete import_data[i].pl;
-                    // delete import_data[i].area;
-                    // delete import_data[i].driver_id;
-                    // delete import_data[i].driver_name;
-                    // delete import_data[i].status;
-                    var _riderID = null;
-                    if(typeof client_rider !== "undefined"){
-                        _riderID=client_rider.rider_id;
-                    }
-                    import_data[i].rider_id=_riderID;
-                });
-                $.ajax({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    url : "{{route('import.zomato')}}",
-                    type : 'POST',
-                    data: {data: import_data},
-                    beforeSend: function() {            
-                        $('.loading').show();
-                    },
-                    complete: function(){
-                        $('.loading').hide();
-                    },
-                    success: function(data){
-                        console.log(data);
-                        swal.fire({
-                            position: 'center',
-                            type: 'success',
-                            title: 'Record imported successfully.',
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                        // riders_table.ajax.reload(null, false);
-                    },
-                    error: function(error){
-                        swal.fire({
-                            position: 'center',
-                            type: 'error',
-                            title: 'Oops...',
-                            text: 'Unable to update.',
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                    }
-                });
-            }
-        });
-        // uppy.upload()
-    });
 
 var riders_table;
 var riders_data = [];
@@ -229,6 +119,9 @@ $(function() {
                 var __data = JSON.parse(JSON.stringify(_data[_d]).toLowerCase());
                 riders_data.push(__data);
             });
+            // dataTables_info
+            $('.total_entries').remove();
+            $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
             
         },
         ajax: '{!! route('admin.riders.data') !!}',

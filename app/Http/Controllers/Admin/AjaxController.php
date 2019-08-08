@@ -992,6 +992,7 @@ public function getRidersDetails()
         ->addColumn('phone_number', function($newComer){
             return $newComer->phone_number;
         })
+        
         ->addColumn('nationality', function($newComer){
             return $newComer->nationality;
         })
@@ -1170,6 +1171,15 @@ public function getRidersDetails()
         })
         ->addColumn('adt', function($performance){
             return $performance->adt;
+        })
+        ->addColumn('rider_name', function($performance){
+        $rider=$performance->Rider;
+        if(isset($rider)){
+        return $rider->name;
+        }
+        else{
+            return 'No Client Rider Id is Assigned';
+        }
         })
         
            ->addColumn('actions', function($performance){

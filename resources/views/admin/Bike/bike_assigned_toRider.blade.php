@@ -44,7 +44,7 @@
                                     {{-- @if ($current_bike !== null)
                                     hidden
                                 @endif --}}
-                                 >{{ $bike->brand }}-{{ $bike->model }}</option>    
+                                 >{{ $bike->brand }}&nbsp{{$bike->bike_number}}&nbsp{{ $bike->model }}</option>    
                                 @endif
                                   
                                 @endforeach
@@ -64,7 +64,7 @@
                                            {{-- @if ($current_bike !== null)
                                            hidden
                                        @endif --}}
-                                        >{{ $bike->brand }}-{{ $bike->model }}</option>    
+                                        >{{ $bike->brand }}&nbsp{{$bike->bike_number}}&nbsp{{ $bike->model }}</option>    
                                        @endif
                                          
                                        @endforeach
