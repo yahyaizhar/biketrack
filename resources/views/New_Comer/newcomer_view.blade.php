@@ -9,6 +9,16 @@
     .dataTables_filter{
         display:none;
     }
+    .dataTables_length{
+   display: block;   
+}
+.total_entries{
+display: inline-block;
+margin-left: 10px;
+}
+.dataTables_info{
+    display:none;
+}
 </style>
     <!--end::Page Vendors Styles -->
 @endsection
@@ -102,6 +112,9 @@ $(function() {
                 var __data = JSON.parse(JSON.stringify(_data[_d]).toLowerCase());
                 newcomer_data.push(__data);
             });
+            $('.total_entries').remove();
+        $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
+   
         },
         ajax: "{!! route('NewComer.view_ajax') !!}",
         columns:null, 

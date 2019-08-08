@@ -9,6 +9,17 @@
 .dataTables_filter{
     display:none;
 }
+
+.dataTables_length{
+   display: block;   
+}
+.total_entries{
+display: inline-block;
+margin-left: 10px;
+}
+.dataTables_info{
+    display:none;
+}
 </style>
     <!--end::Page Vendors Styles -->
 @endsection
@@ -31,6 +42,7 @@
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
+                       
                         &nbsp;
                         <div class="checkbox checkbox-danger btn btn-default btn-elevate btn-icon-sm">
                             <input id="check_id" class="checkbox checkbox-danger" type="checkbox">
@@ -177,6 +189,9 @@ $(function() {
                 var __data = JSON.parse(JSON.stringify(_data[_d]).toLowerCase());
                 riders_data.push(__data);
             });
+            // dataTables_info
+            $('.total_entries').remove();
+            $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
             
         },
         ajax: '{!! route('admin.riders.data') !!}',

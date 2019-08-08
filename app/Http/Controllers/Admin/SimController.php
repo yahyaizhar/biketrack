@@ -47,7 +47,8 @@ class SimController extends Controller
     
     public function view_records_sim(){
         $sim_records=Sim::all();
-        return view('SIM.view_sim_records',compact('sim_records'));
+        $sim_count=Sim::all()->count();
+        return view('SIM.view_sim_records',compact('sim_records','sim_count'));
     }
 
     public function edit_sim($id){
@@ -130,7 +131,8 @@ public function store_simTransaction(Request $request){
 }
 
 public function view_sim_transaction_records(){
-    return view('SIM.view_simTransaction');
+    $transaction_count=Sim_Transaction::all()->count();
+    return view('SIM.view_simTransaction',compact('transaction_count'));
 }
 public function edit_simTransaction($id){
     $sim_transaction=Sim_Transaction::find($id);

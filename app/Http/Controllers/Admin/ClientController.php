@@ -36,7 +36,8 @@ class ClientController extends Controller
     {
         //
         // return Client::all();
-        return view('admin.client.clients');
+        $clients_count=Client::all()->count();
+        return view('admin.client.clients',compact('clients_count'));
     }
 
     /**

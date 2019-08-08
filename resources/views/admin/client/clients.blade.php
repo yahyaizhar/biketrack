@@ -2,7 +2,18 @@
 @section('head')
     <!--begin::Page Vendors Styles(used by this page) -->
     <link href="{{ asset('dashboard/assets/vendors/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />
-
+    <style>
+        .dataTables_length{
+           display: block;   
+        }
+        .total_entries{
+        display: inline-block;
+        margin-left: 10px;
+        }
+        .dataTables_info{
+            display:none;
+        }
+        </style>
     <!--end::Page Vendors Styles -->
 @endsection
 @section('main-content')
@@ -79,7 +90,11 @@ $(function() {
             'loadingRecords': '&nbsp;',
             'processing': $('.loading').show()
         },
-        ajax: '{!! route('admin.clients.data') !!}',
+        drawCallback:function(data){
+            $('.total_entries').remove();
+        $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
+    },
+        ajax: '{!! route('admin.clients.data') !!}', 
         columns: [
             // { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
             { data: 'new_id', name: 'new_id' },
@@ -104,6 +119,7 @@ $(function() {
         // },
         order:[0,'desc'],
     });
+   
 });
 function deleteClient(id)
 {
