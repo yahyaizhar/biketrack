@@ -28,10 +28,9 @@ class RiderController extends Controller
         return view('client.rider.location');
     }
    public function update_ClientRiders(Request $req){
-
-$client_rider=Client_Rider::where('client_id',Auth::user()->id)->where('rider_id',$req->rider_id)->get()->first();
-$client_rider->client_rider_id=$req->client_rider_id;
-$client_rider->update();
-return $client_rider;
+        $client_rider=Client_Rider::where('client_id',Auth::user()->id)->where('rider_id',$req->rider_id)->get()->first();
+        $client_rider->client_rider_id=$req->client_rider_id;
+        $client_rider->update();
+        return $client_rider;
    }
 }

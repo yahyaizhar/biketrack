@@ -52,18 +52,34 @@
                                     @php
                                     $client_id=Auth::user()->id;
                                     $client_rider=App\Model\Client\Client_Rider::where('client_id',$client_id)->where('rider_id',$rider->id)->get()->first();
+                                    $assign_bike=$rider->Assign_bike()->where('status','active')->get()->first();
+                                    $bike_number='No bike assigned';
+                                    if(isset($assign_bike)){
+                                        $bike=App\Model\Bikes\bike::find($assign_bike->bike_id);
+                                        $bike_number=$bike->bike_number;
+                                    } 
                                 @endphp
                                 
                                 
                                     <div class="kt-widget__action">
-                                    <a href="" data-toggle="modal" data-target="#form" data-rider-id="{{$rider->id}}"  data-client-rider-id="{{$client_rider->client_rider_id}}" class="btn btn-label-success btn-sm btn-upper">Add Rider ID</a>&nbsp;
+
+                                    <a href="" data-toggle="modal" data-target="#form" data-rider-id="{{$rider->id}}"  data-client-rider-id="{{$client_rider->client_rider_id}}" class="btn @isset($client_rider->client_rider_id)btn-primary @else btn-success @endisset btn-sm btn-upper">
+                                        @isset($client_rider->client_rider_id)
+                                        <i class="fa fa-edit"></i>
+                                        Update Rider ID
+                                        @else
+                                        <i class="fa fa-plus"></i>
+                                        Add Rider ID
+                                        @endisset
+                                        
+                                    </a>
                                     </div>
                                 </div>
             
                                 <div class="kt-widget__subhead">
                                     <a href="mailto:{{ $rider->email }}"><i class="flaticon2-new-email"></i>{{ $rider->email }}</a>
                                     <a><i class="flaticon2-calendar-3"></i>{{ $rider->phone }} </a>
-                                    <a><i class="fa fa-motorcycle"></i>{{ $rider->vehicle_number }}</a>
+                                    <a><i class="fa fa-motorcycle"></i>{{ $bike_number }}</a> 
                                 </div>
             
                                 <div class="kt-widget__info">
@@ -165,34 +181,34 @@
 </div>
 
 <div>
- <div class="modal fade" id="form" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-         <div class="modal-dialog modal-dialog-centered" role="document">
-           <div class="modal-content">
-             <div class="modal-header border-bottom-0">
-               <h5 class="modal-title" id="exampleModalLabel">Assigned Rider Id</h5>
-               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                 <span aria-hidden="true">&times;</span>
-               </button>
-             </div>
-             <form class="kt-form" id="form_dates"  enctype="multipart/form-data">
-                 <div class="modal-body">
-                     <div class="form-group">
-<input type="hidden" name="rider_id" id="rider_id">
-                     </div>
-                         <div class="form-group">
-                                 <label>Rider Id:</label>
-                         <input type="text" id="body_value" class="form-control @if($errors->has('client_rider_id')) invalid-field @endif" name="client_rider_id" placeholder="Client Assign Rider Id"  >
-                                </div>
-                        </div>
-                       
-               <div class="modal-footer border-top-0 d-flex justify-content-center">
-                 <button type="submit" id="submit_btn_dates" class="btn btn-success">Assign Id</button>
-               </div>
-             </form>
-           </div>
-         </div>
-       </div>
+    <div class="modal fade" id="form" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-bottom-0">
+            <h5 class="modal-title" id="exampleModalLabel">Assigned Rider Id</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <form class="kt-form" id="form_dates"  enctype="multipart/form-data">
+                <div class="modal-body">
+                <div class="form-group">
+                    <input type="hidden" name="rider_id" id="rider_id">
+                </div>
+                <div class="form-group">
+                    <label>Rider Id:</label>
+                    <input type="text" id="body_value" class="form-control @if($errors->has('client_rider_id')) invalid-field @endif" name="client_rider_id" placeholder="Client Assign Rider Id"  >
+                </div>
+            </div>
+                    
+            <div class="modal-footer border-top-0 d-flex justify-content-center">
+                <button type="submit" id="submit_btn_dates" class="btn btn-success">Assign Id</button>
+            </div>
+            </form>
+        </div>
+        </div>
     </div>
+</div>
 <!-- end:: Content -->
 @endsection
 @section('foot')

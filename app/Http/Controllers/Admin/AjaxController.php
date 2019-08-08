@@ -450,6 +450,42 @@ class AjaxController extends Controller
             if(!isset($rider_detail->date_of_joining)){
                 $data.='*Date of joining <br />';
             }
+            if(!isset($rider_detail->passport_image)){
+                $data.='*Passport front image <br />';
+            }
+            if(!isset($rider_detail->passport_image_back)){
+                $data.='*Passport back image <br />';
+            }
+            if(!isset($rider_detail->visa_image)){
+                $data.='*Visa front image <br />';
+            }
+            if(!isset($rider_detail->visa_image_back)){
+                $data.='*Visa back image <br />';
+            }
+            if(!isset($rider_detail->emirate_image)){
+                $data.='*Emirate front image <br />';
+            }
+            if(!isset($rider_detail->emirate_image_back)){
+                $data.='*Emirate back image <br />';
+            }
+            if(!isset($rider_detail->licence_image)){
+                $data.='*Licence front image <br />';
+            }
+            if(!isset($rider_detail->licence_image_back)){
+                $data.='*Licence back image <br />';
+            }
+            if(isset($assign_bike)){
+                $bike = $assign_bike->Bike;
+                if(!isset($bike->mulkiya_picture)){
+                     $data.='*Mulkiya front image <br />';
+                }
+            } 
+            if(isset($assign_bike)){
+                $bike = $assign_bike->Bike;
+                if(!isset($bike->mulkiya_picture_back)){
+                     $data.='*Mulkiya back image <br />';
+                }
+            }
             if(isset($assign_bike)){
                 $bike = $assign_bike->Bike;
                 if(!isset($bike->mulkiya_expiry)){
@@ -492,6 +528,15 @@ class AjaxController extends Controller
         })
         ->addColumn('actions', function($riders){
             $status_text = $riders->status == 1 ? 'Inactive' : 'Active';
+            $client=$riders->clients()->get()->first();
+            $cr_HTML='';
+            if(isset($client))
+            {
+                $client_rider=Client_Rider::where('client_id',$client->id)->where('rider_id',$riders->id)->get()->first();
+                if(isset($client_rider)){
+                    $cr_HTML='<a href="" class="dropdown-item" data-toggle="modal" data-target="#client_rider_model" data-rider-id="'.$riders->id.'" data-client-id="'.$client->id.'" data-client-rider-id="'.$client_rider->client_rider_id.'"><i class="fa fa-user-plus"></i> Client\'s Rider ID</a>';
+                }
+            }
             return '<span class="dtr-data">
             <span class="dropdown">
                 <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
@@ -508,7 +553,7 @@ class AjaxController extends Controller
                     <a class="dropdown-item" href="'.route('bike.bike_assignRiders', $riders).'"><i class="fa fa-eye"></i> Assign Bike</a> 
                     <a class="dropdown-item" href="'.route('SimHistory.addsim', $riders).'"><i class="fa fa-eye"></i> Assign Sim</a>
                     <a class="dropdown-item" href="'.route('Sim.simHistory', $riders).'"><i class="fa fa-eye"></i> View Sim History</a>
-                      
+                    '.$cr_HTML.'
                     </div>
                     
                     </div>

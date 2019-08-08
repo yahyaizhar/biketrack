@@ -40,6 +40,7 @@ Route::group([
     'prefix' => 'admin',
     'namespace' => 'Admin'
 ], function(){
+    Route::post('/update/client/riders','RiderController@update_ClientRiders')->name('ClientRiders.admin.update');
     Route::get('/login', 'Auth\LoginController@showLoginForm')->name('admin.login');
     Route::post('/login', 'Auth\LoginController@login')->name('admin.login');
     Route::get('/logout', 'Auth\LoginController@logout')->name('admin.logout');
