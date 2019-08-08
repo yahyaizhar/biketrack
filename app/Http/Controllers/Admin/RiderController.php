@@ -225,17 +225,17 @@ class RiderController extends Controller
         foreach ($data as $item) {
             $average_pick_up_time=
             $obj = [];
-            $obj['date']=isset($item['date'])?$item['date']:'';
-            $obj['feid']=isset($item['feid'])?$item['feid']:'';
-            $obj['adt']=isset($item['adt'])?$item['adt']:'';
-            $obj['trips']=isset($item['trips'])?$item['trips']:'';
-            $obj['average_pickup_time']=isset($item['average_pick_up_time'])?$item['average_pick_up_time']:''; 
-            $obj['average_drop_time']=isset($item['average_drop_time'])?$item['average_drop_time']:'';
-            $obj['loged_in_during_shift_time']=isset($item['logged_in_during_shift_time'])?$item['logged_in_during_shift_time']:'';
-            $obj['total_loged_in_hours']=isset($item['total_log_in_hrs'])?$item['total_log_in_hrs']:'';
-            $obj['cod_orders']=isset($item['cod_orders'])?$item['cod_orders']:'';
-            $obj['cod_amount']=isset($item['cod_amount'])?$item['cod_amount']:'';
-            $obj['rider_id']=isset($item['rider_id'])?$item['rider_id']:'';
+            $obj['date']=isset($item['date'])?$item['date']:null;
+            $obj['feid']=isset($item['feid'])?$item['feid']:null;
+            $obj['adt']=isset($item['adt'])?$item['adt']:null;
+            $obj['trips']=isset($item['trips'])?$item['trips']:null;
+            $obj['average_pickup_time']=isset($item['average_pick_up_time'])?$item['average_pick_up_time']:null; 
+            $obj['average_drop_time']=isset($item['average_drop_time'])?$item['average_drop_time']:null;
+            $obj['loged_in_during_shift_time']=isset($item['logged_in_during_shift_time'])?$item['logged_in_during_shift_time']:null;
+            $obj['total_loged_in_hours']=isset($item['total_log_in_hrs'])?$item['total_log_in_hrs']:null;
+            $obj['cod_orders']=isset($item['cod_orders'])?$item['cod_orders']:null;
+            $obj['cod_amount']=isset($item['cod_amount'])?$item['cod_amount']:null;
+            $obj['rider_id']=isset($item['rider_id'])?$item['rider_id']:null;
             array_push($zomato_objects, $obj);
         }
         DB::table('rider__performance__zomatos')->insert($zomato_objects);
