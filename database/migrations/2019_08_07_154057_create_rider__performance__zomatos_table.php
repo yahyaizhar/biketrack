@@ -15,6 +15,7 @@ class CreateRiderPerformanceZomatosTable extends Migration
     {
         Schema::create('rider__performance__zomatos', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('rider_id')->nullable();
             $table->string('date')->nullable();
             $table->string('feid')->nullable();
             $table->string('trips')->nullable();
