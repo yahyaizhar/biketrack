@@ -70,7 +70,6 @@
 </div>
 
 <!-- end:: Content -->
-<<<<<<< HEAD
 <div>
 <div class="modal fade" id="import_data" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -93,9 +92,6 @@
         </div>
         </div>
     </div>
-=======
-
->>>>>>> ea5104007560bd2792d3cbdd4bcc4d446d43b178
 @endsection
 @section('foot')
 <link href="https://transloadit.edgly.net/releases/uppy/v1.3.0/uppy.min.css" rel="stylesheet">
