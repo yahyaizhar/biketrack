@@ -43,6 +43,7 @@
                             <i class="la la-plus"></i>
                             New Record
                         </a>
+                        <a style="padding:8.45px 13px;" href="" data-toggle="modal" data-target="#import_data"  class="btn btn-label-success btn-sm btn-upper">Import Zomato Data</a>
                     </div>
                 </div>
             </div>
