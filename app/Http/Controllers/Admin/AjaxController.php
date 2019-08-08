@@ -502,7 +502,6 @@ class AjaxController extends Controller
                     <a class="dropdown-item" href="'.route('admin.rider.ridesReport', $riders->id).'"><i class="fa fa-eye"></i> View Rides Report</a>
                     <button class="dropdown-item" onclick="updateStatus('.$riders->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                     <a class="dropdown-item" href="'.route('admin.rider.location', $riders->id).'"><i class="fa fa-map-marker-alt"></i> View Location</a>
-                    <a class="dropdown-item" href="'.route('admin.riderPerformance', $riders->id).'"><i class="fa fa-eye"></i>Rider Performance</a>
                     <a class="dropdown-item" href="'.route('admin.riders.edit', $riders).'"><i class="fa fa-edit"></i> Edit</a>
                     <button class="dropdown-item" onclick="deleteRider('.$riders->id.')"><i class="fa fa-trash"></i> Delete</button>
                     <a class="dropdown-item" href="'.route('Bike.assignedToRiders_History', $riders).'"><i class="fa fa-eye"></i>View Bikes History</a>
@@ -1128,10 +1127,9 @@ public function getRidersDetails()
        
        }
 
-       public function getRiderPerformance($id)
-       {   $rider=Rider::find($id);
-           $performance =$rider->Rider_Performance_Zomato()->orderByDesc('created_at')->get();
-           // return $clients;
+       public function getRiderPerformance()
+       {
+           $performance =Rider_Performance_Zomato::orderByDesc('created_at')->get();
            return DataTables::of($performance)
            ->addColumn('status', function($performance){
                if($performance->status == 1)
@@ -1158,6 +1156,21 @@ public function getRidersDetails()
         ->addColumn('trips', function($performance){
             return $performance->trips;
         })
+        ->addColumn('loged_in_during_shift_time', function($performance){
+            return $performance->loged_in_during_shift_time;
+        })
+        ->addColumn('total_loged_in_hours', function($performance){
+            return $performance->total_loged_in_hours;
+        })
+        ->addColumn('average_drop_time', function($performance){
+            return $performance->average_drop_time;
+        })
+        ->addColumn('average_pickup_time', function($performance){
+            return $performance->average_pickup_time;
+        })
+        ->addColumn('adt', function($performance){
+            return $performance->adt;
+        })
         
            ->addColumn('actions', function($performance){
                $status_text = $performance->status == 1 ? 'Inactive' : 'Active';
@@ -1174,7 +1187,7 @@ public function getRidersDetails()
                </span>
            </span>';
            })
-           ->rawColumns([ 'feid','date','cod_orders','cod_amount','trips', 'actions', 'status'])
+           ->rawColumns([ 'feid','adt','average_pickup_time','average_drop_time','loged_in_during_shift_time','total_loged_in_hours','date','cod_orders','cod_amount','trips', 'actions', 'status'])
            ->make(true);
        }
 
