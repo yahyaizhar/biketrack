@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Rider\Rider;
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\RiderLocationResourceCollection;
 use App\Model\Rider\Rider_Message;
+use App\Model\Rider\Rider_Performance_Zomato;
 use Illuminate\Support\Facades\Auth;
 use App\Model\Rider\Rider_Report;
 use App\Model\Rider\Rider_detail;
@@ -16,6 +18,8 @@ use App\Model\Bikes\bike;
 use App\Model\Sim\Sim;
 use App\Model\Sim\Sim_Transaction;
 use App\Model\Sim\Sim_History;
+use App\Model\Client\Client_Rider;
+use Illuminate\Support\Arr;
 
 
 class RiderController extends Controller
@@ -200,6 +204,71 @@ class RiderController extends Controller
     {
         //
     }
+
+    /**
+     * Import zomato data
+     *
+     * @param  Request $r
+     * @return \Illuminate\Http\Response
+     */
+    public function import_zomato(Request $r)
+    {
+        $data = $r->data;
+        $zomato_objects=[];
+        foreach ($data as $item) {
+            $obj = [];
+            $obj['date']=$item['date'];
+            $obj['feid']=$item['feid'];
+            $obj['adt']=$item['adt'];
+            $obj['trips']=$item['trips'];
+            $obj['average_pickup_time']=$item['average_pick_up_time'];
+            $obj['average_drop_time']=$item['average_drop_time'];
+            $obj['loged_in_during_shift_time']=$item['logged_in_during_shift_time'];
+            $obj['total_loged_in_hours']=$item['total_log_in_hrs'];
+            $obj['cod_orders']=$item['cod_orders'];
+            $obj['cod_amount']=$item['cod_amount'];
+            $obj['rider_id']=$item['rider_id'];
+            array_push($zomato_objects, $obj);
+        }
+        DB::table('rider__performance__zomatos')->insert($zomato_objects);
+return $data;
+        // $cleint_riders=Arr::where($cleint_riders, function($cr, $key){
+        //     // echo($cr);
+        //     if($cr->client_rider_id=="F5643") return true;
+        //     return false;
+        // });
+        $cr__filtered=[];
+        $data=Arr::where($data,function($data_item, $i) use ($client_riders, &$data){
+            
+            // global $client_riders;
+            // $client_riders=Arr::where($client_riders, function($item) use ($data_item){
+            //     if($item['client_rider_id']==$data_item['feid']) return true;
+            //     return false;
+            // });
+            $client_riders=Arr::where($client_riders, function($item) use (&$data_item, &$data){
+                // if($item['client_rider_id']=="14") return true;
+                // return false;
+                return strval($item['client_rider_id'])==strval($data_item['feid']);
+            });
+             if(isset($client_riders[0])){
+                $rider_id = $client_riders[0]['rider_id'];
+                // $data_item['rider_id']=$rider_id;
+                $array = Arr::add($data[$i], 'rider_id', $rider_id);
+                
+             }
+return true;
+
+        });
+
+        // $client_riders=Arr::where($client_riders, function($item){
+        //     // if($item['client_rider_id']=="14") return true;
+        //     // return false;
+        //     return strval($item['client_rider_id'])==strval("FE470504");
+        // });
+        return $data;
+    }
+
+
 
     /**
      * Show the form for editing the specified resource.

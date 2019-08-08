@@ -244,5 +244,9 @@ Route::delete('/sim/{rider_id}/removeSim/{sim_id}', 'SimController@removeSim')->
 Route::get('/view/{rider_id}/simHistory','SimController@sim_History')->name('Sim.simHistory');
     
 // end Sim history section
+
+//import Zomato
+Route::post('/import/zomato','RiderController@import_zomato')->name('import.zomato');
+//ends import Zomato
 });
   
