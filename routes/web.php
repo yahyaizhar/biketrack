@@ -18,6 +18,9 @@ Route::get('/', function () {
 Route::get('/public/public',function(){
     return view('welcome');
 });
+Route::get('/phpinfo',function(){
+    return phpinfo();
+});
 
 Route::group([
     'prefix' => 'client',
