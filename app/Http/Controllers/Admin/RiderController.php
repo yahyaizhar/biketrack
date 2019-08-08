@@ -228,7 +228,7 @@ class RiderController extends Controller
             $obj['feid']=$item['feid'];
             $obj['adt']=$item['adt'];
             $obj['trips']=$item['trips'];
-            $obj['average_pickup_time']=$item['average_pick_up_time'];
+            $obj['average_pickup_time']=$item['average_pick_up_time']; 
             $obj['average_drop_time']=$item['average_drop_time'];
             $obj['loged_in_during_shift_time']=$item['logged_in_during_shift_time'];
             $obj['total_loged_in_hours']=$item['total_log_in_hrs'];

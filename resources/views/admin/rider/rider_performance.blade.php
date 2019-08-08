@@ -162,7 +162,7 @@ margin-left: 10px;
         }
         Papa.parse(files[0].data, {
             header:true,
-            dynamicTyping: true,
+            // dynamicTyping: true,
             beforeFirstChunk: function( chunk ) {
                 var rows = chunk.split( /\r\n|\r|\n/ );
                 var headings = rows[0].split( ',' );console.warn(headings);
