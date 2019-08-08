@@ -39,7 +39,6 @@
                             </label>
                         </div>
                         <input type="text" class="form-control" placeholder="Search" id="search_details" style="display: inline-block;width: auto;">
-                        <a style="padding:8.45px 13px;" href="" data-toggle="modal" data-target="#import_data"  class="btn btn-label-success btn-sm btn-upper">Import Zomato Data</a>&nbsp;
                         <a href="{{ route('admin.riders.create') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
                             New Record
@@ -71,6 +70,7 @@
 </div>
 
 <!-- end:: Content -->
+<<<<<<< HEAD
 <div>
 <div class="modal fade" id="import_data" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -93,6 +93,9 @@
         </div>
         </div>
     </div>
+=======
+
+>>>>>>> ea5104007560bd2792d3cbdd4bcc4d446d43b178
 @endsection
 @section('foot')
 <link href="https://transloadit.edgly.net/releases/uppy/v1.3.0/uppy.min.css" rel="stylesheet">

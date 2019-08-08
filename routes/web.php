@@ -67,8 +67,8 @@ Route::group([
     Route::post('/rider/{rider}/sendMessage', 'RiderController@sendSMS')->name('admin.rider.sendSMS');
     Route::post('/rider/{rider}/updateStatus', 'RiderController@updateStatus')->name('admin.rider.updateStatus');
     // Route::get('/rider/{rider}/messages', 'RiderController@showMessages')->name('admin.rider.messages');
-    Route::get('/rider/{rider_id}/performance','RiderController@RiderPerformance')->name('admin.riderPerformance');
-    Route::get('get/ajax/{rider_id}/rider/performance','AjaxController@getRiderPerformance')->name('admin.ajax_performance');
+    Route::get('/client/rider/performance','RiderController@RiderPerformance')->name('admin.riderPerformance');
+    Route::get('get/ajax/rider/performance','AjaxController@getRiderPerformance')->name('admin.ajax_performance');
     Route::resource('/clients', 'ClientController', [
         'as' => 'admin'
     ]);

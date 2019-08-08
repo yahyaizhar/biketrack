@@ -554,9 +554,9 @@ public function destroyer(Rider $rider,$id){
     return $rider_detail->id;
 }
   
-   public function RiderPerformance($id){
-       $rider=Rider::find($id);
-       return view('admin.rider.rider_performance',compact('rider'));
+   public function RiderPerformance(){
+    //    $rider=Rider::find($id);
+       return view('admin.rider.rider_performance');
 
    }
 }
