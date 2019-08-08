@@ -222,8 +222,9 @@ class RiderController extends Controller
     {
         $data = $r->data;
         $zomato_objects=[];
+        $i=0;
         foreach ($data as $item) {
-            $average_pick_up_time=
+            $i++;
             $obj = [];
             $obj['date']=isset($item['date'])?$item['date']:null;
             $obj['feid']=isset($item['feid'])?$item['feid']:null;
@@ -239,41 +240,10 @@ class RiderController extends Controller
             array_push($zomato_objects, $obj);
         }
         DB::table('rider__performance__zomatos')->insert($zomato_objects);
-return $data;
-        // $cleint_riders=Arr::where($cleint_riders, function($cr, $key){
-        //     // echo($cr);
-        //     if($cr->client_rider_id=="F5643") return true;
-        //     return false;
-        // });
-        $cr__filtered=[];
-        $data=Arr::where($data,function($data_item, $i) use ($client_riders, &$data){
-            
-            // global $client_riders;
-            // $client_riders=Arr::where($client_riders, function($item) use ($data_item){
-            //     if($item['client_rider_id']==$data_item['feid']) return true;
-            //     return false;
-            // });
-            $client_riders=Arr::where($client_riders, function($item) use (&$data_item, &$data){
-                // if($item['client_rider_id']=="14") return true;
-                // return false;
-                return strval($item['client_rider_id'])==strval($data_item['feid']);
-            });
-             if(isset($client_riders[0])){
-                $rider_id = $client_riders[0]['rider_id'];
-                // $data_item['rider_id']=$rider_id;
-                $array = Arr::add($data[$i], 'rider_id', $rider_id);
-                
-             }
-return true;
-
-        });
-
-        // $client_riders=Arr::where($client_riders, function($item){
-        //     // if($item['client_rider_id']=="14") return true;
-        //     // return false;
-        //     return strval($item['client_rider_id'])==strval("FE470504");
-        // });
-        return $data;
+        return response()->json([
+            'data'=>$data,
+            'count'=>$i
+        ]);
     }
 
 
