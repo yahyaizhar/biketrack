@@ -154,7 +154,7 @@ margin-left: 10px;
   
     $('.upload-button').on('click', function (e) {
         e.preventDefault();
-
+        $('#import_data').modal('hide');
         var files = uppy.getFiles();
         if(files.length<=0){
             alert('Choose .csv file first');
