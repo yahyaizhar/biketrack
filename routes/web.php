@@ -251,6 +251,7 @@ Route::get('/view/{rider_id}/simHistory','SimController@sim_History')->name('Sim
 
 //import Zomato
 Route::post('/import/zomato','RiderController@import_zomato')->name('import.zomato');
+Route::delete('/delete/last/import','RiderController@delete_lastImport')->name('delete.import_data');
 //ends import Zomato
 });
   

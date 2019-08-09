@@ -102,8 +102,11 @@ margin-left: 10px;
                     </div>
                     <div class="modal-footer border-top-0 d-flex justify-content-center">
                         <button class="upload-button btn btn-success">Import</button>
+                        
+                        
                   </div>
                 </form>
+                <button class="btn btn-danger"  onclick="delete_lastImport();return false;"><i class="fa fa-trash"></i> Delete Last Import</button>
               </div>
             </div>
           </div>
@@ -453,10 +456,55 @@ $("#search_details").on("keyup", function() {
 
 
 // table accordian end
-function deleteSim(id)
+function delete_lastImport()
 {
-    var url = "{{ url('admin/sim') }}"+ "/" + id;
-    sendDeleteRequest(url, false, null, performance_table);
+    var url = "{{ url('admin/delete/last/import') }}";
+    console.log(url);
+    swal.fire({
+        title: 'Are you sure?',
+        text: "You want delete last record!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes!'
+    }).then(function(result) {
+        if (result.value) {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url : url,
+                type : 'delete',
+                beforeSend: function() {            
+                    $('.loading').show();
+                },
+                complete: function(){
+                    $('.loading').hide();
+                },
+                success: function(data){
+                    swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Record deleted successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    performance_table.ajax.reload(null, false);
+                },
+                error: function(error){
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Unable to delete.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+        }
+    });
 }
 function updateStatus(sim_id)
 {

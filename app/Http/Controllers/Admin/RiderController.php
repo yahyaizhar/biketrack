@@ -223,9 +223,11 @@ class RiderController extends Controller
         $data = $r->data;
         $zomato_objects=[];
         $i=0;
+        $unique_id=uniqid().'-'.time();
         foreach ($data as $item) {
             $i++;
             $obj = [];
+            $obj['import_id']=$unique_id;
             $obj['date']=isset($item['date'])?$item['date']:null;
             $obj['feid']=isset($item['feid'])?$item['feid']:null;
             $obj['adt']=isset($item['adt'])?$item['adt']:null;
@@ -246,9 +248,16 @@ class RiderController extends Controller
         ]);
     }
 
+    public function delete_lastImport(){
+        $import_id=Rider_Performance_Zomato::all()->last()->import_id;
+        $performances=Rider_Performance_Zomato::where('import_id',$import_id)->get();
+        foreach($performances as $performance)
+            {
+                $performance->delete();
+            }
 
-
-    /**
+    }
+     /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
