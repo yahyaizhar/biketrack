@@ -18,6 +18,7 @@ use App\Model\Accounts\Rider_salary;
 use App\Model\Mobile\Mobile;
 use carbon\carbon;
 use App\Model\Rider\Rider_detail;
+use App\Model\Rider\Rider_Location;
 use App\New_comer;
 use App\Model\Rider\Rider_Report;
 use Illuminate\Support\Facades\Storage;
@@ -720,6 +721,13 @@ class AjaxController extends Controller
         })
         ->editColumn('start_time', function($reports){
             return '<span data-local-format="yyyy-mm-dd HH:MM:ss" data-utc-to-local="' .$reports->start_time.'"></span>';
+        })
+        ->editColumn('way_points', function($report){
+            $start_time = Carbon::parse($report->start_time)->format('Y-m-d H:i:s');
+            $end_time = Carbon::parse($report->end_time)->format('Y-m-d H:i:s'); 
+            $rider = $report->Rider;
+            $locations = $rider->locations()->where('created_at', '>=', $start_time)->where('created_at', '<', $end_time)->get()->toArray();
+            return array('points' => $locations);
         })
         ->editColumn('online_hours', function($reports){
             $time = Carbon::now(); 

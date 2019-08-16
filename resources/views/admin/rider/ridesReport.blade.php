@@ -104,12 +104,9 @@
 <!--end::Page Scripts -->
 <script>
 var rides_report_table;
+var rides_report_data = [];
 $(function() {
     rides_report_table = $('#rides-report-table').DataTable({
-        drawCallback: function( ) {
-            // console.log('a');
-     time_conversion();
-  },
         processing: true,
         serverSide: true,
         'language': {
@@ -117,6 +114,14 @@ $(function() {
             'processing': $('.loading').show()
         },
         drawCallback:function(data){
+            var api = this.api();
+            var _data = api.data();
+            var keys = Object.keys(_data).filter(function(x){return !isNaN(parseInt(x))});
+            keys.forEach(function(_d,_i) {
+                var __data = JSON.parse(JSON.stringify(_data[_d]).toLowerCase());
+                rides_report_data.push(__data);
+            });
+            time_conversion();
 	    $('.total_entries').remove();
         $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
     	},
