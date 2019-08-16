@@ -24,6 +24,13 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        //$schedule->command('backup:clean --disable-notifications')->daily()->at('01:00');
+        $schedule->command('backup:clean')
+        ->everyFiveMinutes()
+        ->after(function () {
+            // Task is complete...
+        });
+        $schedule->command('backup:run')->everyFiveMinutes();
         // $schedule->command('inspire')
         //          ->hourly();
     }
