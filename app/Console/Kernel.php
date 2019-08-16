@@ -30,7 +30,7 @@ class Kernel extends ConsoleKernel
         ->after(function () {
             // Task is complete...
         });
-        $schedule->command('backup:run')->everyFiveMinutes();
+        $schedule->command('backup:run')->everyTenMinutes();
         // $schedule->command('inspire')
         //          ->hourly();
     }
