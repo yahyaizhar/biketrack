@@ -18,6 +18,9 @@ class CreateRelationshipTables extends Migration
             $table->bigInteger('rider_id')->unsigned()->index()->nullable();
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
+            $table->string('accuracy')->nullable();
+            $table->string('altitude')->nullable();
+            $table->string('provider')->nullable();
             $table->foreign('rider_id')->references('id')->on('riders')->onDelete('cascade');
             $table->timestamps();
         });
