@@ -389,7 +389,7 @@ class AjaxController extends Controller
     }
 
     public function getRiders()
-    {
+    {   
         $riders = Rider::orderByDesc('created_at')->where("active_status","A")->get();
         return DataTables::of($riders)
         ->addColumn('new_id', function($riders){
@@ -601,8 +601,9 @@ class AjaxController extends Controller
            $a=$riders->Assign_bike()->where('status', 'active')->get()->first();
             // 
             if ($a) {
-                $bike=bike::find($a->bike_id);
-                return '<a href="'.url('admin/bike/'.$bike->id.'/profile'.'/'.$riders->id) .'">'.$bike->bike_number.'</a>';
+                $bike=bike::where("id",$a->bike_id)->get()->first();
+                
+                return '<a href="'.url('admin/bike/'.$bike['id'].'/profile'.'/'.$riders->id) .'">'.$bike['bike_number'].'</a>';
             }
             else{
                return 'Bike is not assigned to Rider';
