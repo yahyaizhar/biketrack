@@ -225,7 +225,7 @@
                             </div>
                                <div style="border: 2px solid #ddd;padding: 15px;margin: 7px 0;">
                                     <div class="row">
-                                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                            <div class="col-lg-8 col-md-8 col-sm-12">
                                                     <div class="form-group" style="margin-bottom:0px;">
                                                             <label>Passport Expiry:</label>
                                                             <input type="text" id="datepicker3" autocomplete="off" class="form-control @if($errors->has('passport_expiry')) invalid-field @endif" name="passport_expiry" placeholder="Enter Passport Expiry" value="{{ $rider_details->passport_expiry }}" disabled>
@@ -252,7 +252,7 @@
                                       @endif
                                            
                                         </div>
-                                        <div class="col-lg-4 col-md-4 col-sm-12">
+                                        {{-- <div class="col-lg-4 col-md-4 col-sm-12">
                                             @if($rider_details->passport_image_back)
                                             <a href="#" data-featherlight="{{ asset(Storage::url($rider_details->passport_image_back)) }}"><img style="width:150px;height:150px;" style="width:150px;height:150px;" class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_details->passport_image_back)) }}" alt="image"></a>
                                             <span class="form-text text-muted"> Back Image</span>
@@ -261,12 +261,12 @@
                                         <span class="form-text text-muted"> Back Image</span> 
                                         @endif
                                            
-                                        </div>
+                                        </div> --}}
                                     </div> 
                                 </div>
                                     <div style="border: 2px solid #ddd;padding: 15px;margin: 7px 0;">
                                             <div class="row">  
-                                                    <div class="col-lg-4 col-md-4 col-sm-12">         
+                                                    <div class="col-lg-8 col-md-8 col-sm-12">         
                                         <div class="form-group" style="margin-bottom:0px;margin-top:25px;">
                                                             <label>Visa Expiry:</label>
                                                             <input type="text" id="datepicker4" autocomplete="off" class="form-control @if($errors->has('visa_expiry')) invalid-field @endif" name="visa_expiry" placeholder="Enter Visa Expiry" value="{{ $rider_details->visa_expiry }}" disabled>
@@ -293,7 +293,7 @@
                                                 @endif
                                                
                                             </div>
-                                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                            {{-- <div class="col-lg-4 col-md-4 col-sm-12">
                                                 @if($rider_details->visa_image_back)
                                                 <a href="#" data-featherlight="{{ asset(Storage::url($rider_details->visa_image_back)) }}"><img style="width:150px;height:150px;" class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_details->visa_image_back)) }}" alt="image"></a>
                                                 <span class="form-text text-muted"> Back Image</span>
@@ -302,7 +302,7 @@
                                                 <span class="form-text text-muted"> Back Image</span>
                                                 @endif
                                                
-                                            </div>
+                                            </div> --}}
                                         
                                     </div>
                                     </div>

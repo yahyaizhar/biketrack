@@ -454,15 +454,15 @@ class AjaxController extends Controller
             if(!isset($rider_detail->passport_image)){
                 $data.='*Passport front image <br />';
             }
-            if(!isset($rider_detail->passport_image_back)){
-                $data.='*Passport back image <br />';
-            }
+            // if(!isset($rider_detail->passport_image_back)){
+            //     $data.='*Passport back image <br />';
+            // }
             if(!isset($rider_detail->visa_image)){
                 $data.='*Visa front image <br />';
             }
-            if(!isset($rider_detail->visa_image_back)){
-                $data.='*Visa back image <br />';
-            }
+            // if(!isset($rider_detail->visa_image_back)){
+            //     $data.='*Visa back image <br />';
+            // }
             if(!isset($rider_detail->emirate_image)){
                 $data.='*Emirate front image <br />';
             }

@@ -223,7 +223,7 @@
     @endif
 </div>
 </div>
-<div class="col-lg-3 col-md-3 col-sm-12">
+<div class="col-lg-6 col-md-6 col-sm-12">
 <div class="form-group">
     <div class="custom-file" style="    margin-top: 26px;">
         <input type="file" name="passport_image" class="custom-file-input" id="passport_image">
@@ -232,7 +232,7 @@
     </div>
     </div>
 </div>
-<div class="col-lg-3 col-md-3 col-sm-12">
+{{-- <div class="col-lg-3 col-md-3 col-sm-12">
     <div class="form-group">
         <div class="custom-file" style="    margin-top: 26px;">
             <input type="file" name="passport_image_back" class="custom-file-input" id="passport_image_back">
@@ -240,7 +240,7 @@
             <span class="form-text text-muted">Choose Passport Back Image</span>
         </div>
         </div>
-    </div>
+    </div> --}}
 </div>
         
 <div class="row">
@@ -258,7 +258,7 @@
     @endif
 </div>
 </div>
-<div class="col-lg-3 col-md-3 col-sm-12">
+<div class="col-lg-6 col-md-6 col-sm-12">
     <div class="form-group">
         <div class="custom-file" style="    margin-top: 26px;">
             <input type="file" name="visa_image" class="custom-file-input" id="visa_image">
@@ -267,7 +267,7 @@
         </div>
     </div>
     </div>
-    <div class="col-lg-3 col-md-3 col-sm-12">
+    {{-- <div class="col-lg-3 col-md-3 col-sm-12">
         <div class="form-group">
             <div class="custom-file" style="    margin-top: 26px;">
                 <input type="file" name="visa_image_back" class="custom-file-input" id="visa_image_back">
@@ -275,7 +275,7 @@
                 <span class="form-text text-muted">Choose Visa Back Image</span>
             </div>
         </div>
-        </div>
+        </div> --}}
  </div>
 
  <div class="row">

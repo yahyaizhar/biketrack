@@ -293,7 +293,7 @@
                                                 <span class="form-text text-muted">Select Passport Front Image</span>
                                             </div>
                                         </div>
-                                        <div class="col-lg-6 col-md-6 col-sm-12">
+                                        {{-- <div class="col-lg-6 col-md-6 col-sm-12">
                                             @if($rider_detail->passport_image_back)
                                                 <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_detail->passport_image_back)) }}" alt="image">
                                             @else
@@ -306,7 +306,7 @@
                                                 </div>
                                                 <span class="form-text text-muted">Select Passport Back Image</span>
                                             </div>
-                                        </div>
+                                        </div> --}}
                                     </div> 
                                            
                                                     <div class="form-group" style="margin-bottom:0px;margin-top:25px;">
@@ -338,7 +338,7 @@
                                                     <span class="form-text text-muted">Select Visa Front Image</span>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                            {{-- <div class="col-lg-6 col-md-6 col-sm-12">
                                                 @if($rider_detail->visa_image_back)
                                                     <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_detail->visa_image_back)) }}" alt="image">
                                                 @else
@@ -351,7 +351,7 @@
                                                     </div>
                                                     <span class="form-text text-muted">Select Visa Back Image</span>
                                                 </div>
-                                            </div>
+                                            </div> --}}
                                         
                                     </div>
                                    

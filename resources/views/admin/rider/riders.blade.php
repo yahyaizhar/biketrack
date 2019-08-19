@@ -196,7 +196,7 @@ $(function() {
         },
         ajax: '{!! route('admin.riders.data') !!}',
         columns: null,
-        responsive:true,
+        responsive:true, 
         order:[0,'desc']
     };
     if(window.outerWidth>=720){
