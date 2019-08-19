@@ -22,6 +22,7 @@ Route::group([
 ], function(){
     Route::post('/login', 'Auth\LoginController@login')->name('api.rider.login');
     Route::post('/rider/store_location', 'RiderController@storeLocation')->name('api.rider.storeLocation');
+    Route::post('/rider/store_sync_location', 'RiderController@storeSyncLocation')->name('api.rider.storeSyncLocation');
     Route::get('/rider/latestData/{rider}', 'RiderController@getLatestData')->name('api.rider.latestData');
     Route::post('/rider/changeStatus', 'RiderController@changeStatus')->name('api.rider.changeStatus');
     Route::post('/logout', 'RiderController@saveRideDetailsAndLogout')->name('api.rider.saveRideDetailsLogout');

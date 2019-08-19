@@ -25,8 +25,38 @@ class RiderController extends Controller
         $location = new Rider_Location();
         $location->rider_id = $request->driver_id;
         $location->latitude = $request->latitude;
-        $location->longitude = $request->longitude;
+        $location->longitude = $request->longitude; 
+        $location->accuracy = isset($request->accuracy)?$request->accuracy:null;
+        $location->altitude = isset($request->altitude)?$request->altitude:null;
+        $location->provider = "custom_network";
         $location->save();
+    }
+    public function storeSyncLocation(Request $request)
+    {
+        $this->validate($request, [
+            'rider_id' => 'required | exists:riders,id'
+        ]);
+
+        $rider_id = $request->rider_id;
+        $locations = $request->locations;
+        if(count($locations) > 0){
+            foreach($locations as $location)
+            {
+                $rider_location = new Rider_Location();
+                $rider_location->rider_id = $rider_id;
+                $rider_location->latitude = $location['latitude'];
+                $rider_location->longitude = $location['longitude'];
+                $rider_location->accuracy = isset($location['accuracy'])?$location['accuracy']:null;
+                $rider_location->altitude = isset($location['altitude'])?$location['altitude']:null;
+                $rider_location->provider = isset($location['provider'])?$location['provider']:null;
+                $rider_location->created_at = $location['time']; 
+                $rider_location->save();
+            }
+        }
+        
+        return response()->json([
+            'data'=>$request->all()
+        ]);
     }
     public function get_reports(Request $r) 
     {
