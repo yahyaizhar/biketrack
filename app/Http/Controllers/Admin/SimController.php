@@ -92,8 +92,13 @@ class SimController extends Controller
     public function DeleteSim(Request $request,$id){
         $sim_delete=Sim::find($id);
         $sim_delete->active_status='D';
+        $sim_delete->status=0;
         $sim_delete->update();
-        
+        $sim_history=$sim_delete->Sim_History()->where("status","active")->get()->first();
+        if(isset($sim_history)){
+        $sim_history->status="deactive";
+        $sim_history->update();
+        }
         return response()->json([
             'status' => true
         ]);

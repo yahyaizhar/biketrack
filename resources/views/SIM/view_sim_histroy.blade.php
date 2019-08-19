@@ -113,10 +113,13 @@
                             JM
                         </div>
                         <div class="kt-widget__content">
-                            <div class="kt-widget__head">
+                            <div class="kt-widget__head"> 
                                 <a class="kt-widget__username">
                                   <h4>{{$hasSim['sim_company']}}-{{ $hasSim['sim_number'] }}</h4>
                                   <button class="btn btn-label-danger btn-sm btn-upper"><span class="label label-danger">{{$history['status']}}</span></button>
+                                 @if($hasSim['active_status']=="D")
+                                    <button class="btn btn-label-warning btsssn-sm btn-upper"><span class="label label-warning">Deleted</span></button>
+                                 @endif
                                   </a>
         
                                 <div class="kt-widget__action">

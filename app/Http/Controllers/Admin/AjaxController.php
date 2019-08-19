@@ -279,15 +279,15 @@ class AjaxController extends Controller
             // $bike_id = $bike->id;
             $assign_bike=\App\Assign_bike::where('bike_id', $bike->id)->where('status','active')->get()->first();
        
-    //   if($assign_bike){
+      if($assign_bike){
         
-    //     $rider=Rider::find($assign_bike->rider_id);
-    //    $rider_profile='<a href="'.route('admin.rider.profile', $rider->id).'">'.$rider->name.'</a>';
-    //     return $rider_profile;
-    //    }
-    //    else{
-    //        return "Bike is free to assign";
-    //    }
+        $rider=Rider::find($assign_bike->rider_id);
+       $rider_profile='<a href="'.route('admin.rider.profile', $rider->id).'">'.$rider->name.'</a>';
+        return $rider_profile;
+       }
+       else{
+           return "Bike is free to assign";
+       }
        
       
         })
@@ -389,7 +389,7 @@ class AjaxController extends Controller
     }
 
     public function getRiders()
-    {
+    {   
         $riders = Rider::orderByDesc('created_at')->where("active_status","A")->get();
         return DataTables::of($riders)
         ->addColumn('new_id', function($riders){
@@ -601,8 +601,9 @@ class AjaxController extends Controller
            $a=$riders->Assign_bike()->where('status', 'active')->get()->first();
             // 
             if ($a) {
-                $bike=bike::find($a->bike_id);
-                return '<a href="'.url('admin/bike/'.$bike->id.'/profile'.'/'.$riders->id) .'">'.$bike->bike_number.'</a>';
+                $bike=bike::where("id",$a->bike_id)->get()->first();
+                
+                return '<a href="'.url('admin/bike/'.$bike['id'].'/profile'.'/'.$riders->id) .'">'.$bike['bike_number'].'</a>';
             }
             else{
                return 'Bike is not assigned to Rider';

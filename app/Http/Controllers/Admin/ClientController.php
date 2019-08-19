@@ -187,8 +187,13 @@ class ClientController extends Controller
         //     Storage::delete($client->logo);
         // }
         $client->active_status="D";
+        $client->status=0;
         $client->update();
-    }
+        $client_rider=Client_Rider::where("client_id",$client->id)->where("status",1)->get();
+        foreach ($client_rider as  $delete_rider) {
+            $delete_rider->delete();
+        }
+      }
 
     public function showRiders(Client $client)
     {
