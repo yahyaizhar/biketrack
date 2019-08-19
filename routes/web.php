@@ -254,4 +254,13 @@ Route::post('/import/zomato','RiderController@import_zomato')->name('import.zoma
 Route::delete('/delete/last/import','RiderController@delete_lastImport')->name('delete.import_data');
 //ends import Zomato
 });
-  
+Route::group([
+    'prefix' => 'admin',
+    'namespace' => 'Admin'
+], function(){
+    Route::resource('/salik', 'SalikController', [
+        'as' => 'admin'
+    ]);
+Route::get("/salik","SalikController@import_salik_data")->name("admin.salik");
+
+});  
