@@ -20,6 +20,7 @@ class CreateRiderSalariesTable extends Migration
             $table->string('paid_by')->nullable();
             $table->string('status')->nullable();
             $table->string('settings')->nullable();
+            $table->string('active_status')->default("A");
             $table->timestamps();
         });
     }

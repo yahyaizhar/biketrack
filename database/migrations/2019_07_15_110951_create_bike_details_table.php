@@ -18,6 +18,7 @@ class CreateBikeDetailsTable extends Migration
             $table->integer('bike_id')->nullable();
             $table->string('registration_number')->nullable();
             $table->string('settings')->nullable();
+            $table->string('active_status')->default("A");
             $table->timestamps();
         });
     }
