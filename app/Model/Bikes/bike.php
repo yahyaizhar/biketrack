@@ -38,7 +38,7 @@ class bike extends Authenticatable
            return $this->hasOne('App\Model\Bikes\bike_detail');
        }
        public function Assign_bike(){
-        return $this->hasMany('App\Assign_bike','bike_id');
+        return $this->hasMany('\App\Assign_bike','bike_id');
   
       }
       public function Rider(){

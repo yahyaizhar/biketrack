@@ -50,6 +50,7 @@
                                                 <i class="flaticon2-correct"></i>                                            
                                             @endif
                                         </a>
+                                        
                 
                                         <div class="kt-widget__action">
                                             <a href="{{ route('admin.rider.location', $rider->id) }}" class="btn btn-label-danger btn-sm btn-upper">View Location</a>&nbsp;
@@ -58,9 +59,19 @@
                                     </div>
                 
                                     <div class="kt-widget__subhead">
+                                        @php
+                                        $client_rider = App\Model\Client\Client_Rider::where('client_id',$client->id)->where('rider_id',$rider->id)->get()->first();
+                                        $assign_bike=$rider->Assign_bike()->where('status','active')->get()->first();
+                                        $bike_number='No bike assigned';
+                                        if(isset($assign_bike)){
+                                            $bike=App\Model\Bikes\bike::find($assign_bike->bike_id);
+                                            $bike_number=$bike->bike_number;
+                                        } 
+                                        @endphp
+                                        <a>FEID: {{$client_rider->client_rider_id}}</a>
                                         <a href="mailto:{{ $rider->email }}"><i class="flaticon2-new-email"></i>{{ $rider->email }}</a>
                                         <a><i class="flaticon2-calendar-3"></i>{{ $rider->phone }} </a>
-                                        <a><i class="fa fa-motorcycle"></i>{{ $rider->vehicle_number }}</a>
+                                        <a><i class="fa fa-motorcycle"></i>{{ $bike_number }}</a>
                                     </div>
                 
                                     <div class="kt-widget__info">

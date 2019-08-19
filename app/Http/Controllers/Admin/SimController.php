@@ -91,12 +91,12 @@ class SimController extends Controller
     }
     public function DeleteSim(Request $request,$id){
         $sim_delete=Sim::find($id);
+        $sim_delete->active_status='D';
+        $sim_delete->update();
         
-        $sim_delete->delete();
-        
-            return response()->json([
-                'status' => true
-            ]);
+        return response()->json([
+            'status' => true
+        ]);
     }
     // End Sim Section
 

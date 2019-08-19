@@ -87,7 +87,7 @@ class AjaxController extends Controller
     }
     public function getSims()
     {
-        $sims = Sim::orderByDesc('created_at')->get();
+        $sims = Sim::orderByDesc('created_at')->where('active_status', 'A')->get();
         // return $clients;
         return DataTables::of($sims)
         ->addColumn('status', function($sim){
@@ -145,7 +145,7 @@ class AjaxController extends Controller
 
     public function getSimTransaction()
     {
-        $sims = Sim::orderByDesc('created_at')->get();
+        $sims = Sim::orderByDesc('created_at')->where('active_status', 'A')->get();
         // return $clients;
         //array_push($sims,array('month'=>$month));
         return DataTables::of($sims)
@@ -258,7 +258,7 @@ class AjaxController extends Controller
 
     public function getBikes()
     {
-        $bike = bike::orderByDesc('created_at')->get();
+        $bike = bike::orderByDesc('created_at')->where('active_status', 'A')->get();
         // return $clients;
         return DataTables::of($bike)
         ->addColumn('status', function($bike){
@@ -275,7 +275,8 @@ class AjaxController extends Controller
             return '1000'.$bike->id;
         })
         ->addColumn('assigned_to', function($bike){
-            $assign_bike=$bike->Assign_bike()->where('status','active')->get()->first();
+            // $bike_id = $bike->id;
+            $assign_bike=\App\Assign_bike::where('bike_id', $bike->id)->where('status','active')->get()->first();
        
       if($assign_bike){
         

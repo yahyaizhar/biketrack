@@ -18,6 +18,7 @@ class CreateSimsTable extends Migration
             $table->string('sim_number')->nullable();
             $table->string('sim_company')->nullable();
             $table->string('status')->nullable();
+            $table->string('active_status')->default("A");
             $table->timestamps();
         });
     }
