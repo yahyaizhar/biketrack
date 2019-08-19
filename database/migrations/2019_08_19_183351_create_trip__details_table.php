@@ -23,7 +23,7 @@ class CreateTripDetailsTable extends Migration
             $table->string('direction')->nullable();
             $table->string('tag_number')->nullable();
             $table->string('plate')->nullable();
-            $table->string('amount(AED)')->nullable();
+            $table->string('amount_AED')->nullable(); 
             $table->timestamps();
         });
     }

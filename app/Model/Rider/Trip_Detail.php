@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 class Trip_Detail extends Authenticatable
 {
     protected $fillable = [
-        'transaction_id','trip_date','trip_time','transaction_post_date','toll_gate','direction','tag_number','plate','amount(AED)',
+        'transaction_id','trip_date','trip_time','transaction_post_date','toll_gate','direction','tag_number','plate','amount_AED',
     ];
 }
+ 
