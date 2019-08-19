@@ -25,6 +25,7 @@ class CreateBikesTable extends Migration
             $table->string('availability')->default('yes');
             $table->timestamps();
             $table->string('status')->nullable();
+            $table->string('active_status')->default("A");
             $table->string('others')->nullable();
           
         });

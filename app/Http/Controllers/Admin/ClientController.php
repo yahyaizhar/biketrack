@@ -35,8 +35,7 @@ class ClientController extends Controller
     public function index()
     {
         //
-        // return Client::all();
-        $clients_count=Client::all()->count();
+        $clients_count=Client::where("active_status","A")->get()->count();
         return view('admin.client.clients',compact('clients_count'));
     }
 
@@ -275,8 +274,8 @@ class ClientController extends Controller
 // for bikeController
 
 public function bike_assigned_show($id){
-    $bike = bike::all()->toArray();
-    Rider::all()->toArray();
+    $bike = bike::where("active_status","A")->get()->toArray();
+    Rider::where("active_status","A")->get()->toArray();
     $rider=Rider::find($id);
     $assign_bike=count($rider->Assign_bike()->where('status', 'active')->get());
     $rider_show=$rider->Assign_bike()->get();
@@ -291,7 +290,7 @@ public function bike_assigned_show($id){
   }
   public function bike_assigned_toRider(Request $request,$id){
     $rider=Rider::find($id); 
-    $bikes=bike::all();
+    $bikes=bike::where("active_status","A")->get();
     $assign_bike=count($rider->Assign_bike()->where('status', 'active')->get());
     return view('admin.Bike.bike_assigned_toRider',compact('rider','bikes','assign_bike'));
     // return $bikes;
@@ -364,29 +363,37 @@ $record->save();
   }
   public function mutlipleDeleteBike(Request $request)
   {
+    $bike_id_array =$request->bike_id;
+    $bike = bike::find($bike_id_array);
+    $bike->active_status='D';
+    $bike->availability='no';
+    $bike->update();
+
+    $bike_detail=$bike->bike_detail;
+    $bike_detail->active_status="D";
+    $bike_detail->update();
+
+    $assign_bike = $bike->Assign_bike()->where('status', 'active')->get()->first();
+    if(isset($assign_bike)){
+        $assign_bike->status='deactive';
+        $assign_bike->update();
+    }
     
-       $bike_id_array =$request->bike_id;
-      $bike = bike::find($bike_id_array);
-  $bike->delete();
-      
-          return response()->json([
-              'status' => true
-          ]);
+    return response()->json([
+        'status' => true
+    ]);
       
   }
 
 public function Bike_assigned_to_riders_history(Request $request,$id){
   $rider=Rider::find($id);
-  $bike=bike::all()->toArray();
-  $bike_id=bike::find($id);
-  $assign_bike_id=$rider->Assign_bike()->get();
-  $assign_bike_count=$assign_bike_id->count();
-  $hasBike=bike::find($assign_bike_id->pluck('bike_id'));
-  return view('admin.Bike.Biking_history', compact( 'rider','assign_bike_id','assign_bike_count','hasBike'));
+  $assign_bikes=$rider->Assign_bike()->get();
+  $assign_bike_count=$assign_bikes->count();
+  return view('admin.Bike.Biking_history', compact( 'rider','assign_bikes','assign_bike_count'));
 }
 public function rider_history(Request $request,$id){
 $bike_id=bike::find($id);
- $riders=Rider::all()->toArray();
+ $riders=Rider::where("active_status","A")->get()->toArray();
  $rider_id=Rider::find($id);
  $assign_rider=$bike_id->Assign_bike()->get();
  $assign_rider_id_count=$assign_rider->count();

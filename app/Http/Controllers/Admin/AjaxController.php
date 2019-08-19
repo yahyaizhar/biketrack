@@ -279,15 +279,15 @@ class AjaxController extends Controller
             // $bike_id = $bike->id;
             $assign_bike=\App\Assign_bike::where('bike_id', $bike->id)->where('status','active')->get()->first();
        
-    //   if($assign_bike){
-        
-    //     $rider=Rider::find($assign_bike->rider_id);
-    //    $rider_profile='<a href="'.route('admin.rider.profile', $rider->id).'">'.$rider->name.'</a>';
-    //     return $rider_profile;
-    //    }
-    //    else{
-    //        return "Bike is free to assign";
-    //    }
+            if($assign_bike){
+                
+                $rider=Rider::find($assign_bike->rider_id);
+            $rider_profile='<a href="'.route('admin.rider.profile', $rider->id).'">'.$rider->name.'</a>';
+                return $rider_profile;
+            }
+            else{
+                return "Bike is free to assign";
+            }
        
       
         })
@@ -820,7 +820,7 @@ class AjaxController extends Controller
     {
         
         
-        $riderToMonth = Rider::find($rider_id)->Rider_salary()->orderByDesc('created_at')->get();
+        $riderToMonth = Rider::find($rider_id)->Rider_salary()->where("active_status","A")->orderByDesc('created_at')->get();
         //    foreach ($riderToMonth as $rider) {
         //     $month = Carbon::parse($rider->created_at)->format('M-Y');
         //     return $month;
@@ -885,19 +885,11 @@ class AjaxController extends Controller
         ->rawColumns(['created_at', 'salary','payment_date', 'paid_by',  'status','actions'])
         ->make(true);
     }
-    public function getMonthToRider($month_id)
+    public function getMonthToRider($month)
     {  
-        $rider_salaries=Rider_salary::all();
-        $arr=[];
-        foreach ($rider_salaries as $rider_salary ) {
-            $b=Carbon::parse($rider_salary->created_at)->format('m');
-            if(intval($b)===intval($month_id)){
-                array_push($arr, $rider_salary);
-            }
-        }
-       
-        $monthToRider=$arr;
-        return DataTables::of($monthToRider)
+        $rider_salaries=Rider_salary::where("active_status","A")->whereMonth('created_at', $month)->get();
+        
+        return DataTables::of($rider_salaries)
         ->addColumn('status', function($monthToRider){
             if($monthToRider->status == 1)
             {
@@ -953,18 +945,7 @@ class AjaxController extends Controller
         ->rawColumns(['name','status','salary','created_at','updated_at','paid_by','actions'])
         ->make(true);
     }
-
-public function testing(Request $request){
-    $a=Rider_salary::all();
-    foreach ($a as $value) {
-        // return $value->created_at;
-        $month = Carbon::parse($value->created_at)->format('M-Y');
-        
-    }
-   
-    return $month;
-}
-public function getRidersDetails()
+    public function getRidersDetails()
     {
         $riders_detail = Rider_detail::orderByDesc('created_at')->get();
         // return $riders_detail;
@@ -1174,15 +1155,6 @@ public function getRidersDetails()
         ->make(true);
     }
    
-       public function testing1($id){
-           $riders=Rider::find($id);
-        $c =Rider_detail::all();
-       foreach ($c as $a) {
-        return $a->date_of_joining;
-       }
-       
-       }
-
        public function getRiderPerformance()
        {
            $performance =Rider_Performance_Zomato::orderByDesc('created_at')->get();

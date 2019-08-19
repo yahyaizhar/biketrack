@@ -23,7 +23,7 @@ class AccountsController extends Controller
     }
     // add new salary
     public function add_new_salary_create(){
-        $riders=Rider::all();
+        $riders=Rider::where("active_status","A")->get();
         return view('accounts.add_new_salary',compact('riders'));
     }
     public function new_salary_added(Request $request){
@@ -54,12 +54,11 @@ return redirect(route('account.developer_salary'));
     public function DeleteMonth(Request $request){
         $month_id_array =$request->month_id;
         $month = Rider_salary::find($month_id_array);
-        $month->status='0';
-        $month->save();
-        
-            return response()->json([
-                'status' => true
-            ]);
+        $month->active_status='D';
+        $month->update();
+        return response()->json([
+            'status' => true
+        ]);
     }
     public function updateStatusmonth(Request $request)
     {   $month_id_array =$request->month_id;
@@ -110,19 +109,18 @@ return redirect(route('account.developer_salary'));
     
     // salary by developer
     public function salary_by_developer_create(){
-        $riders=Rider::all();
+        $riders=Rider::where("active_status","A")->get();
         return view('accounts.salary_by_developer' ,compact('riders'));
     }
 
     public function DeleteDeveloper(Request $request){
         $developer_id_array =$request->developer_id;
         $developer = Rider_salary::find($developer_id_array);
-        $developer->status='0';
-        $developer->save();
-        
-            return response()->json([
-                'status' => true
-            ]);
+        $developer->active_status='D';
+        $developer->update();
+        return response()->json([
+            'status' => true
+        ]);
     }
     public function updateStatusdeveloper(Request $request)
     {   $developer_id_array =$request->developer_id;
