@@ -26,6 +26,7 @@ class CreateMobilesTable extends Migration
             $table->string('installment_ending_month')->nullable();
             $table->integer('per_month_installment_amount')->nullable();
             $table->integer('status')->default('1');
+            $table->string('active_status')->default("A");
             $table->timestamps();
         });
     }

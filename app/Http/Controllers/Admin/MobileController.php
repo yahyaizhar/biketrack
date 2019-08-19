@@ -110,8 +110,8 @@ class MobileController extends Controller
     }
     public function delete_mobile(Request $request,$id){
         $mobile_delete=Mobile::find($id);
-        
-        $mobile_delete->delete();
+        $mobile_delete->active_status="D";
+        $mobile_delete->update();
         
             return response()->json([
                 'status' => true
@@ -150,8 +150,8 @@ class MobileController extends Controller
     }
     public function delete_mobileInstallment($id){
         $installment_delete=Mobile_installment::find($id);
-        
-        $installment_delete->delete();
+        $installment_delete->active_status="D";
+        $installment_delete->update();
         
             return response()->json([
                 'status' => true

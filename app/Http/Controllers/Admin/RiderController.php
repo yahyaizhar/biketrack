@@ -220,6 +220,8 @@ class RiderController extends Controller
      */
     public function import_zomato(Request $r)
     {
+        
+     
         $data = $r->data;
         $zomato_objects=[];
         $i=0;
@@ -239,7 +241,26 @@ class RiderController extends Controller
             $obj['cod_orders']=isset($item['cod_orders'])?$item['cod_orders']:null;
             $obj['cod_amount']=isset($item['cod_amount'])?$item['cod_amount']:null;
             $obj['rider_id']=isset($item['rider_id'])?$item['rider_id']:null;
+          
+            $a=Rider_Performance_Zomato::where("feid",$item['feid'])->where("date",$item['date'])->get()->first();
+            if(!isset($a)){
             array_push($zomato_objects, $obj);
+            }
+            else{
+                $a['import_id']=$unique_id;
+                $a['date']=isset($item['date'])?$item['date']:null;
+                $a['feid']=isset($item['feid'])?$item['feid']:null;
+                $a['adt']=isset($item['adt'])?$item['adt']:null;
+                $a['trips']=isset($item['trips'])?$item['trips']:null;
+                $a['average_pickup_time']=isset($item['average_pick_up_time'])?$item['average_pick_up_time']:null; 
+                $a['average_drop_time']=isset($item['average_drop_time'])?$item['average_drop_time']:null;
+                $a['loged_in_during_shift_time']=isset($item['logged_in_during_shift_time'])?$item['logged_in_during_shift_time']:null;
+                $a['total_loged_in_hours']=isset($item['total_log_in_hrs'])?$item['total_log_in_hrs']:null;
+                $a['cod_orders']=isset($item['cod_orders'])?$item['cod_orders']:null;
+                $a['cod_amount']=isset($item['cod_amount'])?$item['cod_amount']:null;
+                $a['rider_id']=isset($item['rider_id'])?$item['rider_id']:null;
+                $a->update();
+            }
         }
         DB::table('rider__performance__zomatos')->insert($zomato_objects);
         return response()->json([
@@ -247,6 +268,7 @@ class RiderController extends Controller
             'count'=>$i
         ]);
     }
+   
 
     public function delete_lastImport(){
         $import_id=Rider_Performance_Zomato::all()->last()->import_id;
@@ -458,14 +480,15 @@ class RiderController extends Controller
     public function destroy(Rider $rider)
     {
         
-        if($rider->profile_picture)
-        {
-            Storage::delete($rider->profile_picture);
-        }
-        
-        $rider->delete();
+        // if($rider->profile_picture)
+        // {
+        //     Storage::delete($rider->profile_picture);
+        // }
+        $rider->active_status="D";
+        $rider->update();
         $rider_detail=$rider->Rider_detail;
-        $rider_detail->delete();
+        $rider_detail->active_status="D";
+        $rider_detail->update();
     }
     // public function showMessages(Rider $rider)
     // {
@@ -529,7 +552,8 @@ class RiderController extends Controller
     }
     public function deleteRidesReportRecord(Rider_Report $record)
     {
-        $record->delete();
+        $record->active_status="D";
+        $record->update();
     }
     
     public function rider_details(){

@@ -48,7 +48,7 @@ margin-left: 10px;
                             </label>
                         </div>
                         <input type="text" class="form-control" placeholder="Search" id="search_details" style="display: inline-block;width: auto;">
-                        <a href="{{ route('admin.riders.create') }}" class="btn btn-brand btn-elevate btn-icon-sm">
+                        <a href="{{ route('NewComer.form') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
                             New Record
                         </a>

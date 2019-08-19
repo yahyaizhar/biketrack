@@ -35,6 +35,7 @@ class CreateRiderDetailsTable extends Migration
             $table->string('other_details')->nullable();
             $table->string('others')->nullable();
             $table->string('status')->nullable();
+            $table->string('active_status')->default("A");
             $table->timestamps();
             
         });

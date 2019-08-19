@@ -38,7 +38,8 @@ class NewComerController extends Controller
     public function delete_new_comer(Request $request){
         $newComer_id=$request->newComer_id;
         $newcomer=New_comer::find($newComer_id);
-        $newcomer->delete();
+        $newcomer->active_status="D";
+        $newcomer->update();
         return response()->json([
             'status' => true
         ]);

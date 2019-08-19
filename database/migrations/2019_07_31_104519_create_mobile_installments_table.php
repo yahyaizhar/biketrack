@@ -18,6 +18,7 @@ class CreateMobileInstallmentsTable extends Migration
             $table->bigInteger('mobile_id')->unsigned()->index()->nullable();
             $table->string('installment_month')->nullable();
             $table->integer('installment_amount')->nullable();
+            $table->string('active_status')->default("A");
             $table->timestamps();
         });
     }

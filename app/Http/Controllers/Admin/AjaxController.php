@@ -26,6 +26,7 @@ use App\Model\Sim\Sim;
 use App\Model\Sim\Sim_Transaction;
 use App\Model\Mobile\Mobile_installment;
 use App\Model\Rider\Rider_Performance_Zomato;
+use App\Assign_bike;
 
 
 class AjaxController extends Controller
@@ -33,7 +34,7 @@ class AjaxController extends Controller
     //
     public function getClients()
     {
-        $clients = Client::orderByDesc('created_at')->get();
+        $clients = Client::orderByDesc('created_at')->where("active_status","A")->get();
         // return $clients;
         return DataTables::of($clients)
         ->addColumn('status', function($clients){
@@ -276,16 +277,17 @@ class AjaxController extends Controller
         })
         ->addColumn('assigned_to', function($bike){
             $assign_bike=$bike->Assign_bike()->where('status','active')->get()->first();
+            return $assign_bike;
        
-      if($assign_bike){
+    //   if($assign_bike){
         
-        $rider=Rider::find($assign_bike->rider_id);
-       $rider_profile='<a href="'.route('admin.rider.profile', $rider->id).'">'.$rider->name.'</a>';
-        return $rider_profile;
-       }
-       else{
-           return "Bike is free to assign";
-       }
+    //     $rider=Rider::find($assign_bike->rider_id);
+    //    $rider_profile='<a href="'.route('admin.rider.profile', $rider->id).'">'.$rider->name.'</a>';
+    //     return $rider_profile;
+    //    }
+    //    else{
+    //        return "Bike is free to assign";
+    //    }
        
       
         })
@@ -388,7 +390,7 @@ class AjaxController extends Controller
 
     public function getRiders()
     {
-        $riders = Rider::orderByDesc('created_at')->get();
+        $riders = Rider::orderByDesc('created_at')->where("active_status","A")->get();
         return DataTables::of($riders)
         ->addColumn('new_id', function($riders){
             return '1000'.$riders->id;
@@ -617,7 +619,7 @@ class AjaxController extends Controller
         ->make(true);
     }
     public function getMobiles(){
-        $mobile=Mobile::orderByDesc('created_at')->get();
+        $mobile=Mobile::orderByDesc('created_at')->where("active_status","A")->get();
         
         return DataTables::of($mobile)
         ->addColumn('model', function($mobile){
@@ -667,7 +669,7 @@ class AjaxController extends Controller
     }
 
     public function getMobileInstallment(){
-        $installment=Mobile_installment::orderByDesc('created_at')->get();
+        $installment=Mobile_installment::orderByDesc('created_at')->where("active_status","A")->get();
         return DataTables::of($installment)
         ->addColumn('installment_month', function($installment){
             return $installment->installment_month;
@@ -709,7 +711,7 @@ class AjaxController extends Controller
 
     public function getRidesReport($id)
     {  $rider=Rider::find($id);
-        $reports=$rider->Rider_Report()->get();
+        $reports=$rider->Rider_Report()->where("active_status","A")->get();
         // $reports = $rider->reports;
         
         return DataTables::of($reports)
@@ -1019,7 +1021,7 @@ public function getRidersDetails()
     }
     public function getNewComer()
     {
-        $newComer = New_comer::orderByDesc('created_at')->get();
+        $newComer = New_comer::orderByDesc('created_at')->where("active_status","A")->get();
         // return $clients;
         return DataTables::of($newComer)
         ->addColumn('status', function($newComer){
