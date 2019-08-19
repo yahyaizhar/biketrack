@@ -35,6 +35,7 @@ class CreateNewComersTable extends Migration
             $table->string('why_rejected')->nullable();
             $table->string('overall_remarks')->nullable();
             $table->string('priority')->nullable();
+            $table->string('active_status')->default("A");
             $table->timestamps();
         });
     }

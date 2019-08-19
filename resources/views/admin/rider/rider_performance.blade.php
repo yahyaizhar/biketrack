@@ -150,7 +150,7 @@ margin-left: 10px;
    });
    uppy.on('restriction-failed', (file, error) => {
     // do some customized logic like showing system notice to users
-    console.log(error);
+    // console.log(error);
     alert(error);
     
     })
@@ -163,7 +163,7 @@ margin-left: 10px;
             alert('Choose .csv file first');
             return;
         }
-        Papa.parse(files[0].data, {
+        Papa.parse(files[files.length-1].data, {
             header:true,
             dynamicTyping: true,
             beforeFirstChunk: function( chunk ) {
@@ -177,7 +177,7 @@ margin-left: 10px;
             },
             error: function(err, file, inputElem, reason){ console.log(err); },
             complete: function(results, file){ 
-                console.log( results);
+                // console.log( results);
                 // ajax to import data
                var import_data = results.data;
                import_data.forEach(function(data, i){
@@ -192,7 +192,9 @@ margin-left: 10px;
                         _riderID=client_rider.rider_id;
                     }
                     import_data[i].rider_id=_riderID;
+                    
                 });
+                console.log(import_data);
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -207,7 +209,7 @@ margin-left: 10px;
                         $('.loading').hide();
                     },
                     success: function(data){
-                        console.log(data);
+                        // console.log(data);
                         swal.fire({
                             position: 'center',
                             type: 'success',

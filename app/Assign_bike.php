@@ -12,7 +12,7 @@ class Assign_bike extends Model
     public function Rider(){
         return $this->belongsTo(Rider::class);
     }
-    public function Bike(){
+    public function bike(){
         return $this->belongsTo('App\Model\Bikes\bike');
     }
 }

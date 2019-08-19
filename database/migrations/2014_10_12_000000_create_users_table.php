@@ -34,6 +34,7 @@ class CreateUsersTable extends Migration
             $table->string('logo')->nullable();
             $table->string('password');
             $table->boolean('status')->nullable();
+            $table->string('active_status')->default("A");
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
@@ -54,6 +55,7 @@ class CreateUsersTable extends Migration
             $table->string('break_end_time')->nullable();
             $table->boolean('online')->nullable();
             $table->boolean('status')->nullable();
+            $table->string('active_status')->default("A");
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

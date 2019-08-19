@@ -182,11 +182,12 @@ class ClientController extends Controller
     public function destroy(Client $client)
     {
         //
-        if($client->logo)
-        {
-            Storage::delete($client->logo);
-        }
-        $client->delete();
+        // if($client->logo)
+        // {
+        //     Storage::delete($client->logo);
+        // }
+        $client->active_status="D";
+        $client->update();
     }
 
     public function showRiders(Client $client)
