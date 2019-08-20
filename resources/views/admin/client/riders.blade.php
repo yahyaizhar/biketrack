@@ -67,8 +67,12 @@
                                             $bike=App\Model\Bikes\bike::find($assign_bike->bike_id);
                                             $bike_number=$bike->bike_number;
                                         } 
+                                        $feid='No FIED';
+                                        if(isset($client_rider->client_rider_id)){
+                                            $feid=$client_rider->client_rider_id;
+                                        }
                                         @endphp
-                                        <a>FEID: {{$client_rider->client_rider_id}}</a>
+                                        <a>FEID: {{$feid}}</a>
                                         <a href="mailto:{{ $rider->email }}"><i class="flaticon2-new-email"></i>{{ $rider->email }}</a>
                                         <a><i class="flaticon2-calendar-3"></i>{{ $rider->phone }} </a>
                                         <a><i class="fa fa-motorcycle"></i>{{ $bike_number }}</a>

@@ -134,11 +134,12 @@ return [
     |
     */
 
-    'providers' => [
+    'providers' => [ 
 
         /*
          * Laravel Framework Service Providers...
          */
+        Mavinoo\LaravelBatch\LaravelBatchServiceProvider::class,
         Spatie\Backup\BackupServiceProvider::class,
         Illuminate\Auth\AuthServiceProvider::class,
         Illuminate\Broadcasting\BroadcastServiceProvider::class,
@@ -191,7 +192,7 @@ return [
     */
 
     'aliases' => [
-
+        'Batch' => Mavinoo\LaravelBatch\LaravelBatchFacade::class,
         'App' => Illuminate\Support\Facades\App::class,
         'Arr' => Illuminate\Support\Arr::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,

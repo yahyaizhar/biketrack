@@ -20,6 +20,7 @@ use App\Model\Sim\Sim_Transaction;
 use App\Model\Sim\Sim_History;
 use App\Model\Client\Client_Rider;
 use Illuminate\Support\Arr;
+use Batch;
 
 
 class RiderController extends Controller
@@ -220,51 +221,55 @@ class RiderController extends Controller
      */
     public function import_zomato(Request $r)
     {
-        
-     
         $data = $r->data;
         $zomato_objects=[];
+        $zp = Rider_Performance_Zomato::all(); // r1
+        $update_data = [];
         $i=0;
         $unique_id=uniqid().'-'.time();
         foreach ($data as $item) {
             $i++;
-            $obj = [];
-            $obj['import_id']=$unique_id;
-            $obj['date']=isset($item['date'])?$item['date']:null;
-            $obj['feid']=isset($item['feid'])?$item['feid']:null;
-            $obj['adt']=isset($item['adt'])?$item['adt']:null;
-            $obj['trips']=isset($item['trips'])?$item['trips']:null;
-            $obj['average_pickup_time']=isset($item['average_pick_up_time'])?$item['average_pick_up_time']:null; 
-            $obj['average_drop_time']=isset($item['average_drop_time'])?$item['average_drop_time']:null;
-            $obj['loged_in_during_shift_time']=isset($item['logged_in_during_shift_time'])?$item['logged_in_during_shift_time']:null;
-            $obj['total_loged_in_hours']=isset($item['total_log_in_hrs'])?$item['total_log_in_hrs']:null;
-            $obj['cod_orders']=isset($item['cod_orders'])?$item['cod_orders']:null;
-            $obj['cod_amount']=isset($item['cod_amount'])?$item['cod_amount']:null;
-            $obj['rider_id']=isset($item['rider_id'])?$item['rider_id']:null;
-          
-            $a=Rider_Performance_Zomato::where("feid",$item['feid'])->where("date",$item['date'])->get()->first();
-            if(!isset($a)){
-            array_push($zomato_objects, $obj);
+            $zp_found = Arr::first($zp, function ($item_zp, $key) use ($item) {
+                return $item_zp->date == $item['date'] && $item_zp->feid==$item['feid'];
+            });
+            if(!isset($zp_found)){
+                $obj = [];
+                $obj['import_id']=$unique_id;
+                $obj['date']=isset($item['date'])?$item['date']:null;
+                $obj['feid']=isset($item['feid'])?$item['feid']:null;
+                $obj['adt']=isset($item['adt'])?$item['adt']:null;
+                $obj['trips']=isset($item['trips'])?$item['trips']:null;
+                $obj['average_pickup_time']=isset($item['average_pick_up_time'])?$item['average_pick_up_time']:null; 
+                $obj['average_drop_time']=isset($item['average_drop_time'])?$item['average_drop_time']:null;
+                $obj['loged_in_during_shift_time']=isset($item['logged_in_during_shift_time'])?$item['logged_in_during_shift_time']:null;
+                $obj['total_loged_in_hours']=isset($item['total_log_in_hrs'])?$item['total_log_in_hrs']:null;
+                $obj['cod_orders']=isset($item['cod_orders'])?$item['cod_orders']:null;
+                $obj['cod_amount']=isset($item['cod_amount'])?$item['cod_amount']:null;
+                $obj['rider_id']=isset($item['rider_id'])?$item['rider_id']:null;
+                array_push($zomato_objects, $obj);
             }
             else{
-                $a['import_id']=$unique_id;
-                $a['date']=isset($item['date'])?$item['date']:null;
-                $a['feid']=isset($item['feid'])?$item['feid']:null;
-                $a['adt']=isset($item['adt'])?$item['adt']:null;
-                $a['trips']=isset($item['trips'])?$item['trips']:null;
-                $a['average_pickup_time']=isset($item['average_pick_up_time'])?$item['average_pick_up_time']:null; 
-                $a['average_drop_time']=isset($item['average_drop_time'])?$item['average_drop_time']:null;
-                $a['loged_in_during_shift_time']=isset($item['logged_in_during_shift_time'])?$item['logged_in_during_shift_time']:null;
-                $a['total_loged_in_hours']=isset($item['total_log_in_hrs'])?$item['total_log_in_hrs']:null;
-                $a['cod_orders']=isset($item['cod_orders'])?$item['cod_orders']:null;
-                $a['cod_amount']=isset($item['cod_amount'])?$item['cod_amount']:null;
-                $a['rider_id']=isset($item['rider_id'])?$item['rider_id']:null;
-                $a->update();
+                $objUpdate = [];
+                $objUpdate['id']=$zp_found->id;
+                $objUpdate['import_id']=$unique_id;
+                $objUpdate['date']=isset($item['date'])?$item['date']:null;
+                $objUpdate['feid']=isset($item['feid'])?$item['feid']:null;
+                $objUpdate['adt']=isset($item['adt'])?$item['adt']:null;
+                $objUpdate['trips']=isset($item['trips'])?$item['trips']:null;
+                $objUpdate['average_pickup_time']=isset($item['average_pick_up_time'])?$item['average_pick_up_time']:null; 
+                $objUpdate['average_drop_time']=isset($item['average_drop_time'])?$item['average_drop_time']:null;
+                $objUpdate['loged_in_during_shift_time']=isset($item['logged_in_during_shift_time'])?$item['logged_in_during_shift_time']:null;
+                $objUpdate['total_loged_in_hours']=isset($item['total_log_in_hrs'])?$item['total_log_in_hrs']:null;
+                $objUpdate['cod_orders']=isset($item['cod_orders'])?$item['cod_orders']:null;
+                $objUpdate['cod_amount']=isset($item['cod_amount'])?$item['cod_amount']:null;
+                $objUpdate['rider_id']=isset($item['rider_id'])?$item['rider_id']:null;
+                array_push($update_data, $objUpdate);
             }
         }
-        DB::table('rider__performance__zomatos')->insert($zomato_objects);
+        DB::table('rider__performance__zomatos')->insert($zomato_objects); //r2
+        $data=Batch::update(new Rider_Performance_Zomato, $update_data, 'id'); //r3
         return response()->json([
-            'data'=>$data,
+            'data'=>$zomato_objects,
             'count'=>$i
         ]);
     }
@@ -566,9 +571,7 @@ public function destroyer(Rider $rider,$id){
 }
   
    public function RiderPerformance(){
-    //    $rider=Rider::find($id);
-    $performance_count=Rider_Performance_Zomato::all()->count();
-       return view('admin.rider.rider_performance',compact('performance_count'));
-
+        $performance_count=Rider_Performance_Zomato::all()->count();
+        return view('admin.rider.rider_performance',compact('performance_count'));
    }
 }

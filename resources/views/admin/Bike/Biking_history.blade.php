@@ -40,7 +40,7 @@
                                     <div class="kt-widget__head">
                                         <a class="kt-widget__username">
                                         <h4>{{$bike->brand}}-{{ $bike->model }}</h4>
-                                        @if ($bike->status==='active') 
+                                        @if ($assign_bike->status==='active') 
                                         <button class="btn btn-label-success btn-sm btn-upper"><span class="label label-success">Active</span></button>
                                         @else
                                         <button class="btn btn-label-danger btn-sm btn-upper"><span class="label label-danger">Deactive</span></button>
@@ -67,7 +67,7 @@
                                         $mytimestamp = strtotime($bike->created_at);
                                         $timestampupdated=strtotime($bike->updated_at);
                                     @endphp
-                                        @if($bike->status=='active')
+                                        @if($assign_bike->status=='active')
                                         <h6 style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}}</h6>
                                     
                                     @else

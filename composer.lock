@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6ef022ecc67ba9031c0d375bfefe27d5",
+    "content-hash": "95d3236f0a94735c0d3509dd6609c3c4",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -1898,6 +1898,49 @@
                 "laravel"
             ],
             "time": "2018-09-04T19:00:09+00:00"
+        },
+        {
+            "name": "mavinoo/laravel-batch",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mavinoo/laravelBatch.git",
+                "reference": "e42eb9e29297b74d7b4ac598613889219b7ea6eb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mavinoo/laravelBatch/zipball/e42eb9e29297b74d7b4ac598613889219b7ea6eb",
+                "reference": "e42eb9e29297b74d7b4ac598613889219b7ea6eb",
+                "shasum": ""
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mavinoo\\LaravelBatch\\LaravelBatchServiceProvider"
+                    ],
+                    "aliases": {
+                        "Batch": "Mavinoo\\LaravelBatch\\LaravelBatchFacade"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mavinoo\\LaravelBatch\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mohammad Ghanbari",
+                    "email": "wordpress.iran@gmail.com"
+                }
+            ],
+            "description": "Insert and update batch (bulk) in laravel",
+            "time": "2019-04-14T05:31:07+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -7020,7 +7063,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "mavinoo/laravel-batch": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
