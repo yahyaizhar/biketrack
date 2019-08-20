@@ -247,7 +247,7 @@ Route::get('/view/Sim/{id}','SimController@view_assigned_sim')->name('Sim.view_a
 Route::delete('/sim/{rider_id}/removeSim/{sim_id}', 'SimController@removeSim')->name('Sim.removeSim');
 Route::get('/view/{rider_id}/simHistory','SimController@sim_History')->name('Sim.simHistory');
     
-// end Sim history section
+// end Sim history section 
 
 //import Zomato
 Route::post('/import/zomato','RiderController@import_zomato')->name('import.zomato');
@@ -262,5 +262,9 @@ Route::group([
         'as' => 'admin'
     ]);
 Route::get("/salik","SalikController@import_salik_data")->name("admin.salik");
+Route::post('/import/salik','SalikController@import_Salik')->name('import.salik');
+Route::get('get/ajax/salik/trip_details','AjaxController@getSalikTrip_Details')->name('admin.ajax_details');
+Route::delete('/delete/last/import/salik','SalikController@delete_lastImportSalik')->name('delete.import_salik');
+    
 
 });  

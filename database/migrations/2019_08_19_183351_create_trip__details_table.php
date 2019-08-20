@@ -15,6 +15,7 @@ class CreateTripDetailsTable extends Migration
     {
         Schema::create('trip__details', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('import_id')->nullable();
             $table->string('transaction_id')->nullable();
             $table->string('trip_date')->nullable();
             $table->string('trip_time')->nullable();
@@ -23,7 +24,7 @@ class CreateTripDetailsTable extends Migration
             $table->string('direction')->nullable();
             $table->string('tag_number')->nullable();
             $table->string('plate')->nullable();
-            $table->string('amount_AED')->nullable(); 
+            $table->string('amount_aed')->nullable(); 
             $table->timestamps();
         });
     }
