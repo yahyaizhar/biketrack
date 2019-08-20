@@ -27,6 +27,8 @@ use App\Model\Sim\Sim_Transaction;
 use App\Model\Mobile\Mobile_installment;
 use App\Model\Rider\Rider_Performance_Zomato;
 use App\Assign_bike;
+use App\Model\Rider\Trip_Detail;
+
 
 
 class AjaxController extends Controller
@@ -1226,6 +1228,69 @@ class AjaxController extends Controller
            </span>';
            })
            ->rawColumns([ 'feid','adt','average_pickup_time','average_drop_time','loged_in_during_shift_time','total_loged_in_hours','date','cod_orders','cod_amount','trips', 'actions', 'status'])
+           ->make(true);
+       }
+
+       public function getSalikTrip_Details()
+       {
+           $detail =Trip_Detail::orderByDesc('created_at')->get();
+           return DataTables::of($detail)
+           ->addColumn('status', function($detail){
+               if($detail->status == 1)
+               {
+                   return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
+               }
+               else
+               {
+                   return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
+               }
+           })
+         ->addColumn('transaction_id', function($detail){
+               return $detail->transaction_id;
+           })
+           ->addColumn('toll_gate', function($detail){
+            return $detail->toll_gate;
+        })
+        ->addColumn('direction', function($detail){
+            return $detail->direction;
+        })
+        ->addColumn('tag_number', function($detail){
+            return $detail->tag_number;
+        })
+        ->addColumn('plate', function($detail){
+            return $detail->plate;
+        })
+        ->addColumn('amount_aed', function($detail){
+            return $detail->amount_aed;
+        })
+        ->addColumn('transaction_post_date', function($detail){
+            return $detail->transaction_post_date;
+        })
+        ->addColumn('trip_date', function($detail){
+            return $detail->trip_date;
+        })
+        ->addColumn('trip_time', function($detail){
+            return $detail->trip_time;
+        })
+    
+        
+        
+           ->addColumn('actions', function($detail){
+               $status_text = $detail->status == 1 ? 'Inactive' : 'Active';
+               return '<span class="dtr-data">
+               <span class="dropdown">
+                   <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+                   <i class="la la-ellipsis-h"></i>
+                   </a>
+                   <div class="dropdown-menu dropdown-menu-right">
+                       <a class="dropdown-item" href="'.route('Sim.edit_sim', $detail).'"><i class="fa fa-edit"></i> Edit</a>
+                       <button class="dropdown-item" onclick="updateStatus('.$detail->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
+                       <button class="dropdown-item" onclick="deleteSim('.$detail->id.');"><i class="fa fa-trash"></i> Delete</button>
+                   </div>
+               </span>
+           </span>';
+           })
+           ->rawColumns([ 'transaction_id','toll_gate','direction','tag_number','plate','amount_aed','trip_date','trip_time','transaction_post_date', 'actions', 'status'])
            ->make(true);
        }
 
