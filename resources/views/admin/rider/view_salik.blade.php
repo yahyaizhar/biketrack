@@ -352,7 +352,7 @@ $("#search_details").on("keyup", function() {
 
                 var _id = $(this).find("td").eq(1).text().trim().toLowerCase();
                 if (_res.findIndex(function(x) {
-                        return  x.feid == _id
+                        return  x.transaction_id == _id
                     }) === -1) {
                     $(this).hide();
                 }
