@@ -138,7 +138,8 @@ class AjaxController extends Controller
                     <a class="dropdown-item" href="'.route('Sim.edit_sim', $sim).'"><i class="fa fa-edit"></i> Edit</a>
                     <button class="dropdown-item" onclick="updateStatus('.$sim->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                     <button class="dropdown-item" onclick="deleteSim('.$sim->id.');"><i class="fa fa-trash"></i> Delete</button>
-                </div>
+                    <a class="dropdown-item" href="'.route('Sim.rider.history', $sim->id).'"><i class="fa fa-eye"></i> View Rider history</a>
+                    </div>
             </span>
         </span>';
         })

@@ -67,7 +67,7 @@
                                 </div>
             
                                 <div class="kt-widget__subhead">
-                                    <a><i class="flaticon2-calendar-3"></i>Allowed Balance:&nbsp;{{$history->allowed_balance}} </a>
+                                    <a><i class="flaticon2-calendar-3"></i>Allowed Balance:&nbsp;{{$sim_history->allowed_balance}} </a>
                                     {{-- <a><i class="flaticon2-calendar-3"></i>{{ $bike_id['availability'] }} </a>
                                     <a><i class="fa fa-motorcycle"></i>{{ $bike_id['bike_number'] }}</a> --}}
                                     @php
