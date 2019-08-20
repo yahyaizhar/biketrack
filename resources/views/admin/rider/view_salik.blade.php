@@ -74,7 +74,7 @@ margin-left: 10px;
                         <th>Tag Number</th>
                         <th>Plate</th>
                         <th>Amount(AED)</th>
-                        {{-- <th>Actions</th> --}}1
+                        {{-- <th>Actions</th> --}}
                     </tr>
                 </thead>
             </table>
