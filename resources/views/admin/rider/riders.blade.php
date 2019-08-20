@@ -232,6 +232,7 @@ $(function() {
             { "data": 'new_name', "name": 'name' },
             { "data": 'new_email', "name": 'email' },
             { "data": 'sim_number', "name": 'sim_number' },
+            { "data": 'passport_collected', "name": 'passport_collected' },
             { "data": 'address', "name": 'address' },
             { "data": 'status', "name": 'status' },
             { "data": 'date_of_joining', "name": 'date_of_joining' },
