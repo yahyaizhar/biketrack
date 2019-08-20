@@ -53,7 +53,7 @@ Route::group([
     Route::get('/profile', 'HomeController@profile')->name('admin.profile');
     Route::put('/profile', 'HomeController@updateProfile')->name('admin.profile.update');
 
-    // AJAX Routes
+    // AJAX Routes 
     Route::get('/clients/data', 'AjaxController@getClients')->name('admin.clients.data');
     Route::get('/riders/data', 'AjaxController@getRiders')->name('admin.riders.data');
     Route::get('/riders/{rider}/ridesReport/data', 'AjaxController@getRidesReport')->name('admin.ridesReport.data');
@@ -64,7 +64,8 @@ Route::group([
     ]);
     Route::get('/rider/{rider}/location', 'RiderController@showRiderLocation')->name('admin.rider.location');
     Route::get('/rider/{rider}/profile', 'RiderController@showRiderProfile')->name('admin.rider.profile');
-
+    Route::get('/active_riders','RiderController@getRider_active')->name('admin.riders.active');
+    Route::get('get/ajax/rider/active','AjaxController@getActiveRiders')->name('admin.ajax_active_rider');
     Route::get('/rider/{rider}/ridesReport', 'RiderController@showRidesReport')->name('admin.rider.ridesReport');
     Route::delete('/ridesReportRecord/{record}', 'RiderController@deleteRidesReportRecord')->name('admin.rider.ridesReport.delete');
 

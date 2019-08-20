@@ -1301,5 +1301,240 @@ class AjaxController extends Controller
            ->rawColumns([ 'transaction_id','toll_gate','direction','tag_number','plate','amount_aed','trip_date','trip_time','transaction_post_date', 'actions', 'status'])
            ->make(true);
        }
+       public function getActiveRiders()
+       {   
+           $riders = Rider::orderByDesc('created_at')->where("active_status","A")->where("status","1")->get();
+           return DataTables::of($riders)
+           ->addColumn('new_id', function($riders){
+               return '1000'.$riders->id;
+           })
+           ->addColumn('new_name', function($riders){
+               return '<a href="'.route('admin.rider.profile', $riders->id).'">'.$riders->name.'</a>';
+           })
+           ->addColumn('new_email', function($riders){
+               return $riders->email;
+           })
+           ->addColumn('client_name', function($riders){
+               
+               $client_rider=$riders->clients()->get()->first();
+               if($client_rider){
+               return '<a href="'.route('admin.clients.riders', $client_rider).'">' .$client_rider->name.'</a>';
+           }
+           else{
+               return "Rider has no client";
+           }
+               
+           })
+           
+           ->addColumn('phone', function($riders){
+               return '<a href="'.route('admin.rider.profile', $riders->id).'">'.$riders->phone.'</a>';
+           })
+           ->addColumn('sim_number', function($rider){
+               $sim_history = $rider->Sim_history()->where('status', 'active')->get()->first();
+               if(isset($sim_history)){
+                   $sim = $sim_history->Sim;
+                   return '<a href="'.route('Sim.simHistory', $rider->id).'">'.$sim->sim_number.'</a>';
+               }
+               return '<a href="'.route('SimHistory.addsim', $rider->id).'">No sim</a>';
+           })
+           ->addColumn('missing_fields', function($riders){
+               $data='';
+               $rider_detail =$riders->Rider_detail;
+               $assign_bike=$riders->Assign_bike()->where('status', 'active')->get()->first();
+               $sim_history = $riders->Sim_history()->where('status', 'active')->get()->first();
+               
+               // 
+               if ($assign_bike) {}
+               else{
+                   $data.='*No bike assigned <br />';
+               }
+               if(!isset($riders->name)){
+                   $data.='*Name <br />';
+               }
+               if(!isset($rider_detail->emirate_id)){
+                   $data.='*Emirates ID <br />';
+               }
+               if(!isset($rider_detail->licence_expiry)){
+                   $data.='*Licence Expiry <br />';
+               }
+               if(!isset($rider_detail->visa_expiry)){
+                   $data.='*Visa Expiry <br />';
+               }
+               if(!isset($rider_detail->passport_expiry)){
+                   $data.='*Passport Expiry <br />';
+               }
+               if(!isset($rider_detail->date_of_joining)){
+                   $data.='*Date of joining <br />';
+               }
+               if(!isset($rider_detail->passport_image)){
+                   $data.='*Passport front image <br />';
+               }
+               // if(!isset($rider_detail->passport_image_back)){
+               //     $data.='*Passport back image <br />';
+               // }
+               if(!isset($rider_detail->visa_image)){
+                   $data.='*Visa front image <br />';
+               }
+               // if(!isset($rider_detail->visa_image_back)){
+               //     $data.='*Visa back image <br />';
+               // }
+               if(!isset($rider_detail->emirate_image)){
+                   $data.='*Emirate front image <br />';
+               }
+               if(!isset($rider_detail->emirate_image_back)){
+                   $data.='*Emirate back image <br />';
+               }
+               if(!isset($rider_detail->licence_image)){
+                   $data.='*Licence front image <br />';
+               }
+               if(!isset($rider_detail->licence_image_back)){
+                   $data.='*Licence back image <br />';
+               }
+               if(isset($assign_bike)){
+                   $bike = $assign_bike->Bike;
+                   if(!isset($bike->mulkiya_picture)){
+                        $data.='*Mulkiya front image <br />';
+                   }
+               } 
+               if(isset($assign_bike)){
+                   $bike = $assign_bike->Bike;
+                   if(!isset($bike->mulkiya_picture_back)){
+                        $data.='*Mulkiya back image <br />';
+                   }
+               }
+               if(isset($assign_bike)){
+                   $bike = $assign_bike->Bike;
+                   if(!isset($bike->mulkiya_expiry)){
+                        $data.='*Mulkiya Expiry <br />';
+                   }
+               }
+               if(!isset($sim_history)){
+                   $data.='*No SIM assigned <br />';
+               }
+               return '<a style="color:red;" href="'.url('admin/riders/'.$riders->id.'/edit').'">'.$data.'</a>';
+           })        
+       ->addColumn('adress', function($riders){
+               if($riders->address){
+               return '<a href="'.route('admin.rider.profile', $riders->id).'">'.$riders->address.'</a>';
+           }
+           else{
+               $rider_detail =$riders->Rider_detail()->get()->first();
+              $emerate=$rider_detail->emirate_id.'';
+              $phone   =$riders->phone;
+              $_hasimage=asset(Storage::url($rider_detail->visa_image));
+           //    <img style="width:150px;height:150px;" class="profile-logo img img-thumbnail" src="'+data.visa_image+'" width:100px,height:100px>
+              $_notimage=asset('dashboard/assets/media/users/default.jpg');
+              if($rider_detail->visa_image){
+               return $emerate.$phone ;
+           }else{
+               return $emerate.$phone ; 
+           }
+                          
+           }
+           })
+           ->addColumn('status', function($riders){
+               if($riders->status == 1)
+               {
+                   return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
+               }
+               else
+               {
+                   return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
+               }
+           })
+           ->addColumn('actions', function($riders){
+               $status_text = $riders->status == 1 ? 'Inactive' : 'Active';
+               $client=$riders->clients()->get()->first();
+               $cr_HTML='';
+               if(isset($client))
+               {
+                   $client_rider=Client_Rider::where('client_id',$client->id)->where('rider_id',$riders->id)->get()->first();
+                   if(isset($client_rider)){
+                       $cr_HTML='<a href="" class="dropdown-item" data-toggle="modal" data-target="#client_rider_model" data-rider-id="'.$riders->id.'" data-client-id="'.$client->id.'" data-client-rider-id="'.$client_rider->client_rider_id.'"><i class="fa fa-user-plus"></i> Client\'s Rider ID</a>';
+                   }
+               }
+               return '<span class="dtr-data">
+               <span class="dropdown">
+                   <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+                   <i class="la la-ellipsis-h"></i>
+                   </a>
+                   <div class="dropdown-menu dropdown-menu-right">
+                       <a class="dropdown-item" href="'.route('admin.rider.profile', $riders->id).'"><i class="fa fa-eye"></i> View</a>
+                       <a class="dropdown-item" href="'.route('admin.rider.ridesReport', $riders->id).'"><i class="fa fa-eye"></i> View Rides Report</a>
+                       <button class="dropdown-item" onclick="updateStatus('.$riders->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
+                       <a class="dropdown-item" href="'.route('admin.rider.location', $riders->id).'"><i class="fa fa-map-marker-alt"></i> View Location</a>
+                       <a class="dropdown-item" href="'.route('admin.riders.edit', $riders).'"><i class="fa fa-edit"></i> Edit</a>
+                       <button class="dropdown-item" onclick="deleteRider('.$riders->id.')"><i class="fa fa-trash"></i> Delete</button>
+                       <a class="dropdown-item" href="'.route('Bike.assignedToRiders_History', $riders).'"><i class="fa fa-eye"></i>View Bikes History</a>
+                       <a class="dropdown-item" href="'.route('bike.bike_assignRiders', $riders).'"><i class="fa fa-eye"></i> Assign Bike</a> 
+                       <a class="dropdown-item" href="'.route('SimHistory.addsim', $riders).'"><i class="fa fa-eye"></i> Assign Sim</a>
+                       <a class="dropdown-item" href="'.route('Sim.simHistory', $riders).'"><i class="fa fa-eye"></i> View Sim History</a>
+                       '.$cr_HTML.'
+                       </div>
+                       
+                       </div>
+               </span>
+           </span>';
+           })
+           ->addColumn('date_of_joining', function($riders){
+               $rider_detail =$riders->Rider_detail()->get()->first();
+              return $rider_detail->date_of_joining;
+           })
+           ->addColumn('official_given_number', function($riders){
+               $rider_detail =$riders->Rider_detail()->get()->first();
+              return $rider_detail->official_given_number;
+           })
+           ->addColumn('passport_expiry', function($riders){
+               $rider_detail =$riders->Rider_detail()->get()->first();
+              return $rider_detail->passport_expiry;
+           })
+           ->addColumn('visa_expiry', function($riders){
+               $rider_detail =$riders->Rider_detail()->get()->first();
+              return $rider_detail->visa_expiry;
+           })
+           ->addColumn('licence_expiry', function($riders){
+               $rider_detail =$riders->Rider_detail()->get()->first();
+              return $rider_detail->licence_expiry;
+           })
+           ->addColumn('mulkiya_expiry', function($riders){
+               $assign_bike=$riders->Assign_bike()->where('status', 'active')->get()->first();
+               if(isset($assign_bike)){
+                   $bike = $assign_bike->Bike;
+                   if(isset($bike->mulkiya_expiry)){
+                       return $bike->mulkiya_expiry;
+                   }
+               }
+              return "No mulkiya expiry";
+           })
+           ->addColumn('official_sim_given_date', function($riders){
+               $rider_detail =$riders->Rider_detail()->get()->first();
+              return $rider_detail->official_sim_given_date;
+           })
+           ->addColumn('bike_number', function($riders){
+              $a=$riders->Assign_bike()->where('status', 'active')->get()->first();
+               // 
+               if ($a) {
+                   $bike=bike::where("id",$a->bike_id)->get()->first();
+                   
+                   return '<a href="'.url('admin/bike/'.$bike['id'].'/profile'.'/'.$riders->id) .'">'.$bike['bike_number'].'</a>';
+               }
+               else{
+                  return 'Bike is not assigned to Rider';
+               }
+           
+           })
+           ->addColumn('emirate_id', function($riders){
+               $rider_detail =$riders->Rider_detail()->get()->first();
+              return $rider_detail->emirate_id;
+           })
+           ->addColumn('passport_collected', function($riders){
+               $rider_detail =$riders->Rider_detail()->get()->first();
+              return $rider_detail->passport_collected;
+           })
+           
+           // <a class="dropdown-item" href="'.route('Rider.salary', $riders).'"><i class="fa fa-money-bill-wave"></i> Salaries</a> 
+           ->rawColumns(['new_name','sim_number','passport_collected','missing_fields','adress','client_name','emirate_id','mulkiya_expiry','bike_number','official_sim_given_date','licence_expiry','visa_expiry','passport_expiry','official_given_number', 'new_email','date_of_joining', 'phone', 'actions', 'status'])
+           ->make(true);
+       }
 
 }

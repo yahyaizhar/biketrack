@@ -593,4 +593,9 @@ public function destroyer(Rider $rider,$id){
         $performance_count=Rider_Performance_Zomato::all()->count();
         return view('admin.rider.rider_performance',compact('performance_count'));
    }
+   public function getRider_active(){
+    $rider_count=Rider::where('active_status','A')->get()->count();
+    return view('admin.rider.active_riders',compact('rider_count'));
+   }
+
 }
