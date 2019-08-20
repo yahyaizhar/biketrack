@@ -89,6 +89,13 @@ class SimController extends Controller
             'status' => true
         ]);
     }
+    public function getRiderHistory($sim_id){
+        $sim = Sim::find($sim_id);
+        $sim_history=$sim->Sim_History()->get();
+
+        return view('SIM.rider_history',compact('sim_history', 'sim'));
+
+    }
     public function DeleteSim(Request $request,$id){
         $sim_delete=Sim::find($id);
         $sim_delete->active_status='D';
