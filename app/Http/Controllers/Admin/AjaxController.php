@@ -138,7 +138,8 @@ class AjaxController extends Controller
                     <a class="dropdown-item" href="'.route('Sim.edit_sim', $sim).'"><i class="fa fa-edit"></i> Edit</a>
                     <button class="dropdown-item" onclick="updateStatus('.$sim->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                     <button class="dropdown-item" onclick="deleteSim('.$sim->id.');"><i class="fa fa-trash"></i> Delete</button>
-                </div>
+                    <a class="dropdown-item" href="'.route('Sim.rider.history', $sim->id).'"><i class="fa fa-eye"></i> View Rider history</a>
+                    </div>
             </span>
         </span>';
         })
@@ -616,9 +617,13 @@ class AjaxController extends Controller
             $rider_detail =$riders->Rider_detail()->get()->first();
            return $rider_detail->emirate_id;
         })
+        ->addColumn('passport_collected', function($riders){
+            $rider_detail =$riders->Rider_detail()->get()->first();
+           return $rider_detail->passport_collected;
+        })
         
         // <a class="dropdown-item" href="'.route('Rider.salary', $riders).'"><i class="fa fa-money-bill-wave"></i> Salaries</a> 
-        ->rawColumns(['new_name','sim_number','missing_fields','adress','client_name','emirate_id','mulkiya_expiry','bike_number','official_sim_given_date','licence_expiry','visa_expiry','passport_expiry','official_given_number', 'new_email','date_of_joining', 'phone', 'actions', 'status'])
+        ->rawColumns(['new_name','sim_number','passport_collected','missing_fields','adress','client_name','emirate_id','mulkiya_expiry','bike_number','official_sim_given_date','licence_expiry','visa_expiry','passport_expiry','official_given_number', 'new_email','date_of_joining', 'phone', 'actions', 'status'])
         ->make(true);
     }
     public function getMobiles(){

@@ -69,6 +69,7 @@ margin-left: 10px;
                         <th>Name</th>
                         <th>Assigned To</th>
                         <th>Sim Number</th>
+                        <th>Passport Collected</th>
                         <th>Missing Fields</th>
                         <th>Status</th>
                         <th>Actions</th>
@@ -213,6 +214,7 @@ $(function() {
             { "data": 'new_name', "name": 'name' },
             { "data": 'client_name', "name": 'client_name' },
             { "data": 'sim_number', "name": 'sim_number' },
+            { "data": 'passport_collected', "name": 'passport_collected' },
             { "data": 'missing_fields', "name": 'missing_fields' },
             { "data": 'status', "name": 'status' },
             { "data": 'actions', "name": 'actions' }
@@ -230,6 +232,7 @@ $(function() {
             { "data": 'new_name', "name": 'name' },
             { "data": 'new_email', "name": 'email' },
             { "data": 'sim_number', "name": 'sim_number' },
+            { "data": 'passport_collected', "name": 'passport_collected' },
             { "data": 'address', "name": 'address' },
             { "data": 'status', "name": 'status' },
             { "data": 'date_of_joining', "name": 'date_of_joining' },
