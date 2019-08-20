@@ -223,6 +223,8 @@ Route::get('/edit/{id}/Sim','SimController@edit_sim')->name('Sim.edit_sim');
 Route::post('/update/{id}/Sim','SimController@update_sim')->name('Sim.update_sim');
 Route::post('/sim/{sim_id}/updateStatus','SimController@updateStatusSim')->name('Sim.updateStatus_sim');
 Route::delete('/sim/{sim_id}', 'SimController@DeleteSim')->name('Sim.DeleteSim');
+
+Route::get('/sim/history/rider/{sim_id}','SimController@getRiderHistory')->name('Sim.rider.history');
      // End Sim Section  
 
 
