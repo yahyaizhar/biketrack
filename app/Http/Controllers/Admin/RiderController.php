@@ -490,10 +490,29 @@ class RiderController extends Controller
         //     Storage::delete($rider->profile_picture);
         // }
         $rider->active_status="D";
+        $rider->status='0';
         $rider->update();
+
         $rider_detail=$rider->Rider_detail;
         $rider_detail->active_status="D";
         $rider_detail->update();
+        
+        $clients = $rider->clients()->detach();
+
+        $assign_bike=$rider->Assign_bike()->where('status','active')->get()->first();
+        if(isset($assign_bike)){
+            $assign_bike->status='deactive';
+            $assign_bike->update();
+            $bike=bike::find($assign_bike->bike_id);
+            $bike->availability='yes';
+            $bike->update();
+        }     
+        $sim_history=$rider->Sim_History()->where('status','active')->get()->first();
+        if(isset($sim_history)){
+            $sim_history->status='deactive';
+            $sim_history->update();
+        }
+        
     }
     // public function showMessages(Rider $rider)
     // {
