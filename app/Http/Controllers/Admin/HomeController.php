@@ -36,11 +36,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $all_riders = Rider::all();
+        $all_riders = Rider::where("active_status","A")->get();
         $riders = $all_riders->count();
-        $clients = Client::all()->count();
-        $online_riders = Rider::where('status', 1)->get()->count();
-        $clients_online = Client::where('status', 1)->get()->count();
+        $clients = Client::where("active_status","A")->get()->count();
+        $online_riders = Rider::where('status', 1)where("active_status","A")->get()->count();
+        $clients_online = Client::where('status', 1)where("active_status","A")->get()->count();
         // $clients_online = Client_Rider::select('client_id')->distinct()->get()->count();
 
         $latest_riders = Rider::orderBy('created_at', 'DESC')->take(5)->get();
@@ -49,22 +49,22 @@ class HomeController extends Controller
         
         $current_date = Carbon::parse(Carbon::now());
         $after2_dt=Carbon::now()->addMonths(2);
-        $ve__riders=Rider_detail::whereDate('visa_expiry', '<=', $after2_dt->toDateString())
+        $ve__riders=Rider_detail::where("active_status","A")->whereDate('visa_expiry', '<=', $after2_dt->toDateString())
         ->whereDate('visa_expiry', '>', $current_date->toDateString())
         ->orderBy('visa_expiry', 'DESC')
         ->get();
         
-        $pe__riders=Rider_detail::whereDate('passport_expiry', '<=', $after2_dt->toDateString())
+        $pe__riders=Rider_detail::where("active_status","A")->whereDate('passport_expiry', '<=', $after2_dt->toDateString())
         ->whereDate('passport_expiry', '>', $current_date->toDateString())
         ->orderBy('passport_expiry', 'DESC')
         ->get();
         // return $pe__riders;
         
-        $me__bikes=bike::whereDate('mulkiya_expiry', '<=', $after2_dt->toDateString())
+        $me__bikes=bike::where("active_status","A")->whereDate('mulkiya_expiry', '<=', $after2_dt->toDateString())
         ->whereDate('mulkiya_expiry', '>', $current_date->toDateString())
         ->orderBy('mulkiya_expiry', 'DESC')
         ->get();
-        $le__riders=Rider_detail::whereDate('licence_expiry', '<=', $after2_dt->toDateString())
+        $le__riders=Rider_detail::where("active_status","A")->whereDate('licence_expiry', '<=', $after2_dt->toDateString())
         ->whereDate('licence_expiry', '>', $current_date->toDateString())
         ->orderBy('licence_expiry', 'DESC')
         ->get();
