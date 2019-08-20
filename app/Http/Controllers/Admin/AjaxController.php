@@ -1203,9 +1203,12 @@ class AjaxController extends Controller
             return $performance->adt;
         })
         ->addColumn('rider_name', function($performance){
-        $rider=$performance->Rider;
+        
+        $client_rider=Client_Rider::where("client_rider_id",$performance->feid)->get()->first();
+         $rider=Rider::find($client_rider['rider_id']);
+        
         if(isset($rider)){
-        return $rider->name;
+            return $rider['name'];
         }
         else{
             return 'No Client Rider Id is Assigned';

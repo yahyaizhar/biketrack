@@ -17,7 +17,7 @@
             
                         </h3>
                     </div>
-                    <div class="kt-portlet__head-toolbar">
+                    {{-- <div class="kt-portlet__head-toolbar">
                         <a href="#" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-toggle="dropdown">
                             <i class="flaticon-more-1"></i>
                         </a>
@@ -37,7 +37,7 @@
                                 </li>
                             </ul>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="kt-portlet__body">
                     <!--begin::Widget -->

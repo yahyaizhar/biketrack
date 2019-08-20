@@ -195,8 +195,8 @@
           <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <script>
             $(document).ready(function(){
-                $('#datepicker1').datepicker({format: "dd.mm.yyyy"}); 
-                $('#datepicker2').datepicker({format: "dd.mm.yyyy"}); 
+                $('#datepicker1').fdatepicker({format: 'dd-mm-yyyy'});
+                $('#datepicker2').fdatepicker({format: 'dd-mm-yyyy'});
                 
             });
         

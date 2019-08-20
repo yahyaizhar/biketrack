@@ -18,6 +18,9 @@
                 Assign Sim
             </a>
         @endif
+        <a href="{{ route('Sim.simHistory', $rider->id) }}" class="btn btn-label-info btn-bold btn-sm btn-icon-h kt-margin-l-10">
+         Sim History
+        </a>
         {{-- <a href="{{ route('Bike.assignedToRiders_History', $rider->id) }}" class="btn btn-label-danger btn-bold btn-sm btn-icon-h kt-margin-l-10">
         Bike history
         </a> --}}
@@ -53,7 +56,7 @@
                                     <a class="kt-widget__username"> 
                                       <h4> {{$sim->sim_company}}-{{ $sim->sim_number }}</h4>
                                         <button class="btn btn-label-success btn-sm btn-upper"><span class="label label-success">Active</span></button>
-                                        
+                                        {{-- <button class="btn btn-label-info btn-sm btn-upper"><span class="label label-info">{{$history->allowed_balance}}</span></button> --}}
                                     </a>
             
                                     <div class="kt-widget__action">
@@ -64,7 +67,7 @@
                                 </div>
             
                                 <div class="kt-widget__subhead">
-                                    
+                                    <a><i class="flaticon2-calendar-3"></i>Allowed Balance:&nbsp;{{$history->allowed_balance}} </a>
                                     {{-- <a><i class="flaticon2-calendar-3"></i>{{ $bike_id['availability'] }} </a>
                                     <a><i class="fa fa-motorcycle"></i>{{ $bike_id['bike_number'] }}</a> --}}
                                     @php

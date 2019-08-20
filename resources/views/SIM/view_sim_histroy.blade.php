@@ -53,17 +53,18 @@
                                 <a class="kt-widget__username">
                                   <h4>{{$hasSim['sim_company']}}-{{ $hasSim['sim_number'] }}</h4>
                                   <button class="btn btn-label-success btn-sm btn-upper"><span class="label label-success">{{$history['status']}}</span></button>
-                                  </a>
+                                {{-- <button class="btn btn-label-info btn-sm btn-upper"><span class="label label-info">{{$history->allowed_balance}}</span></button> --}}
+                                </a>
         
                                 <div class="kt-widget__action">
                                   
                                     <button onclick="deleteSim({{$rider->id}},{{$hasSim['id']}})" class="btn btn-label-info btn-sm btn-upper">Remove</button>&nbsp;
-                                {{-- <button class="btn btn-label-success btn-sm btn-upper"><span class="label label-success">{{$bike_id['status']}}</span></button> --}}
+                                {{-- <button class="btn btn-label-success btn-sm btn-upper"><span class="label label-success">sohaib</span></button> --}}
                                  </div>
                             </div>
         
                             <div class="kt-widget__subhead">
-                                
+                                <a><i class="flaticon2-calendar-3"></i>Allowed Balance:&nbsp;{{$history->allowed_balance}} </a>
                                 {{-- <a><i class="flaticon2-calendar-3"></i>{{ $bike1['availability'] }} </a> --}}
                                 {{-- <a><i class="fa fa-motorcycle"></i>{{ $bike1['bike_number'] }}</a> --}}
                                 @php
@@ -117,7 +118,8 @@
                                 <a class="kt-widget__username">
                                   <h4>{{$hasSim['sim_company']}}-{{ $hasSim['sim_number'] }}</h4>
                                   <button class="btn btn-label-danger btn-sm btn-upper"><span class="label label-danger">{{$history['status']}}</span></button>
-                                 @if($hasSim['active_status']=="D")
+                                  {{-- <button class="btn btn-label-info btn-sm btn-upper"><span class="label label-info"></span></button> --}}
+                                  @if($hasSim['active_status']=="D")
                                     <button class="btn btn-label-warning btsssn-sm btn-upper"><span class="label label-warning">Deleted</span></button>
                                  @endif
                                   </a>
@@ -131,7 +133,7 @@
         
                             <div class="kt-widget__subhead">
                                 
-                                {{-- <a><i class="flaticon2-calendar-3"></i>{{ $bike1['availability'] }} </a> --}}
+                                <a><i class="flaticon2-calendar-3"></i>Allowed Balance:&nbsp;{{$history->allowed_balance}} </a>
                                 {{-- <a><i class="fa fa-motorcycle"></i>{{ $bike1['bike_number'] }}</a> --}}
                                 @php
                                 $mytimestamp = strtotime($history['created_at']);
