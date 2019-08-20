@@ -39,8 +39,8 @@ class HomeController extends Controller
         $all_riders = Rider::where("active_status","A")->get();
         $riders = $all_riders->count();
         $clients = Client::where("active_status","A")->get()->count();
-        $online_riders = Rider::where('status', 1)where("active_status","A")->get()->count();
-        $clients_online = Client::where('status', 1)where("active_status","A")->get()->count();
+        $online_riders = Rider::where('status', 1)->where("active_status","A")->get()->count();
+        $clients_online = Client::where('status', 1)->where("active_status","A")->get()->count();
         // $clients_online = Client_Rider::select('client_id')->distinct()->get()->count();
 
         $latest_riders = Rider::orderBy('created_at', 'DESC')->take(5)->get();
