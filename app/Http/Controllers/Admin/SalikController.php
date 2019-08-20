@@ -32,7 +32,7 @@ class SalikController extends Controller
         foreach ($data as $item) {
             $i++;
             $zp_found = Arr::first($zp, function ($item_zp, $key) use ($item) {
-                return $item_zp->date == $item['transaction_id'];
+                return $item_zp->transaction_id == $item['transaction_id'];
             });
             if(!isset($zp_found)){
                 $obj = [];
