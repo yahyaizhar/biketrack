@@ -91,7 +91,7 @@
                     </div> 
                 </li>
                 <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "admin/salik") !== false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle">
-                    <span class="kt-menu__link-icon"><i class="fa fa-motorcycle"></i>    
+                    <span class="kt-menu__link-icon"><i class="fa fa-road"></i>    
                 </span><span class="kt-menu__link-text">Salik</span><i class="kt-menu__ver-arrow la la-angle-right"></i></a>
                     <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
                         <ul class="kt-menu__subnav">
