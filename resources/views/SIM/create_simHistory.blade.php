@@ -123,8 +123,8 @@
  
   <script>
       $(document).ready(function(){
-          $('#datepicker1').fdatepicker({dateFormat: 'yy-mm-dd'}); 
-          $('#datepicker2').fdatepicker({dateFormat: 'yy-mm-dd'}); 
+          $('#datepicker1').fdatepicker({format: 'dd-mm-yyyy'});  
+          $('#datepicker2').fdatepicker({format: 'dd-mm-yyyy'}); 
          
       });
   
