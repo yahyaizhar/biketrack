@@ -1,5 +1,5 @@
 ## Biketrack Dashboard
-##### run and follow these commands:
+##### run and follow these commands: 
 - Create a database locally named `homestead` utf8_general_ci 
 - Download composer https://getcomposer.org/download/
 - Pull Laravel/php project from git provider i.e. `git clone https://github.com/testingatswt/biketrack.git`.
