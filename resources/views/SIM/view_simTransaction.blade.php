@@ -162,7 +162,7 @@ $(function() {
             _filterMonth = __data.month;
         }
         __data.filterMonth=new Date(_filterMonth).format('yyyy-mm-dd');
-        
+        __data.status=$(__data.status).text().toLowerCase();
         var _data = {
             action: "edit",
             data: __data

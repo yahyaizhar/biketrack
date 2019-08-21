@@ -6,6 +6,7 @@
     {{-- sim transactions --}}
     <div class="row">
         <div class="col-md-4">
+            <h5>sim transactions</h5>
             <form class="kt-form" action="{{ route('SimTransaction.store_simTransaction') }}" method="POST" enctype="multipart/form-data">
                 {{ csrf_field() }}
                 <div class="kt-portlet__body">

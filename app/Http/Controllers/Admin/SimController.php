@@ -139,6 +139,7 @@ public function store_simTransaction(Request $request){
         $sim_transaction->status=0;
         
     $sim_transaction->save(); 
+
     return redirect(route('SimTransaction.view_records'))->with('message', 'Sim created successfully.');
 }
 
@@ -210,11 +211,69 @@ public function update_simTransaction(Request $request, $id){
             ]);
             $sim_trans->sim_id=$data['sim_id'];
             $sim_trans->bill_amount=$data['bill_amount'];
+            $extra = $data['bill_amount'] - $data['usage_limit'] ;
+            if($extra<0){
+                $extra=0;
+            }
+            $sim_trans->extra_usage_amount=$extra;
             $sim_trans->extra_usage_payment_status=$data['extra_usage_payment_status'];
             $sim_trans->bill_status=$data['bill_status'];
             $sim_trans->status=1;
             $sim_trans->month_year=$data['filterMonth'];
             $sim_trans->save();
+
+            // ca-ra
+
+            $status = $data['status'];
+            //if($status=='inactive'){
+                // created
+                
+            //}
+           // else{
+                //updated
+                $sim=$sim_trans->Sim;
+                $sim_history = $sim->Sim_history()->where('status', 'active')->get()->first();
+                $rider_id = null;
+                if(isset($sim_history)){
+                    $rider_id=$sim_history->rider_id;
+                }
+                if(strtolower($sim_trans->extra_usage_payment_status)=='paid'){
+                    // dr to ca,
+                    
+                    $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+                        'sim_transaction_id'=>$sim_trans->id
+                    ]);
+                    $ca->type='dr';
+                    $ca->rider_id=$rider_id;
+                    $ca->amount=$data['usage_limit'];
+                    $ca->sim_transaction_id=$sim_trans->id;
+                    $ca->save();
+                    // dr to ra
+
+                    $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
+                        'sim_transaction_id'=>$sim_trans->id
+                    ]);
+                    $ra->type='dr';
+                    $ra->amount=$extra;
+                    $ra->rider_id=$rider_id;
+                    $ra->sim_transaction_id=$sim_trans->id;
+                    $ra->save();
+
+                }
+                else {
+                    $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+                        'sim_transaction_id'=>$sim_trans->id
+                    ]);
+                    $ca->type='dr';
+                    $ca->rider_id=$rider_id;
+                    $ca->amount=$sim_trans->bill_amount;
+                    $ca->sim_transaction_id=$sim_trans->id;
+                    $ca->save();
+                }
+               
+          //  }
+            
+            // ends ca-ra
         }
 
         return response()->json([

@@ -28,6 +28,7 @@ use App\Model\Mobile\Mobile_installment;
 use App\Model\Rider\Rider_Performance_Zomato;
 use App\Assign_bike;
 use App\Model\Rider\Trip_Detail;
+use Arr;
 
 
 
@@ -149,7 +150,18 @@ class AjaxController extends Controller
 
     public function getSimTransaction()
     {
-        $sims = Sim::orderByDesc('created_at')->where('active_status', 'A')->get();
+        $sims = [];
+        $all_sims = Sim::with('Sim_history')->orderByDesc('created_at')->where('active_status', 'A')->get();
+
+        foreach ($all_sims as $sim) {
+            $sim_history = Arr::first($sim->Sim_history, function ($history, $key) {
+                return $history->status=='active';
+            });
+            if(isset($sim_history)){
+                array_push($sims, $sim);
+            }
+        }
+        
         // return $clients;
         //array_push($sims,array('month'=>$month));
         return DataTables::of($sims)
