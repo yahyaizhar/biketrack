@@ -209,6 +209,54 @@
             <input data-switch="true" name="passport_collected" id="passport_collected" type="checkbox" checked="checked" data-on-text="Yes" data-handle-width="70" data-off-text="No" data-on-color="brand">
         </div>
     </div>
+    <div class="row" id="passport_status_no">
+            <div class="col-lg-4 col-md-4 col-sm-12"> 
+                    <div class="form-group">
+                        @php
+                            $riders=App\Model\Rider\Rider::all();
+                        @endphp
+                            <label>Employee Reference:</label>
+                            <select id="empoloyee_reference" class="form-control  @if($errors->has('empoloyee_reference')) invalid-field @endif kt-select2" id="kt_select2_3" name="empoloyee_reference" placeholder="Enter Employee Reference" value="{{ old('empoloyee_reference') }}">
+                                @foreach ($riders as $rider)
+                                <option value="{{$rider->name}}">{{$rider->name}}</option>
+                                @endforeach
+                                </select> 
+                            @if ($errors->has('empoloyee_reference'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{$errors->first('empoloyee_reference')}}
+                                    </strong>
+                                </span>
+                            @endif
+                        </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="form-group">
+                    <label>Other Passport Given:</label>
+                    <input id="other_passport_given" type="text" autocomplete="off" class="form-control @if($errors->has('other_passport_given')) invalid-field @endif" name="other_passport_given" placeholder="Passport given by whom?">
+                @if ($errors->has('other_passport_given'))
+                    <span class="invalid-response" role="alert">
+                    <strong>{{ $errors->first('other_passport_given') }}</strong>
+                    </span>
+                @else
+                    <span class="form-text text-muted">Passport given by whom?</span>
+                @endif
+            </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12">
+            <div class="form-group">
+                <label>Not Given:</label>
+                <input id="not_given" type="text" autocomplete="off" class="form-control @if($errors->has('not_given')) invalid-field @endif" name="not_given" placeholder="Reason that passport is not given?">
+                @if ($errors->has('not_given'))
+                    <span class="invalid-response" role="alert">
+                        <strong>{{ $errors->first('not_given') }}</strong>
+                    </span>
+                @else
+                    <span class="form-text text-muted">Reason that passport is not given?</span>
+                @endif
+            </div>
+            </div>
+    </div>
 <div class="row">
 <div class="col-lg-6 col-md-6 col-sm-12">
 <div class="form-group">
@@ -445,6 +493,13 @@ function myFunction() {
   document.getElementById("myBar").style.width = scrolled + "%";
 }
 
+});
+</script>
+<script>
+$(document).ready(function(){
+$("#passport_collected").toggle(function(){
+console.log("a");
+});
 });
 </script>
 
