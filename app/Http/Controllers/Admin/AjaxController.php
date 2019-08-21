@@ -323,6 +323,7 @@ class AjaxController extends Controller
                     <button class="dropdown-item" onclick="updateStatus('.$bike->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                     <button class="dropdown-item" onclick="deleteBike('.$bike->id.');"><i class="fa fa-trash"></i> Delete</button>
                     <a class="dropdown-item" href="'.route('bike.rider_history', $bike).'"><i class="fa fa-eye"></i> View Rider history</a>
+                    <a class="dropdown-item" href="'.route('bike.bike_salik', $bike->id).'"><i class="fa fa-eye"></i> View Salik</a>
                     </div>
             </span>
         </span>';
@@ -543,6 +544,12 @@ class AjaxController extends Controller
                     $cr_HTML='<a href="" class="dropdown-item" data-toggle="modal" data-target="#client_rider_model" data-rider-id="'.$riders->id.'" data-client-id="'.$client->id.'" data-client-rider-id="'.$client_rider->client_rider_id.'"><i class="fa fa-user-plus"></i> Client\'s Rider ID</a>';
                 }
             }
+            
+            $assign_bike=$riders->Assign_bike()->get()->first();
+            $bike_html="";
+            if(isset($assign_bike)){
+                $bike_html='<a class="dropdown-item" href="'.route('rider.rider_salik', $riders).'"><i class="fa fa-eye"></i> View Salik</a>';
+            }
             return '<span class="dtr-data">
             <span class="dropdown">
                 <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
@@ -560,6 +567,7 @@ class AjaxController extends Controller
                     <a class="dropdown-item" href="'.route('SimHistory.addsim', $riders).'"><i class="fa fa-eye"></i> Assign Sim</a>
                     <a class="dropdown-item" href="'.route('Sim.simHistory', $riders).'"><i class="fa fa-eye"></i> View Sim History</a>
                     '.$cr_HTML.'
+                    '.$bike_html.'
                     </div>
                     
                     </div>
@@ -1453,6 +1461,11 @@ class AjaxController extends Controller
                        $cr_HTML='<a href="" class="dropdown-item" data-toggle="modal" data-target="#client_rider_model" data-rider-id="'.$riders->id.'" data-client-id="'.$client->id.'" data-client-rider-id="'.$client_rider->client_rider_id.'"><i class="fa fa-user-plus"></i> Client\'s Rider ID</a>';
                    }
                }
+               $assign_bike=$riders->Assign_bike()->get()->first();
+            $bike_html="";
+            if(isset($assign_bike)){
+                $bike_html='<a class="dropdown-item" href="'.route('rider.rider_salik', $riders).'"><i class="fa fa-eye"></i> View Salik</a>';
+            }
                return '<span class="dtr-data">
                <span class="dropdown">
                    <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
@@ -1470,6 +1483,7 @@ class AjaxController extends Controller
                        <a class="dropdown-item" href="'.route('SimHistory.addsim', $riders).'"><i class="fa fa-eye"></i> Assign Sim</a>
                        <a class="dropdown-item" href="'.route('Sim.simHistory', $riders).'"><i class="fa fa-eye"></i> View Sim History</a>
                        '.$cr_HTML.'
+                       '.$bike_html.'
                        </div>
                        
                        </div>
@@ -1536,5 +1550,69 @@ class AjaxController extends Controller
            ->rawColumns(['new_name','sim_number','passport_collected','missing_fields','adress','client_name','emirate_id','mulkiya_expiry','bike_number','official_sim_given_date','licence_expiry','visa_expiry','passport_expiry','official_given_number', 'new_email','date_of_joining', 'phone', 'actions', 'status'])
            ->make(true);
        }
+       public function getSalik_Bike($id)
+       {
+           $bike=bike::find($id);
+           $detail =Trip_Detail::orderByDesc('created_at')->where("plate",$bike->bike_number)->get();
+           return DataTables::of($detail)
+           ->addColumn('status', function($detail){
+               if($detail->status == 1)
+               {
+                   return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
+               }
+               else
+               {
+                   return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
+               }
+           })
+         ->addColumn('transaction_id', function($detail){
+               return $detail->transaction_id;
+           })
+           ->addColumn('toll_gate', function($detail){
+            return $detail->toll_gate;
+        })
+        ->addColumn('direction', function($detail){
+            return $detail->direction;
+        })
+        ->addColumn('tag_number', function($detail){
+            return $detail->tag_number;
+        })
+        ->addColumn('plate', function($detail){
+            return $detail->plate;
+        })
+        ->addColumn('amount_aed', function($detail){
+            return $detail->amount_aed;
+        })
+        ->addColumn('transaction_post_date', function($detail){
+            return $detail->transaction_post_date;
+        })
+        ->addColumn('trip_date', function($detail){
+            return $detail->trip_date;
+        })
+        ->addColumn('trip_time', function($detail){
+            return $detail->trip_time;
+        })
+    
+        
+        
+           ->addColumn('actions', function($detail){
+               $status_text = $detail->status == 1 ? 'Inactive' : 'Active';
+               return '<span class="dtr-data">
+               <span class="dropdown">
+                   <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+                   <i class="la la-ellipsis-h"></i>
+                   </a>
+                   <div class="dropdown-menu dropdown-menu-right">
+                       <a class="dropdown-item" href="'.route('Sim.edit_sim', $detail).'"><i class="fa fa-edit"></i> Edit</a>
+                       <button class="dropdown-item" onclick="updateStatus('.$detail->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
+                       <button class="dropdown-item" onclick="deleteSim('.$detail->id.');"><i class="fa fa-trash"></i> Delete</button>
+                   </div>
+               </span>
+           </span>';
+           })
+           ->rawColumns([ 'transaction_id','toll_gate','direction','tag_number','plate','amount_aed','trip_date','trip_time','transaction_post_date', 'actions', 'status'])
+           ->make(true);
+       }
+       
 
 }

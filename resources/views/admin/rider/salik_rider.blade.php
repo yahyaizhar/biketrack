@@ -33,7 +33,7 @@ margin-left: 10px;
                     <i class="kt-font-brand fa fa-hotel"></i>
                 </span>
                 <h3 class="kt-portlet__head-title">
-                   Rider Performance
+                   Trip Details
                 </h3>
             </div>
             <div class="kt-portlet__head-toolbar">
@@ -50,7 +50,7 @@ margin-left: 10px;
                         &nbsp;
                         <input type="text" class="form-control" placeholder="Search" id="search_details" style="display: inline-block;width: auto;">
                         
-                        <a style="padding:8.45px 13px;" href="" data-toggle="modal" data-target="#import_data"  class="btn btn-label-success btn-sm btn-upper">Import Zomato Data</a>&nbsp;
+                        <a style="padding:8.45px 13px;" href="" data-toggle="modal" data-target="#import_data"  class="btn btn-label-success btn-sm btn-upper">Import Trip Detail</a>&nbsp;
                         {{-- <a href="{{ route('Sim.new_sim') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
                             New Record
@@ -60,20 +60,19 @@ margin-left: 10px;
             </div>
         </div>
         <div class="kt-portlet__body">
-
             <!--begin: Datatable -->
-            <table class="table table-striped- table-hover table-checkable table-condensed" id="ridePerformance-table">
+            <table class="table table-striped- table-hover table-checkable table-condensed" id="trip_details">
                 <thead>
                     <tr>
                         {{-- <th>
                             <input type="checkbox" id="select_all" >
                         </th> --}}
-                        <th>FIED</th>
-                        <th>Rider Name</th>
-                        <th>Date</th> 
-                        <th>Trips</th>
-                        <th>Adt</th>
-                        <th>Total Logedin Hours</th>
+                        <th>Transaction ID</th>
+                        <th>Toll Gate</th>
+                        <th>Direction</th> 
+                        <th>Tag Number</th>
+                        <th>Plate</th>
+                        <th>Amount(AED)</th>
                         {{-- <th>Actions</th> --}}
                     </tr>
                 </thead>
@@ -149,10 +148,7 @@ margin-left: 10px;
         
    });
    uppy.on('restriction-failed', (file, error) => {
-    // do some customized logic like showing system notice to users
-    // console.log(error);
     alert(error);
-    
     })
   
     $('.upload-button').on('click', function (e) {
@@ -170,36 +166,20 @@ margin-left: 10px;
                 var rows = chunk.split( /\r\n|\r|\n/ );
                 var headings = rows[0].split( ',' );console.warn(headings);
                 headings.forEach(function(_d, _i){
-                headings[_i]=_d.trim().replace(/ /g, '_').replace(/[0-9]/g, '').toLowerCase();
+                headings[_i]=_d.trim().replace(/ /g, '_').replace(/[0-9]/g, '').replace('(AED)', '_aed').toLowerCase();
                 });
                 rows[0] = headings.join();
                 return rows.join( '\n' );
-            },
+            }, 
             error: function(err, file, inputElem, reason){ console.log(err); },
             complete: function(results, file){ 
-                // console.log( results);
-                // ajax to import data
                var import_data = results.data;
-               import_data.forEach(function(data, i){
-                    var client_rider=client_riders.find(function(x){return x.client_rider_id===data.feid});
-                    // delete import_data[i].pl;
-                    // delete import_data[i].area;
-                    // delete import_data[i].driver_id;
-                    // delete import_data[i].driver_name;
-                    // delete import_data[i].status;
-                    var _riderID = null;
-                    if(typeof client_rider !== "undefined"){
-                        _riderID=client_rider.rider_id;
-                    }
-                    import_data[i].rider_id=_riderID;
-                    
-                });
-                console.log(import_data);
+               console.log(import_data);
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    url : "{{route('import.zomato')}}",
+                    url : "{{route('import.salik')}}",
                     type : 'POST',
                     data: {data: import_data},
                     beforeSend: function() {            
@@ -232,7 +212,6 @@ margin-left: 10px;
                 });
             }
         });
-        // uppy.upload()
     });
 
 // table accordian start
@@ -260,7 +239,7 @@ $(function() {
     
              
         },
-        ajax: '{!! route('admin.ajax_performance') !!}',
+        ajax: '{!! route('bike.ajax_salik_bike',$bike->id) !!}',
         columns:null,
         responsive:true,
        
@@ -269,7 +248,7 @@ $(function() {
 
         if(window.outerWidth>=521){
         //visa_expiry
-        $('#ridePerformance-table thead tr').prepend('<th></th>');
+        $('#trip_details thead tr').prepend('<th></th>');
         _settings.columns=[
             {
             "className":      'details-control',
@@ -278,40 +257,39 @@ $(function() {
             "defaultContent": ''
         },
         // { "data": 'new_id', "name": 'new_id' },
-            { "data": 'feid', "name": 'feid' },
-            { "data": 'rider_name', "name": 'rider_name' },
-            { "data": 'date', "name": 'date' },
-            { "data": 'trips', "name": 'trips' },
-            { "data": 'adt', "name": 'adt' },
-            { "data": 'total_loged_in_hours', "name": 'total_loged_in_hours' },
+            { "data": 'transaction_id', "name": 'transaction_id' },
+            { "data": 'toll_gate', "name": 'toll_gate' },
+            { "data": 'direction', "name": 'direction' },
+            { "data": 'tag_number', "name": 'tag_number' },
+            { "data": 'plate', "name": 'plate' },
+            { "data": 'amount_aed', "name": 'amount_aed' },
             // { "data": 'actions', "name": 'actions' }
         ];
         _settings.responsive=false;
     }
     else{
-        $('#ridePerformance-table thead tr th').eq(4).before('<th>Pickup Time:</th>');
-        $('#ridePerformance-table thead tr th').eq(5).before('<th>Shift Time:</th>');
-        $('#ridePerformance-table thead tr th').eq(6).before('<th>Drop Time:</th>');
-        $('#ridePerformance-table thead tr th').eq(7).before('<th>COD Orders:</th>');
-        $('#ridePerformance-table thead tr th').eq(8).before('<th>COD Amount:</th>');
+        
+        
+        $('#trip_details thead tr th').eq(6).before('<th>Trip Date:</th>');
+        $('#trip_details thead tr th').eq(7).before('<th>Trip Time:</th>');
+        $('#trip_details thead tr th').eq(8).before('<th>Transaction Post Date:</th>');
         _settings.columns=[
-            { "data": 'feid', "name": 'feid' },
-            { "data": 'rider_name', "name": 'rider_name' },
-            { "data": 'date', "name": 'date' },
-            { "data": 'trips', "name": 'trips' },
-            { "data": 'adt', "name": 'adt' },
-            { "data": 'total_loged_in_hours', "name": 'total_loged_in_hours' },
-            { "data": 'average_pickup_time', "name": 'average_pickup_time' },
-            { "data": 'loged_in_during_shift_time', "name": 'loged_in_during_shift_time' },
-            { "data": 'average_drop_time', "name": 'average_drop_time' },
-            { "data": 'cod_orders', "name": 'cod_orders' },
-            { "data": 'cod_amount', "name": 'cod_amount' },
+            { "data": 'transaction_id', "name": 'transaction_id' },
+            { "data": 'toll_gate', "name": 'toll_gate' },
+            { "data": 'direction', "name": 'direction' },
+            { "data": 'tag_number', "name": 'tag_number' },
+            { "data": 'plate', "name": 'plate' },
+            { "data": 'amount_aed', "name": 'amount_aed' },
+            { "data": 'trip_date', "name": 'trip_date' },
+            { "data": 'trip_time', "name": 'trip_time' },
+            { "data": 'transaction_post_date', "name": 'transaction_post_date' },
+            
         ];
      
     }
-    performance_table = $('#ridePerformance-table').DataTable(_settings);
+    performance_table = $('#trip_details').DataTable(_settings);
     if(window.outerWidth>=521){
-        $('#ridePerformance-table tbody').on('click', 'td.details-control', function () {
+        $('#trip_details tbody').on('click', 'td.details-control', function () {
             var tr = $(this).closest('tr');
             var row = performance_table.row( tr );
             if ( row.child.isShown() ) {
@@ -332,25 +310,21 @@ $(function() {
     // `d` is the original data object for the row
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
             '<tr>'+
-            '<td colspan="1"; style="font-weight:900;">Pickup Time:</td>'+
-            '<td colspan="2";>'+data.average_pickup_time+'</td>'+
-            '<td colspan="1"; style="font-weight:900;" >Shift Time:</td>'+
-            '<td colspan="2";>'+data.loged_in_during_shift_time+'</td>'+
-            '<td colspan="1"; style="font-weight:900;" >Drop Time:</td>'+
-            '<td colspan="1";>'+data.average_drop_time+'</td>'+
-            '<td colspan="1"; style="font-weight:900;">COD Orders:</td>'+
-            '<td colspan="2";>'+data.cod_orders+'</td>'+
-            '<td colspan="1"; style="font-weight:900;" >COD Amount:</td>'+
-            '<td colspan="2"; >'+data.cod_amount+'</td>'+
+            '<td colspan="1"; style="font-weight:900;">Trip Date:</td>'+
+            '<td colspan="2";>'+data.trip_date+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Trip time:</td>'+
+            '<td colspan="2";>'+data.trip_time+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Transaction_post_date:</td>'+
+            '<td colspan="1";>'+data.transaction_post_date+'</td>'+
             '</tr>'+
-          
+            
         '</table>';
 }
 $("#search_details").on("keyup", function() {
     var _val = $(this).val().trim().toLowerCase();
     if(_val===''){
-        $("#ridePerformance-table tbody").unmark();
-        $("#ridePerformance-table tbody > tr:visible").each(function() {
+        $("#trip_details tbody").unmark();
+        $("#trip_details tbody > tr:visible").each(function() {
             var tr = $(this);
             var row = performance_table.row( tr );
             if ( row.child.isShown() ) {
@@ -361,10 +335,10 @@ $("#search_details").on("keyup", function() {
         });
         return;
     }
-    // $("#ridePerformance-table tbody > tr:visible").each(function() {
+    // $("#trip_details tbody > tr:visible").each(function() {
     //     $(this).removeClass("shown");
     // });
-    $('#ridePerformance-table tbody > tr').show();
+    $('#trip_details tbody > tr').show();
     if (riders_data.length > 0) {
         
         var _res = riders_data.filter(function(x) {
@@ -373,17 +347,17 @@ $("#search_details").on("keyup", function() {
         });
         
         if (_res.length > 0) {
-            $("#ridePerformance-table tbody > tr").filter(function(index) {
+            $("#trip_details tbody > tr").filter(function(index) {
 
                 var _id = $(this).find("td").eq(1).text().trim().toLowerCase();
                 if (_res.findIndex(function(x) {
-                        return  x.feid == _id
+                        return  x.transaction_id == _id
                     }) === -1) {
                     $(this).hide();
                 }
             });
             if(_val !== ''){
-                $("#ridePerformance-table tbody > tr:visible").each(function() {
+                $("#trip_details tbody > tr:visible").each(function() {
                     var tr = $(this);
                     var row = performance_table.row( tr );
                     // console.warn("isShon: ",row.child.isShown());
@@ -398,16 +372,16 @@ $("#search_details").on("keyup", function() {
                         tr.addClass('shown');
                 });
             }
-            $("#ridePerformance-table tbody").unmark({
+            $("#trip_details tbody").unmark({
                 done: function() {
-                    $("#ridePerformance-table tbody").mark(_val, {
+                    $("#trip_details tbody").mark(_val, {
                         "element": "span",
                         "className": "highlighted"
                     });
                 }
             });
         } else {
-            $("#ridePerformance-table tbody > tr").hide();
+            $("#trip_details tbody > tr").hide();
         }
     }
     }); 
@@ -459,7 +433,7 @@ $("#search_details").on("keyup", function() {
 // table accordian end
 function delete_lastImport()
 {
-    var url = "{{ url('admin/delete/last/import') }}";
+    var url = "{{ url('admin/delete/last/import/salik') }}";
     console.log(url);
     swal.fire({
         title: 'Are you sure?',

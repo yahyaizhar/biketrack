@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 use App\Model\Rider\Trip_Detail; 
 use Batch;
 use Illuminate\Support\Arr;
+use App\Model\Bikes\bike;
+use App\Model\Rider\Rider;
 
 class SalikController extends Controller
 {
@@ -79,6 +81,17 @@ class SalikController extends Controller
                 $performance->delete();
             }
 
+    }
+
+    public function bike_salik($id){
+        $bike=bike::find($id);
+        return view('admin.Bike.salik_bike',compact('bike')); 
+    }
+    public function rider_salik($id){
+        $rider=Rider::find($id);
+        $assign_bike=$rider->Assign_bike()->get()->first();
+        $bike=bike::find($assign_bike->bike_id);
+        return view('admin.rider.salik_rider',compact('bike'));
     }
 
 }

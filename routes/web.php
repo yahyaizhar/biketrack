@@ -116,6 +116,15 @@ Route::group([
     Route::get('/bike/{bike_id}/history','ClientController@rider_history')->name('bike.rider_history');
     Route::get('/bike/{bike_id}/profile/{rider_id}','ClientController@bike_profile')->name('bike.bike_profile');
     // end Bike
+    // salik Bike
+    Route::get('view/bike/salik/{id}','SalikController@bike_salik')->name('bike.bike_salik');
+    // End Salik Bike
+    // salik Rider
+    Route::get('view/rider/salik/{id}','SalikController@rider_salik')->name('rider.rider_salik');
+    Route::get('/get/salik/bike/ajax/{id}','AjaxController@getSalik_Bike')->name('bike.ajax_salik_bike');
+    // End Salik Rider
+
+
 });
 
 Route::group([
