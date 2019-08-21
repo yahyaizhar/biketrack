@@ -99,6 +99,9 @@ margin-left: 10px;
                 <form class="kt-form" id="form_dates"  enctype="multipart/form-data">
                     <div class="modal-body">
                         <div class="UppyDragDrop"></div>
+                        <div class="card card-body bg-light py-1 mt-1 uppy_result">
+                            <span></span>
+                        </div>
                     </div>
                     <div class="modal-footer border-top-0 d-flex justify-content-center">
                         <button class="upload-button btn btn-success">Import</button>
@@ -150,7 +153,11 @@ margin-left: 10px;
    });
    uppy.on('restriction-failed', (file, error) => {
     alert(error);
-    })
+    }).on('file-added', (file) => {
+        console.log(file);
+        var _fileName = file.name;
+        $('.uppy_result').html('<span>'+_fileName+'</span>');
+    });
   
     $('.upload-button').on('click', function (e) {
         e.preventDefault();
