@@ -152,4 +152,8 @@ class HomeController extends Controller
         // return $rider_area;
         return view('admin.map.assign_area_to_rider',compact('rider','rider_area'));
     }
+
+    public function accounts_testing_v1(){
+        return view('admin.accounts.testing');
+    }
 }

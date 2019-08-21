@@ -279,4 +279,7 @@ Route::get('get/ajax/salik/trip_details','AjaxController@getSalikTrip_Details')-
 Route::delete('/delete/last/import/salik','SalikController@delete_lastImportSalik')->name('delete.import_salik');
     
 
+
+Route::get("/accounts/testing","HomeController@accounts_testing_v1")->name("admin.accounts.testing_v1");
+
 });  
