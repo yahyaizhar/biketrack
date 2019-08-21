@@ -213,7 +213,7 @@
             <div class="col-lg-4 col-md-4 col-sm-12"> 
                     <div class="form-group">
                         @php
-                            $riders=App\Model\Rider\Rider::all();
+                            $riders=App\Model\Rider\Rider::where("active_status","A")->where("status","1")->get();
                         @endphp
                             <label>Employee Reference:</label>
                             <select id="empoloyee_reference" class="form-control  @if($errors->has('empoloyee_reference')) invalid-field @endif kt-select2" id="kt_select2_3" name="empoloyee_reference" placeholder="Enter Employee Reference" value="{{ old('empoloyee_reference') }}">
@@ -497,9 +497,18 @@ function myFunction() {
 </script>
 <script>
 $(document).ready(function(){
-$("#passport_collected").toggle(function(){
-console.log("a");
-});
+    $("#passport_status_no").hide();
+    $("#passport_collected").on("switchChange.bootstrapSwitch",function(){
+       var a=$("#passport_collected").attr("data-off-text");
+       var _checked=$(this).prop("checked");
+       if (_checked==false) {
+        $("#passport_status_no").show().fadeIn(3000);
+       }
+       else if(_checked==true){
+        $("#passport_status_no").hide().fadeOut(3000); 
+       }
+        
+    }); 
 });
 </script>
 

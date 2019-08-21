@@ -264,13 +264,13 @@
         <div class="row" id="passport_status_no">
                 <div class="col-lg-4 col-md-4 col-sm-12"> 
                         <div class="form-group">
-                            @php
-                                $riders=App\Model\Rider\Rider::all();
-                            @endphp
+                                @php
+                                    $riders=App\Model\Rider\Rider::where("active_status","A")->where("status","1")->get();
+                                @endphp
                                 <label>Employee Reference:</label>
-                                <select class="form-control @if($errors->has('empoloyee_reference')) invalid-field @endif kt-select2" id="kt_select2_3" name="empoloyee_reference" placeholder="Enter Employee Reference" value="{{ old('empoloyee_reference') }}">
+                                <select id="empoloyee_reference" class="form-control @if($errors->has('empoloyee_reference')) invalid-field @endif kt-select2" id="kt_select2_3" name="empoloyee_reference" placeholder="Enter Employee Reference" value="{{ old('empoloyee_reference') }}">
                                     @foreach ($riders as $rider)
-                                    <option value="{{$rider->name}}">{{$rider->name}}</option>
+                                    <option value="{{$rider->name}}" @if($rider_detail->empoloyee_reference===$rider->name) selected @endif>{{$rider->name}}</option>
                                     @endforeach
                                     </select> 
                                 @if ($errors->has('empoloyee_reference'))
@@ -285,7 +285,7 @@
                 <div class="col-lg-4 col-md-4 col-sm-12">
                     <div class="form-group">
                         <label>Other Passport Given:</label>
-                        <input type="text" autocomplete="off" class="form-control @if($errors->has('other_passport_given')) invalid-field @endif" name="other_passport_given" placeholder="Passport given by whom?">
+                        <input id="other_passport_given" type="text" autocomplete="off" class="form-control @if($errors->has('other_passport_given')) invalid-field @endif" name="other_passport_given" placeholder="Passport given by whom?" value="{{ $rider_detail->other_passport_given }}">
                     @if ($errors->has('other_passport_given'))
                         <span class="invalid-response" role="alert">
                         <strong>{{ $errors->first('other_passport_given') }}</strong>
@@ -298,7 +298,7 @@
                 <div class="col-lg-4 col-md-4 col-sm-12">
                 <div class="form-group">
                     <label>Not Given:</label>
-                    <input type="text" autocomplete="off" class="form-control @if($errors->has('not_given')) invalid-field @endif" name="not_given" placeholder="Reason that passport is not given?">
+                    <input id="not_given" type="text" autocomplete="off" class="form-control @if($errors->has('not_given')) invalid-field @endif" name="not_given" placeholder="Reason that passport is not given?" value="{{ $rider_detail->not_given }}">
                     @if ($errors->has('not_given'))
                         <span class="invalid-response" role="alert">
                             <strong>{{ $errors->first('not_given') }}</strong>
@@ -729,6 +729,31 @@ $(document).ready(function(){
     });
 });
 </script>
-
+<script>
+$(document).ready(function(){
+    
+    var _checked1=$("#passport_collected").prop("checked");
+         if(_checked1==false){
+            $("#passport_status_no").show();
+         }
+    else if(_checked1==true){
+            $("#passport_status_no").hide(); 
+         }
+    
+    $("#passport_collected").on("switchChange.bootstrapSwitch",function(){
+        var a=$("#passport_collected").attr("data-off-text");
+        var _checked=$(this).prop("checked");
+        if (_checked==false) {
+        $("#passport_status_no").show().fadeIn(3000);
+        }
+        else if(_checked==true){
+        $("#passport_status_no").hide().fadeOut(3000); 
+        $("#empoloyee_reference")[0].selectedIndex=-1;
+        $("#other_passport_given").val("");
+        $("#not_given").val("");
+        }
+    }); 
+});
+</script>
 
 @endsection
