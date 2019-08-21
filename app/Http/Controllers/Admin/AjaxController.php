@@ -28,6 +28,8 @@ use App\Model\Mobile\Mobile_installment;
 use App\Model\Rider\Rider_Performance_Zomato;
 use App\Assign_bike;
 use App\Model\Rider\Trip_Detail;
+use App\Model\Accounts\Company_Account;
+use App\Model\Accounts\Rider_Account;
 use Arr;
 
 
@@ -1623,6 +1625,95 @@ class AjaxController extends Controller
            </span>';
            })
            ->rawColumns([ 'transaction_id','toll_gate','direction','tag_number','plate','amount_aed','trip_date','trip_time','transaction_post_date', 'actions', 'status'])
+           ->make(true);
+       }
+       public function getCompanyAccounts()
+       {
+           $C_A = Company_Account::orderByDesc('created_at')->where('active_status', 'A')->get();
+           // return $clients;
+           return DataTables::of($C_A)
+           ->addColumn('status', function($C_A){
+               if($C_A->status == 1)
+               {
+                   return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
+               }
+               else
+               {
+                   return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
+               }
+           })
+           ->addColumn('id', function($C_A){
+               return '1000'.$C_A->id;
+           })
+          
+           ->addColumn('type', function($C_A){
+               return $C_A->type;
+           })
+           ->addColumn('amount', function($C_A){
+               return $C_A->amount;
+           })
+           ->addColumn('action', function($C_A){
+               $status_text = $C_A->status == 1 ? 'Inactive' : 'Active';
+               return '<span class="dtr-data">
+               <span class="dropdown">
+                   <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+                   <i class="la la-ellipsis-h"></i>
+                   </a>
+                   <div class="dropdown-menu dropdown-menu-right">
+                       <a class="dropdown-item" href="'.route('Bike.edit_bike', $C_A).'"><i class="fa fa-edit"></i> Edit</a>
+                       <button class="dropdown-item" onclick="updateStatus('.$C_A->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
+                       <button class="dropdown-item" onclick="deleteBike('.$C_A->id.');"><i class="fa fa-trash"></i> Delete</button>
+                       </div>
+               </span>
+           </span>';
+           })
+                 
+           ->rawColumns(['type','amount','action', 'status'])
+           ->make(true);
+       }
+
+       public function getRiderAccounts()
+       {
+           $R_A = Rider_Account::orderByDesc('created_at')->where('active_status', 'A')->get();
+           // return $clients;
+           return DataTables::of($R_A)
+           ->addColumn('status', function($R_A){
+               if($R_A->status == 1)
+               {
+                   return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
+               }
+               else
+               {
+                   return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
+               }
+           })
+           ->addColumn('id', function($R_A){
+               return '1000'.$R_A->id;
+           })
+          
+           ->addColumn('type', function($R_A){
+               return $R_A->type;
+           })
+           ->addColumn('amount', function($R_A){
+               return $R_A->amount;
+           })
+           ->addColumn('action', function($R_A){
+               $status_text = $R_A->status == 1 ? 'Inactive' : 'Active';
+               return '<span class="dtr-data">
+               <span class="dropdown">
+                   <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+                   <i class="la la-ellipsis-h"></i>
+                   </a>
+                   <div class="dropdown-menu dropdown-menu-right">
+                       <a class="dropdown-item" href="'.route('Bike.edit_bike', $R_A).'"><i class="fa fa-edit"></i> Edit</a>
+                       <button class="dropdown-item" onclick="updateStatus('.$R_A->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
+                       <button class="dropdown-item" onclick="deleteBike('.$R_A->id.');"><i class="fa fa-trash"></i> Delete</button>
+                       </div>
+               </span>
+           </span>';
+           })
+                 
+           ->rawColumns(['type','amount','action', 'status'])
            ->make(true);
        }
        
