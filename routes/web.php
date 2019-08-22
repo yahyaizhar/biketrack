@@ -285,6 +285,7 @@ Route::get('get/ajax/company/accounts','AjaxController@getCompanyAccounts')->nam
 Route::get('get/ajax/rider/accounts','AjaxController@getRiderAccounts')->name('admin.ajax_rider_accounts');
 
 Route::get("/accounts/company/debits","ExpenseController@company_debit_index")->name("admin.accounts.company_debits");
+Route::post('/company/debit/insert','ExpenseController@insert_company_DC')->name('admin.insert_company_debit');
 Route::get("/accounts/company/debits/get_salary_deduction","ExpenseController@company_debit_getSalaryDeduction")->name("admin.accounts.company_debits.getSalaryDeduction");
 
 });  
