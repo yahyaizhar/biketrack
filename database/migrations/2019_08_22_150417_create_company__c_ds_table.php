@@ -22,6 +22,7 @@ class CreateCompanyCDsTable extends Migration
             $table->string('month')->nullable();
             $table->string('advance_description')->nullable();
             $table->string('advance_deducted_by')->nullable();
+            $table->string('advance_notes')->nullable();
             $table->string('salary_total')->nullable();
             $table->string('salary_gross')->nullable();
             $table->string('salary_recieved')->nullable();
