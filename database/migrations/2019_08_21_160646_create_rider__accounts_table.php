@@ -22,11 +22,12 @@ class CreateRiderAccountsTable extends Migration
             $table->integer('bike_expense_id')->nullable();
             $table->integer('fine_id')->nullable();
             $table->integer('salik_id')->nullable();
-            $table->integer('sallary_id')->nullable();
+            $table->integer('salary_id')->nullable();
             $table->integer('sim_transaction_id')->nullable();
             $table->integer('income_id')->nullable();
             $table->integer('investment_id')->nullable();
-            $table->integer('mobile_investment_id')->nullable();
+            $table->integer('mobile_installment_id')->nullable();
+            $table->integer('rider_advance_id')->nullable();
             $table->string('status')->nullable();
             $table->string('active_status')->default("A");
             $table->string('setting')->nullable();

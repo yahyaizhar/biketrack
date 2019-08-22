@@ -22,6 +22,7 @@
     <!-- end::Global Config -->
 
     <!--begin:: Global Mandatory Vendors -->
+    <script src="{{ asset('dashboard/assets/vendors/general/jquery/dist/CSVExport.js') }}" type="text/javascript"></script> 
     <script src="{{ asset('dashboard/assets/vendors/general/jquery/dist/jquery.js') }}" type="text/javascript"></script>
     <script src="{{ asset('dashboard/assets/vendors/general/popper.js/dist/umd/popper.js') }}" type="text/javascript"></script>
     <script src="{{ asset('dashboard/assets/vendors/general/bootstrap/dist/js/bootstrap.min.js') }}" type="text/javascript"></script>
