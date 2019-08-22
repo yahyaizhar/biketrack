@@ -51,6 +51,8 @@ margin-left: 10px;
                         <input type="text" class="form-control" placeholder="Search" id="search_details" style="display: inline-block;width: auto;">
                         
                         <a style="padding:8.45px 13px;" href="" data-toggle="modal" data-target="#import_data"  class="btn btn-label-success btn-sm btn-upper">Import Trip Detail</a>&nbsp;
+                        <input class="btn btn-primary" type="button" onclick="export_data();" value="Export Trip Detail">
+
                         {{-- <a href="{{ route('Sim.new_sim') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
                             New Record
@@ -133,6 +135,24 @@ margin-left: 10px;
     $client_riders=App\Model\Client\Client_Rider::all();
 @endphp
 <script>
+        function export_data(){
+var export_details=[];
+        riders_data.forEach(function(item,index) {
+           export_details.push({
+            "Transaction ID":item.transaction_id,
+            "Toll Gate":item.toll_gate,
+            "Direction":item.direction,
+            "Tag Number":item.tag_number,
+            "Plate":item.plate,
+            "Amount(AED)":item.amount_aed,
+            "Trip Date":item.trip_date,
+            "Trip Time":item.trip_time,
+            "Transaction_post_date":item.transaction_post_date,
+           });
+        });
+        var export_data = new CSVExport(export_details);
+        return false;
+    }    
     
     var client_riders = {!! json_encode($client_riders) !!};
      var uppy = Uppy.Core({

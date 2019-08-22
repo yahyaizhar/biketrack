@@ -51,6 +51,8 @@ margin-left: 10px;
                         <input type="text" class="form-control" placeholder="Search" id="search_details" style="display: inline-block;width: auto;">
                         
                         <a style="padding:8.45px 13px;" href="" data-toggle="modal" data-target="#import_data"  class="btn btn-label-success btn-sm btn-upper">Import Zomato Data</a>&nbsp;
+                        <input class="btn btn-primary" type="button" onclick="export_data();" value="Export Zomato Data">
+
                         {{-- <a href="{{ route('Sim.new_sim') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
                             New Record
@@ -138,6 +140,25 @@ margin-left: 10px;
 @endphp
 <script>
     
+    function export_data(){
+var export_details=[];
+        riders_data.forEach(function(item,index) {
+           export_details.push({
+            "FIED":item.feid,
+            "Date":item.date,
+            "Trips":item.trips,
+            "ADT":item.adt,
+            "Total Logedin Hours":item.total_loged_in_hours,
+            "Pickup Time":item.average_pickup_time,
+            "Shift Time":item.loged_in_during_shift_time,
+            "Drop Time":item.average_drop_time,
+            "COD Orders":item.cod_orders,
+            "COD Amount":item.cod_amount,
+           });
+        });
+        var export_data = new CSVExport(export_details);
+        return false;
+    }  
     var client_riders = {!! json_encode($client_riders) !!};
      var uppy = Uppy.Core({
     debug: true,
