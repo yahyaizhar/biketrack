@@ -1647,25 +1647,24 @@ class AjaxController extends Controller
            })
           
            ->addColumn('type', function($C_A){
-               return $C_A->type;
+               return $C_A->type=='dr'?'Debit':($C_A->type=='cr'?'Credit':'');
            })
            ->addColumn('amount', function($C_A){
                return $C_A->amount;
            })
            ->addColumn('source', function($C_A){
-               $rider="<a href=''>Rider_id: ".$C_A->rider_id."</a>\n";
-               $client="<a href=''>Rider_id: ".$C_A->rider_id."</a>\n";
-               $bike_expence="<a href=''>Rider_id: ".$C_A->rider_id."</a>\n";
-               $fine="<a href=''>Rider_id: ".$C_A->rider_id."</a>\n";
-               $rider="<a href=''>Rider_id: ".$C_A->rider_id."</a>\n";
-               $rider="<a href=''>Rider_id: ".$C_A->rider_id."</a>\n";
-               $rider="<a href=''>Rider_id: ".$C_A->rider_id."</a>\n";
-               $rider="<a href=''>Rider_id: ".$C_A->rider_id."</a>\n";
-               $rider="<a href=''>Rider_id: ".$C_A->rider_id."</a>\n";
-               $rider="<a href=''>Rider_id: ".$C_A->rider_id."</a>\n";
-            return $rider;
+                $rider=isset($C_A->rider_id)?'Rider_id: <a href="'.route('admin.rider.profile', $C_A->rider_id).'">'.$C_A->rider_id.'</a><br/>':'';
+                $client=isset($C_A->client_id)?'client_id: <a href="">'.$C_A->client_id.'</a><br/>':'';
+                $bike_expense=isset($C_A->bike_expense_id)?'bike_expense_id: <a href="">'.$C_A->bike_expense_id.'</a><br/>':'';
+                $fine=isset($C_A->find_id)?'Fine_id: <a href="">'.$C_A->find_id.'</a><br/>':'';
+                $salik=isset($C_A->salik_id)?'Salik_id: <a href="">'.$C_A->salik_id.'</a><br/>':'';
+                $salary=isset($C_A->salary_id)?'salary_id: <a href="">'.$C_A->salary_id.'</a><br/>':'';
+                $sim_transaction=isset($C_A->sim_transaction_id)?'sim_transaction_id: <a href="'.route('SimTransaction.view_records').'">'.$C_A->sim_transaction_id.'</a><br/>':'';
+                $income=isset($C_A->income_id)?'income_id: <a href="">'.$C_A->income_id.'</a><br/>':'';
+                $investment=isset($C_A->investment_id)?'investment_id: <a href="">'.$C_A->investment_id.'</a><br/>':'';
+                return $rider.$client.$bike_expense.$fine.$salik.$salary.$sim_transaction.$income.$income.$investment;
             
-        })
+            })
         //    ->addColumn('action', function($C_A){
         //        $status_text = $C_A->status == 1 ? 'Inactive' : 'Active';
         //        return '<span class="dtr-data">
@@ -1706,28 +1705,26 @@ class AjaxController extends Controller
            })
           
            ->addColumn('type', function($R_A){
-               return $R_A->type;
+            return $R_A->type=='dr'?'Debit':($R_A->type=='cr'?'Credit':'');
            })
            ->addColumn('amount', function($R_A){
                return $R_A->amount;
            })
-           ->addColumn('action', function($R_A){
-               $status_text = $R_A->status == 1 ? 'Inactive' : 'Active';
-               return '<span class="dtr-data">
-               <span class="dropdown">
-                   <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
-                   <i class="la la-ellipsis-h"></i>
-                   </a>
-                   <div class="dropdown-menu dropdown-menu-right">
-                       <a class="dropdown-item" href="'.route('Bike.edit_bike', $R_A).'"><i class="fa fa-edit"></i> Edit</a>
-                       <button class="dropdown-item" onclick="updateStatus('.$R_A->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
-                       <button class="dropdown-item" onclick="deleteBike('.$R_A->id.');"><i class="fa fa-trash"></i> Delete</button>
-                       </div>
-               </span>
-           </span>';
-           })
+           ->addColumn('source', function($C_A){
+                $rider=isset($C_A->rider_id)?'Rider_id: <a href="'.route('admin.rider.profile', $C_A->rider_id).'">'.$C_A->rider_id.'</a><br/>':'';
+                $client=isset($C_A->client_id)?'client_id: <a href="">'.$C_A->client_id.'</a><br/>':'';
+                $bike_expense=isset($C_A->bike_expense_id)?'bike_expense_id: <a href="">'.$C_A->bike_expense_id.'</a><br/>':'';
+                $fine=isset($C_A->find_id)?'Fine_id: <a href="">'.$C_A->find_id.'</a><br/>':'';
+                $salik=isset($C_A->salik_id)?'Salik_id: <a href="">'.$C_A->salik_id.'</a><br/>':'';
+                $salary=isset($C_A->salary_id)?'salary_id: <a href="">'.$C_A->salary_id.'</a><br/>':'';
+                $sim_transaction=isset($C_A->sim_transaction_id)?'sim_transaction_id: <a href="'.route('SimTransaction.view_records').'">'.$C_A->sim_transaction_id.'</a><br/>':'';
+                $income=isset($C_A->income_id)?'income_id: <a href="">'.$C_A->income_id.'</a><br/>':'';
+                $investment=isset($C_A->investment_id)?'investment_id: <a href="">'.$C_A->investment_id.'</a><br/>':'';
+                return $rider.$client.$bike_expense.$fine.$salik.$salary.$sim_transaction.$income.$income.$investment;
+            
+            })
                  
-           ->rawColumns(['type','amount','action', 'status'])
+           ->rawColumns(['type','amount','source', 'status'])
            ->make(true);
        }
        

@@ -17,6 +17,7 @@ class CreateRiderSalariesTable extends Migration
             $table->increments('id');
             $table->integer('rider_id')->nullable();
             $table->string('salary')->nullable();
+            $table->string('month')->nullable();
             $table->string('paid_by')->nullable();
             $table->string('status')->nullable();
             $table->string('settings')->nullable();

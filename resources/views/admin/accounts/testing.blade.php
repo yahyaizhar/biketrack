@@ -116,7 +116,7 @@
                         <th>ID</th>
                         <th>Type</th>
                         <th>Amount</th>
-                        <th>Actions</th>                        
+                        <th>Source</th>                        
                     </tr>
                 </thead>
                 </table>
@@ -227,7 +227,7 @@ $('.total_entries').remove();
             { data: 'id', name: 'id' },
             { data: 'type', name: 'type' },            
             { data: 'amount', name: 'amount' },
-            { data: 'action', name: 'action' },
+            { data: 'source', name: 'source' },
         ],
         responsive:true,
         order:[0,'desc'],

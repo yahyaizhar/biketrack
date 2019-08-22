@@ -14,6 +14,7 @@ use App\Model\Rider\Rider_Message;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Model\Accounts\Rider_salary;
+use Carbon\Carbon;
 
 class AccountsController extends Controller
 {
@@ -27,21 +28,17 @@ class AccountsController extends Controller
         return view('accounts.add_new_salary',compact('riders'));
     }
     public function new_salary_added(Request $request){
-             
-             $rider_id=$request->rider_id;
-             $rider=Rider::find($rider_id);
-             
-       $salary=$rider->Rider_salary()->create([
-         'rider_id'=>$request->get('rider_id') ,
-        'month'=> $request->get('month'),
-        'salary'=> $request->get('salary'),
-        'paid_by'=> $request->get('paid_by'),
-        'status'=> $request->get('status'),
-       ]);
-  
-return redirect(route('account.developer_salary'));    
-
-
+        return $request->get('month');
+        $rider_id=$request->rider_id;
+        $rider=Rider::find($rider_id); 
+        $salary=$rider->Rider_salary()->create([
+            'rider_id'=>$request->get('rider_id') ,
+            'month'=> Carbon::parse($request->get('month'))->format('Y-m-d'),
+            'salary'=> $request->get('salary'),
+            'paid_by'=> $request->get('paid_by'),
+            'status'=> $request->get('status')=='on'?1:0,
+        ]);
+        return redirect(route('account.developer_salary'));
     }
 
     // end add new salary

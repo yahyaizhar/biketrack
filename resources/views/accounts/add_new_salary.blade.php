@@ -34,9 +34,9 @@
                    </div>
 
                     <div class="kt-portlet__body">
-                        {{-- <div class="form-group">
+                        <div class="form-group">
                             <label>Month:</label>
-                            <input type="text" class="form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="{{ old('month') }}">
+                            <input type="text" id="datepicker" readonly class="form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
                             @if ($errors->has('month'))
                                 <span class="invalid-response" role="alert">
                                     <strong>
@@ -46,7 +46,7 @@
                             @else
                                 <span class="form-text text-muted">Please enter Month</span>
                             @endif
-                        </div> --}}
+                        </div>
                         <div class="form-group">
                             <label>Salary:</label>
                             <input type="text" class="form-control @if($errors->has('salary')) invalid-field @endif" name="salary" placeholder="Enter Salary" value="{{ old('salary') }}">
@@ -106,5 +106,17 @@
 @section('foot')
     
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/bootstrap-switch.js') }}" type="text/javascript"></script>
+<link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
+<script>
+    $(function(){
+        $('#datepicker').fdatepicker({ 
+            format: 'MM yyyy', 
+            startView:3,
+            minView:3,
+            maxView:4
+        });
+    });
+</script>
 
 @endsection
