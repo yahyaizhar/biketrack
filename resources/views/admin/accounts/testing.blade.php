@@ -98,13 +98,13 @@
                             <i class="kt-font-brand fa fa-hotel"></i>
                         </span>
                         <h3 class="kt-portlet__head-title">
-                            Company Accounts
+                            Company Accounts 
                         </h3>
                     </div>
                     <div class="kt-portlet__head-toolbar">
                         <div class="kt-portlet__head-wrapper">
                             <div class="kt-portlet__head-actions">
-                                
+                                Closing Balance:   {{$closing_balance_CA}} 
                             </div>
                         </div>
                     </div>
@@ -139,6 +139,7 @@
                 <div class="kt-portlet__head-toolbar">
                     <div class="kt-portlet__head-wrapper">
                         <div class="kt-portlet__head-actions">
+                                Closing Balance: {{$closing_balance_RA}}
                         </div>
                     </div>
                 </div>
@@ -150,7 +151,8 @@
                             <th>ID</th>
                             <th>Type</th>
                             <th>Amount</th>
-                            <th>Actions</th>                        
+                            <th>Source</th>
+                            {{-- <th>Actions</th>                         --}}
                         </tr>
                     </thead>
                 </table>
@@ -197,7 +199,7 @@ $(function() {
             { data: 'id', name: 'id' },
             { data: 'type', name: 'type' },            
             { data: 'amount', name: 'amount' },
-            { data: 'action', name: 'action' },
+            { data: 'source', name: 'source' },
         ],
         responsive:true,
         order:[0,'desc'],

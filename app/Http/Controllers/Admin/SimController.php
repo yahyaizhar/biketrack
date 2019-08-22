@@ -270,7 +270,10 @@ public function update_simTransaction(Request $request, $id){
                     $ca->sim_transaction_id=$sim_trans->id;
                     $ca->save();
                 }
-               
+                
+              
+
+            
           //  }
             
             // ends ca-ra

@@ -1652,23 +1652,37 @@ class AjaxController extends Controller
            ->addColumn('amount', function($C_A){
                return $C_A->amount;
            })
-           ->addColumn('action', function($C_A){
-               $status_text = $C_A->status == 1 ? 'Inactive' : 'Active';
-               return '<span class="dtr-data">
-               <span class="dropdown">
-                   <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
-                   <i class="la la-ellipsis-h"></i>
-                   </a>
-                   <div class="dropdown-menu dropdown-menu-right">
-                       <a class="dropdown-item" href="'.route('Bike.edit_bike', $C_A).'"><i class="fa fa-edit"></i> Edit</a>
-                       <button class="dropdown-item" onclick="updateStatus('.$C_A->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
-                       <button class="dropdown-item" onclick="deleteBike('.$C_A->id.');"><i class="fa fa-trash"></i> Delete</button>
-                       </div>
-               </span>
-           </span>';
-           })
+           ->addColumn('source', function($C_A){
+               $rider="<a href=''>Rider_id: ".$C_A->rider_id."</a>\n";
+               $client="<a href=''>Rider_id: ".$C_A->rider_id."</a>\n";
+               $bike_expence="<a href=''>Rider_id: ".$C_A->rider_id."</a>\n";
+               $fine="<a href=''>Rider_id: ".$C_A->rider_id."</a>\n";
+               $rider="<a href=''>Rider_id: ".$C_A->rider_id."</a>\n";
+               $rider="<a href=''>Rider_id: ".$C_A->rider_id."</a>\n";
+               $rider="<a href=''>Rider_id: ".$C_A->rider_id."</a>\n";
+               $rider="<a href=''>Rider_id: ".$C_A->rider_id."</a>\n";
+               $rider="<a href=''>Rider_id: ".$C_A->rider_id."</a>\n";
+               $rider="<a href=''>Rider_id: ".$C_A->rider_id."</a>\n";
+            return $rider;
+            
+        })
+        //    ->addColumn('action', function($C_A){
+        //        $status_text = $C_A->status == 1 ? 'Inactive' : 'Active';
+        //        return '<span class="dtr-data">
+        //        <span class="dropdown">
+        //            <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+        //            <i class="la la-ellipsis-h"></i>
+        //            </a>
+        //            <div class="dropdown-menu dropdown-menu-right">
+        //                <a class="dropdown-item" href="'.route('Bike.edit_bike', $C_A).'"><i class="fa fa-edit"></i> Edit</a>
+        //                <button class="dropdown-item" onclick="updateStatus('.$C_A->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
+        //                <button class="dropdown-item" onclick="deleteBike('.$C_A->id.');"><i class="fa fa-trash"></i> Delete</button>
+        //                </div>
+        //        </span>
+        //    </span>';
+        //    })
                  
-           ->rawColumns(['type','amount','action', 'status'])
+           ->rawColumns(['type','amount','action', 'status','source'])
            ->make(true);
        }
 

@@ -16,6 +16,8 @@ use App\Model\Mobile\Mobile;
 use App\Model\Rider\Rider_Online_Time;
 use App\Model\Bikes\bike;
 use Carbon\Carbon;
+use App\Model\Accounts\Company_Account;
+use App\Model\Accounts\Rider_Account;
 
 class HomeController extends Controller
 {
@@ -154,6 +156,15 @@ class HomeController extends Controller
     }
 
     public function accounts_testing_v1(){
-        return view('admin.accounts.testing');
+        $sum_dr = Company_Account::where("active_status","A")->where("type","dr")->sum('amount');
+        $sum_cr = Company_Account::where("active_status","A")->where("type","cr")->sum('amount');
+        $closing_balance_CA=$sum_cr-$sum_dr;
+
+        $sum_dr = Rider_Account::where("active_status","A")->where("type","dr")->sum('amount');
+        $sum_cr = Rider_Account::where("active_status","A")->where("type","cr")->sum('amount');
+        $closing_balance_RA=$sum_cr-$sum_dr;
+
+        return view('admin.accounts.testing',compact('closing_balance_CA','closing_balance_RA'));
+    
     }
 }
