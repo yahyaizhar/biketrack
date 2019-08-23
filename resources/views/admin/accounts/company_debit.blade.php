@@ -80,13 +80,15 @@
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
 
+@yield('partial_foot_salary')
+@yield('partial_foot_advance') 
 
 <script>
     $(function(){
         console.log('form main')
         $('.kt-select2').select2({
             placeholder: "Select an option",
-            width:'100%'
+            width:'100%'    
         });
         $('.month_picker').fdatepicker({ 
             format: 'MM yyyy', 
