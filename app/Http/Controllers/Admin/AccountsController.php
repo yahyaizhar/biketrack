@@ -28,7 +28,6 @@ class AccountsController extends Controller
         return view('accounts.add_new_salary',compact('riders'));
     }
     public function new_salary_added(Request $request){
-        return $request->get('month');
         $rider_id=$request->rider_id;
         $rider=Rider::find($rider_id); 
         $salary=$rider->Rider_salary()->create([

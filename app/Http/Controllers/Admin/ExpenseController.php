@@ -28,6 +28,28 @@ class ExpenseController extends Controller
     {
         return view('admin.accounts.company_debit');
     }
+    /**
+     * ajax request for salary deduction.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function company_debit_getSalaryDeduction($month, $rider_id)
+    {
+        $total_salary=27000;
+        $total_deduction = 0;
+        $salary_deducted = \App\Model\Expense\Company_CD::whereMonth('month', $month)
+        ->where(['rider_id' => $rider_id, 'type' => 'dr', 'type_db' =>'advance', 'advance_deducted_by'=>'salary'])
+        ->sum('amount');
+        $total_deduction+=$salary_deducted;
+
+        $gross_salary = $total_salary - $total_deduction;
+        return response()->json([
+            'total_salary'=>$total_salary,
+            'total_deduction'=>$total_deduction,
+            'gross_salary'=>$gross_salary
+        ]);
+    }
+    //company_debit_getSalaryDeduction
     public function insert_company_DC(Request $request){
         $this->validate($request, [
             'type_db'=> 'required | string |max:255',
@@ -47,7 +69,6 @@ class ExpenseController extends Controller
             $val->advance_notes=$request->advance_notes;
         }
         $val->save();
-        return 123;
-        // return redirect(route('Sim.view_records'))->with('message', 'Sim created successfully.');
+        return redirect(route('admin.accounts.company_debits'));
     }
 }
