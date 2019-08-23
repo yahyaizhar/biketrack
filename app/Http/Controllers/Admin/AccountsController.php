@@ -14,6 +14,7 @@ use App\Model\Rider\Rider_Message;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Model\Accounts\Rider_salary;
+use App\Model\Accounts\Id_charge;
 use Carbon\Carbon;
 
 class AccountsController extends Controller
@@ -22,6 +23,57 @@ class AccountsController extends Controller
     {
         $this->middleware('auth:admin');
     }
+    public function id_charges_index()
+    {
+        $riders=Rider::where('active_status', 'A')->get();
+        return view('admin.accounts.id_charges_add', compact('riders'));
+    }
+    public function id_charges_post(Request $r)
+    {
+        $rider=Rider::find($r->rider_id);
+        $id_charge = $rider->id_charges()->create([
+            'type'=>$r->type,
+            'amount'=>$r->amount,
+            'status'=>$r->status=='on'?1:0,
+        ]);
+        $ca = new \App\Model\Accounts\Company_Account;
+        $ca->type='dr';
+        $ca->rider_id=$r->rider_id;
+        $ca->amount=$r->amount;
+        $ca->source='id_charges';
+        $ca->id_charge_id=$id_charge->id;
+        $ca->save();
+
+        return redirect(route('admin.accounts.id_charges_view'));
+    }
+    public function id_charges_view()
+    {
+        return view('admin.accounts.id_charges_view');
+    }
+    public function delete_id_charges($id)
+    {
+        $id_charge=Id_charge::find($id);
+        $id_charge->active_status="D";
+        $id_charge->status=0;
+        $id_charge->update();
+    }
+    public function updateStatusIdCharges($id_charge_id)
+    {
+        $id_charge=Id_charge::find($id_charge_id);
+        if($id_charge->status == 1)
+        {
+            $id_charge->status = 0;
+        }
+        else
+        {
+            $id_charge->status = 1;
+        }
+        $id_charge->update();
+        return response()->json([
+            'status' => true
+        ]);
+    }
+
     // add new salary
     public function add_new_salary_create(){
         $riders=Rider::where("active_status","A")->get();

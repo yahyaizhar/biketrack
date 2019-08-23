@@ -17,8 +17,10 @@ class CreateCompanyAccountsTable extends Migration
             $table->increments('id');
             $table->string('type')->nullable();
             $table->string('amount')->nullable();
+            $table->string('source')->nullable();
             $table->integer('rider_id')->nullable();
             $table->integer('client_id')->nullable();
+            $table->integer('id_charge_id')->nullable();
             $table->integer('bike_expense_id')->nullable();
             $table->integer('fine_id')->nullable();
             $table->integer('salik_id')->nullable();

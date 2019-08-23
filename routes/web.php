@@ -284,4 +284,24 @@ Route::get("/accounts/testing","HomeController@accounts_testing_v1")->name("admi
 Route::get('get/ajax/company/accounts','AjaxController@getCompanyAccounts')->name('admin.ajax_company_accounts');
 Route::get('get/ajax/rider/accounts','AjaxController@getRiderAccounts')->name('admin.ajax_rider_accounts');
 
-});  
+
+});
+
+Route::group([
+    'prefix' => 'admin/accounts',
+    'namespace' => 'Admin'
+], function(){
+    Route::resource('/accounts', 'AccountsController', [
+        'as' => 'admin'
+    ]);
+    
+    Route::get("/id-charges","AccountsController@id_charges_index")->name("admin.accounts.id_charges_index");
+    Route::post("/id-charges/add","AccountsController@id_charges_post")->name("admin.accounts.id_charges_post");
+
+    Route::get("/id-charges/view","AccountsController@id_charges_view")->name("admin.accounts.id_charges_view");
+    Route::get("/id-charges/view/data","AjaxNewController@getIdCharges")->name("admin.accounts.id_charges_view_data");
+
+    Route::put('/id-charges/{charge}/updateStatus','AccountsController@updateStatusIdCharges')->name('admin.accounts.updateStatusIdCharges');
+    Route::delete('/id-charges/{id_charges_id}', 'AccountsController@delete_id_charges')->name('admin.accounts.delete_id_charges');
+});
+
