@@ -21,7 +21,7 @@ use App\Model\Sim\Sim_History;
 use App\Model\Client\Client_Rider;
 use Illuminate\Support\Arr;
 use Batch;
-
+use Carbon\Carbon;
 
 class RiderController extends Controller
 {
@@ -235,11 +235,15 @@ class RiderController extends Controller
             $i++;
             $zp_found = Arr::first($zp, function ($item_zp, $key) use ($item) {
                 return $item_zp->date == $item['date'] && $item_zp->feid==$item['feid'];
+           
             });
+            if(isset($item['date'])){
+            $date=Carbon::parse($item['date'])->format('Y-m-d');
+             }
             if(!isset($zp_found)){
                 $obj = [];
                 $obj['import_id']=$unique_id;
-                $obj['date']=isset($item['date'])?$item['date']:null;
+                $obj['date']=isset($item['date'])?$date:null;
                 $obj['feid']=isset($item['feid'])?$item['feid']:null;
                 $obj['adt']=isset($item['adt'])?$item['adt']:null;
                 $obj['trips']=isset($item['trips'])?$item['trips']:null;
@@ -256,7 +260,7 @@ class RiderController extends Controller
                 $objUpdate = [];
                 $objUpdate['id']=$zp_found->id;
                 $objUpdate['import_id']=$unique_id;
-                $objUpdate['date']=isset($item['date'])?$item['date']:null;
+                $objUpdate['date']=isset($item['date'])?$date:null;
                 $objUpdate['feid']=isset($item['feid'])?$item['feid']:null;
                 $objUpdate['adt']=isset($item['adt'])?$item['adt']:null;
                 $objUpdate['trips']=isset($item['trips'])?$item['trips']:null;
@@ -599,6 +603,9 @@ public function destroyer(Rider $rider,$id){
    public function RiderPerformance(){
         $performance_count=Rider_Performance_Zomato::all()->count();
         return view('admin.rider.rider_performance',compact('performance_count'));
+   }
+   public function Rider_Range_ADT(){
+    return view('admin.rider.rider_ranges_adt');
    }
    public function getRider_active(){
     $rider_count=Rider::where('active_status','A')->get()->count();

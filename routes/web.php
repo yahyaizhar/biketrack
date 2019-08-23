@@ -284,4 +284,6 @@ Route::get("/accounts/testing","HomeController@accounts_testing_v1")->name("admi
 Route::get('get/ajax/company/accounts','AjaxController@getCompanyAccounts')->name('admin.ajax_company_accounts');
 Route::get('get/ajax/rider/accounts','AjaxController@getRiderAccounts')->name('admin.ajax_rider_accounts');
 
+Route::get('/client/ranges/adt','RiderController@Rider_Range_ADT')->name('admin.ranges.adt');
+Route::get('/range/ajax/adt/{data}','AjaxController@getRiderRangesADT')->name('ajax.adt');
 });  
