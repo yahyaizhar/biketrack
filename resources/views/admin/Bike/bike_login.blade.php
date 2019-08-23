@@ -70,6 +70,17 @@
                                     </span>
                                 @endif
                             </div>
+                            <div class="form-group">
+                                    <label>Chassis Number:</label>
+                                    <input type="text" class="form-control @if($errors->has('chassis_number')) invalid-field @endif" name="chassis_number" placeholder="Enter Chassis_Number" value="{{ old('chassis_number') }}">
+                                    @if ($errors->has('chassis_number'))
+                                        <span class="invalid-response" role="alert">
+                                            <strong>
+                                                {{$errors->first('chassis_number')}}
+                                            </strong>
+                                        </span>
+                                    @endif
+                                </div>
                      
                        
                       

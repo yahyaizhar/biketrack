@@ -321,6 +321,9 @@ class AjaxController extends Controller
         ->addColumn('brand', function($bike){
             return $bike->brand;
         })
+        ->addColumn('chassis_number', function($bike){
+            return $bike->chassis_number;
+        })
         ->addColumn('Bike_number', function($bike){
             return '<a href="'.route('bike.bike_assigned', $bike).'">'.$bike->bike_number.'</a>';
         })
@@ -345,7 +348,7 @@ class AjaxController extends Controller
         // <a class="dropdown-item" href="'.route('bike.bike_assigned', $bike).'"><i class="fa fa-eye"></i> View Bikes</a>
         // <a class="dropdown-item" href="'.route('bike.bike_assignRiders', $bike).'"><i class="fa fa-edit"></i> Assign Bikes</a>
                     
-        ->rawColumns(['model','brand', 'Bike_number', 'detail', 'assigned_to','availability', 'status'])
+        ->rawColumns(['model','brand','chassis_number', 'Bike_number', 'detail', 'assigned_to','availability', 'status'])
         ->make(true);
     }
     public function getSalary_by_developer()

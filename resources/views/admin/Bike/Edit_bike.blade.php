@@ -80,6 +80,20 @@
                                     </span>
                                 @endif
                             </div>
+                            <div class="form-group">
+                                    <label>Chassis Number:</label>
+                                    <input type="text" class="form-control @if($errors->has('chassis_number')) invalid-field @endif" name="chassis_number" placeholder="Enter Chassis Number" value="{{ $bike->chassis_number }}">
+                                
+                                    @if ($errors->has('chassis_number'))
+                                        <span class="invalid-response" role="alert">
+                                            <strong>
+                                                {{ $errors->first('chassis_number') }}
+                                            </strong>
+                                        </span>
+                                    @else
+                                        <span class="form-text text-muted">Enter Your Chassis Number.</span>
+                                    @endif
+                                </div> 
                       
                         <div class="form-group">
                                 <label>Mulkiya Number:</label>

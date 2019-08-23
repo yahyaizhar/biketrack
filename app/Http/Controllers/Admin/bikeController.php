@@ -37,6 +37,7 @@ class bikeController extends Controller
       $bike_object->bike_number = $r->bike_number;
       $bike_object->mulkiya_number = $r->mulkiya_number;
       $bike_object->brand = $r->brand;
+      $bike_object->chassis_number = $r->chassis_number;
       $bike_object->mulkiya_expiry = $r->mulkiya_expiry;
       
       if($r->status)
@@ -95,6 +96,7 @@ class bikeController extends Controller
     $bike->bike_number = $request->bike_number;
     // $bike->availability = $request->availability;
     $bike->brand = $request->brand;
+    $bike->chassis_number = $request->chassis_number;
     $bike->mulkiya_number = $request->mulkiya_number;
     $bike->mulkiya_expiry = $request->mulkiya_expiry;
     if($request->status)

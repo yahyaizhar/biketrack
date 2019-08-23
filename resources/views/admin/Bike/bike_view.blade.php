@@ -56,6 +56,7 @@
                         <th>Brand</th>
                         <th>Model</th>
                         <th>Bike Number</th>
+                        <th>Chassis Number</th>
                         <th>Assigned To</th>
                         <th>Status</th>
                         <th>Actions</th>                        
@@ -86,7 +87,7 @@ $(function() {
     bike_table = $('#bike-table').DataTable({
         processing: true,
         serverSide: true,
-        'language': {
+        'language': { 
             'loadingRecords': '&nbsp;',
             'processing': $('.loading').show()
         },
@@ -101,6 +102,7 @@ $('.total_entries').remove();
             { data: 'brand', name: 'brand' },            
             { data: 'model', name: 'model' },
             { data: 'bike_number', name: 'bike_number' },
+            { data: 'chassis_number', name: 'chassis_number' },
             { data: 'assigned_to', name: 'assigned_to' },
             { data: 'status', name: 'status' },
             { data: 'availability', name: 'availability' },

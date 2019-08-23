@@ -47,7 +47,6 @@ class ExpenseController extends Controller
             $val->advance_notes=$request->advance_notes;
         }
         $val->save();
-        return 123;
-        // return redirect(route('Sim.view_records'))->with('message', 'Sim created successfully.');
+        return redirect(route('admin.accounts.company_debits'));
     }
 }
