@@ -304,5 +304,7 @@ Route::group([
 
     Route::put('/id-charges/{charge}/updateStatus','AccountsController@updateStatusIdCharges')->name('admin.accounts.updateStatusIdCharges');
     Route::delete('/id-charges/{id_charges_id}', 'AccountsController@delete_id_charges')->name('admin.accounts.delete_id_charges');
+    Route::get('/id-charges/edit/{charge_id}','AccountsController@id_charges_edit')->name('admin.id_charges_edit');
+    Route::post('/id-charges/update/{charge_id}','AccountsController@id_charges_update')->name('admin.id_charges_update');
 });
 

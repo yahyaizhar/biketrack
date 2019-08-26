@@ -1746,63 +1746,70 @@ class AjaxController extends Controller
             return $rider->name;
            })
            ->addColumn('adt1', function($rider) use ($ranges){
-               
-            $rider_id=Rider_Performance_Zomato::where('rider_id',$rider->id)->get(); 
-            if(isset($rider_id)){
-            $start_date=$ranges['range1']['start_date'];
-            $end_date=$ranges['range1']['end_date'];
-            $from = date($start_date);
-            $to = date($end_date);
-            $zomato_adt1=Rider_Performance_Zomato::whereBetween('date',[$from,$to])->where("rider_id",$rider->id)->sum("adt"); 
-             return $zomato_adt1;
+            $client=$rider->clients()->get()->first();
+            if(isset($client)){
+                $client_rider=Client_Rider::where("rider_id",$rider->id)->where("client_id",$client->id)->get()->first();
+                $client_rider_id=$client_rider->client_rider_id;
+                $start_date=$ranges['range1']['start_date'];
+                $end_date=$ranges['range1']['end_date'];
+                $from = date($start_date);
+                $to = date($end_date);
+                $zomato_adt1=Rider_Performance_Zomato::whereBetween('date',[$from,$to])
+                ->where("feid",$client_rider_id)
+                ->avg("adt"); 
+                return round($zomato_adt1,2);
             }
+            return "0";
             })
            ->addColumn('adt2', function($rider) use ($ranges){
-            $rider_id=Rider_Performance_Zomato::where('rider_id',$rider->id)->get(); 
-            if(isset($rider_id)){
-            $start_date=$ranges['range2']['start_date'];
-            $end_date=$ranges['range2']['end_date'];
-            $from = date($start_date);
-            $to = date($end_date);
-            $zomato_adt2=Rider_Performance_Zomato::whereBetween('date',[$from,$to])->where("rider_id",$rider->id)->sum("adt"); 
-            return $zomato_adt2;
-            }
+            $client=$rider->clients()->get()->first();
+            if(isset($client)){
+                $client_rider=Client_Rider::where("rider_id",$rider->id)->where("client_id",$client->id)->get()->first();
+                $client_rider_id=$client_rider->client_rider_id;
+                $start_date=$ranges['range2']['start_date'];
+                $end_date=$ranges['range2']['end_date'];
+                $from = date($start_date);
+                $to = date($end_date);
+                $zomato_adt2=Rider_Performance_Zomato::whereBetween('date',[$from,$to])
+                ->where("feid",$client_rider_id)
+                ->avg("adt"); 
+                return round($zomato_adt2,2);
+        }
+                return "0";
            })
            ->addColumn('improvements', function($rider) use ($ranges){
-            $start_date1=$ranges['range1']['start_date'];
-            $end_date1=$ranges['range1']['end_date'];
-            $from1 = date($start_date1);
-            $to1 = date($end_date1);   
-            $start_date2=$ranges['range2']['start_date'];
-            $end_date2=$ranges['range2']['end_date'];
-            $from2 = date($start_date2);
-            $to2 = date($end_date2);
-            $zomato_adt1=Rider_Performance_Zomato::whereBetween('date',[$from1,$to1])->where('rider_id',$rider->id)->sum("adt"); 
-            $zomato_adt2=Rider_Performance_Zomato::whereBetween('date',[$from2,$to2])->where('rider_id',$rider->id)->sum("adt"); 
-            if(isset($zomato_adt1) && $zomato_adt1!=0 && isset($zomato_adt2) && $zomato_adt2!=0){
-                
-                if($zomato_adt1>$zomato_adt2){
-                    $imp = ($zomato_adt2/$zomato_adt1)*100;
-                    $imp = '-'.(100 - $imp);
+            $client=$rider->clients()->get()->first();
+            if(isset($client)){
+                $client_rider=Client_Rider::where("rider_id",$rider->id)
+                ->where("client_id",$client->id)
+                ->get()
+                ->first();
+                $client_rider_id=$client_rider->client_rider_id;
+                $start_date1=$ranges['range1']['start_date'];
+                $end_date1=$ranges['range1']['end_date'];
+                $from1 = date($start_date1);
+                $to1 = date($end_date1);   
+                $start_date2=$ranges['range2']['start_date'];
+                $end_date2=$ranges['range2']['end_date'];
+                $from2 = date($start_date2);
+                $to2 = date($end_date2);
+                $zomato_adt1=floatval(Rider_Performance_Zomato::whereBetween('date',[$from1,$to1])
+                ->where("feid",$client_rider_id)
+                ->avg("adt")); 
+                $zomato_adt2=floatval(Rider_Performance_Zomato::whereBetween('date',[$from2,$to2])
+                ->where("feid",$client_rider_id)
+                ->avg("adt"));
+                if( $zomato_adt1!=0 && $zomato_adt2!=0){
+                        $imp = ($zomato_adt1/$zomato_adt2)*100;
+                        $better=$imp-100;
+                        return round($better,2).'%';
                 }
-                else {
-                    $imp = ($zomato_adt1/$zomato_adt2)*100;
-                    $imp = 100 - $imp;
+                if( $zomato_adt2==0  && $zomato_adt1!=0){
+                    return "100%";
                 }
-               
-                
-                
-
-                return $imp.'%';
             }
-            if( $zomato_adt1==0  && $zomato_adt2!=0){
-                return "100%";
-            }
-        
                 return '0%';
             })
-           
-           
            ->rawColumns(['rider_id','adt1','adt2','improvements'])
            ->make(true);
        }
