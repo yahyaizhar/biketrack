@@ -47,8 +47,35 @@ class AccountsController extends Controller
         return redirect(route('admin.accounts.id_charges_view'));
     }
     public function id_charges_view()
-    {
+    { 
         return view('admin.accounts.id_charges_view');
+    }
+    public function id_charges_edit($id){
+        $riders=Rider::where('active_status', 'A')->get();
+        $id_charges=Id_charge::find($id);
+        return view('admin.accounts.id_charges_edit',compact('id_charges','riders'));
+    }
+    public function id_charges_update(Request $r,$id){
+        $rider=Rider::find($r->rider_id);
+        $id_charge =Id_charge::find($id);
+        $id_charge->rider_id=$rider->id;
+        $id_charge->type=$r->type;
+        $id_charge->amount=$r->amount;
+        // $id_charge->=$r->;
+        if($r->status)
+            $id_charge->status = 1;
+        else
+            $id_charge->status = 0;
+        $id_charge->update();
+
+        $ca =\App\Model\Accounts\Company_Account::find($id);
+        $ca->type='dr';
+        $ca->rider_id=$r->rider_id;
+        $ca->amount=$r->amount;
+        $ca->source='id_charges';
+        $ca->id_charge_id=$id_charge->id;
+        $ca->update();
+        return redirect(route('admin.accounts.id_charges_view'));
     }
     public function delete_id_charges($id)
     {

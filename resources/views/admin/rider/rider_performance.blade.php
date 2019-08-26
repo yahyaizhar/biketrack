@@ -51,7 +51,7 @@ margin-left: 10px;
                         <input type="text" class="form-control" placeholder="Search" id="search_details" style="display: inline-block;width: auto;">
                         
                         <a style="padding:8.45px 13px;" href="" data-toggle="modal" data-target="#import_data"  class="btn btn-label-success btn-sm btn-upper">Import Zomato Data</a>&nbsp;
-                        <input class="btn btn-primary" type="button" onclick="export_data();" value="Export Zomato Data">
+                        <input class="btn btn-primary" type="button" onclick="export_data()" value="Export Zomato Data">
 
                         {{-- <a href="{{ route('Sim.new_sim') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
@@ -137,10 +137,13 @@ margin-left: 10px;
 <!--end::Page Scripts -->
 @php
     $client_riders=App\Model\Client\Client_Rider::all();
+    // $performance_data=App\Model\Rider\Rider_Performance_Zomato::all()->toArray();
+    // $performance_data = json_decode($performance_data, true);
 @endphp
-<script>
-    
+<script> 
     function export_data(){
+        
+        
 var export_details=[];
         riders_data.forEach(function(item,index) {
            export_details.push({
@@ -156,7 +159,7 @@ var export_details=[];
             "COD Amount":item.cod_amount,
            });
         });
-        var export_data = new CSVExport(export_details);
+        // var export_data = new CSVExport(export_details);
         return false;
     }  
     var client_riders = {!! json_encode($client_riders) !!};
@@ -399,7 +402,7 @@ $("#search_details").on("keyup", function() {
           
             return JSON.stringify(x).indexOf(_val) !== -1;
         });
-        
+        console.log(_res);
         if (_res.length > 0) {
             $("#ridePerformance-table tbody > tr").filter(function(index) {
 
