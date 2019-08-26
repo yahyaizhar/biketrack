@@ -245,6 +245,25 @@ var time_conversion= function(){
     })
 }
 time_conversion();
+
+"undefined" == typeof window.biketrack && (window.biketrack = {});
+biketrack.updateURL = function(array){
+    if (history.pushState) {
+        var str = '';
+        Object.keys(array).forEach(function(x, i){
+            console.log(array[x]);
+            str+=str==''?x+'='+array[x]:'&'+x+'='+array[x]
+        });
+        var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?'+str;
+        window.history.pushState({path:newurl},'',newurl);
+    }
+}
+biketrack.getUrlParameter = function(name) {
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+    var results = regex.exec(location.search);
+    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+};
 </script>
     <!--end:: Global Optional Vendors -->
 

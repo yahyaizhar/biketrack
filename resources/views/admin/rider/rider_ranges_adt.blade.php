@@ -81,38 +81,69 @@ $(function() {
                     end_date: $('#datapick2').data('daterangepicker').endDate.format('YYYY-MM-DD')
                 }
             };
+            var data = {
+                r1d1:_data.range1.start_date, 
+                r1d2:_data.range1.end_date, 
+                r2d1:_data.range2.start_date,
+                r2d2:_data.range2.end_date
+            }
+            
+            console.log(data);
+            biketrack.updateURL(data);
             console.log($date_data1);
             console.log($date_data2);
             var url = "{{ url('admin/range/ajax/adt/') }}"+"/"+JSON.stringify(_data) ;
-            bike_table = $('#bike-table').DataTable({
-                destroy: true,
-                processing: true,
-                serverSide: true,
-                'language': { 
-                    'loadingRecords': '&nbsp;',
-                    'processing': $('.loading').show()
-                },
-                drawCallback:function(data){
-                    $('.total_entries').remove();
-                    $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
-                },
-                ajax: url,
-                columns: [
-                    { data: 'rider_id', name: 'rider_id' },            
-                    { data: 'adt1', name: 'adt1' },
-                    { data: 'adt2', name: 'adt2' },
-                    { data: 'improvements', name: 'improvements' },
-                ],
-                responsive:true,
-                order:[0,'desc'],
-            });
+            getData(url);
         });
 });
 
 var bike_table;
 $(function() {
-    
+    var r1d1=biketrack.getUrlParameter('r1d1');
+    var r1d2=biketrack.getUrlParameter('r1d2');
+    var r2d1=biketrack.getUrlParameter('r2d1');
+    var r2d2=biketrack.getUrlParameter('r2d2');
+    if(r1d1!="" && r1d2!="" && r2d1!="" && r2d2!=""){
+        new Date(r1d1).format('mm-dd-yyyy')
+        $('input[name="daterange"]').eq(0).val(new Date(r1d1).format('dd-mm-yyyy')+' - '+new Date(r1d2).format('dd-mm-yyyy'));
+        $('input[name="daterange"]').eq(1).val(new Date(r2d1).format('dd-mm-yyyy')+' - '+new Date(r2d2).format('dd-mm-yyyy'));
+        var _data = {
+            range1: {
+                start_date:r1d1,
+                end_date: r1d2
+            },
+            range2: {
+                start_date:r2d1,
+                end_date: r2d2
+            }
+        };
+        var url = "{{ url('admin/range/ajax/adt/') }}"+"/"+JSON.stringify(_data) ;
+        getData(url);
+    }
 });
-
+var getData = function(url){
+    bike_table = $('#bike-table').DataTable({
+        destroy: true,
+        processing: true,
+        serverSide: true,
+        'language': { 
+            'loadingRecords': '&nbsp;',
+            'processing': $('.loading').show()
+        },
+        drawCallback:function(data){
+            $('.total_entries').remove();
+            $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
+        },
+        ajax: url,
+        columns: [
+            { data: 'rider_id', name: 'rider_id' },            
+            { data: 'adt1', name: 'adt1' },
+            { data: 'adt2', name: 'adt2' },
+            { data: 'improvements', name: 'improvements' },
+        ],
+        responsive:true,
+        order:[0,'desc'],
+    });
+}
 </script>
 @endsection
