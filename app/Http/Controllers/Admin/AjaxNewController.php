@@ -115,6 +115,7 @@ class AjaxNewController extends Controller
             </span>
         </span>';
         })
+        ->rawColumns(['name','address','actions', 'status'])
         ->make(true);
     }
 
