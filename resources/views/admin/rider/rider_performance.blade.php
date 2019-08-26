@@ -137,33 +137,45 @@ margin-left: 10px;
 <!--end::Page Scripts -->
 @php
     $client_riders=App\Model\Client\Client_Rider::all();
-    // $performance_data=App\Model\Rider\Rider_Performance_Zomato::all()->toArray();
-    // $performance_data = json_decode($performance_data, true);
+    $performance_data=App\Model\Rider\Rider_Performance_Zomato::all();
+    $riders=App\Model\Rider\Rider::all();
+    // $performance_data = array('d'=>$performance_data);
 @endphp
 <script> 
-    function export_data(){
-        
-        
-var export_details=[];
-        riders_data.forEach(function(item,index) {
-           export_details.push({
-            "FIED":item.feid,
-            "Date":item.date,
-            "Trips":item.trips,
-            "ADT":item.adt,
-            "Total Logedin Hours":item.total_loged_in_hours,
-            "Pickup Time":item.average_pickup_time,
-            "Shift Time":item.loged_in_during_shift_time,
-            "Drop Time":item.average_drop_time,
-            "COD Orders":item.cod_orders,
-            "COD Amount":item.cod_amount,
-           });
+var _perData = {!! json_encode($performance_data) !!};
+var _Riders = {!! json_encode($riders) !!};
+var client_riders = {!! json_encode($client_riders) !!};
+console.log(  _Riders  );
+_perData.forEach(function(x, i){
+	if(x.feid){
+		var client_rider = client_riders.find(function(z){return x.feid==z.client_rider_id});
+		if(client_rider){
+			var rider = _Riders.find(function(y){return y.id === parseInt(client_rider.rider_id)});
+			x.rider_id = rider.name;
+        }
+	}
+});
+function export_data(){
+    var export_details=[];
+    _perData.forEach(function(item,index) {
+        export_details.push({
+        "FIED":item.feid,
+        "Date":item.date,
+        "Trips":item.trips,
+        "ADT":item.adt,
+        "Total Logedin Hours":item.total_loged_in_hours,
+        "Pickup Time":item.average_pickup_time,
+        "Shift Time":item.loged_in_during_shift_time,
+        "Drop Time":item.average_drop_time,
+        "COD Orders":item.cod_orders,
+        "COD Amount":item.cod_amount,
         });
-        // var export_data = new CSVExport(export_details);
-        return false;
-    }  
-    var client_riders = {!! json_encode($client_riders) !!};
-     var uppy = Uppy.Core({
+    });
+        var export_data = new CSVExport(export_details);
+    return false;
+}
+
+    var uppy = Uppy.Core({
     debug: true,
     autoProceed: false,
     allowMultipleUploads: false,
@@ -171,10 +183,9 @@ var export_details=[];
         allowedFileTypes: ['.csv']
     }
 });
-  uppy.use(Uppy.DragDrop, { 
-      target: '.UppyDragDrop',
-        
-   });
+uppy.use(Uppy.DragDrop, { 
+    target: '.UppyDragDrop',
+});
    uppy.on('restriction-failed', (file, error) => {
     // do some customized logic like showing system notice to users
     // console.log(error);
@@ -269,7 +280,7 @@ var export_details=[];
 // table accordian start
 
 var performance_table;
-var riders_data = [];
+var riders_data = _perData;
 $(function() {
     // performance_table = $('').DataTable({
         var _settings={   processing: true,

@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Model\Accounts\Rider_salary;
 use App\Model\Accounts\Id_charge;
+use App\Model\Accounts\Workshop;
 use Carbon\Carbon;
 
 class AccountsController extends Controller
@@ -100,6 +101,71 @@ class AccountsController extends Controller
             'status' => true
         ]);
     }
+
+
+    // workshops
+    public function workshop_index()
+    {
+        // $riders=Rider::where('active_status', 'A')->get();
+        return view('admin.accounts.workshop_add');
+    }
+    public function workshop_post(Request $r)
+    {
+        $workshop = Workshop::create([
+            'name'=>$r->name,
+            'address'=>$r->address,
+            'status'=>$r->status=='on'?1:0,
+        ]);
+        // $workshop->Bike()->attach($workshop->id);
+        
+        return redirect(route('admin.accounts.workshop_view'));
+    }
+    public function workshop_view()
+    { 
+        return view('admin.accounts.workshop_view');
+    }
+    public function workshop_edit($id){
+        $workshop=Workshop::find($id);
+        return view('admin.accounts.workshop_edit',compact('workshop'));
+    }
+    public function workshop_update(Request $r,$id){
+        $workshop =Workshop::find($id);
+        $workshop->name=$r->name;
+        $workshop->address=$r->address;
+        // $id_charge->=$r->;
+        if($r->status)
+            $workshop->status = 1;
+        else
+            $workshop->status = 0;
+        $workshop->update();
+
+        
+        return redirect(route('admin.accounts.workshop_view'));
+    }
+    public function delete_workshop($id)
+    {
+        $workshop=Workshop::find($id);
+        $workshop->active_status="D";
+        $workshop->status=0;
+        $workshop->update();
+    }
+    public function updateStatusWorkshop($workshop_id)
+    {
+        $workshop=Workshop::find($workshop_id);
+        if($workshop->status == 1)
+        {
+            $workshop->status = 0;
+        }
+        else
+        {
+            $workshop->status = 1;
+        }
+        $workshop->update();
+        return response()->json([
+            'status' => true
+        ]);
+    }
+    //ends workshop
 
     // add new salary
     public function add_new_salary_create(){

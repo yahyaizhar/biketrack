@@ -306,5 +306,17 @@ Route::group([
     Route::delete('/id-charges/{id_charges_id}', 'AccountsController@delete_id_charges')->name('admin.accounts.delete_id_charges');
     Route::get('/id-charges/edit/{charge_id}','AccountsController@id_charges_edit')->name('admin.id_charges_edit');
     Route::post('/id-charges/update/{charge_id}','AccountsController@id_charges_update')->name('admin.id_charges_update');
+
+
+    Route::get("/workshop/add","AccountsController@workshop_index")->name("admin.accounts.workshop_index");
+    Route::post("/workshop/add-data","AccountsController@workshop_post")->name("admin.accounts.workshop_post");
+
+    Route::get("/workshop/view","AccountsController@workshop_view")->name("admin.accounts.workshop_view");
+    Route::get("/workshop/view/data","AjaxNewController@getWorkShops")->name("admin.accounts.workshop_view_data");
+
+    Route::put('/workshop/{workshop}/updateStatus','AccountsController@updateStatusWorkshop')->name('admin.accounts.updateStatusWorkshop');
+    Route::delete('/workshop/{workshop_id}', 'AccountsController@delete_workshop')->name('admin.accounts.delete_workshop');
+    Route::get('/workshop/edit/{shop_id}','AccountsController@workshop_edit')->name('admin.workshop_edit');
+    Route::post('/workshop/update/{shop_id}','AccountsController@workshop_update')->name('admin.workshop_update');
 });
 
