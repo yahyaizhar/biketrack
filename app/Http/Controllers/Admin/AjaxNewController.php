@@ -33,6 +33,7 @@ use App\Model\Accounts\Rider_Account;
 use App\Model\Accounts\Id_charge;
 use App\Model\Accounts\Workshop;
 use Arr;
+use App\Model\Accounts\Fuel_Expense;
 
 
 class AjaxNewController extends Controller
@@ -110,14 +111,53 @@ class AjaxNewController extends Controller
                 <i class="la la-ellipsis-h"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="'.route('admin.workshop_edit', $workshop).'"><i class="fa fa-edit"></i> Edit</a>
-                    <button class="dropdown-item" onclick="updateStatus('.$workshop->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
-                    <button class="dropdown-item" onclick="deleteRow('.$workshop->id.');"><i class="fa fa-trash"></i> Delete</button>
+                </div>
+            </span>
+        </span>';
+        })
+        ->make(true);
+    }
+
+    public function getFuelExpense()
+    {
+        $expense = Fuel_Expense::orderByDesc('created_at')->where('active_status', 'A')->get();
+        // return $clients;
+        return DataTables::of($expense)
+        ->addColumn('status', function($expense){
+            if($expense->status == 1)
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
+            }
+            else
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
+            }
+        })
+        ->addColumn('id', function($expense){
+            return '1000'.$expense->id;
+        })
+        ->addColumn('bike_id', function($expense){
+            $bike = bike::find($expense->bike_id);
+            return $bike->bike_number;
+        })
+        ->addColumn('actions', function($expense){
+            $status_text = $expense->status == 1 ? 'Inactive' : 'Active';
+            return '<span class="dtr-data">
+            <span class="dropdown">
+                <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+                <i class="la la-ellipsis-h"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="'.route('admin.edit_fuel_expense', $expense).'"><i class="fa fa-edit"></i> Edit</a>
+                    <button class="dropdown-item" onclick="updateStatus('.$expense->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
+                    <button class="dropdown-item" onclick="deleteRow('.$expense->id.');"><i class="fa fa-trash"></i> Delete</button>
                     </div>
             </span>
         </span>';
         })
-        ->rawColumns(['name','address','actions', 'status'])
+        ->rawColumns(['status','bike_id','type','amount','actions', 'status'])
         ->make(true);
     }
+
+            
 }
