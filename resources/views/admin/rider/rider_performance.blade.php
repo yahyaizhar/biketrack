@@ -137,13 +137,12 @@ margin-left: 10px;
 <!--end::Page Scripts -->
 @php
     $client_riders=App\Model\Client\Client_Rider::all();
-    // $performance_data=App\Model\Rider\Rider_Performance_Zomato::all()->toArray();
-    // $performance_data = json_decode($performance_data, true);
+    $performance_data=App\Model\Rider\Rider_Performance_Zomato::all()->toArray();
 @endphp
-<script> 
-    function export_data(){
-        
-        
+<script>   
+var a=JSON.parse('{{ json_encode($performance_data) }}');
+console.log(); 
+function export_data(){     
 var export_details=[];
         riders_data.forEach(function(item,index) {
            export_details.push({

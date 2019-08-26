@@ -306,5 +306,17 @@ Route::group([
     Route::delete('/id-charges/{id_charges_id}', 'AccountsController@delete_id_charges')->name('admin.accounts.delete_id_charges');
     Route::get('/id-charges/edit/{charge_id}','AccountsController@id_charges_edit')->name('admin.id_charges_edit');
     Route::post('/id-charges/update/{charge_id}','AccountsController@id_charges_update')->name('admin.id_charges_update');
+    
+    Route::get('/fuel_expense/create','AccountsController@fuel_expense_create')->name('admin.fuel_expense_create');
+    Route::post('/fuel_expense/insert','AccountsController@fuel_expense_insert')->name('admin.fuel_expense_insert');
+    Route::get('/fuel_expense/view','AccountsController@fuel_expense_view')->name('admin.fuel_expense_view');
+    Route::get("/fuel_expense/view/data","AjaxNewController@getFuelExpense")->name("admin.accounts.ajax_fuelExpense");
+    Route::delete('/fuel_expense/delete/{expense_id}','AccountsController@delete_fuel_expense')->name('admin.delete_fuel_expense');
+    Route::post('/fuel_expense/{expense_id}/updatestatus','AccountsController@update_fuel_expense')->name('admin.update_fuel_expense');
+    Route::get('/fuel_expense/edit/{expense_id}','AccountsController@edit_fuel_expense')->name('admin.edit_fuel_expense');
+    Route::post('/fuel_expense/update/{expense_id}','AccountsController@update_edit_fuel_expense')->name('admin.update_edit_fuel_expense');
+
+
+
 });
 

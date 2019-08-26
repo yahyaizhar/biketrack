@@ -60,7 +60,7 @@
 
 $(function() {
         $('input[name="daterange"]').daterangepicker({
-            opens: 'left',
+            opens: 'left', 
             locale: {
                 format: 'DD-MM-YYYY '
             }

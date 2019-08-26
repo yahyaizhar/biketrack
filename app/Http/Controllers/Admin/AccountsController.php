@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use App\Model\Accounts\Rider_salary;
 use App\Model\Accounts\Id_charge;
 use Carbon\Carbon;
+use App\Model\Accounts\Fuel_Expense;
 
 class AccountsController extends Controller
 {
@@ -242,8 +243,148 @@ class AccountsController extends Controller
       return redirect(route('account.developer_salary'))->with('message', 'Record Updated Successfully.');
   
 // end salary by developer
+}
+//   Fuel Expense
+public function fuel_expense_create(){
+    $bikes=bike::all();
+    return view('admin.accounts.Fuel_Expense.FE_add',compact('bikes'));
+}
+public function fuel_expense_insert(Request $r){
+    $bike_id=bike::find($r->bike_id);
+    $fuel_expense=new Fuel_Expense();
+    $fuel_expense->amount=$r->amount;
+    $fuel_expense->type=$r->type;
+    $fuel_expense->bike_id=$bike_id->id;
+    if($r->status)
+            $fuel_expense->status = 1;
+        else
+            $fuel_expense->status = 0;
+    $fuel_expense->save();
+if ($fuel_expense->type=="vip_tag") {
+    
+    $ca = new \App\Model\Accounts\Company_Account;
+    $ca->type='dr';
+    $ca->amount=$r->amount;
+    $ca->source='fuel_expense';
+    $ca->fuel_expense_id=$fuel_expense->id;
+    $ca->save();
+}
+elseif($fuel_expense->type=="cash"){
+    $ca = new \App\Model\Accounts\Company_Account;
+    $ca->type='dr';
+    $ca->amount=$r->amount;
+    $ca->source='fuel_expense';
+    $ca->fuel_expense_id=$fuel_expense->id;
+    $ca->save();
 
+    $ra = new \App\Model\Accounts\Rider_Account;
+    $ra->type='cr';
+    $ra->amount=$r->amount;
+    $ra->source='fuel_expense';
+    $ra->fuel_expense_id=$fuel_expense->id;
+    $ra->save();
+}
+    return redirect(route('admin.fuel_expense_view'));
+}
+public function fuel_expense_view()
+{ 
+    return view('admin.accounts.Fuel_Expense.FE_view');
+}
+public function delete_fuel_expense($id)
+{ 
+    $delete_expense=Fuel_Expense::find($id);
+    $delete_expense->status=0;
+    $delete_expense->active_status="D";
+    $delete_expense->update();
 
+    $ra=\App\Model\Accounts\Rider_Account::where("fuel_expense_id",$delete_expense->id)->get();
+    foreach ($ra as $item) {
+        $item->active_status="D";
+        $item->update();
+    }
+    
+    $ca=\App\Model\Accounts\Company_Account::where("fuel_expense_id",$delete_expense->id)->get();
+    foreach ($ca as $elem) {
+        $elem->active_status="D"; 
+        $elem->update();
+    }
+    
 
 }
+public function update_fuel_expense($id)
+{
+    $update_expense=Fuel_Expense::find($id);
+    if($update_expense->status == 1)
+    {
+        $update_expense->status = 0;
+    }
+    else
+    {
+        $update_expense->status = 1;
+    }
+    $update_expense->update();
+    return response()->json([
+        'status' => true
+    ]);
+}
+public function edit_fuel_expense($id){
+    $expense=Fuel_Expense::find($id);
+    $bikes=bike::all();
+    return view('admin.accounts.Fuel_Expense.FE_edit',compact('expense','bikes'));
+}
+public function update_edit_fuel_expense(Request $r,$id){
+    $bike_id=bike::find($r->bike_id);
+    $fuel_expense=Fuel_Expense::find($id);
+    $fuel_expense->amount=$r->amount;
+    $fuel_expense->type=$r->type;
+    $fuel_expense->bike_id=$bike_id->id;
+    if($r->status)
+            $fuel_expense->status = 1;
+        else
+            $fuel_expense->status = 0;
+    $fuel_expense->update();
+if ($fuel_expense->type=="vip_tag") {
+    
+    $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+        'fuel_expense_id'=>$fuel_expense->id
+    ]);
+    $ca->type='dr';
+    $ca->source="fuel_expense"; 
+    $ca->amount=$r->amount;
+    $ca->save();
+
+    
+    $ra=\App\Model\Accounts\Rider_Account::where("fuel_expense_id",$fuel_expense->id)->get()->first();
+    if (isset($ra)) {
+        $ra->delete();
+    }
+
+}
+elseif($fuel_expense->type=="cash"){
+    $ca =\App\Model\Accounts\Company_Account::updateOrCreate([
+    'fuel_expense_id'=>$fuel_expense->id,
+    ]);
+    $ca->type='dr';
+    $ca->source="fuel_expense"; 
+    $ca->amount=$r->amount;
+    $ca->save();
+    
+
+    $ra =\App\Model\Accounts\Rider_Account::updateOrCreate([
+    'fuel_expense_id'=>$fuel_expense->id,
+    ]);
+    $ra->fuel_expense_id=$fuel_expense->id;
+    $ra->type='cr';
+    $ra->source="fuel_expense"; 
+    $ra->amount=$r->amount;
+    $ra->save();
+    
+}
+    return redirect(route('admin.fuel_expense_view'));
+}
+
+
+// end Fuel Expense
+
+
 }

@@ -37,7 +37,7 @@
 
     <!--begin:: Global Optional Vendors -->
 
-
+ 
  
     <script src="{{ asset('dashboard/assets/vendors/general/jquery-form/dist/jquery.form.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('dashboard/assets/vendors/general/block-ui/jquery.blockUI.js') }}" type="text/javascript"></script>
