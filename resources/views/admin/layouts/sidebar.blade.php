@@ -121,13 +121,88 @@
                         <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
                             <ul class="kt-menu__subnav">
                                 <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text">Accounts</span></span></li>
-                                <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/id-charges") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.accounts.id_charges_index') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add Charges</span></a></li>
-                                <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/id-charges/view") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.accounts.id_charges_view') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">View Charges</span></a></li>
-                                <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/fuel_expense/create") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.fuel_expense_create') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add Fuel Expense</span></a></li>
-                                <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/fuel_expense/view") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{route('admin.fuel_expense_view')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">View Fuel Expense</span></a></li>
-                                <li class="kt-menu__item @if(strpos(Request::url(), "/accounts /workshop/add") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.accounts.workshop_index') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add Workshop </span></a></li>
-                                <li class="kt-menu__item @if(strpos(Request::url(), "/accounts /workshop/view") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{route('admin.accounts.workshop_view')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">View Workshop</span></a></li>
                                 
+                                
+                                <li class="kt-menu__item kt-menu__item--submenu @if(strpos(Request::url(), "/accounts/fuel_expense") !== false) kt-menu__item--active kt-menu__item--open @endif "  aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
+                                    <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
+                                        <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
+                                            <span></span>
+                                        </i>
+                                        <span class="kt-menu__link-text">Fuel Expense</span>
+                                        <i class="kt-menu__ver-arrow la la-angle-right"></i>
+                                    </a>
+                                    <div class="kt-menu__submenu " kt-hidden-height="160" @if(strpos(Request::url(), "/accounts/fuel_expense") === false)style="display: none; overflow: hidden;"@endif><span class="kt-menu__arrow"></span>
+                                        <ul class="kt-menu__subnav">
+                                            <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text"></span></span></li>
+                                            <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/fuel_expense/create") !== false) kt-menu__item--active @endif" aria-haspopup="true">
+                                                <a href="{{ route('admin.fuel_expense_create') }}" class="kt-menu__link ">
+                                                    <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
+                                                    <span class="kt-menu__link-text">Add Fuel Expense</span>
+                                                </a>
+                                            </li>
+                                            <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/fuel_expense/view") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
+                                                <a href="{{ route('admin.fuel_expense_view') }}" class="kt-menu__link ">
+                                                    <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
+                                                    <span class="kt-menu__link-text">View Fuel Expense</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <li class="kt-menu__item kt-menu__item--submenu @if(strpos(Request::url(), "/accounts/id-charges") !== false) kt-menu__item--active kt-menu__item--open @endif "  aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
+                                    <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
+                                        <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
+                                            <span></span>
+                                        </i>
+                                        <span class="kt-menu__link-text">Id Charges</span>
+                                        <i class="kt-menu__ver-arrow la la-angle-right"></i>
+                                    </a>
+                                    <div class="kt-menu__submenu " kt-hidden-height="160" @if(strpos(Request::url(), "/accounts/id-charges") === false)style="display: none; overflow: hidden;"@endif><span class="kt-menu__arrow"></span>
+                                        <ul class="kt-menu__subnav">
+                                            <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text"></span></span></li>
+                                            <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/id-charges") !== false) kt-menu__item--active @endif" aria-haspopup="true">
+                                                <a href="{{ route('admin.accounts.id_charges_index') }}" class="kt-menu__link ">
+                                                    <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
+                                                    <span class="kt-menu__link-text">Add Charges</span>
+                                                </a>
+                                            </li>
+                                            <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/id-charges/view") !== false) kt-menu__item--active @endif" aria-haspopup="true">
+                                                <a href="{{ route('admin.accounts.id_charges_view') }}" class="kt-menu__link ">
+                                                    <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
+                                                    <span class="kt-menu__link-text">View Charges</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <li class="kt-menu__item kt-menu__item--submenu @if(strpos(Request::url(), "/accounts/workshop") !== false) kt-menu__item--active kt-menu__item--open @endif "  aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
+                                    <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
+                                        <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
+                                            <span></span>
+                                        </i>
+                                        <span class="kt-menu__link-text">Workshop</span>
+                                        <i class="kt-menu__ver-arrow la la-angle-right"></i>
+                                    </a>
+                                    <div class="kt-menu__submenu " kt-hidden-height="160" @if(strpos(Request::url(), "/accounts/workshop") === false)style="display: none; overflow: hidden;"@endif><span class="kt-menu__arrow"></span>
+                                        <ul class="kt-menu__subnav">
+                                            <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text"></span></span></li>
+                                            <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/workshop/add") !== false) kt-menu__item--active @endif" aria-haspopup="true">
+                                                <a href="{{ route('admin.accounts.workshop_index') }}" class="kt-menu__link ">
+                                                    <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
+                                                    <span class="kt-menu__link-text">Add Workshop</span>
+                                                </a>
+                                            </li>
+                                            <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/workshop/view") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
+                                                <a href="{{ route('admin.accounts.workshop_view') }}" class="kt-menu__link ">
+                                                    <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
+                                                    <span class="kt-menu__link-text">View Workshop</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
                                                                  
                                 <li class="kt-menu__item kt-menu__item--submenu @if(strpos(Request::url(), "CE") !== false) kt-menu__item--active kt-menu__item--open @endif "  aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
                                     <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
