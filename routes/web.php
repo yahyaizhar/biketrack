@@ -339,5 +339,16 @@ Route::group([
     Route::delete('/maintenance/{maintenance}', 'AccountsController@delete_maintenance')->name('admin.accounts.delete_maintenance');
     Route::get('/maintenance/edit/{shop_id}','AccountsController@maintenance_edit')->name('admin.maintenance_edit');
     Route::post('/maintenance/update/{shop_id}','AccountsController@maintenance_update')->name('admin.maintenance_update');
+
+    //     Company_Expense
+    Route::get('/CE/index','ExpenseController@CE_index')->name('admin.CE_index');
+    Route::get('/CE/view','ExpenseController@CE_view')->name('admin.CE_view');
+    Route::post('/CE/insert','ExpenseController@CE_store')->name('admin.CE_store');
+    Route::post('/CE/{id}/update','ExpenseController@CE_update')->name('admin.CE_update');
+    Route::get("/CE/view/data","AjaxNewController@getCompanyExpense")->name("admin.getCompanyExpense");
+    Route::post('/CE/{id}/updatestatus','ExpenseController@CE_updatestatus')->name('admin.CE_index');
+    Route::delete('/CE/delete/{id}','ExpenseController@CE_delete')->name('admin.CE_index');
+    Route::get('/CE/edit/{id}','ExpenseController@CE_edit')->name('admin.CE_index');
+// End Company_Expense
 });
 
