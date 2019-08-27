@@ -262,52 +262,85 @@
                 </div>
         </div>
         <div class="row" id="passport_status_no">
-                <div class="col-lg-4 col-md-4 col-sm-12"> 
-                        <div class="form-group">
-                                @php
-                                    $riders=App\Model\Rider\Rider::where("active_status","A")->where("status","1")->get();
-                                @endphp
-                                <label>Employee Reference:</label>
-                                <select id="empoloyee_reference" class="form-control @if($errors->has('empoloyee_reference')) invalid-field @endif kt-select2" id="kt_select2_3" name="empoloyee_reference" placeholder="Enter Employee Reference" value="{{ old('empoloyee_reference') }}">
-                                    @foreach ($riders as $rider)
-                                    <option value="{{$rider->name}}" @if($rider_detail->empoloyee_reference===$rider->name) selected @endif>{{$rider->name}}</option>
-                                    @endforeach
-                                    </select> 
-                                @if ($errors->has('empoloyee_reference'))
-                                    <span class="invalid-response" role="alert">
-                                        <strong>
-                                            {{$errors->first('empoloyee_reference')}}
-                                        </strong>
-                                    </span>
-                                @endif
-                            </div>
-                </div>
-                <div class="col-lg-4 col-md-4 col-sm-12">
-                    <div class="form-group">
-                        <label>Other Passport Given:</label>
-                        <input id="other_passport_given" type="text" autocomplete="off" class="form-control @if($errors->has('other_passport_given')) invalid-field @endif" name="other_passport_given" placeholder="Passport given by whom?" value="{{ $rider_detail->other_passport_given }}">
-                    @if ($errors->has('other_passport_given'))
-                        <span class="invalid-response" role="alert">
-                        <strong>{{ $errors->first('other_passport_given') }}</strong>
-                        </span>
-                    @else
-                        <span class="form-text text-muted">Passport given by whom?</span>
-                    @endif
-                </div>
-                </div>
-                <div class="col-lg-4 col-md-4 col-sm-12">
+            <div class="col-lg-4 col-md-4 col-sm-12"> 
                 <div class="form-group">
-                    <label>Not Given:</label>
-                    <input id="not_given" type="text" autocomplete="off" class="form-control @if($errors->has('not_given')) invalid-field @endif" name="not_given" placeholder="Reason that passport is not given?" value="{{ $rider_detail->not_given }}">
-                    @if ($errors->has('not_given'))
-                        <span class="invalid-response" role="alert">
-                            <strong>{{ $errors->first('not_given') }}</strong>
-                        </span>
-                    @else
-                        <span class="form-text text-muted">Reason that passport is not given?</span>
-                    @endif
+                    <label class="kt-radio">
+                        <input type="radio"  data-depended=".is_guarantee__employee"@if($rider_detail->is_guarantee=='employee') checked @endif name="is_guarantee" value="employee"> Employee Reference
+                        <span></span>
+                    </label>
+                    <div class="is_guarantee__employee dependend-field">
+                        @php
+                            $riders=App\Model\Rider\Rider::where("active_status","A")->where("status","1")->get();
+                        @endphp
+                        <select id="empoloyee_reference" required class="form-control  @if($errors->has('empoloyee_reference')) invalid-field @endif kt-select2" id="kt_select2_3" name="empoloyee_reference" placeholder="Enter Employee Reference" value="{{ old('empoloyee_reference') }}">
+                            @foreach ($riders as $rider)
+                            <option @if($rider_detail->empoloyee_reference==$rider->id) selected @endif value="{{$rider->id}}">{{$rider->name}}</option>
+                            @endforeach
+                        </select> 
+                        @if ($errors->has('empoloyee_reference'))
+                            <span class="invalid-response" role="alert">
+                                <strong>
+                                    {{$errors->first('empoloyee_reference')}}
+                                </strong>
+                            </span>
+                        @endif
+                        <span class="form-text text-muted">Who referred this rider?</span>
+                    </div>
                 </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12"> 
+                <div class="form-group">
+                    <label class="kt-radio">
+                        <input type="radio" data-depended=".is_guarantee__outsider"@if($rider_detail->is_guarantee=='outsider') checked @endif name="is_guarantee" required value="outsider"> Someone else passport
+                        <span></span>
+                    </label>
+                    <textarea type="text" rows="5" autocomplete="off" class="dependend-field is_guarantee__outsider form-control @if($errors->has('other_passport_given')) invalid-field @endif" name="other_passport_given" placeholder="Other person detail" >
+                            {{ $rider_detail->other_passport_given }}
+                    </textarea>
+                    <span class="form-text text-muted is_guarantee__outsider dependend-field">Where that person works?</span>
                 </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12"> 
+                <div class="form-group">
+                    <label class="kt-radio">
+                        <input type="radio" data-depended=".is_guarantee__not_given"@if($rider_detail->is_guarantee=='not_given') checked @endif name="is_guarantee" required value="not_given"> Not given
+                        <span></span>
+                    </label>
+                    <textarea type="text" rows="5" autocomplete="off" class="dependend-field is_guarantee__not_given form-control @if($errors->has('not_given')) invalid-field @endif" name="not_given" placeholder="Reason" >
+                        {{ $rider_detail->not_given }}
+                    </textarea>
+                    <span class="form-text text-muted is_guarantee__not_given dependend-field">Why not?</span>
+                </div>
+            </div>
+            
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                @if($rider_detail->passport_document_image)
+                    <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_detail->passport_document_image)) }}" alt="image">
+                @else
+                    <img class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                @endif
+                <div class="form-group">
+                    <label>Passport Image:</label>
+                    <div class="custom-file">
+                        <input type="file" name="passport_document_image" class="custom-file-input" id="passport_document_image">
+                        <label class="custom-file-label" for="passport_document_image">Choose Passport Image</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                @if($rider_detail->agreement_image)
+                    <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_detail->agreement_image)) }}" alt="image">
+                @else
+                    <img class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                @endif
+                <div class="form-group">
+                    <label>Agreement Image:</label>
+                    <div class="custom-file">
+                        <input type="file" name="agreement_image" class="custom-file-input" id="agreement_image">
+                        <label class="custom-file-label" for="agreement_image">Choose Agreement Image</label>
+                    </div>
+                </div>
+            </div>
         </div>
                                 
                                         
@@ -593,6 +626,28 @@
 {{-- start_timer , timepicker1 --}}
 <script>
 $(document).ready(function(){
+    $('.dependend-field').hide('fast');
+    $(':radio[data-depended]').on('change', function(){
+        $('[name="passport_document_image"]')
+            .siblings('.custom-file-label')
+            .text('Choose Passport Image')
+            .parents('.custom-file')
+            .siblings('label')
+            .text('Passport Image');
+        var _dependend = $(this).attr('data-depended');
+        if($(this).val().trim()=='not_given'){
+            $('[name="passport_document_image"]')
+            .siblings('.custom-file-label')
+            .text('Choose Document Image')
+            .parents('.custom-file')
+            .siblings('label')
+            .text('Document Image');
+        }
+        $('.dependend-field').val('').hide('fast');
+        $('#empoloyee_reference')[0].selectedIndex=-1;
+        $('#empoloyee_reference').trigger('change');
+        $(_dependend).fadeIn('fast');
+    })
 // time 1
 $('#timepicker1').change(function(){
 var a = $('#timepicker1').val();
