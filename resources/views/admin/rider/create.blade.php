@@ -202,7 +202,7 @@
                                         @php
                                             $riders=App\Model\Rider\Rider::where("active_status","A")->where("status","1")->get();
                                         @endphp
-                                        <select id="empoloyee_reference" required class="form-control  @if($errors->has('empoloyee_reference')) invalid-field @endif kt-select2" id="kt_select2_3" name="empoloyee_reference" placeholder="Enter Employee Reference" value="{{ old('empoloyee_reference') }}">
+                                        <select id="empoloyee_reference" class="form-control  @if($errors->has('empoloyee_reference')) invalid-field @endif kt-select2" id="kt_select2_3" name="empoloyee_reference" placeholder="Enter Employee Reference" value="{{ old('empoloyee_reference') }}">
                                             @foreach ($riders as $rider)
                                             <option value="{{$rider->id}}">{{$rider->name}}</option>
                                             @endforeach
