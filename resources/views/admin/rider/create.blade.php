@@ -1,5 +1,11 @@
 @extends('admin.layouts.app')
 @section('main-content')
+<style>
+#passport_status_no{
+    border: 1px solid rgb(221, 221, 221);
+    padding: 14px 0px;
+}
+</style>
 <!-- begin:: Content -->
 <div class="progress-bar sticky-top" id="myBar" style="height: 10px;background: #4caf50;width: 0%;"></div>
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
@@ -104,62 +110,62 @@
                             @endif
                         </div>
                         <div class="row">
-                       <div class="col-lg-3 col-md-3 col-sm-12">
-                        <div class="form-group">
-                            <label>Start Time:</label>
-                            <input type="hidden" id="start_timer1" name="start_time">
-                            <input type="text" autocomplete="off" id="timepicker1" class="form-control @if($errors->has('start_time')) invalid-field @endif"  placeholder="Start Time" value="{{ old('start_time') }}">
-                            @if ($errors->has('start_time'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{$errors->first('start_time')}}
-                                    </strong>
-                                </span>
-                            @endif
-                        </div>
-                       </div>
-                       <div class="col-lg-3 col-md-3 col-sm-12">
-                        <div class="form-group">
-                            <label>End Time:</label>
-                            <input type="hidden" id="start_timer2" name="end_time">
-                            <input type="text" autocomplete="off" id="timepicker2" class="form-control @if($errors->has('end_time')) invalid-field @endif"  placeholder="End Time" value="{{ old('end_time') }}">
-                            @if ($errors->has('end_time'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{$errors->first('end_time')}}
-                                    </strong>
-                                </span>
-                            @endif
-                        </div>
-                       </div>
-                       <div class="col-lg-3 col-md-3 col-sm-12">
-                        <div class="form-group">
-                            <label>Break Start Time:</label>
-                            <input type="hidden" id="start_timer3" name="break_start_time">
-                            <input type="text" autocomplete="off" id="timepicker3" class="form-control @if($errors->has('break_start_time')) invalid-field @endif"  placeholder="Break Start Time" value="{{ old('break_start_time') }}">
-                            @if ($errors->has('break_start_time'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{$errors->first('break_start_time')}}
-                                    </strong>
-                                </span>
-                            @endif
-                        </div>
-                       </div>
-                       <div class="col-lg-3 col-md-3 col-sm-12">
-                        <div class="form-group">
-                            <label>Break End Time:</label>
-                            <input type="hidden" id="start_timer4" name="break_end_time">
-                            <input type="text" autocomplete="off" id="timepicker4" class="form-control @if($errors->has('break_end_time')) invalid-field @endif"  placeholder="Break End Time" value="{{ old('break_end_time') }}">
-                            @if ($errors->has('break_end_time'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{$errors->first('break_end_time')}}
-                                    </strong>
-                                </span>
-                            @endif
-                        </div>
-                       </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                <div class="form-group">
+                                    <label>Start Time:</label>
+                                    <input type="hidden" id="start_timer1" name="start_time">
+                                    <input type="text" autocomplete="off" id="timepicker1" class="form-control @if($errors->has('start_time')) invalid-field @endif"  placeholder="Start Time" value="{{ old('start_time') }}">
+                                    @if ($errors->has('start_time'))
+                                        <span class="invalid-response" role="alert">
+                                            <strong>
+                                                {{$errors->first('start_time')}}
+                                            </strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label>End Time:</label>
+                                        <input type="hidden" id="start_timer2" name="end_time">
+                                        <input type="text" autocomplete="off" id="timepicker2" class="form-control @if($errors->has('end_time')) invalid-field @endif"  placeholder="End Time" value="{{ old('end_time') }}">
+                                        @if ($errors->has('end_time'))
+                                            <span class="invalid-response" role="alert">
+                                                <strong>
+                                                    {{$errors->first('end_time')}}
+                                                </strong>
+                                            </span>
+                                        @endif
+                                    </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label>Break Start Time:</label>
+                                        <input type="hidden" id="start_timer3" name="break_start_time">
+                                        <input type="text" autocomplete="off" id="timepicker3" class="form-control @if($errors->has('break_start_time')) invalid-field @endif"  placeholder="Break Start Time" value="{{ old('break_start_time') }}">
+                                        @if ($errors->has('break_start_time'))
+                                            <span class="invalid-response" role="alert">
+                                                <strong>
+                                                    {{$errors->first('break_start_time')}}
+                                                </strong>
+                                            </span>
+                                        @endif
+                                    </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                    <div class="form-group">
+                                        <label>Break End Time:</label>
+                                        <input type="hidden" id="start_timer4" name="break_end_time">
+                                        <input type="text" autocomplete="off" id="timepicker4" class="form-control @if($errors->has('break_end_time')) invalid-field @endif"  placeholder="Break End Time" value="{{ old('break_end_time') }}">
+                                        @if ($errors->has('break_end_time'))
+                                            <span class="invalid-response" role="alert">
+                                                <strong>
+                                                    {{$errors->first('break_end_time')}}
+                                                </strong>
+                                            </span>
+                                        @endif
+                                    </div>
+                            </div>
                         </div>
                         <div class="form-group">
                             <div class="custom-file">
@@ -167,96 +173,90 @@
                                 <label class="custom-file-label" for="profile_picture">Choose Picture</label>
                             </div>
                         </div>
-                                            
-<div class="form-group">
-    <label>Date of Joining:</label>
-    <input type="text" id="datepicker1" autocomplete="off" class="form-control @if($errors->has('date_of_joining')) invalid-field @endif" name="date_of_joining" placeholder="Enter joining Date">
-    @if ($errors->has('date_of_joining'))
-        <span class="invalid-response" role="alert">
-            <strong>{{ $errors->first('date_of_joining') }}</strong>
-        </span>
-    @else
-        <span class="form-text text-muted">Please enter your Joining Date</span>
-    @endif
-</div>
-{{-- <div class="form-group">
-    <label>Official Given Number:</label>
-    <input type="text" class="form-control @if($errors->has('official_given_number')) invalid-field @endif" name="official_given_number" placeholder="Enter official number" value="{{ old('official_given_number') }}">
-    @if ($errors->has('official_given_number'))
-        <span class="invalid-response" role="alert">
-            <strong>
-                {{ $errors->first('official_given_number') }}
-            </strong>
-        </span>
-    @else
-        <span class="form-text text-muted">Please enter your official phone number</span>
-    @endif
-</div> --}}
-{{-- <div class="form-group">
-    <label>Official Sim Given Date:</label>
-    <input type="text" id="datepicker2" autocomplete="off" class="form-control @if($errors->has('official_sim_given_date')) invalid-field @endif" name="official_sim_given_date" placeholder="Enter official sim given Date">
-    @if ($errors->has('official_sim_given_date'))
-        <span class="invalid-response" role="alert">
-            <strong>{{ $errors->first('official_sim_given_date') }}</strong>
-        </span>
-    @else
-        <span class="form-text text-muted">Please enter your Official Sim Date</span>
-    @endif
-</div> --}}
-<div class="form-group">
-        <label>Is Passport Collected:</label>
-        <div>
-            <input data-switch="true" name="passport_collected" id="passport_collected" type="checkbox" checked="checked" data-on-text="Yes" data-handle-width="70" data-off-text="No" data-on-color="brand">
-        </div>
-    </div>
-    <div class="row" id="passport_status_no">
-            <div class="col-lg-4 col-md-4 col-sm-12"> 
-                    <div class="form-group">
-                        @php
-                            $riders=App\Model\Rider\Rider::where("active_status","A")->where("status","1")->get();
-                        @endphp
-                            <label>Employee Reference:</label>
-                            <select id="empoloyee_reference" class="form-control  @if($errors->has('empoloyee_reference')) invalid-field @endif kt-select2" id="kt_select2_3" name="empoloyee_reference" placeholder="Enter Employee Reference" value="{{ old('empoloyee_reference') }}">
-                                @foreach ($riders as $rider)
-                                <option value="{{$rider->name}}">{{$rider->name}}</option>
-                                @endforeach
-                                </select> 
-                            @if ($errors->has('empoloyee_reference'))
+
+                        <div class="form-group">
+                            <label>Date of Joining:</label>
+                            <input type="text" id="datepicker1" autocomplete="off" class="form-control @if($errors->has('date_of_joining')) invalid-field @endif" name="date_of_joining" placeholder="Enter joining Date">
+                            @if ($errors->has('date_of_joining'))
                                 <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{$errors->first('empoloyee_reference')}}
-                                    </strong>
+                                    <strong>{{ $errors->first('date_of_joining') }}</strong>
                                 </span>
+                            @else
+                                <span class="form-text text-muted">Please enter your Joining Date</span>
                             @endif
                         </div>
-            </div>
-            <div class="col-lg-4 col-md-4 col-sm-12">
-                <div class="form-group">
-                    <label>Other Passport Given:</label>
-                    <input id="other_passport_given" type="text" autocomplete="off" class="form-control @if($errors->has('other_passport_given')) invalid-field @endif" name="other_passport_given" placeholder="Passport given by whom?">
-                @if ($errors->has('other_passport_given'))
-                    <span class="invalid-response" role="alert">
-                    <strong>{{ $errors->first('other_passport_given') }}</strong>
-                    </span>
-                @else
-                    <span class="form-text text-muted">Passport given by whom?</span>
-                @endif
-            </div>
-            </div>
-            <div class="col-lg-4 col-md-4 col-sm-12">
-            <div class="form-group">
-                <label>Not Given:</label>
-                <input id="not_given" type="text" autocomplete="off" class="form-control @if($errors->has('not_given')) invalid-field @endif" name="not_given" placeholder="Reason that passport is not given?">
-                @if ($errors->has('not_given'))
-                    <span class="invalid-response" role="alert">
-                        <strong>{{ $errors->first('not_given') }}</strong>
-                    </span>
-                @else
-                    <span class="form-text text-muted">Reason that passport is not given?</span>
-                @endif
-            </div>
-            </div>
-    </div>
+                        <div class="form-group">
+                            <label>Is Passport Collected:</label>
+                            <div>
+                                <input data-switch="true" name="passport_collected" id="passport_collected" type="checkbox" checked="checked" data-on-text="Yes" data-handle-width="70" data-off-text="No" data-on-color="brand">
+                            </div>
+                        </div>
+                        <div class="row" id="passport_status_no">
+                            <div class="col-lg-4 col-md-4 col-sm-12"> 
+                                <div class="form-group">
+                                    <label class="kt-radio">
+                                        <input type="radio"  data-depended=".is_guarantee__employee" name="is_guarantee" value="employee"> Employee Reference
+                                        <span></span>
+                                    </label>
+                                    <div class="is_guarantee__employee dependend-field">
+                                        @php
+                                            $riders=App\Model\Rider\Rider::where("active_status","A")->where("status","1")->get();
+                                        @endphp
+                                        <select id="empoloyee_reference" required class="form-control  @if($errors->has('empoloyee_reference')) invalid-field @endif kt-select2" id="kt_select2_3" name="empoloyee_reference" placeholder="Enter Employee Reference" value="{{ old('empoloyee_reference') }}">
+                                            @foreach ($riders as $rider)
+                                            <option value="{{$rider->name}}">{{$rider->name}}</option>
+                                            @endforeach
+                                        </select> 
+                                        @if ($errors->has('empoloyee_reference'))
+                                            <span class="invalid-response" role="alert">
+                                                <strong>
+                                                    {{$errors->first('empoloyee_reference')}}
+                                                </strong>
+                                            </span>
+                                        @endif
+                                        <span class="form-text text-muted">Who referred this rider?</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12"> 
+                                <div class="form-group">
+                                    <label class="kt-radio">
+                                        <input type="radio" data-depended=".is_guarantee__outsider" name="is_guarantee" required value="outsider"> Someone else passport
+                                        <span></span>
+                                    </label>
+                                    <textarea type="text" rows="5" autocomplete="off" class="dependend-field is_guarantee__outsider form-control @if($errors->has('other_passport_given')) invalid-field @endif" name="other_passport_given" placeholder="Other person detail" ></textarea>
+                                    <span class="form-text text-muted is_guarantee__outsider dependend-field">Where that person works?</span>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12"> 
+                                <div class="form-group">
+                                    <label class="kt-radio">
+                                        <input type="radio" data-depended=".is_guarantee__not_given" name="is_guarantee" required value="not_given"> Not given
+                                        <span></span>
+                                    </label>
+                                    <textarea type="text" rows="5" autocomplete="off" class="dependend-field is_guarantee__not_given form-control @if($errors->has('not_given')) invalid-field @endif" name="not_given" placeholder="Reason" ></textarea>
+                                    <span class="form-text text-muted is_guarantee__not_given dependend-field">Why not?</span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label>Passport Image:</label>
+                                    <div class="custom-file">
+                                        <input type="file" name="passport_document_image" class="custom-file-input" id="passport_document_image">
+                                        <label class="custom-file-label" for="passport_document_image">Choose Passport Image</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label>Agreement Image:</label>
+                                    <div class="custom-file">
+                                        <input type="file" name="agreement_image" class="custom-file-input" id="agreement_image">
+                                        <label class="custom-file-label" for="agreement_image">Choose Agreement Image</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 <div class="row">
 <div class="col-lg-6 col-md-6 col-sm-12">
 <div class="form-group">
@@ -425,6 +425,26 @@
 @section('foot')
 <script>
     $(document).ready(function(){
+        $('.dependend-field').hide('fast');
+        $(':radio[data-depended]').on('change', function(){
+            $('[name="passport_document_image"]')
+                .siblings('.custom-file-label')
+                .text('Choose Passport Image')
+                .parents('.custom-file')
+                .siblings('label')
+                .text('Passport Image');
+            var _dependend = $(this).attr('data-depended');
+            if($(this).val().trim()=='not_given'){
+                $('[name="passport_document_image"]')
+                .siblings('.custom-file-label')
+                .text('Choose Document Image')
+                .parents('.custom-file')
+                .siblings('label')
+                .text('Document Image');
+            }
+            $('.dependend-field').hide('fast');
+            $(_dependend).fadeIn('fast');
+        })
         $('#timepicker1').change(function(){
         var a = $('#timepicker1').val();
         var getUTC_date=new Date(a.toDate('h:m')).format('HH:MM',true);
@@ -461,10 +481,14 @@
 {{-- timepicker --}}
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
- 
+<script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/select2.js') }}" type="text/javascript"></script>
  {{-- end time picker --}}
  <script>
       $(document).ready(function(){
+        $('.kt-select2').select2({
+            placeholder: "Select an option",
+            width:'100%'    
+        });
         $('#timepicker1').fdatepicker({ format: 'hh:ii',startView:1,maxView:0,pickTime: true,});
         $('#timepicker2').fdatepicker({ format: 'hh:ii',startView:1,maxView:0,pickTime: true});
         $('#timepicker3').fdatepicker({ format: 'hh:ii',startView:1,maxView:0,pickTime: true});
