@@ -645,7 +645,10 @@ class AjaxController extends Controller
         ->addColumn('passport_collected', function($riders){
             $rider_detail =$riders->Rider_detail()->get()->first();
             $a=$rider_detail->passport_collected."<br>";
-            $b="<a href='".route('admin.rider.profile', $rider_detail->empoloyee_reference)."'>Reffered By: ".$rider_detail->empoloyee_reference."</a>";
+            $b="";
+            if (isset($rider_detail->empoloyee_reference)) {
+                $b="<a href='".route('admin.rider.profile', $rider_detail->empoloyee_reference)."'>Reffered By: ".$rider_detail->empoloyee_reference."</a>";
+            }
             if($rider_detail->passport_collected=="no"){
                 if ($rider_detail->is_guarantee=="employee") {
                     return $a.$b;
@@ -1569,7 +1572,10 @@ class AjaxController extends Controller
            ->addColumn('passport_collected', function($riders){
             $rider_detail =$riders->Rider_detail()->get()->first();
             $a=$rider_detail->passport_collected."<br>";
-            $b="<a href='".route('admin.rider.profile', $rider_detail->empoloyee_reference)."'>Reffered By: ".$rider_detail->empoloyee_reference."</a>";
+            $b="";
+            if (isset($rider_detail->empoloyee_reference)) {
+                $b="<a href='".route('admin.rider.profile', $rider_detail->empoloyee_reference)."'>Reffered By: ".$rider_detail->empoloyee_reference."</a>";
+            }
             if($rider_detail->passport_collected=="no"){
                 if ($rider_detail->is_guarantee=="employee") {
                     return $a.$b;
