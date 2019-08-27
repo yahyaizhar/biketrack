@@ -183,6 +183,7 @@ class AccountsController extends Controller
             'workshop_id'=>$r->workshop_id,
             'bike_id'=>$r->bike_id,
             'amount'=>$r->amount,
+            'accident_payment_status'=>$r->accident_payment_status,
             'status'=>$r->status=='on'?1:0,
         ]);
         
@@ -203,6 +204,7 @@ class AccountsController extends Controller
         $maintenance->maintenance_type=$r->maintenance_type;
         $maintenance->workshop_id=$r->workshop_id;
         $maintenance->bike_id=$r->bike_id;
+        $maintenance->accident_payment_status=$r->accident_payment_status;
         $maintenance->amount=$r->amount;
         // $id_charge->=$r->;
         if($r->status)

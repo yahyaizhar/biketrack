@@ -76,10 +76,23 @@
                                 <input data-switch="true" name="status" id="status" type="checkbox" @if($maintenance->status==1) checked @endif data-on-text="Enabled" data-handle-width="70" data-off-text="Disabled" data-on-color="brand">
                             </div>
                         </div>
-                    </div>
                     
-                   
-
+                    <div class="form-group" id="accident_payment_status" @if($maintenance->maintenance_type=='regular') style="display:none;" @endif>
+                            <label>Accident Payment type:</label>
+                            <div class="kt-radio-inline">
+                                <label class="kt-radio">
+                                    <input required type="radio" name="accident_payment_status" @if ($maintenance->accident_payment_status==='pending') checked @endif value="pending"> Pending
+                                    <span></span>
+                                </label>
+                                <label class="kt-radio">
+                                    <input required type="radio" name="accident_payment_status"@if ($maintenance->accident_payment_status==='paid') checked @endif value="paid"> Paid
+                                    <span></span>
+                                </label>
+                            </div>
+                        </div> 
+                    
+                    
+                    </div>
                     <div class="kt-portlet__foot">
                         <div class="kt-form__actions kt-form__actions--right">
                             <button type="submit" class="btn btn-primary">Submit</button>
@@ -106,8 +119,21 @@
  
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
-  $(document).ready(function(){
-    //   $('#datepicker').datepicker({dateFormat: 'yy-mm-dd'}); 
+$(document).ready(function(){
+   
+   
+
+$('[name="maintenance_type"]').on("change",function(){
+     var _val=$(this).val();1
+if (_val=="accident") {
+       $("#accident_payment_status").show();
+       $('[name="accident_payment_status"]').prop('required', true);
+}
+else{
+    $("#accident_payment_status").hide();
+    $('[name="accident_payment_status"]').prop('checked', false).prop('required', false);
+}
+});
       $('#datepicker').fdatepicker({format: 'dd-mm-yyyy'}); 
 
   });

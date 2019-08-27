@@ -23,7 +23,7 @@
                         <div class="form-group">
                             <label>Maintenance Type:</label>
                             {{-- <input  autocomplete="off" list="model" class="form-control @if($errors->has('model')) invalid-field @endif" name="model"  > --}}
-                            <select required class="form-control @if($errors->has('maintenance_type')) invalid-field @endif kt-select2-general" name="maintenance_type">
+                            <select required  class="form-control @if($errors->has('maintenance_type')) invalid-field @endif kt-select2-general" name="maintenance_type">
                                 <option value="accident">Accident</option>
                                 <option value="regular">Regular</option>
                             </select> 
@@ -68,6 +68,19 @@
                                 </span>
                             @endif
                         </div>
+                        <div class="form-group" id="accident_payment_status">
+                            <label>Accident Payment type:</label>
+                            <div class="kt-radio-inline">
+                                <label class="kt-radio">
+                                    <input required type="radio" name="accident_payment_status" value="pending"> Pending
+                                    <span></span>
+                                </label>
+                                <label class="kt-radio">
+                                    <input required type="radio" name="accident_payment_status" value="paid"> Paid
+                                    <span></span>
+                                </label>
+                            </div>
+                        </div>
                      
                         
                         <div class="form-group">
@@ -103,11 +116,22 @@
  
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
-  $(document).ready(function(){
-    //   $('#datepicker').datepicker({dateFormat: 'yy-mm-dd'}); 
-      $('#datepicker').fdatepicker({format: 'dd-mm-yyyy'}); 
-
-  });
-
+$(document).ready(function(){
+$('[name="maintenance_type"]').on("change",function(){
+    var _val=$(this).val();
+    $("#accident_payment_status").show();
+   if (_val=="accident") {
+       $("#accident_payment_status").show();
+       $('[name="accident_payment_status"]').prop('required', true);
+   }
+   else{
+    $("#accident_payment_status").hide();
+    
+    $('[name="accident_payment_status"]').prop('checked', false).prop('required', false);
+   }
+});
+    $('#datepicker').fdatepicker({format: 'dd-mm-yyyy'}); 
+});
+ 
 </script>
 @endsection
