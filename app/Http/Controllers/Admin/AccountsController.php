@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use App\Model\Accounts\Rider_salary;
 use App\Model\Accounts\Id_charge;
 use App\Model\Accounts\Workshop;
+use App\Model\Accounts\Maintenance;
 use Carbon\Carbon;
 use App\Model\Accounts\Fuel_Expense;
 
@@ -107,7 +108,7 @@ class AccountsController extends Controller
     // workshops
     public function workshop_index()
     {
-        // $riders=Rider::where('active_status', 'A')->get();
+        
         return view('admin.accounts.workshop_add');
     }
     public function workshop_post(Request $r)
@@ -167,6 +168,76 @@ class AccountsController extends Controller
         ]);
     }
     //ends workshop
+
+    // maintenance
+    public function maintenance_index()
+    {
+        $workshops=Workshop::where('active_status', 'A')->get();
+        $bikes=bike::where("active_status","A")->get();
+        return view('admin.accounts.maintenance_add',compact('workshops', 'bikes'));
+    }
+    public function maintenance_post(Request $r)
+    {
+        $maintenance = Maintenance::create([
+            'maintenance_type'=>$r->maintenance_type,
+            'workshop_id'=>$r->workshop_id,
+            'bike_id'=>$r->bike_id,
+            'amount'=>$r->amount,
+            'status'=>$r->status=='on'?1:0,
+        ]);
+        
+        return redirect(route('admin.accounts.maintenance_view'));
+    }
+    public function maintenance_view()
+    { 
+        return view('admin.accounts.maintenance_view');
+    }
+    public function maintenance_edit($id){
+        $maintenance=Maintenance::find($id);
+        $workshops=Workshop::where('active_status', 'A')->get();
+        $bikes=bike::where("active_status","A")->get();
+        return view('admin.accounts.maintenance_edit',compact('maintenance','workshops','bikes'));
+    }
+    public function maintenance_update(Request $r,$id){
+        $maintenance =Maintenance::find($id);
+        $maintenance->maintenance_type=$r->maintenance_type;
+        $maintenance->workshop_id=$r->workshop_id;
+        $maintenance->bike_id=$r->bike_id;
+        $maintenance->amount=$r->amount;
+        // $id_charge->=$r->;
+        if($r->status)
+            $maintenance->status = 1;
+        else
+            $maintenance->status = 0;
+        $maintenance->update();
+
+        
+        return redirect(route('admin.accounts.maintenance_view'));
+    }
+    public function delete_maintenance($id)
+    {
+        $maintenance=Maintenance::find($id);
+        $maintenance->active_status="D";
+        $maintenance->status=0;
+        $maintenance->update();
+    }
+    public function updateStatusMaintenance($maintenance_id)
+    {
+        $maintenance=Maintenance::find($maintenance_id);
+        if($maintenance->status == 1)
+        {
+            $maintenance->status = 0;
+        }
+        else
+        {
+            $maintenance->status = 1;
+        }
+        $maintenance->update();
+        return response()->json([
+            'status' => true
+        ]);
+    }
+    //ends maintenence
 
     // add new salary
     public function add_new_salary_create(){
@@ -312,7 +383,7 @@ class AccountsController extends Controller
 }
 //   Fuel Expense
 public function fuel_expense_create(){
-    $bikes=bike::all();
+    $bikes=bike::where('active_status', 'A')->get();
     return view('admin.accounts.Fuel_Expense.FE_add',compact('bikes'));
 }
 public function fuel_expense_insert(Request $r){

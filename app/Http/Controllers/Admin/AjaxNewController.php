@@ -32,9 +32,10 @@ use App\Model\Accounts\Company_Account;
 use App\Model\Accounts\Rider_Account;
 use App\Model\Accounts\Id_charge;
 use App\Model\Accounts\Workshop;
+use App\Model\Accounts\Maintenance;
 use Arr;
 use App\Model\Accounts\Fuel_Expense;
-
+use App\Model\Accounts\Company_Expense;
 
 class AjaxNewController extends Controller
 {
@@ -76,6 +77,60 @@ class AjaxNewController extends Controller
         </span>';
         })
         ->rawColumns(['status','rider_name','type','amount','actions', 'status'])
+        ->make(true);
+    }
+
+    public function getMaintenances()
+    {
+        $maintenances = Maintenance::orderByDesc('created_at')->where('active_status', 'A')->get();
+        // return $clients;
+        return DataTables::of($maintenances)
+        ->addColumn('status', function($maintenance){
+            if($maintenance->status == 1)
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
+            }
+            else
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
+            }
+        })
+        ->addColumn('id', function($maintenance){
+            return '1000'.$maintenance->id;
+        })
+        ->addColumn('maintenance_type', function($maintenance){
+            return $maintenance->maintenance_type;
+        })
+        ->addColumn('workshop', function($maintenance){
+            $workshop = Workshop::find($maintenance->workshop_id);
+            return $workshop->name;
+        })
+        ->addColumn('bike', function($maintenance){
+            $bike = bike::find($maintenance->bike_id);
+            return $bike->bike_number;
+        })
+        ->addColumn('amount', function($maintenance){
+            return $maintenance->amount;
+        })
+        ->addColumn('created_at', function($maintenance){
+            return Carbon::parse($maintenance->created_at)->diffForHumans();
+        })
+        ->addColumn('actions', function($maintenance){
+            $status_text = $maintenance->status == 1 ? 'Inactive' : 'Active';
+            return '<span class="dtr-data">
+            <span class="dropdown">
+                <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+                <i class="la la-ellipsis-h"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="'.route('admin.maintenance_edit', $maintenance).'"><i class="fa fa-edit"></i> Edit</a>
+                    <button class="dropdown-item" onclick="updateStatus('.$maintenance->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
+                    <button class="dropdown-item" onclick="deleteRow('.$maintenance->id.');"><i class="fa fa-trash"></i> Delete</button>
+                    </div>
+            </span>
+        </span>';
+        })
+        ->rawColumns(['maintenance_type','workshop','bike','address','amount', 'status', 'actions'])
         ->make(true);
     }
 
@@ -160,6 +215,50 @@ class AjaxNewController extends Controller
         </span>';
         })
         ->rawColumns(['status','bike_id','type','amount','actions', 'status'])
+        ->make(true);
+    }
+
+    public function getCompanyExpense()
+    {
+        $expense = Company_Expense::orderByDesc('created_at')->where('active_status', 'A')->get();
+        // return $clients;
+        return DataTables::of($expense)
+        ->addColumn('status', function($expense){
+            if($expense->status == 1)
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
+            }
+            else
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
+            }
+        })
+        ->addColumn('id', function($expense){
+            return '1000'.$expense->id;
+        })
+        ->addColumn('amount', function($expense){
+            return $expense->amount;
+        })
+        ->addColumn('description', function($expense){
+            return $expense->description;
+        })
+       
+        ->addColumn('actions', function($expense){
+            $status_text = $expense->status == 1 ? 'Inactive' : 'Active';
+            return '<span class="dtr-data">
+            <span class="dropdown">
+                <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+                <i class="la la-ellipsis-h"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="'.route('admin.CE_index', $expense).'"><i class="fa fa-edit"></i> Edit</a>
+                    <button class="dropdown-item" onclick="updateStatus('.$expense->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
+                    <button class="dropdown-item" onclick="deleteRow('.$expense->id.');"><i class="fa fa-trash"></i> Delete</button>
+                    </div>
+            </span>
+        </span>';
+        })
+        ->rawColumns(['status','description','type','amount','actions', 'status'])
         ->make(true);
     }
 

@@ -328,5 +328,16 @@ Route::group([
     Route::get('/fuel_expense/edit/{expense_id}','AccountsController@edit_fuel_expense')->name('admin.edit_fuel_expense');
     Route::post('/fuel_expense/update/{expense_id}','AccountsController@update_edit_fuel_expense')->name('admin.update_edit_fuel_expense');
 
+
+    Route::get("/maintenance/add","AccountsController@maintenance_index")->name("admin.accounts.maintenance_index");
+    Route::post("/maintenance/add-data","AccountsController@maintenance_post")->name("admin.accounts.maintenance_post");
+
+    Route::get("/maintenance/view","AccountsController@maintenance_view")->name("admin.accounts.maintenance_view");
+    Route::get("/maintenance/view/data","AjaxNewController@getMaintenances")->name("admin.accounts.maintenance_view_data");
+
+    Route::put('/maintenance/{maintenance}/updateStatus','AccountsController@updateStatusMaintenance')->name('admin.accounts.updateStatusMaintenance');
+    Route::delete('/maintenance/{maintenance}', 'AccountsController@delete_maintenance')->name('admin.accounts.delete_maintenance');
+    Route::get('/maintenance/edit/{shop_id}','AccountsController@maintenance_edit')->name('admin.maintenance_edit');
+    Route::post('/maintenance/update/{shop_id}','AccountsController@maintenance_update')->name('admin.maintenance_update');
 });
 
