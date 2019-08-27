@@ -82,9 +82,6 @@
                            
                             @endif
                         </div>
-                        
-              
-                        
                         <div class="form-group">
                             <label>City:</label>
                             <input type="text" class="form-control @if($errors->has('address')) invalid-field @endif" name="address" placeholder="Enter city" value="{{ $rider->address }}" disabled>
@@ -96,10 +93,78 @@
                                 </span>
                             @endif
                         </div>
-                        <div class="form-group">
-                            <label>IS Passport Collected:</label>
-                            <input type="text" class="form-control " value="{{ $rider_details->passport_collected }}" disabled>
-                            </div>
+                        @if ( $rider_details->passport_collected=="no")
+                        <div style="border: 1px solid #adadc9;padding: 7px;">
+                                <div class="form-group" >
+                                    <label>IS Passport Collected:</label>
+                                    <input type="text" class="form-control " value="{{ $rider_details->passport_collected }}" disabled>
+                                    </div>
+                                    @if ($rider_details->is_guarantee=="employee")
+                                    <div class="form-group">
+                                            <label>Employee Reference:</label>
+                                            <input type="text" class="form-control @if($errors->has('empoloyee_reference')) invalid-field @endif" name="empoloyee_reference"  value="{{ $rider_details->empoloyee_reference }}" disabled>
+                                            @if ($errors->has('empoloyee_reference'))
+                                                <span class="invalid-response" role="alert">
+                                                    <strong>
+                                                        {{$errors->first('empoloyee_reference')}}
+                                                    </strong>
+                                                </span>
+                                            @endif
+                                        </div> 
+                                    @endif
+                                    @if ($rider_details->is_guarantee=="outsider")
+                                    <div class="form-group">
+                                            <label>Someone else passport:</label>
+                                            <input type="text" class="form-control @if($errors->has('other_passport_given')) invalid-field @endif" name="other_passport_given"  value="{{ $rider_details->other_passport_given }}" disabled>
+                                            @if ($errors->has('other_passport_given'))
+                                                <span class="invalid-response" role="alert">
+                                                    <strong>
+                                                        {{$errors->first('other_passport_given')}}
+                                                    </strong>
+                                                </span>
+                                            @endif
+                                        </div> 
+                                    @endif
+                                   @if ($rider_details->is_guarantee=="not_given")
+                                   <div class="form-group">
+                                        <label>Not Given:</label>
+                                        <input type="text" class="form-control @if($errors->has('not_given')) invalid-field @endif" name="not_given"  value="{{ $rider_details->not_given }}" disabled>
+                                        @if ($errors->has('not_given'))
+                                            <span class="invalid-response" role="alert">
+                                                <strong>
+                                                    {{$errors->first('not_given')}}
+                                                </strong>
+                                            </span>
+                                        @endif
+                                    </div> 
+                                   @endif
+                                        
+                                    <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        @if($rider_details->passport_document_image)
+                                            <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_details->passport_document_image)) }}" alt="image">
+                                        @else
+                                            <img class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                                        @endif
+                                        <span class="form-text text-muted"> Passport Or Document Image</span> 
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                            @if($rider_details->agreement_image)
+                                                <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_details->agreement_image)) }}" alt="image">
+                                            @else
+                                                <img class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                                            @endif
+                                            <span class="form-text text-muted"> Agreement Image</span> 
+                                        </div>
+                                        </div>
+                                    </div> 
+                        @else
+                        <div class="form-group" >
+                                <label>IS Passport Collected:</label>
+                                <input type="text" class="form-control " value="{{ $rider_details->passport_collected }}" disabled>
+                                </div> 
+                        @endif
+                         
                       <div class="row">
                              <div class="col-lg-3 col-md-3 col-sm-12">
                              <div class="form-group">
