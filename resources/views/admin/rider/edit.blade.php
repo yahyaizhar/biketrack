@@ -626,8 +626,14 @@
 {{-- start_timer , timepicker1 --}}
 <script>
 $(document).ready(function(){
+    $('.kt-select2').select2({
+        placeholder: "Select an option",
+        width:'100%'    
+    });
     $('.dependend-field').hide('fast');
+    $(':radio[data-depended]').trigger('change');
     $(':radio[data-depended]').on('change', function(){
+        if(!$(this).is(':checked'))return false;
         $('[name="passport_document_image"]')
             .siblings('.custom-file-label')
             .text('Choose Passport Image')
