@@ -20,9 +20,12 @@ class CreateRiderDetailsTable extends Migration
             $table->string('official_given_number')->nullable();
             $table->string('official_sim_given_date')->nullable();
             $table->string('passport_collected')->nullable();
-            $table->string('empoloyee_reference')->nullable();
+            $table->string('is_guarantee')->nullable();
+            $table->integer('empoloyee_reference')->nullable();
             $table->string('other_passport_given')->nullable();
             $table->string('not_given')->nullable();
+            $table->string('passport_document_image')->nullable();
+            $table->string('agreement_image')->nullable(); 
             $table->string('passport_image')->nullable();
             $table->string('passport_image_back')->nullable();
             $table->string('passport_expiry')->nullable();

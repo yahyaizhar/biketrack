@@ -117,13 +117,36 @@ class RiderController extends Controller
        $rider_detail->official_sim_given_date = $request->official_sim_given_date;
        $rider_detail->other_details = $request->other_details;
        $rider_detail->emirate_id = $request->emirate_id;
+       $rider_detail->is_guarantee = $request->is_guarantee;
        $rider_detail->empoloyee_reference = $request->empoloyee_reference;
        $rider_detail->other_passport_given = $request->other_passport_given;
        $rider_detail->not_given = $request->not_given;
+    
        if($request->passport_collected)
        $rider_detail->passport_collected = 'yes';
    else
        $rider_detail->passport_collected = 'no';
+       if($request->hasFile('passport_document_image'))
+       {
+           // return 'yes';
+           $filename = $request->passport_document_image->getClientOriginalName();
+           $filesize = $request->passport_document_image->getClientSize();
+           // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
+           $filepath = Storage::putfile('public/uploads/riders/passport_document_image', $request->file('passport_document_image'));
+           $rider_detail->passport_document_image = $filepath;
+       }
+       if($request->hasFile('agreement_image'))
+       {
+           // return 'yes';
+           $filename = $request->agreement_image->getClientOriginalName();
+           $filesize = $request->agreement_image->getClientSize();
+           // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
+           $filepath = Storage::putfile('public/uploads/riders/agreement_image', $request->file('agreement_image'));
+           $rider_detail->agreement_image = $filepath;
+       }
+
+
+
        
        if($request->hasFile('passport_image'))
         {
@@ -364,20 +387,49 @@ class RiderController extends Controller
             $rider->profile_picture = $filepath;
         }
         // return 'no';
-        $rider->update();
+        $rider->update(); 
         $rider_detail=$rider->Rider_detail()->get()->first();
         $rider_detail->date_of_joining = $request->date_of_joining;
         $rider_detail->official_given_number = $request->official_given_number;
         $rider_detail->official_sim_given_date = $request->official_sim_given_date;
         $rider_detail->other_details = $request->other_details;
         $rider_detail->emirate_id = $request->emirate_id;
+        $rider_detail->is_guarantee = $request->is_guarantee;
         $rider_detail->empoloyee_reference = $request->empoloyee_reference;
         $rider_detail->other_passport_given = $request->other_passport_given;
         $rider_detail->not_given = $request->not_given;
+        
         if($request->passport_collected)
         $rider_detail->passport_collected = 'yes';
     else
         $rider_detail->passport_collected = 'no';
+        if($request->hasFile('passport_document_image'))
+        {
+            if($rider_detail->passport_document_image)
+           {
+               Storage::delete($rider_detail->passport_document_image);
+           }
+            $filename = $request->passport_document_image->getClientOriginalName();
+            $filesize = $request->passport_document_image->getClientSize();
+            // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
+            $filepath = Storage::putfile('public/uploads/riders/passport_document_image', $request->file('passport_document_image'));
+            $rider_detail->passport_document_image = $filepath;
+        }  
+        if($request->hasFile('agreement_image'))
+        {
+            if($rider_detail->agreement_image)
+           {
+               Storage::delete($rider_detail->agreement_image);
+           }
+            $filename = $request->agreement_image->getClientOriginalName();
+            $filesize = $request->agreement_image->getClientSize();
+            // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
+            $filepath = Storage::putfile('public/uploads/riders/agreement_image', $request->file('agreement_image'));
+            $rider_detail->agreement_image = $filepath;
+        }
+
+
+
         if($request->hasFile('passport_image'))
         {
             if($rider_detail->passport_image)

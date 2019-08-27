@@ -644,7 +644,13 @@ class AjaxController extends Controller
         })
         ->addColumn('passport_collected', function($riders){
             $rider_detail =$riders->Rider_detail()->get()->first();
-           return $rider_detail->passport_collected;
+            $a=$rider_detail->passport_collected."<br>";
+            $b="<a href='".route('admin.rider.profile', $riders->id)."'>Reffered By: ".$rider_detail->empoloyee_reference."</a>";
+            if($rider_detail->passport_collected=="no"){
+                return $a.$b;
+            }
+            return $a;
+           
         })
         
         // <a class="dropdown-item" href="'.route('Rider.salary', $riders).'"><i class="fa fa-money-bill-wave"></i> Salaries</a> 
