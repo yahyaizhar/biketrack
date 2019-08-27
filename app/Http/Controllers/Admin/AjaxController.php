@@ -647,7 +647,8 @@ class AjaxController extends Controller
             $a=$rider_detail->passport_collected."<br>";
             $b="";
             if (isset($rider_detail->empoloyee_reference)) {
-                $b="<a href='".route('admin.rider.profile', $rider_detail->empoloyee_reference)."'>Reffered By: ".$rider_detail->empoloyee_reference."</a>";
+                $rider=Rider::find($rider_detail->empoloyee_reference);
+                $b="Referred By: <a href='".route('admin.rider.profile', $rider_detail->empoloyee_reference)."'> ".$rider['name']."</a>";
             }
             if($rider_detail->passport_collected=="no"){
                 if ($rider_detail->is_guarantee=="employee") {
@@ -1574,7 +1575,8 @@ class AjaxController extends Controller
             $a=$rider_detail->passport_collected."<br>";
             $b="";
             if (isset($rider_detail->empoloyee_reference)) {
-                $b="<a href='".route('admin.rider.profile', $rider_detail->empoloyee_reference)."'>Reffered By: ".$rider_detail->empoloyee_reference."</a>";
+                $rider=Rider::find($rider_detail->empoloyee_reference);
+                $b="Referred By: <a href='".route('admin.rider.profile', $rider_detail->empoloyee_reference)."'> ".$rider['name']."</a>";
             }
             if($rider_detail->passport_collected=="no"){
                 if ($rider_detail->is_guarantee=="employee") {

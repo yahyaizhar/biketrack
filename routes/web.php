@@ -328,5 +328,18 @@ Route::group([
     Route::get('/fuel_expense/edit/{expense_id}','AccountsController@edit_fuel_expense')->name('admin.edit_fuel_expense');
     Route::post('/fuel_expense/update/{expense_id}','AccountsController@update_edit_fuel_expense')->name('admin.update_edit_fuel_expense');
 
+
+//     Company_Expense
+    Route::get('/CE/index','ExpenseController@CE_index')->name('admin.CE_index');
+    Route::get('/CE/view','ExpenseController@CE_view')->name('admin.CE_view');
+    Route::post('/CE/insert','ExpenseController@CE_store')->name('admin.CE_store');
+    Route::post('/CE/{id}/update','ExpenseController@CE_update')->name('admin.CE_update');
+    Route::get("/CE/view/data","AjaxNewController@getCompanyExpense")->name("admin.getCompanyExpense");
+    Route::post('/CE/{id}/updatestatus','ExpenseController@CE_updatestatus')->name('admin.CE_index');
+    Route::delete('/CE/delete/{id}','ExpenseController@CE_delete')->name('admin.CE_index');
+    Route::get('/CE/edit/{id}','ExpenseController@CE_edit')->name('admin.CE_index');
+// End Company_Expense
+
+
 });
 
