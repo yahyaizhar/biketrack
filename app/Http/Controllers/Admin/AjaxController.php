@@ -645,9 +645,11 @@ class AjaxController extends Controller
         ->addColumn('passport_collected', function($riders){
             $rider_detail =$riders->Rider_detail()->get()->first();
             $a=$rider_detail->passport_collected."<br>";
-            $b="<a href='".route('admin.rider.profile', $riders->id)."'>Reffered By: ".$rider_detail->empoloyee_reference."</a>";
+            $b="<a href='".route('admin.rider.profile', $rider_detail->empoloyee_reference)."'>Reffered By: ".$rider_detail->empoloyee_reference."</a>";
             if($rider_detail->passport_collected=="no"){
-                return $a.$b;
+                if ($rider_detail->is_guarantee=="employee") {
+                    return $a.$b;
+                }
             }
             return $a;
            
@@ -1565,9 +1567,17 @@ class AjaxController extends Controller
               return $rider_detail->emirate_id;
            })
            ->addColumn('passport_collected', function($riders){
-               $rider_detail =$riders->Rider_detail()->get()->first();
-              return $rider_detail->passport_collected;
-           })
+            $rider_detail =$riders->Rider_detail()->get()->first();
+            $a=$rider_detail->passport_collected."<br>";
+            $b="<a href='".route('admin.rider.profile', $rider_detail->empoloyee_reference)."'>Reffered By: ".$rider_detail->empoloyee_reference."</a>";
+            if($rider_detail->passport_collected=="no"){
+                if ($rider_detail->is_guarantee=="employee") {
+                    return $a.$b;
+                }
+            }
+            return $a;
+           
+        })
            
            // <a class="dropdown-item" href="'.route('Rider.salary', $riders).'"><i class="fa fa-money-bill-wave"></i> Salaries</a> 
            ->rawColumns(['new_name','sim_number','passport_collected','missing_fields','adress','client_name','emirate_id','mulkiya_expiry','bike_number','official_sim_given_date','licence_expiry','visa_expiry','passport_expiry','official_given_number', 'new_email','date_of_joining', 'phone', 'actions', 'status'])
