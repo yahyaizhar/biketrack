@@ -17,6 +17,7 @@ use App\Model\Accounts\Rider_salary;
 use App\Model\Accounts\Id_charge;
 use App\Model\Accounts\Workshop;
 use App\Model\Accounts\Maintenance;
+use App\Model\Accounts\Edirham;
 use Carbon\Carbon;
 use App\Model\Accounts\Fuel_Expense;
 
@@ -168,6 +169,65 @@ class AccountsController extends Controller
         ]);
     }
     //ends workshop
+
+    // edirhams
+    public function edirham_index()
+    {
+        return view('admin.accounts.Edirham.edirham_add');
+    }
+    public function edirham_post(Request $r)
+    {
+        $edirham = Edirham::create([
+            'amount'=>$r->amount,
+            'status'=>$r->status=='on'?1:0,
+        ]);
+        
+        return redirect(route('admin.accounts.edirham_view'));
+    }
+    public function edirham_view()
+    { 
+        return view('admin.accounts.Edirham.edirham_view');
+    }
+    public function edirham_edit($id){
+        $edirham=Edirham::find($id);
+        return view('admin.accounts.Edirham.edirham_edit',compact('edirham'));
+    }
+    public function edirham_update(Request $r,$id){
+        $edirham =Edirham::find($id);
+        $edirham->amount=$r->amount;
+        if($r->status)
+            $edirham->status = 1;
+        else
+            $edirham->status = 0;
+        $edirham->update();
+
+        
+        return redirect(route('admin.accounts.edirham_view'));
+    }
+    public function delete_edirham($id)
+    {
+        $edirham=Edirham::find($id);
+        $edirham->active_status="D";
+        $edirham->status=0;
+        $edirham->update();
+    }
+    public function updateStatusEdirham($edirham_id)
+    {
+        $edirham=Edirham::find($edirham_id);
+        if($edirham->status == 1)
+        {
+            $edirham->status = 0;
+        }
+        else
+        {
+            $edirham->status = 1;
+        }
+        $edirham->update();
+        return response()->json([
+            'status' => true
+        ]);
+    }
+    //ends edirhams
 
     // maintenance
     public function maintenance_index()

@@ -33,9 +33,11 @@ use App\Model\Accounts\Rider_Account;
 use App\Model\Accounts\Id_charge;
 use App\Model\Accounts\Workshop;
 use App\Model\Accounts\Maintenance;
+use App\Model\Accounts\Edirham;
 use Arr;
 use App\Model\Accounts\Fuel_Expense;
 use App\Model\Accounts\Company_Expense;
+use App\Model\Accounts\WPS;
 
 class AjaxNewController extends Controller
 {
@@ -177,6 +179,49 @@ class AjaxNewController extends Controller
         ->make(true);
     }
 
+    public function getEdirhams()
+    {
+        $edirhams = Edirham::orderByDesc('created_at')->where('active_status', 'A')->get();
+        // return $clients;
+        return DataTables::of($edirhams)
+        ->addColumn('status', function($edirham){
+            if($edirham->status == 1)
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
+            }
+            else
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
+            }
+        })
+        ->addColumn('id', function($edirham){
+            return '1000'.$edirham->id;
+        })
+        ->addColumn('amount', function($edirham){
+            return $edirham->amount;
+        })
+        ->addColumn('created_at', function($edirham){
+            return Carbon::parse($edirham->created_at)->diffForHumans();
+        })
+        ->addColumn('actions', function($edirham){
+            $status_text = $edirham->status == 1 ? 'Inactive' : 'Active';
+            return '<span class="dtr-data">
+            <span class="dropdown">
+                <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+                <i class="la la-ellipsis-h"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="'.route('admin.edirham_edit', $edirham).'"><i class="fa fa-edit"></i> Edit</a>
+                    <button class="dropdown-item" onclick="updateStatus('.$edirham->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
+                    <button class="dropdown-item" onclick="deleteRow('.$edirham->id.');"><i class="fa fa-trash"></i> Delete</button>
+                    </div>
+            </span>
+        </span>';
+        })
+        ->rawColumns(['amount','actions', 'created_at','status'])
+        ->make(true);
+    }
+
     public function getFuelExpense()
     {
         $expense = Fuel_Expense::orderByDesc('created_at')->where('active_status', 'A')->get();
@@ -262,5 +307,55 @@ class AjaxNewController extends Controller
         ->make(true);
     }
 
+    public function getWPS()
+    {
+        $wps = WPS::orderByDesc('created_at')->where('active_status', 'A')->get();
+        // return $clients;
+        return DataTables::of($wps)
+        ->addColumn('status', function($wps){
+            if($wps->status == 1)
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
+            }
+            else
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
+            }
+        })
+        ->addColumn('id', function($wps){
+            return '1000'.$wps->id;
+        })
+        ->addColumn('amount', function($wps){
+            return $wps->amount;
+        })
+        ->addColumn('bank_name', function($wps){
+            return $wps->bank_name;
+        })
+        ->addColumn('payment_status', function($wps){
+            return $wps->payment_status;
+        })
+        ->addColumn('rider_id', function($wps){
+            $rider=Rider::find($wps->rider_id);
+            return $rider->name ;
+        })
+       
+        ->addColumn('actions', function($wps){
+            $status_text = $wps->status == 1 ? 'Inactive' : 'Active';
+            return '<span class="dtr-data">
+            <span class="dropdown">
+                <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+                <i class="la la-ellipsis-h"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="'.route('admin.wps_edit', $wps).'"><i class="fa fa-edit"></i> Edit</a>
+                    <button class="dropdown-item" onclick="updateStatus('.$wps->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
+                    <button class="dropdown-item" onclick="deleteRow('.$wps->id.');"><i class="fa fa-trash"></i> Delete</button>
+                    </div>
+            </span>
+        </span>';
+        })
+        ->rawColumns(['status','bank_name','rider_id','payment_status','amount','actions', 'status'])
+        ->make(true);
+    }
             
 }

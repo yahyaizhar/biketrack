@@ -331,10 +331,8 @@ Route::group([
 
     Route::get("/maintenance/add","AccountsController@maintenance_index")->name("admin.accounts.maintenance_index");
     Route::post("/maintenance/add-data","AccountsController@maintenance_post")->name("admin.accounts.maintenance_post");
-
     Route::get("/maintenance/view","AccountsController@maintenance_view")->name("admin.accounts.maintenance_view");
     Route::get("/maintenance/view/data","AjaxNewController@getMaintenances")->name("admin.accounts.maintenance_view_data");
-
     Route::put('/maintenance/{maintenance}/updateStatus','AccountsController@updateStatusMaintenance')->name('admin.accounts.updateStatusMaintenance');
     Route::delete('/maintenance/{maintenance}', 'AccountsController@delete_maintenance')->name('admin.accounts.delete_maintenance');
     Route::get('/maintenance/edit/{shop_id}','AccountsController@maintenance_edit')->name('admin.maintenance_edit');
@@ -350,5 +348,17 @@ Route::group([
     Route::delete('/CE/delete/{id}','ExpenseController@CE_delete')->name('admin.CE_index');
     Route::get('/CE/edit/{id}','ExpenseController@CE_edit')->name('admin.CE_index');
 // End Company_Expense
+
+//edirham
+Route::get("/edirham/add","AccountsController@edirham_index")->name("admin.accounts.edirham_index");
+Route::post("/edirham/add-data","AccountsController@edirham_post")->name("admin.accounts.edirham_post");
+Route::get("/edirham/view","AccountsController@edirham_view")->name("admin.accounts.edirham_view");
+Route::get("/edirham/view/data","AjaxNewController@getEdirhams")->name("admin.accounts.edirham_view_data");
+Route::put('/edirham/{edirham}/updateStatus','AccountsController@updateStatusEdirham')->name('admin.accounts.updateStatusEdirham');
+Route::delete('/edirham/{edirham}', 'AccountsController@delete_edirham')->name('admin.accounts.delete_edirham');
+Route::get('/edirham/edit/{id}','AccountsController@edirham_edit')->name('admin.edirham_edit');
+Route::post('/edirham/update/{id}','AccountsController@edirham_update')->name('admin.edirham_update');
+
+//edns edirham
 });
 
