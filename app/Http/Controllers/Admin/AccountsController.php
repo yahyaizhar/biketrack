@@ -681,7 +681,7 @@ public function fuel_expense_insert(Request $r){
         else
             $fuel_expense->status = 0;
     $fuel_expense->save();
-    $assign_bike=\App\Assign_bike::where('bike_id', $maintenance->bike_id)->where('status','active')->get()->first();
+    $assign_bike=\App\Assign_bike::where('bike_id', $fuel_expense->bike_id)->where('status','active')->get()->first();
     $rider_id = null;
     if($assign_bike){
         $rider_id=Rider::find($assign_bike->rider_id)->id;
@@ -773,7 +773,7 @@ public function update_edit_fuel_expense(Request $r,$id){
             $fuel_expense->status = 0;
     $fuel_expense->update();
 
-    $assign_bike=\App\Assign_bike::where('bike_id', $maintenance->bike_id)->where('status','active')->get()->first();
+    $assign_bike=\App\Assign_bike::where('bike_id', $fuel_expense->bike_id)->where('status','active')->get()->first();
     $rider_id = null;
     if($assign_bike){
         $rider_id=Rider::find($assign_bike->rider_id)->id;
