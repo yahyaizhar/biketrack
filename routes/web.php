@@ -346,9 +346,21 @@ Route::group([
     Route::post('/CE/insert','ExpenseController@CE_store')->name('admin.CE_store');
     Route::post('/CE/{id}/update','ExpenseController@CE_update')->name('admin.CE_update');
     Route::get("/CE/view/data","AjaxNewController@getCompanyExpense")->name("admin.getCompanyExpense");
-    Route::post('/CE/{id}/updatestatus','ExpenseController@CE_updatestatus')->name('admin.CE_index');
-    Route::delete('/CE/delete/{id}','ExpenseController@CE_delete')->name('admin.CE_index');
-    Route::get('/CE/edit/{id}','ExpenseController@CE_edit')->name('admin.CE_index');
+    Route::post('/CE/{id}/updatestatus','ExpenseController@CE_updatestatus')->name('admin.CE_updatestatus');
+    Route::delete('/CE/delete/{id}','ExpenseController@CE_delete')->name('admin.CE_delete');
+    Route::get('/CE/edit/{id}','ExpenseController@CE_edit')->name('admin.CE_edit');
 // End Company_Expense
+
+
+//     WPS
+Route::get('/wps/index','ExpenseController@wps_index')->name('admin.wps_index');
+Route::get('/wps/view','ExpenseController@wps_view')->name('admin.wps_view');
+Route::post('/wps/insert','ExpenseController@wps_store')->name('admin.wps_store');
+Route::post('/wps/{id}/update','ExpenseController@wps_update')->name('admin.wps_update');
+Route::get("/wps/view/data","AjaxNewController@getWPS")->name("admin.getWPS");
+Route::post('/wps/{id}/updatestatus','ExpenseController@wps_updatestatus')->name('admin.wps_updatestatus');
+Route::delete('/wps/delete/{id}','ExpenseController@wps_delete')->name('admin.wps_delete');
+Route::get('/wps/edit/{id}','ExpenseController@wps_edit')->name('admin.wps_edit');
+// End WPS
 });
 

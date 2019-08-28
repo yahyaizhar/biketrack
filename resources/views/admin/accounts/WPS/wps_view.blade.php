@@ -27,7 +27,7 @@
                     <i class="kt-font-brand fa fa-hotel"></i>
                 </span>
                 <h3 class="kt-portlet__head-title">
-                   View Company Expense
+                View WPS
                 </h3>
             </div>
             <div class="kt-portlet__head-toolbar">
@@ -35,7 +35,7 @@
                     <div class="kt-portlet__head-actions">
                         {{-- <button class="btn btn-danger btn-elevate btn-icon-sm" id="bulk_delete">Delete Selected</button> --}}
                         &nbsp;
-                        <a href="{{ route('admin.CE_index') }}" class="btn btn-brand btn-elevate btn-icon-sm">
+                        <a href="{{ route('admin.wps_index') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
                             New Record
                         </a>
@@ -46,15 +46,17 @@
         <div class="kt-portlet__body">
 
             <!--begin: Datatable -->
-            <table class="table table-striped- table-hover table-checkable table-condensed" id="CompanyExpense-table">
+            <table class="table table-striped- table-hover table-checkable table-condensed" id="wps-table">
                 <thead>
                     <tr>
                         {{-- <th>
                             <input type="checkbox" id="select_all" >
                         </th> --}}
                         <th>ID</th>
-                        <th>Description</th>
-                        <th>Amount</th>
+                        <th>Rider_id</th>
+                        <th>Bank Name</th>
+                        <th>Salary</th>
+                        <th>Payment Status</th>
                         <th>Status</th>
                         <th>Actions</th>                        
                     </tr>
@@ -79,9 +81,9 @@
 
 <!--end::Page Scripts -->
 <script>
-var expense_table;
+var wps_table;
 $(function() {
-    expense_table = $('#CompanyExpense-table').DataTable({
+    wps_table = $('#wps-table').DataTable({
         processing: true,
         serverSide: true,
         'language': { 
@@ -92,12 +94,14 @@ $(function() {
         $('.total_entries').remove();
         $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
     },
-        ajax: "{!! route('admin.getCompanyExpense') !!}",
+        ajax: "{!! route('admin.getWPS') !!}",
         columns: [
             //  { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
             { data: 'id', name: 'id' },
-            { data: 'description', name: 'description' },            
+            { data: 'rider_id', name: 'rider_id' },
+            { data: 'bank_name', name: 'bank_name' },            
             { data: 'amount', name: 'amount' },
+            { data: 'payment_status', name: 'payment_status' },
             { data: 'status', name: 'status' },
             { data: 'actions', name: 'actions' },
         ],
@@ -107,17 +111,17 @@ $(function() {
 });
 function deleteRow(id)
 {
-    var url = "{{ url('admin/accounts/CE/delete') }}"+ "/" + id  ;
+    var url = "{{ url('admin/accounts/wps/delete') }}"+ "/" + id  ;
     console.log(url,true);
-    sendDeleteRequest(url, false, null, expense_table);
+    sendDeleteRequest(url, false, null, wps_table);
 }
 function updateStatus(id)
 {
-    var url = "{{ url('admin/accounts/CE') }}" + "/" + id +"/updatestatus";
+    var url = "{{ url('admin/accounts/wps') }}" + "/" + id +"/updatestatus";
     console.log(url,true);
     swal.fire({
         title: 'Are you sure?',
-        text: "You want update status!", 
+        text: "You want update status!",
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes!'
@@ -145,7 +149,7 @@ function updateStatus(id)
                         showConfirmButton: false,
                         timer: 1500
                     });
-                    expense_table.ajax.reload(null, false);
+                    wps_table.ajax.reload(null, false);
                 },
                 error: function(error){
                     swal.fire({
