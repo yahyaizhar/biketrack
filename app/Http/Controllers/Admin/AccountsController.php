@@ -181,6 +181,14 @@ class AccountsController extends Controller
             'amount'=>$r->amount,
             'status'=>$r->status=='on'?1:0,
         ]);
+        $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+            'edirham_id'=>$edirham->id
+        ]);
+        $ca->edirham_id =$edirham->id;
+        $ca->type='dr';
+        $ca->source="edirham"; 
+        $ca->amount=$r->amount;
+        $ca->save();
         
         return redirect(route('admin.accounts.edirham_view'));
     }
@@ -201,7 +209,16 @@ class AccountsController extends Controller
             $edirham->status = 0;
         $edirham->update();
 
-        
+        $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+            'edirham_id'=>$edirham->id,
+            'type' => 'dr'
+        ]);
+        $ca->edirham_id =$edirham->id;
+        $ca->type='dr';
+        $ca->source="edirham"; 
+        $ca->amount=$r->amount;
+        $ca->save();
+
         return redirect(route('admin.accounts.edirham_view'));
     }
     public function delete_edirham($id)
@@ -246,6 +263,90 @@ class AccountsController extends Controller
             'accident_payment_status'=>$r->accident_payment_status,
             'status'=>$r->status=='on'?1:0,
         ]);
+        $assign_bike=\App\Assign_bike::where('bike_id', $maintenance->bike_id)->where('status','active')->get()->first();
+        $rider_id = null;
+        if($assign_bike){
+            $rider_id=Rider::find($assign_bike->rider_id)->id;
+        }
+        if($maintenance->accident_payment_status == 'pending'){
+            
+            $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+                'maintenance_id'=>$maintenance->id
+            ]);
+            $ca->maintenance_id =$maintenance->id;
+            $ca->type='dr';
+            $ca->rider_id=$rider_id;
+            $ca->source="maintenance"; 
+            $ca->amount=$r->amount;
+            $ca->save();
+
+            $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
+                'maintenance_id'=>$maintenance->id
+            ]);
+            $ra->maintenance_id =$maintenance->id;
+            $ra->type='cr_payable';
+            $ra->rider_id=$rider_id;
+            $ra->source="maintenance"; 
+            $ra->amount=$r->amount;
+            $ra->save();
+        }
+        else if($maintenance->accident_payment_status == 'paid'){
+            $ca_check = \App\Model\Accounts\Company_Account::where(['maintenance_id' => $maintenance->id, 'type'=>'dr'])->get()->first();
+            if(!isset($ca_check)){
+                $ca_dr = new \App\Model\Accounts\Company_Account;
+                $ca_dr->maintenance_id =$maintenance->id;
+                $ca_dr->type='dr';
+                $ca_dr->rider_id=$rider_id;
+                $ca_dr->source="maintenance"; 
+                $ca_dr->amount=$r->amount;
+                $ca_dr->save();
+            }
+            $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+                'maintenance_id'=>$maintenance->id,
+                'type'=>'cr'
+            ]);
+            $ca->maintenance_id =$maintenance->id;
+            $ca->type='cr';
+            $ca->rider_id=$rider_id;
+            $ca->source="maintenance"; 
+            $ca->amount=$r->amount;
+            $ca->save();
+
+            $ra_check = \App\Model\Accounts\Rider_Account::where(['maintenance_id' => $maintenance->id, 'type'=>'cr_payable'])->get()->first();
+            if(!isset($ra_check)){
+                $ra_dr = new \App\Model\Accounts\Rider_Account;
+                $ra_dr->maintenance_id =$maintenance->id;
+                $ra_dr->type='cr_payable';
+                $ra_dr->rider_id=$rider_id;
+                $ra_dr->source="maintenance"; 
+                $ra_dr->amount=$r->amount;
+                $ra_dr->save();
+            }
+
+            $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
+                'maintenance_id'=>$maintenance->id,
+                'type'=>'dr_payable'
+            ]);
+            $ra->maintenance_id =$maintenance->id;
+            $ra->type='dr_payable';
+            $ra->rider_id=$rider_id;
+            $ra->source="maintenance";
+            $ra->amount=$r->amount;
+            $ra->save();
+        }
+        else {
+            //regular
+            
+            $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+                'maintenance_id'=>$maintenance->id
+            ]);
+            $ca->maintenance_id =$maintenance->id;
+            $ca->type='dr';
+            $ca->rider_id=$rider_id;
+            $ca->source="maintenance"; 
+            $ca->amount=$r->amount;
+            $ca->save();
+        }
         
         return redirect(route('admin.accounts.maintenance_view'));
     }
@@ -272,7 +373,128 @@ class AccountsController extends Controller
         else
             $maintenance->status = 0;
         $maintenance->update();
+        
+        $assign_bike=\App\Assign_bike::where('bike_id', $maintenance->bike_id)->where('status','active')->get()->first();
+        $rider_id = null;
+        if($assign_bike){
+            $rider_id=Rider::find($assign_bike->rider_id)->id;
+        }
+        if($maintenance->accident_payment_status == 'pending'){
+            $ra_check = \App\Model\Accounts\Rider_Account::where(['maintenance_id' => $maintenance->id, 'type'=>'dr_payable'])->get()->first();
+            if(isset($ra_check)){
+                $ra_check->delete();
+            }
 
+            $ca_check = \App\Model\Accounts\Company_Account::where(['maintenance_id' => $maintenance->id, 'type'=>'cr'])->get()->first();
+            if(isset($ca_check)){
+                $ca_check->delete();
+            }
+            $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+                'maintenance_id'=>$maintenance->id
+            ]);
+            $ca->maintenance_id =$maintenance->id;
+            $ca->type='dr';
+            $ca->rider_id=$rider_id;
+            $ca->source="maintenance"; 
+            $ca->amount=$r->amount;
+            $ca->save();
+
+            $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
+                'maintenance_id'=>$maintenance->id
+            ]);
+            $ra->maintenance_id =$maintenance->id;
+            $ra->type='cr_payable';
+            $ra->rider_id=$rider_id;
+            $ra->source="maintenance"; 
+            $ra->amount=$r->amount;
+            $ra->save();
+        }
+        else if($maintenance->accident_payment_status == 'paid'){
+            $ca_check = \App\Model\Accounts\Company_Account::where(['maintenance_id' => $maintenance->id, 'type'=>'dr'])->get()->first();
+            if(!isset($ca_check)){
+                $ca_dr = new \App\Model\Accounts\Company_Account;
+                $ca_dr->maintenance_id =$maintenance->id;
+                $ca_dr->type='dr';
+                $ca_dr->rider_id=$rider_id;
+                $ca_dr->source="maintenance"; 
+                $ca_dr->amount=$r->amount;
+                $ca_dr->save();
+            }
+            else {
+                $ca_check->maintenance_id =$maintenance->id;
+                $ca_check->type='dr';
+                $ca_check->rider_id=$rider_id;
+                $ca_check->source="maintenance"; 
+                $ca_check->amount=$r->amount;
+                $ca_check->save();
+            }
+            $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+                'maintenance_id'=>$maintenance->id,
+                'type'=>'cr'
+            ]);
+            $ca->maintenance_id =$maintenance->id;
+            $ca->type='cr';
+            $ca->rider_id=$rider_id;
+            $ca->source="maintenance"; 
+            $ca->amount=$r->amount;
+            $ca->save();
+
+            $ra_check = \App\Model\Accounts\Rider_Account::where(['maintenance_id' => $maintenance->id, 'type'=>'cr_payable'])->get()->first();
+            if(!isset($ra_check)){
+                $ra_dr = new \App\Model\Accounts\Rider_Account;
+                $ra_dr->maintenance_id =$maintenance->id;
+                $ra_dr->type='cr_payable';
+                $ra_dr->rider_id=$rider_id;
+                $ra_dr->source="maintenance"; 
+                $ra_dr->amount=$r->amount;
+                $ra_dr->save();
+            }
+            else {
+                $ra_check->maintenance_id =$maintenance->id;
+                $ra_check->type='cr_payable';
+                $ra_check->rider_id=$rider_id;
+                $ra_check->source="maintenance"; 
+                $ra_check->amount=$r->amount;
+                $ra_check->save();
+            }
+
+            $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
+                'maintenance_id'=>$maintenance->id,
+                'type'=>'dr_payable'
+            ]);
+            $ra->maintenance_id =$maintenance->id;
+            $ra->type='dr_payable';
+            $ra->rider_id=$rider_id;
+            $ra->source="maintenance";
+            $ra->amount=$r->amount;
+            $ra->save();
+        }
+        else {
+            //regular
+            $ra_check = \App\Model\Accounts\Rider_Account::where(['maintenance_id' => $maintenance->id])->get();
+            if(isset($ra_check)){
+                foreach ($ra_check as $del) {
+                    $del->delete();
+                }
+            }
+
+            $ca_check = \App\Model\Accounts\Company_Account::where(['maintenance_id' => $maintenance->id])->get();
+            if(isset($ca_check)){
+                foreach ($ca_check as $del) {
+                    $del->delete();
+                }
+            }
+            $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+                'maintenance_id'=>$maintenance->id
+            ]);
+            $ca->maintenance_id =$maintenance->id;
+            $ca->type='dr';
+            $ca->rider_id=$rider_id;
+            $ca->source="maintenance"; 
+            $ca->amount=$r->amount;
+            $ca->save();
+        }
+        
         
         return redirect(route('admin.accounts.maintenance_view'));
     }
