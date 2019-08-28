@@ -370,5 +370,16 @@ Route::post('/wps/{id}/updatestatus','ExpenseController@wps_updatestatus')->name
 Route::delete('/wps/delete/{id}','ExpenseController@wps_delete')->name('admin.wps_delete');
 Route::get('/wps/edit/{id}','ExpenseController@wps_edit')->name('admin.wps_edit');
 // End WPS
+
+//     ADVANCE & RETURN
+Route::get('/AR/index','ExpenseController@AR_index')->name('admin.AR_index');
+Route::get('/AR/view','ExpenseController@AR_view')->name('admin.AR_view');
+Route::post('/AR/insert','ExpenseController@AR_store')->name('admin.AR_store');
+Route::post('/AR/{id}/update','ExpenseController@AR_update')->name('admin.AR_update');
+Route::get("/AR/view/data","AjaxNewController@getAR")->name("admin.getAR");
+Route::post('/AR/{id}/updatestatus','ExpenseController@AR_updatestatus')->name('admin.AR_updatestatus');
+Route::delete('/AR/delete/{id}','ExpenseController@AR_delete')->name('admin.AR_delete');
+Route::get('/AR/edit/{id}','ExpenseController@AR_edit')->name('admin.AR_edit');
+// End ADVANCE & RETURN
 });
 

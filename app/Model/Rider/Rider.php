@@ -47,6 +47,10 @@ class Rider extends Authenticatable
     {
         return $this->hasMany(Rider_Message::class, 'rider_id');
     }
+    public function WPS()
+    {
+        return $this->hasMany('App\Model\Accounts\WPS', 'rider_id');
+    }
     public function id_charges()
     {
         return $this->hasMany('App\Model\Accounts\Id_charge', 'rider_id');

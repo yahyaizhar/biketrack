@@ -9,4 +9,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class WPS extends Authenticatable
 {
     protected $fillable = ['bank_name','rider_id', 'amount', 'status','payment_status','active_status','setting'];
+    public function Rider()
+    {
+        return $this->belongsTo('App\Model\Rider\Rider');
+    }
 }

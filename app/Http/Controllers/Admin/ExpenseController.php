@@ -8,8 +8,10 @@ use App\Model\Expence\Company_CD;
 use carbon\carbon;
 use App\Model\Accounts\Company_Expense;
 use App\Model\Accounts\Company_Account;
+use App\Model\Accounts\Rider_Account;
 use App\Model\Rider\Rider;
 use App\Model\Accounts\WPS;
+use App\Model\Accounts\AdvanceReturn;
 
 class ExpenseController extends Controller
 {
@@ -18,6 +20,7 @@ class ExpenseController extends Controller
     {
         $this->middleware('auth:admin');
     }
+    // Company Expense
     public function CE_index(){
         return view('admin.accounts.Company_Expense.CE_add');
     }
@@ -95,7 +98,8 @@ public function CE_edit($id){
     $edit_expense=Company_Expense::find($id);
     return view('admin.accounts.Company_Expense.CE_edit',compact('edit_expense'));
 }
-
+// End Company Expense
+// WPS
 public function wps_index(){
     $riders=Rider::where("active_status","A")->get();
     return view('admin.accounts.WPS.wps_add',compact('riders'));
@@ -111,13 +115,51 @@ public function wps_store(Request $r){
         else
             $wps->status = 0;
     $wps->save();
-    
-    $ca = new Company_Account();
-    $ca->type='dr';
-    $ca->amount=$r->amount;
-    $ca->source='wps';
-    $ca->wps_id=$wps->id;
-    $ca->save();
+    if ($wps->payment_status=="deposit") {
+        $ca =Company_Account::firstOrCreate([
+            'wps_id'=>$wps->id
+        ]);
+        $ca->type='dr';
+        $ca->amount=$r->amount;
+        $ca->source='wps';
+        $ca->wps_id=$wps->id;
+        $ca->save(); 
+    }
+    if ($wps->payment_status=="withdraw") {
+        $ra =Rider_Account::firstOrCreate([
+            'wps_id'=>$wps->id
+        ]);
+        $ra->type='cr';
+        $ra->amount=$r->amount;
+        $ra->source='wps';
+        $ra->wps_id=$wps->id;
+        $ra->save();
+    }
+    if ($wps->payment_status=="kingrider") {
+        $ca_dr =Company_Account::where("wps_id",$wps->id)->where("type","dr")->get()->first();
+        if (isset($ca_dr)) {       
+        $ca =Company_Account::firstOrCreate([
+            'wps_id'=>$wps->id
+        ]);
+        $ca->type='cr';
+        $ca->amount=$r->amount;
+        $ca->source='wps';
+        $ca->wps_id=$wps->id;
+        $ca->save();
+    }
+        $ra_dr =Rider_Account::where("wps_id",$wps->id)->where("type","cr")->get()->first();
+           
+        
+        if (isset($ra_dr)) {
+            $ra=new Rider_Account();
+            $ra->type='dr';
+            $ra->amount=$r->amount;
+            $ra->source='wps';  
+            $ra->save();
+        }
+       
+    }
+   
     return redirect(route('admin.wps_view'));
 }
 public function wps_view(){
@@ -139,16 +181,71 @@ public function wps_update(Request $r,$id){
         else
             $wps->status = 0;
     $wps->save();
+    $ca_delete=Company_Account::where("wps_id",$wps->id)->get();
+    foreach ($ca_delete as $delete) {
+        $delete->delete();
+    }
+    $ra_delete=Rider_Account::where("wps_id",$wps->id)->get();
+    foreach ($ra_delete as $delete) {
+        $delete->delete();
+    }
+    if ($wps->payment_status=="deposit") {
+        $ca =Company_Account::firstOrCreate([
+            'wps_id'=>$wps->id
+        ]);
+        $ca->type='dr';
+        $ca->amount=$r->amount;
+        $ca->source='wps';
+        $ca->wps_id=$wps->id;
+        $ca->save(); 
+    }
+    if ($wps->payment_status=="withdraw") {
+        
+        $ca =Company_Account::firstOrCreate([
+            'wps_id'=>$wps->id
+        ]);
+        $ca->type='dr';
+        $ca->amount=$r->amount;
+        $ca->source='wps';
+        $ca->wps_id=$wps->id;
+        $ca->save();  
+
+        $ra =Rider_Account::firstOrCreate([
+            'wps_id'=>$wps->id
+        ]);
+        $ra->type='cr';
+        $ra->amount=$r->amount;
+        $ra->source='wps';
+        $ra->wps_id=$wps->id;
+        $ra->save();
+    }
+    if ($wps->payment_status=="kingrider") {
+        $ca_dr =Company_Account::where("wps_id",$wps->id)->where("type","dr")->get()->first();
+        if (isset($ca_dr)) {       
+        $ca =Company_Account::firstOrCreate([
+            'wps_id'=>$wps->id
+        ]);
+        $ca->type='cr';
+        $ca->amount=$r->amount;
+        $ca->source='wps';
+        $ca->wps_id=$wps->id;
+        $ca->save();
+    }
+        $ra_dr =Rider_Account::where("wps_id",$wps->id)->where("type","cr")->get()->first();
+           
+        
+        if (isset($ra_dr)) {
+            $ra=new Rider_Account();
+            $ra->type='dr';
+            $ra->amount=$r->amount;
+            $ra->source='wps';  
+            $ra->save();
+        }
+       
+    }
     
-    $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
-        'wps_id'=>$wps->id
-    ]);
-    $ca->type='dr';
-    $ca->amount=$r->amount;
-    $ca->source='wps';
-    $ca->save();
-    return redirect(route('admin.wps_view'));
-}
+        return redirect(route('admin.wps_view'));
+        }
 public function wps_delete($id){
     $delete_wps=WPS::find($id);
     $delete_wps->status=0;
@@ -176,6 +273,216 @@ public function wps_updatestatus($id){
         'status' => true
     ]);
 }
+// End WPS
+// ADVANCE & RETURN
+public function AR_index(){
+    $riders=Rider::where("active_status","A")->get();
+return view('admin.accounts.AR.AR_add',compact("riders"));
+}
+public function AR_view(){
+return view('admin.accounts.AR.AR_view');
+}
+public function AR_updatestatus($id){
+    $update_ar=AdvanceReturn::find($id);
+    if($update_ar->status == 1)
+    {
+        $update_ar->status = 0;
+    }
+    else
+    {
+        $update_ar->status = 1;
+    }
+    $update_ar->update();
+    return response()->json([
+        'status' => true
+    ]);
+}
+public function AR_delete($id){
+    $delete_ar=AdvanceReturn::find($id);
+    $delete_ar->status=0;
+    $delete_ar->active_status="D";
+    $delete_ar->update();
+}
+public function AR_edit($id){
+    $riders=Rider::where("active_status","A")->get();
+    $edit_ar=AdvanceReturn::find($id);
+    return view('admin.accounts.AR.AR_edit',compact('edit_ar','riders'));
+}
+public function AR_store(Request $r){
+    $ar = AdvanceReturn::create([
+        'payment_status'=>$r->payment_status,
+        'type'=>$r->type,
+        'rider_id'=>$r->rider_id,
+        'amount'=>$r->amount,
+        'status'=>$r->status=='on'?1:0,
+    ]); 
 
+    if($ar->payment_status=="pending"){
+        $ca =Company_Account::firstOrCreate([
+            'advance_return_id'=>$ar->id
+        ]);
+        $ca->type='dr';
+        $ca->amount=$r->amount;
+        if($ar->type=="advance"){$ca->source='advance';}
+        else if($ar->type=="return"){$ca->source='loan';}    
+        $ca->advance_return_id=$ar->id;
+        $ca->rider_id=$ar->rider_id;
+        $ca->save();
+
+        $ra =Rider_Account::firstOrCreate([
+            'advance_return_id'=>$ar->id
+        ]);
+        $ra->type='cr_payable';
+        $ra->rider_id=$ar->rider_id;
+        $ra->amount=$r->amount;
+        if($ar->type=="advance"){$ra->source='advance';}
+        else if($ar->type=="return"){$ra->source='loan';}
+        $ra->advance_return_id=$ar->id;
+        $ra->save();
+
+    }
+
+
+    if($ar->payment_status=="paid"){
+        $ca =Company_Account::firstOrCreate([
+            'advance_return_id'=>$ar->id
+        ]);
+        $ca->type='cr';
+        $ca->amount=$r->amount;
+        if($ar->type=="advance"){$ca->source='advance';}
+        else if($ar->type=="return"){$ca->source='loan';}
+        $ca->advance_return_id=$ar->id;
+        $ca->save();
+
+        $ra =Rider_Account::firstOrCreate([
+            'advance_return_id'=>$ar->id
+        ]);
+        $ra->type='dr_payable';
+        $ra->amount=$r->amount;
+        if($ar->type=="advance"){$ra->source='advance';}
+        else if($ar->type=="return"){$ra->source='loan';}
+        $ra->advance_return_id=$ar->id;
+        $ra->save();
+
+    }
+
+    return redirect(route('admin.AR_view'));
+}
+public function AR_update(Request $r,$id){
+    $update_ar=AdvanceReturn::find($id);
+    $update_ar->type=$r->type;
+    $update_ar->amount=$r->amount;
+    $update_ar->payment_status=$r->payment_status;
+    $update_ar->rider_id=$r->rider_id;
+    if($r->status)
+        $update_ar->status = 1;
+    else
+        $update_ar->status = 0;
+    $update_ar->save();
+    
+
+    if($update_ar->payment_status == 'pending'){
+        $ra_check =Rider_Account::where(['advance_return_id' => $update_ar->id, 'type'=>'dr_payable'])->get()->first();
+        if(isset($ra_check)){
+            $ra_check->delete();
+        }
+
+        $ca_check =Company_Account::where(['advance_return_id' => $update_ar->id, 'type'=>'cr'])->get()->first();
+        if(isset($ca_check)){
+            $ca_check->delete();
+        }
+        $ca =Company_Account::firstOrCreate([
+            'advance_return_id'=>$update_ar->id
+        ]);
+        $ca->advance_return_id =$update_ar->id;
+        $ca->type='dr';
+        $ca->rider_id=$update_ar->rider_id;
+        if($update_ar->type=="advance"){$ca->source='advance';}
+        else if($update_ar->type=="return"){$ca->source='loan';}
+        $ca->amount=$r->amount;
+        $ca->save();
+
+        $ra =Rider_Account::firstOrCreate([
+            'advance_return_id'=>$update_ar->id
+        ]);
+        $ra->advance_return_id =$update_ar->id;
+        $ra->type='cr_payable';
+        $ra->rider_id=$update_ar->rider_id;
+        if($update_ar->type=="advance"){$ra->source='advance';}
+        else if($update_ar->type=="return"){$ra->source='loan';}
+        $ra->amount=$r->amount;
+        $ra->save();
+    }
+    else if($update_ar->payment_status == 'paid'){
+        $ca_check =Company_Account::where(['advance_return_id' => $update_ar->id, 'type'=>'dr'])->get()->first();
+        if(!isset($ca_check)){
+            $ca_dr = new Company_Account;
+            $ca_dr->advance_return_id =$update_ar->id;
+            $ca_dr->type='dr';
+            $ca_dr->rider_id=$update_ar->rider_id;
+            if($update_ar->type=="advance"){$ca_dr->source='advance';}
+            else if($update_ar->type=="return"){$ca_dr->source='loan';}
+            $ca_dr->amount=$r->amount;
+            $ca_dr->save();
+        }
+        else {
+            $ca_check->advance_return_id =$update_ar->id;
+            $ca_check->type='dr';
+            $ca_check->rider_id=$update_ar->rider_id;
+            if($update_ar->type=="advance"){$ca_check->source='advance';}
+            else if($update_ar->type=="return"){$ca_check->source='loan';}
+            $ca_check->amount=$r->amount;
+            $ca_check->save();
+        }
+        $ca =Company_Account::firstOrCreate([
+            'advance_return_id'=>$update_ar->id,
+            'type'=>'cr'
+        ]);
+        $ca->advance_return_id =$update_ar->id;
+        $ca->type='cr';
+        $ca->rider_id=$update_ar->rider_id;
+        if($update_ar->type=="advance"){$ca->source='advance';}
+        else if($update_ar->type=="return"){$ca->source='loan';}
+        $ca->amount=$r->amount;
+        $ca->save();
+
+        $ra_check =Rider_Account::where(['advance_return_id' => $update_ar->id, 'type'=>'cr_payable'])->get()->first();
+        if(!isset($ra_check)){
+            $ra_dr = new Rider_Account;
+            $ra_dr->advance_return_id =$update_ar->id;
+            $ra_dr->type='cr_payable';
+            $ra_dr->rider_id=$update_ar->rider_id;
+            if($update_ar->type=="advance"){$ra_dr->source='advance';}
+            else if($update_ar->type=="return"){$ra_dr->source='loan';}
+            $ra_dr->amount=$r->amount;
+            $ra_dr->save();
+        }
+        else {
+            $ra_check->advance_return_id =$update_ar->id;
+            $ra_check->type='cr_payable';
+            $ra_check->rider_id=$update_ar->rider_id;
+            if($update_ar->type=="advance"){$ra_check->source='advance';}
+            else if($update_ar->type=="return"){$ra_check->source='loan';}
+            $ra_check->amount=$r->amount;
+            $ra_check->save();
+        }
+
+        $ra =Rider_Account::firstOrCreate([
+            'advance_return_id'=>$update_ar->id,
+            'type'=>'dr_payable'
+        ]);
+        $ra->advance_return_id =$update_ar->id;
+        $ra->type='dr_payable';
+        $ra->rider_id=$update_ar->rider_id;
+        if($update_ar->type=="advance"){$ra->source='advance';}
+        else if($update_ar->type=="return"){$ra->source='loan';}
+        $ra->amount=$r->amount;
+        $ra->save();
+    }
+
+    
+    return redirect(route('admin.AR_view'));
+}
+// End ADVANCE & RETURN
 
 }
