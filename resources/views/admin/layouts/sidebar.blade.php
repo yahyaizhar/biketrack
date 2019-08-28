@@ -257,8 +257,8 @@
                                         </ul>
                                     </div>
                                 </li>
-                                                                 
-                                <li class="kt-menu__item kt-menu__item--submenu @if(strpos(Request::url(), "CE") !== false) kt-menu__item--active kt-menu__item--open @endif "  aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
+
+                                <li class="kt-menu__item kt-menu__item--submenu @if(strpos(Request::url(), "/accounts/CE") !== false) kt-menu__item--active kt-menu__item--open @endif "  aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
                                     <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
                                         <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
                                             <span></span>
@@ -266,17 +266,17 @@
                                         <span class="kt-menu__link-text">Company Expense</span>
                                         <i class="kt-menu__ver-arrow la la-angle-right"></i>
                                     </a>
-                                    <div class="kt-menu__submenu " kt-hidden-height="160" style="display: none; overflow: hidden;"><span class="kt-menu__arrow"></span>
+                                    <div class="kt-menu__submenu " kt-hidden-height="160" @if(strpos(Request::url(), "/accounts/CE") === false)style="display: none; overflow: hidden;"@endif><span class="kt-menu__arrow"></span>
                                         <ul class="kt-menu__subnav">
                                             <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text"></span></span></li>
-                                            <li class="kt-menu__item @if(strpos(Request::url(), "/CE/index") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
-                                                <a href="/admin/accounts/CE/index" class="kt-menu__link ">
+                                            <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/CE/index") !== false) kt-menu__item--active @endif" aria-haspopup="true">
+                                                <a href="{{ route('admin.CE_index') }}" class="kt-menu__link ">
                                                     <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                     <span class="kt-menu__link-text">Add Company Expense</span>
                                                 </a>
                                             </li>
                                             <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/CE/view") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
-                                                <a href="/admin/accounts/CE/view" class="kt-menu__link ">
+                                                <a href="{{ route('admin.CE_view') }}" class="kt-menu__link ">
                                                     <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                     <span class="kt-menu__link-text">View Company Expense</span>
                                                 </a>
@@ -284,6 +284,7 @@
                                         </ul>
                                     </div>
                                 </li>
+                                
  
                                 <li class="kt-menu__item kt-menu__item--submenu @if(strpos(Request::url(), "/accounts/wps") !== false) kt-menu__item--active kt-menu__item--open @endif "  aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
                                     <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
@@ -306,6 +307,33 @@
                                                 <a href="{{ route('admin.wps_view') }}" class="kt-menu__link ">
                                                     <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                     <span class="kt-menu__link-text">View WPS</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <li class="kt-menu__item kt-menu__item--submenu @if(strpos(Request::url(), "/accounts/AR") !== false) kt-menu__item--active kt-menu__item--open @endif "  aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
+                                    <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
+                                        <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
+                                            <span></span>
+                                        </i>
+                                        <span class="kt-menu__link-text">Advance & Return</span>
+                                        <i class="kt-menu__ver-arrow la la-angle-right"></i>
+                                    </a>
+                                    <div class="kt-menu__submenu " kt-hidden-height="160" @if(strpos(Request::url(), "/accounts/AR") === false)style="display: none; overflow: hidden;"@endif><span class="kt-menu__arrow"></span>
+                                        <ul class="kt-menu__subnav">
+                                            <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text"></span></span></li>
+                                            <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/AR/index") !== false) kt-menu__item--active @endif" aria-haspopup="true">
+                                                <a href="{{ route('admin.AR_index') }}" class="kt-menu__link ">
+                                                    <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
+                                                    <span class="kt-menu__link-text">Add Advance & Return</span>
+                                                </a>
+                                            </li>
+                                            <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/AR/view") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
+                                                <a href="{{ route('admin.AR_view') }}" class="kt-menu__link ">
+                                                    <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
+                                                    <span class="kt-menu__link-text">View Advance & Return</span>
                                                 </a>
                                             </li>
                                         </ul>

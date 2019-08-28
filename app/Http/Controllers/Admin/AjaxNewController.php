@@ -38,6 +38,7 @@ use Arr;
 use App\Model\Accounts\Fuel_Expense;
 use App\Model\Accounts\Company_Expense;
 use App\Model\Accounts\WPS;
+use App\Model\Accounts\AdvanceReturn;
 
 class AjaxNewController extends Controller
 {
@@ -357,5 +358,54 @@ class AjaxNewController extends Controller
         ->rawColumns(['status','bank_name','rider_id','payment_status','amount','actions', 'status'])
         ->make(true);
     }
-            
+    public function getAR()
+    {
+        $ar = AdvanceReturn::orderByDesc('created_at')->where('active_status', 'A')->get();
+        // return $clients;
+        return DataTables::of($ar)
+        ->addColumn('status', function($ar){
+            if($ar->status == 1)
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
+            }
+            else
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
+            }
+        })
+        ->addColumn('id', function($ar){
+            return '1000'.$ar->id;
+        })
+        ->addColumn('amount', function($ar){
+            return $ar->amount;
+        })
+        ->addColumn('type', function($ar){
+            return $ar->type;
+        })
+        ->addColumn('payment_status', function($ar){
+            return $ar->payment_status;
+        })
+        ->addColumn('rider_id', function($ar){
+            $rider=Rider::find($ar->rider_id);
+            return $rider->name ;
+        })
+       
+        ->addColumn('actions', function($ar){
+            $status_text = $ar->status == 1 ? 'Inactive' : 'Active';
+            return '<span class="dtr-data">
+            <span class="dropdown">
+                <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+                <i class="la la-ellipsis-h"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="'.route('admin.AR_edit', $ar).'"><i class="fa fa-edit"></i> Edit</a>
+                    <button class="dropdown-item" onclick="updateStatus('.$ar->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
+                    <button class="dropdown-item" onclick="deleteRow('.$ar->id.');"><i class="fa fa-trash"></i> Delete</button>
+                    </div>
+            </span>
+        </span>';
+        })
+        ->rawColumns(['status','type','rider_id','payment_status','amount','actions', 'status'])
+        ->make(true);
+    }
 }
