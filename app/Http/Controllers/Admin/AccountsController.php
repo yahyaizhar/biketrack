@@ -681,11 +681,17 @@ public function fuel_expense_insert(Request $r){
         else
             $fuel_expense->status = 0;
     $fuel_expense->save();
+    $assign_bike=\App\Assign_bike::where('bike_id', $maintenance->bike_id)->where('status','active')->get()->first();
+    $rider_id = null;
+    if($assign_bike){
+        $rider_id=Rider::find($assign_bike->rider_id)->id;
+    }
 if ($fuel_expense->type=="vip_tag") {
     
     $ca = new \App\Model\Accounts\Company_Account;
     $ca->type='dr';
     $ca->amount=$r->amount;
+    $ca->rider_id = $rider_id;
     $ca->source='fuel_expense';
     $ca->fuel_expense_id=$fuel_expense->id;
     $ca->save();
@@ -694,6 +700,7 @@ elseif($fuel_expense->type=="cash"){
     $ca = new \App\Model\Accounts\Company_Account;
     $ca->type='dr';
     $ca->amount=$r->amount;
+    $ca->rider_id = $rider_id;
     $ca->source='fuel_expense';
     $ca->fuel_expense_id=$fuel_expense->id;
     $ca->save();
@@ -701,6 +708,7 @@ elseif($fuel_expense->type=="cash"){
     $ra = new \App\Model\Accounts\Rider_Account;
     $ra->type='cr';
     $ra->amount=$r->amount;
+    $ra->rider_id = $rider_id;
     $ra->source='fuel_expense';
     $ra->fuel_expense_id=$fuel_expense->id;
     $ra->save();
@@ -764,12 +772,19 @@ public function update_edit_fuel_expense(Request $r,$id){
         else
             $fuel_expense->status = 0;
     $fuel_expense->update();
+
+    $assign_bike=\App\Assign_bike::where('bike_id', $maintenance->bike_id)->where('status','active')->get()->first();
+    $rider_id = null;
+    if($assign_bike){
+        $rider_id=Rider::find($assign_bike->rider_id)->id;
+    }
 if ($fuel_expense->type=="vip_tag") {
     
     $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
         'fuel_expense_id'=>$fuel_expense->id
     ]);
     $ca->type='dr';
+    $ca->rider_id = $rider_id;
     $ca->source="fuel_expense"; 
     $ca->amount=$r->amount;
     $ca->save();
@@ -786,6 +801,7 @@ elseif($fuel_expense->type=="cash"){
     'fuel_expense_id'=>$fuel_expense->id,
     ]);
     $ca->type='dr';
+    $ca->rider_id = $rider_id;
     $ca->source="fuel_expense"; 
     $ca->amount=$r->amount;
     $ca->save();
@@ -796,6 +812,7 @@ elseif($fuel_expense->type=="cash"){
     ]);
     $ra->fuel_expense_id=$fuel_expense->id;
     $ra->type='cr';
+    $ra->rider_id = $rider_id;
     $ra->source="fuel_expense"; 
     $ra->amount=$r->amount;
     $ra->save();
