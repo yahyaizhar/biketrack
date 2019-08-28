@@ -35,7 +35,7 @@
                     <div class="kt-portlet__head-actions">
                         {{-- <button class="btn btn-danger btn-elevate btn-icon-sm" id="bulk_delete">Delete Selected</button> --}}
                         &nbsp;
-                        <a href="{{ route('admin.accounts.id_charges_index') }}" class="btn btn-brand btn-elevate btn-icon-sm">
+                        <a href="{{ route('admin.fuel_expense_create') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
                             New Record
                         </a>
