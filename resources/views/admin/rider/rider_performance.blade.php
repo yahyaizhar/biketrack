@@ -73,11 +73,11 @@ margin-left: 10px;
                         <th>Adt</th>
                         <th>Total Logedin Hours</th>
                         {{-- <th>Actions</th> --}}
-                        <th>h1</th>
-                        <th>h1</th>
-                        <th>h1</th>
-                        <th>h1</th>
-                        <th>h1</th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
                     </tr>
                 </thead>
             </table>
@@ -440,7 +440,43 @@ $(function() {
           
         '</table>';
 }
+if(window.outerWidth>=521){
+        $("#check_id").change(function(){
 
+            if($("#check_id").prop("checked") == true){
+                $("td.details-control").each(function(){
+                    if (!$(this).parent().hasClass("shown")) {
+                        $(this).trigger("click");
+                    }  
+                });
+            }
+            if($("#check_id"). prop("checked") == false){
+                $("td.details-control").each(function(){
+                    if ($(this).parent().hasClass("shown")) {
+                        $(this).trigger("click");
+                    }  
+                });
+            }
+        });
+    }
+    else if(window.outerWidth<521){
+        $("#check_id").change(function(){
+            if($("#check_id").prop("checked") == true){
+                $("td.sorting_1").each(function(){
+                    if (!$(this).parent().hasClass("parent")) {
+                        $(this).trigger("click");
+                    }  
+                });
+            }
+            if($("#check_id"). prop("checked") == false){
+                $("td.sorting_1").each(function(){
+                    if ($(this).parent().hasClass("parent")) {
+                        $(this).trigger("click");
+                    }  
+                });
+            }
+        });
+    }
 
 
 

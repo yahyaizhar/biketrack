@@ -6,9 +6,6 @@
 .highlighted{
     background-color: #FFFF88;
 }
-.dataTables_filter{
-    display:none;
-}
 
 .dataTables_length{
    display: block;   
@@ -35,7 +32,7 @@ margin-left: 10px;
                     <i class="kt-font-brand fa fa-motorcycle"></i>
                 </span>
                 <h3 class="kt-portlet__head-title">
-                   Active Riders
+                    Active Riders 
                 </h3>
 
             </div>
@@ -50,7 +47,6 @@ margin-left: 10px;
                                Detailed View
                             </label>
                         </div>
-                        <input type="text" class="form-control" placeholder="Search" id="search_details" style="display: inline-block;width: auto;">
                         <a href="{{ route('admin.riders.create') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
                             New Record
@@ -64,7 +60,7 @@ margin-left: 10px;
             <table class="table table-striped table-hover table-checkable table-condensed" id="riders-table">
                 <thead>
                     <tr>
-                    
+                        
                         <th>ID</th>
                         <th>Name</th>
                         <th>Assigned To</th>
@@ -73,6 +69,15 @@ margin-left: 10px;
                         <th>Missing Fields</th>
                         <th>Status</th>
                         <th>Actions</th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
                     </tr>
                 </thead>
             </table>
@@ -193,7 +198,7 @@ $(function() {
             // dataTables_info
             $('.total_entries').remove();
             $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
-            
+            mark_table();
         },
         ajax: '{!! route('admin.ajax_active_rider') !!}',
         columns: null,
@@ -217,9 +222,25 @@ $(function() {
             { "data": 'passport_collected', "name": 'passport_collected' },
             { "data": 'missing_fields', "name": 'missing_fields' },
             { "data": 'status', "name": 'status' },
-            { "data": 'actions', "name": 'actions' }
+            { "data": 'actions', "name": 'actions' },
+            { "data": 'date_of_joining', "name": 'date_of_joining' },
+            { "data": 'bike_number', "name": 'bike_number' },
+            { "data": 'phone', "name": 'phone' },
+            { "data": 'emirate_id', "name": 'emirate_id' },
+            { "data": 'new_email', "name": 'email' },
+            { "data": 'passport_expiry', "name": 'passport_expiry' },
+            { "data": 'visa_expiry', "name": 'visa_expiry' },
+            { "data": 'licence_expiry', "name": 'licence_expiry' },
+            { "data": 'mulkiya_expiry', "name": 'mulkiya_expiry' },
         ];
         _settings.responsive=false;
+        _settings.columnDefs=[
+            {
+                "targets": [ 9,10,11,12,13,14,15,16,17 ],
+                "visible": false,
+                searchable: true,
+            },
+        ];
     }
     else{
         $('#riders-table thead tr th').eq(6).before('<th>Date Of Joining</th>');
@@ -245,6 +266,46 @@ $(function() {
      
     }
     riders_table = $('#riders-table').DataTable(_settings);
+    var mark_table = function(){
+        var _val = riders_table.search();
+        if(_val===''){
+            $("#riders-table tbody").unmark();
+            $("#riders-table tbody > tr:visible").each(function() {
+                var tr = $(this);
+                var row = riders_table.row( tr );
+                if ( row.child.isShown() ) {
+                    // This row is already open - close it
+                    row.child.remove();
+                    tr.removeClass('shown');
+                }
+            });
+            return;
+        }
+        $('#riders-table tbody > tr[role="row"]:visible').each(function() {
+            var tr = $(this);
+            var row = riders_table.row( tr );
+            // console.warn("isShon: ",row.child.isShown());
+            if ( row.child.isShown() ) {
+                // This row is already open - close it
+                row.child.remove();
+                tr.removeClass('shown');
+            }
+                // This row is already open - close it
+                var _arow = row.child( format(row.data()) );
+                _arow.show();
+                tr.addClass('shown');
+        });
+        $("#riders-table tbody").unmark({
+            done: function() {
+                $("#riders-table tbody").mark(_val, {
+                    "element": "span",
+                    "className": "highlighted"
+                });
+            }
+        });
+        
+    }
+
 
     if(window.outerWidth>=720){
         $('#riders-table tbody').on('click', 'td.details-control', function () {
@@ -298,73 +359,7 @@ function format ( data ) {
             '</tr>'+
         '</table>';
 }
-
-$("#search_details").on("keyup", function() {
-    var _val = $(this).val().trim().toLowerCase();
-    if(_val===''){
-        $("#riders-table tbody").unmark();
-        $("#riders-table tbody > tr:visible").each(function() {
-            var tr = $(this);
-            var row = riders_table.row( tr );
-            if ( row.child.isShown() ) {
-                // This row is already open - close it
-                row.child.remove();
-                tr.removeClass('shown');
-            }
-        });
-        return;
-    }
-    // $("#riders-table tbody > tr:visible").each(function() {
-    //     $(this).removeClass("shown");
-    // });
-    $('#riders-table tbody > tr').show();
-    if (riders_data.length > 0) {
-        
-        var _res = riders_data.filter(function(x) {
-          
-            return JSON.stringify(x).indexOf(_val) !== -1;
-        });
-        
-        if (_res.length > 0) {
-            $("#riders-table tbody > tr").filter(function(index) {
-
-                var _id = $(this).find("td").eq(1).text().trim().toLowerCase();
-                if (_res.findIndex(function(x) {
-                        return "1000" + x.id == _id
-                    }) === -1) {
-                    $(this).hide();
-                }
-            });
-            if(_val !== ''){
-                $("#riders-table tbody > tr:visible").each(function() {
-                    var tr = $(this);
-                    var row = riders_table.row( tr );
-                    // console.warn("isShon: ",row.child.isShown());
-                    if ( row.child.isShown() ) {
-                        // This row is already open - close it
-                        row.child.remove();
-                        tr.removeClass('shown');
-                    }
-                        // This row is already open - close it
-                        var _arow = row.child( format(row.data()) );
-                        _arow.show();
-                        tr.addClass('shown');
-                });
-            }
-            $("#riders-table tbody").unmark({
-                done: function() {
-                    $("#riders-table tbody").mark(_val, {
-                        "element": "span",
-                        "className": "highlighted"
-                    });
-                }
-            });
-        } else {
-            $("#riders-table tbody > tr").hide();
-        }
-    }
-    }); 
-    if(window.outerWidth>=720){
+if(window.outerWidth>=521){
         $("#check_id").change(function(){
 
             if($("#check_id").prop("checked") == true){
@@ -383,7 +378,7 @@ $("#search_details").on("keyup", function() {
             }
         });
     }
-    else if(window.outerWidth<720){
+    else if(window.outerWidth<521){
         $("#check_id").change(function(){
             if($("#check_id").prop("checked") == true){
                 $("td.sorting_1").each(function(){
@@ -401,6 +396,8 @@ $("#search_details").on("keyup", function() {
             }
         });
     }
+
+
 });
 
 function deleteRider(id){
