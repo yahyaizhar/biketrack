@@ -6,9 +6,6 @@
         .highlighted{
             background-color: #FFFF88;
         }
-        .dataTables_filter{
-            display:none;
-        }
         .dataTables_length{
    display: block;   
 }
@@ -77,6 +74,11 @@ margin-left: 10px;
                         <th>Adt</th>
                         <th>Total Logedin Hours</th>
                         {{-- <th>Actions</th> --}}
+                        <th>h1</th>
+                        <th>h1</th>
+                        <th>h1</th>
+                        <th>h1</th>
+                        <th>h1</th>
                     </tr>
                 </thead>
             </table>
@@ -299,7 +301,7 @@ $(function() {
             });
             $('.total_entries').remove();
             $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
-    
+            mark_table();
              
         },
         ajax: '{!! route('admin.ajax_performance') !!}',
@@ -327,8 +329,20 @@ $(function() {
             { "data": 'adt', "name": 'adt' },
             { "data": 'total_loged_in_hours', "name": 'total_loged_in_hours' },
             // { "data": 'actions', "name": 'actions' }
+            { "data": 'average_pickup_time', "name": 'average_pickup_time' },
+            { "data": 'loged_in_during_shift_time', "name": 'loged_in_during_shift_time' },
+            { "data": 'average_drop_time', "name": 'average_drop_time' },
+            { "data": 'cod_orders', "name": 'cod_orders' },
+            { "data": 'cod_amount', "name": 'cod_amount' },
         ];
         _settings.responsive=false;
+        _settings.columnDefs=[
+            {
+                "targets": [ 7,8,9,10,11 ],
+                "visible": false,
+                searchable: true,
+            },
+        ];
     }
     else{
         $('#ridePerformance-table thead tr th').eq(4).before('<th>Pickup Time:</th>');
@@ -352,6 +366,45 @@ $(function() {
      
     }
     performance_table = $('#ridePerformance-table').DataTable(_settings);
+    var mark_table = function(){
+        var _val = performance_table.search();
+        if(_val===''){
+            $("#ridePerformance-table tbody").unmark();
+            $("#ridePerformance-table tbody > tr:visible").each(function() {
+                var tr = $(this);
+                var row = performance_table.row( tr );
+                if ( row.child.isShown() ) {
+                    // This row is already open - close it
+                    row.child.remove();
+                    tr.removeClass('shown');
+                }
+            });
+            return;
+        }
+        $('#ridePerformance-table tbody > tr[role="row"]:visible').each(function() {
+            var tr = $(this);
+            var row = performance_table.row( tr );
+            // console.warn("isShon: ",row.child.isShown());
+            if ( row.child.isShown() ) {
+                // This row is already open - close it
+                row.child.remove();
+                tr.removeClass('shown');
+            }
+                // This row is already open - close it
+                var _arow = row.child( format(row.data()) );
+                _arow.show();
+                tr.addClass('shown');
+        });
+        $("#ridePerformance-table tbody").unmark({
+            done: function() {
+                $("#ridePerformance-table tbody").mark(_val, {
+                    "element": "span",
+                    "className": "highlighted"
+                });
+            }
+        });
+        
+    }
     if(window.outerWidth>=521){
         $('#ridePerformance-table tbody').on('click', 'td.details-control', function () {
             var tr = $(this).closest('tr');
@@ -388,109 +441,7 @@ $(function() {
           
         '</table>';
 }
-$("#search_details").on("keyup", function() {
-    var _val = $(this).val().trim().toLowerCase();
-    if(_val===''){
-        $("#ridePerformance-table tbody").unmark();
-        $("#ridePerformance-table tbody > tr:visible").each(function() {
-            var tr = $(this);
-            var row = performance_table.row( tr );
-            if ( row.child.isShown() ) {
-                // This row is already open - close it
-                row.child.remove();
-                tr.removeClass('shown');
-            }
-        });
-        return;
-    }
-    // $("#ridePerformance-table tbody > tr:visible").each(function() {
-    //     $(this).removeClass("shown");
-    // });
-    $('#ridePerformance-table tbody > tr').show();
-    if (riders_data.length > 0) {
-        
-        var _res = riders_data.filter(function(x) {
-          
-            return JSON.stringify(x).indexOf(_val) !== -1;
-        });
-        console.log(_res);
-        if (_res.length > 0) {
-            $("#ridePerformance-table tbody > tr").filter(function(index) {
 
-                var _id = $(this).find("td").eq(1).text().trim().toLowerCase();
-                if (_res.findIndex(function(x) {
-                        return  x.feid == _id
-                    }) === -1) {
-                    $(this).hide();
-                }
-            });
-            if(_val !== ''){
-                $("#ridePerformance-table tbody > tr:visible").each(function() {
-                    var tr = $(this);
-                    var row = performance_table.row( tr );
-                    // console.warn("isShon: ",row.child.isShown());
-                    if ( row.child.isShown() ) {
-                        // This row is already open - close it
-                        row.child.remove();
-                        tr.removeClass('shown');
-                    }
-                        // This row is already open - close it
-                        var _arow = row.child( format(row.data()) );
-                        _arow.show();
-                        tr.addClass('shown');
-                });
-            }
-            $("#ridePerformance-table tbody").unmark({
-                done: function() {
-                    $("#ridePerformance-table tbody").mark(_val, {
-                        "element": "span",
-                        "className": "highlighted"
-                    });
-                }
-            });
-        } else {
-            $("#ridePerformance-table tbody > tr").hide();
-        }
-    }
-    }); 
-    if(window.outerWidth>=521){
-        $("#check_id").change(function(){
-
-            if($("#check_id").prop("checked") == true){
-                $("td.details-control").each(function(){
-                    if (!$(this).parent().hasClass("shown")) {
-                        $(this).trigger("click");
-                    }  
-                });
-            }
-            if($("#check_id"). prop("checked") == false){
-                $("td.details-control").each(function(){
-                    if ($(this).parent().hasClass("shown")) {
-                        $(this).trigger("click");
-                    }  
-                });
-            }
-        });
-    }
-    else if(window.outerWidth<521){
-        $("#check_id").change(function(){
-            if($("#check_id").prop("checked") == true){
-                $("td.sorting_1").each(function(){
-                    if (!$(this).parent().hasClass("parent")) {
-                        $(this).trigger("click");
-                    }  
-                });
-            }
-            if($("#check_id"). prop("checked") == false){
-                $("td.sorting_1").each(function(){
-                    if ($(this).parent().hasClass("parent")) {
-                        $(this).trigger("click");
-                    }  
-                });
-            }
-        });
-    }
-});
 
 
 
@@ -598,7 +549,7 @@ function updateStatus(sim_id)
         }
     });
 }
-
+});
 </script>
 <style>
     td.details-control {
