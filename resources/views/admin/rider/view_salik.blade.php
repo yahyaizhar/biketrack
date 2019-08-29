@@ -45,6 +45,7 @@ margin-left: 10px;
                             </label>
                         </div>
                         &nbsp;
+                        
                         <a style="padding:8.45px 13px;" href="" data-toggle="modal" data-target="#import_data"  class="btn btn-label-success btn-sm btn-upper">Import Trip Detail</a>&nbsp;
                         <input class="btn btn-primary" type="button" onclick="export_data();" value="Export Trip Detail">
                         
@@ -72,9 +73,9 @@ margin-left: 10px;
                         <th>Plate</th>
                         <th>Amount(AED)</th>
 
-                        <th>h1</th>
-                        <th>h2</th>
-                        <th>h3</th>
+                        <th class="d-none">h1</th>
+                        <th class="d-none">h2</th>
+                        <th class="d-none">h3</th>
                         {{-- <th>Actions</th> --}}
                     </tr>
                 </thead>
@@ -402,6 +403,43 @@ $(function() {
         '</table>';
 }
 
+    if(window.outerWidth>=521){
+        $("#check_id").change(function(){
+
+            if($("#check_id").prop("checked") == true){
+                $("td.details-control").each(function(){
+                    if (!$(this).parent().hasClass("shown")) {
+                        $(this).trigger("click");
+                    }  
+                });
+            }
+            if($("#check_id"). prop("checked") == false){
+                $("td.details-control").each(function(){
+                    if ($(this).parent().hasClass("shown")) {
+                        $(this).trigger("click");
+                    }  
+                });
+            }
+        });
+    }
+    else if(window.outerWidth<521){
+        $("#check_id").change(function(){
+            if($("#check_id").prop("checked") == true){
+                $("td.sorting_1").each(function(){
+                    if (!$(this).parent().hasClass("parent")) {
+                        $(this).trigger("click");
+                    }  
+                });
+            }
+            if($("#check_id"). prop("checked") == false){
+                $("td.sorting_1").each(function(){
+                    if ($(this).parent().hasClass("parent")) {
+                        $(this).trigger("click");
+                    }  
+                });
+            }
+        });
+    }
 });
 
 
