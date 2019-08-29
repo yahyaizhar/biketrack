@@ -45,7 +45,6 @@ margin-left: 10px;
                             </label>
                         </div>
                         &nbsp;
-                        <input type="text" class="form-control" placeholder="Search" id="search_details" style="display: inline-block;width: auto;">
                         
                         <a style="padding:8.45px 13px;" href="" data-toggle="modal" data-target="#import_data"  class="btn btn-label-success btn-sm btn-upper">Import Zomato Data</a>&nbsp;
                         <input class="btn btn-primary" type="button" onclick="export_data()" value="Export Zomato Data">
