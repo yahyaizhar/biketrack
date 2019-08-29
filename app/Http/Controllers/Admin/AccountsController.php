@@ -72,7 +72,7 @@ class AccountsController extends Controller
             $id_charge->status = 0;
         $id_charge->update();
 
-        $ca =\App\Model\Accounts\Company_Account::find($id);
+        $ca =\App\Model\Accounts\Company_Account::where("id_charge_id",$id_charge->id)->get()->first();
         $ca->type='dr';
         $ca->rider_id=$r->rider_id;
         $ca->amount=$r->amount;
@@ -706,7 +706,7 @@ elseif($fuel_expense->type=="cash"){
     $ca->save();
 
     $ra = new \App\Model\Accounts\Rider_Account;
-    $ra->type='cr';
+    $ra->type='cr_payable';
     $ra->amount=$r->amount;
     $ra->rider_id = $rider_id;
     $ra->source='fuel_expense';
@@ -811,7 +811,7 @@ elseif($fuel_expense->type=="cash"){
     'fuel_expense_id'=>$fuel_expense->id,
     ]);
     $ra->fuel_expense_id=$fuel_expense->id;
-    $ra->type='cr';
+    $ra->type='cr_payable';
     $ra->rider_id = $rider_id;
     $ra->source="fuel_expense"; 
     $ra->amount=$r->amount;
