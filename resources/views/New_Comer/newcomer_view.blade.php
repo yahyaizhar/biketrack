@@ -6,9 +6,6 @@
     .highlighted{
         background-color: #FFFF88;
     }
-    .dataTables_filter{
-        display:none;
-    }
     .dataTables_length{
    display: block;   
 }
@@ -47,7 +44,6 @@ margin-left: 10px;
                                Detailed View
                             </label>
                         </div>
-                        <input type="text" class="form-control" placeholder="Search" id="search_details" style="display: inline-block;width: auto;">
                         <a href="{{ route('NewComer.form') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
                             New Record
@@ -70,7 +66,18 @@ margin-left: 10px;
                         <th>Nationality</th>
                         <th>Experience</th>
                         <th>Inteview Status</th>
-                        <th>Actions</th>                        
+                        <th>Actions</th>  
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        
                     </tr>
                 </thead>
             </table>
@@ -114,7 +121,7 @@ $(function() {
             });
             $('.total_entries').remove();
         $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
-   
+   mark_table();
         },
         ajax: "{!! route('NewComer.view_ajax') !!}",
         columns:null, 
@@ -138,12 +145,27 @@ $(function() {
             { "data": 'experience', "name": 'experience' },
             { "data": 'interview_status', "name": 'interview_status' },
             { "data": 'actions', "name": 'actions' },
+            { "data": 'source_of_contact', "name": 'source_of_contact' },
+            { "data": 'experience_input', "name": 'experience_input' },
+            { "data": 'passport_status', "name": 'passport_status' },
+            { "data": 'passport_reason', "name": 'passport_reason' },
+            { "data": 'kingriders_interview', "name": 'kingriders_interview' },
+            { "data": 'interview', "name": 'interview' },
+            { "data": 'overall_remarks', "name": 'overall_remarks'},
+            { "data": 'whatsapp_number', "name": 'whatsapp_number'},
+            { "data": 'education', "name": 'education'},
+            { "data": 'licence_issue_date', "name": 'licence_issue_date'},
         ],
       
         _settings.responsive=false;
-
-        
-    }
+        _settings.columnDefs=[
+            {
+                "targets": [ 7,8,9,10,11,12,13,14,15,16 ],
+                "visible": false,
+                searchable: true,
+            },
+        ];
+ }
     else{
         $('#newComer-table thead tr th').eq(5).after('<th>Source Of Contact</th>');
         $('#newComer-table thead tr th').eq(6).after('<th>Experiance Input</th>');
@@ -171,6 +193,45 @@ $(function() {
      
     }
     newcomer_table = $('#newComer-table').DataTable(_settings);
+    var mark_table = function(){
+        var _val = newcomer_table.search();
+        if(_val===''){
+            $("#newComer-table tbody").unmark();
+            $("#newComer-table tbody > tr:visible").each(function() {
+                var tr = $(this);
+                var row = newcomer_table.row( tr );
+                if ( row.child.isShown() ) {
+                    // This row is already open - close it
+                    row.child.remove();
+                    tr.removeClass('shown');
+                }
+            });
+            return;
+        }
+        $('#newComer-table tbody > tr[role="row"]:visible').each(function() {
+            var tr = $(this);
+            var row = newcomer_table.row( tr );
+            // console.warn("isShon: ",row.child.isShown());
+            if ( row.child.isShown() ) {
+                // This row is already open - close it
+                row.child.remove();
+                tr.removeClass('shown');
+            }
+                // This row is already open - close it
+                var _arow = row.child( format(row.data()) );
+                _arow.show();
+                tr.addClass('shown');
+        });
+        $("#newComer-table tbody").unmark({
+            done: function() {
+                $("#newComer-table tbody").mark(_val, {
+                    "element": "span",
+                    "className": "highlighted"
+                });
+            }
+        });
+        
+    }
     if(window.outerWidth>=686){
     $('#newComer-table tbody').on('click', 'td.details-control', function () {
         var tr = $(this).closest('tr');
@@ -228,73 +289,6 @@ $(function() {
                 '</tr>'+
            '</table>';
     }
-
-    $("#search_details").on("keyup", function() {
-        var _val = $(this).val().trim().toLowerCase();
-        $('#newComer-table tbody > tr').show();
-        if(_val===''){
-            $("#newComer-table tbody").unmark();
-            $("#newComer-table tbody > tr:visible").each(function() {
-                var tr = $(this);
-                var row = newcomer_table.row( tr );
-                if ( row.child.isShown() ) {
-                    // This row is already open - close it
-                    row.child.remove();
-                    tr.removeClass('shown');
-                }
-            });
-            return;
-        }
-        // $("#riders-table tbody > tr:visible").each(function() {
-        //     $(this).removeClass("shown");
-        // });
-        
-        if (newcomer_data.length > 0) {
-            
-            var _res = newcomer_data.filter(function(x) {
-            
-                return JSON.stringify(x).indexOf(_val) !== -1;
-            });
-            
-            if (_res.length > 0) {
-                $("#newComer-table tbody > tr").filter(function(index) {
-
-                    var _name = $(this).find("td").eq(1).text().trim().toLowerCase();
-                    if (_res.findIndex(function(x) {
-                            return x.name == _name
-                        }) === -1) {
-                        $(this).hide();
-                    }
-                });
-                if(_val !== ''){
-                    $("#newComer-table tbody > tr:visible").each(function() {
-                        var tr = $(this);
-                        var row = newcomer_table.row( tr );
-                        // console.warn("isShon: ",row.child.isShown());
-                        if ( row.child.isShown() ) {
-                            // This row is already open - close it
-                            row.child.remove();
-                            tr.removeClass('shown');
-                        }
-                            // This row is already open - close it
-                            var _arow = row.child( format(row.data()) ); 
-                            _arow.show();
-                            tr.addClass('shown');
-                    });
-                }
-                $("#newComer-table tbody").unmark({
-                    done: function() {
-                        $("#newComer-table tbody").mark(_val, {
-                            "element": "span",
-                            "className": "highlighted"
-                        });
-                    }
-                });
-            } else {
-                $("#newComer-table tbody > tr").hide();
-            }
-        }
-    }); 
     if(window.outerWidth>=720){
         $("#check_id").change(function(){
 
