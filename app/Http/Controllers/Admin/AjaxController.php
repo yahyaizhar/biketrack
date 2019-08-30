@@ -1496,7 +1496,7 @@ class AjaxController extends Controller
                 $bike_html='<a class="dropdown-item" href="'.route('rider.rider_salik', $riders).'"><i class="fa fa-eye"></i> View Salik</a>';
             }
                return '<span class="dtr-data">
-               <span class="dropdown">
+               <span class="dropdown psbScroll">
                    <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
                    <i class="la la-ellipsis-h"></i>
                    </a>
