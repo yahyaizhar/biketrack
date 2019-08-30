@@ -272,18 +272,11 @@
                         @php
                             $riders=App\Model\Rider\Rider::where("active_status","A")->where("status","1")->get();
                         @endphp
-                        <select id="empoloyee_reference" class="form-control  @if($errors->has('empoloyee_reference')) invalid-field @endif kt-select2" id="kt_select2_3" name="empoloyee_reference" placeholder="Enter Employee Reference" value="{{ old('empoloyee_reference') }}">
+                        <select id="empoloyee_reference" class="form-control  kt-select2" id="kt_select2_3" name="empoloyee_reference" placeholder="Enter Employee Reference" value="{{ old('empoloyee_reference') }}">
                             @foreach ($riders as $rider)
                             <option @if($rider_detail->empoloyee_reference==$rider->id) selected @endif value="{{$rider->id}}">{{$rider->name}}</option>
                             @endforeach
                         </select> 
-                        @if ($errors->has('empoloyee_reference'))
-                            <span class="invalid-response" role="alert">
-                                <strong>
-                                    {{$errors->first('empoloyee_reference')}}
-                                </strong>
-                            </span>
-                        @endif
                         <span class="form-text text-muted">Who referred this rider?</span>
                     </div>
                 </div>
@@ -291,10 +284,10 @@
             <div class="col-lg-4 col-md-4 col-sm-12"> 
                 <div class="form-group">
                     <label class="kt-radio">
-                        <input type="radio" data-depended=".is_guarantee__outsider"@if($rider_detail->is_guarantee=='outsider') checked @endif name="is_guarantee" required value="outsider"> Someone else passport
+                        <input type="radio" data-depended=".is_guarantee__outsider"@if($rider_detail->is_guarantee=='outsider') checked @endif name="is_guarantee" value="outsider"> Someone else passport
                         <span></span>
                     </label>
-                    <textarea type="text" rows="5" autocomplete="off" class="dependend-field @if($rider_detail->is_guarantee!='outsider') d-none @endif is_guarantee__outsider form-control @if($errors->has('other_passport_given')) invalid-field @endif" name="other_passport_given" placeholder="Other person detail" >
+                    <textarea type="text" rows="5" autocomplete="off" class="dependend-field @if($rider_detail->is_guarantee!='outsider') d-none @endif is_guarantee__outsider form-control " name="other_passport_given" placeholder="Other person detail" >
                             {{ $rider_detail->other_passport_given }}
                     </textarea>
                     <span class="form-text text-muted is_guarantee__outsider dependend-field @if($rider_detail->is_guarantee!='outsider') d-none @endif">Where that person works?</span>
@@ -303,10 +296,10 @@
             <div class="col-lg-4 col-md-4 col-sm-12"> 
                 <div class="form-group">
                     <label class="kt-radio">
-                        <input type="radio" data-depended=".is_guarantee__not_given"@if($rider_detail->is_guarantee=='not_given') checked @endif name="is_guarantee" required value="not_given"> Not given
+                        <input type="radio" data-depended=".is_guarantee__not_given"@if($rider_detail->is_guarantee=='not_given') checked @endif name="is_guarantee" value="not_given"> Not given
                         <span></span>
                     </label>
-                    <textarea type="text" rows="5" autocomplete="off" class="dependend-field @if($rider_detail->is_guarantee!='not_given') d-none @endif is_guarantee__not_given form-control @if($errors->has('not_given')) invalid-field @endif" name="not_given" placeholder="Reason" >
+                    <textarea type="text" rows="5" autocomplete="off" class="dependend-field @if($rider_detail->is_guarantee!='not_given') d-none @endif is_guarantee__not_given form-control " name="not_given" placeholder="Reason" >
                         {{ $rider_detail->not_given }}
                     </textarea>
                     <span class="form-text text-muted is_guarantee__not_given dependend-field @if($rider_detail->is_guarantee!='not_given') d-none @endif">Why not?</span>
@@ -341,7 +334,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> 
                                 
                                         
                                                 <div class="form-group" style="margin-bottom:0px;">

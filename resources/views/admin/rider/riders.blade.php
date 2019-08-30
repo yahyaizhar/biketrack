@@ -359,7 +359,7 @@ function format ( data ) {
             '</tr>'+
         '</table>';
 }
-if(window.outerWidth>=521){
+if(window.outerWidth>=720){
         $("#check_id").change(function(){
 
             if($("#check_id").prop("checked") == true){
@@ -378,7 +378,7 @@ if(window.outerWidth>=521){
             }
         });
     }
-    else if(window.outerWidth<521){
+    else if(window.outerWidth<720){
         $("#check_id").change(function(){
             if($("#check_id").prop("checked") == true){
                 $("td.sorting_1").each(function(){
@@ -393,7 +393,7 @@ if(window.outerWidth>=521){
                         $(this).trigger("click");
                     }  
                 });
-            }
+            } 
         });
     }
 

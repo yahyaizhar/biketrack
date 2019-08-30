@@ -359,15 +359,14 @@ $(function() {
             done: function() {
                 $("#trip_details tbody").mark(_val, {
                     "element": "span",
-                    "className": "highlighted"
+                    "className": "highlighted" 
                 });
             }
-        });
+        }); 
         
     }
     performance_table = $('#trip_details').DataTable(_settings);
     performance_table.on( 'search.dt', function () {
-        console.log('asdasd');
         mark_table();
     });
     if(window.outerWidth>=521){

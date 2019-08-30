@@ -63,10 +63,10 @@
                                     <input type="radio" name="payment_status" value="deposit"> Deposit To Bank
                                     <span></span>
                                 </label>
-                                <label class="kt-radio">
+                                {{-- <label class="kt-radio">
                                         <input type="radio" name="payment_status" value="withdraw"> Withdrawn From Bank
                                     <span></span>
-                                </label>
+                                </label> --}}  
                                 <label class="kt-radio">
                                     <input type="radio" name="payment_status" value="kingrider"> Deposit To Kingrider
                                 <span></span>

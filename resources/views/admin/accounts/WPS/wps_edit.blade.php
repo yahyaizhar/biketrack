@@ -63,10 +63,10 @@
                                     <input type="radio" name="payment_status" @if ($edit_wps->payment_status==='deposit') checked @endif value="deposit"> Deposit To Bank
                                     <span></span>
                                 </label>
-                                <label class="kt-radio">
+                                {{-- <label class="kt-radio">
                                         <input type="radio" name="payment_status"@if ($edit_wps->payment_status==='withdraw') checked @endif value="withdraw"> Withdrawn From Bank
                                     <span></span>
-                                </label>
+                                </label> --}} 
                                 <label class="kt-radio">
                                     <input type="radio" name="payment_status"@if ($edit_wps->payment_status==='kingrider') checked @endif value="kingrider"> Deposit To Kingrider
                                 <span></span>

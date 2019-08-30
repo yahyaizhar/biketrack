@@ -13,6 +13,7 @@ use Batch;
 use Illuminate\Support\Arr;
 use App\Model\Bikes\bike;
 use App\Model\Rider\Rider;
+use App\Model\Accounts\Company_Account;
 
 class SalikController extends Controller
 {
@@ -29,6 +30,7 @@ class SalikController extends Controller
         $trip_objects=[];
         $zp = Trip_Detail::all(); // r1
         $update_data = [];
+        $company_accounts=[];
         $i=0;
         $unique_id=uniqid().'-'.time();
         foreach ($data as $item) {
@@ -53,7 +55,7 @@ class SalikController extends Controller
             else{
                 $objUpdate = [];
                 $objUpdate['id']=$zp_found->id;
-                $objUpdate['import_id']=$unique_id;
+                $objUpdate['import_id']=$unique_id; 
                 $objUpdate['transaction_id']=isset($item['transaction_id'])?$item['transaction_id']:null;
                 $objUpdate['toll_gate']=isset($item['toll_gate'])?$item['toll_gate']:null;
                 $objUpdate['direction']=isset($item['direction'])?$item['direction']:null;
@@ -66,12 +68,13 @@ class SalikController extends Controller
                 array_push($update_data, $objUpdate);
             }
         }
-        DB::table('trip__details')->insert($trip_objects); //r2
-        $data=Batch::update(new Trip_Detail, $update_data, 'id'); //r3
+        DB::table('trip__details')->insert($trip_objects); 
+        $data=Batch::update(new Trip_Detail, $update_data, 'id'); 
         return response()->json([
             'data'=>$trip_objects,
             'count'=>$i
         ]);
+
     }
     public function delete_lastImportSalik(){
         $import_id=Trip_Detail::all()->last()->import_id;
