@@ -26,7 +26,7 @@ class CreateCompanyAccountsTable extends Migration
             $table->integer('maintenance_id')->nullable();
             $table->integer('edirham_id')->nullable();
             $table->integer('company_expense_id')->nullable();
-            $table->integer('salik_id')->nullable();
+            $table->string('salik_id')->nullable();
             $table->integer('sim_transaction_id')->nullable();
             $table->string('status')->nullable();
             $table->string('active_status')->default("A");

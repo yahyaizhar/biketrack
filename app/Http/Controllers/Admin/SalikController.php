@@ -15,6 +15,7 @@ use App\Model\Bikes\bike;
 use App\Model\Accounts\Company_Account;
 use App\Model\Accounts\Rider_Account;
 use App\Model\Rider\Rider;
+use Carbon\Carbon;
 
 class SalikController extends Controller
 {
@@ -60,6 +61,8 @@ class SalikController extends Controller
                 $ca_obj['source']='salik';
                 $ca_obj['amount']=$obj['amount_aed'];
                 $ca_obj['type']='dr';
+                $ca_obj['created_at']=Carbon::now();
+                $ca_obj['updated_at']=Carbon::now();
                 array_push($ca_objects, $ca_obj);
             }
             else{
@@ -82,6 +85,8 @@ class SalikController extends Controller
                 $ca_obj['source']='salik';
                 $ca_obj['amount']=$objUpdate['amount_aed'];
                 $ca_obj['type']='dr';
+                $ca_obj['created_at']=Carbon::now();
+                $ca_obj['updated_at']=Carbon::now();
                 array_push($ca_objects_updates, $ca_obj);
             }
         }
