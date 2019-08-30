@@ -12,6 +12,8 @@ use App\Model\Rider\Trip_Detail;
 use Batch;
 use Illuminate\Support\Arr;
 use App\Model\Bikes\bike;
+use App\Model\Accounts\Company_Account;
+use App\Model\Accounts\Rider_Account;
 use App\Model\Rider\Rider;
 
 class SalikController extends Controller
@@ -27,6 +29,8 @@ class SalikController extends Controller
     {
         $data = $r->data;
         $trip_objects=[];
+        $ca_objects=[];
+        $ca_objects_updates=[];
         $zp = Trip_Detail::all(); // r1
         $update_data = [];
         $i=0;
@@ -49,6 +53,13 @@ class SalikController extends Controller
                 $obj['trip_time']=isset($item['trip_time'])?$item['trip_time']:null;
                 $obj['transaction_post_date']=isset($item['transaction_post_date'])?$item['transaction_post_date']:null;
                 array_push($trip_objects, $obj);
+
+                $ca_obj = [];
+                $ca_obj['salik_id']=$obj['transaction_id'];
+                $ca_obj['source']='salik';
+                $ca_obj['amount']=$obj['amount_aed'];
+                $ca_obj['type']='dr';
+                array_push($ca_objects, $ca_obj);
             }
             else{
                 $objUpdate = [];
@@ -64,22 +75,39 @@ class SalikController extends Controller
                 $objUpdate['trip_time']=isset($item['trip_time'])?$item['trip_time']:null;
                 $objUpdate['transaction_post_date']=isset($item['transaction_post_date'])?$item['transaction_post_date']:null;
                 array_push($update_data, $objUpdate);
+
+                $ca_obj = [];
+                $ca_obj['salik_id']=$objUpdate['transaction_id'];
+                $ca_obj['source']='salik';
+                $ca_obj['amount']=$obj['amount_aed'];
+                $ca_obj['type']='dr';
+                array_push($ca_objects_updates, $ca_obj);
             }
         }
         DB::table('trip__details')->insert($trip_objects); //r2
-        $data=Batch::update(new Trip_Detail, $update_data, 'id'); //r3
+        $data=Batch::update(new Trip_Detail, $update_data, 'id'); //r3  
+
+        DB::table('company__accounts')->insert($ca_objects); //r4
+        $data_ca=Batch::update(new Company_Account, $ca_objects_updates, 'salik_id'); //r5  
         return response()->json([
             'data'=>$trip_objects,
+            'data_ca'=>$ca_objects,
+            'data_ca_update'=>$data_ca,
             'count'=>$i
         ]);
     }
     public function delete_lastImportSalik(){
         $import_id=Trip_Detail::all()->last()->import_id;
         $performances=Trip_Detail::where('import_id',$import_id)->get();
+        $ca_deletes=[];
         foreach($performances as $performance)
-            {
-                $performance->delete();
-            }
+        {
+            $ca_obj = [];
+            $ca_obj['salik_id']=$performance->transaction_id;
+            array_push($ca_deletes, $ca_obj);
+            $performance->delete();
+        }
+        Company_Account::whereIn('salik_id', $ca_deletes)->delete();
 
     }
 
