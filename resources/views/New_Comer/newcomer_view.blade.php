@@ -289,7 +289,7 @@ $(function() {
                 '</tr>'+
            '</table>';
     }
-    if(window.outerWidth>=720){
+    if(window.outerWidth>=686){
         $("#check_id").change(function(){
 
             if($("#check_id").prop("checked") == true){
@@ -308,7 +308,7 @@ $(function() {
             }
         });
     }
-    else if(window.outerWidth<720){
+    else if(window.outerWidth<686){
         $("#check_id").change(function(){
             if($("#check_id").prop("checked") == true){
                 $("td.sorting_1").each(function(){
@@ -352,7 +352,7 @@ function updateStatus(bike_id)
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
-            });
+            }); 
             $.ajax({
                 url : url,
                 type : 'POST',

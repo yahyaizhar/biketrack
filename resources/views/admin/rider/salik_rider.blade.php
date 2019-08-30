@@ -6,19 +6,16 @@
         .highlighted{
             background-color: #FFFF88;
         }
-        .dataTables_filter{
+        .dataTables_length{
+        display: block;      
+        }
+        .total_entries{
+        display: inline-block;
+        margin-left: 10px;
+        }
+        .dataTables_info{
             display:none;
         }
-        .dataTables_length{
-   display: block;   
-}
-.total_entries{
-display: inline-block;
-margin-left: 10px;
-}
-.dataTables_info{
-    display:none;
-}
         </style>
     <!--end::Page Vendors Styles -->
 @endsection
@@ -39,7 +36,6 @@ margin-left: 10px;
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
-                        {{-- <button class="btn btn-danger btn-elevate btn-icon-sm" id="bulk_delete">Delete Selected</button> --}}
                         &nbsp;
                         <div class="checkbox checkbox-danger btn btn-default btn-elevate btn-icon-sm">
                             <input id="check_id" class="checkbox checkbox-danger" type="checkbox">
@@ -48,15 +44,9 @@ margin-left: 10px;
                             </label>
                         </div>
                         &nbsp;
-                        <input type="text" class="form-control" placeholder="Search" id="search_details" style="display: inline-block;width: auto;">
                         
                         <a style="padding:8.45px 13px;" href="" data-toggle="modal" data-target="#import_data"  class="btn btn-label-success btn-sm btn-upper">Import Trip Detail</a>&nbsp;
                         <input class="btn btn-primary" type="button" onclick="export_data();" value="Export Trip Detail">
-
-                        {{-- <a href="{{ route('Sim.new_sim') }}" class="btn btn-brand btn-elevate btn-icon-sm">
-                            <i class="la la-plus"></i>
-                            New Record
-                        </a> --}}
                         </div>
                 </div>
             </div>
@@ -76,6 +66,9 @@ margin-left: 10px;
                         <th>Plate</th>
                         <th>Amount(AED)</th>
                         {{-- <th>Actions</th> --}}
+                        <th class="d-none">h1</th>
+                        <th class="d-none">h2</th>
+                        <th class="d-none">h3</th>
                     </tr>
                 </thead>
             </table>
@@ -256,7 +249,7 @@ $(function() {
             });
             $('.total_entries').remove();
             $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
-    
+            mark_table();
              
         },
         ajax: '{!! route('bike.ajax_salik_bike',$bike->id) !!}',
@@ -284,7 +277,17 @@ $(function() {
             { "data": 'plate', "name": 'plate' },
             { "data": 'amount_aed', "name": 'amount_aed' },
             // { "data": 'actions', "name": 'actions' }
+            { "data": 'trip_date', "name": 'trip_date' },
+            { "data": 'trip_time', "name": 'trip_time' },
+            { "data": 'transaction_post_date', "name": 'transaction_post_date' },
         ];
+        _settings.columnDefs=[
+            {
+                "targets": [ 7,8,9 ],
+                "visible": false,
+                searchable: true,
+            },
+        ],
         _settings.responsive=false;
     }
     else{
@@ -308,6 +311,45 @@ $(function() {
      
     }
     performance_table = $('#trip_details').DataTable(_settings);
+    var mark_table = function(){
+        var _val = performance_table.search();
+        if(_val===''){
+            $("#trip_details tbody").unmark();
+            $("#trip_details tbody > tr:visible").each(function() {
+                var tr = $(this);
+                var row = performance_table.row( tr );
+                if ( row.child.isShown() ) {
+                    // This row is already open - close it
+                    row.child.remove();
+                    tr.removeClass('shown');
+                }
+            });
+            return;
+        }
+        $('#trip_details tbody > tr[role="row"]:visible').each(function() {
+            var tr = $(this);
+            var row = performance_table.row( tr );
+            // console.warn("isShon: ",row.child.isShown());
+            if ( row.child.isShown() ) {
+                // This row is already open - close it
+                row.child.remove();
+                tr.removeClass('shown');
+            }
+                // This row is already open - close it
+                var _arow = row.child( format(row.data()) );
+                _arow.show();
+                tr.addClass('shown');
+        });
+        $("#trip_details tbody").unmark({
+            done: function() {
+                $("#trip_details tbody").mark(_val, {
+                    "element": "span",
+                    "className": "highlighted"
+                });
+            }
+        });
+        
+    }
     if(window.outerWidth>=521){
         $('#trip_details tbody').on('click', 'td.details-control', function () {
             var tr = $(this).closest('tr');
@@ -340,71 +382,7 @@ $(function() {
             
         '</table>';
 }
-$("#search_details").on("keyup", function() {
-    var _val = $(this).val().trim().toLowerCase();
-    if(_val===''){
-        $("#trip_details tbody").unmark();
-        $("#trip_details tbody > tr:visible").each(function() {
-            var tr = $(this);
-            var row = performance_table.row( tr );
-            if ( row.child.isShown() ) {
-                // This row is already open - close it
-                row.child.remove();
-                tr.removeClass('shown');
-            }
-        });
-        return;
-    }
-    // $("#trip_details tbody > tr:visible").each(function() {
-    //     $(this).removeClass("shown");
-    // });
-    $('#trip_details tbody > tr').show();
-    if (riders_data.length > 0) {
-        
-        var _res = riders_data.filter(function(x) {
-          
-            return JSON.stringify(x).indexOf(_val) !== -1;
-        });
-        
-        if (_res.length > 0) {
-            $("#trip_details tbody > tr").filter(function(index) {
-
-                var _id = $(this).find("td").eq(1).text().trim().toLowerCase();
-                if (_res.findIndex(function(x) {
-                        return  x.transaction_id == _id
-                    }) === -1) {
-                    $(this).hide();
-                }
-            });
-            if(_val !== ''){
-                $("#trip_details tbody > tr:visible").each(function() {
-                    var tr = $(this);
-                    var row = performance_table.row( tr );
-                    // console.warn("isShon: ",row.child.isShown());
-                    if ( row.child.isShown() ) {
-                        // This row is already open - close it
-                        row.child.remove();
-                        tr.removeClass('shown');
-                    }
-                        // This row is already open - close it
-                        var _arow = row.child( format(row.data()) );
-                        _arow.show();
-                        tr.addClass('shown');
-                });
-            }
-            $("#trip_details tbody").unmark({
-                done: function() {
-                    $("#trip_details tbody").mark(_val, {
-                        "element": "span",
-                        "className": "highlighted"
-                    });
-                }
-            });
-        } else {
-            $("#trip_details tbody > tr").hide();
-        }
-    }
-    }); 
+   
     if(window.outerWidth>=521){
         $("#check_id").change(function(){
 
@@ -443,13 +421,6 @@ $("#search_details").on("keyup", function() {
         });
     }
 });
-
-
-
-    
-
-
-
 // table accordian end
 function delete_lastImport()
 {

@@ -202,18 +202,11 @@
                                         @php
                                             $riders=App\Model\Rider\Rider::where("active_status","A")->where("status","1")->get();
                                         @endphp
-                                        <select id="empoloyee_reference" class="form-control  @if($errors->has('empoloyee_reference')) invalid-field @endif kt-select2" id="kt_select2_3" name="empoloyee_reference" placeholder="Enter Employee Reference" value="{{ old('empoloyee_reference') }}">
+                                        <select id="empoloyee_reference" class="form-control   kt-select2" id="kt_select2_3" name="empoloyee_reference" placeholder="Enter Employee Reference" value="{{ old('empoloyee_reference') }}">
                                             @foreach ($riders as $rider)
                                             <option value="{{$rider->id}}">{{$rider->name}}</option>
                                             @endforeach
                                         </select> 
-                                        @if ($errors->has('empoloyee_reference'))
-                                            <span class="invalid-response" role="alert">
-                                                <strong>
-                                                    {{$errors->first('empoloyee_reference')}}
-                                                </strong>
-                                            </span>
-                                        @endif
                                         <span class="form-text text-muted">Who referred this rider?</span>
                                     </div>
                                 </div>
@@ -221,20 +214,20 @@
                             <div class="col-lg-4 col-md-4 col-sm-12"> 
                                 <div class="form-group">
                                     <label class="kt-radio">
-                                        <input type="radio" data-depended=".is_guarantee__outsider" name="is_guarantee" required value="outsider"> Someone else passport
+                                        <input type="radio" data-depended=".is_guarantee__outsider" name="is_guarantee" value="outsider"> Someone else passport
                                         <span></span>
                                     </label>
-                                    <textarea type="text" rows="5" autocomplete="off" class="dependend-field is_guarantee__outsider form-control @if($errors->has('other_passport_given')) invalid-field @endif" name="other_passport_given" placeholder="Other person detail" ></textarea>
+                                    <textarea type="text" rows="5" autocomplete="off" class="dependend-field is_guarantee__outsider form-control " name="other_passport_given" placeholder="Other person detail" ></textarea>
                                     <span class="form-text text-muted is_guarantee__outsider dependend-field">Where that person works?</span>
                                 </div>
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-12"> 
                                 <div class="form-group">
                                     <label class="kt-radio">
-                                        <input type="radio" data-depended=".is_guarantee__not_given" name="is_guarantee" required value="not_given"> Not given
+                                        <input type="radio" data-depended=".is_guarantee__not_given" name="is_guarantee" value="not_given"> Not given
                                         <span></span>
                                     </label>
-                                    <textarea type="text" rows="5" autocomplete="off" class="dependend-field is_guarantee__not_given form-control @if($errors->has('not_given')) invalid-field @endif" name="not_given" placeholder="Reason" ></textarea>
+                                    <textarea type="text" rows="5" autocomplete="off" class="dependend-field is_guarantee__not_given form-control " name="not_given" placeholder="Reason" ></textarea>
                                     <span class="form-text text-muted is_guarantee__not_given dependend-field">Why not?</span>
                                 </div>
                             </div>
@@ -256,7 +249,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> 
 <div class="row">
 <div class="col-lg-6 col-md-6 col-sm-12">
 <div class="form-group">
@@ -423,6 +416,10 @@
 </div>
 @endsection
 @section('foot')
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
 <script>
     $(document).ready(function(){
         $('.dependend-field').hide('fast');
@@ -444,7 +441,7 @@
             }
             $('.dependend-field').hide('fast');
             $(_dependend).fadeIn('fast');
-        })
+        });
         $('#timepicker1').change(function(){
         var a = $('#timepicker1').val();
         var getUTC_date=new Date(a.toDate('h:m')).format('HH:MM',true);
@@ -474,10 +471,7 @@
     });
     </script>
 
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <link rel="stylesheet" href="/resources/demos/style.css">
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
+ 
 {{-- timepicker --}}
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
