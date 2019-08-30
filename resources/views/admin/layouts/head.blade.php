@@ -111,7 +111,11 @@
 	max-width: fit-content;
   }
 }
-						
+			.psbScroll .dropdown-menu{
+				max-height: 16rem;
+				overflow-y: scroll;		
+
+			}			
 
 						</style>
 						<link href="//cdn.rawgit.com/noelboss/featherlight/1.7.13/release/featherlight.min.css" type="text/css" rel="stylesheet" />

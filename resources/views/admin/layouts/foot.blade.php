@@ -264,6 +264,23 @@ biketrack.getUrlParameter = function(name) {
     var results = regex.exec(location.search);
     return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 };
+
+jQuery(function($) {
+    var _psbScroll = null;
+    $(document).on("shown.bs.dropdown.psbScroll", function(event, data) {
+        var $item = $('.dropdown-menu', event.target)[0];
+        console.log($item);
+        if(_psbScroll){
+            _psbScroll.destroy();
+            _psbScroll = null; // to make sure garbages are collected
+        }
+        _psbScroll = new PerfectScrollbar($item, {
+            wheelSpeed: 0.5,
+            swipeEasing: true,
+            wheelPropagation:false
+        });
+    });  
+});
 </script>
     <!--end:: Global Optional Vendors -->
 

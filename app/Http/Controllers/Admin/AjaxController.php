@@ -568,11 +568,11 @@ class AjaxController extends Controller
                 $bike_html='<a class="dropdown-item" href="'.route('rider.rider_salik', $riders).'"><i class="fa fa-eye"></i> View Salik</a>';
             }
             return '<span class="dtr-data">
-            <span class="dropdown">
-                <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+            <span class="dropdown psbScroll">
+                <a href="#"  class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
                 <i class="la la-ellipsis-h"></i>
                 </a>
-                <div class="dropdown-menu dropdown-menu-right">
+                <div class="dropdown-menu dropdown-menu-right" data-ktmenu-vertical="1" data-ktmenu-scroll="1" data-ktmenu-dropdown-timeout="500">
                     <a class="dropdown-item" href="'.route('admin.rider.profile', $riders->id).'"><i class="fa fa-eye"></i> View</a>
                     <a class="dropdown-item" href="'.route('admin.rider.ridesReport', $riders->id).'"><i class="fa fa-eye"></i> View Rides Report</a>
                     <button class="dropdown-item" onclick="updateStatus('.$riders->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
