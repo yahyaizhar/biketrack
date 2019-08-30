@@ -894,9 +894,9 @@ class AjaxController extends Controller
             //         </label>';
         }) 
         
-        ->addColumn('created_at', function($riderToMonth){
+        ->addColumn('month', function($riderToMonth){
             
-            return  Carbon::parse($riderToMonth->created_at)->format('M Y');
+            return  Carbon::parse($riderToMonth->month)->format('M Y');
         })
         ->addColumn('salary', function($riderToMonth){
 
@@ -932,7 +932,7 @@ class AjaxController extends Controller
     }
     public function getMonthToRider($month)
     {  
-        $rider_salaries=Rider_salary::where("active_status","A")->whereMonth('created_at', $month)->get();
+        $rider_salaries=Rider_salary::where("active_status","A")->whereMonth('month', $month)->get();
         
         return DataTables::of($rider_salaries)
         ->addColumn('status', function($monthToRider){

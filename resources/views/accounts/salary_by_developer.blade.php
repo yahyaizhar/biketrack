@@ -133,7 +133,7 @@ $(document).ready(function(){
      ajax: "{{url('admin/Rider/To/Month/ajax')}}"+"/"+$(this).val(),
      columns: [
             //  { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
-            { data: 'created_at', name: 'created_at' },
+            { data: 'month', name: 'month' },
             { data: 'salary', name: 'salary' },
             { data: 'payment_date', name: 'payment_date' },
             { data: 'paid_by', name: 'paid_by' },

@@ -10,7 +10,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class Rider_salary extends Authenticatable
 {
     protected $fillable = [
-        'rider_id','salary','paid_by','status','settings',
+        'rider_id','salary','paid_by','status','settings', 'month',
        ];
        public function Rider()
          {
