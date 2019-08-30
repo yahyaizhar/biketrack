@@ -1278,7 +1278,7 @@ class AjaxController extends Controller
 
        public function getSalikTrip_Details()
        {
-           $detail =Trip_Detail::orderByDesc('created_at')->get();
+           $detail =Trip_Detail::where("active_status","A")->orderByDesc('created_at')->get();
            return DataTables::of($detail)
            ->addColumn('status', function($detail){
                if($detail->status == 1)
