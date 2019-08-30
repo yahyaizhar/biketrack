@@ -39,7 +39,7 @@
                         <div class="form-group">
                             <label>Select Sim:</label>
                           <div>
-                            <select class="form-control kt-select2" id="kt_select2_3" name="sim_id" >
+                            <select required class="form-control kt-select2" id="kt_select2_3" name="sim_id" >
                                  @foreach ($sim as $sims)
                                  @php
                                  $temp=true; 
@@ -61,7 +61,7 @@
                            
                         <div class="form-group">
                             <label>Allowed Balance:</label>
-                            <input type="text" class="form-control @if($errors->has('allowed_balance')) invalid-field @endif" name="allowed_balance" placeholder="Allowed Balance " value="{{ old('allowed_balance') }}">
+                            <input required type="text" class="form-control @if($errors->has('allowed_balance')) invalid-field @endif" name="allowed_balance" placeholder="Allowed Balance " value="{{ old('allowed_balance') }}">
                             @if ($errors->has('allowed_balance'))
                                 <span class="invalid-response" role="alert">
                                     <strong>
@@ -73,7 +73,7 @@
 
                         <div class="form-group">
                                 <label>Given Date:</label>
-                                <input type="text" id="datepicker1" autocomplete="off" class="form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter given Date" >
+                                <input required type="text" id="datepicker1" autocomplete="off" class="form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter given Date" >
                                 @if ($errors->has('given_date'))
                                     <span class="invalid-response" role="alert">
                                         <strong>
