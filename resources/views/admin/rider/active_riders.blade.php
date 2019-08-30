@@ -341,7 +341,7 @@ function format ( data ) {
             '<td colspan="2";>'+data.bike_number+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >Phone Number:</td>'+
             '<td colspan="1";>'+data.phone+'</td>'+
-            '<td colspan="1"; style="font-weight:900;" >Emerate ID:</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Emirate ID:</td>'+
             '<td colspan="1";>'+data.emirate_id+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >Email:</td>'+
             '<td colspan="1";>'+data.email+'</td>'+
@@ -352,7 +352,7 @@ function format ( data ) {
             '<td colspan="2";>'+data.passport_expiry+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >Visa Expiry:</td>'+
             '<td colspan="2"; >'+data.visa_expiry+'</td>'+
-            '<td style="font-weight:900;">Licence Exiry:</td>'+
+            '<td style="font-weight:900;">Licence Expiry:</td>'+
             '<td colspan="2";>'+data.licence_expiry+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >Mulkiya Expiry:</td>'+
             '<td colspan="2";>'+data.mulkiya_expiry+'</td>'+
