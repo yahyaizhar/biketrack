@@ -15,7 +15,6 @@ use App\Model\Bikes\bike;
 use App\Model\Accounts\Company_Account;
 use App\Model\Accounts\Rider_Account;
 use App\Model\Rider\Rider;
-use App\Model\Accounts\Company_Account;
 
 class SalikController extends Controller
 {
@@ -95,7 +94,7 @@ class SalikController extends Controller
             'data'=>$trip_objects,
             'data_ca'=>$ca_objects,
             'data_ca_update'=>$data_ca,
-            'count'=>$i
+            'count'=>$i 
         ]);
 
     }
