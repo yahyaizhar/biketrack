@@ -102,14 +102,20 @@ class SalikController extends Controller
         $import_id=Trip_Detail::all()->last()->import_id;
         $performances=Trip_Detail::where('import_id',$import_id)->get();
         $ca_deletes=[];
+        $deletes = [];
         foreach($performances as $performance)
         {
             $ca_obj = [];
             $ca_obj['salik_id']=$performance->transaction_id;
+            $ca_obj['active_status']='D';
+            $ca_obj['source']='salik';
+            $ca_obj['amount']=$performance->amount_aed;
+            $ca_obj['type']='dr';
             array_push($ca_deletes, $ca_obj);
-            $performance->delete();
+            $performance->active_status = 'D';
+            $performance->update();
         }
-        Company_Account::whereIn('salik_id', $ca_deletes)->delete();
+        $data_ca=Batch::update(new Company_Account, $ca_deletes, 'salik_id'); //r
 
     }
 
