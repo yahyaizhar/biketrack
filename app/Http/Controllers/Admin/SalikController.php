@@ -80,7 +80,7 @@ class SalikController extends Controller
                 $ca_obj = [];
                 $ca_obj['salik_id']=$objUpdate['transaction_id'];
                 $ca_obj['source']='salik';
-                $ca_obj['amount']=$obj['amount_aed'];
+                $ca_obj['amount']=$objUpdate['amount_aed'];
                 $ca_obj['type']='dr';
                 array_push($ca_objects_updates, $ca_obj);
             }
