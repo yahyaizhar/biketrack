@@ -25,6 +25,7 @@ class CreateTripDetailsTable extends Migration
             $table->string('tag_number')->nullable();
             $table->string('plate')->nullable();
             $table->string('amount_aed')->nullable(); 
+            $table->string('active_status')->default("A"); 
             $table->timestamps();
         });
     }
