@@ -10,6 +10,18 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class Rider_Account extends Authenticatable
 {
     protected $fillable = [
-        'type','amount','rider_id','client_id','bike_expense_id','fine_id','salik_id','salary_id','sim_transaction_id','income_id','investment_id','mobile_installment_id','status','active_status','rider_advance_id','setting'
-       ];
+        'type',
+        'amount',
+        'rider_id',
+        'advance_return_id',
+        'id_charge_id',
+        'wps_id',
+        'fuel_expense_id',
+        'maintenance_id',
+        'edirham_id',
+        'company_expense_id',
+        'salik_id',
+        'sim_transaction_id',
+        'status',
+    ];
 }
