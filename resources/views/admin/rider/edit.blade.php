@@ -1,6 +1,30 @@
 @extends('admin.layouts.app')
 @section('main-content')
 <!-- begin:: Content -->
+<style>
+             .icon_change_password{
+                 position: absolute;
+                top: 35%;
+                right: 1%;
+                color: #5578eb;
+                font-size: 20px;
+            }
+            .icon_change_password_confirmation{
+                 position: absolute;
+                top: 48%;
+                right: 1%;
+                color: #5578eb;
+                font-size: 20px;
+            }
+            .custom-file-label{
+                overflow: hidden;
+            }
+            .custom-file-label::after{
+                color: white;
+                background-color: #5578eb;
+            }
+        </style>
+        
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
 <div class="row">
     <div class="col-md-12">
@@ -619,6 +643,38 @@
 {{-- start_timer , timepicker1 --}}
 <script>
 $(document).ready(function(){
+
+ 
+$("[name='password']").after('<div class="icon_change_password" data-target="password"><i class="fa fa-eye for_password"></i></div>');
+        $(".icon_change_password ").parent().addClass("position-relative");
+        $(".icon_change_password").on("click",function(){
+            if ($("[name='password']").attr("type")=="password") {
+                $("[name='password']").attr("type","text");
+                $(".for_password").removeClass("fa fa-eye ");
+                $(".for_password").addClass("fa fa-eye-slash");
+            }
+            else if($("[name='password']").attr("type")=="text"){
+                $("[name='password']").attr("type","password");
+                $(".for_password").removeClass("fa fa-eye-slash ");
+                $(".for_password").addClass("fa fa-eye");
+            } 
+        });
+        $("[name='password_confirmation']").after('<div class="icon_change_password_confirmation" data-target="password"><i class="fa fa-eye for_password_confirmation"></i></div>');
+        $(".icon_change_password_confirmation").parent().addClass("position-relative");
+        $(".icon_change_password_confirmation").on("click",function(){
+            if ($("[name='password_confirmation']").attr("type")=="password") {
+                $("[name='password_confirmation']").attr("type","text");
+                $(".for_password_confirmation").removeClass("fa fa-eye ");
+                $(".for_password_confirmation").addClass("fa fa-eye-slash");
+            }
+            else if($("[name='password_confirmation']").attr("type")=="text"){
+                $("[name='password_confirmation']").attr("type","password");
+                $(".for_password_confirmation").removeClass("fa fa-eye-slash ");
+                $(".for_password_confirmation").addClass("fa fa-eye");
+            } 
+        });
+
+
     $('.kt-select2').select2({
         placeholder: "Select an option",
         width:'100%'    

@@ -24,7 +24,7 @@
                         <div class="form-group">
                             <label>Riders: </label>
                             <div>
-                                <select class="form-control kt-select2" id="kt_select2_3" name="riders[]" multiple="multiple">
+                                <select required class="form-control kt-select2" id="kt_select2_3" name="riders[]" multiple="multiple">
                                 @foreach ($riders as $rider)
                                     <option value="{{ $rider->id }}" 
                                         {{-- @foreach ($client->getRiders as $assigned_rider)
