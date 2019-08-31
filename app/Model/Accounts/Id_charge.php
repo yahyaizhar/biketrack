@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Id_charge extends Authenticatable
 {
-    protected $fillable = ['type', 'amount', 'status'];
+    protected $fillable = ['type', 'amount', 'month', 'status'];
     public function Rider()
     {
         return $this->belongsTo('App\Model\Rider\Rider');

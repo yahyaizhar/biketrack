@@ -112,7 +112,7 @@ class RiderController extends Controller
         
        $rider_detail=new Rider_detail();
        $rider_detail->rider_id = $rider->id;
-       $rider_detail->date_of_joining = $request->date_of_joining;
+       $rider_detail->date_of_joining = Carbon::parse($request->date_of_joining)->format('Y-m-d');
        $rider_detail->official_given_number = $request->official_given_number;
        $rider_detail->official_sim_given_date = $request->official_sim_given_date;
        $rider_detail->other_details = $request->other_details;
@@ -166,7 +166,7 @@ class RiderController extends Controller
             $filepath = Storage::putfile('public/uploads/riders/passport_image_back', $request->file('passport_image_back'));
             $rider_detail->passport_image_back = $filepath;
         }
-       $rider_detail->passport_expiry = $request->passport_expiry;
+       $rider_detail->passport_expiry = Carbon::parse($request->passport_expiry)->format('Y-m-d');
        if($request->hasFile('visa_image'))
        {
            // return 'yes';
@@ -185,7 +185,7 @@ class RiderController extends Controller
            $filepath = Storage::putfile('public/uploads/riders/visa_image_back', $request->file('visa_image_back'));
            $rider_detail->visa_image_back = $filepath;
        }
-       $rider_detail->visa_expiry = $request->visa_expiry;
+       $rider_detail->visa_expiry = Carbon::parse($request->visa_expiry)->format('Y-m-d');
        if($request->hasFile('emirate_image'))
        {
            // return 'yes';
@@ -222,7 +222,7 @@ class RiderController extends Controller
            $filepath = Storage::putfile('public/uploads/riders/licence_image_back', $request->file('licence_image_back'));
            $rider_detail->licence_image_back = $filepath;
        }
-       $rider_detail->licence_expiry= $request->licence_expiry;
+       $rider_detail->licence_expiry= Carbon::parse($request->licence_expiry)->format('Y-m-d');
        
       
        $rider_detail->save();
@@ -389,7 +389,7 @@ class RiderController extends Controller
         // return 'no';
         $rider->update(); 
         $rider_detail=$rider->Rider_detail()->get()->first();
-        $rider_detail->date_of_joining = $request->date_of_joining;
+        $rider_detail->date_of_joining = Carbon::parse($request->date_of_joining)->format('Y-m-d');
         $rider_detail->official_given_number = $request->official_given_number;
         $rider_detail->official_sim_given_date = $request->official_sim_given_date;
         $rider_detail->other_details = $request->other_details;
@@ -454,7 +454,7 @@ class RiderController extends Controller
             $filepath = Storage::putfile('public/uploads/riders/passport_image_back', $request->file('passport_image_back'));
             $rider_detail->passport_image_back = $filepath;
         }
-       $rider_detail->passport_expiry = $request->passport_expiry;
+       $rider_detail->passport_expiry = Carbon::parse($request->passport_expiry)->format('Y-m-d');
        if($request->hasFile('visa_image'))
        {
            // return 'yes';
@@ -481,7 +481,7 @@ class RiderController extends Controller
            $filepath = Storage::putfile('public/uploads/riders/visa_image_back', $request->file('visa_image_back'));
            $rider_detail->visa_image_back = $filepath;
        }
-       $rider_detail->visa_expiry = $request->visa_expiry;
+       $rider_detail->visa_expiry = Carbon::parse($request->visa_expiry)->format('Y-m-d');
        if($request->hasFile('emirate_image'))
        {
            // return 'yes';
@@ -532,7 +532,7 @@ class RiderController extends Controller
            $filepath = Storage::putfile('public/uploads/riders/licence_image_back', $request->file('licence_image_back'));
            $rider_detail->licence_image_back = $filepath;
        }
-       $rider_detail->licence_expiry= $request->licence_expiry;
+       $rider_detail->licence_expiry= Carbon::parse($request->licence_expiry)->format('Y-m-d');
        
        $rider_detail->update();
     

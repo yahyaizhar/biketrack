@@ -8,5 +8,5 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Maintenance extends Authenticatable
 {
-    protected $fillable = ['maintenance_type','accident_payment_status', 'workshop_id','bike_id', 'amount', 'status'];
+    protected $fillable = ['maintenance_type', 'month','accident_payment_status', 'workshop_id','bike_id', 'amount', 'status'];
 }

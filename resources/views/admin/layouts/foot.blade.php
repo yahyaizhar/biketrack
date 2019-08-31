@@ -280,6 +280,23 @@ jQuery(function($) {
             wheelPropagation:false
         });
     });  
+    $('.month_picker').each(function(){
+        var _initDate = $(this).attr('data-month');
+        
+        $(this).fdatepicker({ 
+            format: 'MM yyyy', 
+            // initialDate: 'July 2019',
+            startView:3,
+            minView:3,
+            maxView:4
+        });
+        $(this).trigger('click')
+        $('.datepicker:visible table tbody .month:contains('+_initDate.split(' ')[0]+')').trigger('click')  
+        // setTimeout(function() {
+        //     $('.datepicker:visible table tbody .month:contains('+_initDate.split(' ')[0]+')').trigger('click')    
+        // }, 500);
+        
+    });
 });
 </script>
     <!--end:: Global Optional Vendors -->

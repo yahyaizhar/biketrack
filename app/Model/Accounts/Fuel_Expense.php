@@ -8,5 +8,5 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Fuel_Expense extends Authenticatable
 {
-    protected $fillable = ['type', 'amount', 'status','active_status'];
+    protected $fillable = ['type', 'amount', 'month', 'status','active_status'];
 }

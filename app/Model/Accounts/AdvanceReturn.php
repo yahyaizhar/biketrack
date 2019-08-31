@@ -9,7 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class AdvanceReturn extends Authenticatable
 {
     protected $fillable = [
-        'type','rider_id', 'amount', 'status','payment_status','active_status','setting'
+        'type','rider_id', 'month', 'amount', 'status','payment_status','active_status','setting'
     ];
    
 }

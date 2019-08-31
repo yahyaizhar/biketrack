@@ -10,6 +10,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class Company_Expense extends Authenticatable
 {
     protected $fillable = [
-        'amount','description','status','active_status','setting'
+        'amount', 'month','description','status','active_status','setting'
        ];
 }

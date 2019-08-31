@@ -38,10 +38,12 @@ class AccountsController extends Controller
         $id_charge = $rider->id_charges()->create([
             'type'=>$r->type,
             'amount'=>$r->amount,
+            'month' => Carbon::parse($r->get('month'))->format('Y-m-d'),
             'status'=>$r->status=='on'?1:0,
         ]);
         $ca = new \App\Model\Accounts\Company_Account;
         $ca->type='dr';
+        $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
         $ca->rider_id=$r->rider_id;
         $ca->amount=$r->amount;
         $ca->source='id_charges';
@@ -64,6 +66,7 @@ class AccountsController extends Controller
         $id_charge =Id_charge::find($id);
         $id_charge->rider_id=$rider->id;
         $id_charge->type=$r->type;
+        $id_charge->month=Carbon::parse($r->get('month'))->format('Y-m-d');
         $id_charge->amount=$r->amount;
         // $id_charge->=$r->;
         if($r->status)
@@ -76,6 +79,7 @@ class AccountsController extends Controller
         $ca->type='dr';
         $ca->rider_id=$r->rider_id;
         $ca->amount=$r->amount;
+        $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ca->source='id_charges';
         $ca->id_charge_id=$id_charge->id;
         $ca->update();
@@ -87,6 +91,13 @@ class AccountsController extends Controller
         $id_charge->active_status="D";
         $id_charge->status=0;
         $id_charge->update();
+
+        $ca =\App\Model\Accounts\Company_Account::where("id_charge_id",$id_charge->id)->get()->first();
+        if(isset($ca)){
+            $ca->active_status="D";
+            $ca->update();
+        }
+        
     }
     public function updateStatusIdCharges($id_charge_id)
     {
@@ -179,6 +190,7 @@ class AccountsController extends Controller
     {
         $edirham = Edirham::create([
             'amount'=>$r->amount,
+            'month' => Carbon::parse($r->get('month'))->format('Y-m-d'),
             'status'=>$r->status=='on'?1:0,
         ]);
         $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
@@ -186,6 +198,7 @@ class AccountsController extends Controller
         ]);
         $ca->edirham_id =$edirham->id;
         $ca->type='dr';
+        $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ca->source="edirham"; 
         $ca->amount=$r->amount;
         $ca->save();
@@ -203,6 +216,7 @@ class AccountsController extends Controller
     public function edirham_update(Request $r,$id){
         $edirham =Edirham::find($id);
         $edirham->amount=$r->amount;
+        $edirham->month=Carbon::parse($r->get('month'))->format('Y-m-d');
         if($r->status)
             $edirham->status = 1;
         else
@@ -216,6 +230,7 @@ class AccountsController extends Controller
         $ca->edirham_id =$edirham->id;
         $ca->type='dr';
         $ca->source="edirham"; 
+        $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ca->amount=$r->amount;
         $ca->save();
 
@@ -259,6 +274,7 @@ class AccountsController extends Controller
             'maintenance_type'=>$r->maintenance_type,
             'workshop_id'=>$r->workshop_id,
             'bike_id'=>$r->bike_id,
+            'month' => Carbon::parse($r->get('month'))->format('Y-m-d'),
             'amount'=>$r->amount,
             'accident_payment_status'=>$r->accident_payment_status,
             'status'=>$r->status=='on'?1:0,
@@ -276,6 +292,7 @@ class AccountsController extends Controller
             $ca->maintenance_id =$maintenance->id;
             $ca->type='dr';
             $ca->rider_id=$rider_id;
+            $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
             $ca->source="maintenance"; 
             $ca->amount=$r->amount;
             $ca->save();
@@ -285,6 +302,7 @@ class AccountsController extends Controller
             ]);
             $ra->maintenance_id =$maintenance->id;
             $ra->type='cr_payable';
+            $ra->month = Carbon::parse($r->get('month'))->format('Y-m-d');
             $ra->rider_id=$rider_id;
             $ra->source="maintenance"; 
             $ra->amount=$r->amount;
@@ -296,6 +314,7 @@ class AccountsController extends Controller
                 $ca_dr = new \App\Model\Accounts\Company_Account;
                 $ca_dr->maintenance_id =$maintenance->id;
                 $ca_dr->type='dr';
+                $ca_dr->month = Carbon::parse($r->get('month'))->format('Y-m-d');
                 $ca_dr->rider_id=$rider_id;
                 $ca_dr->source="maintenance"; 
                 $ca_dr->amount=$r->amount;
@@ -307,6 +326,7 @@ class AccountsController extends Controller
             ]);
             $ca->maintenance_id =$maintenance->id;
             $ca->type='cr';
+            $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
             $ca->rider_id=$rider_id;
             $ca->source="maintenance"; 
             $ca->amount=$r->amount;
@@ -317,6 +337,7 @@ class AccountsController extends Controller
                 $ra_dr = new \App\Model\Accounts\Rider_Account;
                 $ra_dr->maintenance_id =$maintenance->id;
                 $ra_dr->type='cr_payable';
+                $ra_dr->month = Carbon::parse($r->get('month'))->format('Y-m-d');
                 $ra_dr->rider_id=$rider_id;
                 $ra_dr->source="maintenance"; 
                 $ra_dr->amount=$r->amount;
@@ -330,6 +351,7 @@ class AccountsController extends Controller
             $ra->maintenance_id =$maintenance->id;
             $ra->type='dr_payable';
             $ra->rider_id=$rider_id;
+            $ra->month = Carbon::parse($r->get('month'))->format('Y-m-d');
             $ra->source="maintenance";
             $ra->amount=$r->amount;
             $ra->save();
@@ -343,6 +365,7 @@ class AccountsController extends Controller
             $ca->maintenance_id =$maintenance->id;
             $ca->type='dr';
             $ca->rider_id=$rider_id;
+            $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
             $ca->source="maintenance"; 
             $ca->amount=$r->amount;
             $ca->save();
@@ -365,6 +388,7 @@ class AccountsController extends Controller
         $maintenance->maintenance_type=$r->maintenance_type;
         $maintenance->workshop_id=$r->workshop_id;
         $maintenance->bike_id=$r->bike_id;
+        $maintenance->month=Carbon::parse($r->get('month'))->format('Y-m-d');
         $maintenance->accident_payment_status=$r->accident_payment_status;
         $maintenance->amount=$r->amount;
         // $id_charge->=$r->;
@@ -395,6 +419,7 @@ class AccountsController extends Controller
             $ca->maintenance_id =$maintenance->id;
             $ca->type='dr';
             $ca->rider_id=$rider_id;
+            $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
             $ca->source="maintenance"; 
             $ca->amount=$r->amount;
             $ca->save();
@@ -405,6 +430,7 @@ class AccountsController extends Controller
             $ra->maintenance_id =$maintenance->id;
             $ra->type='cr_payable';
             $ra->rider_id=$rider_id;
+            $ra->month = Carbon::parse($r->get('month'))->format('Y-m-d');
             $ra->source="maintenance"; 
             $ra->amount=$r->amount;
             $ra->save();
@@ -416,6 +442,7 @@ class AccountsController extends Controller
                 $ca_dr->maintenance_id =$maintenance->id;
                 $ca_dr->type='dr';
                 $ca_dr->rider_id=$rider_id;
+                $ca_dr->month = Carbon::parse($r->get('month'))->format('Y-m-d');
                 $ca_dr->source="maintenance"; 
                 $ca_dr->amount=$r->amount;
                 $ca_dr->save();
@@ -424,6 +451,7 @@ class AccountsController extends Controller
                 $ca_check->maintenance_id =$maintenance->id;
                 $ca_check->type='dr';
                 $ca_check->rider_id=$rider_id;
+                $ca_check->month = Carbon::parse($r->get('month'))->format('Y-m-d');
                 $ca_check->source="maintenance"; 
                 $ca_check->amount=$r->amount;
                 $ca_check->save();
@@ -435,6 +463,7 @@ class AccountsController extends Controller
             $ca->maintenance_id =$maintenance->id;
             $ca->type='cr';
             $ca->rider_id=$rider_id;
+            $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
             $ca->source="maintenance"; 
             $ca->amount=$r->amount;
             $ca->save();
@@ -444,6 +473,7 @@ class AccountsController extends Controller
                 $ra_dr = new \App\Model\Accounts\Rider_Account;
                 $ra_dr->maintenance_id =$maintenance->id;
                 $ra_dr->type='cr_payable';
+                $ra_dr->month = Carbon::parse($r->get('month'))->format('Y-m-d');
                 $ra_dr->rider_id=$rider_id;
                 $ra_dr->source="maintenance"; 
                 $ra_dr->amount=$r->amount;
@@ -453,6 +483,7 @@ class AccountsController extends Controller
                 $ra_check->maintenance_id =$maintenance->id;
                 $ra_check->type='cr_payable';
                 $ra_check->rider_id=$rider_id;
+                $ra_check->month = Carbon::parse($r->get('month'))->format('Y-m-d');
                 $ra_check->source="maintenance"; 
                 $ra_check->amount=$r->amount;
                 $ra_check->save();
@@ -464,6 +495,7 @@ class AccountsController extends Controller
             ]);
             $ra->maintenance_id =$maintenance->id;
             $ra->type='dr_payable';
+            $ra->month = Carbon::parse($r->get('month'))->format('Y-m-d');
             $ra->rider_id=$rider_id;
             $ra->source="maintenance";
             $ra->amount=$r->amount;
@@ -490,6 +522,7 @@ class AccountsController extends Controller
             $ca->maintenance_id =$maintenance->id;
             $ca->type='dr';
             $ca->rider_id=$rider_id;
+            $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
             $ca->source="maintenance"; 
             $ca->amount=$r->amount;
             $ca->save();
@@ -527,6 +560,10 @@ class AccountsController extends Controller
     public function add_new_salary_create(){
         $riders=Rider::where("active_status","A")->get();
         return view('accounts.add_new_salary',compact('riders'));
+    }
+    public function get_salary_deduction($month, $rider_id){
+        $rider = Rider::find($rider_id);
+        
     }
     public function new_salary_added(Request $request){
         $rider_id=$request->rider_id;

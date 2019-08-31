@@ -27,6 +27,7 @@ class ExpenseController extends Controller
     public function CE_store(Request $r){
         $ce=new Company_Expense();
         $ce->amount=$r->amount;
+        $ce->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ce->description=$r->description;
         if($r->status)
                 $ce->status = 1;
@@ -36,6 +37,7 @@ class ExpenseController extends Controller
         
         $ca = new Company_Account();
         $ca->type='dr';
+        $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ca->amount=$r->amount;
         $ca->source='company_expense';
         $ca->company_expense_id=$ce->id;
@@ -48,6 +50,7 @@ class ExpenseController extends Controller
     public function CE_update(Request $r,$id){
         $ce=Company_Expense::find($id);
         $ce->amount=$r->amount;
+        $ce->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ce->description=$r->description;
         if($r->status)
                 $ce->status = 1;
@@ -59,6 +62,7 @@ class ExpenseController extends Controller
             'company_expense_id'=>$ce->id
         ]);
         $ca->type='dr';
+        $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ca->amount=$r->amount;
         $ca->source='company_expense';
         $ca->company_expense_id=$ce->id;
@@ -73,10 +77,10 @@ class ExpenseController extends Controller
     $delete_expense->update();
 
     $ca=Company_Account::where("company_expense_id",$delete_expense->id)->get();
-    foreach ($ca as $item) {
-        $item->active_status="D";
-        $item->update();
-    }
+        foreach ($ca as $item) {
+            $item->active_status="D";
+            $item->update();
+        }
     }
     public function CE_updatestatus($id)
 {
@@ -108,6 +112,7 @@ public function wps_store(Request $r){
     $wps=new WPS();
     $wps->amount=$r->amount;
     $wps->bank_name=$r->bank_name;
+    $wps->month = Carbon::parse($r->get('month'))->format('Y-m-d');
     $wps->payment_status=$r->payment_status;
     $wps->rider_id=$r->rider_id;
     if($r->status)
@@ -121,6 +126,7 @@ public function wps_store(Request $r){
         ]);
         $ca->type='dr';
         $ca->amount=$r->amount;
+        $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ca->source='wps';
         $ca->wps_id=$wps->id;
         $ca->save(); 
@@ -131,6 +137,7 @@ public function wps_store(Request $r){
         ]);
         $ra->type='cr';
         $ra->amount=$r->amount;
+        $ra->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ra->source='wps';
         $ra->wps_id=$wps->id;
         $ra->save();
@@ -143,6 +150,7 @@ public function wps_store(Request $r){
         ]);
         $ca->type='cr';
         $ca->amount=$r->amount;
+        $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ca->source='wps';
         $ca->wps_id=$wps->id;
         $ca->save();
@@ -154,6 +162,7 @@ public function wps_store(Request $r){
             $ra=new Rider_Account();
             $ra->type='dr';
             $ra->amount=$r->amount;
+            $ra->month = Carbon::parse($r->get('month'))->format('Y-m-d');
             $ra->source='wps';  
             $ra->save();
         }
@@ -174,6 +183,7 @@ public function wps_update(Request $r,$id){
     $wps=WPS::find($id);
     $wps->amount=$r->amount;
     $wps->bank_name=$r->bank_name;
+    $wps->month = Carbon::parse($r->get('month'))->format('Y-m-d');
     $wps->payment_status=$r->payment_status;
     $wps->rider_id=$r->rider_id;
     if($r->status)
@@ -194,6 +204,7 @@ public function wps_update(Request $r,$id){
             'wps_id'=>$wps->id
         ]);
         $ca->type='dr';
+        $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ca->amount=$r->amount;
         $ca->source='wps';
         $ca->wps_id=$wps->id;
@@ -206,6 +217,7 @@ public function wps_update(Request $r,$id){
         ]);
         $ca->type='dr';
         $ca->amount=$r->amount;
+        $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ca->source='wps';
         $ca->wps_id=$wps->id;
         $ca->save();  
@@ -215,6 +227,7 @@ public function wps_update(Request $r,$id){
         ]);
         $ra->type='cr';
         $ra->amount=$r->amount;
+        $ra->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ra->source='wps';
         $ra->wps_id=$wps->id;
         $ra->save();
@@ -227,6 +240,7 @@ public function wps_update(Request $r,$id){
         ]);
         $ca->type='cr';
         $ca->amount=$r->amount;
+        $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ca->source='wps';
         $ca->wps_id=$wps->id;
         $ca->save();
@@ -238,6 +252,7 @@ public function wps_update(Request $r,$id){
             $ra=new Rider_Account();
             $ra->type='dr';
             $ra->amount=$r->amount;
+            $ra->month = Carbon::parse($r->get('month'))->format('Y-m-d');
             $ra->source='wps';  
             $ra->save();
         }
@@ -313,6 +328,7 @@ public function AR_store(Request $r){
         'payment_status'=>$r->payment_status,
         'type'=>$r->type,
         'rider_id'=>$r->rider_id,
+        'month' => Carbon::parse($r->get('month'))->format('Y-m-d'),
         'amount'=>$r->amount,
         'status'=>$r->status=='on'?1:0,
     ]); 
@@ -327,6 +343,7 @@ public function AR_store(Request $r){
         else if($ar->type=="return"){$ca->source='loan';}    
         $ca->advance_return_id=$ar->id;
         $ca->rider_id=$ar->rider_id;
+        $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ca->save();
 
         $ra =Rider_Account::firstOrCreate([
@@ -335,6 +352,7 @@ public function AR_store(Request $r){
         $ra->type='cr_payable';
         $ra->rider_id=$ar->rider_id;
         $ra->amount=$r->amount;
+        $ra->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         if($ar->type=="advance"){$ra->source='advance';}
         else if($ar->type=="return"){$ra->source='loan';}
         $ra->advance_return_id=$ar->id;
@@ -349,6 +367,7 @@ public function AR_store(Request $r){
         ]);
         $ca->type='cr';
         $ca->amount=$r->amount;
+        $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         if($ar->type=="advance"){$ca->source='advance';}
         else if($ar->type=="return"){$ca->source='loan';}
         $ca->advance_return_id=$ar->id;
@@ -359,6 +378,7 @@ public function AR_store(Request $r){
         ]);
         $ra->type='dr_payable';
         $ra->amount=$r->amount;
+        $ra->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         if($ar->type=="advance"){$ra->source='advance';}
         else if($ar->type=="return"){$ra->source='loan';}
         $ra->advance_return_id=$ar->id;
@@ -372,6 +392,7 @@ public function AR_update(Request $r,$id){
     $update_ar=AdvanceReturn::find($id);
     $update_ar->type=$r->type;
     $update_ar->amount=$r->amount;
+    $update_ar->month = Carbon::parse($r->get('month'))->format('Y-m-d');
     $update_ar->payment_status=$r->payment_status;
     $update_ar->rider_id=$r->rider_id;
     if($r->status)
@@ -397,6 +418,7 @@ public function AR_update(Request $r,$id){
         $ca->advance_return_id =$update_ar->id;
         $ca->type='dr';
         $ca->rider_id=$update_ar->rider_id;
+        $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         if($update_ar->type=="advance"){$ca->source='advance';}
         else if($update_ar->type=="return"){$ca->source='loan';}
         $ca->amount=$r->amount;
@@ -408,6 +430,7 @@ public function AR_update(Request $r,$id){
         $ra->advance_return_id =$update_ar->id;
         $ra->type='cr_payable';
         $ra->rider_id=$update_ar->rider_id;
+        $ra->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         if($update_ar->type=="advance"){$ra->source='advance';}
         else if($update_ar->type=="return"){$ra->source='loan';}
         $ra->amount=$r->amount;
@@ -420,6 +443,7 @@ public function AR_update(Request $r,$id){
             $ca_dr->advance_return_id =$update_ar->id;
             $ca_dr->type='dr';
             $ca_dr->rider_id=$update_ar->rider_id;
+            $ca_dr->month = Carbon::parse($r->get('month'))->format('Y-m-d');
             if($update_ar->type=="advance"){$ca_dr->source='advance';}
             else if($update_ar->type=="return"){$ca_dr->source='loan';}
             $ca_dr->amount=$r->amount;
@@ -429,6 +453,7 @@ public function AR_update(Request $r,$id){
             $ca_check->advance_return_id =$update_ar->id;
             $ca_check->type='dr';
             $ca_check->rider_id=$update_ar->rider_id;
+            $ca_check->month = Carbon::parse($r->get('month'))->format('Y-m-d');
             if($update_ar->type=="advance"){$ca_check->source='advance';}
             else if($update_ar->type=="return"){$ca_check->source='loan';}
             $ca_check->amount=$r->amount;
@@ -441,6 +466,7 @@ public function AR_update(Request $r,$id){
         $ca->advance_return_id =$update_ar->id;
         $ca->type='cr';
         $ca->rider_id=$update_ar->rider_id;
+        $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         if($update_ar->type=="advance"){$ca->source='advance';}
         else if($update_ar->type=="return"){$ca->source='loan';}
         $ca->amount=$r->amount;
@@ -451,6 +477,7 @@ public function AR_update(Request $r,$id){
             $ra_dr = new Rider_Account;
             $ra_dr->advance_return_id =$update_ar->id;
             $ra_dr->type='cr_payable';
+            $ra_dr->month = Carbon::parse($r->get('month'))->format('Y-m-d');
             $ra_dr->rider_id=$update_ar->rider_id;
             if($update_ar->type=="advance"){$ra_dr->source='advance';}
             else if($update_ar->type=="return"){$ra_dr->source='loan';}
@@ -460,6 +487,7 @@ public function AR_update(Request $r,$id){
         else {
             $ra_check->advance_return_id =$update_ar->id;
             $ra_check->type='cr_payable';
+            $ra_check->month = Carbon::parse($r->get('month'))->format('Y-m-d');
             $ra_check->rider_id=$update_ar->rider_id;
             if($update_ar->type=="advance"){$ra_check->source='advance';}
             else if($update_ar->type=="return"){$ra_check->source='loan';}
@@ -473,6 +501,7 @@ public function AR_update(Request $r,$id){
         ]);
         $ra->advance_return_id =$update_ar->id;
         $ra->type='dr_payable';
+        $ra->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ra->rider_id=$update_ar->rider_id;
         if($update_ar->type=="advance"){$ra->source='advance';}
         else if($update_ar->type=="return"){$ra->source='loan';}
