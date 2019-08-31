@@ -1,5 +1,11 @@
 @extends('admin.layouts.app')
 @section('main-content')<!-- begin:: Content -->
+<style>
+ .custom-file-label::after{
+        color: white;
+        background-color: #5578eb;
+    }
+</style>
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <div class="row">
         <div class="col-md-12">

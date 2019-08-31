@@ -339,8 +339,8 @@ function format ( data ) {
             '<td colspan="2";>'+data.date_of_joining+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >Assign Bike Number:</td>'+
             '<td colspan="2";>'+data.bike_number+'</td>'+
-            '<td colspan="1"; style="font-weight:900;" >Phone Number:</td>'+
-            '<td colspan="1";>'+data.phone+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Personal Phone Number:</td>'+
+            '<td colspan="1";><a>'+data.phone+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >Emirate ID:</td>'+
             '<td colspan="1";>'+data.emirate_id+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >Email:</td>'+

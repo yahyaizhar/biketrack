@@ -32,7 +32,7 @@ class SimController extends Controller
     public function store_sim(Request $request){
         $this->validate($request, [
             'sim_company' => 'required | string | max:255',
-            'sim_number'=> 'required | string |max:255'
+            'sim_number'=> 'required | unique:sims'
         ]);
         $sim=new Sim();
         $sim->sim_number=$request->sim_number;

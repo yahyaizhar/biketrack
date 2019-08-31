@@ -22,6 +22,19 @@
                     <div class="kt-portlet__body">
                         
                         
+                        <div class="form-group">
+                            <label>Month:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::parse($edirham->month)->format('M Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                            @if ($errors->has('month'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('month') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Month</span>
+                            @endif
+                        </div>
 
                         <div class="form-group">
                             <label>Amount:</label>

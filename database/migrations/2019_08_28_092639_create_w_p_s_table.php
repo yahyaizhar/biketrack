@@ -18,6 +18,7 @@ class CreateWPSTable extends Migration
             $table->string('bank_name')->nullable();
             $table->integer('rider_id')->nullable();
             $table->integer('amount')->nullable();
+            $table->string('month')->nullable();
             $table->string('payment_status')->nullable();
             $table->string('status')->nullable();
             $table->string('active_status')->default("A");

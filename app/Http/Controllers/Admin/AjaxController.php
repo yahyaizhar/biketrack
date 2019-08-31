@@ -435,7 +435,7 @@ class AjaxController extends Controller
         })
         
         ->addColumn('phone', function($riders){
-            return '<a href="'.route('admin.rider.profile', $riders->id).'">'.$riders->phone.'</a>';
+            return '<a href="tel:'.$riders->phone.'">'.$riders->phone.'</a>';
         })
         ->addColumn('sim_number', function($rider){
             $sim_history = $rider->Sim_history()->where('status', 'active')->get()->first();
@@ -1364,7 +1364,7 @@ class AjaxController extends Controller
            })
            
            ->addColumn('phone', function($riders){
-               return '<a href="'.route('admin.rider.profile', $riders->id).'">'.$riders->phone.'</a>';
+               return '<a href=tel:"'.$riders->phone.'">'.$riders->phone.'</a>';
            })
            ->addColumn('sim_number', function($rider){
                $sim_history = $rider->Sim_history()->where('status', 'active')->get()->first();

@@ -67,7 +67,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Phone:</label>
+                        <label>Personal Phone Number:</label>
                         <input type="text" class="form-control @if($errors->has('phone')) invalid-field @endif" name="phone" placeholder="Enter phone number" value="{{ $rider->phone }}">
                         @if ($errors->has('phone'))
                             <span class="invalid-response" role="alert">
@@ -188,7 +188,7 @@
         
                     <div class="form-group">
                             <label>Date of Joining:</label>
-                            <input type="text" id="datepicker1" autocomplete="off" class="form-control @if($errors->has('date_of_joining')) invalid-field @endif" name="date_of_joining" placeholder="Enter joining Date" value="{{ $rider_detail->date_of_joining }}">
+                            <input type="text" id="datepicker1" autocomplete="off" class="form-control @if($errors->has('date_of_joining')) invalid-field @endif" name="date_of_joining" placeholder="Enter Joining Date" value="{{ $rider_detail->date_of_joining }}">
                             @if ($errors->has('date_of_joining'))
                                 <span class="invalid-response" role="alert">
                                     <strong>
