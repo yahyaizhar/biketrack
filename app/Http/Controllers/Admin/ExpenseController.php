@@ -129,6 +129,7 @@ public function wps_store(Request $r){
         $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ca->source='wps';
         $ca->wps_id=$wps->id;
+        $ca->rider_id=$r->rider_id;
         $ca->save(); 
     }
     if ($wps->payment_status=="withdraw") {
@@ -140,6 +141,7 @@ public function wps_store(Request $r){
         $ra->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ra->source='wps';
         $ra->wps_id=$wps->id;
+        $ra->rider_id=$r->rider_id;
         $ra->save();
     }
     if ($wps->payment_status=="kingrider") {
@@ -153,6 +155,7 @@ public function wps_store(Request $r){
         $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ca->source='wps';
         $ca->wps_id=$wps->id;
+        $ca->rider_id=$r->rider_id;
         $ca->save();
     }
         $ra_dr =Rider_Account::where("wps_id",$wps->id)->where("type","cr")->get()->first();
@@ -163,7 +166,8 @@ public function wps_store(Request $r){
             $ra->type='dr';
             $ra->amount=$r->amount;
             $ra->month = Carbon::parse($r->get('month'))->format('Y-m-d');
-            $ra->source='wps';  
+            $ra->source='wps'; 
+            $ra->rider_id=$r->rider_id; 
             $ra->save();
         }
        
@@ -208,6 +212,7 @@ public function wps_update(Request $r,$id){
         $ca->amount=$r->amount;
         $ca->source='wps';
         $ca->wps_id=$wps->id;
+        $ca->rider_id=$r->rider_id;
         $ca->save(); 
     }
     if ($wps->payment_status=="withdraw") {
@@ -220,6 +225,7 @@ public function wps_update(Request $r,$id){
         $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ca->source='wps';
         $ca->wps_id=$wps->id;
+        $ca->rider_id=$r->rider_id;
         $ca->save();  
 
         $ra =Rider_Account::firstOrCreate([
@@ -230,6 +236,7 @@ public function wps_update(Request $r,$id){
         $ra->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ra->source='wps';
         $ra->wps_id=$wps->id;
+        $ra->rider_id=$r->rider_id;
         $ra->save();
     }
     if ($wps->payment_status=="kingrider") {
@@ -243,6 +250,7 @@ public function wps_update(Request $r,$id){
         $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ca->source='wps';
         $ca->wps_id=$wps->id;
+        $ca->rider_id=$r->rider_id;
         $ca->save();
     }
         $ra_dr =Rider_Account::where("wps_id",$wps->id)->where("type","cr")->get()->first();
@@ -254,6 +262,7 @@ public function wps_update(Request $r,$id){
             $ra->amount=$r->amount;
             $ra->month = Carbon::parse($r->get('month'))->format('Y-m-d');
             $ra->source='wps';  
+            $ra->rider_id=$r->rider_id;
             $ra->save();
         }
        

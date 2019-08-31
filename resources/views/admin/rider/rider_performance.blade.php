@@ -281,7 +281,7 @@ uppy.use(Uppy.DragDrop, {
 // table accordian start
 
 var performance_table;
-var riders_data = _perData;
+var riders_data = JSON.parse(JSON.stringify(_perData));
 $(function() {
     // performance_table = $('').DataTable({
         var _settings={   processing: true,

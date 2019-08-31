@@ -712,6 +712,7 @@ public function fuel_expense_insert(Request $r){
     $fuel_expense=new Fuel_Expense();
     $fuel_expense->amount=$r->amount;
     $fuel_expense->type=$r->type;
+    $fuel_expense->month=Carbon::parse($r->get('month'))->format('Y-m-d');
     $fuel_expense->bike_id=$bike_id->id;
     if($r->status)
             $fuel_expense->status = 1;
@@ -728,6 +729,7 @@ if ($fuel_expense->type=="vip_tag") {
     $ca = new \App\Model\Accounts\Company_Account;
     $ca->type='dr';
     $ca->amount=$r->amount;
+    $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
     $ca->rider_id = $rider_id;
     $ca->source='fuel_expense';
     $ca->fuel_expense_id=$fuel_expense->id;
@@ -737,6 +739,7 @@ elseif($fuel_expense->type=="cash"){
     $ca = new \App\Model\Accounts\Company_Account;
     $ca->type='dr';
     $ca->amount=$r->amount;
+    $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
     $ca->rider_id = $rider_id;
     $ca->source='fuel_expense';
     $ca->fuel_expense_id=$fuel_expense->id;
@@ -745,6 +748,7 @@ elseif($fuel_expense->type=="cash"){
     $ra = new \App\Model\Accounts\Rider_Account;
     $ra->type='cr_payable';
     $ra->amount=$r->amount;
+    $ra->month=Carbon::parse($r->get('month'))->format('Y-m-d');
     $ra->rider_id = $rider_id;
     $ra->source='fuel_expense';
     $ra->fuel_expense_id=$fuel_expense->id;
@@ -802,6 +806,7 @@ public function update_edit_fuel_expense(Request $r,$id){
     $bike_id=bike::find($r->bike_id);
     $fuel_expense=Fuel_Expense::find($id);
     $fuel_expense->amount=$r->amount;
+    $fuel_expense->month=Carbon::parse($r->get('month'))->format('Y-m-d');
     $fuel_expense->type=$r->type;
     $fuel_expense->bike_id=$bike_id->id;
     if($r->status)
@@ -821,6 +826,7 @@ if ($fuel_expense->type=="vip_tag") {
         'fuel_expense_id'=>$fuel_expense->id
     ]);
     $ca->type='dr';
+    $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
     $ca->rider_id = $rider_id;
     $ca->source="fuel_expense"; 
     $ca->amount=$r->amount;
@@ -839,6 +845,7 @@ elseif($fuel_expense->type=="cash"){
     ]);
     $ca->type='dr';
     $ca->rider_id = $rider_id;
+    $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
     $ca->source="fuel_expense"; 
     $ca->amount=$r->amount;
     $ca->save();
@@ -850,6 +857,7 @@ elseif($fuel_expense->type=="cash"){
     $ra->fuel_expense_id=$fuel_expense->id;
     $ra->type='cr_payable';
     $ra->rider_id = $rider_id;
+    $ra->month=Carbon::parse($r->get('month'))->format('Y-m-d');
     $ra->source="fuel_expense"; 
     $ra->amount=$r->amount;
     $ra->save();
