@@ -1,5 +1,8 @@
 @extends('admin.layouts.app')
 @section('main-content')
+@php
+    $total_salary =27000;
+@endphp
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <div class="row">
         <div class="col-md-12">
