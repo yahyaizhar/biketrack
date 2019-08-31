@@ -15,7 +15,7 @@ class CreateSimsTable extends Migration
     {
         Schema::create('sims', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('sim_number')->nullable();
+            $table->string('sim_number')->unique();
             $table->string('sim_company')->nullable();
             $table->string('status')->nullable();
             $table->string('active_status')->default("A");

@@ -16,6 +16,7 @@ class CreateEdirhamsTable extends Migration
         Schema::create('edirhams', function (Blueprint $table) {
             $table->increments('id');
             $table->string('amount')->nullable();
+            $table->string('month')->nullable();
             $table->string('status')->nullable();
             $table->string('active_status')->default("A");
             $table->string('setting')->nullable();

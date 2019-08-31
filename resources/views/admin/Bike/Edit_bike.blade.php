@@ -52,7 +52,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Bike Number(etc k-3102):</label>
-                                    <input type="text" class="form-control @if($errors->has('bike_number')) invalid-field @endif" name="bike_number" placeholder="Enter Bike Number (etc K-3102)" value="{{ $bike->bike_number }}">
+                                    <input type="text" required class="form-control @if($errors->has('bike_number')) invalid-field @endif" name="bike_number" placeholder="Enter Bike Number (etc K-3102)" value="{{ $bike->bike_number }}">
                                 
                                     @if ($errors->has('bike_number'))
                                         <span class="invalid-response" role="alert">
@@ -68,7 +68,7 @@
                         <div class="form-group">
                                 <label>Brand(etc Honda):</label> 
                                 {{-- <input type="text" class="form-control @if($errors->has('brand')) invalid-field @endif" name="brand" placeholder="Enter Brand (etc Honda)" value="{{ $bike->brand }}"> --}}
-                                <select class="form-control @if($errors->has('brand')) invalid-field @endif kt-select2" id="kt_select2_3" name="brand" placeholder="Enter Brand (etc Honda)" >
+                                <select class="form-control  @if($errors->has('brand')) invalid-field @endif kt-select2" id="kt_select2_3" name="brand" placeholder="Enter Brand (etc Honda)" >
                                         <option value="Honda Unicorn" @if ($bike->brand=="Honda Unicorn") selected @endif>Honda Unicorn</option>
                                         <option value="Pulsar" @if ($bike->brand=="Pulsar") selected @endif>Pulsar</option>
                                         </select> 
@@ -82,7 +82,7 @@
                             </div>
                             <div class="form-group">
                                     <label>Chassis Number:</label>
-                                    <input type="text" class="form-control @if($errors->has('chassis_number')) invalid-field @endif" name="chassis_number" placeholder="Enter Chassis Number" value="{{ $bike->chassis_number }}">
+                                    <input type="text" required class="form-control @if($errors->has('chassis_number')) invalid-field @endif" name="chassis_number" placeholder="Enter Chassis Number" value="{{ $bike->chassis_number }}">
                                 
                                     @if ($errors->has('chassis_number'))
                                         <span class="invalid-response" role="alert">
@@ -97,7 +97,7 @@
                       
                         <div class="form-group">
                                 <label>Mulkiya Number:</label>
-                                <input type="text" class="form-control @if($errors->has('mulkiya_number')) invalid-field @endif" name="mulkiya_number" placeholder="Enter Mulkiya Nnumber" value="{{ $bike->mulkiya_number }}">
+                                <input type="text" required class="form-control @if($errors->has('mulkiya_number')) invalid-field @endif" name="mulkiya_number" placeholder="Enter Mulkiya Nnumber" value="{{ $bike->mulkiya_number }}">
                                 @if ($errors->has('mulkiya_number'))
                                     <span class="invalid-response" role="alert">
                                         <strong>

@@ -17,6 +17,7 @@ class CreateCompanyExpensesTable extends Migration
             $table->increments('id');
             $table->string('description')->nullable();
             $table->string('amount')->nullable();
+            $table->string('month')->nullable();
             $table->string('status')->nullable();
             $table->string('active_status')->default("A");
             $table->string('setting')->nullable();

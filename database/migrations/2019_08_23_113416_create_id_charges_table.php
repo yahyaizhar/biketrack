@@ -18,6 +18,7 @@ class CreateIdChargesTable extends Migration
             $table->integer('rider_id')->nullable();
             $table->string('type')->nullable();
             $table->string('amount')->nullable();
+            $table->string('month')->nullable();
             $table->string('status')->nullable();
             $table->string('active_status')->default("A");
             $table->string('setting')->nullable();

@@ -31,6 +31,7 @@
     <!--end::Page Vendors Styles -->
 
     <!--begin:: Global Mandatory Vendors -->
+   
     <link href="{{ asset('dashboard/assets/vendors/general/perfect-scrollbar/css/perfect-scrollbar.css') }}" rel="stylesheet" type="text/css" />
 
     <!--end:: Global Mandatory Vendors -->
@@ -77,6 +78,7 @@
 		<link rel="shortcut icon" href="{{ asset('dashboard/assets/media/logos/company-logo.png') }}" />
     <!-- Styles -->
     {{-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> --}}
+    
     @section('head')        
     @show
 </head>

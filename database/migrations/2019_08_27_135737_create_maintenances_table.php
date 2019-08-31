@@ -19,6 +19,7 @@ class CreateMaintenancesTable extends Migration
             $table->integer('workshop_id')->nullable();
             $table->integer('bike_id')->nullable();
             $table->integer('amount')->nullable();
+            $table->string('month')->nullable();
             $table->string('accident_payment_status')->nullable();
             $table->string('status')->nullable();
             $table->string('active_status')->default("A");

@@ -19,6 +19,7 @@ class CreateAdvanceReturnsTable extends Migration
             $table->integer('rider_id')->nullable();
             $table->integer('amount')->nullable();
             $table->string('payment_status')->nullable();
+            $table->string('month')->nullable();
             $table->string('status')->nullable();
             $table->string('active_status')->default("A");
             $table->string('setting')->nullable();

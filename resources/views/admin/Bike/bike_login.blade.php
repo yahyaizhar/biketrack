@@ -1,6 +1,15 @@
 @extends('admin.layouts.app')
 @section('main-content')
 <!-- begin:: Content -->
+<style>
+    .custom-file-label::after{
+           color: white;
+           background-color: #5578eb;
+       }
+       .custom-file-label{
+        overflow: hidden;
+    }
+   </style>
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <div class="row">
         <div class="col-md-12">
@@ -46,7 +55,7 @@
                         </div>
                         <div class="form-group">
                             <label>Bike Number(etc K-3102):</label>
-                            <input type="text" class="form-control @if($errors->has('bike_number')) invalid-field @endif" name="bike_number" placeholder="Enter Bike_Number (etc K-3102)" value="{{ old('bike_number') }}">
+                            <input type="text" required class="form-control @if($errors->has('bike_number')) invalid-field @endif" name="bike_number" placeholder="Enter Bike_Number (etc K-3102)" value="{{ old('bike_number') }}">
                             @if ($errors->has('bike_number'))
                                 <span class="invalid-response" role="alert">
                                     <strong>
@@ -58,7 +67,7 @@
                         <div class="form-group">
                                 <label>Brand(etc Honda):</label>
                                 {{-- <input type="text" class="form-control @if($errors->has('brand')) invalid-field @endif" name="brand" placeholder="Enter Brand (etc Honda)" value="{{ old('brand') }}"> --}}
-                                <select class="form-control @if($errors->has('brand')) invalid-field @endif kt-select2" id="kt_select2_3" name="brand" placeholder="Enter Brand (etc Honda)" value="{{ old('brand') }}" >
+                                <select class="form-control @if($errors->has('brand')) invalid-field @endif kt-select2" id="kt_select2_3" name="brand" placeholder="Enter Brand (etc Honda)" required value="{{ old('brand') }}" >
                                         <option value="Honda Unicorn">Honda Unicorn</option>
                                         <option value="Pulsar">Pulsar</option>
                                         </select> 
@@ -70,9 +79,9 @@
                                     </span>
                                 @endif
                             </div>
-                            <div class="form-group">
+                            <div class="form-group"> 
                                     <label>Chassis Number:</label>
-                                    <input type="text" class="form-control @if($errors->has('chassis_number')) invalid-field @endif" name="chassis_number" placeholder="Enter Chassis_Number" value="{{ old('chassis_number') }}">
+                                    <input type="text" class="form-control @if($errors->has('chassis_number')) invalid-field @endif" name="chassis_number" placeholder="Enter Chassis_Number" required value="{{ old('chassis_number') }}">
                                     @if ($errors->has('chassis_number'))
                                         <span class="invalid-response" role="alert">
                                             <strong>
@@ -86,7 +95,7 @@
                       
                         <div class="form-group">
                                 <label>Mulkiya Number:</label>
-                                <input type="text" class="form-control @if($errors->has('mulkiya_number')) invalid-field @endif" name="mulkiya_number" placeholder="Enter Mulkiya Number" value="{{ old('mulkiya_number') }}">
+                                <input type="text" required class="form-control @if($errors->has('mulkiya_number')) invalid-field @endif" name="mulkiya_number" placeholder="Enter Mulkiya Number" value="{{ old('mulkiya_number') }}">
                                 @if ($errors->has('mulkiya_number'))
                                     <span class="invalid-response" role="alert">
                                         <strong>

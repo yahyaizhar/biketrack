@@ -5,6 +5,27 @@
     border: 1px solid rgb(221, 221, 221);
     padding: 14px 0px;
 }
+     .icon_change_password{
+         position: absolute;
+        top: 35%;
+        right: 1%;
+        color: #5578eb;
+        font-size: 20px;
+    }
+    .icon_change_password_confirmation{
+         position: absolute;
+        top: 48%;
+        right: 1%;
+        color: #5578eb;
+        font-size: 20px;
+    }
+    .custom-file-label{
+        overflow: hidden;
+    }
+    .custom-file-label::after{
+        color: white;
+        background-color: #5578eb;
+    }
 </style>
 <!-- begin:: Content -->
 <div class="progress-bar sticky-top" id="myBar" style="height: 10px;background: #4caf50;width: 0%;"></div>
@@ -56,7 +77,7 @@
                             @endif
                         </div>
                         <div class="form-group">
-                            <label>Phone:</label>
+                            <label>Personal Phone Number:</label>
                             <input type="text" class="form-control @if($errors->has('phone')) invalid-field @endif" name="phone" placeholder="Enter phone number" value="{{ old('phone') }}">
                             @if ($errors->has('phone'))
                                 <span class="invalid-response" role="alert">
@@ -176,7 +197,7 @@
 
                         <div class="form-group">
                             <label>Date of Joining:</label>
-                            <input type="text" id="datepicker1" autocomplete="off" class="form-control @if($errors->has('date_of_joining')) invalid-field @endif" name="date_of_joining" placeholder="Enter joining Date">
+                            <input type="text" id="datepicker1" autocomplete="off" class="form-control @if($errors->has('date_of_joining')) invalid-field @endif" name="date_of_joining" placeholder="Enter Joining Date">
                             @if ($errors->has('date_of_joining'))
                                 <span class="invalid-response" role="alert">
                                     <strong>{{ $errors->first('date_of_joining') }}</strong>
@@ -422,6 +443,37 @@
 
 <script>
     $(document).ready(function(){
+
+        $("[name='password']").after('<div class="icon_change_password" data-target="password"><i class="fa fa-eye for_password"></i></div>');
+        $(".icon_change_password ").parent().addClass("position-relative");
+        $(".icon_change_password").on("click",function(){
+            if ($("[name='password']").attr("type")=="password") {
+                $("[name='password']").attr("type","text");
+                $(".for_password").removeClass("fa fa-eye ");
+                $(".for_password").addClass("fa fa-eye-slash");
+            }
+            else if($("[name='password']").attr("type")=="text"){
+                $("[name='password']").attr("type","password");
+                $(".for_password").removeClass("fa fa-eye-slash ");
+                $(".for_password").addClass("fa fa-eye");
+            } 
+        });
+        $("[name='password_confirmation']").after('<div class="icon_change_password_confirmation" data-target="password"><i class="fa fa-eye for_password_confirmation"></i></div>');
+        $(".icon_change_password_confirmation").parent().addClass("position-relative");
+        $(".icon_change_password_confirmation").on("click",function(){
+            if ($("[name='password_confirmation']").attr("type")=="password") {
+                $("[name='password_confirmation']").attr("type","text");
+                $(".for_password_confirmation").removeClass("fa fa-eye ");
+                $(".for_password_confirmation").addClass("fa fa-eye-slash");
+            }
+            else if($("[name='password_confirmation']").attr("type")=="text"){
+                $("[name='password_confirmation']").attr("type","password");
+                $(".for_password_confirmation").removeClass("fa fa-eye-slash ");
+                $(".for_password_confirmation").addClass("fa fa-eye");
+            } 
+        });
+
+
         $('.dependend-field').hide('fast');
         $(':radio[data-depended]').on('change', function(){
             $('[name="passport_document_image"]')

@@ -58,7 +58,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Phone Number:</label>
+                            <label>Personal Phone Number:</label>
                             <input type="text" class="form-control @if($errors->has('phone')) invalid-field @endif" name="phone" placeholder="Enter phone number" value="{{ $rider->phone }}" disabled>
                             @if ($errors->has('phone'))
                                 <span class="invalid-response" role="alert">
@@ -101,8 +101,11 @@
                                     </div>
                                     @if ($rider_details->is_guarantee=="employee")
                                     <div class="form-group">
+                                        @php
+                                            $rider=App\Model\Rider\Rider::find($rider_details->empoloyee_reference);
+                                        @endphp
                                             <label>Employee Reference:</label>
-                                            <input type="text" class="form-control @if($errors->has('empoloyee_reference')) invalid-field @endif" name="empoloyee_reference"  value="{{ $rider_details->empoloyee_reference }}" disabled>
+                                            <input type="text" class="form-control @if($errors->has('empoloyee_reference')) invalid-field @endif" name="empoloyee_reference"  value="{{ $rider->name }}" disabled>
                                             @if ($errors->has('empoloyee_reference'))
                                                 <span class="invalid-response" role="alert">
                                                     <strong>
@@ -502,7 +505,7 @@
                     </div>
                     <div class="kt-portlet__foot">
                         <div class="kt-form__actions kt-form__actions--right">
-                            <a style="float:right;" href="{{ route('admin.riders.edit', $rider->id) }}" class="btn btn-label-info btn-sm btn-upper">Edit</a>&nbsp;
+                            <a style="float:right;" href="{{ route('admin.riders.edit', $rider->id) }}" class="btn btn-primary btn-sm btn-upper">Edit</a>&nbsp;
                         {{-- <span class="kt-margin-l-10">or <a href="{{url('/admin/riders')}}" class="kt-link kt-font-bold">Cancel</a></span> --}}
                         </div>
                     </div>
