@@ -565,7 +565,8 @@ class AccountsController extends Controller
     }
     public function get_rider_account($rider_id){
         $rider = Rider::find($rider_id);
-        $opening_balance = $rider->Rider_detail->salary; 
+        // $opening_balance = $rider->Rider_detail->salary; 
+        $opening_balance = 0; 
         $month = 07;
         $rider_statements = \App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
         ->whereMonth("month",$month)

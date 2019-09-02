@@ -18,7 +18,7 @@
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <div class="kt-portlet">
         <div class="row row-no-padding row-col-separator-xl">
-            <div class="col-md-12 col-lg-6 col-xl-6">
+            {{-- <div class="col-md-12 col-lg-6 col-xl-6">
     
                 <!--begin::New Orders-->
                 <div class="kt-widget24">
@@ -37,7 +37,7 @@
                 </div>
     
                 <!--end::New Orders-->
-            </div>
+            </div> --}}
             <div class="col-md-12 col-lg-6 col-xl-6">
     
                 <!--begin::New Users-->
@@ -66,7 +66,7 @@
                     <i class="kt-font-brand fa fa-hotel"></i>
                 </span>
                 <h3 class="kt-portlet__head-title">
-                    Rider debits
+                    Rider Account
                 </h3>
             </div>
             <div class="kt-portlet__head-toolbar">
