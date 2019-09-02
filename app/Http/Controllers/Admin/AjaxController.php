@@ -567,6 +567,20 @@ class AjaxController extends Controller
             if(isset($assign_bike)){
                 $bike_html='<a class="dropdown-item" href="'.route('rider.rider_salik', $riders).'"><i class="fa fa-eye"></i> View Salik</a>';
             }
+            $assign_bike_change=$riders->Assign_bike()->where("status","active")->get()->first();
+            if (isset($assign_bike_change)) {
+                $bike_change='<a class="dropdown-item" href="'.route('bike.bike_assignRiders', $riders).'"><i class="fa fa-eye"></i> Change Bike</a>';
+            }
+            else{
+                $bike_change='<a class="dropdown-item" href="'.route('bike.bike_assignRiders', $riders).'"><i class="fa fa-eye"></i> Assign Bike</a>';
+            }
+            $sim_history_change = $riders->Sim_history()->where('status', 'active')->get()->first();
+            if(isset($sim_history_change)){
+             $sim_change='<a class="dropdown-item" href="'.route('SimHistory.addsim', $riders).'"><i class="fa fa-eye"></i> Change Sim</a>';
+            }
+            else{
+                $sim_change='<a class="dropdown-item" href="'.route('SimHistory.addsim', $riders).'"><i class="fa fa-eye"></i> Assign Sim</a>';
+            }
             return '<span class="dtr-data">
             <span class="dropdown psbScroll">
                 <a href="#"  class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
@@ -580,9 +594,10 @@ class AjaxController extends Controller
                     <a class="dropdown-item" href="'.route('admin.riders.edit', $riders).'"><i class="fa fa-edit"></i> Edit</a>
                     <button class="dropdown-item" onclick="deleteRider('.$riders->id.')"><i class="fa fa-trash"></i> Delete</button>
                     <a class="dropdown-item" href="'.route('Bike.assignedToRiders_History', $riders).'"><i class="fa fa-eye"></i>View Bikes History</a>
-                    <a class="dropdown-item" href="'.route('bike.bike_assignRiders', $riders).'"><i class="fa fa-eye"></i> Assign Bike</a> 
-                    <a class="dropdown-item" href="'.route('SimHistory.addsim', $riders).'"><i class="fa fa-eye"></i> Assign Sim</a>
+                    '.$bike_change.'
+                    '.$sim_change.'
                     <a class="dropdown-item" href="'.route('Sim.simHistory', $riders).'"><i class="fa fa-eye"></i> View Sim History</a>
+                    <a class="dropdown-item" href="'.route('admin.accounts.get_rider_account', $riders->id).'"><i class="fa fa-eye"></i> View Report</a>
                     '.$cr_HTML.'
                     '.$bike_html.'
                     </div>

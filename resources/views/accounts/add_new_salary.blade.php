@@ -67,7 +67,7 @@
                         </div>
                         <div class="form-group">
                             <label>Gross Salary:</label>
-                        <input type="text" class="form-control @if($errors->has('gross_salary')) invalid-field @endif" name="gross_salary" value="">
+                        <input readonly type="text" class="form-control @if($errors->has('gross_salary')) invalid-field @endif" name="gross_salary" value="">
                             @if ($errors->has('gross_salary'))
                                 <span class="invalid-response" role="alert">
                                     <strong>
