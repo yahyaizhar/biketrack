@@ -1,8 +1,5 @@
 @extends('admin.layouts.app')
 @section('main-content')
-@php
-    $total_salary =27000;
-@endphp
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <div class="row">
         <div class="col-md-12">
@@ -52,7 +49,7 @@
                         </div>
                         <div class="form-group">
                             <label>Total Salary:</label>
-                            <input type="text" class="form-control @if($errors->has('month')) invalid-field @endif" name="total_salary" value="{{$total_salary}}">
+                            <input readonly type="text" class="form-control @if($errors->has('total_salary')) invalid-field @endif" name="total_salary" value="">
                             @if ($errors->has('total_salary'))
                                 <span class="invalid-response" role="alert">
                                     <strong>
@@ -61,7 +58,7 @@
                                 </span>
                             @else
                                 <span class="form-text text-muted">Total salary</span>
-                            @endif
+                            @endif 
                                 
                         </div>
                         <div class="form-group">
@@ -70,7 +67,7 @@
                         </div>
                         <div class="form-group">
                             <label>Gross Salary:</label>
-                            <input type="text" class="form-control @if($errors->has('gross_salary')) invalid-field @endif" name="gross_salary" value="">
+                        <input type="text" class="form-control @if($errors->has('gross_salary')) invalid-field @endif" name="gross_salary" value="">
                             @if ($errors->has('gross_salary'))
                                 <span class="invalid-response" role="alert">
                                     <strong>
@@ -112,7 +109,7 @@
                         </div>
                         <div class="form-group">
                             <label for="paid_by">Paid By:</label>
-                            <input class="form-control @if($errors->has('paid_by')) invalid-field @endif" id="paid_by" name="paid_by" rows="3" placeholder="Paid By"  value="{{ old('paid_by') }}" />
+                            <input required class="form-control @if($errors->has('paid_by')) invalid-field @endif" id="paid_by" name="paid_by" rows="3" placeholder="Paid By"  value="{{ old('paid_by') }}" />
                             @if ($errors->has('paid_by'))
                                 <span class="invalid-response" role="alert">
                                     <strong>
@@ -193,7 +190,7 @@
             .done(function(data) {  
                 console.log(data);
                 $('#salary [name="gross_salary"], #salary [name="recieved_salary"]').val(data.gross_salary).trigger('change');
-
+                $('#salary [name="total_salary"]').val(data.total_salary).trigger('change');
             });
         });
     });

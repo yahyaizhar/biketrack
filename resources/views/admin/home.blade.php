@@ -100,7 +100,7 @@
 
 
     <div class="row">
-        <div class="col-md-6 col-lg-6 col-xl-6">
+        {{-- <div class="col-md-6 col-lg-6 col-xl-6">
             <!--begin:: Widgets/New Users-->
             <div class="kt-portlet kt-portlet--tabs kt-portlet--height-fluid">
                 <div class="kt-portlet__head">
@@ -190,7 +190,7 @@
                 </div>
             </div>
             <!--end:: Widgets/New Users-->	
-        </div>
+        </div> --}}
 
         <div class="col-md-6 col-lg-6 col-xl-6">
             <!--begin:: Widgets/New Users-->

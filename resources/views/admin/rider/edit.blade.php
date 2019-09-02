@@ -223,6 +223,17 @@
                                 <span class="form-text text-muted">Please enter your Joining Date</span>
                             @endif
                         </div>
+                        <div class="form-group">
+                                <label>Salary:</label>
+                                <input type="text" required class="form-control @if($errors->has('salary')) invalid-field @endif" name="salary" placeholder="Enter An Amount" value="{{ $rider_detail->salary }}">
+                                @if ($errors->has('salary'))
+                                    <span class="invalid-response" role="alert">
+                                        <strong>{{ $errors->first('salary') }}</strong>
+                                    </span>
+                                @else
+                                    <span class="form-text text-muted">Please enter Rider Salary</span>
+                                @endif
+                            </div>
                         <div class="row">
                             <div class="col-lg-12 col-md-12 col-sm-12">
                                 @isset($sim_number)
