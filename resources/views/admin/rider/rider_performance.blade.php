@@ -485,6 +485,9 @@ if(window.outerWidth>=521){
 
 
 // table accordian end
+
+});
+
 function delete_lastImport()
 {
     var url = "{{ url('admin/delete/last/import') }}";
@@ -584,7 +587,6 @@ function updateStatus(sim_id)
         }
     });
 }
-});
 </script>
 <style>
     td.details-control {

@@ -14,6 +14,7 @@ class DataSeed extends Seeder
         //
         $admins = [
             [
+                'type'=>'su',
                 'name' => 'Admin',
                 'email' => 'admin@biketrack.com',
                 'email_verified_at' => now(),

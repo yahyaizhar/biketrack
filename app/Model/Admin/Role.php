@@ -7,7 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Model\Rider\Rider_Message;
 
-class Admin extends Authenticatable
+class Role extends Authenticatable
 {
     use Notifiable;
     protected $guard = 'admin';
@@ -18,7 +18,7 @@ class Admin extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email','type','logo', 'password',
+         'admin_id','' 
     ];
 
     /**
@@ -38,9 +38,4 @@ class Admin extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
-    public function messages()
-    {
-        return $this->hasMany(Rider_Message::class, 'admin_id');
-    }
 }

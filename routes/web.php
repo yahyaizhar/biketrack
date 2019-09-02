@@ -43,6 +43,9 @@ Route::group([
     'prefix' => 'admin',
     'namespace' => 'Admin'
 ], function(){
+    Route::get('/add/employee','Auth\EmployeeController@showloginform')->name('Employee.showloginform');
+    Route::post('/insert/employee','Auth\EmployeeController@insert_employee')->name('Employee.insert_employee');
+    
     Route::post('/update/client/riders','RiderController@update_ClientRiders')->name('ClientRiders.admin.update');
     Route::get('/login', 'Auth\LoginController@showLoginForm')->name('admin.login');
     Route::post('/login', 'Auth\LoginController@login')->name('admin.login');
@@ -295,6 +298,7 @@ Route::group([
     Route::resource('/accounts', 'AccountsController', [
         'as' => 'admin'
     ]);
+    Route::get("/rider/account","AccountsController@rider_account")->name("admin.accounts.rider_account");
 
     Route::get("/rider/{rider_id}/account","AccountsController@get_rider_account")->name("admin.accounts.get_rider_account");
 
