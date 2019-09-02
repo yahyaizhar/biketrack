@@ -207,6 +207,17 @@
                             @endif
                         </div>
                         <div class="form-group">
+                                <label>Salary:</label>
+                                <input type="text" required class="form-control @if($errors->has('salary')) invalid-field @endif" name="salary" placeholder="Enter An Amount">
+                                @if ($errors->has('salary'))
+                                    <span class="invalid-response" role="alert">
+                                        <strong>{{ $errors->first('salary') }}</strong>
+                                    </span>
+                                @else
+                                    <span class="form-text text-muted">Please enter Rider Salary</span>
+                                @endif
+                            </div>
+                        <div class="form-group">
                             <label>Is Passport Collected:</label>
                             <div>
                                 <input data-switch="true" name="passport_collected" id="passport_collected" type="checkbox" checked="checked" data-on-text="Yes" data-handle-width="70" data-off-text="No" data-on-color="brand">

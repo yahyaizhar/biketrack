@@ -17,8 +17,10 @@ use App\Model\Accounts\Rider_salary;
 use App\Model\Accounts\Id_charge;
 use App\Model\Accounts\Workshop;
 use App\Model\Accounts\Maintenance;
+use App\Model\Accounts\Rider_Account;
 use App\Model\Accounts\Edirham;
 use Carbon\Carbon;
+use App\Model\Rider\Rider_detail;
 use App\Model\Accounts\Fuel_Expense;
 
 class AccountsController extends Controller
@@ -585,16 +587,60 @@ class AccountsController extends Controller
                         
         return view('admin.accounts.Rider_Debit.view_account',compact('closing_balance','rider', 'rider_statements', 'opening_balance')); 
     }
+    public function get_salary_deduction($month, $rider_id){   
+        $ra=Rider_Account::where("rider_id",$rider_id)
+        ->whereMonth("month",$month)
+        ->where("type","cr_payable")
+        ->get();  
+        $rider_detail=Rider_detail::where("active_status","A")
+        ->where("rider_id",$rider_id)
+        ->get()
+        ->first();
+        $ra_sum=$ra->sum("amount");
+        $ra_recieved=$rider_detail->salary - $ra_sum;
+
+       
+        return response()->json([
+            'gross_salary'=>$ra_recieved ,
+            'recieved_salary'=>$ra_recieved,
+            'total_salary'=>$rider_detail->salary,
+        ]);
+    }
     public function new_salary_added(Request $request){
         $rider_id=$request->rider_id;
         $rider=Rider::find($rider_id); 
         $salary=$rider->Rider_salary()->create([
             'rider_id'=>$request->get('rider_id') ,
             'month'=> Carbon::parse($request->get('month'))->format('Y-m-d'),
-            'salary'=> $request->get('salary'),
+            'total_salary'=> $request->get('total_salary'),
+            'gross_salary'=> $request->get('gross_salary'),
+            'recieved_salary'=> $request->get('recieved_salary'),
+            'remaining_salary'=> $request->get('remaining_salary'),
             'paid_by'=> $request->get('paid_by'),
             'status'=> $request->get('status')=='on'?1:0,
         ]);
+        $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+            'salary_id'=>$salary->id
+        ]);
+        $ca->salary_id =$salary->id;
+        $ca->type='dr';
+        $ca->rider_id=$rider_id;
+        $ca->month = Carbon::parse($request->get('month'))->format('Y-m-d');
+        $ca->source="salary"; 
+        $ca->amount=$request->recieved_salary;
+        $ca->save();
+
+        $ca = \App\Model\Accounts\Rider_Account::firstOrCreate([
+            'salary_id'=>$salary->id
+        ]);
+        $ca->salary_id =$salary->id;
+        $ca->type='cr';
+        $ca->rider_id=$rider_id;
+        $ca->month = Carbon::parse($request->get('month'))->format('Y-m-d');
+        $ca->source="salary"; 
+        $ca->amount=$request->recieved_salary;
+        $ca->save();
+
         return redirect(route('account.developer_salary'));
     }
 

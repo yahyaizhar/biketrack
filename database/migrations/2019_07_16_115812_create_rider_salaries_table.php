@@ -16,7 +16,10 @@ class CreateRiderSalariesTable extends Migration
         Schema::create('rider_salaries', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('rider_id')->nullable();
-            $table->string('salary')->nullable();
+            $table->string('total_salary')->nullable();
+            $table->string('gross_salary')->nullable();
+            $table->string('recieved_salary')->nullable();
+            $table->string('remaining_salary')->nullable();
             $table->string('month')->nullable();
             $table->string('paid_by')->nullable();
             $table->string('status')->nullable();

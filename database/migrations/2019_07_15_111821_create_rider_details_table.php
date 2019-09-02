@@ -17,6 +17,7 @@ class CreateRiderDetailsTable extends Migration
             $table->increments('id');
             $table->integer('rider_id')->nullable();
             $table->string('date_of_joining')->nullable();
+            $table->string('salary')->nullable();
             $table->string('official_given_number')->nullable();
             $table->string('official_sim_given_date')->nullable();
             $table->string('passport_collected')->nullable();
