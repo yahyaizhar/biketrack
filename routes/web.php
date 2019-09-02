@@ -296,9 +296,12 @@ Route::group([
         'as' => 'admin'
     ]);
 
-    Route::get("/rider/{rider_id}/account","AccountsController@get_rider_account")->name("admin.accounts.get_rider_account");
+    Route::get("/rider/account/{range}","AjaxNewController@getRiderAccounts")->name("admin.accounts.get_rider_account");
 
-    Route::get("/company/debits/get_salary_deduction/{month}/{rider_id}","AccountsController@get_salary_deduction")->name("admin.accounts.get_salary_deduction");
+    Route::get("/rider/account","AccountsController@rider_account")->name("admin.accounts.rider_account");
+
+
+    Route::get("/company/debits/get_salary_deduction/{rider_id}/{d1}/{d2}","AccountsController@get_salary_deduction")->name("admin.accounts.get_salary_deduction");
     
     Route::get("/id-charges","AccountsController@id_charges_index")->name("admin.accounts.id_charges_index");
     Route::post("/id-charges/add","AccountsController@id_charges_post")->name("admin.accounts.id_charges_post");

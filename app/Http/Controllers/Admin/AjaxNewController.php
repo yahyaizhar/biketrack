@@ -83,6 +83,51 @@ class AjaxNewController extends Controller
         ->make(true);
     }
 
+    public function getRiderAccounts($ranges)
+    {
+        $ranges = json_decode($ranges, true);
+        $from = date($ranges['range']['start_date']);
+        $to = date($ranges['range']['end_date']);
+        $rider_statements = \App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        ->whereDate('created_at', '>=',$from)
+        ->whereDate('created_at', '<=',$to)
+        ->get();
+        $running_balance = 0;
+        return DataTables::of($rider_statements)
+        ->addColumn('date', function($rider_statement){
+            return Carbon::parse($rider_statement->created_at)->format('d/m/Y');
+        })
+        ->addColumn('desc', function($rider_statement){
+            return $rider_statement->source;
+        })
+        ->addColumn('cr', function($rider_statement){
+            if ($rider_statement->type=='cr' || $rider_statement->type=='cr_payable')
+            {
+                $class = $rider_statement->type=='cr_payable'?'kt-font-danger':'';
+                return '<span class="'.$class.'">'.$rider_statement->amount.'</span>';
+            }
+            return 0;
+        })
+        ->addColumn('dr', function($rider_statement){
+            if($rider_statement->type=='dr' || $rider_statement->type=='dr_payable'){
+                $class = $rider_statement->type=='dr_payable'?'kt-font-danger':'';
+                return '<span class="'.$class.'">('.$rider_statement->amount.')</span>';
+            }
+            return 0;
+        })
+        ->addColumn('balance', function($rider_statement) use (&$running_balance){
+            if($rider_statement->type=='dr' || $rider_statement->type=='dr_payable'){
+                $running_balance -= $rider_statement->amount;
+            }
+            else{
+                $running_balance += $rider_statement->amount;
+            }
+            return $running_balance;
+        })
+        ->rawColumns(['desc','date','cr','dr','balance'])
+        ->make(true);
+    }
+
     public function getMaintenances()
     {
         $maintenances = Maintenance::orderByDesc('created_at')->where('active_status', 'A')->get();

@@ -563,7 +563,11 @@ class AccountsController extends Controller
         $riders=Rider::where("active_status","A")->get();
         return view('accounts.add_new_salary',compact('riders'));
     }
-    public function get_rider_account($rider_id){
+    public function rider_account(){ 
+        $riders = Rider::where('active_status', 'A')->get();
+        return view('admin.accounts.Rider_Debit.view_account',compact('riders')); 
+    }
+    public function get_rider_account($rider_id, $d1, $d2){
         $rider = Rider::find($rider_id);
         // $opening_balance = $rider->Rider_detail->salary; 
         $opening_balance = 0; 
