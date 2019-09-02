@@ -53,6 +53,8 @@
                 <div class="kt-notification">
                     <div class="kt-notification__custom kt-space-between">
                         <a href="{{ route('admin.logout') }}" class="btn btn-label btn-label-brand btn-sm btn-bold">Sign Out</a>
+                        <a href="{{ route('Employee.showloginform') }}" class="btn btn-label btn-primary btn-sm btn-bold">Add Employee</a>
+                        
                         {{-- <a href="demo1/custom/user/login-v2.html" target="_blank" class="btn btn-clean btn-sm btn-bold">Upgrade Plan</a> --}}
                     </div>
                 </div>
