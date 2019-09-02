@@ -296,6 +296,8 @@ Route::group([
         'as' => 'admin'
     ]);
 
+    Route::get("/rider/{rider_id}/account","AccountsController@get_rider_account")->name("admin.accounts.get_rider_account");
+
     Route::get("/company/debits/get_salary_deduction{month}/{rider_id}","AccountsController@get_salary_deduction")->name("admin.accounts.get_salary_deduction");
     
     Route::get("/id-charges","AccountsController@id_charges_index")->name("admin.accounts.id_charges_index");

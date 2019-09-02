@@ -561,9 +561,29 @@ class AccountsController extends Controller
         $riders=Rider::where("active_status","A")->get();
         return view('accounts.add_new_salary',compact('riders'));
     }
-    public function get_salary_deduction($month, $rider_id){
+    public function get_rider_account($rider_id){
         $rider = Rider::find($rider_id);
+        $opening_balance = $rider->Rider_detail->salary; 
+        $month = 07;
+        $rider_statements = \App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        ->whereMonth("month",$month)
+        ->get();
+
+        $rider_debits_cr_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        ->whereMonth("month",$month)
+        ->where("type","cr_payable")
+        ->orWhere('type', 'cr')
+        ->sum('amount');
         
+        $rider_debits_dr_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        ->whereMonth("month",$month)
+        ->where("type","dr_payable")
+        ->orWhere('type', 'dr')
+        ->sum('amount');
+
+        $closing_balance = ($opening_balance + $rider_debits_cr_payable) - $rider_debits_dr_payable;
+                        
+        return view('admin.accounts.Rider_Debit.view_account',compact('closing_balance','rider', 'rider_statements', 'opening_balance')); 
     }
     public function new_salary_added(Request $request){
         $rider_id=$request->rider_id;
