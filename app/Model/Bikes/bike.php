@@ -9,11 +9,16 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Model\Rider\Rider;
 use App\Model\Bikes\bike;
 use App\Assign_bike;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 
 
 class bike extends Authenticatable
 {
+    use LogsActivity;
+    protected static $logAttributes = ['*'];
+    protected static $logOnlyDirty = true;
+
     protected $fillable = [
         'model','brand','chassis_number','mulkiya_number','mulkiya_expiry','mulkiya_picture','mulkiya_picture_back','bike_number','rider_id','availability','other','status',
        ];

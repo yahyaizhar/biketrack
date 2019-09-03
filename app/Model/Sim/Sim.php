@@ -8,11 +8,16 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Model\Rider\Rider;
 use App\Model\Bikes\bike;
 use App\Assign_bike;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Sim extends Authenticatable
 {
+    use LogsActivity;
+    protected static $logAttributes = ['*'];
+    protected static $logOnlyDirty = true;
+
     protected $fillable = [
     'sim_number','sim_company','status',
     ];

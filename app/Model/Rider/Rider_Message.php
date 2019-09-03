@@ -4,10 +4,14 @@ namespace App\Model\Rider;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Model\Admin\Admin;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Rider_Message extends Model
 {
-    //
+    use LogsActivity;
+    protected static $logAttributes = ['*'];
+    protected static $logOnlyDirty = true;
+
     protected $table = 'rider_messages';
     
     public function rider()

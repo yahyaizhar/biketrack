@@ -5,11 +5,14 @@ namespace App\Model\Mobile;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Mobile extends Authenticatable
 {
-    use Notifiable;
-
+    use Notifiable, LogsActivity;
+    protected static $logAttributes = ['*'];
+    protected static $logOnlyDirty = true; 
+    
     /**
      * The attributes that are mass assignable.
      *
