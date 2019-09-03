@@ -392,5 +392,13 @@ Route::post('/AR/{id}/updatestatus','ExpenseController@AR_updatestatus')->name('
 Route::delete('/AR/delete/{id}','ExpenseController@AR_delete')->name('admin.AR_delete');
 Route::get('/AR/edit/{id}','ExpenseController@AR_edit')->name('admin.AR_edit');
 // End ADVANCE & RETURN
+
+
+//zomato income
+Route::get("/income/zomato/index","AccountsController@income_zomato_index")->name("admin.accounts.income_zomato_index");
+Route::post('/income/zomato/import','AccountsController@income_zomato_import')->name('admin.accounts.income_zomato_import');
+Route::get('/income/zomato/ajax/data','AjaxNewController@income_zomato_ajax')->name('admin.accounts.income_zomato_ajax');
+Route::delete('/income/zomato/delete','AccountsController@income_zomato_delete')->name('admin.accounts.income_zomato_delete');
+//zomato income 
 });
 
