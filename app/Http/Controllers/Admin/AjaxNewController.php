@@ -453,4 +453,5 @@ class AjaxNewController extends Controller
         ->rawColumns(['status','type','rider_id','payment_status','amount','actions', 'status'])
         ->make(true);
     }
+ 
 }
