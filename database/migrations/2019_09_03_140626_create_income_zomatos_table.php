@@ -17,6 +17,7 @@ class CreateIncomeZomatosTable extends Migration
             $table->increments('id');
             $table->string('feid')->nullable();
             $table->string('rider_id')->nullable();
+            $table->string('import_id')->nullable();
             $table->string('log_in_hours_payable')->nullable();
             $table->string('total_to_be_paid_out')->nullable();
             $table->string('amount_for_login_hours')->nullable();

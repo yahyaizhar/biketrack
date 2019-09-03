@@ -950,29 +950,39 @@ public function income_zomato_import(Request $r){
     $zomato_obj=[];
     $ca_objects=[];
     $ca_objects_updates=[];
-    $zp = Income_zomato::all(); // r1
+    $zi = Income_zomato::all(); // r1
+    $client_riders = Client_Rider::all();
     $update_data = [];
     $company_accounts=[];
     $i=0;
     $unique_id=uniqid().'-'.time();
     foreach ($data as $item) {
         $i++;
-        $zp_found = Arr::first($zp, function ($item_zp, $key) use ($item) {
-            return $item_zp->transaction_id == $item['transaction_id'];
+        $zi_found = Arr::first($zi, function ($item_zi, $key) use ($item) {
+            return $item_zi->feid == $item['feid'] && $item_zi->date == $item['onboarding_date'];
         });
-        if(!isset($zp_found)){
+        $rider_found = Arr::first($client_riders, function ($client_rider, $key) use ($item) {
+            return $client_rider->client_rider_id == $item['feid'];
+        });
+        $rider_id = null;
+        if(isset($rider_found)){
+            $rider_id = $rider_found->rider_id;
+        }
+        if(!isset($zi_found)){
             $obj = [];
             $obj['import_id']=$unique_id;
-            $obj['transaction_id']=isset($item['transaction_id'])?$item['transaction_id']:null;
-            $obj['toll_gate']=isset($item['toll_gate'])?$item['toll_gate']:null;
-            $obj['direction']=isset($item['direction'])?$item['direction']:null;
-            $obj['tag_number']=isset($item['tag_number'])?$item['tag_number']:null;
-            $obj['plate']=isset($item['plate'])?$item['plate']:null; 
-            $obj['amount_aed']=isset($item['amount_aed'])?$item['amount_aed']:null;
-            $obj['trip_date']=isset($item['trip_date'])?$item['trip_date']:null;
-            $obj['trip_time']=isset($item['trip_time'])?$item['trip_time']:null;
-            $obj['transaction_post_date']=isset($item['transaction_post_date'])?$item['transaction_post_date']:null;
-            array_push($trip_objects, $obj);
+            $obj['rider_id']=$unique_id;
+            $obj['feid']=isset($item['feid'])?$item['feid']:null;
+            $obj['log_in_hours_payable']=isset($item['log_in_hours_payable'])?$item['log_in_hours_payable']:null;
+            $obj['total_to_be_paid_out']=isset($item['total_to_be_paid_out'])?$item['total_to_be_paid_out']:null;
+            $obj['amount_for_login_hours']=isset($item['amount_for_login_hours'])?$item['amount_for_login_hours']:null;
+            $obj['amount_to_be_paid_against_orders_completed']=isset($item['amount_to_be_paid_against_orders_completed'])?$item['amount_to_be_paid_against_orders_completed']:null; 
+            $obj['ncw_incentives']=isset($item['ncw_incentives'])?$item['ncw_incentives']:null;
+            $obj['tips_payouts']=isset($item['tips_payouts'])?$item['tips_payouts']:null;
+            $obj['dc_deductions']=isset($item['dc_deductions'])?$item['dc_deductions']:null;
+            $obj['mcdonalds_deductions']=isset($item['mcdonalds_deductions'])?$item['mcdonalds_deductions']:null;
+            $obj['date']=isset($item['onboarding_date'])?$item['onboarding_date']:null;
+            array_push($zomato_obj, $obj);
 
             $ca_obj = [];
             $ca_obj['salik_id']=$obj['transaction_id'];
@@ -985,17 +995,19 @@ public function income_zomato_import(Request $r){
         }
         else{
             $objUpdate = [];
-            $objUpdate['id']=$zp_found->id;
-            $objUpdate['import_id']=$unique_id; 
-            $objUpdate['transaction_id']=isset($item['transaction_id'])?$item['transaction_id']:null;
-            $objUpdate['toll_gate']=isset($item['toll_gate'])?$item['toll_gate']:null;
-            $objUpdate['direction']=isset($item['direction'])?$item['direction']:null;
-            $objUpdate['tag_number']=isset($item['tag_number'])?$item['tag_number']:null;
-            $objUpdate['plate']=isset($item['plate'])?$item['plate']:null; 
-            $objUpdate['amount_aed']=isset($item['amount_aed'])?$item['amount_aed']:null;
-            $objUpdate['trip_date']=isset($item['trip_date'])?$item['trip_date']:null;
-            $objUpdate['trip_time']=isset($item['trip_time'])?$item['trip_time']:null;
-            $objUpdate['transaction_post_date']=isset($item['transaction_post_date'])?$item['transaction_post_date']:null;
+            $objUpdate['id']=$zi_found->id;
+            $obj['import_id']=$unique_id;
+            $obj['rider_id']=$unique_id;
+            $obj['feid']=isset($item['feid'])?$item['feid']:null;
+            $obj['log_in_hours_payable']=isset($item['log_in_hours_payable'])?$item['log_in_hours_payable']:null;
+            $obj['total_to_be_paid_out']=isset($item['total_to_be_paid_out'])?$item['total_to_be_paid_out']:null;
+            $obj['amount_for_login_hours']=isset($item['amount_for_login_hours'])?$item['amount_for_login_hours']:null;
+            $obj['amount_to_be_paid_against_orders_completed']=isset($item['amount_to_be_paid_against_orders_completed'])?$item['amount_to_be_paid_against_orders_completed']:null; 
+            $obj['ncw_incentives']=isset($item['ncw_incentives'])?$item['ncw_incentives']:null;
+            $obj['tips_payouts']=isset($item['tips_payouts'])?$item['tips_payouts']:null;
+            $obj['dc_deductions']=isset($item['dc_deductions'])?$item['dc_deductions']:null;
+            $obj['mcdonalds_deductions']=isset($item['mcdonalds_deductions'])?$item['mcdonalds_deductions']:null;
+            $obj['date']=isset($item['onboarding_date'])?$item['onboarding_date']:null;
             array_push($update_data, $objUpdate);
 
             $ca_obj = [];
