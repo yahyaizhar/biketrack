@@ -76,6 +76,18 @@
            return $item['action_name']=='salik';   });
      
 
+if (Auth::user()->type=="su") {
+    $isDashboard_array='1';
+    $isRiders_array='1';
+    $isClients_array='1';
+    $isBikes_array='1';
+    $isSim_array='1';
+    $isMobile_array='1';
+    $isNewComer_array='1';
+    $isAccounts_array='1';
+    $isExpense_array='1';
+    $isSalik_array='1';
+}
 @endphp 
 <div class="kt-aside-menu-wrapper kt-grid__item kt-grid__item--fluid" id="kt_aside_menu_wrapper">
         <div id="kt_aside_menu" class="kt-aside-menu " data-ktmenu-vertical="1" data-ktmenu-scroll="1" data-ktmenu-dropdown-timeout="500">

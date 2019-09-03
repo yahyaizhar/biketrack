@@ -23,58 +23,84 @@
         </div>
         </div>
 @include('admin.includes.message')
-<form class="kt-form" action="{{ route('Employee.insert_employee') }}" method="POST" enctype="multipart/form-data">
+<form class="kt-form" action="{{ route('Employee.update_employee',$edit_employee->id) }}" method="POST" enctype="multipart/form-data">
     {{ csrf_field() }}
         <div class="kt-portlet__body">
+            <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12"> 
             <div class="form-group"> 
                 <label>Name:</label>
-                <input type="text" class="form-control @if($errors->has('name')) invalid-field @endif" name="name" placeholder="Enter Your Name" required autofocus value="{{ old('name') }}">
+                <input type="text" class="form-control @if($errors->has('name')) invalid-field @endif" name="name" placeholder="Enter Your Name" required autofocus value="{{ $edit_employee->name }}">
                 @if ($errors->has('name'))
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $errors->first('name') }}</strong>
                     </span>
                 @endif
             </div>
-            <div class="form-group"> 
+            <div class="form-group">
                 <label>Email:</label>
-                <input type="text" class="form-control @if($errors->has('email')) invalid-field @endif" name="email" placeholder="Enter Your Email" required value="{{ old('email') }}">
+                <input type="text" class="form-control @if($errors->has('email')) invalid-field @endif" name="email" placeholder="Enter Your Email" required value="{{ $edit_employee->email }}">
                 @if ($errors->has('email'))
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $errors->first('email') }}</strong>
                     </span>
                 @endif
             </div>
-            <div class="form-group"> 
-                <label>Password:</label>
-                <input type="password" class="form-control @if($errors->has('password')) invalid-field @endif" name="password" placeholder="Enter Your Password" required>
-                @if ($errors->has('password'))
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $errors->first('password') }}</strong>
-                    </span>
-                @endif
+        </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group col-md-6 pull-right mtr-15">
+                            <div class="custom-file">
+                                <input type="file" name="logo" class="custom-file-input" id="logo">
+                                <label class="custom-file-label" for="logo">Choose Profile Picture</label>
+                            </div>
+                    </div>    
+                @if($edit_employee->logo)
+                        <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($edit_employee->logo)) }}" alt="image">
+                    @else
+                        <img class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                    @endif
+                   
             </div>
-            <div class="form-group"> 
-                <label>Password:</label>
-                <input type="password" class="form-control" name="password_confirmation" placeholder="Confirm your password" required>
-            </div>
-            <div class="row">
-                <div class="col-lg-6 col-md-6">
+        </div>
+            <label class="kt-checkbox">
+                    <input id="change-password" name="change_password" type="checkbox" {{ old('change_password') ? 'checked' : '' }}> Change Password
+                    <span></span>
+                </label>
+                <div id="password-fields" style="display:none;">
                     <div class="form-group">
-                        <label for="address">Logo:</label>
-                        <div class="custom-file">
-                            <input type="file" name="logo" class="custom-file-input" id="logo" value="{{ old('logo') }}">
-                            <label class="custom-file-label" for="logo">Choose logo</label>
-                        </div>
+                        <label>Password:</label>
+                        <input type="password" class="form-control @if($errors->has('passsword')) invalid-field @endif" name="password" placeholder="Enter password">
+                        @if ($errors->has('password'))
+                            <span class="invalid-response" role="alert">
+                                <strong>{{ $errors->first('password') }}</strong>
+                            </span>
+                        @else
+                            <span class="form-text text-muted">Please enter your password</span>
+                        @endif
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password:</label>
+                        <input type="password" class="form-control @if($errors->has('passsword')) invalid-field @endif" name="password_confirmation" placeholder="Enter confirm password">
                     </div>
                 </div>
-            </div>
             <h5>User Rights</h5>
+            
             <div class="row">
             <div class="col-md-4">
+
             <div class="form-group">
                 <div class="kt-checkbox-inline">
                     <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
-                        <input type="checkbox" name="action_name[]" value="dashboard"> Dashboard
+                        <input type="checkbox" name="action_name[]" @if ($Dashboard['action_name']=="dashboard") checked @endif value="dashboard"> Dashboard
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="kt-checkbox-inline">
+                    <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
+                        <input type="checkbox" name="action_name[]" @if ($Accounts['action_name']=="accounts") checked @endif value="accounts"> Accounts
                         <span></span>
                     </label>
                 </div>
@@ -82,7 +108,7 @@
             <div class="form-group">
                 <div class="kt-checkbox-inline">
                     <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
-                        <input type="checkbox" name="action_name[]" value="accounts"> Accounts
+                        <input type="checkbox" name="action_name[]" @if ($Expense['action_name']=="expense") checked @endif value="expense"> Expense
                         <span></span>
                     </label>
                 </div>
@@ -90,49 +116,7 @@
             <div class="form-group">
                 <div class="kt-checkbox-inline">
                     <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
-                        <input type="checkbox" name="action_name[]" value="expense"> Expense
-                        <span></span>
-                    </label>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="kt-checkbox-inline">
-                    <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
-                        <input type="checkbox" name="action_name[]" value="salik"> Salik
-                        <span></span>
-                    </label>
-                </div>
-            </div>
-            </div>
-            <div class="col-md-4">
-            <div class="form-group">
-                <div class="kt-checkbox-inline">
-                    <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
-                        <input type="checkbox" name="action_name[]" value="riders"> Riders
-                        <span></span>
-                    </label>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="kt-checkbox-inline">
-                    <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
-                        <input type="checkbox" name="action_name[]" value="bikes"> Bikes
-                        <span></span>
-                    </label>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="kt-checkbox-inline">
-                    <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
-                        <input type="checkbox" name="action_name[]" value="clients" > Clients
-                        <span></span>
-                    </label>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="kt-checkbox-inline">
-                    <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
-                        <input type="checkbox" name="action_name[]" value="sim"> Sim
+                        <input type="checkbox" name="action_name[]" @if ($Salik['action_name']=="salik") checked @endif value="salik"> Salik
                         <span></span>
                     </label>
                 </div>
@@ -142,7 +126,7 @@
             <div class="form-group">
                 <div class="kt-checkbox-inline">
                     <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
-                        <input type="checkbox" name="action_name[]" value="mobile"> Mobile
+                        <input type="checkbox" name="action_name[]" @if ($Riders['action_name']=="riders") checked @endif value="riders"> Riders
                         <span></span>
                     </label>
                 </div>
@@ -150,13 +134,48 @@
             <div class="form-group">
                 <div class="kt-checkbox-inline">
                     <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
-                        <input type="checkbox" name="action_name[]" value="new_comer"> New Comer
+                        <input type="checkbox" name="action_name[]" @if ($Bikes['action_name']=="bikes") checked @endif value="bikes"> Bikes
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="kt-checkbox-inline">
+                    <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
+                        <input type="checkbox" name="action_name[]" @if ($Clients['action_name']=="clients") checked @endif value="clients" > Clients
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="kt-checkbox-inline">
+                    <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
+                        <input type="checkbox" name="action_name[]" @if ($Sim['action_name']=="sim") checked @endif value="sim"> Sim
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+            </div>
+            <div class="col-md-4">
+            <div class="form-group">
+                <div class="kt-checkbox-inline">
+                    <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
+                        <input type="checkbox" name="action_name[]" @if ($Mobile['action_name']=="mobile") checked @endif value="mobile"> Mobile
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="kt-checkbox-inline">
+                    <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
+                        <input type="checkbox" name="action_name[]" @if ($NewComer['action_name']=="new_comer") checked @endif value="new_comer"> New Comer
                         <span></span>
                     </label>
                 </div>
             </div>
             </div>
         </div>
+        
         </div>
         <div class="kt-portlet__foot">
         <div class="kt-form__actions kt-form__actions--right">
@@ -184,4 +203,15 @@
 
   });
 </script>
+<script>
+        $(document).ready(function () {
+            if($('#change-password').prop('checked') == true)
+            {
+                $('#password-fields').show();
+            }
+            $('#change-password').change(function () {
+                $('#password-fields').fadeToggle();
+            });
+        });
+    </script>
 @endsection

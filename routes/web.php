@@ -45,7 +45,13 @@ Route::group([
 ], function(){
     Route::get('/add/employee','Auth\EmployeeController@showloginform')->name('Employee.showloginform');
     Route::post('/insert/employee','Auth\EmployeeController@insert_employee')->name('Employee.insert_employee');
-    
+    Route::get('/show/employee','Auth\EmployeeController@viewEmployee')->name('Employee.viewEmployee');
+    Route::get('/show/employee/ajax','Auth\EmployeeController@getEmployee')->name('Employee.getEmployee');
+    Route::delete('/delete/employee/{employee_id}','Auth\EmployeeController@deleteEmployee')->name('Employee.deleteEmployee');
+    Route::get('/edit/employee/{employee_id}','Auth\EmployeeController@edit_employee')->name('Employee.edit_employee');
+    Route::post('/update/employee/{employee_id}','Auth\EmployeeController@update_employee')->name('Employee.update_employee');
+
+
     Route::post('/update/client/riders','RiderController@update_ClientRiders')->name('ClientRiders.admin.update');
     Route::get('/login', 'Auth\LoginController@showLoginForm')->name('admin.login');
     Route::post('/login', 'Auth\LoginController@login')->name('admin.login');
