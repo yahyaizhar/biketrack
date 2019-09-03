@@ -68,6 +68,95 @@
                     </div>
                 </div>
             </div>
+            <h5>User Rights</h5>
+            <div class="row">
+            <div class="col-md-4">
+            <div class="form-group">
+                <div class="kt-checkbox-inline">
+                    <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
+                        <input type="checkbox" name="action_name[]" value="dashboard"> Dashboard
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="kt-checkbox-inline">
+                    <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
+                        <input type="checkbox" name="action_name[]" value="accounts"> Accounts
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="kt-checkbox-inline">
+                    <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
+                        <input type="checkbox" name="action_name[]" value="expense"> Expense
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="kt-checkbox-inline">
+                    <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
+                        <input type="checkbox" name="action_name[]" value="salik"> Salik
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+            </div>
+            <div class="col-md-4">
+            <div class="form-group">
+                <div class="kt-checkbox-inline">
+                    <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
+                        <input type="checkbox" name="action_name[]" value="riders"> Riders
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="kt-checkbox-inline">
+                    <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
+                        <input type="checkbox" name="action_name[]" value="bikes"> Bikes
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="kt-checkbox-inline">
+                    <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
+                        <input type="checkbox" name="action_name[]" value="clients" > Clients
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="kt-checkbox-inline">
+                    <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
+                        <input type="checkbox" name="action_name[]" value="sim"> Sim
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+            </div>
+            <div class="col-md-4">
+            <div class="form-group">
+                <div class="kt-checkbox-inline">
+                    <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
+                        <input type="checkbox" name="action_name[]" value="mobile"> Mobile
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="kt-checkbox-inline">
+                    <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
+                        <input type="checkbox" name="action_name[]" value="new_comer"> New Comer
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+            </div>
+        </div>
         </div>
         <div class="kt-portlet__foot">
         <div class="kt-form__actions kt-form__actions--right">

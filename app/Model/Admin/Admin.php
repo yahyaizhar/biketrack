@@ -47,4 +47,8 @@ class Admin extends Authenticatable
     {
         return $this->hasMany(Rider_Message::class, 'admin_id');
     }
+    public function Role()
+    {
+        return $this->hasMany(\App\Model\Admin\Role::class, 'admin_id');
+    }
 }
