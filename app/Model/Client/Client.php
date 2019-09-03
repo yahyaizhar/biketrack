@@ -14,6 +14,7 @@ class Client extends Authenticatable
 
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;
+    
     /**
      * The attributes that are mass assignable.
      *

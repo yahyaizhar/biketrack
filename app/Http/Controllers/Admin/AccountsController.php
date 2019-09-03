@@ -22,6 +22,7 @@ use App\Model\Accounts\Edirham;
 use Carbon\Carbon;
 use App\Model\Rider\Rider_detail;
 use App\Model\Accounts\Fuel_Expense;
+use App\Model\Accounts\Client_Income;
 
 class AccountsController extends Controller
 {
@@ -1034,4 +1035,66 @@ public function income_zomato_import(Request $r){
 }
 
 //ends income zomato
+
+// client_income
+public function client_income_index(){
+   $clients=Client::where("active_status","A")->get();
+    return view('accounts.Client_income.add_income',compact("clients"));
+}
+public function client_income_view(){
+    return view('accounts.Client_income.view_income');  
+}
+public function client_income_updatestatus(Request $request,$id){
+    $update_client_income=Client_Income::find($id);
+    if($update_client_income->status == 1)
+    {
+        $update_client_income->status = 0;
+    }
+    else
+    {
+        $update_client_income->status = 1;
+    }
+    $update_client_income->update();
+    return response()->json([
+        'status' => true
+    ]);
+}
+public function client_income_delete(Request $request,$id){
+    $delete_client_income=Client_Income::find($id);
+    $delete_client_income->active_status="D";
+    $delete_client_income->save();
+    return response()->json([
+        'status' => true
+    ]);
+}
+public function client_income_edit($id){
+    $clients=Client::where("active_status","A")->get();
+    $edit_client_income=Client_Income::find($id);
+    return view('accounts.Client_income.edit_income',compact('edit_client_income','clients'));
+}
+public function client_income_store(Request $request){
+    $client_income=new Client_Income();
+    $client_income->amount=$request->amount;
+    $client_income->month=Carbon::parse($request->get('month'))->format('Y-m-d');
+    $client_income->client_id=$request->client_id;
+    if($request->status)
+            $client_income->status = 1;
+        else
+            $client_income->status = 0;
+    $client_income->save();
+    return redirect(route('admin.client_income_view'));
+}
+public function client_income_update(Request $request,$id){
+    $update_income=Client_Income::find($id);
+    $update_income->amount=$request->amount;
+    $update_income->month=Carbon::parse($request->get('month'))->format('Y-m-d');
+    $update_income->client_id=$request->client_id;
+    if($request->status)
+        $update_income->status = 1;
+    else
+        $update_income->status = 0;
+        $update_income->save();
+        return redirect(route('admin.client_income_view'));
+}
+// end Client_income
 }

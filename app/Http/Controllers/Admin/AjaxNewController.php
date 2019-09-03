@@ -39,6 +39,7 @@ use App\Model\Accounts\Fuel_Expense;
 use App\Model\Accounts\Company_Expense;
 use App\Model\Accounts\WPS;
 use App\Model\Accounts\AdvanceReturn;
+use App\Model\Accounts\Client_Income;
 
 class AjaxNewController extends Controller
 {
@@ -451,6 +452,54 @@ class AjaxNewController extends Controller
         </span>';
         })
         ->rawColumns(['status','type','rider_id','payment_status','amount','actions', 'status'])
+        ->make(true);
+    }
+
+    public function getclient_income()
+    {
+        $client_income = Client_Income::orderByDesc('created_at')->where('active_status', 'A')->get();
+        // return $clients;
+        return DataTables::of($client_income)
+        ->addColumn('status', function($client_income){
+            if($wps->status == 1)
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
+            }
+            else
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
+            }
+        })
+        ->addColumn('id', function($client_income){
+            return '1000'.$client_income->id;
+        })
+        ->addColumn('amount', function($client_income){
+            return $client_income->amount;
+        })
+        ->addColumn('month', function($client_income){
+            return $client_income->month;
+        })
+        ->addColumn('client_id', function($client_income){
+            $client=Client::find($client_income->client_id);
+            return $client->name ;
+        })
+       
+        ->addColumn('actions', function($client_income){
+            $status_text = $client_income->status == 1 ? 'Inactive' : 'Active';
+            return '<span class="dtr-data">
+            <span class="dropdown">
+                <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+                <i class="la la-ellipsis-h"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="'.route('admin.wps_edit', $client_income).'"><i class="fa fa-edit"></i> Edit</a>
+                    <button class="dropdown-item" onclick="updateStatus('.$client_income->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
+                    <button class="dropdown-item" onclick="deleteRow('.$client_income->id.');"><i class="fa fa-trash"></i> Delete</button>
+                    </div>
+            </span>
+        </span>';
+        })
+        ->rawColumns(['status','month','client_id','amount','actions', 'status'])
         ->make(true);
     }
  

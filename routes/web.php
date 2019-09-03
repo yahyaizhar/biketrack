@@ -406,5 +406,16 @@ Route::post('/income/zomato/import','AccountsController@income_zomato_import')->
 Route::get('/income/zomato/ajax/data','AjaxNewController@income_zomato_ajax')->name('admin.accounts.income_zomato_ajax');
 Route::delete('/income/zomato/delete','AccountsController@income_zomato_delete')->name('admin.accounts.income_zomato_delete');
 //zomato income 
+
+// Client_income
+Route::get('/client_income/index','AccountsController@client_income_index')->name('admin.client_income_index');
+Route::get('/client_income/view','AccountsController@client_income_view')->name('admin.client_income_view');
+Route::post('/client_income/insert','AccountsController@client_income_store')->name('admin.client_income_store');
+Route::post('/client_income/{id}/update','AccountsController@client_income_update')->name('admin.client_income_update');
+Route::get("/client_income/view/data","AjaxNewController@getclient_income")->name("admin.getclient_income");
+Route::post('/client_income/{id}/updatestatus','AccountsController@client_income_updatestatus')->name('admin.client_income_updatestatus');
+Route::delete('/client_income/delete/{id}','AccountsController@client_income_delete')->name('admin.client_income_delete');
+Route::get('/client_income/edit/{id}','AccountsController@client_income_edit')->name('admin.client_income_edit');
+// end Client_income
 });
 

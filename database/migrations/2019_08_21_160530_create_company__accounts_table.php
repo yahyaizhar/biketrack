@@ -17,6 +17,7 @@ class CreateCompanyAccountsTable extends Migration
             $table->increments('id');
             $table->string('type')->nullable();
             $table->string('amount')->nullable();
+            $table->string('month')->nullable();
             $table->string('source')->nullable();
             $table->integer('rider_id')->nullable();
             $table->integer('advance_return_id')->nullable();
