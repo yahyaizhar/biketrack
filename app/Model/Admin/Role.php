@@ -18,7 +18,7 @@ class Role extends Authenticatable
      * @var array
      */
     protected $fillable = [
-         'admin_id','' 
+         'admin_id','action_name', 
     ];
 
     /**
@@ -38,4 +38,8 @@ class Role extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    public function Admin()
+    {
+        return $this->belongTo(\App\Model\Admin\Admin::class);
+    }
 }

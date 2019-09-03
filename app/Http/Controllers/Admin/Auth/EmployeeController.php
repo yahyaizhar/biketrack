@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use App\Model\Admin\Admin;
+use App\Model\Admin\Role;
+use Illuminate\Support\Facades\DB;
+use Batch;
+use Carbon\Carbon;
 
 class EmployeeController extends Controller
 {
@@ -41,6 +45,18 @@ class EmployeeController extends Controller
             $employee->logo = $filepath;
         }
         $employee->save();
+       
+        $roles = $request->get('action_name');
+            $user_roles=[];
+        foreach ($roles  as $role) {
+        $obj=[];
+        $obj['admin_id']=$employee->id;
+        $obj['action_name']=$role;
+        $obj['created_at']=Carbon::now();
+        $obj['updated_at']=Carbon::now();
+        array_push($user_roles, $obj);
+        }
+        DB::table('roles')->insert($user_roles);        
         return redirect(url('/admin'));
     }
 }
