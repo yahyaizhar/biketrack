@@ -87,6 +87,8 @@ if (Auth::user()->type=="su") {
     $isAccounts_array='1';
     $isExpense_array='1';
     $isSalik_array='1';
+    $livemap='1';
+    $supportemail='1';
 }
 @endphp 
 <div class="kt-aside-menu-wrapper kt-grid__item kt-grid__item--fluid" id="kt_aside_menu_wrapper">
@@ -101,9 +103,11 @@ if (Auth::user()->type=="su") {
                     </g>
                 </svg></span><span class="kt-menu__link-text">Dashboard</span></a></li>
                 @endisset
+                @isset($livemap)
                 <li class="kt-menu__item @if(strpos(Request::url(), "admin/livemap") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.livemap') }}" class="kt-menu__link "><span class="kt-menu__link-icon">
                 <i class="fa fa-map-marker-alt"></i>
             </span><span class="kt-menu__link-text">Live Map</span></a></li>
+            @endisset
             @isset($isRiders_array)
                 <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "admin/active_riders") !== false) kt-menu__item--active kt-menu__item--open @endif @if(strpos(Request::url(), "admin/rider") !== false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle">
                     <span class="kt-menu__link-icon"><i class="fa fa-users"></i>    
@@ -177,7 +181,7 @@ if (Auth::user()->type=="su") {
                             {{-- <li class="kt-menu__item @if(strpos(Request::url(), "/Developer/Salary") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Salary By Developer</span></a></li> --}}
                          
                         
-                            <li class="kt-menu__item kt-menu__item--submenu @if(strpos(Request::url(), "/Salary/client_income") !== false) kt-menu__item--active kt-menu__item--open @endif "  aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
+                            <li class="kt-menu__item kt-menu__item--submenu @if(strpos(Request::url(), "/Salary") !== false) kt-menu__item--active kt-menu__item--open @endif "  aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
                                 <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
                                     <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
                                         <span></span>
@@ -482,13 +486,14 @@ if (Auth::user()->type=="su") {
                                 </div>
                             </li>
                             @endisset
-
-                <li class="kt-menu__item @if(strpos(Request::url(), "admin/emails") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.emails.index') }}" class="kt-menu__link "><span class="kt-menu__link-icon">
+                    @isset($supportemail)
+                    <li class="kt-menu__item @if(strpos(Request::url(), "admin/emails") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.emails.index') }}" class="kt-menu__link "><span class="kt-menu__link-icon">
                     <i class="fa fa-envelope"></i>
                 </span><span class="kt-menu__link-text">Support Emails</span></a></li>
+                @endisset
             </ul>
         </div>
     </div>
-
+  
     <!-- end:: Aside Menu -->
 </div>

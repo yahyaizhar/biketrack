@@ -32,7 +32,7 @@
                         </div>
                         <div class="form-group">
                                 <label>Month:</label>
-                                <input type="text" data-month="{{Carbon\Carbon::parse($edit_wps->month)->format('M Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="{{ $edit_client_income->month }}">
+                                <input type="text" data-month="{{Carbon\Carbon::parse($edit_client_income->month)->format('M Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="{{ $edit_client_income->month }}">
                                 @if ($errors->has('month'))
                                     <span class="invalid-response" role="alert">
                                         <strong>

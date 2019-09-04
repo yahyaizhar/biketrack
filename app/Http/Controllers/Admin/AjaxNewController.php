@@ -510,7 +510,7 @@ class AjaxNewController extends Controller
         // return $clients;
         return DataTables::of($client_income)
         ->addColumn('status', function($client_income){
-            if($wps->status == 1)
+            if($client_income->status == 1)
             {
                 return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
             }
@@ -541,7 +541,7 @@ class AjaxNewController extends Controller
                 <i class="la la-ellipsis-h"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="'.route('admin.wps_edit', $client_income).'"><i class="fa fa-edit"></i> Edit</a>
+                    <a class="dropdown-item" href="'.route('admin.client_income_edit', $client_income).'"><i class="fa fa-edit"></i> Edit</a>
                     <button class="dropdown-item" onclick="updateStatus('.$client_income->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                     <button class="dropdown-item" onclick="deleteRow('.$client_income->id.');"><i class="fa fa-trash"></i> Delete</button>
                     </div>

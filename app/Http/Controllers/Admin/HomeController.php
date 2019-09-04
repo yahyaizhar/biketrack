@@ -167,4 +167,7 @@ class HomeController extends Controller
         return view('admin.accounts.testing',compact('closing_balance_CA','closing_balance_RA'));
     
     }
+    public function request403(){
+        return view("403");
+    }
 }
