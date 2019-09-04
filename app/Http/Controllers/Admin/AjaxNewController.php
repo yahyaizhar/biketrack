@@ -40,6 +40,7 @@ use App\Model\Accounts\Company_Expense;
 use App\Model\Accounts\WPS;
 use App\Model\Accounts\AdvanceReturn;
 use App\Model\Accounts\Client_Income;
+use App\Model\Accounts\Income_zomato;
 
 class AjaxNewController extends Controller
 {
@@ -81,6 +82,54 @@ class AjaxNewController extends Controller
         </span>';
         })
         ->rawColumns(['status','rider_name','type','amount','actions', 'status'])
+        ->make(true);
+    }
+    public function income_zomato_ajax()
+    {
+        $income_zomatos = Income_zomato::orderByDesc('created_at')->where('active_status', 'A')->get();
+        // return $clients;
+        return DataTables::of($income_zomatos)
+        
+        ->addColumn('rider_name', function($income_zomato){
+            $client_rider=Client_Rider::where("client_rider_id",$income_zomato->feid)->get()->first();
+            $rider=Rider::find($client_rider['rider_id']);
+            
+            if(isset($rider)){
+                return $rider['name'];
+            }
+            else{
+                return 'No Client Rider Id is Assigned';
+            }
+        })
+        ->addColumn('total_to_be_paid_out', function($income_zomato){
+            return $income_zomato->total_to_be_paid_out;
+        })
+        ->addColumn('amount_for_login_hours', function($income_zomato){
+            return $income_zomato->amount_for_login_hours;
+        })
+        ->addColumn('amount_to_be_paid_against_orders_completed', function($income_zomato){
+            return $income_zomato->amount_to_be_paid_against_orders_completed;
+        })
+        ->addColumn('ncw_incentives', function($income_zomato){
+            return $income_zomato->ncw_incentives;
+        })
+        ->addColumn('tips_payouts', function($income_zomato){
+            return $income_zomato->tips_payouts;
+        })
+        ->addColumn('dc_deductions', function($income_zomato){
+            return $income_zomato->dc_deductions;
+        })
+        ->addColumn('mcdonalds_deductions', function($income_zomato){
+            return $income_zomato->mcdonalds_deductions;
+        })
+        ->addColumn('feid', function($income_zomato){
+            return $income_zomato->feid;
+        })
+        ->addColumn('date', function($income_zomato){
+            return $income_zomato->date;
+        })
+        
+        ->rawColumns(['feid','date','rider_name','total_to_be_paid_out','amount_for_login_hours', 'amount_to_be_paid_against_orders_completed', 'ncw_incentives', 'tips_payouts', 'dc_deductions', 'mcdonalds_deductions'])
         ->make(true);
     }
 

@@ -16,6 +16,7 @@ class CreateIncomeZomatosTable extends Migration
         Schema::create('income_zomatos', function (Blueprint $table) {
             $table->increments('id');
             $table->string('feid')->nullable();
+            $table->string('p_id')->unique();
             $table->string('rider_id')->nullable();
             $table->string('import_id')->nullable();
             $table->string('log_in_hours_payable')->nullable();

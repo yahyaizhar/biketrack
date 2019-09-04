@@ -66,16 +66,15 @@ margin-left: 10px;
                         {{-- <th>
                             <input type="checkbox" id="select_all" >
                         </th> --}}
-                        <th>Transaction ID</th>
-                        <th>Toll Gate</th>
-                        <th>Direction</th> 
-                        <th>Tag Number</th>
-                        <th>Plate</th>
-                        <th>Amount(AED)</th>
+                        <th>Rider Name</th>
+                        <th>Total Payout</th>
+                        <th>Login Hours Amount</th> 
+                        <th>Order Completed Amount</th>
+                        <th>NCW Incentives</th>
+                        <th>Tips Payouts</th>
 
                         <th class="d-none">h1</th>
                         <th class="d-none">h2</th>
-                        <th class="d-none">h3</th>
                         {{-- <th>Actions</th> --}}
                     </tr>
                 </thead>
@@ -143,15 +142,15 @@ margin-left: 10px;
 var export_details=[];
         riders_data.forEach(function(item,index) {
            export_details.push({
-            "Transaction ID":item.transaction_id,
-            "Toll Gate":item.toll_gate,
-            "Direction":item.direction,
-            "Tag Number":item.tag_number,
-            "Plate":item.plate,
-            "Amount(AED)":item.amount_aed,
-            "Trip Date":item.trip_date,
-            "Trip Time":item.trip_time,
-            "Transaction_post_date":item.transaction_post_date,
+            "FEID":item.feid,
+            "Onboarding Date": item.date,
+            "Total to be paid out":item.total_to_be_paid_out,
+            "Amount for login hours":item.amount_for_login_hours,
+            "Amount to be paid against orders completed":item.amount_to_be_paid_against_orders_completed,
+            "NCW Incentives":item.ncw_incentives,
+            "Tips Payouts":item.tips_payouts,
+            "DC Deductions":item.dc_deductions,
+            "Mcdonalds Deductions":item.mcdonalds_deductions,
            });
         });
         var export_data = new CSVExport(export_details);
@@ -268,7 +267,7 @@ $(function() {
             mark_table();
              
         },
-        ajax: '{!! route('admin.ajax_details') !!}',
+        ajax: '{!! route('admin.accounts.income_zomato_ajax') !!}',
         columns:null,
         responsive:true,
         
@@ -285,20 +284,21 @@ $(function() {
             "data":           null,
             "defaultContent": ''
             },
-            { "data": 'transaction_id', "name": 'transaction_id' },
-            { "data": 'toll_gate', "name": 'toll_gate' },
-            { "data": 'direction', "name": 'direction' },
-            { "data": 'tag_number', "name": 'tag_number' },
-            { "data": 'plate', "name": 'plate' },
-            { "data": 'amount_aed', "name": 'amount_aed' },
+            { "data": 'rider_name', "name": 'rider_name' },
+            { "data": 'total_to_be_paid_out', "name": 'total_to_be_paid_out' },
+            { "data": 'amount_for_login_hours', "name": 'amount_for_login_hours' },
+            { "data": 'amount_to_be_paid_against_orders_completed', "name": 'amount_to_be_paid_against_orders_completed' },
+            { "data": 'ncw_incentives', "name": 'ncw_incentives' },
             // { "data": 'actions', "name": 'actions' }
-            { "data": 'trip_date', "name": 'trip_date' },
-            { "data": 'trip_time', "name": 'trip_time' },
-            { "data": 'transaction_post_date', "name": 'transaction_post_date' },
+            { "data": 'tips_payouts', "name": 'tips_payouts' },
+            { "data": 'mcdonalds_deductions', "name": 'mcdonalds_deductions' },
+            { "data": 'dc_deductions', "name": 'dc_deductions' },
+            { "data": 'date', "name": 'date' },
+            { "data": 'feid', "name": 'feid' },
         ];
         _settings.columnDefs=[
             {
-                "targets": [ 7,8,9 ],
+                "targets": [ 7,8,9, 10 ],
                 "visible": false,
                 searchable: true,
             },
@@ -313,15 +313,17 @@ $(function() {
         $('#trip_details thead tr th').eq(7).before('<th>Trip Time:</th>');
         $('#trip_details thead tr th').eq(8).before('<th>Transaction Post Date:</th>');
         _settings.columns=[
-            { "data": 'transaction_id', "name": 'transaction_id' },
-            { "data": 'toll_gate', "name": 'toll_gate' },
-            { "data": 'direction', "name": 'direction' },   
-            { "data": 'tag_number', "name": 'tag_number' },
-            { "data": 'plate', "name": 'plate' },
-            { "data": 'amount_aed', "name": 'amount_aed' },
-            { "data": 'trip_date', "name": 'trip_date' },
-            { "data": 'trip_time', "name": 'trip_time' },
-            { "data": 'transaction_post_date', "name": 'transaction_post_date' },
+            { "data": 'rider_name', "name": 'rider_name' },
+            { "data": 'total_to_be_paid_out', "name": 'total_to_be_paid_out' },
+            { "data": 'amount_for_login_hours', "name": 'amount_for_login_hours' },
+            { "data": 'amount_to_be_paid_against_orders_completed', "name": 'amount_to_be_paid_against_orders_completed' },
+            { "data": 'ncw_incentives', "name": 'ncw_incentives' },
+            // { "data": 'actions', "name": 'actions' }
+            { "data": 'tips_payouts', "name": 'tips_payouts' },
+            { "data": 'mcdonalds_deductions', "name": 'mcdonalds_deductions' },
+            { "data": 'dc_deductions', "name": 'dc_deductions' },
+            { "data": 'date', "name": 'date' },
+            { "data": 'feid', "name": 'feid' },
             
         ];
      
@@ -391,12 +393,10 @@ $(function() {
     // `d` is the original data object for the row
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
             '<tr>'+
-            '<td colspan="1"; style="font-weight:900;">Trip Date:</td>'+
-            '<td colspan="2";>'+data.trip_date+'</td>'+
-            '<td colspan="1"; style="font-weight:900;" >Trip time:</td>'+
-            '<td colspan="2";>'+data.trip_time+'</td>'+
-            '<td colspan="1"; style="font-weight:900;" >Transaction_post_date:</td>'+
-            '<td colspan="1";>'+data.transaction_post_date+'</td>'+
+            '<td colspan="1"; style="font-weight:900;">DC Deductions:</td>'+
+            '<td colspan="2";>'+data.dc_deductions+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Mcdonalds Deductions:</td>'+
+            '<td colspan="2";>'+data.mcdonalds_deductions+'</td>'+
             '</tr>'+
             
         '</table>';

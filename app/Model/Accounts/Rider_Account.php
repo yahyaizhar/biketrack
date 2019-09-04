@@ -17,6 +17,7 @@ class Rider_Account extends Authenticatable
     protected $fillable = [
         'type', 'month',
         'amount',
+        'p_id',
         'rider_id',
         'advance_return_id',
         'id_charge_id',
