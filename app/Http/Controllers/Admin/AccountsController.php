@@ -631,10 +631,17 @@ class AccountsController extends Controller
         $ra_zomatos=Income_zomato::where("rider_id",$rider_id)
         ->whereMonth("date",$month)
         ->get()->first();  
-        $ra_zomatos_no_of_hours = $ra_zomatos->log_in_hours_payable * 7.87;
-        $ra_zomatos_no_of_trips = $ra_zomatos->trips_payable * 2;
-        $ra_zomatos_ncw_incentives = $ra_zomatos->ncw_incentives;
-        $ra_zomatos_tips_payouts = $ra_zomatos->tips_payouts;
+        $ra_zomatos_no_of_hours =0;
+        $ra_zomatos_no_of_trips = 0;
+        $ra_zomatos_ncw_incentives =0;
+        $ra_zomatos_tips_payouts = 0;
+        if(isset($ra_zomatos)){
+            $ra_zomatos_no_of_hours = $ra_zomatos->log_in_hours_payable * 7.87;
+            $ra_zomatos_no_of_trips = $ra_zomatos->trips_payable * 2;
+            $ra_zomatos_ncw_incentives = $ra_zomatos->ncw_incentives;
+            $ra_zomatos_tips_payouts = $ra_zomatos->tips_payouts;
+        }
+       
         
         $ra_deduction = $ra_payable;
         $ra_salary=$ra_zomatos_no_of_hours + $ra_zomatos_no_of_trips + $ra_cr;
@@ -683,6 +690,61 @@ class AccountsController extends Controller
         $ca->amount=$request->recieved_salary;
         $ca->save();
 
+
+        // $RA=\App\Model\Accounts\Rider_Account::
+        //  where("type","cr_payable")
+        // ->where("rider_id",$rider_id)
+        // ->whereMonth("month", Carbon::parse($request->get('month'))->format('m'))
+        // ->get();
+        // foreach ($RA as $check_rider_cr_payable) {
+        //     $check_rider_dr_payable=\App\Model\Accounts\Rider_Account::where("source",$check_rider_cr_payable->source)
+        //     ->where("type","dr_payable")
+        //    ->where("rider_id",$check_rider_cr_payable->rider_id)
+        //    ->where("month",$check_rider_cr_payable->month)
+        //    ->get()
+        //    ->first();
+
+        // if (!isset($check_rider_dr_payable)) {
+        //     $ra = new \App\Model\Accounts\Rider_Account;
+        //     $ra->salary_id =$check_rider_cr_payable->salary_id;
+        //     $ra->income_zomato_id =$check_rider_cr_payable->income_zomato_id;
+        //     $ra->advance_return_id =$check_rider_cr_payable->advance_return_id;
+        //     $ra->id_charge_id =$check_rider_cr_payable->id_charge_id;
+        //     $ra->wps_id =$check_rider_cr_payable->wps_id;
+        //     $ra->fuel_expense_id =$check_rider_cr_payable->fuel_expense_id;
+        //     $ra->maintenance_id =$check_rider_cr_payable->maintenance_id;
+        //     $ra->edirham_id =$check_rider_cr_payable->edirham_id;
+        //     $ra->company_expense_id =$check_rider_cr_payable->company_expense_id;
+        //     $ra->salik_id =$check_rider_cr_payable->salik_id;
+        //     $ra->sim_transaction_id =$check_rider_cr_payable->sim_transaction_id;
+        //     $ra->type='dr_payable';
+        //     $ra->rider_id=$rider_id;
+        //     $ra->month = $check_rider_cr_payable->month;
+        //     $ra->source=$check_rider_cr_payable->source; 
+        //     $ra->amount=$check_rider_cr_payable->amount;
+        //     $ra->save();
+
+        //     $ca = new \App\Model\Accounts\Company_Account;
+        //     $ca->salary_id =$check_rider_cr_payable->salary_id;
+        //     $ca->income_zomato_id =$check_rider_cr_payable->income_zomato_id;
+        //     $ca->advance_return_id =$check_rider_cr_payable->advance_return_id;
+        //     $ca->id_charge_id =$check_rider_cr_payable->id_charge_id;
+        //     $ca->wps_id =$check_rider_cr_payable->wps_id;
+        //     $ca->fuel_expense_id =$check_rider_cr_payable->fuel_expense_id;
+        //     $ca->maintenance_id =$check_rider_cr_payable->maintenance_id;
+        //     $ca->edirham_id =$check_rider_cr_payable->edirham_id;
+        //     $ca->company_expense_id =$check_rider_cr_payable->company_expense_id;
+        //     $ca->salik_id =$check_rider_cr_payable->salik_id;
+        //     $ca->sim_transaction_id =$check_rider_cr_payable->sim_transaction_id;
+        //     $ca->type='cr';
+        //     $ca->rider_id=$rider_id;
+        //     $ca->month = $check_rider_cr_payable->month;
+        //     $ca->source=$check_rider_cr_payable->source; 
+        //     $ca->amount=$check_rider_cr_payable->amount;
+        //     $ca->save();
+        // } 
+       
+    // }
         return redirect(route('account.developer_salary'));
     }
 

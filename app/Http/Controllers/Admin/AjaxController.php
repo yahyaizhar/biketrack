@@ -377,7 +377,7 @@ class AjaxController extends Controller
             //         </label>';
         }) 
         ->addColumn('salary', function($rider_salary){
-            return $rider_salary->salary;
+            return $rider_salary->total_salary;
         })
         ->addColumn('created_at', function($rider_salary){
             return $rider_salary->created_at;
@@ -913,8 +913,11 @@ class AjaxController extends Controller
             return  Carbon::parse($riderToMonth->month)->format('M Y');
         })
         ->addColumn('salary', function($riderToMonth){
-
-            return $riderToMonth->salary;
+               $total_salary='<strong>Total Salary</strong>: '.$riderToMonth->total_salary.'<br>';
+               $gross_salary='<strong>Gross Salary</strong>: '.$riderToMonth->gross_salary.'<br>';
+               $recieved_salary='<strong>Received Salary</strong>: '.$riderToMonth->recieved_salary.'<br>';
+               $remaining_salary='<strong>Remaining Salary</strong>: '.$riderToMonth->remaining_salary.'<br>';
+            return $total_salary.$gross_salary.$recieved_salary.$remaining_salary;
         })
         ->addColumn('payment_date', function($riderToMonth){
             return $riderToMonth->updated_at;
@@ -973,9 +976,13 @@ class AjaxController extends Controller
             $c = Rider::find($monthToRider->rider_id);
             return $c->name;
         })
-        ->addColumn('salary', function($monthToRider){
-            return $monthToRider->salary;
-        })
+        ->addColumn('salary', function($riderToMonth){
+            $total_salary='<strong>Total Salary</strong>: '.$riderToMonth->total_salary.'<br>';
+            $gross_salary='<strong>Gross Salary</strong>: '.$riderToMonth->gross_salary.'<br>';
+            $recieved_salary='<strong>Received Salary</strong>: '.$riderToMonth->recieved_salary.'<br>';
+            $remaining_salary='<strong>Remaining Salary</strong>: '.$riderToMonth->remaining_salary.'<br>';
+         return $total_salary.$gross_salary.$recieved_salary.$remaining_salary;
+     })
         ->addColumn('updated_at', function($monthToRider){
             return $monthToRider->updated_at;
         })
