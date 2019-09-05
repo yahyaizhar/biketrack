@@ -208,6 +208,9 @@ Route::group([
     Route::get("/accounts/rider/account","AccountsController@rider_account")->name("admin.accounts.rider_account");
     Route::get("/accounts/company/debits/get_salary_deduction/{month}/{rider_id}","AccountsController@get_salary_deduction")->name("admin.accounts.get_salary_deduction");
 
+    Route::get("/accounts/rider/expense","AccountsController@rider_expense_get")->name("admin.accounts.rider_expense_get");
+    Route::post("/accounts/rider/expense/add","AccountsController@rider_expense_post")->name("admin.accounts.rider_expense_post");
+    
 });
 // end Accounts
 

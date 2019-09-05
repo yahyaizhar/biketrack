@@ -633,14 +633,15 @@ class AccountsController extends Controller
         $ra_zomatos_tips_payouts = $ra_zomatos->tips_payouts;
         
         $ra_deduction = $ra_payable;
-        $ra_salary=$ra_zomatos_no_of_hours + $ra_zomatos_no_of_trips + $ra_zomatos_ncw_incentives + $ra_zomatos_tips_payouts;
-        $ra_recieved=($ra_salary - $ra_deduction) + $ra_cr;
+        $ra_salary=$ra_zomatos_no_of_hours + $ra_zomatos_no_of_trips + $ra_cr;
+        $ra_recieved=$ra_salary - $ra_deduction;
 
        
         return response()->json([
-            'gross_salary'=>$ra_recieved ,
-            'recieved_salary'=>$ra_recieved,
-            'total_salary'=>$ra_salary,
+            'gross_salary'=>round($ra_recieved,2) ,
+            'd'=>$ra_payable,
+            'recieved_salary'=>round($ra_recieved,2),
+            'total_salary'=>round($ra_salary,2),
         ]);
     }
     public function new_salary_added(Request $request){
@@ -1218,4 +1219,37 @@ public function client_income_update(Request $request,$id){
         return redirect(route('admin.client_income_view'));
 }
 // end Client_income
+
+    public function rider_expense_get()
+    {
+        $riders=Rider::where("active_status","A")->get();
+        return view('admin.accounts.Rider_Debit.rider_expense',compact('riders'));
+    }
+    public function rider_expense_post(Request $r)
+    {
+        $d_type = $r->d_type;
+        $ca = new \App\Model\Accounts\Company_Account;
+        $ca->type='dr';
+        $ca->amount=$r->amount;
+        $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+        $ca->rider_id = $r->rider_id;
+        $ca->source='custom_expense@'.$r->desc;
+        $ca->save();
+        $ra = new \App\Model\Accounts\Rider_Account;
+        if($d_type=='payable'){
+            // cr_payable
+            $ra->type='cr_payable';
+        }
+        else{
+            //cr
+            $ra->type='cr';
+        }
+        $ra->amount=$r->amount;
+        $ra->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+        $ra->rider_id = $r->rider_id;
+        $ra->source='custom_expense@'.$r->desc;
+        $ra->save();
+        
+        return redirect(route('admin.accounts.rider_account'));
+    }
 }

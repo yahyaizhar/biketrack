@@ -177,6 +177,8 @@ if (Auth::user()->type=="su") {
                             
                             <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/income/zomato/index") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.accounts.income_zomato_index') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Zomato Income</span></a></li>
 
+                            <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/rider/expense") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.accounts.rider_expense_get') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add Rider Expense</span></a></li>
+
                             <li class="kt-menu__item kt-menu__item--submenu @if(strpos(Request::url(), "/Salary") !== false) kt-menu__item--active kt-menu__item--open @endif "  aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
                                 <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
                                     <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
