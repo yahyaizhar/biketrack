@@ -1826,7 +1826,7 @@ class AjaxController extends Controller
                 ->where("feid",$client_rider_id)
                 ->avg("adt"); 
                 return round($zomato_adt2,2);
-        }
+            }
                 return "0";
            })
            ->addColumn('improvements', function($rider) use ($ranges){
