@@ -27,6 +27,7 @@
                 <h3 class="kt-portlet__head-title">
                     Rider Ranges ADT
                 </h3>
+                <input style="margin-left: 15px;" class="btn btn-primary" type="button" onclick="export_data()" value="Export Zomato Data">
             </div>
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-wrapper">
@@ -57,6 +58,22 @@
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/datatables/basic/basic.js') }}" type="text/javascript"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script>
+   
+var riders_data = [];
+var _perData=riders_data;
+function export_data(){
+    var export_details=[];
+    _perData.forEach(function(item,index) {
+        export_details.push({
+        "rider_id":item.rider_id,
+        "adt1":item.adt1,
+        "adt2":item.adt2,
+        "improvements":item.improvements,
+    });
+});
+        var export_data = new CSVExport(export_details);
+    return false;
+}
 
 $(function() {
         $('input[name="daterange"]').daterangepicker({
@@ -66,9 +83,6 @@ $(function() {
             }
         }, function(start, end, label) {
             console.log("A new date selection was made: " + start.format('DD-MM-YYYY') + ' to ' + end.format('DD-MM-YYYY'));
-
-
-        
             $date_data1=$(".datapick1").val();
             $date_data2=$(".datapick2").val();
             var _data = {
@@ -88,12 +102,13 @@ $(function() {
                 r2d2:_data.range2.end_date
             }
             
-            console.log(data);
+            // console.log(data);
             biketrack.updateURL(data);
-            console.log($date_data1);
-            console.log($date_data2);
+            // console.log($date_data1);
+            // console.log($date_data2);
             var url = "{{ url('admin/range/ajax/adt/') }}"+"/"+JSON.stringify(_data) ;
             getData(url);
+            
         });
 });
 
@@ -119,10 +134,12 @@ $(function() {
         };
         var url = "{{ url('admin/range/ajax/adt/') }}"+"/"+JSON.stringify(_data) ;
         getData(url);
+        
     }
 });
 var getData = function(url){
     bike_table = $('#bike-table').DataTable({
+        "lengthMenu": [[-1], ["All"]],
         destroy: true,
         processing: true,
         serverSide: true,
@@ -131,6 +148,13 @@ var getData = function(url){
             'processing': $('.loading').show()
         },
         drawCallback:function(data){
+            var api = this.api();
+            var _data = api.data();
+            var keys = Object.keys(_data).filter(function(x){return !isNaN(parseInt(x))});
+            keys.forEach(function(_d,_i) {
+                var __data = JSON.parse(JSON.stringify(_data[_d]).toLowerCase());
+                riders_data.push(__data);
+            });
             $('.total_entries').remove();
             $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
         },
