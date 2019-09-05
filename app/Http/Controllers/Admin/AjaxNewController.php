@@ -177,6 +177,48 @@ class AjaxNewController extends Controller
         ->rawColumns(['desc','date','cr','dr','balance'])
         ->make(true);
     }
+    public function getCompanyAccounts($ranges)
+    {
+        $ranges = json_decode($ranges, true);
+        $from = date($ranges['range']['start_date']);
+        $to = date($ranges['range']['end_date']);
+        $company_statements = \App\Model\Accounts\Company_Account::where("rider_id",$ranges['rider_id'])
+        ->whereDate('created_at', '>=',$from)
+        ->whereDate('created_at', '<=',$to)
+        ->get();
+        $running_balance = 0;
+        return DataTables::of($company_statements)
+        ->addColumn('date', function($company_statements){
+            return Carbon::parse($company_statements->created_at)->format('d/m/Y');
+        })
+        ->addColumn('desc', function($company_statements){
+            return $company_statements->source;
+        })
+        ->addColumn('cr', function($company_statements){
+            if ($company_statements->type=='cr' )
+            {
+                return '<span >'.$company_statements->amount.'</span>';
+            }
+            return 0;
+        })
+        ->addColumn('dr', function($company_statements){
+            if($company_statements->type=='dr' ){
+                return '<span>('.$company_statements->amount.')</span>';
+            }
+            return 0;
+        })
+        ->addColumn('balance', function($company_statements) use (&$running_balance){
+            if($company_statements->type=='dr'){
+                $running_balance -= $company_statements->amount;
+            }
+            else{
+                $running_balance += $company_statements->amount;
+            }
+            return $running_balance;
+        })
+        ->rawColumns(['desc','date','cr','dr','balance'])
+        ->make(true);
+    }
 
     public function getMaintenances()
     {

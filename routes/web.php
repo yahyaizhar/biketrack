@@ -35,6 +35,8 @@ Route::group([
     Route::get('/Month/To/Rider/ajax/{month_id}','AjaxController@getMonthToRider')->name('account.MonthToRider_ajax');
     Route::get('get/ajax/company/accounts','AjaxController@getCompanyAccounts')->name('admin.ajax_company_accounts');
     Route::get('get/ajax/rider/accounts','AjaxController@getRiderAccounts')->name('admin.ajax_rider_accounts');
+    Route::get("/accounts/rider/account/{range}","AjaxNewController@getRiderAccounts")->name("admin.accounts.get_rider_account");
+    Route::get("/accounts/company/account/{range}","AjaxNewController@getCompanyAccounts")->name("admin.accounts.get_company_account");
     Route::get('/newComer/view/ajax', 'AjaxController@getNewComer')->name('NewComer.view_ajax');
     Route::get('get/ajax/Sim','AjaxController@getSims')->name('Sim.ajax_sim');
     Route::get('/map/testing/{id}','AjaxController@client_name');
@@ -42,7 +44,6 @@ Route::group([
     Route::get('/mobile/installment/data','AjaxController@getMobileInstallment')->name('MobileInstallment.getinstallments');
     Route::get('/mobile/data','AjaxController@getMobiles')->name('mobile.getMobiles');
     Route::get("/client_income/view/data","AjaxNewController@getclient_income")->name("admin.getclient_income");
-    Route::get("/accounts/rider/account/{range}","AjaxNewController@getRiderAccounts")->name("admin.accounts.get_rider_account");
     Route::get("/accounts/fuel_expense/view/data","AjaxNewController@getFuelExpense")->name("admin.accounts.ajax_fuelExpense");
     Route::get("/accounts/id-charges/view/data","AjaxNewController@getIdCharges")->name("admin.accounts.id_charges_view_data");
     Route::get("/accounts/workshop/view/data","AjaxNewController@getWorkShops")->name("admin.accounts.workshop_view_data");
@@ -205,7 +206,8 @@ Route::group([
     Route::get('/client_income/edit/{id}','AccountsController@client_income_edit')->name('admin.client_income_edit');
 // end Client_income
     Route::get("/accounts/rider/account","AccountsController@rider_account")->name("admin.accounts.rider_account");
-    Route::get("/accounts/rider/account","AccountsController@rider_account")->name("admin.accounts.rider_account");
+    Route::get("/accounts/company/account","AccountsController@company_account")->name("admin.accounts.company_account");
+    
     Route::get("/accounts/company/debits/get_salary_deduction/{month}/{rider_id}","AccountsController@get_salary_deduction")->name("admin.accounts.get_salary_deduction");
 
 });
