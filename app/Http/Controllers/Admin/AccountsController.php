@@ -56,6 +56,15 @@ class AccountsController extends Controller
         $ca->id_charge_id=$id_charge->id;
         $ca->save();
 
+        $ra = new \App\Model\Accounts\Rider_Account;
+        $ra->type='cr_payable';
+        $ra->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+        $ra->rider_id=$r->rider_id;
+        $ra->amount=$r->amount;
+        $ra->source='id_charges';
+        $ra->id_charge_id=$id_charge->id;
+        $ra->save();
+
         return redirect(route('admin.accounts.id_charges_view'));
     }
     public function id_charges_view()
@@ -89,6 +98,15 @@ class AccountsController extends Controller
         $ca->source='id_charges';
         $ca->id_charge_id=$id_charge->id;
         $ca->update();
+
+        $ra =\App\Model\Accounts\Rider_Account::where("id_charge_id",$id_charge->id)->get()->first();
+        $ra->type='cr_payable';
+        $ra->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+        $ra->rider_id=$r->rider_id;
+        $ra->amount=$r->amount;
+        $ra->source='id_charges';
+        $ra->id_charge_id=$id_charge->id;
+        $ra->save();
         return redirect(route('admin.accounts.id_charges_view'));
     }
     public function delete_id_charges($id)
@@ -597,22 +615,32 @@ class AccountsController extends Controller
         return view('admin.accounts.Rider_Debit.view_account',compact('closing_balance','rider', 'rider_statements', 'opening_balance')); 
     }
     public function get_salary_deduction($month, $rider_id){   
-        $ra=Rider_Account::where("rider_id",$rider_id)
+        // before tthat check if rider is zomato's
+        $ra_payable=Rider_Account::where("rider_id",$rider_id)
         ->whereMonth("month",$month)
         ->where("type","cr_payable")
-        ->get();  
-        $rider_detail=Rider_detail::where("active_status","A")
-        ->where("rider_id",$rider_id)
-        ->get()
-        ->first();
-        $ra_sum=$ra->sum("amount");
-        $ra_recieved=$rider_detail->salary - $ra_sum;
+        ->sum('amount'); 
+        $ra_cr=Rider_Account::where("rider_id",$rider_id)
+        ->whereMonth("month",$month)
+        ->where("type","cr")
+        ->sum('amount');  
+        $ra_zomatos=Income_zomato::where("rider_id",$rider_id)
+        ->whereMonth("date",$month)
+        ->get()->first();  
+        $ra_zomatos_no_of_hours = $ra_zomatos->log_in_hours_payable * 7.87;
+        $ra_zomatos_no_of_trips = $ra_zomatos->trips_payable * 2;
+        $ra_zomatos_ncw_incentives = $ra_zomatos->ncw_incentives;
+        $ra_zomatos_tips_payouts = $ra_zomatos->tips_payouts;
+        
+        $ra_deduction = $ra_payable;
+        $ra_salary=$ra_zomatos_no_of_hours + $ra_zomatos_no_of_trips + $ra_zomatos_ncw_incentives + $ra_zomatos_tips_payouts;
+        $ra_recieved=($ra_salary - $ra_deduction) + $ra_cr;
 
        
         return response()->json([
             'gross_salary'=>$ra_recieved ,
             'recieved_salary'=>$ra_recieved,
-            'total_salary'=>$rider_detail->salary,
+            'total_salary'=>$ra_salary,
         ]);
     }
     public function new_salary_added(Request $request){
@@ -981,6 +1009,7 @@ public function income_zomato_import(Request $r){
             $obj['rider_id']=$rider_id;
             $obj['feid']=isset($item['feid'])?$item['feid']:null;
             $obj['log_in_hours_payable']=isset($item['log_in_hours_payable'])?$item['log_in_hours_payable']:null;
+            $obj['trips_payable']=isset($item['trips_payable'])?$item['trips_payable']:null;
             $obj['total_to_be_paid_out']=isset($item['total_to_be_paid_out'])?$item['total_to_be_paid_out']:null;
             $obj['amount_for_login_hours']=isset($item['amount_for_login_hours'])?$item['amount_for_login_hours']:null;
             $obj['amount_to_be_paid_against_orders_completed']=isset($item['amount_to_be_paid_against_orders_completed'])?$item['amount_to_be_paid_against_orders_completed']:null; 
@@ -1052,6 +1081,7 @@ public function income_zomato_import(Request $r){
             $objUpdate['rider_id']=$rider_id;
             $objUpdate['feid']=isset($item['feid'])?$item['feid']:null;
             $objUpdate['log_in_hours_payable']=isset($item['log_in_hours_payable'])?$item['log_in_hours_payable']:null;
+            $objUpdate['trips_payable']=isset($item['trips_payable'])?$item['trips_payable']:null;
             $objUpdate['total_to_be_paid_out']=isset($item['total_to_be_paid_out'])?$item['total_to_be_paid_out']:null;
             $objUpdate['amount_for_login_hours']=isset($item['amount_for_login_hours'])?$item['amount_for_login_hours']:null;
             $objUpdate['amount_to_be_paid_against_orders_completed']=isset($item['amount_to_be_paid_against_orders_completed'])?$item['amount_to_be_paid_against_orders_completed']:null; 

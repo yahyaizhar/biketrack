@@ -42,16 +42,16 @@ Route::group([
     Route::get('/mobile/installment/data','AjaxController@getMobileInstallment')->name('MobileInstallment.getinstallments');
     Route::get('/mobile/data','AjaxController@getMobiles')->name('mobile.getMobiles');
     Route::get("/client_income/view/data","AjaxNewController@getclient_income")->name("admin.getclient_income");
-    Route::get("/rider/account/{range}","AjaxNewController@getRiderAccounts")->name("admin.accounts.get_rider_account");
-    Route::get("/fuel_expense/view/data","AjaxNewController@getFuelExpense")->name("admin.accounts.ajax_fuelExpense");
-    Route::get("/id-charges/view/data","AjaxNewController@getIdCharges")->name("admin.accounts.id_charges_view_data");
-    Route::get("/workshop/view/data","AjaxNewController@getWorkShops")->name("admin.accounts.workshop_view_data");
-    Route::get("/edirham/view/data","AjaxNewController@getEdirhams")->name("admin.accounts.edirham_view_data");
-    Route::get("/maintenance/view/data","AjaxNewController@getMaintenances")->name("admin.accounts.maintenance_view_data");
-    Route::get("/CE/view/data","AjaxNewController@getCompanyExpense")->name("admin.getCompanyExpense");
-    Route::get("/wps/view/data","AjaxNewController@getWPS")->name("admin.getWPS");
-    Route::get("/AR/view/data","AjaxNewController@getAR")->name("admin.getAR");
-    Route::get('/income/zomato/ajax/data','AjaxNewController@income_zomato_ajax')->name('admin.accounts.income_zomato_ajax');
+    Route::get("/accounts/rider/account/{range}","AjaxNewController@getRiderAccounts")->name("admin.accounts.get_rider_account");
+    Route::get("/accounts/fuel_expense/view/data","AjaxNewController@getFuelExpense")->name("admin.accounts.ajax_fuelExpense");
+    Route::get("/accounts/id-charges/view/data","AjaxNewController@getIdCharges")->name("admin.accounts.id_charges_view_data");
+    Route::get("/accounts/workshop/view/data","AjaxNewController@getWorkShops")->name("admin.accounts.workshop_view_data");
+    Route::get("/accounts/edirham/view/data","AjaxNewController@getEdirhams")->name("admin.accounts.edirham_view_data");
+    Route::get("/accounts/maintenance/view/data","AjaxNewController@getMaintenances")->name("admin.accounts.maintenance_view_data");
+    Route::get("/accounts/CE/view/data","AjaxNewController@getCompanyExpense")->name("admin.getCompanyExpense");
+    Route::get("/accounts/wps/view/data","AjaxNewController@getWPS")->name("admin.getWPS");
+    Route::get("/accounts/AR/view/data","AjaxNewController@getAR")->name("admin.getAR");
+    Route::get('/accounts/income/zomato/ajax/data','AjaxNewController@income_zomato_ajax')->name('admin.accounts.income_zomato_ajax');
 });
 // End Ajax Routes
 
@@ -204,9 +204,9 @@ Route::group([
     Route::delete('/client_income/delete/{id}','AccountsController@client_income_delete')->name('admin.client_income_delete');
     Route::get('/client_income/edit/{id}','AccountsController@client_income_edit')->name('admin.client_income_edit');
 // end Client_income
-    Route::get("/rider/account","AccountsController@rider_account")->name("admin.accounts.rider_account");
-    Route::get("/rider/account","AccountsController@rider_account")->name("admin.accounts.rider_account");
-    Route::get("/company/debits/get_salary_deduction/{month}/{rider_id}","AccountsController@get_salary_deduction")->name("admin.accounts.get_salary_deduction");
+    Route::get("/accounts/rider/account","AccountsController@rider_account")->name("admin.accounts.rider_account");
+    Route::get("/accounts/rider/account","AccountsController@rider_account")->name("admin.accounts.rider_account");
+    Route::get("/accounts/company/debits/get_salary_deduction/{month}/{rider_id}","AccountsController@get_salary_deduction")->name("admin.accounts.get_salary_deduction");
 
 });
 // end Accounts
@@ -409,9 +409,9 @@ Route::group([
     Route::put('/profile', 'HomeController@updateProfile')->name('admin.profile.update');
 //end login , dashboard   
 //zomato income
-    Route::get("/income/zomato/index","AccountsController@income_zomato_index")->name("admin.accounts.income_zomato_index");
-    Route::post('/income/zomato/import','AccountsController@income_zomato_import')->name('admin.accounts.income_zomato_import');
-    Route::delete('/income/zomato/delete','AccountsController@income_zomato_delete')->name('admin.accounts.income_zomato_delete');
+    Route::get("/accounts/income/zomato/index","AccountsController@income_zomato_index")->name("admin.accounts.income_zomato_index");
+    Route::post('/accounts/income/zomato/import','AccountsController@income_zomato_import')->name('admin.accounts.income_zomato_import');
+    Route::delete('/accounts/income/zomato/delete','AccountsController@income_zomato_delete')->name('admin.accounts.income_zomato_delete');
 //zomato income  
 });
 // end for Admin
