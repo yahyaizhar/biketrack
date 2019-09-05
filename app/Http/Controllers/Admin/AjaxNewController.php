@@ -139,13 +139,24 @@ class AjaxNewController extends Controller
         $from = date($ranges['range']['start_date']);
         $to = date($ranges['range']['end_date']);
         $rider_statements = \App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
-        ->whereDate('created_at', '>=',$from)
-        ->whereDate('created_at', '<=',$to)
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
         ->get();
         $running_balance = 0;
+        $rider_debits_cr_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        ->where("type","cr_payable")
+        ->orWhere('type', 'cr')
+        ->sum('amount');
+        
+        $rider_debits_dr_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        ->where("type","dr_payable")
+        ->orWhere('type', 'dr')
+        ->sum('amount');
+
+        $closing_balance = $rider_debits_cr_payable - $rider_debits_dr_payable;
         return DataTables::of($rider_statements)
         ->addColumn('date', function($rider_statement){
-            return Carbon::parse($rider_statement->created_at)->format('d/m/Y');
+            return Carbon::parse($rider_statement->month)->format('F Y');
         })
         ->addColumn('desc', function($rider_statement){
             return $rider_statement->source;
@@ -174,7 +185,10 @@ class AjaxNewController extends Controller
             }
             return $running_balance;
         })
-        ->rawColumns(['desc','date','cr','dr','balance'])
+        ->with([
+            'closing_balance' => round($closing_balance,2)
+        ])
+        ->rawColumns(['closing_balance','desc','date','cr','dr','balance'])
         ->make(true);
     }
     public function getCompanyAccounts($ranges)
@@ -183,13 +197,25 @@ class AjaxNewController extends Controller
         $from = date($ranges['range']['start_date']);
         $to = date($ranges['range']['end_date']);
         $company_statements = \App\Model\Accounts\Company_Account::where("rider_id",$ranges['rider_id'])
-        ->whereDate('created_at', '>=',$from)
-        ->whereDate('created_at', '<=',$to)
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
         ->get();
+        // ->whereDate('created_at', '>=',$from)
+        // ->whereDate('created_at', '<=',$to)
+
         $running_balance = 0;
+        $c_debits_cr_payable = \App\Model\Accounts\Company_Account::where("rider_id",$ranges['rider_id'])
+        ->orWhere('type', 'cr')
+        ->sum('amount');
+        
+        $c_debits_dr_payable = \App\Model\Accounts\Company_Account::where("rider_id",$ranges['rider_id'])
+        ->orWhere('type', 'dr')
+        ->sum('amount');
+
+        $closing_balance = $c_debits_cr_payable - $c_debits_dr_payable;
         return DataTables::of($company_statements)
         ->addColumn('date', function($company_statements){
-            return Carbon::parse($company_statements->created_at)->format('d/m/Y');
+            return Carbon::parse($company_statements->month)->format('F Y');
         })
         ->addColumn('desc', function($company_statements){
             return $company_statements->source;
@@ -216,6 +242,10 @@ class AjaxNewController extends Controller
             }
             return $running_balance;
         })
+        
+        ->with([
+            'closing_balance' => round($closing_balance,2)
+        ])
         ->rawColumns(['desc','date','cr','dr','balance'])
         ->make(true);
     }

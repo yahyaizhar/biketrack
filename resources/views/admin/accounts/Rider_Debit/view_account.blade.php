@@ -14,7 +14,7 @@
 
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <div class="kt-portlet">
-            <div class="row row-no-padding row-col-separator-xl">
+            <div class="row row-no-padding">
                 <div class="col-md-4">
                     <div class="my-2 mx-4">
                         <label>Select Rider:</label>
@@ -305,6 +305,7 @@
             console.warn(url)
             table = $('#data-table').DataTable({
                 destroy: true,
+                ordering: false,
                 processing: true,
                 serverSide: true,
                 'language': { 
@@ -313,13 +314,9 @@
                 },
                 drawCallback:function(data){
                     console.log(data);
-                    if(data.aoData.length > 0){
-                        var _ClosingBalance = data.aoData[data.aoData.length-1]._aData.balance;
-                        $('#closing_balance').text(_ClosingBalance);
-                    }
-                    else{
-                        $('#closing_balance').text(0);
-                    }
+                    var response = table.ajax.json();
+                    var _ClosingBalance = response.closing_balance;
+                    $('#closing_balance').text(_ClosingBalance);
                 },
                 ajax: url,
                 columns: [
@@ -330,7 +327,6 @@
                     { data: 'balance', name: 'balance' },
                 ],
                 responsive:true,
-                order:[0,'desc'],
             });
         }
 
@@ -353,7 +349,7 @@
             }
             $('[name="rider_id"]').val(rider_id).trigger('change');
         }
-
+        $('[name="sort_by"]:checked').trigger('change')
     })
 </script>
 @endsection

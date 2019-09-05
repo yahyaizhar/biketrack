@@ -47,7 +47,7 @@ margin-left: 10px;
                         &nbsp;
                         
                         <a style="padding:8.45px 13px;" href="" data-toggle="modal" data-target="#import_data"  class="btn btn-label-success btn-sm btn-upper">Import Zomato Income</a>&nbsp;
-                        <input class="btn btn-primary" type="button" onclick="export_data();" value="Export Trip Detail">
+                        <input class="btn btn-primary" type="button" onclick="export_data();" value="Export Zomato Income">
                         
                         {{-- <a href="{{ route('Sim.new_sim') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
