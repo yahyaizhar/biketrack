@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Model\Rider\Trip_Detail; 
 use Batch;
+use App\Assign_bike;
 use Illuminate\Support\Arr;
 use App\Model\Bikes\bike;
 use App\Model\Accounts\Company_Account;
@@ -28,6 +29,9 @@ class SalikController extends Controller
     }
     public function import_Salik(Request $r)
     {
+        $bike=bike::where("active_status","A")->get();
+        $assign_bike=Assign_bike::all();
+
         $data = $r->data;
         $trip_objects=[];
         $ca_objects=[];
@@ -42,9 +46,23 @@ class SalikController extends Controller
             $zp_found = Arr::first($zp, function ($item_zp, $key) use ($item) {
                 return $item_zp->transaction_id == $item['transaction_id'];
             });
+            $bike_found = Arr::first($bike, function ($item_zp, $key) use ($item) {
+                return $item_zp->bike_number == $item['plate'];
+            });
+            if(isset($bike_found)){
+                $assign_bike_found = Arr::first($assign_bike, function ($item_zp, $key) use ($bike_found) {
+                    return $item_zp->bike_id =="29" && $item_zp->status =="active";
+                });
+            }
+            
+            $rider_id=null;
+            if(isset($assign_bike_found)){
+                $rider_id=$assign_bike_found->rider_id;
+            }
             if(!isset($zp_found)){
                 $obj = [];
                 $obj['import_id']=$unique_id;
+                $obj['rider_id']=$rider_id;
                 $obj['transaction_id']=isset($item['transaction_id'])?$item['transaction_id']:null;
                 $obj['toll_gate']=isset($item['toll_gate'])?$item['toll_gate']:null;
                 $obj['direction']=isset($item['direction'])?$item['direction']:null;

@@ -120,6 +120,7 @@ class RiderController extends Controller
        $rider_detail->salary = $request->salary;
        $rider_detail->is_guarantee = $request->is_guarantee;
        $rider_detail->empoloyee_reference = $request->empoloyee_reference;
+       $rider_detail->salik_amount = $request->salik_amount;
        $rider_detail->other_passport_given = $request->other_passport_given;
        $rider_detail->not_given = $request->not_given;
     
@@ -397,6 +398,7 @@ class RiderController extends Controller
         $rider_detail->emirate_id = $request->emirate_id;
         $rider_detail->salary = $request->salary;
         $rider_detail->is_guarantee = $request->is_guarantee;
+        $rider_detail->salik_amount = $request->salik_amount;
         $rider_detail->empoloyee_reference = $request->empoloyee_reference;
         $rider_detail->other_passport_given = $request->other_passport_given;
         $rider_detail->not_given = $request->not_given;

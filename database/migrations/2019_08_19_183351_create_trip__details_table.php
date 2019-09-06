@@ -16,6 +16,7 @@ class CreateTripDetailsTable extends Migration
         Schema::create('trip__details', function (Blueprint $table) {
             $table->increments('id');
             $table->string('import_id')->nullable();
+            $table->integer('rider_id')->nullable();
             $table->string('transaction_id')->nullable();
             $table->string('trip_date')->nullable();
             $table->string('trip_time')->nullable();

@@ -217,6 +217,18 @@
                                     <span class="form-text text-muted">Please enter Rider Salary</span>
                                 @endif
                             </div>
+                            
+                            <div class="form-group">
+                                <label>Salik Amount:</label>
+                                 <input type="text" required class="form-control @if($errors->has('salik_amount')) invalid-field @endif" name="salik_amount" placeholder="Enter A Salik Amount" value="50">
+                                @if ($errors->has('salik_amount'))
+                                    <span class="invalid-response" role="alert">
+                                        <strong>{{ $errors->first('salik_amount') }}</strong>
+                                    </span>
+                                @else
+                                    <span class="form-text text-muted">Please enter Salik Amount</span>
+                                @endif
+                            </div>
                         <div class="form-group">
                             <label>Is Passport Collected:</label>
                             <div>

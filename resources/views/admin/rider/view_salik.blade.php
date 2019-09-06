@@ -67,6 +67,7 @@ margin-left: 10px;
                             <input type="checkbox" id="select_all" >
                         </th> --}}
                         <th>Transaction ID</th>
+                        <th>rider_id</th>
                         <th>Toll Gate</th>
                         <th>Direction</th> 
                         <th>Tag Number</th>
@@ -286,6 +287,7 @@ $(function() {
             "defaultContent": ''
             },
             { "data": 'transaction_id', "name": 'transaction_id' },
+            { "data": 'rider_id', "name": 'rider_id' },
             { "data": 'toll_gate', "name": 'toll_gate' },
             { "data": 'direction', "name": 'direction' },
             { "data": 'tag_number', "name": 'tag_number' },
@@ -298,7 +300,7 @@ $(function() {
         ];
         _settings.columnDefs=[
             {
-                "targets": [ 7,8,9 ],
+                "targets": [ 8,9,10 ],
                 "visible": false,
                 searchable: true,
             },

@@ -108,19 +108,6 @@
                                 
                         </div>
                         <div class="form-group">
-                            <label for="paid_by">Paid By:</label>
-                            <input required class="form-control @if($errors->has('paid_by')) invalid-field @endif" id="paid_by" name="paid_by" rows="3" placeholder="Paid By"  value="{{ old('paid_by') }}" />
-                            @if ($errors->has('paid_by'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{ $errors->first('paid_by') }}
-                                    </strong>
-                                </span>
-                            @else
-                                <span class="form-text text-muted">Salary Paid By:</span>
-                            @endif
-                        </div>
-                        <div class="form-group">
                             <label>Status:</label>
                             <div>
                                 <input data-switch="true" name="status" id="status" type="checkbox" checked="checked" data-on-text="Enabled" data-handle-width="70" data-off-text="Disabled" data-on-color="brand">

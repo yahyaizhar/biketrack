@@ -20,6 +20,7 @@ class CreateRiderDetailsTable extends Migration
             $table->string('salary')->nullable();
             $table->string('official_given_number')->nullable();
             $table->string('official_sim_given_date')->nullable();
+            $table->integer('salik_amount')->default(50);
             $table->string('passport_collected')->nullable();
             $table->string('is_guarantee')->nullable();
             $table->integer('empoloyee_reference')->nullable();
