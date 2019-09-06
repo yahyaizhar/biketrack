@@ -777,14 +777,14 @@ class AccountsController extends Controller
         $ca->save();
     
         $remaining_salary=$request->remaining_salary;
-        if ($remaining_salary>0) {
+        if ($remaining_salary>0) { // rider will give to company
             $ca = new \App\Model\Accounts\Company_Account;
             $ca->salary_id =$salary->id;
             $ca->type='dr';
             $ca->rider_id=$rider_id;
             $ca->month = Carbon::parse($request->get('month'))->addMonth()->format('Y-m-d');
             $ca->source="Remaining Salary From Previous Month"; 
-            $ca->amount=$remaining_salary;
+            $ca->amount=abs($remaining_salary);
             $ca->save();
     
             $ra = new \App\Model\Accounts\Rider_Account;
@@ -793,17 +793,17 @@ class AccountsController extends Controller
             $ra->rider_id=$rider_id;
             $ra->month = Carbon::parse($request->get('month'))->addMonth()->format('Y-m-d');
             $ra->source="Remaining Salary From Previous Month"; 
-            $ra->amount=$remaining_salary;
+            $ra->amount=abs($remaining_salary);
             $ra->save();
         }
-        if ($remaining_salary<0) {
+        else if ($remaining_salary<0) {  // company will give to rider
             $ca = new \App\Model\Accounts\Company_Account;
             $ca->salary_id =$salary->id;
             $ca->type='dr';
             $ca->rider_id=$rider_id;
             $ca->month = Carbon::parse($request->get('month'))->addMonth()->format('Y-m-d');
             $ca->source="Remaining Salary From Previous Month"; 
-            $ca->amount=$remaining_salary;
+            $ca->amount=abs($remaining_salary);
             $ca->save();
     
             $ra = new \App\Model\Accounts\Rider_Account;
@@ -812,7 +812,7 @@ class AccountsController extends Controller
             $ra->rider_id=$rider_id;
             $ra->month = Carbon::parse($request->get('month'))->addMonth()->format('Y-m-d');
             $ra->source="Remaining Salary From Previous Month"; 
-            $ra->amount=$request->total_salary;
+            $ra->amount=abs($remaining_salary);
             $ra->save();
         }
         
@@ -1515,7 +1515,7 @@ public function client_income_update(Request $request,$id){
         $new_ra=new Rider_Account;
         $new_ra->type="dr";
         $new_ra->amount=$ra->amount;
-        $new_ra->source="salary";
+        $new_ra->source="salary_paid";
         $new_ra->payment_status="paid";
         $new_ra->rider_id=$ra->rider_id;
         $new_ra->salary_id=$ra->salary_id;

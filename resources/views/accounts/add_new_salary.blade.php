@@ -80,7 +80,7 @@
                                 
                         </div>
                         <div class="form-group">
-                            <label>Salary Recieved:</label>
+                            <label>Salary Paid to Rider:</label>
                             <input type="text" class="form-control @if($errors->has('recieved_salary')) invalid-field @endif" name="recieved_salary" value="">
                             @if ($errors->has('recieved_salary'))
                                 <span class="invalid-response" role="alert">

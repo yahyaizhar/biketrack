@@ -316,13 +316,6 @@
                     var response = table.ajax.json();
                     var _ClosingBalance = response.closing_balance;
                     $('#closing_balance').text(_ClosingBalance);
-                    t.row.add( [
-                        counter +'.1',
-                        counter +'.2',
-                        counter +'.3',
-                        counter +'.4',
-                        counter +'.5'
-                    ] ).draw( false );
                 },
                 ajax: url,
                 columns: [
@@ -364,7 +357,7 @@
     swal.fire({
         title: 'Are you sure?',
         text: "You want paid salary!",
-        type: 'warning',
+        type: 'warning', 
         showCancelButton: true,
         confirmButtonText: 'Yes!'
     }).then(function(result) {

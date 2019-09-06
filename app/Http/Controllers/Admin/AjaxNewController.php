@@ -209,8 +209,12 @@ class AjaxNewController extends Controller
                 });
                 if(!isset($ra_found)){
                     //not found, can pay
-                    return '<div>Salary <button type="button" onclick="updateStatus('.$rider_statement->id.')" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
+                    return '<div>Salary Recieved from Kingriders <button type="button" onclick="updateStatus('.$rider_statement->id.')" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
                 }
+                return "Salary Recieved from Kingriders";
+            }
+            if($rider_statement->source == 'salary_paid'){
+                return "Salary Paid";
             }
             return $rider_statement->source;
         })
@@ -232,7 +236,7 @@ class AjaxNewController extends Controller
             return 0;
         })
         ->addColumn('balance', function($rider_statement) use (&$running_balance){
-            if($rider_statement->type=='dr' || $rider_statement->type=='dr_payable'){
+            if($rider_statement->type=='dr' || $rider_statement->type=='cr_payable'){
                 $running_balance -= $rider_statement->amount;
             }
             else{
