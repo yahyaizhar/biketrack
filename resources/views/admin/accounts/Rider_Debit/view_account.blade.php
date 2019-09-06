@@ -304,6 +304,7 @@
         var getData = function(url){
             console.warn(url)
             table = $('#data-table').DataTable({
+                lengthMenu: [[-1], ["All"]],
                 destroy: true,
                 ordering: false,
                 processing: true,
@@ -317,6 +318,13 @@
                     var response = table.ajax.json();
                     var _ClosingBalance = response.closing_balance;
                     $('#closing_balance').text(_ClosingBalance);
+                    t.row.add( [
+                        counter +'.1',
+                        counter +'.2',
+                        counter +'.3',
+                        counter +'.4',
+                        counter +'.5'
+                    ] ).draw( false );
                 },
                 ajax: url,
                 columns: [

@@ -142,26 +142,80 @@ class AjaxNewController extends Controller
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
         ->get();
-        $running_balance = 0;
+        
         $rider_debits_cr_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
-        ->where("type","cr_payable")
-        ->orWhere('type', 'cr')
+        ->where(function($q) {
+            $q->where('type', "cr_payable")
+              ->orWhere('type', 'cr');
+        })
         ->sum('amount');
         
         $rider_debits_dr_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
-        ->where("type","dr_payable")
-        ->orWhere('type', 'dr')
+        ->where(function($q) {
+            $q->where('type', "dr_payable")
+              ->orWhere('type', 'dr');
+        })
+        ->sum('amount');
+
+        $rider_debits_cr_prev_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        ->where(function($q) {
+            $q->where('type', "cr_payable")
+              ->orWhere('type', 'cr');
+        })
+        ->whereDate('month', '<',$from)
+        ->sum('amount');
+        
+        $rider_debits_dr_prev_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        ->where(function($q) {
+            $q->where('type', "dr_payable")
+              ->orWhere('type', 'dr');
+        })
+        ->whereDate('month', '<',$from)
         ->sum('amount');
 
         $closing_balance = $rider_debits_cr_payable - $rider_debits_dr_payable;
+        $closing_balance_prev = $rider_debits_cr_prev_payable - $rider_debits_dr_prev_payable;
+        $running_balance =$closing_balance_prev;
+        $flag = new \App\Model\Accounts\Rider_Account;
+        $flag->month='';
+        $flag->source='Opening Balance';
+        $flag->type='skip';
+        $flag->amount=0;
+        $rider_statements->prepend($flag);
+
+        $flag = new \App\Model\Accounts\Rider_Account;
+        $flag->month='';
+        $flag->source='Closing Balance';
+        $flag->type='skip';
+        $flag->amount=0;
+        $rider_statements->push($flag);
+
         return DataTables::of($rider_statements)
         ->addColumn('date', function($rider_statement){
+            if($rider_statement->type=='skip') return '';
             return Carbon::parse($rider_statement->month)->format('F Y');
         })
-        ->addColumn('desc', function($rider_statement){
+        ->addColumn('desc', function($rider_statement) use ($rider_statements){
+            if($rider_statement->type=='skip') return '<strong >'.$rider_statement->source.'</strong>';
+
+            if($rider_statement->source == 'salary'){
+                $ras = $rider_statements->toArray();
+                $ra_found = Arr::first($ras, function ($item, $key) use ($rider_statement) { 
+                    if($item['type']=='skip') return false;
+                    return $item['salary_id'] == $rider_statement->salary_id 
+                    && $item['type'] == "dr"
+                    && $item['rider_id'] == $rider_statement->rider_id
+                    && $item['amount'] == $rider_statement->amount;
+                });
+                if(!isset($ra_found)){
+                    //not found, can pay
+                    return '<div>Salary <button type="button" onclick="updateStatus('.$rider_statement->id.')" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
+                }
+            }
             return $rider_statement->source;
         })
         ->addColumn('cr', function($rider_statement){
+            if($rider_statement->type=='skip') return '';
             if ($rider_statement->type=='cr' || $rider_statement->type=='cr_payable')
             {
                 $class = $rider_statement->type=='cr_payable'?'kt-font-danger':'';
@@ -170,6 +224,7 @@ class AjaxNewController extends Controller
             return 0;
         })
         ->addColumn('dr', function($rider_statement){
+            if($rider_statement->type=='skip') return '';
             if($rider_statement->type=='dr' || $rider_statement->type=='dr_payable'){
                 $class = $rider_statement->type=='dr_payable'?'kt-font-danger':'';
                 return '<span class="'.$class.'">('.$rider_statement->amount.')</span>';
@@ -181,8 +236,9 @@ class AjaxNewController extends Controller
                 $running_balance -= $rider_statement->amount;
             }
             else{
-                $running_balance += $rider_statement->amount;
+                $running_balance += $rider_statement->amount; 
             }
+            if($rider_statement->type=='skip') return '<strong >'.$running_balance.'</strong>';
             return $running_balance;
         })
         ->with([

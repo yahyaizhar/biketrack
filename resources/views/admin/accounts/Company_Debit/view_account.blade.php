@@ -304,6 +304,7 @@
         var getData = function(url){
             console.warn(url)
             table = $('#data-table').DataTable({
+                lengthMenu: [[-1], ["All"]],
                 destroy: true,
                 processing: true,
                 ordering: false,
