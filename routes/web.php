@@ -172,6 +172,10 @@ Route::group([
     Route::get("/salik","SalikController@import_salik_data")->name("admin.salik");
     Route::post('/import/salik','SalikController@import_Salik')->name('import.salik');
     Route::delete('/delete/last/import/salik','SalikController@delete_lastImportSalik')->name('delete.import_salik');
+
+    Route::get('/add/salik','SalikController@add_salik')->name("salik.add_salik");
+    Route::get('/store/salik/{rider_id}','SalikController@store_salik')->name("salik.store_salik");
+    Route::post('/insert/salik','SalikController@insert_salik')->name('Saik.insert_salik');
 });
 // end salik
 

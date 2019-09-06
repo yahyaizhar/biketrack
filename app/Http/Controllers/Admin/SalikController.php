@@ -152,5 +152,64 @@ class SalikController extends Controller
         $bike=bike::find($assign_bike->bike_id);
         return view('admin.rider.salik_rider',compact('bike'));
     }
+    public function add_salik(){
+        $riders=Rider::where("active_status","A")->get();
+        return view('admin.rider.add_salik',compact('riders'));
+    }
+    public function store_salik($id){
+        $rider=Rider::find($id);
+      $rider_detail=$rider->Rider_detail;
+      $salik_amount=$rider_detail->salik_amount;
+
+
+        return response()->json([
+            'salik_amount'=>$salik_amount,
+        ]);
+    }
+    public function insert_salik(Request $request){
+        $used_salik= $request->amount;
+
+        $rider=Rider::find($request->rider_id);
+        $rider_detail=$rider->Rider_detail;
+        $allow_salik=$rider_detail->salik_amount;
+        
+        if($used_salik>$allow_salik){
+            $_greater_ca= new Company_Account;
+            $_greater_ca->source="Salik";
+            $_greater_ca->amount=$used_salik;
+            $_greater_ca->rider_id=$request->rider_id;
+            $_greater_ca->month=Carbon::parse($request->month)->format("Y-m-d");
+            $_greater_ca->type="dr";
+            $_greater_ca->save();
+
+            $_greater_ra= new Rider_Account;
+            $_greater_ra->source="Salik";
+            $_greater_ra->amount=$used_salik-$allow_salik;
+            $_greater_ra->rider_id=$request->rider_id;
+            $_greater_ra->month=Carbon::parse($request->month)->format("Y-m-d");
+            $_greater_ra->type="cr_payable";
+            $_greater_ra->save();
+        }
+        else{
+            $ca= new Company_Account;
+            $ca->source="Salik";
+            $ca->amount=$allow_salik;
+            $ca->rider_id=$request->rider_id;
+            $ca->month=Carbon::parse($request->month)->format("Y-m-d");
+            $ca->type="dr";
+            $ca->save();
+            if($used_salik<$allow_salik){
+                $_less_ra= new Rider_Account;
+                $_less_ra->source="Salik";
+                $_less_ra->amount=$allow_salik-$used_salik;
+                $_less_ra->rider_id=$request->rider_id;
+                $_less_ra->month=Carbon::parse($request->month)->format("Y-m-d");
+                $_less_ra->type="cr";
+                $_less_ra->save();
+            }
+        }
+            
+        return redirect(route('admin.salik'));
+    }
 
 }
