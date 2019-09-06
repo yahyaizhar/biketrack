@@ -12,7 +12,7 @@ class Rider_detail extends Model
     protected static $logOnlyDirty = true;
 
     protected $fillable = [
-        'rider_id','salary','passport_document_image','agreement_image','is_guarantee','other_details','date_of_joining','passport_collected','empoloyee_reference','other_passport_given','not_given','official_given_number','official_sim_given_date','passport_image','passport_image_back','passport_expiry','emirate_image','emirate_image_back','emirate_id','visa_image','visa_image_back','visa_expiry','licence_image','licence_image_back','licence_expiry',
+        'rider_id','salary','salik_amount','passport_document_image','agreement_image','is_guarantee','other_details','date_of_joining','passport_collected','empoloyee_reference','other_passport_given','not_given','official_given_number','official_sim_given_date','passport_image','passport_image_back','passport_expiry','emirate_image','emirate_image_back','emirate_id','visa_image','visa_image_back','visa_expiry','licence_image','licence_image_back','licence_expiry',
     ];
 
     public function Rider_detail() 

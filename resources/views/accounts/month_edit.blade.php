@@ -38,19 +38,6 @@
                                         <span class="form-text text-muted">Please enter Ammount</span>
                                     @endif
                                 </div>
-                                <div class="form-group">
-                                    <label>Paid By:</label>
-                                    <input type="text" class="form-control @if($errors->has('paid_by')) invalid-field @endif" name="paid_by" placeholder="Paid By" value="{{ $month->paid_by }}">
-                                    @if ($errors->has('paid_by'))
-                                        <span class="invalid-response" role="alert">
-                                            <strong>
-                                                {{ $errors->first('paid_by') }}
-                                            </strong>
-                                        </span>
-                                    @else
-                                        <span class="form-text text-muted">Ammont Paid By:</span>
-                                    @endif
-                                </div>
                             </div>
                            
                         </div>

@@ -665,7 +665,7 @@ class AccountsController extends Controller
             'gross_salary'=> $request->get('gross_salary'),
             'recieved_salary'=> $request->get('recieved_salary'),
             'remaining_salary'=> $request->get('remaining_salary'),
-            'paid_by'=> $request->get('paid_by'),
+            'paid_by'=>Auth::user()->id,
             'status'=> $request->get('status')=='on'?1:0,
         ]);
         

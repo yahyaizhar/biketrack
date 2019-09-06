@@ -14,6 +14,7 @@ use App\Http\Resources\ClientRidersLocationsResourceCollection;
 use App\Http\Resources\ClientLocationResourceCollection;
 use App\Model\Bikes\bike;
 use App\Model\Bikes\bike_detail;
+use Illuminate\Support\Facades\Auth;
 use App\Model\Accounts\Rider_salary;
 use App\Model\Mobile\Mobile;
 use carbon\carbon;
@@ -30,6 +31,7 @@ use App\Assign_bike;
 use App\Model\Rider\Trip_Detail;
 use App\Model\Accounts\Company_Account;
 use App\Model\Accounts\Rider_Account;
+use App\Model\Admin\Admin;
 use Arr;
 
 
@@ -917,13 +919,14 @@ class AjaxController extends Controller
                $gross_salary='<strong>Gross Salary</strong>: '.$riderToMonth->gross_salary.'<br>';
                $recieved_salary='<strong>Received Salary</strong>: '.$riderToMonth->recieved_salary.'<br>';
                $remaining_salary='<strong>Remaining Salary</strong>: '.$riderToMonth->remaining_salary.'<br>';
-            return $total_salary.$gross_salary.$recieved_salary.$remaining_salary;
+            return $riderToMonth->total_salary;
         })
         ->addColumn('payment_date', function($riderToMonth){
             return $riderToMonth->updated_at;
         })
         ->addColumn('paid_by', function($riderToMonth){
-            return $riderToMonth->paid_by;
+            $admin=Admin::find($riderToMonth->paid_by);
+            return $admin->name;
         })
         
         ->addColumn('actions', function($riderToMonth){
@@ -981,13 +984,14 @@ class AjaxController extends Controller
             $gross_salary='<strong>Gross Salary</strong>: '.$riderToMonth->gross_salary.'<br>';
             $recieved_salary='<strong>Received Salary</strong>: '.$riderToMonth->recieved_salary.'<br>';
             $remaining_salary='<strong>Remaining Salary</strong>: '.$riderToMonth->remaining_salary.'<br>';
-         return $total_salary.$gross_salary.$recieved_salary.$remaining_salary;
+         return $riderToMonth->total_salary;
      })
         ->addColumn('updated_at', function($monthToRider){
             return $monthToRider->updated_at;
         })
         ->addColumn('paid_by', function($monthToRider){
-            return $monthToRider->paid_by;
+            $admin=Admin::find($monthToRider->paid_by);
+            return $admin->name;
         })
         
         ->addColumn('actions', function($monthToRider){
@@ -1311,10 +1315,17 @@ class AjaxController extends Controller
                    return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
                }
            })
-         ->addColumn('transaction_id', function($detail){
-               return $detail->transaction_id;
-           })
-           ->addColumn('toll_gate', function($detail){
+        ->addColumn('transaction_id', function($detail){
+            return $detail->transaction_id;
+        })
+        ->addColumn('rider_id', function($detail){
+           $rider=Rider::find($detail->rider_id);
+           if(isset($rider)){
+            return $rider->name;
+        }
+        return "No Rider is Assigned";
+        })
+        ->addColumn('toll_gate', function($detail){
             return $detail->toll_gate;
         })
         ->addColumn('direction', function($detail){
