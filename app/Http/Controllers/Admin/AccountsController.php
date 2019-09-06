@@ -665,9 +665,12 @@ class AccountsController extends Controller
             'gross_salary'=> $request->get('gross_salary'),
             'recieved_salary'=> $request->get('recieved_salary'),
             'remaining_salary'=> $request->get('remaining_salary'),
+            'payment_status'=>$request->get('payment_status'), 
             'paid_by'=>Auth::user()->id,
             'status'=> $request->get('status')=='on'?1:0,
         ]);
+
+
         
 
 
@@ -756,7 +759,8 @@ class AccountsController extends Controller
         $ca->type='dr';
         $ca->rider_id=$rider_id;
         $ca->month = Carbon::parse($request->get('month'))->format('Y-m-d');
-        $ca->source="salary"; 
+        $ca->source="salary";
+        $ca->payment_status=$request->get('payment_status');
         $ca->amount=$request->total_salary;
         $ca->save();
 
@@ -768,9 +772,10 @@ class AccountsController extends Controller
         $ca->rider_id=$rider_id;
         $ca->month = Carbon::parse($request->get('month'))->format('Y-m-d');
         $ca->source="salary"; 
+        $ca->payment_status=$request->get('payment_status');
         $ca->amount=$request->total_salary;
         $ca->save();
-       
+    
         $remaining_salary=$request->remaining_salary;
         if ($remaining_salary>0) {
             $ca = new \App\Model\Accounts\Company_Account;
@@ -1504,5 +1509,21 @@ public function client_income_update(Request $request,$id){
         $ra->save();
         
         return redirect(route('admin.accounts.rider_account'));
+    }
+    public function updatePaymentStatus($id){
+        $ra=Rider_Account::find($id);
+        $new_ra=new Rider_Account;
+        $new_ra->type="dr";
+        $new_ra->amount=$ra->amount;
+        $new_ra->source="salary";
+        $new_ra->payment_status="paid";
+        $new_ra->rider_id=$ra->rider_id;
+        $new_ra->salary_id=$ra->salary_id;
+        $new_ra->month=$ra->month;
+        $new_ra->save();
+        return response()->json([
+            'data'=>'true',
+        ]);
+
     }
 }

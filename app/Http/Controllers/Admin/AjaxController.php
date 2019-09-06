@@ -924,6 +924,9 @@ class AjaxController extends Controller
         ->addColumn('payment_date', function($riderToMonth){
             return $riderToMonth->updated_at;
         })
+        ->addColumn('payment_status', function($monthToRider){
+            return $monthToRider->payment_status;
+        })
         ->addColumn('paid_by', function($riderToMonth){
             $admin=Admin::find($riderToMonth->paid_by);
             return $admin->name;
@@ -947,7 +950,7 @@ class AjaxController extends Controller
         // <a class="dropdown-item" href="'.route('bike.bike_assigned', $bike).'"><i class="fa fa-eye"></i> View Bikes</a>
         // <a class="dropdown-item" href="'.route('bike.bike_assignRiders', $bike).'"><i class="fa fa-edit"></i> Assign Bikes</a>
                     
-        ->rawColumns(['created_at', 'salary','payment_date', 'paid_by',  'status','actions'])
+        ->rawColumns(['created_at','payment_status', 'salary','payment_date', 'paid_by',  'status','actions'])
         ->make(true);
     }
     public function getMonthToRider($month)
@@ -989,9 +992,14 @@ class AjaxController extends Controller
         ->addColumn('updated_at', function($monthToRider){
             return $monthToRider->updated_at;
         })
+        ->addColumn('payment_status', function($monthToRider){
+            return $monthToRider->payment_status;
+        })
         ->addColumn('paid_by', function($monthToRider){
             $admin=Admin::find($monthToRider->paid_by);
+            if(isset($admin)){
             return $admin->name;
+        } 
         })
         
         ->addColumn('actions', function($monthToRider){
@@ -1012,7 +1020,7 @@ class AjaxController extends Controller
         // <a class="dropdown-item" href="'.route('bike.bike_assigned', $bike).'"><i class="fa fa-eye"></i> View Bikes</a>
         // <a class="dropdown-item" href="'.route('bike.bike_assignRiders', $bike).'"><i class="fa fa-edit"></i> Assign Bikes</a>
                     
-        ->rawColumns(['name','status','salary','created_at','updated_at','paid_by','actions'])
+        ->rawColumns(['name','payment_status','status','salary','created_at','updated_at','paid_by','actions'])
         ->make(true);
     }
     public function getRidersDetails()

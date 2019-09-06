@@ -108,11 +108,25 @@
                                 
                         </div>
                         <div class="form-group">
+                                <label>Payment status:</label>
+                                <div class="kt-radio-inline">
+                                    <label class="kt-radio">
+                                        <input type="radio" name="payment_status" value="paid"> Paid
+                                        <span></span>
+                                    </label>
+                                    <label class="kt-radio">
+                                            <input type="radio" name="payment_status" value="pending"> Pending
+                                        <span></span>
+                                    </label>
+                                </div>
+                        </div>
+                        <div class="form-group">
                             <label>Status:</label>
                             <div>
                                 <input data-switch="true" name="status" id="status" type="checkbox" checked="checked" data-on-text="Enabled" data-handle-width="70" data-off-text="Disabled" data-on-color="brand">
                             </div>
                         </div>
+                       
                         <div>
                             <input  name="setting" style="visibility:hidden;">
                         </div>
