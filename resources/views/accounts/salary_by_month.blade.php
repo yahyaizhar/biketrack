@@ -93,6 +93,7 @@
                         <th>Amount</th>
                         <th>Payment Date</th>
                         <th>Paid By</th>
+                        <th>Payment Status</th>
                         <th>Status</th>
                         <th>Actions</th>                        
                     </tr>
@@ -148,6 +149,7 @@ $(document).ready(function(){
             { data: 'salary', name: 'salary' },
             {data:'updated_at',name:'updated_at'},
             { data: 'paid_by', name: 'paid_by' },
+            { data: 'payment_status', name: 'payment_status' },
             { data: 'status', name: 'status' },
             { data: 'actions', name: 'actions' },
         ],

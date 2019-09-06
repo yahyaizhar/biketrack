@@ -211,7 +211,8 @@ Route::group([
 // end Client_income
     Route::get("/accounts/rider/account","AccountsController@rider_account")->name("admin.accounts.rider_account");
     Route::get("/accounts/company/account","AccountsController@company_account")->name("admin.accounts.company_account");
-    
+    Route::get('/rider/accounts/{id}/updateStatus','AccountsController@updatePaymentStatus')->name('Rider.updatePaymentStatus');
+
     Route::get("/accounts/company/debits/get_salary_deduction/{month}/{rider_id}","AccountsController@get_salary_deduction")->name("admin.accounts.get_salary_deduction");
 
     Route::get("/accounts/rider/expense","AccountsController@rider_expense_get")->name("admin.accounts.rider_expense_get");

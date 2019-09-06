@@ -19,6 +19,7 @@ class Rider_Account extends Authenticatable
         'amount',
         'p_id',
         'rider_id',
+        'payment_status',
         'advance_return_id',
         'id_charge_id',
         'wps_id',

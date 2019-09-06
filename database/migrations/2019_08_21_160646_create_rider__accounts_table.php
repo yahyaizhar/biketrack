@@ -19,6 +19,7 @@ class CreateRiderAccountsTable extends Migration
             $table->string('amount')->nullable();
             $table->string('month')->nullable();
             $table->string('source')->nullable();
+            $table->string('payment-status')->default("pending");
             $table->integer('rider_id')->nullable();
             $table->integer('salary_id')->nullable();
             $table->string('income_zomato_id')->nullable();

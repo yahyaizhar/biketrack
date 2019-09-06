@@ -19,6 +19,7 @@ class Company_Account extends Authenticatable
         'month',
         'amount',
         'rider_id',
+        'payment_status',
         'advance_return_id',
         'id_charge_id',
         'wps_id',

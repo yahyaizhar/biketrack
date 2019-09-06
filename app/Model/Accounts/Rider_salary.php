@@ -15,7 +15,7 @@ class Rider_salary extends Authenticatable
     protected static $logOnlyDirty = true;
 
     protected $fillable = [
-        'rider_id','total_salary','gross_salary','remaining_salary','recieved_salary','paid_by','status','settings', 'month',
+        'rider_id','total_salary','payment_status','gross_salary','remaining_salary','recieved_salary','paid_by','status','settings', 'month',
        ];
        public function Rider()
          {
