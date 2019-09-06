@@ -150,7 +150,7 @@ class AjaxController extends Controller
         ->make(true);
     }
 
-    public function getSimTransaction()
+    public function getSimTransaction($month) 
     {
         $sims = [];
         $all_sims = Sim::with('Sim_history')->orderByDesc('created_at')->where('active_status', 'A')->get();
@@ -167,8 +167,8 @@ class AjaxController extends Controller
         // return $clients;
         //array_push($sims,array('month'=>$month));
         return DataTables::of($sims)
-        ->addColumn('status', function($sims){
-            $sim_tran = $sims->Sim_Transaction()->get()->first();
+        ->addColumn('status', function($sims) use ($month){
+            $sim_tran = $sims->Sim_Transaction()->whereMonth('month_year', Carbon::parse($month)->format('m'))->get()->first();
             $status = 0;
             if(isset($sim_tran)){
                 $status = 1;
@@ -185,8 +185,8 @@ class AjaxController extends Controller
         ->addColumn('sim_id', function($sims){
             return $sims->id;
         })
-        ->addColumn('id', function($sims){
-            $sim_tran = $sims->Sim_Transaction()->get()->first();
+        ->addColumn('id', function($sims) use ($month){
+            $sim_tran = $sims->Sim_Transaction()->whereMonth('month_year', Carbon::parse($month)->format('m'))->get()->first();
             if(isset($sim_tran)){
                 return $sim_tran->id;
             }
@@ -195,8 +195,8 @@ class AjaxController extends Controller
         ->addColumn('sim_number', function($sims){
             return $sims->sim_number;
         })
-        ->addColumn('month', function($sims){
-            $sim_tran = $sims->Sim_Transaction()->get()->first();
+        ->addColumn('month', function($sims) use ($month){
+            $sim_tran = $sims->Sim_Transaction()->whereMonth('month_year', Carbon::parse($month)->format('m'))->get()->first();
             if(isset($sim_tran)){
                 return Carbon::parse($sim_tran->month_year)->format('F Y');
             }
@@ -209,8 +209,8 @@ class AjaxController extends Controller
             }
             return 105;
         })
-        ->addColumn('bill_amount', function($sims){
-            $sim_tran = $sims->Sim_Transaction()->get()->first();
+        ->addColumn('bill_amount', function($sims) use ($month){
+            $sim_tran = $sims->Sim_Transaction()->whereMonth('month_year', Carbon::parse($month)->format('m'))->get()->first();
             $sim_history = $sims->Sim_history()->where('status', 'active')->get()->first();
             if(isset($sim_tran)){
                 return $sim_tran->bill_amount;
@@ -220,8 +220,8 @@ class AjaxController extends Controller
             }
             return 105;
         })
-        ->addColumn('extra_usage_amount', function($sims){
-            $sim_tran = $sims->Sim_Transaction()->get()->first();
+        ->addColumn('extra_usage_amount', function($sims) use ($month){
+            $sim_tran = $sims->Sim_Transaction()->whereMonth('month_year', Carbon::parse($month)->format('m'))->get()->first();
             $sim_history = $sims->Sim_history()->where('status', 'active')->get()->first();
             $bill_amt=105;
             $usage_limit=105;
@@ -239,15 +239,15 @@ class AjaxController extends Controller
             
             return $extra;
         })
-        ->addColumn('extra_usage_payment_status', function($sims){
-            $sim_tran = $sims->Sim_Transaction()->get()->first();
+        ->addColumn('extra_usage_payment_status', function($sims) use ($month){
+            $sim_tran = $sims->Sim_Transaction()->whereMonth('month_year', Carbon::parse($month)->format('m'))->get()->first();
             if(!isset($sim_tran)){
                 return 'Pending';
             }
             return $sim_tran->extra_usage_payment_status;
         })
-        ->addColumn('bill_status', function($sims){
-            $sim_tran = $sims->Sim_Transaction()->get()->first();
+        ->addColumn('bill_status', function($sims) use ($month){
+            $sim_tran = $sims->Sim_Transaction()->whereMonth('month_year', Carbon::parse($month)->format('m'))->get()->first();
             if(!isset($sim_tran)){
                 return 'Pending';
             }

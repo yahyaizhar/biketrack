@@ -171,7 +171,7 @@
         $('#salary [name="recieved_salary"]').on('change input', function(){
             var _gross_salary = parseFloat($('#salary [name="gross_salary"]').val().trim());
             var _recieved_salary = parseFloat($(this).val().trim());
-            $('#salary [name="remaining_salary"]').val(_gross_salary-_recieved_salary);
+            $('#salary [name="remaining_salary"]').val(_recieved_salary-_gross_salary);
         });
         $('#salary [name="rider_id"],#salary [name="month"]').on('change', function(){
             var _riderid = $('[name="rider_id"]').val();

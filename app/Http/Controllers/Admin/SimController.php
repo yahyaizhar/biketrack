@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use App\Model\Sim\Sim;
 use App\Model\Sim\Sim_Transaction;
 use App\Model\Sim\Sim_History;
+use Carbon\Carbon;
 
 class SimController extends Controller
 {
@@ -237,39 +238,54 @@ public function update_simTransaction(Request $request, $id){
                 if(isset($sim_history)){
                     $rider_id=$sim_history->rider_id;
                 }
-                if(strtolower($sim_trans->extra_usage_payment_status)=='paid'){
-                    // dr to ca,
+                // if(strtolower($sim_trans->extra_usage_payment_status)=='paid'){
+                //     // dr to ca,
                     
+                //     $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+                //         'sim_transaction_id'=>$sim_trans->id
+                //     ]);
+                //     $ca->type='dr';
+                //     $ca->rider_id=$rider_id;
+                //     $ca->amount=$data['usage_limit'];
+                //     $ca->sim_transaction_id=$sim_trans->id;
+                //     $ca->save();
+                //     // dr to ra
+
+                //     $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
+                //         'sim_transaction_id'=>$sim_trans->id
+                //     ]);
+                //     $ra->type='dr';
+                //     $ra->amount=$extra;
+                //     $ra->rider_id=$rider_id;
+                //     $ra->sim_transaction_id=$sim_trans->id;
+                //     $ra->save();
+
+                // }
+                // else {
                     $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
                         'sim_transaction_id'=>$sim_trans->id
                     ]);
+                    $ca->sim_transaction_id =$sim_trans->id;
                     $ca->type='dr';
                     $ca->rider_id=$rider_id;
-                    $ca->amount=$data['usage_limit'];
-                    $ca->sim_transaction_id=$sim_trans->id;
+                    $ca->month = Carbon::parse($data['filterMonth'])->format('Y-m-d');
+                    $ca->source="Sim Transaction"; 
+                    $ca->amount=$data['bill_amount'];
                     $ca->save();
-                    // dr to ra
 
-                    $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
-                        'sim_transaction_id'=>$sim_trans->id
-                    ]);
-                    $ra->type='dr';
-                    $ra->amount=$extra;
-                    $ra->rider_id=$rider_id;
-                    $ra->sim_transaction_id=$sim_trans->id;
-                    $ra->save();
-
-                }
-                else {
-                    $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
-                        'sim_transaction_id'=>$sim_trans->id
-                    ]);
-                    $ca->type='dr';
-                    $ca->rider_id=$rider_id;
-                    $ca->amount=$sim_trans->bill_amount;
-                    $ca->sim_transaction_id=$sim_trans->id;
-                    $ca->save();
-                }
+                    if($extra>0){
+                        $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
+                            'sim_transaction_id'=>$sim_trans->id
+                        ]);
+                        $ra->sim_transaction_id =$sim_trans->id;
+                        $ra->type='cr_payable';
+                        $ra->rider_id=$rider_id;
+                        $ra->month = Carbon::parse($data['filterMonth'])->format('Y-m-d');
+                        $ra->source="Sim extra usage"; 
+                        $ra->amount=$extra;
+                        $ra->save();
+                    }
+                //}
                 
               
 

@@ -292,9 +292,11 @@ jQuery(function($) {
         });
         $(this).trigger('click')
         $('.datepicker:visible table tbody .month:contains('+_initDate.split(' ')[0]+')').trigger('click')  
-        // setTimeout(function() {
-        //     $('.datepicker:visible table tbody .month:contains('+_initDate.split(' ')[0]+')').trigger('click')    
-        // }, 500);
+        var _self = $(this);
+        setTimeout(function() {
+            _self.trigger('change') 
+        }, 300);
+        
         
     });
 });

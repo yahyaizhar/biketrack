@@ -48,7 +48,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Filter by month</label>
-                        <input type="text" readonly id="datepicker" class="form-control @if($errors->has('month_year')) invalid-field @endif" placeholder="Enter Month" value="">
+                        <input id="month_picker" type="text" data-month="{{Carbon\Carbon::now()->format('M Y')}}" required readonly class="month_picker form-control @if($errors->has('month_year')) invalid-field @endif" name="month_year" placeholder="Enter Month" value="">
                     </div>
                 
                 </div>
@@ -101,66 +101,81 @@ $(function() {
     });
     // $('#datepicker').val("{{Carbon\Carbon::now()->format('F Y')}}");
     var isLoaded = false;
-    simTransaction_table = $('#simTransaction-table').DataTable({
-        processing: true,
-        serverSide: true,
-        'language': {
-            'loadingRecords': '&nbsp;',
-            'processing': $('.loading').show()
-        },
-        drawCallback:function(settings){
-            
-            if(!isLoaded){
-                console.log(settings);
-                isLoaded=true;
-                $('#datepicker').trigger('changeDate'); 
-            }
-            
-            // $('#datepicker').trigger('change');
-        },
-        drawCallback:function(data){
-        $('.total_entries').remove();
-        $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
-    },
-        ajax: "{{url('admin/get/ajax/Transaction/Sim/')}}",
-        columns: [
-            // { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
-            { data: 'month', name: 'month' },
-            { data: 'sim_number', name: 'sim_number' },
-            { data: 'usage_limit', name: 'usage_limit' },
-            { data: 'bill_amount', name: 'bill_amount' },
-            { data: 'extra_usage_amount', name: 'extra_usage_amount' },
-            { data: 'extra_usage_payment_status', name: 'extra_usage_payment_status' },
-            { data: 'bill_status', name: 'bill_status' },
-            { data: 'status', name: 'status' },
-        ],
-        responsive:true,
-        columnDefs:[
-            {
-                "targets": [ 0 ],
-                "visible": false,
+    var getData = function(){
+        simTransaction_table = $('#simTransaction-table').DataTable({
+            processing: true,
+            destroy:true,
+            serverSide: true,
+            'language': {
+                'loadingRecords': '&nbsp;',
+                'processing': $('.loading').show()
             },
-        ],
-        order:[1,'desc'],
-    });
-    $('#datepicker').on('changeDate', function(){
-        var _val = $(this).val();
-        if(simTransaction_table && _val!==""){
-            simTransaction_table.columns( '.th_month' )
-            .search( _val )
-            .draw();
-        }
-    });
+            drawCallback:function(data){
+                $('.total_entries').remove();
+                $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
+            },
+            ajax: "{{url('admin/get/ajax/Transaction/Sim/')}}"+"/"+new Date($('#month_picker').val()).format('yyyy-mm-dd'),
+            columns: [
+                // { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
+                { data: 'month', name: 'month' },
+                { data: 'sim_number', name: 'sim_number' },
+                { data: 'usage_limit', name: 'usage_limit' },
+                { data: 'bill_amount', name: 'bill_amount' },
+                { data: 'extra_usage_amount', name: 'extra_usage_amount' },
+                { data: 'extra_usage_payment_status', name: 'extra_usage_payment_status' },
+                { data: 'bill_status', name: 'bill_status' },
+                { data: 'status', name: 'status' },
+            ],
+            responsive:true,
+            columnDefs:[
+                {
+                    "targets": [ 0 ],
+                    "visible": false,
+                },
+            ],
+            order:[1,'desc'],
+        });
+        simTransaction_table.MakeCellsEditable("destroy"); 
+        simTransaction_table.MakeCellsEditable({
+            "onUpdate": myCallbackFunction,
+            "columns": [3,5,6],
+            "inputCss":'form-control',
+            "inputTypes": [
+                {
+                    "column":3, 
+                    "type":"text", 
+                    "options":null 
+                }, 
+                {
+                    "column":5, 
+                    "type": "list",
+                    "options":[
+                        { "value": "Pending", "display": "Pending" },
+                        { "value": "Paid", "display": "Paid" }
+                    ]
+                },
+                {
+                    "column":6, 
+                    "type": "list",
+                    "options":[
+                        { "value": "Pending", "display": "Pending" },
+                        { "value": "Paid", "display": "Paid" }
+                    ]
+                }
+            ]
+        });
+    }
+    
     function myCallbackFunction (updatedCell, updatedRow, oldValue) {
         console.log(updatedRow.data());
         var __data = updatedRow.data();
         var _filterMonth = new Date(Date.now()).format("mmmm yyyy");
-        if($('#datepicker').val()!==""){
-            _filterMonth =$('#datepicker').val();
+        if($('#month_picker').val()!==""){
+            _filterMonth =$('#month_picker').val();
         }
-        if(__data.month && __data.month !== ""){
-            _filterMonth = __data.month;
-        }
+        // if(__data.month && __data.month !== ""){
+        //     _filterMonth = __data.month;
+        // }
         __data.filterMonth=new Date(_filterMonth).format('yyyy-mm-dd');
         __data.status=$(__data.status).text().toLowerCase();
         var _data = {
@@ -185,33 +200,12 @@ $(function() {
         });
     }
 
-    simTransaction_table.MakeCellsEditable({
-        "onUpdate": myCallbackFunction,
-        "columns": [3,5,6],
-        "inputCss":'form-control',
-        "inputTypes": [
-            {
-				"column":3, 
-				"type":"text", 
-				"options":null 
-			}, 
-            {
-                "column":5, 
-                "type": "list",
-                "options":[
-                    { "value": "Pending", "display": "Pending" },
-                    { "value": "Paid", "display": "Paid" }
-                ]
-            },
-            {
-                "column":6, 
-                "type": "list",
-                "options":[
-                    { "value": "Pending", "display": "Pending" },
-                    { "value": "Paid", "display": "Paid" }
-                ]
-            }
-        ]
+    
+
+    $('#month_picker').on('change', function(){
+        var _val = $(this).val();
+        console.log('asdasd')
+        getData();
     });
 });
 function deleteSimTransaction(id)
