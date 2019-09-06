@@ -22,11 +22,13 @@ class ExpenseController extends Controller
     }
     // Company Expense
     public function CE_index(){
-        return view('admin.accounts.Company_Expense.CE_add');
+        $riders=Rider::where("active_status","A")->get();
+        return view('admin.accounts.Company_Expense.CE_add', compact('riders'));
     }
     public function CE_store(Request $r){
         $ce=new Company_Expense();
         $ce->amount=$r->amount;
+        $ce->rider_id=$r->rider_id;
         $ce->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ce->description=$r->description;
         if($r->status)
@@ -35,11 +37,16 @@ class ExpenseController extends Controller
                 $ce->status = 0;
         $ce->save();
         
+        $rider_id = null;
+        if(isset($ce->rider_id) && $ce->rider_id!=""){
+            $rider_id = $ce->rider_id;
+        }
         $ca = new Company_Account();
         $ca->type='dr';
         $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ca->amount=$r->amount;
-        $ca->source='company_expense';
+        $ca->rider_id=$rider_id;
+        $ca->source=$ce->description;
         $ca->company_expense_id=$ce->id;
         $ca->save();
         return redirect(route('admin.CE_view'));

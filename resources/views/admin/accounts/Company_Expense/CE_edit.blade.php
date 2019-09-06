@@ -32,6 +32,19 @@
                                 </span>
                             @endif
                         </div>
+
+                        <div class="form-group">
+                            <label>Select Rider:</label>
+                            <select class="form-control kt-select2" id="kt_select2_3" name="rider_id" >
+                                <option value="">No rider<option>
+                                @foreach ($riders as $rider)
+                                    <option @if($edit_expense->rider_id==$rider->id) selected @endif value="{{ $rider->id }}">
+                                        {{ $rider->name }}
+                                    </option>     
+                                @endforeach 
+                            </select> 
+                        </div>
+
                         <div class="form-group">
                                 <label>Month:</label>
                                 <input type="text" data-month="{{Carbon\Carbon::parse($edit_expense->month)->format('M Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">

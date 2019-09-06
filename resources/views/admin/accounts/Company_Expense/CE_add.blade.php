@@ -32,6 +32,18 @@
                                 </span>
                             @endif
                         </div>
+
+                        <div class="form-group">
+                            <label>Select Rider:</label>
+                            <select class="form-control kt-select2" id="kt_select2_3" name="rider_id" >
+                                <option value="">No rider<option>
+                                @foreach ($riders as $rider)
+                                    <option value="{{ $rider->id }}">
+                                        {{ $rider->name }}
+                                    </option>     
+                                @endforeach 
+                           </select> 
+                       </div>
                       
                         <div class="form-group">
                                 <label>Month:</label>
@@ -91,4 +103,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
  
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script>
+$(function(){
+    $('.kt-select2').select2({
+        placeholder: "Select an rider",
+        width:'100%'    
+    });
+})
+</script>
 @endsection

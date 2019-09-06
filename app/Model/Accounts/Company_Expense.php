@@ -15,6 +15,6 @@ class Company_Expense extends Authenticatable
     protected static $logOnlyDirty = true;
        
     protected $fillable = [
-        'amount', 'month','description','status','active_status','setting'
+        'amount', 'rider_id','month','description','status','active_status','setting'
        ];
 }
