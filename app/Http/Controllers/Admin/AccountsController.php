@@ -668,34 +668,134 @@ class AccountsController extends Controller
             'paid_by'=> $request->get('paid_by'),
             'status'=> $request->get('status')=='on'?1:0,
         ]);
-        $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
-            'salary_id'=>$salary->id
-        ]);
-        $ca->salary_id =$salary->id;
-        $ca->type='dr';
-        $ca->rider_id=$rider_id;
-        $ca->month = Carbon::parse($request->get('month'))->format('Y-m-d');
-        $ca->source="salary"; 
-        $ca->amount=$request->recieved_salary;
-        $ca->save();
-
-        $ca = \App\Model\Accounts\Rider_Account::firstOrCreate([
-            'salary_id'=>$salary->id
-        ]);
-        $ca->salary_id =$salary->id;
-        $ca->type='cr';
-        $ca->rider_id=$rider_id;
-        $ca->month = Carbon::parse($request->get('month'))->format('Y-m-d');
-        $ca->source="salary"; 
-        $ca->amount=$request->recieved_salary;
-        $ca->save();
+        
 
 
-        // $RA=\App\Model\Accounts\Rider_Account::
-        //  where("type","cr_payable")
-        // ->where("rider_id",$rider_id)
-        // ->whereMonth("month", Carbon::parse($request->get('month'))->format('m'))
-        // ->get();
+        $RA=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        ->whereMonth("month", Carbon::parse($request->get('month'))->format('m'))
+        ->get();
+
+        $RA_cr=\App\Model\Accounts\Rider_Account::
+         where("type","cr_payable")
+        ->where("rider_id",$rider_id)
+        ->orWhere('type', 'cr')
+        ->whereMonth("month", Carbon::parse($request->get('month'))->format('m'))
+        ->get();
+        $ra__debits=[];
+        $ca__debits=[];
+        foreach ($RA_cr as $check_rider_cr_payable) {
+            $check_rider_dr_payable=Arr::first($RA, function ($item_zi, $key) use ($check_rider_cr_payable) {
+                if($check_rider_cr_payable->type=="cr"){
+                    return $item_zi->type == "dr" && $item_zi->rider_id == $check_rider_cr_payable->rider_id &&  $item_zi->month == $check_rider_cr_payable->month && $item_zi->amount == $check_rider_cr_payable->amount;
+                }
+                elseif ($check_rider_cr_payable->type=="cr_payable") {
+                    return $item_zi->type == "dr_payable" && $item_zi->rider_id == $check_rider_cr_payable->rider_id &&  $item_zi->month == $check_rider_cr_payable->month && $item_zi->amount == $check_rider_cr_payable->amount;
+                }
+                
+            });
+            if (!isset($check_rider_dr_payable)) {
+                // not found, add one
+                if($check_rider_cr_payable->type=="cr"){
+                    $obj=[];
+                    $obj['salary_id'] =$check_rider_cr_payable->salary_id;
+                    $obj['income_zomato_id'] =$check_rider_cr_payable->income_zomato_id;
+                    $obj['advance_return_id'] =$check_rider_cr_payable->advance_return_id;
+                    $obj['id_charge_id'] =$check_rider_cr_payable->id_charge_id;
+                    $obj['wps_id'] =$check_rider_cr_payable->wps_id;
+                    $obj['fuel_expense_id'] =$check_rider_cr_payable->fuel_expense_id;
+                    $obj['maintenance_id'] =$check_rider_cr_payable->maintenance_id;
+                    $obj['edirham_id'] =$check_rider_cr_payable->edirham_id;
+                    $obj['company_expense_id'] =$check_rider_cr_payable->company_expense_id;
+                    $obj['salik_id'] =$check_rider_cr_payable->salik_id;
+                    $obj['sim_transaction_id'] =$check_rider_cr_payable->sim_transaction_id;
+                    $obj['type']='dr';
+                    $obj['rider_id']=$rider_id;
+                    $obj['month'] = $check_rider_cr_payable->month;
+                    $obj['source']=$check_rider_cr_payable->source; 
+                    $obj['amount']=$check_rider_cr_payable->amount;
+                    array_push($ra__debits, $obj);
+
+                    $obj['type']='cr';
+                    array_push($ca__debits, $obj);
+                }
+                elseif ($check_rider_cr_payable->type=="cr_payable") {
+                    $obj=[];
+                    $obj['salary_id'] =$check_rider_cr_payable->salary_id;
+                    $obj['income_zomato_id'] =$check_rider_cr_payable->income_zomato_id;
+                    $obj['advance_return_id'] =$check_rider_cr_payable->advance_return_id;
+                    $obj['id_charge_id'] =$check_rider_cr_payable->id_charge_id;
+                    $obj['wps_id'] =$check_rider_cr_payable->wps_id;
+                    $obj['fuel_expense_id'] =$check_rider_cr_payable->fuel_expense_id;
+                    $obj['maintenance_id'] =$check_rider_cr_payable->maintenance_id;
+                    $obj['edirham_id'] =$check_rider_cr_payable->edirham_id;
+                    $obj['company_expense_id'] =$check_rider_cr_payable->company_expense_id;
+                    $obj['salik_id'] =$check_rider_cr_payable->salik_id;
+                    $obj['sim_transaction_id'] =$check_rider_cr_payable->sim_transaction_id;
+                    $obj['type']='dr_payable';
+                    $obj['rider_id']=$rider_id;
+                    $obj['month'] = $check_rider_cr_payable->month;
+                    $obj['source']=$check_rider_cr_payable->source; 
+                    $obj['amount']=$check_rider_cr_payable->amount;
+                    array_push($ra__debits, $obj);
+
+                    $obj['type']='cr';
+                    array_push($ca__debits, $obj);
+                }
+                
+            }
+        }
+        DB::table('rider__accounts')->insert($ra__debits); //r4
+        DB::table('company__accounts')->insert($ca__debits); //r4
+
+       
+        $remaining_salary=$request->remaining_salary;
+        if ($remaining_salary>0) {
+            $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+                'salary_id'=>$salary->id
+            ]);
+            $ca->salary_id =$salary->id;
+            $ca->type='dr';
+            $ca->rider_id=$rider_id;
+            $ca->month = Carbon::parse($request->get('month'))->format('Y-m-d');
+            $ca->source="salary"; 
+            $ca->amount=$request->total_salary;
+            $ca->save();
+    
+            $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
+                'salary_id'=>$salary->id
+            ]);
+            $ra->salary_id =$salary->id;
+            $ra->type='cr_payable';
+            $ra->rider_id=$rider_id;
+            $ra->month = Carbon::parse($request->get('month'))->format('Y-m-d');
+            $ra->source="salary"; 
+            $ra->amount=$request->total_salary;
+            $ra->save();
+        }
+        if ($remaining_salary<0) {
+            $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+                'salary_id'=>$salary->id
+            ]);
+            $ca->salary_id =$salary->id;
+            $ca->type='dr';
+            $ca->rider_id=$rider_id;
+            $ca->month = Carbon::parse($request->get('month'))->format('Y-m-d');
+            $ca->source="salary"; 
+            $ca->amount=$request->total_salary;
+            $ca->save();
+    
+            $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
+                'salary_id'=>$salary->id
+            ]);
+            $ra->salary_id =$salary->id;
+            $ra->type='cr';
+            $ra->rider_id=$rider_id;
+            $ra->month = Carbon::parse($request->get('month'))->format('Y-m-d');
+            $ra->source="salary"; 
+            $ra->amount=$request->total_salary;
+            $ra->save();
+        }
+        
         // foreach ($RA as $check_rider_cr_payable) {
         //     $check_rider_dr_payable=\App\Model\Accounts\Rider_Account::where("source",$check_rider_cr_payable->source)
         //     ->where("type","dr_payable")

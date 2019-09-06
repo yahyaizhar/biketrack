@@ -143,6 +143,7 @@ var getData = function(url){
         destroy: true,
         processing: true,
         serverSide: true,
+        
         'language': { 
             'loadingRecords': '&nbsp;',
             'processing': $('.loading').show()
@@ -158,7 +159,21 @@ var getData = function(url){
             $('.total_entries').remove();
             $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
         },
-        ajax: url,
+        ajax : {
+            url : url,
+            dataSrc: function(json) {
+                var rows = [];
+                console.log(json);
+                for (var i=0;i<json.data.length;i++) {
+                    //skip rows "if a condition is met"
+                    //here just any rows except row #1
+                    var adt1 = parseFloat(json.data[i].adt1);
+                    var adt2 = parseFloat(json.data[i].adt2);
+                    if(!(adt1 == 0 && adt2 == 0))rows.push(json.data[i]);
+                }
+                return rows;
+            }
+        },
         columns: [
             { data: 'rider_id', name: 'rider_id' },            
             { data: 'adt1', name: 'adt1' },
