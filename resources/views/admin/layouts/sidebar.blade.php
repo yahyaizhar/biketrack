@@ -163,7 +163,8 @@ if (Auth::user()->type=="su") {
                         <ul class="kt-menu__subnav">
                             <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text">Salik</span></span></li>
                             <li class="kt-menu__item @if(strpos(Request::url(), "admin/salik") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.salik') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">View Salik</span></a></li>
-                       </ul>
+                            <li class="kt-menu__item @if(strpos(Request::url(), "admin/add/salik") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('salik.add_salik') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add Salik</span></a></li>
+                        </ul>
                     </div>
                 </li>
                 @endisset
