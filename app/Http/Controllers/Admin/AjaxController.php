@@ -917,7 +917,7 @@ class AjaxController extends Controller
                $gross_salary='<strong>Gross Salary</strong>: '.$riderToMonth->gross_salary.'<br>';
                $recieved_salary='<strong>Received Salary</strong>: '.$riderToMonth->recieved_salary.'<br>';
                $remaining_salary='<strong>Remaining Salary</strong>: '.$riderToMonth->remaining_salary.'<br>';
-            return $total_salary.$gross_salary.$recieved_salary.$remaining_salary;
+            return $riderToMonth->total_salary;
         })
         ->addColumn('payment_date', function($riderToMonth){
             return $riderToMonth->updated_at;
@@ -981,7 +981,7 @@ class AjaxController extends Controller
             $gross_salary='<strong>Gross Salary</strong>: '.$riderToMonth->gross_salary.'<br>';
             $recieved_salary='<strong>Received Salary</strong>: '.$riderToMonth->recieved_salary.'<br>';
             $remaining_salary='<strong>Remaining Salary</strong>: '.$riderToMonth->remaining_salary.'<br>';
-         return $total_salary.$gross_salary.$recieved_salary.$remaining_salary;
+         return $riderToMonth->total_salary;
      })
         ->addColumn('updated_at', function($monthToRider){
             return $monthToRider->updated_at;
