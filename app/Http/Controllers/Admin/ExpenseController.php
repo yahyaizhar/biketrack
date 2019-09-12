@@ -530,4 +530,7 @@ public function AR_update(Request $r,$id){
 }
 // End ADVANCE & RETURN
 
+public function CE_report(){
+    return view('admin.accounts.Company_Expense.CE_report');
+}
 }

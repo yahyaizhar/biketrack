@@ -686,6 +686,14 @@ class AjaxController extends Controller
         ->addColumn('model', function($mobile){
             return $mobile->model;
         })
+        ->addColumn('rider_id', function($mobile){
+            $rider=Rider::find($mobile->rider_id);
+            if (isset($rider)) {
+                $a='<a href="#">'.$rider->name.'</a>';
+                return $a;
+            }
+            return "No Rider is assigned";
+        })
         ->addColumn('imei', function($mobile){
             return $mobile->imei;
         })
@@ -696,7 +704,14 @@ class AjaxController extends Controller
             return $mobile->sale_price;
         })
         ->addColumn('payment_type', function($mobile){
+            if ($mobile->payment_type=="installment"){
+                $type=$mobile->payment_type.'<br>';
+                $remaining_installment=($mobile->sale_price)-($mobile->amount_received).'<br>';
+                $intallment_per_month=$mobile->per_month_installment_amount;
+            return  $type;
+        }else{
             return $mobile->payment_type;
+        }
         })
         ->addColumn('status', function($mobile){
             if($mobile->status == 1)
@@ -725,7 +740,7 @@ class AjaxController extends Controller
             </span>
         </span>';
         })
-        ->rawColumns(['model','imei','purchase_price','sale_price','payment_type','actions', 'status'])
+        ->rawColumns(['model','rider_id','imei','purchase_price','sale_price','payment_type','actions', 'status'])
         ->make(true);
     }
 

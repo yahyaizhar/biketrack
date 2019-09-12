@@ -144,7 +144,7 @@
                         <th>Running Balance</th>
                     </tr>
                 </thead>
-                {{--<tbody>
+                {{-- <tbody>
                      @php
                         $running_balance = $opening_balance;
                     @endphp
@@ -170,7 +170,7 @@
                             <td>{{$running_balance}}</td>
                         </tr>
                     @endforeach 
-                </tbody>--}}
+                </tbody> --}}
             </table>
 
             <!--end: Datatable -->

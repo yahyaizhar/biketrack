@@ -53,6 +53,7 @@
                             <input type="checkbox" id="select_all" >
                         </th> --}}
                         <th>ID</th>
+                        <th>Assigned To Rider</th>
                         <th>Model</th>
                         <th>IMEI</th>
                         <th>Purchase Price</th>
@@ -98,7 +99,8 @@ $(function() {
         ajax: "{!! route('mobile.getMobiles') !!}",
         columns: [
             //  { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
-            { data: 'id', name: 'id' },          
+            { data: 'id', name: 'id' }, 
+            { data: 'rider_id', name: 'rider_id' },         
             { data: 'model', name: 'model' },
             { data: 'imei', name: 'imei' },
             { data: 'purchase_price', name: 'purchase_price' },

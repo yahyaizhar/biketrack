@@ -33,6 +33,7 @@ Route::group([
     Route::get('/Developer/Salary/ajax','AjaxController@getSalary_by_developer')->name('account.developer_salary_ajax');
     Route::get('/Rider/To/Month/ajax/{rider_id}','AjaxController@getRiderToMonth')->name('account.RiderToMonth_ajax');
     Route::get('/Month/To/Rider/ajax/{month_id}','AjaxController@getMonthToRider')->name('account.MonthToRider_ajax');
+    Route::get('/CE/Report/ajax/{month_id}','AjaxNewController@getCE_REPORT')->name('account.getCE_REPORT');
     Route::get('get/ajax/company/accounts','AjaxController@getCompanyAccounts')->name('admin.ajax_company_accounts');
     Route::get('get/ajax/rider/accounts','AjaxController@getRiderAccounts')->name('admin.ajax_rider_accounts');
     Route::get("/accounts/rider/account/{range}","AjaxNewController@getRiderAccounts")->name("admin.accounts.get_rider_account");
@@ -41,6 +42,7 @@ Route::group([
     Route::get('get/ajax/Sim','AjaxController@getSims')->name('Sim.ajax_sim');
     Route::get('/map/testing/{id}','AjaxController@client_name');
     Route::get('/get/ajax/Transaction/Sim/{month}','AjaxController@getSimTransaction')->name('SimTransaction.ajax_simTransaction');
+    Route::get('/get/ajax/Transaction/Mobile/{month}','AjaxNewController@getMobileTransaction')->name('Transaction.getMobileTransaction');
     Route::get('/mobile/installment/data','AjaxController@getMobileInstallment')->name('MobileInstallment.getinstallments');
     Route::get('/mobile/data','AjaxController@getMobiles')->name('mobile.getMobiles');
     Route::get("/client_income/view/data","AjaxNewController@getclient_income")->name("admin.getclient_income");
@@ -210,13 +212,13 @@ Route::group([
     Route::delete('/client_income/delete/{id}','AccountsController@client_income_delete')->name('admin.client_income_delete');
     Route::get('/client_income/edit/{id}','AccountsController@client_income_edit')->name('admin.client_income_edit');
 // end Client_income
-    Route::get("/accounts/rider/account","AccountsController@rider_account")->name("admin.accounts.rider_account");
-    Route::get("/accounts/company/account","AccountsController@company_account")->name("admin.accounts.company_account");
+    Route::get("/Salary/accounts/rider/account","AccountsController@rider_account")->name("admin.accounts.rider_account");
+    Route::get("/Salary/accounts/company/account","AccountsController@company_account")->name("admin.accounts.company_account");
     Route::get('/rider/accounts/{id}/updateStatus','AccountsController@updatePaymentStatus')->name('Rider.updatePaymentStatus');
 
     Route::get("/accounts/company/debits/get_salary_deduction/{month}/{rider_id}","AccountsController@get_salary_deduction")->name("admin.accounts.get_salary_deduction");
 
-    Route::get("/accounts/rider/expense","AccountsController@rider_expense_get")->name("admin.accounts.rider_expense_get");
+    Route::get("/Salary/accounts/rider/expense","AccountsController@rider_expense_get")->name("admin.accounts.rider_expense_get");
     Route::post("/accounts/rider/expense/add","AccountsController@rider_expense_post")->name("admin.accounts.rider_expense_post");
     
 });
@@ -282,6 +284,7 @@ Route::group([
     Route::post('/CE/{id}/updatestatus','ExpenseController@CE_updatestatus')->name('admin.CE_updatestatus');
     Route::delete('/CE/delete/{id}','ExpenseController@CE_delete')->name('admin.CE_delete');
     Route::get('/CE/edit/{id}','ExpenseController@CE_edit')->name('admin.CE_edit');
+    Route::get('/CE/report','ExpenseController@CE_report')->name('admin.CE_report');
 // End Company_Expense
 //     WPS
     Route::get('/wps/index','ExpenseController@wps_index')->name('admin.wps_index');
@@ -392,6 +395,11 @@ Route::group([
     Route::post('/mobile/installment/{id}/update','MobileController@update_mobileInstallment')->name('MobileInstallment.update');
     Route::delete('/mobile/installment/delete/{mobile_id}','MobileController@delete_mobileInstallment')->name('MobileInstallment.delete');
 // end mobile installement
+// transaction Records
+    Route::get('/mobile/transaction/view','MobileController@transaction_view')->name('Mobile.transaction_view');
+    Route::post('/mobile/transaction/inline_edit','MobileController@edit_inline_MobileTransaction')->name('Transaction.edit_inline_MobileTransaction');
+    
+// end transaction Records
 });
 // end mobile
 
@@ -420,7 +428,7 @@ Route::group([
     Route::put('/profile', 'HomeController@updateProfile')->name('admin.profile.update');
 //end login , dashboard   
 //zomato income
-    Route::get("/accounts/income/zomato/index","AccountsController@income_zomato_index")->name("admin.accounts.income_zomato_index");
+    Route::get("/Salary/accounts/income/zomato/index","AccountsController@income_zomato_index")->name("admin.accounts.income_zomato_index");
     Route::post('/accounts/income/zomato/import','AccountsController@income_zomato_import')->name('admin.accounts.income_zomato_import');
     Route::delete('/accounts/income/zomato/delete','AccountsController@income_zomato_delete')->name('admin.accounts.income_zomato_delete');
 //zomato income  

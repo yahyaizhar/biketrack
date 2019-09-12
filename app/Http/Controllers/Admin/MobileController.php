@@ -18,6 +18,8 @@ use App\Model\Sim\Sim_Transaction;
 use App\Model\Sim\Sim_History;
 use App\Model\Mobile\Mobile;
 use App\Model\Mobile\Mobile_installment;
+use App\Model\Mobile\Mobile_Transaction;
+use carbon\carbon;
 
 class MobileController extends Controller
 {
@@ -76,7 +78,8 @@ class MobileController extends Controller
     }
     public function create_mobile_GET()
     {
-        return view('admin.rider.mobile.create');
+        $riders=Rider::where("active_status","A")->get();
+        return view('admin.rider.mobile.create',compact("riders"));
     }
     public function create_mobile_POST(Request $r)
     {
@@ -92,6 +95,7 @@ class MobileController extends Controller
         $mobile = new Mobile;
         $mobile->model=$r->brand.' '.$r->model;
         $mobile->imei=$r->imei;
+        $mobile->rider_id=$r->rider_id;
         $mobile->purchase_price=$r->purchase_price;
         $mobile->sale_price=$r->sale_price;
         $mobile->payment_type=$r->payment_type;
@@ -100,6 +104,27 @@ class MobileController extends Controller
         $mobile->installment_ending_month=$r->installment_ending_month;
         $mobile->per_month_installment_amount=$r->per_month_installment_amount;
         $mobile->save();
+
+        $mobile_transaction=new Mobile_Transaction;
+        $mobile_transaction->mobile_id=$mobile->id;
+        $mobile_transaction->sale_price=$mobile->sale_price;
+        $mobile_transaction->amount_received=$mobile->amount_received;
+        $mobile_transaction->remaining_amount=($mobile->sale_price)-($mobile->amount_received);
+        $mobile_transaction->per_month_installment_amount=$mobile->per_month_installment_amount;
+        
+        $a=$mobile_transaction->remaining_amount;
+        if($a=='0'){
+        $mobile_transaction->bill_status='paid';
+        }
+        $mobile_transaction->bill_status='pending';
+        $mobile_transaction->month=Carbon::parse($r->filterMonth)->format("Y-m-d");
+        $mobile_transaction->save();
+
+        $mobile_installment=new Mobile_installment;
+        $mobile_installment->installment_amount=0;
+        $mobile_installment->mobile_id=$mobile->id;
+        $mobile_installment->installment_month=Carbon::parse($r->filterMonth)->format('Y-m-d');
+        $mobile_installment->save();
         return redirect(route('mobile.show'))->with('message', 'Record Added Successfully.');
         
     }
@@ -160,4 +185,62 @@ class MobileController extends Controller
 
 
     // End mobile installment
+    // transaction Records
+    public function transaction_view(){
+        return view('admin.rider.mobile.transaction_records.transaction_view');
+    }
+    public function edit_inline_MobileTransaction(Request $r){
+        $action = $r->action;
+        $id = $r->data['id'];
+    
+        $mobile=Mobile::find($id);
+        $sp=$mobile->sale_price;
+
+        $mob_installment=$mobile->Mobile_installment()->sum("installment_amount");
+        $RA=$sp-$mob_installment;
+    if($RA!==0){
+        if($action=="edit"){
+            
+            $data=$r->data;
+            $mobile_trans = Mobile::firstOrCreate([
+                'id'=>$id
+            ]);
+            $mobile_trans->model=$data['model'];
+            $mobile_trans->sale_price=$data['sale_price'];
+            $cash_recieved = $data['amount_received'] + $data['per_month_installment_amount'] ;
+           
+            $mobile_trans->amount_received=$cash_recieved;
+            $mobile_trans->save();
+            
+            $mobile_transaction=new Mobile_Transaction;
+            $mobile_transaction->mobile_id=$data['id'];
+            $mobile_transaction->sale_price=$data['sale_price'];
+            $mobile_transaction->amount_received=$cash_recieved;
+            $mobile_transaction->remaining_amount=$data['sale_price']-$cash_recieved;
+            $mobile_transaction->per_month_installment_amount=$data['per_month_installment_amount'];
+            
+            $a=$data['sale_price']-$cash_recieved;
+            if($a<=0){
+            $mobile_transaction->bill_status='paid';
+            }
+            // $mobile_transaction->bill_status=$a;
+            $mobile_transaction->month=Carbon::parse($data['filterMonth'])->format('Y-m-d');
+            $mobile_transaction->save();
+
+            $mobile_installment=new Mobile_installment;
+            $mobile_installment->installment_amount=$data['per_month_installment_amount'];
+            $mobile_installment->mobile_id=$data['id'];
+            $mobile_installment->installment_month=Carbon::parse($data['filterMonth'])->format('Y-m-d');
+            $mobile_installment->save();
+                    
+            }
+        }
+       
+
+        return response()->json([
+            'status' => true,
+            'ss'=>$RA
+        ]);
+    }
+    // end transaction Records
 }
