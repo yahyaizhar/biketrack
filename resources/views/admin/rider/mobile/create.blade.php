@@ -22,6 +22,16 @@
                     {{ csrf_field() }}
                     <div class="kt-portlet__body">
                         <div class="form-group">
+                            <label>Select Rider:</label>
+                            <select class="form-control kt-select2" id="kt_select2_3" name="rider_id" >
+                                    @foreach ($riders as $rider)
+                                        <option value="{{ $rider->id }}">
+                                            {{ $rider->name }}
+                                    </option>     
+                                    @endforeach 
+                            </select> 
+                        </div>
+                        <div class="form-group">
                             <label>Select Brand:</label>
                             <div>
                                 <select class="form-control kt-select2" id="kt_select2_3" name="brand" >
@@ -162,6 +172,10 @@
     <script>
     $(function(){
         $('.dp__custom').fdatepicker({ format: 'MM yyyy',startView:3,minView:3,maxView:4});
+        $('.kt-select2').select2({
+            placeholder: "Select an option",
+            width:'100%'    
+        });
     });
     </script>
 @endsection

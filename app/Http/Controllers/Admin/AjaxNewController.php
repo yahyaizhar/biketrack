@@ -41,6 +41,7 @@ use App\Model\Accounts\WPS;
 use App\Model\Accounts\AdvanceReturn;
 use App\Model\Accounts\Client_Income;
 use App\Model\Accounts\Income_zomato;
+use App\Model\Mobile\Mobile_Transaction;
 
 class AjaxNewController extends Controller
 {
@@ -683,5 +684,93 @@ class AjaxNewController extends Controller
         ->rawColumns(['status','month','client_id','amount','actions', 'status'])
         ->make(true);
     }
+    public function getCE_REPORT($month)
+    {  
+        $CE=Company_Expense::where("active_status","A")->whereMonth('month', $month)->get();
+        $total_expense=Company_Expense::where("active_status","A")->whereMonth('month', $month)->sum("amount");
+        
+        $flag = new Company_Expense;
+        $flag->month='';
+        $flag->description='<strong>Total Expense</strong>';
+        $flag->amount='<strong>'.$total_expense.'</strong>';
+        $CE->push($flag);
+        
+        return DataTables::of($CE)
+        
+        ->addColumn('date', function($CE){
+            $month_year=Carbon::parse($CE->month)->format('M-Y');
+           return $month_year;
+        }) 
+        ->addColumn('description', function($CE){
+           return $CE->description;
+        }) 
+        ->addColumn('amount', function($CE){
+            return $CE->amount;
+        }) 
+       
+        ->with([
+            'closing_balance' => $total_expense
+        ])
+               
+        ->rawColumns(['closing_balance','date','description','amount'])
+        ->make(true);
+    }
  
+
+    public function getMobileTransaction($month) 
+    {
+        $all_mobiles =Mobile::orderByDesc('created_at')->get();
+        $mob_trans=Mobile_Transaction::all();
+        return DataTables::of($all_mobiles)
+        ->addColumn('model', function($mobile) use ($month,$mob_trans){
+            // $zp_found = Arr::first($mob_trans, function ($item_zp, $key) use ($month) {
+            //     return $item_zp->month == Carbon::parse($month)->format('Y-m-d');
+            // });
+                   return $mobile->model;
+               
+              
+        })
+        ->addColumn('sale_price', function($all_mobiles) use ($month,$mob_trans){
+            
+                return $all_mobiles->sale_price;
+               
+        })
+        ->addColumn('amount_received', function($all_mobiles) use ($month,$mob_trans){
+                return $all_mobiles->amount_received;
+              
+        })
+        ->addColumn('remaining_amount', function($all_mobiles) use ($month,$mob_trans){
+          
+                $RA=$all_mobiles->amount_received;
+                $SP=$all_mobiles->sale_price;
+                $remaining_amount=$SP-$RA;
+                return $remaining_amount;
+               
+        })
+        ->addColumn('per_month_installment_amount', function($all_mobiles) use ($month,$mob_trans){
+            return '0';
+        })
+        ->addColumn('month', function($all_mobiles) use ($month,$mob_trans) {
+            $mob_tran =Mobile_Transaction::find($all_mobiles->id)->whereMonth('month', Carbon::parse($month)->format('m'))->get()->first();
+            if(isset($mob_tran)){
+                return Carbon::parse($mob_tran->month)->format('F Y');
+            }
+            return Carbon::now()->format('F Y');
+        })
+        ->addColumn('bill_status', function($all_mobiles) use ($month,$mob_trans){
+            $RA=$all_mobiles->amount_received;
+            $SP=$all_mobiles->sale_price;
+            $remaining_amount=$SP-$RA;
+          
+            if ($remaining_amount<=0) {
+                return 'paid' ;
+            }
+           
+            return "pending" ;
+        
+        })
+        
+        ->rawColumns(['model','month','sale_price','amount_received','bill_status','remaining_amount','per_month_installment_amount', 'status'])
+        ->make(true);
+    }
 }
