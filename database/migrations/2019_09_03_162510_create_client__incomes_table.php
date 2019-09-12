@@ -16,6 +16,7 @@ class CreateClientIncomesTable extends Migration
         Schema::create('client__incomes', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('client_id')->nullable();
+            $table->integer('rider_id')->nullable();
             $table->integer('amount')->nullable();
             $table->string('month')->nullable();
             $table->string('status')->nullable();

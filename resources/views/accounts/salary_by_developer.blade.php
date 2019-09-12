@@ -94,7 +94,33 @@
     </div>
 </div>
 {{-- End Rider OPTIONS --}}
-
+<div class="modal fade" id="invoice_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header border-bottom-0">
+        <h5 class="modal-title" id="exampleModalLabel">Assigned Rider Id</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <form class="kt-form" id="form_dates"  enctype="multipart/form-data">
+            <div class="modal-body">
+            {{-- <div class="form-group">
+                <input type="hidden" name="rider_id" id="rider_id">
+            </div>
+            <div class="form-group">
+                <label>Rider Id:</label>
+                <input type="text" id="body_value" class="form-control @if($errors->has('client_rider_id')) invalid-field @endif" name="client_rider_id" placeholder="Client Assign Rider Id"  >
+            </div> --}}
+        </div>
+                
+        <div class="modal-footer border-top-0 d-flex justify-content-center">
+            <button type="submit" id="submit_btn_dates" class="btn btn-success">Assign Id</button>
+        </div>
+        </form>
+    </div>
+    </div>
+</div>
 @endsection
 @section('foot')
 
@@ -112,7 +138,10 @@
     var month=null;
     var rider=null;
 $(document).ready(function(){
-    
+    $('.kt-select2').select2({
+        placeholder: "Select an option",
+        width:'100%'    
+    });
     $('#kt_content-a').hide(); 
     $("#kt_select2_3_4").change(function(){
     $('#kt_content-a').show();

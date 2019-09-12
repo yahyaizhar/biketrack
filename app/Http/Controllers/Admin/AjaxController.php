@@ -890,6 +890,7 @@ class AjaxController extends Controller
         
         return DataTables::of($riderToMonth)
         ->addColumn('status', function($riderToMonth){
+            return '<a href="" data-toggle="modal" data-target="#invoice_model" class="btn btn-bold btn-sm btn-font-sm btn-label-success">View</a>';
             if($riderToMonth->status == 1)
             {
                 return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';

@@ -202,6 +202,7 @@ Route::group([
     
 // Client_income
     Route::get('/client_income/index','AccountsController@client_income_index')->name('admin.client_income_index');
+    Route::get('/client_income/{client_id}/getRiders','AccountsController@client_income_getRiders')->name('admin.client_income_getRiders');
     Route::get('/client_income/view','AccountsController@client_income_view')->name('admin.client_income_view');
     Route::post('/client_income/insert','AccountsController@client_income_store')->name('admin.client_income_store');
     Route::post('/client_income/{id}/update','AccountsController@client_income_update')->name('admin.client_income_update');

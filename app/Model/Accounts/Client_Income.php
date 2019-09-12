@@ -15,6 +15,6 @@ class Client_Income extends Authenticatable
     protected static $logOnlyDirty = true;
     
     protected $fillable = [
-        'client_id', 'month', 'amount', 'status','active_status',
+        'client_id', 'month', 'amount', 'status','active_status','rider_id'
     ];
 }

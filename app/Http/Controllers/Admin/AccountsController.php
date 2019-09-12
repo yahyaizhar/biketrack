@@ -620,6 +620,7 @@ class AccountsController extends Controller
     }
     public function get_salary_deduction($month, $rider_id){   
         // before tthat check if rider is zomato's
+        $rider = Rider::find($rider_id);
         $ra_payable=Rider_Account::where("rider_id",$rider_id)
         ->whereMonth("month",$month)
         ->where("type","cr_payable")
@@ -628,29 +629,38 @@ class AccountsController extends Controller
         ->whereMonth("month",$month)
         ->where("type","cr")
         ->sum('amount');  
-        $ra_zomatos=Income_zomato::where("rider_id",$rider_id)
-        ->whereMonth("date",$month)
-        ->get()->first();  
-        $ra_zomatos_no_of_hours =0;
-        $ra_zomatos_no_of_trips = 0;
-        $ra_zomatos_ncw_incentives =0;
-        $ra_zomatos_tips_payouts = 0;
-        if(isset($ra_zomatos)){
-            $ra_zomatos_no_of_hours = $ra_zomatos->log_in_hours_payable * 7.87;
-            $ra_zomatos_no_of_trips = $ra_zomatos->trips_payable * 2;
-            $ra_zomatos_ncw_incentives = $ra_zomatos->ncw_incentives;
-            $ra_zomatos_tips_payouts = $ra_zomatos->tips_payouts;
-        }
-       
+        $feid = $rider->clients()->first()->pivot->client_rider_id;
+        if(isset($feid)){ // rider belongs to zomato
+            $ra_zomatos=Income_zomato::where("rider_id",$rider_id)
+            ->whereMonth("date",$month)
+            ->get()->first();  
+            $ra_zomatos_no_of_hours =0;
+            $ra_zomatos_no_of_trips = 0;
+            $ra_zomatos_ncw_incentives =0;
+            $ra_zomatos_tips_payouts = 0;
+            if(isset($ra_zomatos)){
+                $ra_zomatos_no_of_hours = $ra_zomatos->log_in_hours_payable * 7.87;
+                $ra_zomatos_no_of_trips = $ra_zomatos->trips_payable * 2;
+                $ra_zomatos_ncw_incentives = $ra_zomatos->ncw_incentives;
+                $ra_zomatos_tips_payouts = $ra_zomatos->tips_payouts;
+            }
         
-        $ra_deduction = $ra_payable;
-        $ra_salary=$ra_zomatos_no_of_hours + $ra_zomatos_no_of_trips + $ra_cr;
-        $ra_recieved=$ra_salary - $ra_deduction;
-
+            
+            $ra_deduction = $ra_payable;
+            $ra_salary=$ra_zomatos_no_of_hours + $ra_zomatos_no_of_trips + $ra_cr;
+            $ra_recieved=$ra_salary - $ra_deduction;
+        }
+        else { // other clients
+            $fixed_salary = $rider->Rider_Detail->salary;
+            $fixed_salary = isset($fixed_salary)?$fixed_salary:0;
+            $ra_deduction = $ra_payable;
+            $ra_salary= $fixed_salary + $ra_cr;
+            $ra_recieved=$ra_salary - $ra_deduction;
+        }
        
         return response()->json([
             'gross_salary'=>round($ra_recieved,2) ,
-            'd'=>$ra_payable,
+            'd'=>$fixed_salary,
             'recieved_salary'=>round($ra_recieved,2),
             'total_salary'=>round($ra_salary,2),
         ]);
@@ -1419,8 +1429,17 @@ public function income_zomato_import(Request $r){
 // client_income
 public function client_income_index(){
    $clients=Client::where("active_status","A")->get();
-    return view('accounts.Client_income.add_income',compact("clients"));
+   $riders=Rider::where("active_status","A")->get();
+    return view('accounts.Client_income.add_income',compact("clients", 'riders'));
 }
+public function client_income_getRiders($client_id){
+    $clients=Client::find($client_id);
+    $riders=$clients->riders;
+     return response()->json([
+         'riders' => $riders
+     ]);
+ }
+
 public function client_income_view(){
     return view('accounts.Client_income.view_income');  
 }
@@ -1453,18 +1472,33 @@ public function client_income_edit($id){
     return view('accounts.Client_income.edit_income',compact('edit_client_income','clients'));
 }
 public function client_income_store(Request $request){
+    $client = Client::find($request->client_id);
     $client_income=new Client_Income();
     $client_income->amount=$request->amount;
     $client_income->month=Carbon::parse($request->get('month'))->format('Y-m-d');
     $client_income->client_id=$request->client_id;
+    $client_income->rider_id=$request->rider_id;
     if($request->status)
-            $client_income->status = 1;
-        else
-            $client_income->status = 0;
+        $client_income->status = 1;
+    else
+        $client_income->status = 0;
     $client_income->save();
+
+    $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+        'client_income_id'=>$client_income->id
+    ]);
+    $ca->client_income_id =$client_income->id;
+    $ca->type='cr';
+    $ca->rider_id=$client_income->rider_id;
+    $ca->month = Carbon::parse($request->get('month'))->format('Y-m-d');
+    $ca->source=$client->name." Income"; 
+    $ca->amount=$client_income->amount;
+    $ca->save();
+
     return redirect(route('admin.client_income_view'));
 }
 public function client_income_update(Request $request,$id){
+    $client = Client::find($request->client_id);
     $update_income=Client_Income::find($id);
     $update_income->amount=$request->amount;
     $update_income->month=Carbon::parse($request->get('month'))->format('Y-m-d');
@@ -1473,7 +1507,17 @@ public function client_income_update(Request $request,$id){
         $update_income->status = 1;
     else
         $update_income->status = 0;
-        $update_income->save();
+    $update_income->save();
+    $ca = \App\Model\Accounts\Rider_Account::firstOrCreate([
+        'client_income_id'=>$client_income->id
+    ]);
+    $ca->client_income_id =$client_income->id;
+    $ca->type='cr';
+    $ca->rider_id=$client_income->rider_id;
+    $ca->month = Carbon::parse($request->get('month'))->format('Y-m-d');
+    $ca->source=$client->name." Income"; 
+    $ca->amount=$client_income->amount;
+    $ca->save();
         return redirect(route('admin.client_income_view'));
 }
 // end Client_income

@@ -25,11 +25,20 @@
                             <label>Client:</label>
                             <select required class="form-control kt-select2-general" name="client_id" >
                                 @foreach ($clients as $client)
+                                
+                                @unless (strpos( strtolower($client->name) , "zomato") !== false)
                                 <option value="{{ $client->id }}">
                                     {{ $client->name }}
-                                </option>     
+                                </option> 
+                                @endunless
+                                    
                                 @endforeach 
                             </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Rider:</label>
+                            <select required class="form-control kt-select2-general" name="rider_id" ></select>
                         </div>
                         <div class="form-group">
                                 <label>Month:</label>
@@ -90,11 +99,30 @@
  
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
-  $(document).ready(function(){
+    $(document).ready(function(){
     //   $('#datepicker').datepicker({dateFormat: 'yy-mm-dd'}); 
-      $('#datepicker').fdatepicker({format: 'dd-mm-yyyy'}); 
+        $('#datepicker').fdatepicker({format: 'dd-mm-yyyy'}); 
 
-  });
+        $('[name="client_id"]').on('change', function(){
+            var _client_id = $(this).val();
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }, 
+                url:"{{url('admin/client_income/')}}"+'/'+_client_id+'/getRiders',
+                method: "GET"
+            })
+            .done(function(resp) {  
+                console.log(resp);
+                $('[name="rider_id"]').html('');
+                resp.riders.forEach(function(rider, index){
+                    $('[name="rider_id"]').append('<option value="'+rider.id+'">'+rider.name+'</option>');
+                });
+                $('[name="rider_id"]')[0].selectedIndex = -1;
+                $('[name="rider_id"]').trigger('change');
+            });
+        });
+    });
 
 </script>
 @endsection

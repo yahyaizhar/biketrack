@@ -44,7 +44,7 @@ class Client extends Authenticatable
 
     public function riders()
     {
-        return $this->belongsToMany(Rider::class, 'client_riders', 'client_id', 'rider_id')->withTimestamps();
+        return $this->belongsToMany(Rider::class, 'client_riders', 'client_id', 'rider_id')->withPivot('client_id', 'rider_id', 'created_at', 'updated_at', 'client_rider_id');
     }
     public function getRiders()
     {
