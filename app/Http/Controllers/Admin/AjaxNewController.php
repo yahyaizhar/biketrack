@@ -719,7 +719,7 @@ class AjaxNewController extends Controller
 
     public function getMobileTransaction($month) 
     {
-        $all_mobiles =Mobile::orderByDesc('created_at')->get();
+        $all_mobiles =Mobile::where("payment_type","installment")->orderByDesc('created_at')->get();
         $mob_trans=Mobile_Transaction::all();
         return DataTables::of($all_mobiles)
         ->addColumn('model', function($mobile) use ($month,$mob_trans){

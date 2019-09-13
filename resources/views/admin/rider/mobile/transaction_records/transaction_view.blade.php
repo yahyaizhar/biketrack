@@ -47,7 +47,7 @@
             <div class="row">
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label>Filter by month</label>
+                        <label>Select Installment month</label>
                         <input id="month_picker" type="text" data-month="{{Carbon\Carbon::now()->format('M Y')}}" required readonly class="month_picker form-control @if($errors->has('month_year')) invalid-field @endif" name="month_year" placeholder="Enter Month" value="">
                     </div>
                 

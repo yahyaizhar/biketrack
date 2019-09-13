@@ -2,6 +2,7 @@
 @section('head')
     <!--begin::Page Vendors Styles(used by this page) -->
     <link href="{{ asset('dashboard/assets/vendors/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('css/print.min.css') }}" rel="stylesheet" type="text/css" />
     <style>
         .dataTables_length{
            display: block;   
@@ -104,7 +105,53 @@
         </div>
     </div>
 </div>
-
+<div class="modal fade" id="invoice_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-bottom-0">
+            <h5 class="modal-title" id="exampleModalLabel">Salary Detail</h5>
+             
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-8">
+                            <label><strong>Total Salary</strong></label>
+                    </div>
+                    <div class="col-md-4">
+                            <label><strong id="t_salary"></strong></label>
+                    </div>
+                </div>
+                <h5>Debits</h5>
+                <div class="form-group" id="append_row">
+                   
+                </div>
+            
+                <div class="row" id="gross">
+                    <div class="col-md-8">
+                            <label><strong >Gross Salary</strong></label>
+                    </div>
+                    <div class="col-md-4">
+                            <label><strong id="gross_salary"></strong></label>
+                    </div>
+                </div>    
+            </div> 
+            <div class="modal-footer border-top-0 d-flex justify-content-center">
+                    <button type="button" onclick="printJS({
+                         printable: 'invoice_model', 
+                         type: 'html' ,
+                         style: '#gross{ margin-top:10px; }',
+                         })">
+                            Print Invoice
+                        </button> 
+            </div>
+            
+        </div>
+        </div>
+    </div>
 {{-- end Month OPTIONS --}}
 @endsection
 @section('foot')
@@ -118,10 +165,32 @@
 
 <!--end::Page Scripts -->
     <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/select2.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/print.min.js') }}" type="text/javascript"></script>
+
 <script>
     var month=null;
     var rider=null;
 $(document).ready(function(){
+    var current_open_target=null;
+     $("#invoice_model").on('shown.bs.modal', function (event){
+        current_open_target=$(event.relatedTarget);
+        var current_target = $(event.currentTarget);
+        
+        var data_rider_debits=$(event.relatedTarget).attr("data-view");
+        var total_salary=$(event.relatedTarget).attr("data-salary");
+        var gross_salary=$(event.relatedTarget).attr("data-gross_salary");
+      
+        var data_json=JSON.parse(data_rider_debits);
+        console.log(data_json);
+        current_target.find('#append_row').html('');
+        $.each(data_json,function(index,item){
+            current_target.find('#append_row').append(' <div class="row"><div class="col-md-8"><input type="text" readonly id="source_print" value="'+  item.source+'" class="form-control " name="source"  ></div><div class="col-md-4"><input type="text" readonly class="form-control " id="amount_print" value="'+  item.amount+'" name="amount"></div></div>');
+        })
+        current_target.find('#t_salary').text(total_salary); 
+        current_target.find('#gross_salary').text(gross_salary);
+        $('#t_salary_form').text(total_salary); 
+        $('#gross_salary_form').text(gross_salary);  
+    });
     
     
 
