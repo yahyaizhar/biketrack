@@ -98,7 +98,7 @@
             <div class="form-group">
                 <div class="kt-checkbox-inline">
                     <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
-                        <input type="checkbox" name="action_name[]" value="salik"> Salik
+                        <input type="checkbox" name="action_name[]" value="new_comer"> New Comer
                         <span></span>
                     </label>
                 </div>
@@ -147,14 +147,7 @@
                     </label>
                 </div>
             </div>
-            <div class="form-group">
-                <div class="kt-checkbox-inline">
-                    <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
-                        <input type="checkbox" name="action_name[]" value="new_comer"> New Comer
-                        <span></span>
-                    </label>
-                </div>
-            </div>
+            
             </div>
         </div>
         </div>

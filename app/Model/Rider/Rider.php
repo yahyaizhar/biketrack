@@ -6,15 +6,14 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Model\Client\Client;
-use Spatie\Activitylog\Traits\LogsActivity;
+
 
 class Rider extends Authenticatable
 {
-    use Notifiable, LogsActivity;
+    use Notifiable;
     protected $table = 'riders';
     protected $guard = 'api-riders';
-    protected static $logAttributes = ['*'];
-    protected static $logOnlyDirty = true;
+  
     /**
      * The attributes that are mass assignable.
      *

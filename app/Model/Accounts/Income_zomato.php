@@ -5,13 +5,11 @@ namespace App\Model\Accounts;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Spatie\Activitylog\Traits\LogsActivity;
+
 
 class Income_zomato extends Authenticatable
 {
-    use LogsActivity;
-    protected static $logAttributes = ['*'];
-    protected static $logOnlyDirty = true;
+
 
     protected $fillable = [
         'feid','rider_id','log_in_hours_payable','total_to_be_paid_out',

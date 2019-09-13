@@ -157,19 +157,9 @@ Route::group([
     Route::get('/bike/{bike_id}/profile/{rider_id}','ClientController@bike_profile')->name('bike.bike_profile');
     Route::get('view/bike/salik/{id}','SalikController@bike_salik')->name('bike.bike_salik');
     Route::get('view/rider/salik/{id}','SalikController@rider_salik')->name('rider.rider_salik');
-
-});
-// Bike
-
-
-// salik
-Route::group([
-    'prefix' => 'admin',
-    'namespace' => 'Admin',
-    'middleware' => ['roles:salik']
-], function(){
+// salik 
     Route::resource('/salik', 'SalikController', [
-        'as' => 'admin'
+    'as' => 'admin'
     ]);
     Route::get("/salik","SalikController@import_salik_data")->name("admin.salik");
     Route::post('/import/salik','SalikController@import_Salik')->name('import.salik');
@@ -178,8 +168,10 @@ Route::group([
     Route::get('/add/salik','SalikController@add_salik')->name("salik.add_salik");
     Route::get('/store/salik/{rider_id}','SalikController@store_salik')->name("salik.store_salik");
     Route::post('/insert/salik','SalikController@insert_salik')->name('Saik.insert_salik');
+// end salik   
+
 });
-// end salik
+// Bike
 
 // Accounts
 Route::group([

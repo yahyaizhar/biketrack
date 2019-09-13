@@ -23,6 +23,56 @@
 </div>
 <!-- begin:: Content -->
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content" style="margin-top:60px;">
+@if (strpos($client->email, "zomato") !== false)
+    <div class="kt-portlet">
+        <div class="kt-portlet__body  kt-portlet__body--fit">
+            <div class="row row-no-padding row-col-separator-xl">
+                <div class="col-md-12 col-lg-4 col-xl-4">
+                    <div class="kt-widget24">
+                        <div class="kt-widget24__details">
+                            <a href="{{ route('admin.riderPerformance') }}" class="kt-widget24__info">
+                                <span class="kt-widget24__stats kt-font-danger">
+                                    <button type="button" class="btn btn-primary">
+                                        <i class="fa fa-tachometer-alt"></i>
+                                        <p class="p-0 m-0">Rider Performance</p>
+                                    </button>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-lg-4 col-xl-4">
+                    <div class="kt-widget24">
+                        <div class="kt-widget24__details">
+                            <a href="{{ route('admin.ranges.adt') }}" class="kt-widget24__info">
+                                <span class="kt-widget24__stats kt-font-success">
+                                    <button type="button" class="btn btn-success">
+                                        <i class="flaticon2-percentage"></i>
+                                        <p class="p-0 m-0">ADT Performance</p>
+                                    </button>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-lg-4 col-xl-4">
+                    <div class="kt-widget24">
+                        <div class="kt-widget24__details">
+                            <a href="{{ route('admin.accounts.income_zomato_index') }}" class="kt-widget24__info">
+                                <span class="kt-widget24__stats kt-font-brand">
+                                    <button type="button" class="btn btn-danger">
+                                        <i class="fa fa-dollar-sign"></i>
+                                        <p class="p-0 m-0">Income Report</p>
+                                    </button>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
     @if(count($riders) > 0)
         @foreach ($riders as $rider)
         <div class="row">

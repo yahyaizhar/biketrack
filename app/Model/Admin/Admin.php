@@ -6,14 +6,11 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Model\Rider\Rider_Message;
-use Spatie\Activitylog\Traits\LogsActivity;
+
 
 class Admin extends Authenticatable
 {
-    use Notifiable, LogsActivity;
-    protected $guard = 'admin';
-    protected static $logAttributes = ['*'];
-    protected static $logOnlyDirty = true;
+    use Notifiable;
 
 
     /**
