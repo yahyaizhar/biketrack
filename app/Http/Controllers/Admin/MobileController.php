@@ -89,8 +89,6 @@ class MobileController extends Controller
             'purchase_price' => 'required | numeric',
             'sale_price' => 'required | numeric',
             'payment_type' => 'required',
-            'amount_received' => 'required | numeric',
-            'per_month_installment_amount' => 'required | numeric',
         ]);
         $mobile = new Mobile;
         $mobile->model=$r->brand.' '.$r->model;

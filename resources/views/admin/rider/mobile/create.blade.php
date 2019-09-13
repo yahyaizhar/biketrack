@@ -95,62 +95,36 @@
                         </div>
                         <div class="form-group">
                             <label>Payment type:</label>
-                            <div class="kt-radio-inline">
+                            <div class="kt-radio-inline" id="payment_type">
                                 <label class="kt-radio">
-                                    <input type="radio" name="payment_type" value="cash"> Cash
+                                    <input type="radio" id="cash_PT" name="payment_type" value="cash"> Cash
                                     <span></span>
                                 </label>
                                 <label class="kt-radio">
-                                        <input type="radio" name="payment_type" value="installment"> Installment
+                                        <input type="radio" id="installment_PT" name="payment_type" value="installment"> Installment
                                     <span></span>
                                 </label>
                             </div>
                             {{-- <span class="form-text text-muted">Some help text goes here</span> --}}
                         </div>
+                        <div class="just_installment">
                         <div class="form-group">
                             <label>Amount received:</label>
-                            <input type="text" class="form-control @if($errors->has('amount_received')) invalid-field @endif" name="amount_received" placeholder="Enter received amount " value="{{ old('amount_received') }}">
-                            @if ($errors->has('amount_received'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{$errors->first('amount_received')}}
-                                    </strong>
-                                </span>
-                            @endif
+                            <input id="amount_received" type="text" class="form-control " name="amount_received" placeholder="Enter received amount " >
                         </div>
                         <div class="form-group">
                             <label>Installment Starting Month:</label>
-                            <input type="text" class="dp__custom form-control @if($errors->has('installment_starting_month')) invalid-field @endif" autocomplete="off" name="installment_starting_month" placeholder="Installment start " value="{{ old('installment_starting_month') }}">
-                            @if ($errors->has('installment_starting_month'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{$errors->first('installment_starting_month')}}
-                                    </strong>
-                                </span>
-                            @endif
+                            <input id="installment_starting_month" type="text" class="dp__custom form-control " autocomplete="off" name="installment_starting_month" placeholder="Installment start " >
                         </div>
                         <div class="form-group">
                             <label>Installment Ending Month:</label>
-                            <input type="text" class="dp__custom form-control @if($errors->has('installment_ending_month')) invalid-field @endif" autocomplete="off" name="installment_ending_month" placeholder="Installment ends " value="{{ old('installment_ending_month') }}">
-                            @if ($errors->has('installment_ending_month'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{$errors->first('installment_ending_month')}}
-                                    </strong>
-                                </span>
-                            @endif
+                            <input id="installment_ending_month" type="text" class="dp__custom form-control" autocomplete="off" name="installment_ending_month" placeholder="Installment ends " >
                         </div>
                         <div class="form-group">
                             <label>Per Month Installment Amount:</label>
-                            <input type="number" class="form-control @if($errors->has('per_month_installment_amount')) invalid-field @endif" autocomplete="off" name="per_month_installment_amount" placeholder="Per month installments " value="{{ old('per_month_installment_amount') }}">
-                            @if ($errors->has('per_month_installment_amount'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{$errors->first('per_month_installment_amount')}}
-                                    </strong>
-                                </span>
-                            @endif
+                            <input  id="per_month_installment_amount" type="number" class="form-control " autocomplete="off" name="per_month_installment_amount" placeholder="Per month installments " >
                         </div>
+                    </div>
                         
                     </div>
                     <div class="kt-portlet__foot">
@@ -176,6 +150,20 @@
             placeholder: "Select an option",
             width:'100%'    
         });
+    });
+    $(document).ready(function(){
+       $(".just_installment").hide();
+      $("#installment_PT").change(function(){
+         $(".just_installment").show();
+      });
+      $("#cash_PT").change(function(){
+         $(".just_installment").hide();
+         $("#amount_received").val('');
+         $("#installment_starting_month").val('');
+         $("#installment_ending_month").val('');
+         $("#per_month_installment_amount").val('');
+
+      });
     });
     </script>
 @endsection

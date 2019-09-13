@@ -26,6 +26,8 @@ use App\Model\Accounts\Client_Income;
 use App\Model\Accounts\Income_zomato;
 use Arr;
 use Batch;
+use App\Model\Accounts\Company_Account;
+
 
 class AccountsController extends Controller
 {
@@ -1570,4 +1572,6 @@ public function client_income_update(Request $request,$id){
         ]);
 
     }
+
+  
 }

@@ -201,7 +201,6 @@ Route::group([
     Route::post('/developer/{developer_id}/updateStatus', 'AccountsController@updateStatusdeveloper')->name('account.updateStatusdeveloper');
     Route::get('/developer/Edit/{developer_id}','AccountsController@developer_edit')->name('account.edit_developer');
     Route::post('/developer/update/{developer_id}','AccountsController@developer_update')->name('account.developer_update');
-    
 // Client_income
     Route::get('/client_income/index','AccountsController@client_income_index')->name('admin.client_income_index');
     Route::get('/client_income/{client_id}/getRiders','AccountsController@client_income_getRiders')->name('admin.client_income_getRiders');

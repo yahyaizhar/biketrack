@@ -905,7 +905,13 @@ class AjaxController extends Controller
         
         return DataTables::of($riderToMonth)
         ->addColumn('status', function($riderToMonth){
-            return '<a href="" data-toggle="modal" data-target="#invoice_model" class="btn btn-bold btn-sm btn-font-sm btn-label-success">View</a>';
+            $ra=Rider_Account::where('type','cr_payable')
+            ->where("rider_id",$riderToMonth->rider_id)
+            ->whereMonth("month",Carbon::parse($riderToMonth->month)->format('m'))
+            ->get()->toArray();
+            $total_salaary=$riderToMonth->total_salary;
+            $gross_salary=$riderToMonth->gross_salary;
+            return '<a href=""  data-gross_salary='.$gross_salary.'   data-salary='.$total_salaary.' data-view="'.htmlspecialchars(json_encode($ra), ENT_QUOTES, 'UTF-8').'"  data-toggle="modal" data-target="#invoice_model" class="btn btn-bold btn-sm btn-font-sm btn-label-success">View</a>';
             if($riderToMonth->status == 1)
             {
                 return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
@@ -975,6 +981,14 @@ class AjaxController extends Controller
         
         return DataTables::of($rider_salaries)
         ->addColumn('status', function($monthToRider){
+             $ra=Rider_Account::where('type','cr_payable')
+            ->where("rider_id",$monthToRider->rider_id)
+            ->whereMonth("month",Carbon::parse($monthToRider->month)->format('m'))
+            ->get()->toArray();
+            $total_salaary=$monthToRider->total_salary;
+            $gross_salary=$monthToRider->gross_salary;
+            return '<a href=""  data-gross_salary='.$gross_salary.'   data-salary='.$total_salaary.' data-view="'.htmlspecialchars(json_encode($ra), ENT_QUOTES, 'UTF-8').'"  data-toggle="modal" data-target="#invoice_model" class="btn btn-bold btn-sm btn-font-sm btn-label-success">View</a>';
+            
             if($monthToRider->status == 1)
             {
                 return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
