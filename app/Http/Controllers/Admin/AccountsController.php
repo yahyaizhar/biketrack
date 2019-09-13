@@ -1505,21 +1505,23 @@ public function client_income_update(Request $request,$id){
     $update_income->amount=$request->amount;
     $update_income->month=Carbon::parse($request->get('month'))->format('Y-m-d');
     $update_income->client_id=$request->client_id;
+    $update_income->rider_id=$request->rider_id;
     if($request->status)
         $update_income->status = 1;
     else
         $update_income->status = 0;
     $update_income->save();
-    $ca = \App\Model\Accounts\Rider_Account::firstOrCreate([
-        'client_income_id'=>$client_income->id
+    $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+        'client_income_id'=>$update_income->id
     ]);
-    $ca->client_income_id =$client_income->id;
+    $ca->client_income_id =$update_income->id;
     $ca->type='cr';
-    $ca->rider_id=$client_income->rider_id;
+    $ca->rider_id=$update_income->rider_id;
     $ca->month = Carbon::parse($request->get('month'))->format('Y-m-d');
     $ca->source=$client->name." Income"; 
-    $ca->amount=$client_income->amount;
+    $ca->amount=$update_income->amount;
     $ca->save();
+   
         return redirect(route('admin.client_income_view'));
 }
 // end Client_income

@@ -31,8 +31,21 @@
                             </select>
                         </div>
                         <div class="form-group">
+                                <label>Rider:</label>
+                                <select required class="form-control kt-select2-general" name="rider_id" data-value="{{ $edit_client_income->rider_id }}">
+                                @php
+                                    $clients=App\Model\Client\Client::find($edit_client_income->client_id);
+                                    $riders=$clients->riders;
+                                @endphp         
+                                @foreach ($riders as $rider)
+                                    <option value="{{$rider->id}}"@if ($edit_client_income->rider_id==$rider->id) selected @endif>
+                                        {{$rider->name}}</option>
+                                @endforeach
+                                </select>
+                        </div>
+                        <div class="form-group">
                                 <label>Month:</label>
-                                <input type="text" data-month="{{Carbon\Carbon::parse($edit_client_income->month)->format('M Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="{{ $edit_client_income->month }}">
+                                <input type="text" data-month="{{Carbon\Carbon::parse($edit_client_income->month)->format('M Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" >
                                 @if ($errors->has('month'))
                                     <span class="invalid-response" role="alert">
                                         <strong>
@@ -94,7 +107,27 @@
   $(document).ready(function(){
     //   $('#datepicker').datepicker({dateFormat: 'yy-mm-dd'}); 
       $('#datepicker').fdatepicker({format: 'dd-mm-yyyy'}); 
+      $('[name="client_id"]').on('change', function(){
 
+            var _client_id = $(this).val();
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }, 
+                url:"{{url('admin/client_income/')}}"+'/'+_client_id+'/getRiders',
+                method: "GET"
+            })
+            .done(function(resp) {  
+                // console.log(resp);
+                $('[name="rider_id"]').html('');
+                resp.riders.forEach(function(rider, index){
+                    $('[name="rider_id"]').append('<option value="'+rider.id+'">'+rider.name+'</option>');
+                });
+                $('[name="rider_id"]')[0].selectedIndex = -1;
+                $('[name="rider_id"]').trigger('change');
+            });
+        });
+      
   });
 
 </script>
