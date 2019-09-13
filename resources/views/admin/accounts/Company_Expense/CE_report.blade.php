@@ -133,6 +133,9 @@ $(document).ready(function(){
         rider.destroy();
      }
      rider =$('#CE_report').DataTable({
+        lengthMenu: [[-1], ["All"]],
+        destroy: true,
+        ordering: false,
         processing: true,
         serverSide: true,
         'language': { 
@@ -152,7 +155,7 @@ $(document).ready(function(){
 
         ],
         responsive:true,
-        // order:[0,'desc'],
+        // order:[0,'desc'], 
     });
   });
 

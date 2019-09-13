@@ -690,7 +690,7 @@ class AjaxNewController extends Controller
         $total_expense=Company_Expense::where("active_status","A")->whereMonth('month', $month)->sum("amount");
         
         $flag = new Company_Expense;
-        $flag->month='';
+        $flag->month='temp';
         $flag->description='<strong>Total Expense</strong>';
         $flag->amount='<strong>'.$total_expense.'</strong>';
         $CE->push($flag);
@@ -698,6 +698,7 @@ class AjaxNewController extends Controller
         return DataTables::of($CE)
         
         ->addColumn('date', function($CE){
+            if($CE->month=='temp') return '';
             $month_year=Carbon::parse($CE->month)->format('M-Y');
            return $month_year;
         }) 
