@@ -26,11 +26,9 @@
                             <select required class="form-control kt-select2-general" name="client_id" >
                                 @foreach ($clients as $client)
                                 
-                                @unless (strpos( strtolower($client->name) , "zomato") !== false)
                                 <option value="{{ $client->id }}">
                                     {{ $client->name }}
                                 </option> 
-                                @endunless
                                     
                                 @endforeach 
                             </select>
