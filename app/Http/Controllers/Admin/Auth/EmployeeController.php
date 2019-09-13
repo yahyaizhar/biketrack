@@ -61,9 +61,7 @@ class EmployeeController extends Controller
          
          $Expense= Arr::first($users, function ($item) {
                 return $item['action_name']=='expense';   });
-       
-         $Salik= Arr::first($users, function ($item) {
-                return $item['action_name']=='salik';   });    
+         
         
         return view('admin.auth.employee_edit',compact('edit_employee','Dashboard','Riders','Clients','Bikes','Sim','Mobile','NewComer','Accounts','Expense','Salik'));
     }
