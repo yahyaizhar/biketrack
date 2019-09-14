@@ -104,7 +104,7 @@ if (Auth::user()->type=="su") {
                 <li class="kt-menu__item @if(strpos(Request::url(), "admin/livemap") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.livemap') }}" class="kt-menu__link "><span class="kt-menu__link-icon">
                 <i class="fa fa-map-marker-alt"></i>
             </span><span class="kt-menu__link-text">Live Map</span></a></li>
-                <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "admin/active_riders") !== false) kt-menu__item--active kt-menu__item--open @endif @if(strpos(Request::url(), "admin/rider") !== false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle">
+                <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "admin/active_riders") !== false || strpos(Request::url(), "admin/Salary/accounts/rider/account") !== false || strpos(Request::url(), "admin/Salary/accounts/rider/expense") !== false) kt-menu__item--active kt-menu__item--open @endif @if(strpos(Request::url(), "admin/rider") !== false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle">
                     <span class="kt-menu__link-icon"><i class="fa fa-users"></i>    
                 </span><span class="kt-menu__link-text">Riders</span><i class="kt-menu__ver-arrow la la-angle-right"></i></a>
                     <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
@@ -113,20 +113,48 @@ if (Auth::user()->type=="su") {
                             <li class="kt-menu__item @if(strpos(Request::url(), "admin/riders/create") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.riders.create') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">New Rider</span></a></li>
                             <li class="kt-menu__item @if(strpos(Request::url(), "admin/active_riders") !== false && strpos(Request::url(), "admin/riders/create") == false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.riders.active') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Active Riders</span></a></li>
                             <li class="kt-menu__item @if(strpos(Request::url(), "admin/rider") !== false && strpos(Request::url(), "admin/riders/create") == false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.riders.index') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">All Riders</span></a></li>
+                            <li class="kt-menu__item @if(strpos(Request::url(), "/Salary/accounts") !== false && strpos(Request::url(), "admin/Salary/accounts/rider/account") != false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.accounts.rider_account') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">View Rider Reports</span></a></li>
+                            <li class="kt-menu__item @if(strpos(Request::url(), "/Salary/accounts/rider/expense") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.accounts.rider_expense_get') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add Rider Expense</span></a></li>
                             {{-- <li class="kt-menu__item @if(strpos(Request::url(), "admin/rider/assign-area") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.assignArea') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Rider Area</span></a></li> --}}
                             {{-- <li class="kt-menu__item @if(strpos(Request::url(), "admin/rider/detail") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.Rider_details') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Rider Detail</span></a></li> --}}
                             {{-- <li class="kt-menu__item " aria-haspopup="true"><a href="{{ route('') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Riders List</span></a></li> --}}
                         </ul>
                     </div>
                 </li>
-                <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "admin/client") !== false && strpos(Request::url(), "admin/client/ranges") === false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle"><span class="kt-menu__link-icon">
+                <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "admin/client") !== false && strpos(Request::url(), "client_income") !== false && strpos(Request::url(), "admin/client/ranges") === false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle"><span class="kt-menu__link-icon">
                 <i class="fa fa-hotel"></i>    
                 </span><span class="kt-menu__link-text">Clients</span><i class="kt-menu__ver-arrow la la-angle-right"></i></a>
                     <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
                         <ul class="kt-menu__subnav">
                             <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text">Clients</span></span></li>
                             <li class="kt-menu__item @if(strpos(Request::url(), "admin/clients/create") !== false) kt-menu__item--active @endif " aria-haspopup="true"><a href="{{ route('admin.clients.create') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">New Client</span></a></li>
-                            <li class="kt-menu__item @if(strpos(Request::url(), "admin/client") !== false && strpos(Request::url(), "admin/clients/create") == false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.clients.index') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Clients</span></a></li>
+                            <li class="kt-menu__item @if(strpos(Request::url(), "admin/client") !== false && strpos(Request::url(), "admin/clients/create") == false && strpos(Request::url(), "client_income") == false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.clients.index') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Clients</span></a></li>
+                            <li class="kt-menu__item kt-menu__item--submenu @if(strpos(Request::url(), "client_income") !== false) kt-menu__item--active kt-menu__item--open @endif "  aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
+                                <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
+                                    <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="kt-menu__link-text">Client Income</span>
+                                    <i class="kt-menu__ver-arrow la la-angle-right"></i>
+                                </a>
+                                <div class="kt-menu__submenu " kt-hidden-height="160" @if(strpos(Request::url(), "client_income") === false)style="display: none; overflow: hidden;"@endif><span class="kt-menu__arrow"></span>
+                                    <ul class="kt-menu__subnav">
+                                        <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text"></span></span></li>
+                                        <li class="kt-menu__item @if(strpos(Request::url(), "client_income/index") !== false) kt-menu__item--active @endif" aria-haspopup="true">
+                                            <a href="{{ route('admin.client_income_index') }}" class="kt-menu__link ">
+                                                <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
+                                                <span class="kt-menu__link-text">Add Client Income</span>
+                                            </a>
+                                        </li>
+                                        <li class="kt-menu__item @if(strpos(Request::url(), "client_income/view") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
+                                            <a href="{{ route('admin.client_income_view') }}" class="kt-menu__link ">
+                                                <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
+                                                <span class="kt-menu__link-text">View Client Income</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                 </li> 
@@ -252,7 +280,7 @@ if (Auth::user()->type=="su") {
                 <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "zomato") !== false || strpos(Request::url(), "adt") !== false || strpos(Request::url(), "performance") !== false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
                     <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
                         <span class="kt-menu__link-icon">
-                            <i class="la la-truck"></i>    
+                            <i class="la la-cutlery"></i>    
                         </span>
                         <span class="kt-menu__link-text">Zomato</span>
                         <i class="kt-menu__ver-arrow la la-angle-right"></i>
@@ -265,85 +293,88 @@ if (Auth::user()->type=="su") {
                         </ul>
                     </div>
                 </li>
-                <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "Salary") !== false && strpos(Request::url(), "zomato") === false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
+                <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "CE") !== false || strpos(Request::url(), "company") !== false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
                     <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
                         <span class="kt-menu__link-icon">
-                            <i class="fa fa-file-invoice"></i>    
+                            <i class="flaticon2-shelter"></i>    
                         </span>
-                        <span class="kt-menu__link-text">Accounts</span>
+                        <span class="kt-menu__link-text">Company</span>
                         <i class="kt-menu__ver-arrow la la-angle-right"></i>
                     </a>
                     <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
                         <ul class="kt-menu__subnav">
-                            
-                            
-                            <li class="kt-menu__item @if(strpos(Request::url(), "/Salary/accounts") !== false && strpos(Request::url(), "admin/Salary/accounts/rider/account") != false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.accounts.rider_account') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">View Rider Reports</span></a></li>
                             <li class="kt-menu__item @if(strpos(Request::url(), "/Salary/accounts") !== false && strpos(Request::url(), "admin/Salary/accounts/company") != false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.accounts.company_account') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">View Company Reports</span></a></li>
-                            <li class="kt-menu__item @if(strpos(Request::url(), "/Salary/accounts/rider/expense") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.accounts.rider_expense_get') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add Rider Expense</span></a></li>
-                            <li class="kt-menu__item kt-menu__item--submenu @if(strpos(Request::url(), "/Salary") !== false && strpos(Request::url(), "zomato") === false) kt-menu__item--active kt-menu__item--open @endif "  aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
+                            <li class="kt-menu__item kt-menu__item--submenu @if(strpos(Request::url(), "/accounts/CE") !== false) kt-menu__item--active kt-menu__item--open @endif "  aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
                                 <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
                                     <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
                                         <span></span>
                                     </i>
-                                    <span class="kt-menu__link-text">Salary</span>
+                                    <span class="kt-menu__link-text">Company Expense</span>
                                     <i class="kt-menu__ver-arrow la la-angle-right"></i>
                                 </a>
-                                <div class="kt-menu__submenu " kt-hidden-height="160" @if(strpos(Request::url(), "/Salary" && strpos(Request::url(), "zomato") === false) === false)style="display: none; overflow: hidden;"@endif><span class="kt-menu__arrow"></span>
+                                <div class="kt-menu__submenu " kt-hidden-height="160" @if(strpos(Request::url(), "/accounts/CE") === false)style="display: none; overflow: hidden;"@endif><span class="kt-menu__arrow"></span>
                                     <ul class="kt-menu__subnav">
                                         <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text"></span></span></li>
-                                        <li class="kt-menu__item @if(strpos(Request::url(), "/Add/Salary") !== false) kt-menu__item--active @endif" aria-haspopup="true">
-                                            <a href="{{ route('account.new_salary') }}" class="kt-menu__link ">
+                                        <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/CE/index") !== false) kt-menu__item--active @endif" aria-haspopup="true">
+                                            <a href="{{ route('admin.CE_index') }}" class="kt-menu__link ">
                                                 <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
-                                                <span class="kt-menu__link-text">Create Salary</span>
+                                                <span class="kt-menu__link-text">Add Company Expense</span>
                                             </a>
                                         </li>
-                                        <li class="kt-menu__item @if(strpos(Request::url(), "/Month/Salary") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
-                                            <a href="{{ route('account.month_salary') }}" class="kt-menu__link ">
+                                        <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/CE/view") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
+                                            <a href="{{ route('admin.CE_view') }}" class="kt-menu__link ">
                                                 <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
-                                                <span class="kt-menu__link-text">View Salary By Month</span>
+                                                <span class="kt-menu__link-text">View Company Expense</span>
                                             </a>
                                         </li>
-                                        <li class="kt-menu__item @if(strpos(Request::url(), "/Developer/Salary") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
-                                            <a href="{{ route('account.developer_salary') }}" class="kt-menu__link ">
+                                        <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/CE/report") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
+                                            <a href="{{ route('admin.CE_report') }}" class="kt-menu__link ">
                                                 <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
-                                                <span class="kt-menu__link-text">View Salary By Developer</span>
+                                                <span class="kt-menu__link-text">View Company Expense Report</span>
                                             </a>
                                         </li>
                                     </ul>
                                 </div>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "/Add/Salary") !== false || strpos(Request::url(), "/Month/Salary") !== false || strpos(Request::url(), "/Developer/Salary") !== false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
+                    <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
+                        <span class="kt-menu__link-icon">
+                            <i class="la la-money"></i>    
+                        </span>
+                        <span class="kt-menu__link-text">Salary</span>
+                        <i class="kt-menu__ver-arrow la la-angle-right"></i>
+                    </a>
+                    <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
+                        <ul class="kt-menu__subnav">
+                            <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text"></span></span></li>
+                            <li class="kt-menu__item @if(strpos(Request::url(), "/Add/Salary") !== false) kt-menu__item--active @endif" aria-haspopup="true">
+                                <a href="{{ route('account.new_salary') }}" class="kt-menu__link ">
+                                    <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
+                                    <span class="kt-menu__link-text">Create Salary</span>
+                                </a>
+                            </li>
+                            <li class="kt-menu__item @if(strpos(Request::url(), "/Month/Salary") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
+                                <a href="{{ route('account.month_salary') }}" class="kt-menu__link ">
+                                    <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
+                                    <span class="kt-menu__link-text">View Salary By Month</span>
+                                </a>
+                            </li>
+                            <li class="kt-menu__item @if(strpos(Request::url(), "/Developer/Salary") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
+                                <a href="{{ route('account.developer_salary') }}" class="kt-menu__link ">
+                                    <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
+                                    <span class="kt-menu__link-text">View Salary By Developer</span>
+                                </a>
                             </li>
                         
-                            <li class="kt-menu__item kt-menu__item--submenu @if(strpos(Request::url(), "/Salary") !== false) kt-menu__item--active kt-menu__item--open @endif "  aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
-                                <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
-                                    <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
-                                        <span></span>
-                                    </i>
-                                    <span class="kt-menu__link-text">Client Income</span>
-                                    <i class="kt-menu__ver-arrow la la-angle-right"></i>
-                                </a>
-                                <div class="kt-menu__submenu " kt-hidden-height="160" @if(strpos(Request::url(), "/Salary/client_income") === false)style="display: none; overflow: hidden;"@endif><span class="kt-menu__arrow"></span>
-                                    <ul class="kt-menu__subnav">
-                                        <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text"></span></span></li>
-                                        <li class="kt-menu__item @if(strpos(Request::url(), "/Salary/client_income/index") !== false) kt-menu__item--active @endif" aria-haspopup="true">
-                                            <a href="{{ route('admin.client_income_index') }}" class="kt-menu__link ">
-                                                <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
-                                                <span class="kt-menu__link-text">Add Client Income</span>
-                                            </a>
-                                        </li>
-                                        <li class="kt-menu__item @if(strpos(Request::url(), "/Salary/client_income/view") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
-                                            <a href="{{ route('admin.client_income_view') }}" class="kt-menu__link ">
-                                                <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
-                                                <span class="kt-menu__link-text">View Client Income</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
+                            
                         </ul> 
                     </div>
                 </li>
-                <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "accounts") !== false && strpos(Request::url(), "zomato") === false && strpos(Request::url(), "workshop") === false && strpos(Request::url(), "fuel_expense") === false && strpos(Request::url(), "maintenance") === false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle">
-                        <span class="kt-menu__link-icon"><i class="fa fa-file-invoice"></i>    
+                <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "accounts") !== false && strpos(Request::url(), "zomato") === false && strpos(Request::url(), "CE") === false && strpos(Request::url(), "company") === false && strpos(Request::url(), "workshop") === false && strpos(Request::url(), "fuel_expense") === false && strpos(Request::url(), "maintenance") === false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle">
+                        <span class="kt-menu__link-icon"><i class="la la-credit-card"></i>    
                     </span><span class="kt-menu__link-text">Expense</span><i class="kt-menu__ver-arrow la la-angle-right"></i></a>
                         <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
                             <ul class="kt-menu__subnav">
@@ -408,40 +439,6 @@ if (Auth::user()->type=="su") {
                                     </div>
                                 </li>
 
-                                
-
-                                <li class="kt-menu__item kt-menu__item--submenu @if(strpos(Request::url(), "/accounts/CE") !== false) kt-menu__item--active kt-menu__item--open @endif "  aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
-                                    <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
-                                        <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
-                                            <span></span>
-                                        </i>
-                                        <span class="kt-menu__link-text">Company Expense</span>
-                                        <i class="kt-menu__ver-arrow la la-angle-right"></i>
-                                    </a>
-                                    <div class="kt-menu__submenu " kt-hidden-height="160" @if(strpos(Request::url(), "/accounts/CE") === false)style="display: none; overflow: hidden;"@endif><span class="kt-menu__arrow"></span>
-                                        <ul class="kt-menu__subnav">
-                                            <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text"></span></span></li>
-                                            <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/CE/index") !== false) kt-menu__item--active @endif" aria-haspopup="true">
-                                                <a href="{{ route('admin.CE_index') }}" class="kt-menu__link ">
-                                                    <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
-                                                    <span class="kt-menu__link-text">Add Company Expense</span>
-                                                </a>
-                                            </li>
-                                            <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/CE/view") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
-                                                <a href="{{ route('admin.CE_view') }}" class="kt-menu__link ">
-                                                    <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
-                                                    <span class="kt-menu__link-text">View Company Expense</span>
-                                                </a>
-                                            </li>
-                                            <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/CE/report") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
-                                                <a href="{{ route('admin.CE_report') }}" class="kt-menu__link ">
-                                                    <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
-                                                    <span class="kt-menu__link-text">View Company Expense Report</span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </li>
                                 
  
                                 <li class="kt-menu__item kt-menu__item--submenu @if(strpos(Request::url(), "/accounts/wps") !== false) kt-menu__item--active kt-menu__item--open @endif "  aria-haspopup="true" data-ktmenu-submenu-toggle="hover">

@@ -638,13 +638,10 @@ class AccountsController extends Controller
             ->get()->first();  
             $ra_zomatos_no_of_hours =0;
             $ra_zomatos_no_of_trips = 0;
-            $ra_zomatos_ncw_incentives =0;
-            $ra_zomatos_tips_payouts = 0;
             if(isset($ra_zomatos)){
-                $ra_zomatos_no_of_hours = $ra_zomatos->log_in_hours_payable * 7.87;
+                $ra_zomatos_no_of_hours = $ra_zomatos->log_in_hours_payable > 286?286:$ra_zomatos->log_in_hours_payable;
+                $ra_zomatos_no_of_hours = $ra_zomatos_no_of_hours * 7.87;
                 $ra_zomatos_no_of_trips = $ra_zomatos->trips_payable * 2;
-                $ra_zomatos_ncw_incentives = $ra_zomatos->ncw_incentives;
-                $ra_zomatos_tips_payouts = $ra_zomatos->tips_payouts;
             }
         
             
@@ -661,10 +658,11 @@ class AccountsController extends Controller
         }
        
         return response()->json([
+            'net_salary'=>round($ra_salary,2),
             'gross_salary'=>round($ra_recieved,2) ,
-            'd'=>$fixed_salary,
-            'recieved_salary'=>round($ra_recieved,2),
-            'total_salary'=>round($ra_salary,2),
+            'total_salary'=>round($ra_zomatos_no_of_hours+$ra_zomatos_no_of_trips,2),
+            'total_deduction'=>round($ra_payable,2),
+            'total_bonus'=>round($ra_cr,2),
         ]);
     }
     public function new_salary_added(Request $request){
@@ -673,7 +671,7 @@ class AccountsController extends Controller
         $salary=$rider->Rider_salary()->create([
             'rider_id'=>$request->get('rider_id') ,
             'month'=> Carbon::parse($request->get('month'))->format('Y-m-d'),
-            'total_salary'=> $request->get('total_salary'),
+            'total_salary'=> $request->get('net_salary'),
             'gross_salary'=> $request->get('gross_salary'),
             'recieved_salary'=> $request->get('recieved_salary'),
             'remaining_salary'=> $request->get('remaining_salary'),
@@ -686,83 +684,83 @@ class AccountsController extends Controller
         
 
 
-        $RA=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
-        ->whereMonth("month", Carbon::parse($request->get('month'))->format('m'))
-        ->get();
+        // $RA=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        // ->whereMonth("month", Carbon::parse($request->get('month'))->format('m'))
+        // ->get();
 
-        $RA_cr=\App\Model\Accounts\Rider_Account::
-        where("rider_id",$rider_id)
-        ->whereMonth("month", Carbon::parse($request->get('month'))->format('m'))
-        ->where(function($q) {
-            $q->where('type', "cr_payable")
-              ->orWhere('type', 'cr');
-        })
-        ->get();
-        $ra__debits=[];
-        $ca__debits=[];
-        foreach ($RA_cr as $check_rider_cr_payable) {
-            $check_rider_dr_payable=Arr::first($RA, function ($item_zi, $key) use ($check_rider_cr_payable) {
-                if($check_rider_cr_payable->type=="cr"){
-                    return $item_zi->type == "dr" && $item_zi->rider_id == $check_rider_cr_payable->rider_id &&  $item_zi->month == $check_rider_cr_payable->month && $item_zi->amount == $check_rider_cr_payable->amount;
-                }
-                elseif ($check_rider_cr_payable->type=="cr_payable") {
-                    return $item_zi->type == "dr_payable" && $item_zi->rider_id == $check_rider_cr_payable->rider_id &&  $item_zi->month == $check_rider_cr_payable->month && $item_zi->amount == $check_rider_cr_payable->amount;
-                }
+        // $RA_cr=\App\Model\Accounts\Rider_Account::
+        // where("rider_id",$rider_id)
+        // ->whereMonth("month", Carbon::parse($request->get('month'))->format('m'))
+        // ->where(function($q) {
+        //     $q->where('type', "cr_payable")
+        //       ->orWhere('type', 'cr');
+        // })
+        // ->get();
+        // $ra__debits=[];
+        // $ca__debits=[];
+        // foreach ($RA_cr as $check_rider_cr_payable) {
+        //     $check_rider_dr_payable=Arr::first($RA, function ($item_zi, $key) use ($check_rider_cr_payable) {
+        //         if($check_rider_cr_payable->type=="cr"){
+        //             return $item_zi->type == "dr" && $item_zi->rider_id == $check_rider_cr_payable->rider_id &&  $item_zi->month == $check_rider_cr_payable->month && $item_zi->amount == $check_rider_cr_payable->amount;
+        //         }
+        //         elseif ($check_rider_cr_payable->type=="cr_payable") {
+        //             return $item_zi->type == "dr_payable" && $item_zi->rider_id == $check_rider_cr_payable->rider_id &&  $item_zi->month == $check_rider_cr_payable->month && $item_zi->amount == $check_rider_cr_payable->amount;
+        //         }
                 
-            });
-            if (!isset($check_rider_dr_payable)) {
-                // not found, add one
-                if($check_rider_cr_payable->type=="cr"){
-                    $obj=[];
-                    $obj['salary_id'] =$check_rider_cr_payable->salary_id;
-                    $obj['income_zomato_id'] =$check_rider_cr_payable->income_zomato_id;
-                    $obj['advance_return_id'] =$check_rider_cr_payable->advance_return_id;
-                    $obj['id_charge_id'] =$check_rider_cr_payable->id_charge_id;
-                    $obj['wps_id'] =$check_rider_cr_payable->wps_id;
-                    $obj['fuel_expense_id'] =$check_rider_cr_payable->fuel_expense_id;
-                    $obj['maintenance_id'] =$check_rider_cr_payable->maintenance_id;
-                    $obj['edirham_id'] =$check_rider_cr_payable->edirham_id;
-                    $obj['company_expense_id'] =$check_rider_cr_payable->company_expense_id;
-                    $obj['salik_id'] =$check_rider_cr_payable->salik_id;
-                    $obj['sim_transaction_id'] =$check_rider_cr_payable->sim_transaction_id;
-                    $obj['type']='dr';
-                    $obj['rider_id']=$rider_id;
-                    $obj['month'] = $check_rider_cr_payable->month;
-                    $obj['source']=$check_rider_cr_payable->source; 
-                    $obj['amount']=$check_rider_cr_payable->amount;
-                    array_push($ra__debits, $obj);
+        //     });
+        //     if (!isset($check_rider_dr_payable)) {
+        //         // not found, add one
+        //         if($check_rider_cr_payable->type=="cr"){
+        //             $obj=[];
+        //             $obj['salary_id'] =$check_rider_cr_payable->salary_id;
+        //             $obj['income_zomato_id'] =$check_rider_cr_payable->income_zomato_id;
+        //             $obj['advance_return_id'] =$check_rider_cr_payable->advance_return_id;
+        //             $obj['id_charge_id'] =$check_rider_cr_payable->id_charge_id;
+        //             $obj['wps_id'] =$check_rider_cr_payable->wps_id;
+        //             $obj['fuel_expense_id'] =$check_rider_cr_payable->fuel_expense_id;
+        //             $obj['maintenance_id'] =$check_rider_cr_payable->maintenance_id;
+        //             $obj['edirham_id'] =$check_rider_cr_payable->edirham_id;
+        //             $obj['company_expense_id'] =$check_rider_cr_payable->company_expense_id;
+        //             $obj['salik_id'] =$check_rider_cr_payable->salik_id;
+        //             $obj['sim_transaction_id'] =$check_rider_cr_payable->sim_transaction_id;
+        //             $obj['type']='dr';
+        //             $obj['rider_id']=$rider_id;
+        //             $obj['month'] = $check_rider_cr_payable->month;
+        //             $obj['source']=$check_rider_cr_payable->source; 
+        //             $obj['amount']=$check_rider_cr_payable->amount;
+        //             array_push($ra__debits, $obj);
 
-                    // $obj['type']='dr';
-                    // array_push($ca__debits, $obj);
-                }
-                elseif ($check_rider_cr_payable->type=="cr_payable") {
-                    $obj=[];
-                    $obj['salary_id'] =$check_rider_cr_payable->salary_id;
-                    $obj['income_zomato_id'] =$check_rider_cr_payable->income_zomato_id;
-                    $obj['advance_return_id'] =$check_rider_cr_payable->advance_return_id;
-                    $obj['id_charge_id'] =$check_rider_cr_payable->id_charge_id;
-                    $obj['wps_id'] =$check_rider_cr_payable->wps_id;
-                    $obj['fuel_expense_id'] =$check_rider_cr_payable->fuel_expense_id;
-                    $obj['maintenance_id'] =$check_rider_cr_payable->maintenance_id;
-                    $obj['edirham_id'] =$check_rider_cr_payable->edirham_id;
-                    $obj['company_expense_id'] =$check_rider_cr_payable->company_expense_id;
-                    $obj['salik_id'] =$check_rider_cr_payable->salik_id;
-                    $obj['sim_transaction_id'] =$check_rider_cr_payable->sim_transaction_id;
-                    $obj['type']='dr_payable';
-                    $obj['rider_id']=$rider_id;
-                    $obj['month'] = $check_rider_cr_payable->month;
-                    $obj['source']=$check_rider_cr_payable->source; 
-                    $obj['amount']=$check_rider_cr_payable->amount;
-                    array_push($ra__debits, $obj);
+        //             // $obj['type']='dr';
+        //             // array_push($ca__debits, $obj);
+        //         }
+        //         elseif ($check_rider_cr_payable->type=="cr_payable") {
+        //             $obj=[];
+        //             $obj['salary_id'] =$check_rider_cr_payable->salary_id;
+        //             $obj['income_zomato_id'] =$check_rider_cr_payable->income_zomato_id;
+        //             $obj['advance_return_id'] =$check_rider_cr_payable->advance_return_id;
+        //             $obj['id_charge_id'] =$check_rider_cr_payable->id_charge_id;
+        //             $obj['wps_id'] =$check_rider_cr_payable->wps_id;
+        //             $obj['fuel_expense_id'] =$check_rider_cr_payable->fuel_expense_id;
+        //             $obj['maintenance_id'] =$check_rider_cr_payable->maintenance_id;
+        //             $obj['edirham_id'] =$check_rider_cr_payable->edirham_id;
+        //             $obj['company_expense_id'] =$check_rider_cr_payable->company_expense_id;
+        //             $obj['salik_id'] =$check_rider_cr_payable->salik_id;
+        //             $obj['sim_transaction_id'] =$check_rider_cr_payable->sim_transaction_id;
+        //             $obj['type']='dr_payable';
+        //             $obj['rider_id']=$rider_id;
+        //             $obj['month'] = $check_rider_cr_payable->month;
+        //             $obj['source']=$check_rider_cr_payable->source; 
+        //             $obj['amount']=$check_rider_cr_payable->amount;
+        //             array_push($ra__debits, $obj);
 
-                    $obj['type']='cr';
-                    array_push($ca__debits, $obj);
-                }
+        //             $obj['type']='cr';
+        //             array_push($ca__debits, $obj);
+        //         }
                 
-            }
-        }
-        DB::table('rider__accounts')->insert($ra__debits); //r4
-        DB::table('company__accounts')->insert($ca__debits); //r4
+        //     }
+        // }
+        // DB::table('rider__accounts')->insert($ra__debits); //r4
+        // DB::table('company__accounts')->insert($ca__debits); //r4
 
         $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
             'salary_id'=>$salary->id
@@ -772,7 +770,7 @@ class AccountsController extends Controller
         $ca->rider_id=$rider_id;
         $ca->month = Carbon::parse($request->get('month'))->format('Y-m-d');
         $ca->source="salary";
-        $ca->payment_status=$request->get('payment_status');
+        $ca->payment_status="pending";
         $ca->amount=$request->total_salary;
         $ca->save();
 
@@ -784,49 +782,49 @@ class AccountsController extends Controller
         $ca->rider_id=$rider_id;
         $ca->month = Carbon::parse($request->get('month'))->format('Y-m-d');
         $ca->source="salary"; 
-        $ca->payment_status=$request->get('payment_status');
+        $ca->payment_status="pending";
         $ca->amount=$request->total_salary;
         $ca->save();
     
-        $remaining_salary=$request->remaining_salary;
-        if ($remaining_salary>0) { // rider will give to company
-            $ca = new \App\Model\Accounts\Company_Account;
-            $ca->salary_id =$salary->id;
-            $ca->type='dr';
-            $ca->rider_id=$rider_id;
-            $ca->month = Carbon::parse($request->get('month'))->addMonth()->format('Y-m-d');
-            $ca->source="Remaining Salary From Previous Month"; 
-            $ca->amount=abs($remaining_salary);
-            $ca->save();
+        // $remaining_salary=$request->remaining_salary;
+        // if ($remaining_salary>0) { // rider will give to company
+        //     $ca = new \App\Model\Accounts\Company_Account;
+        //     $ca->salary_id =$salary->id;
+        //     $ca->type='dr';
+        //     $ca->rider_id=$rider_id;
+        //     $ca->month = Carbon::parse($request->get('month'))->addMonth()->format('Y-m-d');
+        //     $ca->source="Remaining Salary From Previous Month"; 
+        //     $ca->amount=abs($remaining_salary);
+        //     $ca->save();
     
-            $ra = new \App\Model\Accounts\Rider_Account;
-            $ra->salary_id =$salary->id;
-            $ra->type='cr_payable';
-            $ra->rider_id=$rider_id;
-            $ra->month = Carbon::parse($request->get('month'))->addMonth()->format('Y-m-d');
-            $ra->source="Remaining Salary From Previous Month"; 
-            $ra->amount=abs($remaining_salary);
-            $ra->save();
-        }
-        else if ($remaining_salary<0) {  // company will give to rider
-            $ca = new \App\Model\Accounts\Company_Account;
-            $ca->salary_id =$salary->id;
-            $ca->type='dr';
-            $ca->rider_id=$rider_id;
-            $ca->month = Carbon::parse($request->get('month'))->addMonth()->format('Y-m-d');
-            $ca->source="Remaining Salary From Previous Month"; 
-            $ca->amount=abs($remaining_salary);
-            $ca->save();
+        //     $ra = new \App\Model\Accounts\Rider_Account;
+        //     $ra->salary_id =$salary->id;
+        //     $ra->type='cr_payable';
+        //     $ra->rider_id=$rider_id;
+        //     $ra->month = Carbon::parse($request->get('month'))->addMonth()->format('Y-m-d');
+        //     $ra->source="Remaining Salary From Previous Month"; 
+        //     $ra->amount=abs($remaining_salary);
+        //     $ra->save();
+        // }
+        // else if ($remaining_salary<0) {  // company will give to rider
+        //     $ca = new \App\Model\Accounts\Company_Account;
+        //     $ca->salary_id =$salary->id;
+        //     $ca->type='dr';
+        //     $ca->rider_id=$rider_id;
+        //     $ca->month = Carbon::parse($request->get('month'))->addMonth()->format('Y-m-d');
+        //     $ca->source="Remaining Salary From Previous Month"; 
+        //     $ca->amount=abs($remaining_salary);
+        //     $ca->save();
     
-            $ra = new \App\Model\Accounts\Rider_Account;
-            $ra->salary_id =$salary->id;
-            $ra->type='cr';
-            $ra->rider_id=$rider_id;
-            $ra->month = Carbon::parse($request->get('month'))->addMonth()->format('Y-m-d');
-            $ra->source="Remaining Salary From Previous Month"; 
-            $ra->amount=abs($remaining_salary);
-            $ra->save();
-        }
+        //     $ra = new \App\Model\Accounts\Rider_Account;
+        //     $ra->salary_id =$salary->id;
+        //     $ra->type='cr';
+        //     $ra->rider_id=$rider_id;
+        //     $ra->month = Carbon::parse($request->get('month'))->addMonth()->format('Y-m-d');
+        //     $ra->source="Remaining Salary From Previous Month"; 
+        //     $ra->amount=abs($remaining_salary);
+        //     $ra->save();
+        // }
         
         // foreach ($RA as $check_rider_cr_payable) {
         //     $check_rider_dr_payable=\App\Model\Accounts\Rider_Account::where("source",$check_rider_cr_payable->source)
@@ -1214,17 +1212,21 @@ public function income_zomato_import(Request $r){
             $obj['amount_to_be_paid_against_orders_completed']=isset($item['amount_to_be_paid_against_orders_completed'])?$item['amount_to_be_paid_against_orders_completed']:null; 
             $obj['ncw_incentives']=isset($item['ncw_incentives'])?$item['ncw_incentives']:null;
             $obj['tips_payouts']=isset($item['tips_payouts'])?$item['tips_payouts']:null;
+            $obj['denials_penalty']=isset($item['denials_penalty'])?$item['denials_penalty']:null;
             $obj['dc_deductions']=isset($item['dc_deductions'])?$item['dc_deductions']:null;
             $obj['mcdonalds_deductions']=isset($item['mcdonalds_deductions'])?$item['mcdonalds_deductions']:null;
             
             $obj['date']=isset($item['onboarding_date'])?Carbon::createFromFormat('d/m/Y',$item['onboarding_date'])->format('Y-m-d'):null;
+            $obj['created_at']=Carbon::now();
+            $obj['updated_at']=Carbon::now();
             array_push($zomato_obj, $obj);
 
-            $ca_amt1 = $obj['amount_for_login_hours']+$obj['amount_to_be_paid_against_orders_completed']+$obj['ncw_incentives']+$obj['tips_payouts'];
+            $ca_amt1 = ($obj['amount_for_login_hours']+$obj['amount_to_be_paid_against_orders_completed']+$obj['ncw_incentives']+$obj['tips_payouts'])
+            - ($obj['dc_deductions'] + $obj['mcdonalds_deductions'] + $obj['denials_penalty']);
             $ca_obj = [];
             $p_id1=uniqid().time().rand();
             $ca_obj['income_zomato_id']=$p_id1;
-            $ca_obj['source']='income_zomato@payout';
+            $ca_obj['source']='Zomato Payout';
             $ca_obj['rider_id']=$rider_id;
             $ca_obj['amount']=$ca_amt1;
             $ca_obj['month']=$obj['date'];
@@ -1233,83 +1235,113 @@ public function income_zomato_import(Request $r){
             $ca_obj['updated_at']=Carbon::now();
             array_push($ca_objects, $ca_obj);
 
+            //bonus
             $ca_amt2 = $obj['ncw_incentives'];
-            $ca_obj = [];
-            $p_id1=uniqid().time().rand();
-            $ca_obj['income_zomato_id']=$p_id1;
-            $ca_obj['source']='NCW Incentives';
-            $ca_obj['rider_id']=$rider_id;
-            $ca_obj['amount']=$ca_amt2;
-            $ca_obj['month']=$obj['date'];
-            $ca_obj['type']='dr';
-            $ca_obj['created_at']=Carbon::now();
-            $ca_obj['updated_at']=Carbon::now();
-            array_push($ca_objects, $ca_obj);
+            if($ca_amt2 > 0){
+                $ca_obj = [];
+                $p_id1=uniqid().time().rand();
+                $ca_obj['income_zomato_id']=$p_id1;
+                $ca_obj['source']='NCW Incentives';
+                $ca_obj['rider_id']=$rider_id;
+                $ca_obj['amount']=$ca_amt2;
+                $ca_obj['month']=$obj['date'];
+                $ca_obj['type']='dr';
+                $ca_obj['created_at']=Carbon::now();
+                $ca_obj['updated_at']=Carbon::now();
+                array_push($ca_objects, $ca_obj);
+            }
 
             $ca_amt2 = $obj['tips_payouts'];
-            $ca_obj = [];
-            $p_id1=uniqid().time().rand();
-            $ca_obj['income_zomato_id']=$p_id1;
-            $ca_obj['source']='Tips Payouts';
-            $ca_obj['rider_id']=$rider_id;
-            $ca_obj['amount']=$ca_amt2;
-            $ca_obj['month']=$obj['date'];
-            $ca_obj['type']='dr';
-            $ca_obj['created_at']=Carbon::now();
-            $ca_obj['updated_at']=Carbon::now();
-            array_push($ca_objects, $ca_obj);
+            if($ca_amt2 > 0){
+                $ca_obj = [];
+                $p_id1=uniqid().time().rand();
+                $ca_obj['income_zomato_id']=$p_id1;
+                $ca_obj['source']='Tips Payouts';
+                $ca_obj['rider_id']=$rider_id;
+                $ca_obj['amount']=$ca_amt2;
+                $ca_obj['month']=$obj['date'];
+                $ca_obj['type']='dr';
+                $ca_obj['created_at']=Carbon::now();
+                $ca_obj['updated_at']=Carbon::now();
+                array_push($ca_objects, $ca_obj);
+            }
 
-            $ra_amt1 = $obj['mcdonalds_deductions'];
-            $ra_obj = [];
-            $p_id1=uniqid().time().rand();
-            $ra_obj['income_zomato_id']=$p_id1;
-            $ra_obj['source']='Mcdonalds Deductions'; 
-            $ra_obj['rider_id']=$rider_id;
-            $ra_obj['amount']=$ra_amt1;
-            $ra_obj['month']=$obj['date'];
-            $ra_obj['type']='cr_payable';
-            $ra_obj['created_at']=Carbon::now();
-            $ra_obj['updated_at']=Carbon::now();
-            array_push($ra_objects, $ra_obj);
-
-            $ra_amt1 = $obj['dc_deductions'];
-            $ra_obj = [];
-            $p_id1=uniqid().time().rand();
-            $ra_obj['income_zomato_id']=$p_id1;
-            $ra_obj['source']='DC Deductions'; 
-            $ra_obj['rider_id']=$rider_id;
-            $ra_obj['amount']=$ra_amt1;
-            $ra_obj['month']=$obj['date'];
-            $ra_obj['type']='cr_payable';
-            $ra_obj['created_at']=Carbon::now();
-            $ra_obj['updated_at']=Carbon::now();
-            array_push($ra_objects, $ra_obj);
-
+            
             $ra_amt2 = $obj['tips_payouts'];
-            $ra_obj = [];
-            $p_id1=uniqid().time().rand();
-            $ra_obj['income_zomato_id']=$p_id1;
-            $ra_obj['source']='Tips Payouts';
-            $ra_obj['rider_id']=$rider_id;
-            $ra_obj['amount']=$ra_amt2;
-            $ra_obj['month']=$obj['date'];
-            $ra_obj['type']='cr';
-            $ra_obj['created_at']=Carbon::now();
-            $ra_obj['updated_at']=Carbon::now();
-            array_push($ra_objects, $ra_obj);
+            if($ra_amt2 > 0){
+                $ra_obj = [];
+                $p_id1=uniqid().time().rand();
+                $ra_obj['income_zomato_id']=$p_id1;
+                $ra_obj['source']='Tips Payouts';
+                $ra_obj['rider_id']=$rider_id;
+                $ra_obj['amount']=$ra_amt2;
+                $ra_obj['month']=$obj['date'];
+                $ra_obj['type']='cr';
+                $ra_obj['created_at']=Carbon::now();
+                $ra_obj['updated_at']=Carbon::now();
+                array_push($ra_objects, $ra_obj);
+            }
 
             $ra_amt2 = $obj['ncw_incentives'];
-            $ra_obj = [];
-            $p_id1=uniqid().time().rand();
-            $ra_obj['income_zomato_id']=$p_id1;
-            $ra_obj['source']='NCW Incentives';
-            $ra_obj['rider_id']=$rider_id;
-            $ra_obj['amount']=$ra_amt2;
-            $ra_obj['month']=$obj['date'];
-            $ra_obj['type']='cr';
-            $ra_obj['created_at']=Carbon::now();
-            $ra_obj['updated_at']=Carbon::now();
-            array_push($ra_objects, $ra_obj);
+                if($ra_amt2 > 0){
+                $ra_obj = [];
+                $p_id1=uniqid().time().rand();
+                $ra_obj['income_zomato_id']=$p_id1;
+                $ra_obj['source']='NCW Incentives';
+                $ra_obj['rider_id']=$rider_id;
+                $ra_obj['amount']=$ra_amt2;
+                $ra_obj['month']=$obj['date'];
+                $ra_obj['type']='cr';
+                $ra_obj['created_at']=Carbon::now();
+                $ra_obj['updated_at']=Carbon::now();
+                array_push($ra_objects, $ra_obj);
+            }
+
+            //deductions
+            $ra_amt1 = $obj['mcdonalds_deductions'];
+            if($ra_amt1 > 0){
+                $ra_obj = [];
+                $p_id1=uniqid().time().rand();
+                $ra_obj['income_zomato_id']=$p_id1;
+                $ra_obj['source']='Mcdonalds Deductions'; 
+                $ra_obj['rider_id']=$rider_id;
+                $ra_obj['amount']=$ra_amt1;
+                $ra_obj['month']=$obj['date'];
+                $ra_obj['type']='cr_payable';
+                $ra_obj['created_at']=Carbon::now();
+                $ra_obj['updated_at']=Carbon::now();
+                array_push($ra_objects, $ra_obj);
+            }
+
+            $ra_amt1 = $obj['dc_deductions'];
+            if($ra_amt1 > 0){
+                $ra_obj = [];
+                $p_id1=uniqid().time().rand();
+                $ra_obj['income_zomato_id']=$p_id1;
+                $ra_obj['source']='DC Deductions'; 
+                $ra_obj['rider_id']=$rider_id;
+                $ra_obj['amount']=$ra_amt1;
+                $ra_obj['month']=$obj['date'];
+                $ra_obj['type']='cr_payable';
+                $ra_obj['created_at']=Carbon::now();
+                $ra_obj['updated_at']=Carbon::now();
+                array_push($ra_objects, $ra_obj);
+            }
+
+            $ra_amt1 = $obj['denials_penalty'];
+            if($ra_amt1 > 0){
+                $ra_obj = [];
+                $p_id1=uniqid().time().rand();
+                $ra_obj['income_zomato_id']=$p_id1;
+                $ra_obj['source']='Denials Penalty'; 
+                $ra_obj['rider_id']=$rider_id;
+                $ra_obj['amount']=$ra_amt1;
+                $ra_obj['month']=$obj['date'];
+                $ra_obj['type']='cr_payable';
+                $ra_obj['created_at']=Carbon::now();
+                $ra_obj['updated_at']=Carbon::now();
+                array_push($ra_objects, $ra_obj);
+            }
         }
         else{
             $objUpdate = [];
@@ -1325,12 +1357,16 @@ public function income_zomato_import(Request $r){
             $objUpdate['amount_to_be_paid_against_orders_completed']=isset($item['amount_to_be_paid_against_orders_completed'])?$item['amount_to_be_paid_against_orders_completed']:null; 
             $objUpdate['ncw_incentives']=isset($item['ncw_incentives'])?$item['ncw_incentives']:null;
             $objUpdate['tips_payouts']=isset($item['tips_payouts'])?$item['tips_payouts']:null;
+            $objUpdate['denials_penalty']=isset($item['denials_penalty'])?$item['denials_penalty']:null;
             $objUpdate['dc_deductions']=isset($item['dc_deductions'])?$item['dc_deductions']:null;
             $objUpdate['mcdonalds_deductions']=isset($item['mcdonalds_deductions'])?$item['mcdonalds_deductions']:null;
             $objUpdate['date']=isset($item['onboarding_date'])?Carbon::createFromFormat('d/m/Y',$item['onboarding_date'])->format('Y-m-d'):null;
+            $objUpdate['created_at']=Carbon::now();
+            $objUpdate['updated_at']=Carbon::now();
             array_push($update_data, $objUpdate);
 
-            $ca_amt1 = $objUpdate['amount_for_login_hours']+$objUpdate['amount_to_be_paid_against_orders_completed']+$objUpdate['ncw_incentives']+$objUpdate['tips_payouts'];
+            $ca_amt1 = ($objUpdate['amount_for_login_hours']+$objUpdate['amount_to_be_paid_against_orders_completed']+$objUpdate['ncw_incentives']+$objUpdate['tips_payouts'])
+            - ($objUpdate['dc_deductions'] + $objUpdate['mcdonalds_deductions'] + $objUpdate['denials_penalty']);
             $ca_obj = [];
             $ca_obj['income_zomato_id']=$objUpdate['p_id'];
             $ca_obj['source']='income_zomato@payout';
@@ -1341,71 +1377,115 @@ public function income_zomato_import(Request $r){
             $ca_obj['updated_at']=Carbon::now();
             array_push($ca_objects_updates, $ca_obj);
 
+
+
+            //bonus
             $ca_amt2 = $objUpdate['ncw_incentives'];
-            $ca_obj = [];
-            $ca_obj['income_zomato_id']=$objUpdate['p_id'];
-            $ca_obj['source']='NCW Incentives';
-            $ca_obj['rider_id']=$rider_id;
-            $ca_obj['amount']=$ca_amt2;
-            $ca_obj['month']=$objUpdate['date'];
-            $ca_obj['type']='dr';
-            $ca_obj['updated_at']=Carbon::now();
-            array_push($ca_objects_updates, $ca_obj);
+            if($ca_amt2 > 0){
+                $ca_obj = [];
+                $p_id1=$objUpdate['p_id'];
+                $ca_obj['income_zomato_id']=$p_id1;
+                $ca_obj['source']='NCW Incentives';
+                $ca_obj['rider_id']=$rider_id;
+                $ca_obj['amount']=$ca_amt2;
+                $ca_obj['month']=$objUpdate['date'];
+                $ca_obj['type']='dr';
+                $ca_obj['created_at']=Carbon::now();
+                $ca_obj['updated_at']=Carbon::now();
+                array_push($ca_objects_updates, $ca_obj);
+            }
 
             $ca_amt2 = $objUpdate['tips_payouts'];
-            $ca_obj = [];
-            $ca_obj['income_zomato_id']=$objUpdate['p_id'];
-            $ca_obj['source']='Tips Payouts';
-            $ca_obj['rider_id']=$rider_id;
-            $ca_obj['amount']=$ca_amt2;
-            $ca_obj['month']=$objUpdate['date'];
-            $ca_obj['type']='dr';
-            $ca_obj['updated_at']=Carbon::now();
-            array_push($ca_objects_updates, $ca_obj);
+            if($ca_amt2 > 0){
+                $ca_obj = [];
+                $p_id1=$objUpdate['p_id'];
+                $ca_obj['income_zomato_id']=$p_id1;
+                $ca_obj['source']='Tips Payouts';
+                $ca_obj['rider_id']=$rider_id;
+                $ca_obj['amount']=$ca_amt2;
+                $ca_obj['month']=$objUpdate['date'];
+                $ca_obj['type']='dr';
+                $ca_obj['created_at']=Carbon::now();
+                $ca_obj['updated_at']=Carbon::now();
+                array_push($ca_objects_updates, $ca_obj);
+            }
 
-            $ra_amt1 = $objUpdate['mcdonalds_deductions'];
-            $ra_obj = [];
-            $ra_obj['income_zomato_id']=$objUpdate['p_id'];
-            $ra_obj['source']='Mcdonalds Deductions';
-            $ra_obj['rider_id']=$rider_id;
-            $ra_obj['amount']=$ra_amt1;
-            $ra_obj['month']=$objUpdate['date'];
-            $ra_obj['type']='cr_payable';
-            $ra_obj['updated_at']=Carbon::now();
-            array_push($ra_objects_updates, $ra_obj);
-
-            $ra_amt1 = $objUpdate['dc_deductions'];
-            $ra_obj = [];
-            $ra_obj['income_zomato_id']=$objUpdate['p_id'];
-            $ra_obj['source']='DC Deductions';
-            $ra_obj['rider_id']=$rider_id;
-            $ra_obj['amount']=$ra_amt1;
-            $ra_obj['month']=$objUpdate['date'];
-            $ra_obj['type']='cr_payable';
-            $ra_obj['updated_at']=Carbon::now();
-            array_push($ra_objects_updates, $ra_obj);
-
+            
             $ra_amt2 = $objUpdate['tips_payouts'];
-            $ra_obj = [];
-            $ra_obj['income_zomato_id']=$objUpdate['p_id'];
-            $ra_obj['source']='Tips Payouts';
-            $ra_obj['rider_id']=$rider_id;
-            $ra_obj['amount']=$ra_amt2;
-            $ra_obj['month']=$objUpdate['date'];
-            $ra_obj['type']='cr';
-            $ra_obj['updated_at']=Carbon::now();
-            array_push($ra_objects_updates, $ra_obj);
+            if($ra_amt2 > 0){
+                $ra_obj = [];
+                $p_id1=$objUpdate['p_id'];
+                $ra_obj['income_zomato_id']=$p_id1;
+                $ra_obj['source']='Tips Payouts';
+                $ra_obj['rider_id']=$rider_id;
+                $ra_obj['amount']=$ra_amt2;
+                $ra_obj['month']=$objUpdate['date'];
+                $ra_obj['type']='cr';
+                $ra_obj['created_at']=Carbon::now();
+                $ra_obj['updated_at']=Carbon::now();
+                array_push($ra_objects_updates, $ra_obj);
+            }
 
             $ra_amt2 = $objUpdate['ncw_incentives'];
-            $ra_obj = [];
-            $ra_obj['income_zomato_id']=$objUpdate['p_id'];
-            $ra_obj['source']='NCW Incentives';
-            $ra_obj['rider_id']=$rider_id;
-            $ra_obj['amount']=$ra_amt2;
-            $ra_obj['month']=$objUpdate['date'];
-            $ra_obj['type']='cr';
-            $ra_obj['updated_at']=Carbon::now();
-            array_push($ra_objects_updates, $ra_obj);
+                if($ra_amt2 > 0){
+                $ra_obj = [];
+                $p_id1=$objUpdate['p_id'];
+                $ra_obj['income_zomato_id']=$p_id1;
+                $ra_obj['source']='NCW Incentives';
+                $ra_obj['rider_id']=$rider_id;
+                $ra_obj['amount']=$ra_amt2;
+                $ra_obj['month']=$objUpdate['date'];
+                $ra_obj['type']='cr';
+                $ra_obj['created_at']=Carbon::now();
+                $ra_obj['updated_at']=Carbon::now();
+                array_push($ra_objects_updates, $ra_obj);
+            }
+
+            //deductions
+            $ra_amt1 = $objUpdate['mcdonalds_deductions'];
+            if($ra_amt1 > 0){
+                $ra_obj = [];
+                $p_id1=$objUpdate['p_id'];
+                $ra_obj['income_zomato_id']=$p_id1;
+                $ra_obj['source']='Mcdonalds Deductions'; 
+                $ra_obj['rider_id']=$rider_id;
+                $ra_obj['amount']=$ra_amt1;
+                $ra_obj['month']=$objUpdate['date'];
+                $ra_obj['type']='cr_payable';
+                $ra_obj['created_at']=Carbon::now();
+                $ra_obj['updated_at']=Carbon::now();
+                array_push($ra_objects_updates, $ra_obj);
+            }
+
+            $ra_amt1 = $objUpdate['dc_deductions'];
+            if($ra_amt1 > 0){
+                $ra_obj = [];
+                $p_id1=$objUpdate['p_id'];
+                $ra_obj['income_zomato_id']=$p_id1;
+                $ra_obj['source']='DC Deductions'; 
+                $ra_obj['rider_id']=$rider_id;
+                $ra_obj['amount']=$ra_amt1;
+                $ra_obj['month']=$objUpdate['date'];
+                $ra_obj['type']='cr_payable';
+                $ra_obj['created_at']=Carbon::now();
+                $ra_obj['updated_at']=Carbon::now();
+                array_push($ra_objects_updates, $ra_obj);
+            }
+
+            $ra_amt1 = $objUpdate['denials_penalty'];
+            if($ra_amt1 > 0){
+                $ra_obj = [];
+                $ra_obj['income_zomato_id']=$objUpdate['p_id'];
+                $ra_obj['source']='Denials Penalty'; 
+                $ra_obj['rider_id']=$rider_id;
+                $ra_obj['amount']=$ra_amt1;
+                $ra_obj['month']=$objUpdate['date'];
+                $ra_obj['type']='cr_payable';
+                $ra_obj['created_at']=Carbon::now();
+                $ra_obj['updated_at']=Carbon::now();
+                array_push($ra_objects_updates, $ra_obj);
+            }
+
         }
     }
     Income_zomato::insert($zomato_obj); //r2
@@ -1539,7 +1619,7 @@ public function client_income_update(Request $request,$id){
         $ca->amount=$r->amount;
         $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
         $ca->rider_id = $r->rider_id;
-        $ca->source='custom_expense@'.$r->desc;
+        $ca->source=$r->desc;
         $ca->save();
         $ra = new \App\Model\Accounts\Rider_Account;
         if($d_type=='payable'){
@@ -1553,16 +1633,17 @@ public function client_income_update(Request $request,$id){
         $ra->amount=$r->amount;
         $ra->month=Carbon::parse($r->get('month'))->format('Y-m-d');
         $ra->rider_id = $r->rider_id;
-        $ra->source='custom_expense@'.$r->desc;
+        $ra->source=$r->desc;
         $ra->save();
         
         return redirect(route('admin.accounts.rider_account'));
     }
     public function updatePaymentStatus($id){
         $ra=Rider_Account::find($id);
+        $salary = Rider_salary::find($ra->salary_id);
         $new_ra=new Rider_Account;
         $new_ra->type="dr";
-        $new_ra->amount=$ra->amount;
+        $new_ra->amount=$salary->recieved_salary;
         $new_ra->source="salary_paid";
         $new_ra->payment_status="paid";
         $new_ra->rider_id=$ra->rider_id;

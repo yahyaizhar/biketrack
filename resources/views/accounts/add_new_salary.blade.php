@@ -49,15 +49,15 @@
                         </div>
                         <div class="form-group">
                             <label>Total Salary:</label>
-                            <input readonly type="text" class="form-control @if($errors->has('total_salary')) invalid-field @endif" name="total_salary" value="">
-                            @if ($errors->has('total_salary'))
+                            <input readonly type="text" class="form-control @if($errors->has('net_salary')) invalid-field @endif" name="net_salary" value="">
+                            @if ($errors->has('net_salary'))
                                 <span class="invalid-response" role="alert">
                                     <strong>
-                                        {{ $errors->first('total_salary') }}
+                                        {{ $errors->first('net_salary') }}
                                     </strong>
                                 </span>
                             @else
-                                <span class="form-text text-muted">Total salary</span>
+                                <span class="form-text text-muted">Net salary</span>
                             @endif 
                                 
                         </div>
@@ -107,7 +107,7 @@
                             @endif
                                 
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                                 <label>Payment status:</label>
                                 <div class="kt-radio-inline">
                                     <label class="kt-radio">
@@ -119,7 +119,7 @@
                                         <span></span>
                                     </label>
                                 </div>
-                        </div>
+                        </div> --}}
                         <div class="form-group">
                             <label>Status:</label>
                             <div>
@@ -128,7 +128,11 @@
                         </div>
                        
                         <div>
-                            <input  name="setting" style="visibility:hidden;">
+                            <input type="hidden" name="setting">
+                            <input type="hidden"  name="total_salary" >
+                            <input type="hidden"  name="total_bonus" >
+                            <input type="hidden"  name="total_deduction" >
+                            <input type="hidden"  name="payment_status" value="pending" >
                         </div>
                     </div>
                     <div class="kt-portlet__foot">
@@ -191,7 +195,10 @@
             .done(function(data) {  
                 console.log(data);
                 $('#salary [name="gross_salary"], #salary [name="recieved_salary"]').val(data.gross_salary).trigger('change');
-                $('#salary [name="total_salary"]').val(data.total_salary).trigger('change');
+                $('#salary [name="net_salary"]').val(data.net_salary).trigger('change');
+                $('#salary [name="total_deduction"]').val(data.total_deduction);
+                $('#salary [name="total_salary"]').val(data.total_salary);
+                $('#salary [name="total_bonus"]').val(data.total_bonus);
             });
         });
     });

@@ -141,7 +141,9 @@
                         <th>Description</th>
                         <th>Credit</th>
                         <th>Debit</th>
+                        <th>Cash Paid</th>
                         <th>Running Balance</th>
+                        
                     </tr>
                 </thead>
                 {{-- <tbody>
@@ -323,7 +325,9 @@
                     { data: 'desc', name: 'desc' },
                     { data: 'cr', name: 'cr' },
                     { data: 'dr', name: 'dr' },
+                    { data: 'cash_paid', name: 'cash_paid' },
                     { data: 'balance', name: 'balance' },
+                    
                 ],
                 responsive:true,
             });

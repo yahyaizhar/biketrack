@@ -26,6 +26,7 @@ class CreateIncomeZomatosTable extends Migration
             $table->string('amount_to_be_paid_against_orders_completed')->nullable();
             $table->string('ncw_incentives')->nullable();
             $table->string('tips_payouts')->nullable();
+            $table->string('denials_penalty')->nullable();
             $table->string('dc_deductions')->nullable();
             $table->string('mcdonalds_deductions')->nullable();
             $table->string('date')->nullable();

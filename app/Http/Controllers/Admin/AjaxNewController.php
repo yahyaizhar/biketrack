@@ -177,6 +177,8 @@ class AjaxNewController extends Controller
         $closing_balance = $rider_debits_cr_payable - $rider_debits_dr_payable;
         $closing_balance_prev = $rider_debits_cr_prev_payable - $rider_debits_dr_prev_payable;
         $running_balance =$closing_balance_prev;
+        $cash_paid =0;
+
         $flag = new \App\Model\Accounts\Rider_Account;
         $flag->month='';
         $flag->source='Opening Balance';
@@ -206,7 +208,7 @@ class AjaxNewController extends Controller
                     return $item['salary_id'] == $rider_statement->salary_id 
                     && $item['type'] == "dr"
                     && $item['rider_id'] == $rider_statement->rider_id
-                    && $item['amount'] == $rider_statement->amount;
+                    && $item['source'] == "salary_paid";
                 });
                 if(!isset($ra_found)){
                     //not found, can pay
@@ -221,35 +223,51 @@ class AjaxNewController extends Controller
         })
         ->addColumn('cr', function($rider_statement){
             if($rider_statement->type=='skip') return '';
-            if ($rider_statement->type=='cr' || $rider_statement->type=='cr_payable')
+            if($rider_statement->payment_status=='paid') return 0;
+            if ($rider_statement->type=='cr')
             {
                 $class = $rider_statement->type=='cr_payable'?'kt-font-danger':'';
+                if($rider_statement->payment_status=='paid') $class = 'kt-font-success';
                 return '<span class="'.$class.'">'.$rider_statement->amount.'</span>';
             }
             return 0;
         })
         ->addColumn('dr', function($rider_statement){
             if($rider_statement->type=='skip') return '';
-            if($rider_statement->type=='dr' || $rider_statement->type=='dr_payable'){
-                $class = $rider_statement->type=='dr_payable'?'kt-font-danger':'';
+            if($rider_statement->payment_status=='paid') return 0;
+            if($rider_statement->type=='dr' || $rider_statement->type=='dr_payable' || $rider_statement->type=='cr_payable'){
+                $class = $rider_statement->type=='cr_payable'?'kt-font-danger':'';
+                if($rider_statement->payment_status=='paid') $class = 'kt-font-success';
                 return '<span class="'.$class.'">('.$rider_statement->amount.')</span>';
             }
             return 0;
         })
         ->addColumn('balance', function($rider_statement) use (&$running_balance){
-            if($rider_statement->type=='dr' || $rider_statement->type=='cr_payable'){
+            if($rider_statement->type=='dr' || $rider_statement->type=='dr_payable' || $rider_statement->type=='cr_payable'){
                 $running_balance -= $rider_statement->amount;
             }
             else{
                 $running_balance += $rider_statement->amount; 
             }
-            if($rider_statement->type=='skip') return '<strong >'.$running_balance.'</strong>';
-            return $running_balance;
+            if($rider_statement->type=='skip') return '<strong >'.round($running_balance,2).'</strong>';
+            return round($running_balance,2);
+        })
+        ->addColumn('cash_paid', function($rider_statement) use (&$cash_paid){
+            if($rider_statement->payment_status=='paid'){
+                // if($rider_statement->type=='dr' || $rider_statement->type=='dr_payable' || $rider_statement->type=='cr_payable'){
+                //     $cash_paid -= $rider_statement->amount;
+                // }
+                // else{
+                    $cash_paid += $rider_statement->amount;
+                //}
+            }
+            if($rider_statement->type=='skip') return '<strong >'.round($cash_paid,2).'</strong>';
+            return round($cash_paid,2);
         })
         ->with([
             'closing_balance' => round($closing_balance,2)
         ])
-        ->rawColumns(['closing_balance','desc','date','cr','dr','balance'])
+        ->rawColumns(['closing_balance','cash_paid','desc','date','cr','dr','balance'])
         ->make(true);
     }
     public function getCompanyAccounts($ranges)
