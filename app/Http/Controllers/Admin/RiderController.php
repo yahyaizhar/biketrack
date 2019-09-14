@@ -660,8 +660,18 @@ public function destroyer(Rider $rider,$id){
         $performance_count=Rider_Performance_Zomato::all()->count();
         return view('admin.rider.rider_performance',compact('performance_count'));
    }
-   public function Rider_Range_ADT(){
-    return view('admin.rider.rider_ranges_adt');
+   public function Rider_Range_ADT(Request $r){
+       $ZAD=[];
+    $performance=Rider_Performance_Zomato::distinct('import_id')->pluck('import_id');
+    foreach ($performance as $data_distinct) {
+        $data=Rider_Performance_Zomato::where('import_id',$data_distinct)->get();
+        $obj=[];
+        $obj['r1']=$data->max('date');
+        $obj['r2']=$data->min('date');
+        $obj['import_id']=$data_distinct;
+            array_push($ZAD,$obj);  
+    }
+    return view('admin.rider.rider_ranges_adt',compact('ZAD'));
    }
    public function getRider_active(){
     $rider_count=Rider::where('active_status','A')->get()->count();
