@@ -20,20 +20,44 @@
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <div class="kt-portlet kt-portlet--mobile">
         <div class="kt-portlet__head kt-portlet__head--lg">
-            <div class="kt-portlet__head-label">
+            <div class="kt-portlet__head-label col-md-6">
                 <span class="kt-portlet__head-icon">
                     <i class="kt-font-brand fa fa-hotel"></i>
                 </span>
                 <h3 class="kt-portlet__head-title">
                     Rider Ranges ADT
                 </h3>
-                <input style="margin-left: 15px;" class="btn btn-primary" type="button" onclick="export_data()" value="Export Zomato Data">
+                <input style="margin-right:10px;" class="btn btn-primary" type="button" onclick="export_data()" value="Export Zomato Data">
+            <div class="form-group" style="display:contents;">
+                <div class="kt-radio-inline">
+                    <label class="kt-radio">
+                        <input type="radio" name="payment_status" id="report" value="report" checked> By Report
+                        <span></span>
+                    </label>
+                    <label class="kt-radio">
+                        <input type="radio" name="payment_status" id="date" value="date"> By Date
+                        <span></span>
+                    </label>
+                </div>
             </div>
-            <div class="kt-portlet__head-toolbar">
+            </div>
+            <div class="kt-portlet__head-toolbar col-md-6">
                 <div class="kt-portlet__head-wrapper">
-                    <div class="kt-portlet__head-actions">
-                       Range1:     <input type="text" id="datapick1" name="daterange" />
-                       Range2:     <input type="text" id="datapick2" name="daterange" />
+                    <div class="kt-portlet__head-actions" id="Report_range">
+                            Range1: <select class="range_report"  name="range_report">
+                            @foreach ($ZAD as $item)
+                                <option id="report_date1" data-r1="{{$item['r1']}}" data-r2="{{$item['r2']}}">{{$item['r2']}} - {{$item['r1']}}</option>
+                            @endforeach
+                        </select>  
+                        Range2: <select class="range_report"  name="range_report">
+                            @foreach ($ZAD as $item)
+                               <option id="report_date2" data-r1="{{$item['r1']}}" data-r2="{{$item['r2']}}">{{$item['r2']}} - {{$item['r1']}}</option>
+                            @endforeach
+                        </select> 
+                    </div>
+                    <div class="kt-portlet__head-actions" id="ranges_adt">
+                        Range1:     <input type="text" id="datapick1" name="daterange" />
+                        Range2:     <input type="text" id="datapick2" name="daterange" />
                     </div>
                 </div>
             </div>
@@ -58,7 +82,17 @@
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/datatables/basic/basic.js') }}" type="text/javascript"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script>
-   
+   $(document).ready(function(){
+       $("#ranges_adt").hide();
+       $("#report").change(function(){
+        $("#ranges_adt").hide();
+        $("#Report_range").show();
+       });
+       $("#date").change(function(){
+        $("#ranges_adt").show();
+        $("#Report_range").hide();
+       });
+   });
 var riders_data = [];
 var _perData=riders_data;
 function export_data(){
@@ -72,7 +106,7 @@ function export_data(){
     });
 });
         var export_data = new CSVExport(export_details);
-    return false;
+        return false;
 }
 
 $(function() {
@@ -101,15 +135,46 @@ $(function() {
                 r2d1:_data.range2.start_date,
                 r2d2:_data.range2.end_date
             }
-            
-            // console.log(data);
             biketrack.updateURL(data);
-            // console.log($date_data1);
-            // console.log($date_data2);
             var url = "{{ url('admin/range/ajax/adt/') }}"+"/"+JSON.stringify(_data) ;
             getData(url);
             
         });
+        
+        
+});
+
+$(function() { 
+    
+    $('.range_report').change(function(){
+        var a=$('.range_report').eq(0).find(':selected').attr('data-r1');    
+        var b=$('.range_report').eq(0).find(':selected').attr('data-r2');  
+        var c=$('.range_report').eq(1).find(':selected').attr('data-r1');    
+        var d=$('.range_report').eq(1).find(':selected').attr('data-r2');   
+        getreports(b,a,d,c);
+    });
+
+    function getreports(r1,r2,r3,r4) {
+            var _data = {
+                range1: {
+                    start_date:r1,
+                    end_date:r2
+                },
+                range2: {
+                    start_date:r3,
+                    end_date: r4
+                }
+            };
+            var data = {
+                r1d1:_data.range1.start_date, 
+                r1d2:_data.range1.end_date, 
+                r2d1:_data.range2.start_date,
+                r2d2:_data.range2.end_date
+            }
+            biketrack.updateURL(data);
+            var url = "{{ url('admin/range/ajax/adt/') }}"+"/"+JSON.stringify(_data) ;
+            getData(url);
+        }
 });
 
 var bike_table;
