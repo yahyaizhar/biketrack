@@ -285,14 +285,46 @@ class AjaxNewController extends Controller
 
         
 
-        $running_balance = 0;
+        
         $c_debits_cr_payable = \App\Model\Accounts\Company_Account::where("rider_id",$ranges['rider_id'])
-        ->orWhere('type', 'cr')
+        ->where(function($q) {
+            $q->where('type', "dr_receivable")
+              ->orWhere('type', 'cr');
+        })
         ->sum('amount');
         
         $c_debits_dr_payable = \App\Model\Accounts\Company_Account::where("rider_id",$ranges['rider_id'])
-        ->orWhere('type', 'dr')
+        ->where('type', 'dr')
         ->sum('amount');
+        
+        //
+        $c_debits_rn_cr_payable = \App\Model\Accounts\Company_Account::where("rider_id",$ranges['rider_id'])
+        ->where(function($q) {
+            $q->where('type', "dr_receivable")
+              ->orWhere('type', 'cr');
+        })
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->sum('amount');
+        
+        $c_debits_rn_dr_payable = \App\Model\Accounts\Company_Account::where("rider_id",$ranges['rider_id'])
+        ->where('type', 'dr')
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->sum('amount');
+
+        $c_debits_rn_pl_payable = \App\Model\Accounts\Company_Account::where("rider_id",$ranges['rider_id'])
+        ->where('type', 'pl')
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->sum('amount');
+        $running_static_balance = $c_debits_rn_cr_payable - $c_debits_rn_dr_payable - $c_debits_rn_pl_payable;
+        //
+        $c_debits_rn_pl_total = \App\Model\Accounts\Company_Account::where("rider_id",$ranges['rider_id'])
+        ->where('type', 'pl')
+        ->whereDate('month', '<',$from)
+        ->sum('amount');
+        $profit = $c_debits_rn_pl_total;
 
         $c_debits_cr_prev_payable = \App\Model\Accounts\Company_Account::where("rider_id",$ranges['rider_id'])
         ->where(function($q) {
@@ -310,6 +342,8 @@ class AjaxNewController extends Controller
         ->sum('amount');
 
         $closing_balance = $c_debits_cr_payable - $c_debits_dr_payable;
+        
+        $first_month = $company_statements->last()->month;
 
         $closing_balance_prev = $c_debits_cr_prev_payable - $c_debits_dr_prev_payable;
         $running_balance =$closing_balance_prev;
@@ -337,6 +371,7 @@ class AjaxNewController extends Controller
             return $company_statements->source;
         })
         ->addColumn('cr', function($company_statements){
+            if($company_statements->type=='pl') return 0;
             if($company_statements->type=='skip') return '';
             if ($company_statements->type=='cr' || $company_statements->type=='dr_receivable')
             {
@@ -345,27 +380,41 @@ class AjaxNewController extends Controller
             return 0;
         })
         ->addColumn('dr', function($company_statements){
+            if($company_statements->type=='pl') return 0;
             if($company_statements->type=='skip') return '';
             if($company_statements->type=='dr'){
                 return '<span>('.$company_statements->amount.')</span>';
             }
             return 0;
         })
+        ->addColumn('company_profit', function($company_statements) use (&$profit){
+            
+            if($company_statements->type=='pl'){
+                $profit +=$company_statements->amount;
+                return round($company_statements->amount, 2);
+            }
+            if($company_statements->type=='skip') return '<strong>'.round($profit, 2).'</strong>';
+            return 0;
+        })
         ->addColumn('balance', function($company_statements) use (&$running_balance){
-            if($company_statements->type=='dr'){
+            if($company_statements->type=='dr' || $company_statements->type=='pl'){
                 $running_balance -= $company_statements->amount;
             }
             else{
                 $running_balance += $company_statements->amount;
             }
-            if($company_statements->type=='skip') return '<strong >'.round($running_balance,2).'</strong>';
-            return $running_balance;
+            $_id = $company_statements->source=="Closing Balance"? 'running_closing_balance':'running_opening_balance';
+            if($company_statements->type=='pl') return 0;
+            if($company_statements->type=='skip') return '<strong id="'.$_id.'"> '.round($running_balance,2).'</strong>';
+            return round($running_balance,2);
         })
         
         ->with([
-            'closing_balance' => round($closing_balance,2)
+            'closing_balance' => round($closing_balance,2),
+            'last_month' => $first_month,
+            'running_static_balance' => $running_static_balance
         ])
-        ->rawColumns(['desc','date','cr','dr','balance'])
+        ->rawColumns(['desc','date','cr','dr','balance', 'company_profit'])
         ->make(true);
     }
 

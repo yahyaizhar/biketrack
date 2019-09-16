@@ -88,7 +88,7 @@
                 <!--begin::New Users-->
                 <div class="kt-widget24">
                     <div class="kt-widget24__details">
-                        <a href="https://kingridersapp.solutionwin.net/admin/livemap" class="kt-widget24__info">
+                        <a href="" class="kt-widget24__info">
                             <h4 class="kt-widget24__title">
                                 Closing Balance
                             </h4>
@@ -142,6 +142,7 @@
                         <th>Payout Against Rider</th>
                         <th>Paid to Rider Account</th>
                         <th>Running Balance</th>
+                        <th>Company Profit</th>
                     </tr>
                 </thead>
                 {{--<tbody>
@@ -174,6 +175,12 @@
             </table>
 
             <!--end: Datatable -->
+
+            <div class="row">
+                <div class="col">
+                    <button class="btn btn-success float-right" id="btnSend_profit" onclick="send_profit()"></button>
+                </div>
+            </div>
         </div>
     
 
@@ -192,13 +199,58 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script>
     var table;
+    var send_profit = function(){
+        var _profit = $('#btnSend_profit').attr('data-profit');
+        var _Month = $('#btnSend_profit').attr('data-month');
+        var _RiderId = $('[name="rider_id"]').val();
+        var _FormData = new FormData();
+        _FormData.append('profit', _profit);
+        _FormData.append('month', _Month);
+        _FormData.append('rider_id', _RiderId);
+
+        var url = '{{route('admin.accounts.add_company_profit')}}';
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            url : url,
+            type : 'POST',
+            data: _FormData,
+            processData: false,
+            contentType: false,
+            success: function(data){
+                console.log(data);
+                
+                swal.fire({
+                    position: 'center',
+                    type: 'success',
+                    title: 'Record updated successfully.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                table.ajax.reload(null, false);
+            },
+            error: function(error){
+                swal.fire({
+                    position: 'center',
+                    type: 'error',
+                    title: 'Oops...',
+                    text: 'Unable to update.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        });
+    }
     $(function(){
         
         $('.kt-select2').select2({
             placeholder: "Select a rider",
             width:'100%'    
         });
-
+        
         $('[name="rider_id"]').on('change', function(){
             var _riderId = $(this).val();
             var _SE = $('[name="sort_by"]:checked');
@@ -315,9 +367,20 @@
                 },
                 drawCallback:function(data){
                     console.log(data);
+                    $('#btnSend_profit').text('').fadeOut('fast'); 
                     var response = table.ajax.json();
+                    console.log(response);
+                    
+                    if(typeof response == "undefined") return;
                     var _ClosingBalance = response.closing_balance;
+                    var _Month = response.last_month;
+                    var _Running_Balance = response.running_static_balance;
                     $('#closing_balance').text(_ClosingBalance);
+                    var running_closing_balance = parseFloat($('#running_closing_balance').text());
+                    if(running_closing_balance > 0){
+                        $('#btnSend_profit').text('Send '+running_closing_balance+' to Company Profit').attr('data-month', _Month).attr('data-profit', _Running_Balance).fadeIn('fast'); 
+                    }
+                    
                 },
                 ajax: url,
                 columns: [
@@ -326,6 +389,7 @@
                     { data: 'cr', name: 'cr' },
                     { data: 'dr', name: 'dr' },
                     { data: 'balance', name: 'balance' },
+                    { data: 'company_profit', name: 'company_profit' },
                 ],
                 responsive:true,
             });
@@ -336,7 +400,7 @@
         var rider_id=biketrack.getUrlParameter('rider_id');
         var sort_by=biketrack.getUrlParameter('sort_by');
         console.log(r1d1, r1d2, rider_id, sort_by);
-        
+        var already_triggered = false;
         if(r1d1!="" && r1d2!="" && rider_id!="" && sort_by!=""){
             $('[name="sort_by"][value="'+sort_by+'"]').prop('checked', true);
             $('#custom_range').hide();
@@ -348,10 +412,11 @@
                     dpCallback(picker);
                 });
             }
+            already_triggered = true;
             $('[name="rider_id"]').val(rider_id).trigger('change');
         }
-
-        $('[name="sort_by"]:checked').trigger('change')
+        if(!already_triggered) $('[name="sort_by"]:checked').trigger('change');
+        
 
     })
 </script> 

@@ -213,6 +213,8 @@ Route::group([
     Route::post("/accounts/rider/expense/add","AccountsController@rider_expense_post")->name("admin.accounts.rider_expense_post");
 
     Route::post("/accounts/rider/cash/add","AccountsController@rider_cash_add")->name("admin.accounts.rider_cash_add");
+
+    Route::post("/accounts/company/profit/add","AccountsController@add_company_profit")->name("admin.accounts.add_company_profit");
     
 });
 // end Accounts

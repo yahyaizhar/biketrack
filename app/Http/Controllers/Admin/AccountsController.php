@@ -1740,6 +1740,22 @@ public function client_income_update(Request $request,$id){
         ]);
 
     }
+
+    public function add_company_profit(Request $r){
+        $ra = new \App\Model\Accounts\Company_Account;
+        $ra->type='pl';
+        $ra->amount=$r->profit;
+        $ra->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+        $ra->rider_id = $r->rider_id;
+        $ra->source=$r->profit>0?"Profit":"Loss";
+        $ra->payment_status="paid";
+        $ra->save();
+        return response()->json([
+            'data'=>$r->all(),
+        ]);
+
+    }
+
     public function rider_cash_add(Request $r){
         $d_type = $r->d_type;
         if($d_type=='cash_paid'){ // add cash to rider account
