@@ -34,6 +34,7 @@ Route::group([
     Route::get('/Rider/To/Month/ajax/{rider_id}','AjaxController@getRiderToMonth')->name('account.RiderToMonth_ajax');
     Route::get('/Month/To/Rider/ajax/{month_id}','AjaxController@getMonthToRider')->name('account.MonthToRider_ajax');
     Route::get('/CE/Report/ajax/{month_id}','AjaxNewController@getCE_REPORT')->name('account.getCE_REPORT');
+    Route::get('/Company/Overall/Report/ajax/{month_id}','AjaxNewController@getCompany_overall_REPORT')->name('account.getCompany_overall_REPORT');
     Route::get('get/ajax/company/accounts','AjaxController@getCompanyAccounts')->name('admin.ajax_company_accounts');
     Route::get('get/ajax/rider/accounts','AjaxController@getRiderAccounts')->name('admin.ajax_rider_accounts');
     Route::get("/accounts/rider/account/{range}","AjaxNewController@getRiderAccounts")->name("admin.accounts.get_rider_account");
@@ -213,6 +214,7 @@ Route::group([
     Route::post("/accounts/rider/expense/add","AccountsController@rider_expense_post")->name("admin.accounts.rider_expense_post");
 
     Route::post("/accounts/rider/cash/add","AccountsController@rider_cash_add")->name("admin.accounts.rider_cash_add");
+    Route::get("/company/overall/report","AccountsController@company_overall_report")->name("admin.accounts.company_overall_report");
     
 });
 // end Accounts

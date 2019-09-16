@@ -832,4 +832,67 @@ class AjaxNewController extends Controller
         ->rawColumns(['model','month','sale_price','amount_received','bill_status','remaining_amount','per_month_installment_amount', 'status'])
         ->make(true);
     }
+    public function getCompany_overall_REPORT($month)
+    {
+        $CO=Company_Account::whereMonth('month',$month)->get();
+        $cr=Company_Account::where(function($q) {
+            $q->where('type','cr')
+            ->orWhere('type','dr_receivable');
+        })
+        ->whereMonth('month',$month)
+        ->sum("amount");
+        
+        $dr=Company_Account::whereMonth('month',$month)
+        ->where("type","dr")
+        ->sum("amount");
+
+        $res=$cr-$dr;
+
+        return DataTables::of($CO)
+        
+        ->addColumn('rider_id', function($CO){
+            $type=$CO->type;
+            if ($type=='cr' || $type=='dr_receivable' || $type=='dr') {
+                $rider=Rider::find($CO->rider_id);
+                if (isset($rider)) {
+                    return $rider->name;
+                } else {
+                    return 'No Rider';
+                }
+           }  
+        }) 
+        ->addColumn('description', function($CO){
+            $type=$CO->type;
+            if ($type=='cr' || $type=='dr_receivable' || $type=='dr') {
+                return $CO->source;
+           }  
+        }) 
+        ->addColumn('cr', function($CO){
+            $type=$CO->type;
+            if ($type=='cr' || $type=='dr_receivable' || $type=='dr') {
+                $type=$CO->type;
+                if ($type=='cr' || $type=='dr_receivable') {
+                   return $CO->amount;
+               }
+                return 0 ;
+           } 
+        }) 
+        ->addColumn('dr', function($CO){
+            $type=$CO->type;
+            if ($type=='cr' || $type=='dr_receivable' || $type=='dr') {
+                $type=$CO->type;
+                if ($type=='dr') {
+                   return $CO->amount;
+               }
+                return 0 ;
+           } 
+        }) 
+       
+        ->with([
+            'profit' => round($res,2),
+        ])
+               
+        ->rawColumns(['profit','cr','description','amount','dr','rider_id'])
+        ->make(true);
+    }
 }
