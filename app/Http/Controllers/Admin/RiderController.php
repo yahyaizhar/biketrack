@@ -669,7 +669,16 @@ public function destroyer(Rider $rider,$id){
         $obj['r1']=$data->max('date');
         $obj['r2']=$data->min('date');
         $obj['import_id']=$data_distinct;
-            array_push($ZAD,$obj);  
+        $isFound = false;
+        for ($i=0; $i <count($ZAD) ; $i++) { 
+            if ($ZAD[$i]['r1'] == $obj['r1'] && $ZAD[$i]['r2'] == $obj['r2']) {
+                $isFound = true;
+                break;
+            }
+        }
+        if(!$isFound){
+            array_push($ZAD,$obj);
+        }
     }
     return view('admin.rider.rider_ranges_adt',compact('ZAD'));
    }

@@ -84,9 +84,11 @@
 <script>
    $(document).ready(function(){
        $("#ranges_adt").hide();
+       $('.range_report').eq(0).trigger('change');
        $("#report").change(function(){
         $("#ranges_adt").hide();
         $("#Report_range").show();
+        $('.range_report').eq(0).trigger('change');
        });
        $("#date").change(function(){
         $("#ranges_adt").show();
