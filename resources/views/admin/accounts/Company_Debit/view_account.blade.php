@@ -139,8 +139,8 @@
                         </th> --}}
                         <th>Date</th>
                         <th>Description</th>
-                        <th>Credit</th>
-                        <th>Debit</th>
+                        <th>Payout Against Rider</th>
+                        <th>Paid to Rider Account</th>
                         <th>Running Balance</th>
                     </tr>
                 </thead>

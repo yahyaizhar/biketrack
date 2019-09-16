@@ -143,7 +143,8 @@ var KTSelect2 = function() {
 
         // disabled results
         $('.kt-select2-general').select2({
-            placeholder: "Select an option"
+            placeholder: "Select an option",
+            width:'100%'    
         });
     }
 

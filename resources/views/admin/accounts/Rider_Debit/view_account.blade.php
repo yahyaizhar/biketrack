@@ -18,7 +18,7 @@
                 <div class="col-md-4">
                     <div class="my-2 mx-4">
                         <label>Select Rider:</label>
-                        <select class="form-control kt-select2" name="rider_id" >
+                        <select class="form-control kt-select2" name="rider_id" class="rider_selector" >
                             @foreach ($riders as $rider)
                             <option value="{{ $rider->id }}">
                                 {{ $rider->name }}
@@ -114,17 +114,98 @@
                     Rider Account
                 </h3>
             </div>
-            <div class="kt-portlet__head-toolbar">
+            <div class="kt-portlet__head-toolbar"> 
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
-                        {{-- <button class="btn btn-danger btn-elevate btn-icon-sm" id="bulk_delete">Delete Selected</button> --}}
-                        {{-- &nbsp;--}}
+                        <a href="" class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_modal" >
+                            <i class="la la-money"></i>
+                             Add Cash
+                        </a>
+                         &nbsp;
                         <a href="{{ route('admin.accounts.rider_expense_get') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
                             New Record
                         </a> 
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="cash_pay_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title">Add Cash to Rider</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form class="kt-form" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <input type="hidden" name="cash_rider_id">
+
+                        <div class="form-group">
+                            <label>Type:</label>
+                            {{-- <input  autocomplete="off" list="model" class="form-control @if($errors->has('model')) invalid-field @endif" name="model"  > --}}
+                            <select required class="form-control @if($errors->has('d_type')) invalid-field @endif kt-select2-general" name="d_type">
+                                <option value="cash_paid">Cash Paid</option>
+                                <option value="dr">Debit</option>
+                            </select> 
+                            @if ($errors->has('d_type'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{$errors->first('d_type')}}
+                                    </strong>
+                                </span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Month:</label>
+                        <input type="text" data-month="{{Carbon\Carbon::now()->format('M Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                            @if ($errors->has('month'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('month') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Month</span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Amount:</label>
+                            <input required type="number" step="0.01" class="form-control @if($errors->has('amount')) invalid-field @endif" name="amount" placeholder="Enter Amount" value="">
+                            @if ($errors->has('amount'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{$errors->first('amount')}}
+                                    </strong>
+                                </span>
+                            @endif
+                        </div>
+
+                        <div class="form-group">
+                            <label>Description:</label>
+                            <textarea required class="form-control @if($errors->has('desc')) invalid-field @endif" name="desc" cols="3" rows="5"></textarea>
+                            @if ($errors->has('desc'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{$errors->first('desc')}}
+                                    </strong>
+                                </span>
+                            @endif
+                        </div>
+
+                        <div class="kt-form__actions kt-form__actions--right">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            
+                        </div>
+                    </div>
+                        
+                    {{-- <div class="modal-footer border-top-0 d-flex justify-content-center">
+                    </div> --}}
+                </form>
+            </div>
             </div>
         </div>
 
@@ -146,33 +227,6 @@
                         
                     </tr>
                 </thead>
-                {{-- <tbody>
-                     @php
-                        $running_balance = $opening_balance;
-                    @endphp
-                    
-                    @foreach ($rider_statements as $rider_statement)
-                    
-                        <tr>
-                            <td>{{Carbon\Carbon::parse($rider_statement->created_at)->format('d/m/Y')}}</td>
-                            <td>{{$rider_statement->source}}</td>
-                            @if ($rider_statement->type=='dr' || $rider_statement->type=='dr_payable')
-                            @php
-                                $running_balance -= $rider_statement->amount;
-                            @endphp
-                            <td>0</td>
-                            <td class="@if($rider_statement->type=='dr_payable')kt-font-danger @endif">({{$rider_statement->amount}})</td>
-                            @else
-                            @php
-                                $running_balance += $rider_statement->amount;
-                            @endphp
-                            <td class="@if($rider_statement->type=='cr_payable')kt-font-danger @endif">{{$rider_statement->amount}}</td>
-                            <td>0</td>
-                            @endif
-                            <td>{{$running_balance}}</td>
-                        </tr>
-                    @endforeach 
-                </tbody> --}}
             </table>
 
             <!--end: Datatable -->
@@ -199,8 +253,49 @@
             width:'100%'    
         });
 
+        $('#cash_pay_modal form').on('submit', function(e){
+            e.preventDefault();
+            var _form = $(this);
+            var _cta = _form.find('[type="submit"]');
+            _cta.prop('disabled', true).addClass('btn-icon').html('<i class="fa flaticon2-refresh fa-spin"></i>');
+            var url = '{{route('admin.accounts.rider_cash_add')}}';
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url : url,
+                type : 'POST',
+                data: _form.serializeArray(),
+                success: function(data){
+                    _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
+                    swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Record updated successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    table.ajax.reload(null, false);
+                },
+                error: function(error){
+                    _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Unable to update.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+        });
+
         $('[name="rider_id"]').on('change', function(){
             var _riderId = $(this).val();
+            $('[name="cash_rider_id"]').val(_riderId);
             var _SE = $('[name="sort_by"]:checked');
             var _SortBy = _SE.val();
             var start = _SE.attr('data-start'),
@@ -316,7 +411,11 @@
                 drawCallback:function(data){
                     console.log(data);
                     var response = table.ajax.json();
-                    var _ClosingBalance = response.closing_balance;
+                    console.log(response);
+                    
+                    var _ClosingBalance = 0;
+                    if(response && typeof response.closing_balance !== "undefined")_ClosingBalance = response.closing_balance;
+                    
                     $('#closing_balance').text(_ClosingBalance);
                 },
                 ajax: url,

@@ -211,6 +211,8 @@ Route::group([
 
     Route::get("/Salary/accounts/rider/expense","AccountsController@rider_expense_get")->name("admin.accounts.rider_expense_get");
     Route::post("/accounts/rider/expense/add","AccountsController@rider_expense_post")->name("admin.accounts.rider_expense_post");
+
+    Route::post("/accounts/rider/cash/add","AccountsController@rider_cash_add")->name("admin.accounts.rider_cash_add");
     
 });
 // end Accounts
