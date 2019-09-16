@@ -1790,7 +1790,9 @@ public function client_income_update(Request $request,$id){
             'data'=>$r->all(),
         ]);
 
-    }
+    } 
 
-  
+  public function company_overall_report(){
+      return view('admin.accounts.Company_Debit.company_overall_report');
+  }
 }
