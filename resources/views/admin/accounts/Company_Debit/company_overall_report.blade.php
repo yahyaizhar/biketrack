@@ -51,8 +51,16 @@
 <div class="kt-widget24">
 <div class="kt-widget24__details">
     <a href="" class="kt-widget24__info">
-        <h4 class="kt-widget24__title">Balance</h4>
-        <span class="kt-widget24__stats kt-font-success" id="total_profit">0</span>
+        <h4 class="kt-widget24__title">Overall Balance</h4>
+        <span class="kt-widget24__stats kt-font-success" id="overall_balnce">0</span>
+    </a>
+    <a href="" class="kt-widget24__info">
+        <h4 class="kt-widget24__title">Total Profit</h4>
+        <span class="kt-widget24__stats kt-font-primary" id="total_profit">0</span>
+    </a>
+    <a href="" class="kt-widget24__info">
+        <h4 class="kt-widget24__title">Overall Balance Monthly</h4>
+        <span class="kt-widget24__stats kt-font-warning" id="overall_balnce_monthly">0</span>
     </a>
 </div>
 </div>
@@ -126,8 +134,13 @@ $(document).ready(function(){
         $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
         
         var response = rider.ajax.json();
-        var _ClosingBalance = response.profit;
-        $('#total_profit').text(_ClosingBalance);
+        var _overall_balnce = response.overall_balnce;
+        var _total_profit = response.total_profit;
+        var _overall_balnce_monthly = response.overall_balnce_monthly;
+
+        $('#overall_balnce').text(_overall_balnce);
+        $('#total_profit').text(_total_profit);
+        $('#overall_balnce_monthly').text(_overall_balnce_monthly);
     	},
      ajax: "{{url('admin/Company/Overall/Report/ajax')}}"+"/"+$(this).val(),
      columns: [
