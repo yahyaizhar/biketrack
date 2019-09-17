@@ -336,14 +336,18 @@ class AjaxNewController extends Controller
         
         $c_debits_dr_prev_payable = \App\Model\Accounts\Company_Account::where("rider_id",$ranges['rider_id'])
         ->where(function($q) {
-            $q->where('type', "dr");
+            $q->where('type', "dr")
+            ->orWhere('type', 'pl');
         })
         ->whereDate('month', '<',$from)
         ->sum('amount');
 
         $closing_balance = $c_debits_cr_payable - $c_debits_dr_payable;
+        $first_month = Carbon::now()->format('Y-m-d');
+        if(count($company_statements) > 0){
+            $first_month = $company_statements->last()->month;
+        }
         
-        $first_month = $company_statements->last()->month;
 
         $closing_balance_prev = $c_debits_cr_prev_payable - $c_debits_dr_prev_payable;
         $running_balance =$closing_balance_prev;

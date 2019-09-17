@@ -34,7 +34,7 @@
                         <label>Show result of:</label>
                         <div class="kt-radio-inline">
                             <label class="kt-radio">
-                            <input type="radio" data-start="{{Carbon\Carbon::now()->startOfWeek()->format('Y-m-d')}}" data-end="{{Carbon\Carbon::now()->endOfWeek()->format('Y-m-d')}}" name="sort_by" value="week" checked> This Week
+                            <input type="radio" data-start="{{Carbon\Carbon::now()->subMonths(1)->startOfMonth()->format('Y-m-d')}}" data-end="{{Carbon\Carbon::now()->subMonths(1)->startOfMonth()->format('Y-m-d')}}" name="sort_by" value="week" checked> Last Month
                                 <span></span>
                             </label>
                             <label class="kt-radio">
@@ -141,8 +141,9 @@
                         <th>Description</th>
                         <th>Payout Against Rider</th>
                         <th>Paid to Rider Account</th>
-                        <th>Running Balance</th>
                         <th>Company Profit</th>
+                        <th>Running Balance</th>
+                        
                     </tr>
                 </thead>
                 {{--<tbody>
@@ -378,7 +379,7 @@
                     $('#closing_balance').text(_ClosingBalance);
                     var running_closing_balance = parseFloat($('#running_closing_balance').text());
                     if(running_closing_balance > 0){
-                        $('#btnSend_profit').text('Send '+running_closing_balance+' to Company Profit').attr('data-month', _Month).attr('data-profit', _Running_Balance).fadeIn('fast'); 
+                        $('#btnSend_profit').text('Send '+parseFloat(_Running_Balance).toFixed(2)+' to Company Profit').attr('data-month', _Month).attr('data-profit', _Running_Balance).fadeIn('fast'); 
                     }
                     
                 },
@@ -388,8 +389,9 @@
                     { data: 'desc', name: 'desc' },
                     { data: 'cr', name: 'cr' },
                     { data: 'dr', name: 'dr' },
-                    { data: 'balance', name: 'balance' },
                     { data: 'company_profit', name: 'company_profit' },
+                    { data: 'balance', name: 'balance' },
+                   
                 ],
                 responsive:true,
             });
