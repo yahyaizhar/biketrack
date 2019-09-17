@@ -888,61 +888,66 @@ class AjaxNewController extends Controller
     public function getCompany_overall_REPORT($month)
     {
         $CO=Company_Account::whereMonth('month',$month)->get();
-        $cr=Company_Account::where(function($q) {
+        $overall_balnce_cr_monthly=Company_Account::where(function($q) {
             $q->where('type','cr')
-            ->orWhere('type','dr_receivable');
+            ->orWhere('type','dr_receivable')
+            ->orWhere('type','pl');
         })
         ->whereMonth('month',$month)
         ->sum("amount");
         
-        $dr=Company_Account::whereMonth('month',$month)
+        $overall_balnce_dr_monthly=Company_Account::whereMonth('month',$month)
         ->where("type","dr")
         ->sum("amount");
 
-        $res=$cr-$dr;
+        $overall_balnce_monthly=$overall_balnce_cr_monthly-$overall_balnce_dr_monthly;
 
+        $total_profit=Company_Account::where('type','pl')
+        ->sum("amount");
+
+        $overall_balnce_cr=Company_Account::where('type','cr')
+        ->orWhere('type','dr_receivable')
+        ->sum("amount");
+
+        $overall_balnce_dr=Company_Account::where('type','dr')
+        ->sum("amount");
+        
+        $overall_balnce=$overall_balnce_cr-$overall_balnce_dr;
+       
         return DataTables::of($CO)
         
         ->addColumn('rider_id', function($CO){
-            $type=$CO->type;
-            if ($type=='cr' || $type=='dr_receivable' || $type=='dr') {
                 $rider=Rider::find($CO->rider_id);
                 if (isset($rider)) {
                     return $rider->name;
                 } else {
                     return 'No Rider';
                 }
-           }  
         }) 
         ->addColumn('description', function($CO){
-            $type=$CO->type;
-            if ($type=='cr' || $type=='dr_receivable' || $type=='dr') {
                 return $CO->source;
-           }  
+
         }) 
         ->addColumn('cr', function($CO){
-            $type=$CO->type;
-            if ($type=='cr' || $type=='dr_receivable' || $type=='dr') {
                 $type=$CO->type;
-                if ($type=='cr' || $type=='dr_receivable') {
+                if ($type=='cr' || $type=='dr_receivable' || $type=='pl') {
                    return $CO->amount;
                }
                 return 0 ;
-           } 
         }) 
         ->addColumn('dr', function($CO){
-            $type=$CO->type;
-            if ($type=='cr' || $type=='dr_receivable' || $type=='dr') {
                 $type=$CO->type;
                 if ($type=='dr') {
                    return $CO->amount;
                }
                 return 0 ;
-           } 
+      
         }) 
        
         ->with([
-            'profit' => round($res,2),
+            'overall_balnce_monthly' => round($overall_balnce_monthly,2),
+            'total_profit' => round($total_profit,2),
+            'overall_balnce' => round($overall_balnce,2),
         ])
                
         ->rawColumns(['profit','cr','description','amount','dr','rider_id'])
