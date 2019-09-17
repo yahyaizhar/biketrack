@@ -48,7 +48,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Filter by month</label>
-                        <input id="month_picker" type="text" data-month="{{Carbon\Carbon::now()->format('M Y')}}" required readonly class="month_picker form-control @if($errors->has('month_year')) invalid-field @endif" name="month_year" placeholder="Enter Month" value="">
+                        <input id="month_picker" type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month_year')) invalid-field @endif" name="month_year" placeholder="Enter Month" value="">
                     </div>
                 
                 </div>
@@ -173,9 +173,9 @@ $(function() {
         if($('#month_picker').val()!==""){
             _filterMonth =$('#month_picker').val();
         }
-        // if(__data.month && __data.month !== ""){
-        //     _filterMonth = __data.month;
-        // }
+            // if(__data.month && __data.month !== ""){
+            //     _filterMonth = __data.month;
+            // }
         __data.filterMonth=new Date(_filterMonth).format('yyyy-mm-dd');
         __data.status=$(__data.status).text().toLowerCase();
         var _data = {

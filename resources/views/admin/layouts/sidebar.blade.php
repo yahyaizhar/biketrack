@@ -499,7 +499,6 @@ if (Auth::user()->type=="su") {
                              </ul> 
                         </div>
                     </li>
-                    @isset($isNewComer_array)
                 <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "admin/newComer") !== false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle"><span class="kt-menu__link-icon">
                     <i class="fa fa-user-plus"></i>    
                     </span><span class="kt-menu__link-text">New Comer</span><i class="kt-menu__ver-arrow la la-angle-right"></i></a>
@@ -510,9 +509,7 @@ if (Auth::user()->type=="su") {
                                 <li class="kt-menu__item @if(strpos(Request::url(), "admin/newComer/view") !== false && strpos(Request::url(), "admin/newComer/view") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('NewComer.view') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">NewComer Table</span></a></li>
                             </ul>
                         </div>
-                    </li> 
-                    @endisset
-                    @isset($isSim_array)
+                    </li>
                     <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "Sim") !== false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle">
                             <span class="kt-menu__link-icon"><i class="fa fa-sim-card"></i>    
                         </span><span class="kt-menu__link-text">Sims</span><i class="kt-menu__ver-arrow la la-angle-right"></i></a>
@@ -527,8 +524,6 @@ if (Auth::user()->type=="su") {
                                  </ul>
                             </div>
                         </li>
-                        @endisset
-                        @isset($isMobile_array)
                         <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "mobile") !== false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle">
                                 <span class="kt-menu__link-icon"><i class="fa fa-mobile-alt"></i>    
                             </span><span class="kt-menu__link-text">Mobile</span><i class="kt-menu__ver-arrow la la-angle-right"></i></a>
@@ -544,12 +539,9 @@ if (Auth::user()->type=="su") {
                                      </ul>
                                 </div>
                             </li>
-                            @endisset
-                    @isset($supportemail)
                     <li class="kt-menu__item @if(strpos(Request::url(), "admin/emails") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.emails.index') }}" class="kt-menu__link "><span class="kt-menu__link-icon">
                     <i class="fa fa-envelope"></i>
                 </span><span class="kt-menu__link-text">Support Emails</span></a></li>
-                @endisset
             </ul>
         </div>
     </div>
