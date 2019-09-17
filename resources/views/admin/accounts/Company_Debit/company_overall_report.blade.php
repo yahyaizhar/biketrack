@@ -13,9 +13,28 @@
         .dataTables_info{
             display:none;
         }
-        </style>
+        .watermark{
+            background: transparent;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 146%;
+        }
+        #watermark-text
+        {
+            color: #f5f5f5;
+            font-size: 30rem;
+            opacity: 0.5;
+            background: transparent;
+        }
+    </style>
     <!--end::Page Vendors Styles -->
-@endsection
+@endsection 
 @section('main-content')
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <div class="row">
@@ -31,7 +50,7 @@
  @include('client.includes.message')
 <div class="kt-portlet__body">
 <div>
-    <select class="form-control kt-select2" id="kt_select2_3_5" name="month_id" >
+    <select class="form-control kt-select2" id="kt_select2_3_5" name="month_id">
         <option >Select Month</option>
         <option value="01">January</option>   
         <option value="02">Febuary</option>   
@@ -50,17 +69,21 @@
 </div>
 <div class="kt-widget24">
 <div class="kt-widget24__details">
-    <a href="" class="kt-widget24__info">
+    <a class="kt-widget24__info">
         <h4 class="kt-widget24__title">Overall Balance</h4>
         <span class="kt-widget24__stats kt-font-success" id="overall_balnce">0</span>
     </a>
-    <a href="" class="kt-widget24__info">
+    <a class="kt-widget24__info">
         <h4 class="kt-widget24__title">Total Profit</h4>
         <span class="kt-widget24__stats kt-font-primary" id="total_profit">0</span>
     </a>
-    <a href="" class="kt-widget24__info">
+    <a class="kt-widget24__info">
         <h4 class="kt-widget24__title">Overall Balance Monthly</h4>
         <span class="kt-widget24__stats kt-font-warning" id="overall_balnce_monthly">0</span>
+    </a>
+    <a class="kt-widget24__info">
+        <h4 class="kt-widget24__title">Payable To Riders</h4>
+        <span class="kt-widget24__stats kt-font-danger" id="payable_to_riders">0</span>
     </a>
 </div>
 </div>
@@ -68,11 +91,11 @@
 </div>
 </div>
 </div>
-
 {{-- Month OPTIONS --}}
+        
 @include('admin.includes.message')
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content-b">
-    <div class="kt-portlet kt-portlet--mobile">
+    <div class="kt-portlet kt-portlet--mobile" style="position: relative;">
         <div class="kt-portlet__head kt-portlet__head--lg">
             <div class="kt-portlet__head-label">
                 <span class="kt-portlet__head-icon">
@@ -85,7 +108,6 @@
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
-                       
                     </div>
                 </div>
             </div>
@@ -93,8 +115,8 @@
         <div class="kt-portlet__body">
             <table class="table table-striped- table-hover table-checkable table-condensed" id="CO_report">
                 <thead>
-                    <tr>
-                        <th>Rider Name</th>
+                    <tr> 
+                        <th>Date</th>
                         <th>Description</th>
                         <th>Credit</th>
                         <th>Debit</th>                       
@@ -102,6 +124,9 @@
                 </thead>
             </table>
         </div>
+        <div class="watermark">
+                
+            </div> 
     </div>
 </div>
 @endsection
@@ -113,6 +138,10 @@
     var month=null;
     var rider=null;
 $(document).ready(function(){
+    $('.kt-select2').select2({
+        placeholder: "Select a month",
+        width:'100%'    
+    });
     
     $("#kt_select2_3_5").change(function(){
     $('#kt_content-b').show();
@@ -132,19 +161,22 @@ $(document).ready(function(){
         drawCallback:function(data){
 	    $('.total_entries').remove();
         $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
-        
-        var response = rider.ajax.json();
+        $('.watermark').html('<p id="watermark-text">C</p>');
+
+        var response = rider.ajax.json(); 
         var _overall_balnce = response.overall_balnce;
         var _total_profit = response.total_profit;
         var _overall_balnce_monthly = response.overall_balnce_monthly;
+        var _payable_to_riders = response.payable_to_riders;
 
         $('#overall_balnce').text(_overall_balnce);
         $('#total_profit').text(_total_profit);
         $('#overall_balnce_monthly').text(_overall_balnce_monthly);
+        $('#payable_to_riders').text(_payable_to_riders);
     	},
      ajax: "{{url('admin/Company/Overall/Report/ajax')}}"+"/"+$(this).val(),
      columns: [
-            { data: 'rider_id', name: 'rider_id' },
+            { data: 'month', name: 'month' },
             { data: 'description', name: 'description' },
             {data:'cr',name:'cr'},
             {data:'dr',name:'dr'}, 
@@ -154,6 +186,7 @@ $(document).ready(function(){
         // order:[0,'desc'], 
     });
   });
+  $("#kt_select2_3_5").val('{{carbon\carbon::now()->format('m')}}').trigger('change');
 
 });
 </script>
