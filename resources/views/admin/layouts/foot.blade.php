@@ -284,14 +284,14 @@ jQuery(function($) {
         var _initDate = $(this).attr('data-month');
         
         $(this).fdatepicker({ 
-            format: 'MM yyyy', 
+            format: 'MM dd, yyyy', 
             // initialDate: 'July 2019',
-            startView:3,
-            minView:3,
+            startView:2,
+            minView:2,
             maxView:4
         });
         $(this).trigger('click')
-        $('.datepicker:visible table tbody .month:contains('+_initDate.split(' ')[0]+')').trigger('click')  
+        $('.datepicker:visible table tbody .day:contains('+_initDate.split(',')[0].split(' ')[1]+')').trigger('click');
         var _self = $(this);
         setTimeout(function() {
             _self.trigger('change') 
