@@ -913,20 +913,32 @@ class AjaxNewController extends Controller
         ->sum("amount");
         
         $overall_balnce=$overall_balnce_cr-$overall_balnce_dr;
+
+        $payable_to_riders_cr=Company_Account::whereNotNull('rider_id')
+        ->where(function($q) {
+            $q->where('type','cr')
+            ->orWhere('type','dr_receivable');
+        })
+        ->sum('amount');
+        
+        $payable_to_riders_dr=Company_Account::whereNotNull('rider_id')
+        ->where('type','dr')
+        ->sum('amount');
+
+        $payable_to_riders=$payable_to_riders_cr-$payable_to_riders_dr;
        
         return DataTables::of($CO)
         
-        ->addColumn('rider_id', function($CO){
-                $rider=Rider::find($CO->rider_id);
-                if (isset($rider)) {
-                    return $rider->name;
-                } else {
-                    return 'No Rider';
-                }
+        ->addColumn('month', function($CO) {
+                return carbon::parse($CO->month)->format('M d, Y');
         }) 
         ->addColumn('description', function($CO){
-                return $CO->source;
-
+            $rider=Rider::find($CO->rider_id);
+                if (isset($rider)) {
+                    return $CO->source.' <strong>('.$rider->name.')</strong>';
+                } else {
+                    return $CO->source;;
+                }
         }) 
         ->addColumn('cr', function($CO){
                 $type=$CO->type;
@@ -948,9 +960,10 @@ class AjaxNewController extends Controller
             'overall_balnce_monthly' => round($overall_balnce_monthly,2),
             'total_profit' => round($total_profit,2),
             'overall_balnce' => round($overall_balnce,2),
+            'payable_to_riders'=>round($payable_to_riders,2),
         ])
                
-        ->rawColumns(['profit','cr','description','amount','dr','rider_id'])
+        ->rawColumns(['profit','cr','description','amount','dr','rider_id','month'])
         ->make(true);
     }
 }

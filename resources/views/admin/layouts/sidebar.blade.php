@@ -374,7 +374,7 @@ if (Auth::user()->type=="su") {
                         </ul> 
                     </div>
                 </li>
-                <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "accounts") !== false && strpos(Request::url(), "zomato") === false && strpos(Request::url(), "CE") === false && strpos(Request::url(), "company") === false && strpos(Request::url(), "workshop") === false && strpos(Request::url(), "fuel_expense") === false && strpos(Request::url(), "maintenance") === false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle">
+                <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "accounts") !== false && strpos(Request::url(), "zomato") === false && strpos(Request::url(), "/admin/Salary/accounts/rider/expense") === false && strpos(Request::url(), "/admin/Salary/accounts/rider/account") === false && strpos(Request::url(), "CE") === false && strpos(Request::url(), "company") === false && strpos(Request::url(), "workshop") === false && strpos(Request::url(), "fuel_expense") === false && strpos(Request::url(), "maintenance") === false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle">
                         <span class="kt-menu__link-icon"><i class="la la-credit-card"></i>    
                     </span><span class="kt-menu__link-text">Expense</span><i class="kt-menu__ver-arrow la la-angle-right"></i></a>
                         <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
