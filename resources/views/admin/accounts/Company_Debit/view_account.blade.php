@@ -34,7 +34,7 @@
                         <label>Show result of:</label>
                         <div class="kt-radio-inline">
                             <label class="kt-radio">
-                            <input type="radio" data-start="{{Carbon\Carbon::now()->subMonths(1)->startOfMonth()->format('Y-m-d')}}" data-end="{{Carbon\Carbon::now()->subMonths(1)->startOfMonth()->format('Y-m-d')}}" name="sort_by" value="week" checked> Last Month
+                            <input type="radio" data-start="{{Carbon\Carbon::now()->subMonths(1)->startOfMonth()->format('Y-m-d')}}" data-end="{{Carbon\Carbon::now()->subMonths(1)->endOfMonth()->format('Y-m-d')}}" name="sort_by" value="week" checked> Last Month
                                 <span></span>
                             </label>
                             <label class="kt-radio">

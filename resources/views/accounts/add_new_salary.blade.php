@@ -183,7 +183,7 @@
             var _month = $('[name="month"]').val();
             
             if(_riderid==''||_month=='')return;
-            _month = new Date(_month).format('m');
+            _month = new Date(_month).format('yyyy-mm-dd');
             console.log(_riderid, _month);
             $.ajax({
                 headers: {

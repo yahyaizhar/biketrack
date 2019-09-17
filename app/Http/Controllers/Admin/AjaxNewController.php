@@ -160,15 +160,14 @@ class AjaxNewController extends Controller
 
         $rider_debits_cr_prev_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->where(function($q) {
-            $q->where('type', "cr_payable")
-              ->orWhere('type', 'cr');
+            $q->where('type', "cr");
         })
         ->whereDate('month', '<',$from)
         ->sum('amount');
         
         $rider_debits_dr_prev_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->where(function($q) {
-            $q->where('type', "dr_payable")
+            $q->where('type', "cr_payable")
               ->orWhere('type', 'dr');
         })
         ->whereDate('month', '<',$from)
@@ -196,7 +195,7 @@ class AjaxNewController extends Controller
         return DataTables::of($rider_statements)
         ->addColumn('date', function($rider_statement){
             if($rider_statement->type=='skip') return '';
-            return Carbon::parse($rider_statement->created_at)->format('d M, Y');
+            return Carbon::parse($rider_statement->month)->format('M d, Y');
         })
         ->addColumn('desc', function($rider_statement) use ($rider_statements){
             if($rider_statement->type=='skip') return '<strong >'.$rider_statement->source.'</strong>';
@@ -266,7 +265,9 @@ class AjaxNewController extends Controller
             return  0;
         })
         ->with([
-            'closing_balance' => round($closing_balance,2)
+            'closing_balance' => round($closing_balance,2),
+            'rider_debits_cr_prev_payable'=>$rider_debits_cr_prev_payable,
+            'rider_debits_dr_prev_payable'=>$rider_debits_dr_prev_payable
         ])
         ->rawColumns(['closing_balance','cash_paid','desc','date','cr','dr','balance'])
         ->make(true);
@@ -368,7 +369,7 @@ class AjaxNewController extends Controller
         return DataTables::of($company_statements)
         ->addColumn('date', function($company_statements){
             if($company_statements->type=='skip') return '';
-            return Carbon::parse($company_statements->month)->format('F Y');
+            return Carbon::parse($company_statements->month)->format('M d, Y');
         })
         ->addColumn('desc', function($company_statements){
             if($company_statements->type=='skip') return '<strong >'.$company_statements->source.'</strong>';

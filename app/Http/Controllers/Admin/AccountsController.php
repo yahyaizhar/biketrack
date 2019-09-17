@@ -622,19 +622,54 @@ class AccountsController extends Controller
     }
     public function get_salary_deduction($month, $rider_id){   
         // before tthat check if rider is zomato's
+        $startMonth = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
+        $month = Carbon::parse($month)->format('Y-m-d');
+        $onlyMonth = Carbon::parse($month)->format('m');
+        
         $rider = Rider::find($rider_id);
+
+        //prev payables
+        $rider_debits_cr_prev_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        ->where(function($q) {
+            $q->where('type', "cr");
+        })
+        ->whereDate('month', '<',$startMonth)
+        ->sum('amount');
+        
+        $rider_debits_dr_prev_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        ->where(function($q) {
+            $q->where('type', "cr_payable")
+              ->orWhere('type', 'dr');
+        })
+        ->whereDate('month', '<',$startMonth)
+        ->sum('amount');
+        $closing_balance_prev = $rider_debits_cr_prev_payable - $rider_debits_dr_prev_payable;
+        //ends prev payables
+
         $ra_payable=Rider_Account::where("rider_id",$rider_id)
-        ->whereMonth("month",$month)
-        ->where("type","cr_payable")
+        ->whereMonth("month",$onlyMonth)
+        ->where("payment_status","pending")
+        ->where(function($q) {
+            $q->where('type', "cr_payable")
+            ->orWhere('type', 'dr');
+        })
         ->sum('amount'); 
         $ra_cr=Rider_Account::where("rider_id",$rider_id)
-        ->whereMonth("month",$month)
+        ->whereMonth("month",$onlyMonth)
         ->where("type","cr")
         ->sum('amount');  
+        if($closing_balance_prev < 0){ //deduct
+            $ra_payable += abs($closing_balance_prev);
+        }
+        else {
+            // add
+            $ra_cr += abs($closing_balance_prev);
+        }
+        
         $feid = $rider->clients()->first()->pivot->client_rider_id;
         if(isset($feid)){ // rider belongs to zomato
             $ra_zomatos=Income_zomato::where("rider_id",$rider_id)
-            ->whereMonth("date",$month)
+            ->whereMonth("date",$onlyMonth)
             ->get()->first();  
             $ra_zomatos_no_of_hours =0;
             $ra_zomatos_no_of_trips = 0;
@@ -663,6 +698,8 @@ class AccountsController extends Controller
             'total_salary'=>round($ra_zomatos_no_of_hours+$ra_zomatos_no_of_trips,2),
             'total_deduction'=>round($ra_payable,2),
             'total_bonus'=>round($ra_cr,2),
+
+            'closing_balance_prev'=>$closing_balance_prev
         ]);
     }
     public function new_salary_added(Request $request){
