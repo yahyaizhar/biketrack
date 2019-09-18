@@ -81,7 +81,44 @@
                                 </span>
                             @endif
                         </div>
-                        
+                        <div class="form-group">
+                            <label>Paid By Rider:</label>
+                            <input required type="number" class="form-control @if($errors->has('paid_by_rider')) invalid-field @endif" name="paid_by_rider" placeholder="Enter Amount" value="{{$maintenance->paid_by_rider}}">
+                            @if ($errors->has('paid_by_rider'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{$errors->first('paid_by_rider')}}
+                                    </strong>
+                                </span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Paid By Company:</label>
+                            <input required type="number" class="form-control @if($errors->has('paid_by_company')) invalid-field @endif" name="paid_by_company" placeholder="Enter Amount" value="{{$maintenance->paid_by_company}}">
+                            @if ($errors->has('paid_by_company'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{$errors->first('paid_by_company')}}
+                                    </strong>
+                                </span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="form-group col-md-6 pull-right mtr-15">
+                                        <div class="custom-file">
+                                            <input type="file" name="invoice_image" class="custom-file-input" id="invoice_image">
+                                            <label class="custom-file-label" for="invoice_image">Choose Image</label>
+                                        </div>
+                                        <span class="form-text text-muted">Select Image</span>
+                                    </div>    
+                            @if($maintenance->invoice_image)
+                                    <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($maintenance->invoice_image)) }}" alt="image">
+                                @else
+                                    <img class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                                @endif
+                            </div>
+                        </div>
                         
                         <div class="form-group">
                             <label>Status:</label>
@@ -89,20 +126,6 @@
                                 <input data-switch="true" name="status" id="status" type="checkbox" @if($maintenance->status==1) checked @endif data-on-text="Enabled" data-handle-width="70" data-off-text="Disabled" data-on-color="brand">
                             </div>
                         </div>
-                    
-                    <div class="form-group" id="accident_payment_status" @if($maintenance->maintenance_type=='regular') style="display:none;" @endif>
-                            <label>Accident Payment type:</label>
-                            <div class="kt-radio-inline">
-                                <label class="kt-radio">
-                                    <input required type="radio" name="accident_payment_status" @if ($maintenance->accident_payment_status==='pending') checked @endif value="pending"> Pending
-                                    <span></span>
-                                </label>
-                                <label class="kt-radio">
-                                    <input required type="radio" name="accident_payment_status"@if ($maintenance->accident_payment_status==='paid') checked @endif value="paid"> Paid
-                                    <span></span>
-                                </label>
-                            </div>
-                        </div> 
                     
                     
                     </div>
@@ -134,7 +157,47 @@
 <script>
 $(document).ready(function(){
    
-   
+    $('[name="amount"]').on("change input",function(){
+        var _val=parseFloat($('[name="amount"]').val());
+        $('[name="paid_by_company"]').val(_val);
+        var _company=parseFloat($('[name="paid_by_company"]').val());
+        var _rider=_val-_company;
+        $('[name="paid_by_rider"]').val(_rider);
+        
+        
+    });
+
+    $('[name="paid_by_company"]').on("change input",function(){
+        var _c_val=$(this).val();
+        var _val=parseFloat($('[name="amount"]').val());
+        var res_rider=_val-_c_val;
+        if (_c_val>_val) {
+            console.log("Value is greater");
+            $(this).val(_val);  
+        }else if(_c_val<0){
+            console.log("Value is less");
+            $(this).val(0);
+        }else{
+            $('[name="paid_by_rider"]').val(res_rider);
+        }
+        
+    });
+    
+    $('[name="paid_by_rider"]').on("change input",function(){
+        var _c_val=$(this).val();
+        var _val=parseFloat($('[name="amount"]').val());
+        var res_comany=_val-_c_val;
+        if (_c_val>_val) {
+            console.log("Value is greater");
+            $(this).val(_val);  
+        }else if(_c_val<0){
+            console.log("Value is less");
+            $(this).val(0);
+        }else{
+            $('[name="paid_by_company"]').val(res_comany); 
+        }
+        
+    });
 
 $('[name="maintenance_type"]').on("change",function(){
      var _val=$(this).val();1

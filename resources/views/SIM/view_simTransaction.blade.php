@@ -61,6 +61,7 @@
                             <input type="checkbox" id="select_all" >
                         </th> --}}
                         <th class="th_month">Month</th>
+                        <th>Rider Name</th>
                         <th>Sim Number</th>
                         <th>Usage Limit</th>
                         <th >Bill Amount</th>
@@ -118,6 +119,7 @@ $(function() {
             columns: [
                 // { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
                 { data: 'month', name: 'month' },
+                { data: 'rider_id', name: 'rider_id' },
                 { data: 'sim_number', name: 'sim_number' },
                 { data: 'usage_limit', name: 'usage_limit' },
                 { data: 'bill_amount', name: 'bill_amount' },
@@ -138,7 +140,7 @@ $(function() {
         simTransaction_table.MakeCellsEditable("destroy"); 
         simTransaction_table.MakeCellsEditable({
             "onUpdate": myCallbackFunction,
-            "columns": [3,5,6],
+            "columns": [4,6,7],
             "inputCss":'form-control',
             "inputTypes": [
                 {

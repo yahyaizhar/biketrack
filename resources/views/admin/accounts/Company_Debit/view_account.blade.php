@@ -7,6 +7,9 @@
     .fields_wrapper--show{
         display: block;
     }
+    .table th, .table td{
+        padding:0 !important;
+    }
 </style>
 @endsection
 @section('main-content') 
@@ -544,5 +547,57 @@
         
 
     })
+
+    function updateStatus(id)
+{
+    var url = "{{ url('admin/bill/payment') }}" + "/" + id + "/updateStatus";
+    console.log(url,true);
+    swal.fire({
+        title: 'Are you sure?',
+        text: "You want to Pay Bill!",
+        type: 'warning', 
+        showCancelButton: true,
+        confirmButtonText: 'Yes!'
+    }).then(function(result) {
+        if (result.value) {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url : url,
+                type : 'GET',
+                beforeSend: function() {            
+                    $('.loading').show();
+                },
+                complete: function(){
+                    $('.loading').hide();
+                },
+                success: function(data){
+                    swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Record updated successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    table.ajax.reload(null, false);
+                    table_bills.ajax.reload(null, false);
+                },
+                error: function(error){
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Unable to update.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+        }
+    });
+}
 </script> 
 @endsection

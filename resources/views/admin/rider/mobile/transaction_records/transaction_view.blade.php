@@ -57,6 +57,7 @@
                 <thead>
                     <tr>
                         <th class="th_month">Month</th>
+                        <th>Rider Name</th>
                         <th>Mobile</th>
                         <th>Sale Price</th>
                         <th >Cash Recieved</th>
@@ -114,6 +115,7 @@ $(function() {
             columns: [
                 // { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
                 { data: 'month', name: 'month' },
+                { data: 'rider_id', name: 'rider_id' },
                 { data: 'model', name: 'model' },
                 { data: 'sale_price', name: 'sale_price' },
                 { data: 'amount_received', name: 'amount_received' },
@@ -134,7 +136,7 @@ $(function() {
         simTransaction_table.MakeCellsEditable("destroy"); 
         simTransaction_table.MakeCellsEditable({
             "onUpdate": myCallbackFunction,
-            "columns": [5],
+            "columns": [6],
             "inputCss":'form-control',
             "onValidate":function(cell, row, newValue){
                
@@ -157,7 +159,7 @@ $(function() {
              "allowNulls":{ "columns": [4], "errorClass":"my-error"},
             "inputTypes": [
                 {
-                    "column":5, 
+                    "column":6, 
                     "type":"text", 
                     "options":null,
                 }, 

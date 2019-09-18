@@ -25,6 +25,7 @@ use App\Model\Rider\Rider_Report;
 use Illuminate\Support\Facades\Storage;
 use App\Model\Sim\Sim;
 use App\Model\Sim\Sim_Transaction;
+use App\Model\Sim\Sim_History;
 use App\Model\Mobile\Mobile_installment;
 use App\Model\Rider\Rider_Performance_Zomato;
 use App\Assign_bike;
@@ -187,6 +188,18 @@ class AjaxController extends Controller
         ->addColumn('sim_id', function($sims){
             return $sims->id;
         })
+        ->addColumn('rider_id', function($sims){
+           $history=$sims->Sim_History()->get()->first();
+           if(isset($history)){
+               $rider=Rider::find($history->rider_id);
+               if (isset($rider)) {
+                return $rider->name ;
+               }
+               return 'No Rider Assigned' ;
+           }
+           
+           return 'No Sim Assigned' ;
+        })
         ->addColumn('id', function($sims) use ($month){
             $sim_tran = $sims->Sim_Transaction()->whereMonth('month_year', Carbon::parse($month)->format('m'))->get()->first();
             if(isset($sim_tran)){
@@ -207,6 +220,9 @@ class AjaxController extends Controller
         ->addColumn('usage_limit', function($sims){
             $sim_history = $sims->Sim_history()->where('status', 'active')->get()->first();
             if(isset($sim_history)){
+                if (isset($sim_history->allowed_balance)==null) {
+                    return 105;
+                }
                 return $sim_history->allowed_balance;
             }
             return 105;
@@ -218,6 +234,9 @@ class AjaxController extends Controller
                 return $sim_tran->bill_amount;
             }
             if(isset($sim_history)){
+                if (isset($sim_history->allowed_balance)==null) {
+                    return 105;
+                }
                 return $sim_history->allowed_balance;
             }
             return 105;
@@ -271,7 +290,7 @@ class AjaxController extends Controller
         //     </span>
         // </span>';
         // })
-        ->rawColumns(['usage_limit','sim_number','bill_amount', 'status'])
+        ->rawColumns(['usage_limit','rider_id','sim_number','bill_amount', 'status'])
         ->make(true);
     }
 

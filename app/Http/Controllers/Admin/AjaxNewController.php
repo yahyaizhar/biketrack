@@ -235,14 +235,13 @@ class AjaxNewController extends Controller
         
         $rider_debits_cr_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->where(function($q) {
-            $q->where('type', "cr_payable")
-              ->orWhere('type', 'cr');
+            $q->where('type', "cr");
         })
         ->sum('amount');
         
         $rider_debits_dr_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->where(function($q) {
-            $q->where('type', "dr_payable")
+            $q->where('type', "cr_payable")
               ->orWhere('type', 'dr');
         })
         ->sum('amount');
@@ -367,6 +366,14 @@ class AjaxNewController extends Controller
         $from = date($ranges['range']['start_date']);
         $to = date($ranges['range']['end_date']);
         $company_statements = \App\Model\Accounts\Company_Account::where("rider_id",$ranges['rider_id'])
+        ->where(function($q) {
+            $q->whereNotNull('fuel_expense_id')
+              ->orWhere('maintenance_id', '!=', null)
+              ->orWhere('sim_transaction_id', '!=', null)
+              ->orWhere('salik_id', '!=', null)
+              ->orWhere('salary_id', '!=', null);
+        })
+        ->where('payment_status','paid')
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
         ->get();
@@ -491,6 +498,7 @@ class AjaxNewController extends Controller
             return 0;
         })
         ->addColumn('balance', function($company_statements) use (&$running_balance){
+            
             if($company_statements->type=='dr' || $company_statements->type=='pl'){
                 $running_balance -= $company_statements->amount;
             }
@@ -946,6 +954,14 @@ class AjaxNewController extends Controller
                 return $all_mobiles->sale_price;
                
         })
+        ->addColumn('rider_id', function($all_mobiles) use ($month,$mob_trans){
+            $riders=Rider::find($all_mobiles->rider_id);
+            if (isset($riders)) {
+                return $riders->name;
+            }
+            return 'No Assigned Rider';
+           
+        })
         ->addColumn('amount_received', function($all_mobiles) use ($month,$mob_trans){
                 return $all_mobiles->amount_received;
               
@@ -981,7 +997,7 @@ class AjaxNewController extends Controller
         
         })
         
-        ->rawColumns(['model','month','sale_price','amount_received','bill_status','remaining_amount','per_month_installment_amount', 'status'])
+        ->rawColumns(['model','rider_id','month','sale_price','amount_received','bill_status','remaining_amount','per_month_installment_amount', 'status'])
         ->make(true);
     }
     public function getCompany_overall_REPORT($month)
