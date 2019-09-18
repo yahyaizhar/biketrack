@@ -160,6 +160,8 @@ Route::group([
     Route::get('/bike/{bike_id}/profile/{rider_id}','ClientController@bike_profile')->name('bike.bike_profile');
     Route::get('view/bike/salik/{id}','SalikController@bike_salik')->name('bike.bike_salik');
     Route::get('view/rider/salik/{id}','SalikController@rider_salik')->name('rider.rider_salik');
+    Route::get('/bike/rent/view','bikeController@create_bike_rent')->name('admin.create_bike_rent');
+    Route::post('/insert/bike/rent','bikeController@post_bike_rent')->name('admin.post_bike_rent');
 // salik 
     Route::resource('/salik', 'SalikController', [
     'as' => 'admin'

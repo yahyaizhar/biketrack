@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Storage;
 use App\Model\Rider\Rider_Message;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use carbon\carbon;
+use \App\Model\Accounts\Company_Account;
 
 class bikeController extends Controller 
 {
@@ -136,5 +138,25 @@ class bikeController extends Controller
       
       
     }
-    
+    // Bike Rent
+    public function create_bike_rent(){
+      $bikes=bike::where('active_status','A')->get();
+      return view('admin.Bike.bike_rent',compact('bikes'));
+    }
+    public function post_bike_rent(Request $r){
+      $bike_rent=new bike;
+      $bike_rent->bike_id=$r->bike_id;
+      $bike_rent->month=carbon::parse($r->month)->format('Y-m-d');
+      $bike_rent->amount=$r->amount;
+      
+      $ca = new Company_Account;
+      $ca->type='dr';
+      $ca->amount=$r->amount;
+      $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+      $ca->bike_rent_id ='0';
+      $ca->source='Bike Rent';
+      $ca->save();
+      return redirect(route('bike.bike_view'));
+    }
+    // end Bike Rent
 }
