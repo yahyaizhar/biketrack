@@ -55,6 +55,7 @@
                         <th>ID</th>
                         <th>Client_Id</th>
                         <th>Month</th>
+                        <th>Rider Name</th>
                         <th>Income Amount</th>
                         <th>Status</th>
                         <th>Actions</th>                        
@@ -98,7 +99,8 @@ $(function() {
             //  { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
             { data: 'id', name: 'id' },
             { data: 'client_id', name: 'client_id' },
-            { data: 'month', name: 'month' },            
+            { data: 'month', name: 'month' },  
+            { data: 'rider_id', name: 'rider_id' },            
             { data: 'amount', name: 'amount' },
             { data: 'status', name: 'status' },
             { data: 'actions', name: 'actions' },

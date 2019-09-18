@@ -10,8 +10,6 @@
 </style>
 @endsection
 @section('main-content') 
-
-
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <div class="kt-portlet">
             <div class="row row-no-padding">
@@ -84,7 +82,6 @@
                 <!--end::New Orders-->
             </div> --}}
             <div class="col-md-12 col-lg-6 col-xl-6">
-    
                 <!--begin::New Users-->
                 <div class="kt-widget24">
                     <div class="kt-widget24__details">
@@ -93,15 +90,11 @@
                                 Closing Balance
                             </h4>
                             <span class="kt-widget24__stats kt-font-success" id="closing_balance">
-                                
                             </span>
                         </a>
                     </div>
                 </div>
-    
-                <!--end::New Users-->
             </div>
-            
         </div>
     </div>
     <div class="kt-portlet kt-portlet--mobile">
@@ -130,7 +123,6 @@
                 </div>
             </div>
         </div>
-
         <div class="modal fade" id="cash_pay_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -183,7 +175,6 @@
                                 </span>
                             @endif
                         </div>
-
                         <div class="form-group">
                             <label>Description:</label>
                             <textarea required class="form-control @if($errors->has('desc')) invalid-field @endif" name="desc" cols="3" rows="5"></textarea>
@@ -195,22 +186,17 @@
                                 </span>
                             @endif
                         </div>
-
                         <div class="kt-form__actions kt-form__actions--right">
                             <button type="submit" class="btn btn-primary">Submit</button>
-                            
                         </div>
                     </div>
-                        
                     {{-- <div class="modal-footer border-top-0 d-flex justify-content-center">
                     </div> --}}
                 </form>
             </div>
             </div>
         </div>
-
         <div class="kt-portlet__body">
-
                 <!--begin: Datatable -->
             <table class="table table-striped- table-hover table-checkable table-condensed" id="data-table">
                 <thead>
@@ -220,15 +206,13 @@
                         </th> --}}
                         <th>Date</th>
                         <th>Description</th>
-                        <th>Credit</th>
-                        <th>Debit</th>
-                        <th>Cash Paid</th>
+                        <th>Payable to Rider</th>
+                        <th>Recieveable from Rider</th>
+                        <th>Cash Paid</th> 
                         <th>Running Balance</th>
-                        
                     </tr>
                 </thead>
             </table>
-
             <!--end: Datatable -->
         </div>
     </div>

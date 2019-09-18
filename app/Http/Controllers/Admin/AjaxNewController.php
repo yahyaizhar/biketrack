@@ -770,6 +770,13 @@ class AjaxNewController extends Controller
         ->addColumn('amount', function($client_income){
             return $client_income->amount;
         })
+        ->addColumn('rider_id', function($client_income){
+            $rider=Rider::find($client_income->rider_id);
+            if (isset($rider)) {
+                return $rider->name;
+            }
+            return 'No Rider is assigned';
+        })
         ->addColumn('month', function($client_income){
             return $client_income->month;
         })
@@ -793,7 +800,7 @@ class AjaxNewController extends Controller
             </span>
         </span>';
         })
-        ->rawColumns(['status','month','client_id','amount','actions', 'status'])
+        ->rawColumns(['status','rider_id','month','client_id','amount','actions', 'status'])
         ->make(true);
     }
     public function getCE_REPORT($month)
