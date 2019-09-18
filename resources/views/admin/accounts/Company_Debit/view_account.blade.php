@@ -567,7 +567,7 @@
             });
             $.ajax({
                 url : url,
-                type : 'GET',
+                type : 'PUT',
                 beforeSend: function() {            
                     $('.loading').show();
                 },
