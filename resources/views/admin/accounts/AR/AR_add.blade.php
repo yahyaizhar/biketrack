@@ -71,22 +71,7 @@
                                 </span>
                             @endif
                         </div>
-
-                        <div class="form-group">
-                            <label>Payment Status:</label>
-                            <div class="kt-radio-inline">
-                                <label class="kt-radio">
-                                    <input type="radio" name="payment_status" value="pending"> Pending
-                                    <span></span>
-                                </label>
-                                <label class="kt-radio">
-                                        <input type="radio" name="payment_status" value="paid"> Paid
-                                    <span></span>
-                                </label>
-                            </div>
-                        </div>
-                     
-                        
+                        <input type="hidden" name="payment_status" value="pending">
                         <div class="form-group">
                             <label>Status:</label>
                             <div>

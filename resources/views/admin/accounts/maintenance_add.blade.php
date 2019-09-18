@@ -80,21 +80,35 @@
                                 </span>
                             @endif
                         </div>
-                        <div class="form-group" id="accident_payment_status">
-                            <label>Accident Payment type:</label>
-                            <div class="kt-radio-inline">
-                                <label class="kt-radio">
-                                    <input required type="radio" name="accident_payment_status" value="pending"> Pending
-                                    <span></span>
-                                </label>
-                                <label class="kt-radio">
-                                    <input required type="radio" name="accident_payment_status" value="paid"> Paid
-                                    <span></span>
-                                </label>
+                        <div class="form-group">
+                            <label>Paid By Rider:</label>
+                            <input required type="number" class="form-control @if($errors->has('paid_by_rider')) invalid-field @endif" name="paid_by_rider" placeholder="Enter Amount" value="">
+                            @if ($errors->has('paid_by_rider'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{$errors->first('paid_by_rider')}}
+                                    </strong>
+                                </span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Paid By Company:</label>
+                            <input required type="number" class="form-control @if($errors->has('paid_by_company')) invalid-field @endif" name="paid_by_company" placeholder="Enter Amount" value="">
+                            @if ($errors->has('paid_by_company'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{$errors->first('paid_by_company')}}
+                                    </strong>
+                                </span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <div class="custom-file">
+                                <input type="file" name="invoice_image" class="custom-file-input" id="invoice_image">
+                                <label class="custom-file-label" for="invoice_image">Choose Image</label>
+                                <span class="form-text text-muted">Choose Image</span>
                             </div>
                         </div>
-                     
-                        
                         <div class="form-group">
                             <label>Status:</label>
                             <div>
@@ -129,6 +143,46 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
 $(document).ready(function(){
+    $('[name="amount"]').on("change input",function(){
+        var _val=parseFloat($('[name="amount"]').val());
+        $('[name="paid_by_company"]').val(_val);
+        var _company=parseFloat($('[name="paid_by_company"]').val());
+        var _rider=_val-_company;
+        $('[name="paid_by_rider"]').val(_rider);
+    });
+
+    $('[name="paid_by_company"]').on("change input",function(){
+        var _c_val=$(this).val();
+        var _val=parseFloat($('[name="amount"]').val());
+        var res_rider=_val-_c_val;
+        if (_c_val>_val) {
+            console.log("Value is greater");
+            $(this).val(_val);  
+        }else if(_c_val<0){
+            console.log("Value is less");
+            $(this).val(0);
+        }else{
+            $('[name="paid_by_rider"]').val(res_rider);
+        }
+    });
+    
+    $('[name="paid_by_rider"]').on("change input",function(){
+        var _c_val=$(this).val();
+        var _val=parseFloat($('[name="amount"]').val());
+        var res_comany=_val-_c_val;
+        if (_c_val>_val) {
+            console.log("Value is greater");
+            $(this).val(_val);  
+        }else if(_c_val<0){
+            console.log("Value is less");
+            $(this).val(0);
+        }else{
+            $('[name="paid_by_company"]').val(res_comany); 
+        }
+    });
+
+
+
 $('[name="maintenance_type"]').on("change",function(){
     var _val=$(this).val();
     $("#accident_payment_status").show();

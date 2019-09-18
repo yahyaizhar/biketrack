@@ -208,7 +208,7 @@ Route::group([
 
     Route::post("/accounts/company/profit/add","AccountsController@add_company_profit")->name("admin.accounts.add_company_profit");
     Route::get("/company/overall/report","AccountsController@company_overall_report")->name("admin.accounts.company_overall_report");
-    
+    Route::post('/bill/payment/{id}/updateStatus','AccountsController@updateBillPaymentStatus')->name('admin.updateBillPaymentStatus');
 });
 // end Accounts
 

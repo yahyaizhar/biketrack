@@ -302,9 +302,20 @@ class AccountsController extends Controller
             'bike_id'=>$r->bike_id,
             'month' => Carbon::parse($r->get('month'))->format('Y-m-d'),
             'amount'=>$r->amount,
-            'accident_payment_status'=>$r->accident_payment_status,
+            'paid_by_rider'=>$r->paid_by_rider,
+            'paid_by_company'=>$r->paid_by_company,
             'status'=>$r->status=='on'?1:0,
         ]);
+        if($r->hasFile('invoice_image'))
+            {
+                // return 'yes';
+                $filename = $r->invoice_image->getClientOriginalName();
+                $filesize = $r->invoice_image->getClientSize();
+                // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
+                $filepath = Storage::putfile('public/uploads/riders/invoice_image', $r->file('invoice_image'));
+                $maintenance->invoice_image = $filepath;
+            }
+            $maintenance->save();
         $assign_bike=\App\Assign_bike::where('bike_id', $maintenance->bike_id)->where('status','active')->get()->first();
         $rider_id = null;
         if($assign_bike){
@@ -415,8 +426,23 @@ class AccountsController extends Controller
         $maintenance->workshop_id=$r->workshop_id;
         $maintenance->bike_id=$r->bike_id;
         $maintenance->month=Carbon::parse($r->get('month'))->format('Y-m-d');
-        $maintenance->accident_payment_status=$r->accident_payment_status;
         $maintenance->amount=$r->amount;
+        $maintenance->paid_by_company=$r->paid_by_company;
+        $maintenance->paid_by_rider=$r->paid_by_rider;
+        if($r->hasFile('invoice_image'))
+        {
+            // return 'yes';
+            if($maintenance->invoice_image)
+            {
+                Storage::delete($maintenance->invoice_image);
+            }
+            $filename = $r->invoice_image->getClientOriginalName();
+            $filesize = $r->invoice_image->getClientSize();
+            // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
+            $filepath = Storage::putfile('public/uploads/riders/invoice_image', $r->file('invoice_image'));
+            $maintenance->invoice_image = $filepath;
+        }
+
         // $id_charge->=$r->;
         if($r->status)
             $maintenance->status = 1;
@@ -1832,4 +1858,14 @@ public function client_income_update(Request $request,$id){
   public function company_overall_report(){
       return view('admin.accounts.Company_Debit.company_overall_report');
   }
+
+  public function updateBillPaymentStatus($id){
+    $ca=Company_Account::find($id);
+    $ca->payment_status="paid";
+    $ca->save();
+    return response()->json([
+        'data'=>'true',
+    ]);
+
+}
 }

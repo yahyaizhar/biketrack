@@ -28,9 +28,12 @@
         #watermark-text
         {
             color: #f5f5f5;
-            font-size: 30rem;
+            font-size: 25rem;
             opacity: 0.5;
             background: transparent;
+        }
+        .table th, .table td{
+            padding:0 !important;
         }
     </style>
     <!--end::Page Vendors Styles -->
@@ -124,9 +127,7 @@
                 </thead>
             </table>
         </div>
-        <div class="watermark">
-                
-            </div> 
+        <div class="watermark"></div> 
     </div>
 </div>
 @endsection
