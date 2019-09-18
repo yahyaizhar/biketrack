@@ -56,6 +56,8 @@ Route::group([
     Route::get("/accounts/wps/view/data","AjaxNewController@getWPS")->name("admin.getWPS");
     Route::get("/accounts/AR/view/data","AjaxNewController@getAR")->name("admin.getAR");
     Route::get('/accounts/income/zomato/ajax/data','AjaxNewController@income_zomato_ajax')->name('admin.accounts.income_zomato_ajax');
+
+    Route::get("/accounts/company/bills/{range}","AjaxNewController@getCompanyAccountsBills")->name("admin.accounts.get_company_account_bills");
 });
 // End Ajax Routes
 

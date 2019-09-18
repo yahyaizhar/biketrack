@@ -116,7 +116,7 @@ class MobileController extends Controller
         ]);
         $ca->mobile_installment_id =$mobile_installment->id;
         $ca->type='dr';
-        $ca->rider_id=$mobile_trans->rider_id;
+        $ca->rider_id=$r->rider_id;
         $ca->month = $mobile_installment->installment_month;
         $ca->source="Mobile Installment";
         $ca->amount=$data['per_month_installment_amount'];
@@ -127,7 +127,7 @@ class MobileController extends Controller
         ]);
         $ra->mobile_installment_id =$mobile_installment->id;
         $ra->type='cr_payable';
-        $ra->rider_id=$mobile_trans->rider_id;
+        $ra->rider_id=$r->rider_id;
         $ra->month = $mobile_installment->installment_month;
         $ra->source="Mobile Installment";
         $ra->amount=$data['per_month_installment_amount'];

@@ -176,6 +176,7 @@ class SalikController extends Controller
         if($used_salik>$allow_salik){
             $_greater_ca= new Company_Account;
             $_greater_ca->source="Salik";
+            $_greater_ca->salik_id="0";
             $_greater_ca->amount=$used_salik;
             $_greater_ca->rider_id=$request->rider_id;
             $_greater_ca->month=Carbon::parse($request->month)->format("Y-m-d");
@@ -184,6 +185,7 @@ class SalikController extends Controller
 
             $_greater_ra= new Rider_Account;
             $_greater_ra->source="Salik";
+            $_greater_ra->salik_id="0";
             $_greater_ra->amount=$used_salik-$allow_salik;
             $_greater_ra->rider_id=$request->rider_id;
             $_greater_ra->month=Carbon::parse($request->month)->format("Y-m-d");
@@ -194,6 +196,7 @@ class SalikController extends Controller
             $ca= new Company_Account;
             $ca->source="Salik";
             $ca->amount=$allow_salik;
+            $ca->salik_id="0";
             $ca->rider_id=$request->rider_id;
             $ca->month=Carbon::parse($request->month)->format("Y-m-d");
             $ca->type="dr";
@@ -201,6 +204,7 @@ class SalikController extends Controller
             if($used_salik<$allow_salik){
                 $_less_ra= new Rider_Account;
                 $_less_ra->source="Salik";
+                $_less_ra->salik_id="0";
                 $_less_ra->amount=$allow_salik-$used_salik;
                 $_less_ra->rider_id=$request->rider_id;
                 $_less_ra->month=Carbon::parse($request->month)->format("Y-m-d");

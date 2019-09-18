@@ -134,6 +134,95 @@ class AjaxNewController extends Controller
         ->make(true);
     }
 
+    public function getCompanyAccountsBills($ranges) 
+    {
+        $ranges = json_decode($ranges, true);
+        $from = date($ranges['range']['start_date']);
+        $to = date($ranges['range']['end_date']);
+        $rider_id = $ranges['rider_id'];
+
+        $bills = collect([]);
+
+        $month = Carbon::parse($to)->format('m');
+        //sim
+        $model = \App\Model\Accounts\Company_Account::
+        whereMonth('month', $month)
+        ->where("rider_id",$rider_id)
+        ->whereNotNull('sim_transaction_id')
+        ->get()
+        ->first();
+        if(isset($model)){
+            $model->source = "Sim Usage";
+            $bills->push($model);
+        }
+        //Salik
+        $model = \App\Model\Accounts\Company_Account::
+        whereMonth('month', $month)
+        ->where("rider_id",$rider_id)
+        ->whereNotNull('salik_id')
+        ->get()
+        ->first();
+        if(isset($model)){
+            $model->source = "Salik";
+            $bills->push($model);
+        }
+        //fuel_expense
+        $model = \App\Model\Accounts\Company_Account::
+        whereMonth('month', $month)
+        ->where("rider_id",$rider_id)
+        ->whereNotNull('fuel_expense_id')
+        ->get()
+        ->first();
+        if(isset($model)){
+            $model->source = "Fuel Expense";
+            $bills->push($model);
+        }
+        //maintenance
+        $model = \App\Model\Accounts\Company_Account::
+        whereMonth('month', $month)
+        ->where("rider_id",$rider_id)
+        ->whereNotNull('maintenance_id')
+        ->get()
+        ->first();
+        if(isset($model)){
+            $model->source = "Bike Maintenance";
+            $bills->push($model);
+        }
+
+
+        return DataTables::of($bills)
+        ->addColumn('date', function($bill){
+            return Carbon::parse($bill->month)->format('M d, Y');
+        })
+        ->addColumn('bill', function($bill){
+            return $bill->source;
+        })
+        ->addColumn('amount', function($bill){
+            return $bill->amount;
+        })
+        ->addColumn('payment_status', function($bill){
+            if($bill->payment_status == 'pending'){
+                //enable pay
+                return '<div>Pending <button type="button" onclick="updateStatus('.$bill->id.')" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
+            }
+            return ucfirst($bill->payment_status);
+        })
+        ->addColumn('action', function($bill){
+
+            return '';
+        })
+        // ->with([
+        //     'closing_balance' => round($closing_balance,2)
+        // ])
+        ->rawColumns(['amount','bill','payment_status','date','action'])
+        ->make(true);
+
+        // return response()->json([
+        //     'data'=>$bills
+        // ]);
+
+    }
+
     public function getRiderAccounts($ranges)
     {
         $ranges = json_decode($ranges, true);
@@ -835,6 +924,8 @@ class AjaxNewController extends Controller
         ->rawColumns(['closing_balance','date','description','amount'])
         ->make(true);
     }
+
+    
  
 
     public function getMobileTransaction($month) 

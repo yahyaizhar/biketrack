@@ -23,7 +23,7 @@
                     <div class="kt-portlet__body">
                         <div class="form-group">
                             <label>Select Rider:</label>
-                            <select class="form-control kt-select2" id="kt_select2_3" name="rider_id" >
+                            <select class="form-control kt-select2" name="rider_id" >
                                     @foreach ($riders as $rider)
                                         <option value="{{ $rider->id }}">
                                             {{ $rider->name }}

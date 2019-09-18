@@ -118,11 +118,11 @@
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
                         {{-- <button class="btn btn-danger btn-elevate btn-icon-sm" id="bulk_delete">Delete Selected</button> --}}
-                        {{-- &nbsp;
-                        <a href="{{ route('SimTransaction.create_sim') }}" class="btn btn-brand btn-elevate btn-icon-sm">
+                        {{-- &nbsp;--}}
+                        <a href="" data-ajax="{{ route('account.new_salary') }}" class=" btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
-                            New Record
-                        </a> --}}
+                            Generate Salary
+                        </a> 
                     </div>
                 </div>
             </div>
@@ -146,34 +146,26 @@
                         
                     </tr>
                 </thead>
-                {{--<tbody>
-                     @php
-                        $running_balance = $opening_balance;
-                    @endphp
-                    
-                    @foreach ($rider_statements as $rider_statement)
-                    
-                        <tr>
-                            <td>{{Carbon\Carbon::parse($rider_statement->created_at)->format('d/m/Y')}}</td>
-                            <td>{{$rider_statement->source}}</td>
-                            @if ($rider_statement->type=='dr' || $rider_statement->type=='dr_payable')
-                            @php
-                                $running_balance -= $rider_statement->amount;
-                            @endphp
-                            <td>0</td>
-                            <td class="@if($rider_statement->type=='dr_payable')kt-font-danger @endif">({{$rider_statement->amount}})</td>
-                            @else
-                            @php
-                                $running_balance += $rider_statement->amount;
-                            @endphp
-                            <td class="@if($rider_statement->type=='cr_payable')kt-font-danger @endif">{{$rider_statement->amount}}</td>
-                            <td>0</td>
-                            @endif
-                            <td>{{$running_balance}}</td>
-                        </tr>
-                    @endforeach 
-                </tbody>--}}
             </table>
+
+            <div class="row">
+                <div class="col">
+                    <div class="h1 text-center mt-5">Bill Account</div>
+                    <table class="table table-striped- table-hover table-checkable table-condensed" id="table-bills">
+                        <thead>
+                            <tr>
+
+                                <th>Date</th>
+                                <th>Bill</th>
+                                <th>Amount</th>
+                                <th>Payment Status</th>
+                                <th>Action</th>
+                                
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
 
             <!--end: Datatable -->
 
@@ -185,6 +177,22 @@
         </div>
     
 
+    </div>
+</div>
+
+<div class="modal fade" id="quick_view" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header border-bottom-0">
+            <h5 class="modal-title"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+
+        </div>
+    </div>
     </div>
 </div>
 @endsection
@@ -200,6 +208,7 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script>
     var table;
+    var table_bills;
     var send_profit = function(){
         var _profit = $('#btnSend_profit').attr('data-profit');
         var _Month = $('#btnSend_profit').attr('data-month');
@@ -246,6 +255,78 @@
         });
     }
     $(function(){
+
+
+        
+        $('[data-ajax]').on('click', function(e){
+            e.preventDefault();
+            var _ajaxUrl = $(this).attr('data-ajax');
+            console.log(_ajaxUrl);
+            var _self = $(this);
+            
+
+            $.ajax({
+                url : _ajaxUrl,
+                type : 'GET',
+                dataType: 'html',
+                success: function(data){
+                    console.log($(data));
+                    
+                    var _targetForm = $(data).find('form').wrap('<p/>').parent().html();
+                    
+                    var _quickViewModal = $('#quick_view');
+                    _quickViewModal.find('.modal-title').text(_self.text().trim());
+                    _quickViewModal.find('.modal-body').html(_targetForm);
+                    $('script[data-ajax]').remove();
+                    $('body').append('<script data-ajax>'+$(data).find('[data-ajax]').html()+'<\/script>');
+                    _quickViewModal.modal('show');
+
+                    //add event handler to submit form in modal
+                    _quickViewModal.find('form').on('submit', function(e){
+                        e.preventDefault();
+                        var _form = $(this);
+                        var _url = _form.attr('action');
+                        $.ajax({
+                            url : _url,
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            type : 'POST',
+                            data: _form.serialize(),
+                            success: function(data){
+                                console.log(data);
+                                
+                                swal.fire({
+                                    position: 'center',
+                                    type: 'success',
+                                    title: 'Record updated successfully.',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                                table.ajax.reload(null, false);
+                            },
+                            error: function(error){
+                                swal.fire({
+                                    position: 'center',
+                                    type: 'error',
+                                    title: 'Oops...',
+                                    text: 'Unable to update.',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                            }
+                        });
+                    });
+                    
+                },
+                error: function(error){
+                    console.log(error);
+                }
+            });
+            
+        });
+
+
         
         $('.kt-select2').select2({
             placeholder: "Select a rider",
@@ -280,7 +361,7 @@
             
             console.log(data);
             biketrack.updateURL(data);
-            var url = "{{ url('admin/accounts/company/account/') }}"+"/"+JSON.stringify(_data) ;
+            var url = JSON.stringify(_data) ;
             getData(url);
         });
 
@@ -309,7 +390,7 @@
             
             console.log(data);
             biketrack.updateURL(data);
-            var url = "{{ url('admin/accounts/company/account/') }}"+"/"+JSON.stringify(_data) ;
+            var url = JSON.stringify(_data) ;
             getData(url);
             // var _Url = "{{url('/company/debits/get_salary_deduction/')}}"+"/"+_riderId+''
         });
@@ -346,7 +427,7 @@
             
             console.log(data);
             biketrack.updateURL(data);
-            var url = "{{ url('admin/accounts/company/account/') }}"+"/"+JSON.stringify(_data) ;
+            var url = JSON.stringify(_data) ;
             getData(url);
         }
 
@@ -354,11 +435,13 @@
         
 
 
-        var getData = function(url){
+        var getData = function(ranges){
+            var url = "{{ url('admin/accounts/company/account/') }}"+"/"+ranges;
             console.warn(url)
             table = $('#data-table').DataTable({
                 lengthMenu: [[-1], ["All"]],
                 destroy: true,
+                "dom": 'rft',
                 processing: true,
                 ordering: false,
                 serverSide: true,
@@ -391,6 +474,46 @@
                     { data: 'dr', name: 'dr' },
                     { data: 'company_profit', name: 'company_profit' },
                     { data: 'balance', name: 'balance' },
+                   
+                ],
+                responsive:true,
+            });
+            var url = "{{ url('admin/accounts/company/bills/') }}"+"/"+ranges;
+            table_bills = $('#table-bills').DataTable({
+                lengthMenu: [[-1], ["All"]],
+                dom: 't',
+                destroy: true,
+                processing: true,
+                ordering: false,
+                serverSide: true,
+                'language': { 
+                    'loadingRecords': '&nbsp;',
+                    'processing': $('.loading').show()
+                },
+                drawCallback:function(data){
+                    console.log(data);
+                    $('#btnSend_profit').text('').fadeOut('fast'); 
+                    var response = table.ajax.json();
+                    console.log(response);
+                    
+                    if(typeof response == "undefined") return;
+                    var _ClosingBalance = response.closing_balance;
+                    var _Month = response.last_month;
+                    var _Running_Balance = response.running_static_balance;
+                    $('#closing_balance').text(_ClosingBalance);
+                    var running_closing_balance = parseFloat($('#running_closing_balance').text());
+                    if(running_closing_balance > 0){
+                        $('#btnSend_profit').text('Send '+parseFloat(_Running_Balance).toFixed(2)+' to Company Profit').attr('data-month', _Month).attr('data-profit', _Running_Balance).fadeIn('fast'); 
+                    }
+                    
+                },
+                ajax: url,
+                columns: [
+                    { data: 'date', name: 'date' },            
+                    { data: 'bill', name: 'bill' },
+                    { data: 'amount', name: 'amount' },
+                    { data: 'payment_status', name: 'payment_status' },
+                    { data: 'action', name: 'action' },
                    
                 ],
                 responsive:true,
