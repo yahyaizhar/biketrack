@@ -205,7 +205,8 @@ class AjaxNewController extends Controller
                 //enable pay
                 return '<div>Pending <button type="button" onclick="updateStatus('.$bill->id.')" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
             }
-            return ucfirst($bill->payment_status);
+            
+            return ucfirst($bill->payment_status).' <i class="flaticon2-correct text-success h5"></i>';
         })
         ->addColumn('action', function($bill){
 

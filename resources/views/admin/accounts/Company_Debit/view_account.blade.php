@@ -7,9 +7,9 @@
     .fields_wrapper--show{
         display: block;
     }
-    .table th, .table td{
+    /* .table th, .table td{
         padding:0 !important;
-    }
+    } */
 </style>
 @endsection
 @section('main-content') 
