@@ -266,6 +266,7 @@ Route::group([
     Route::put('/maintenance/{maintenance}/updateStatus','AccountsController@updateStatusMaintenance')->name('admin.accounts.updateStatusMaintenance');
     Route::delete('/maintenance/{maintenance}', 'AccountsController@delete_maintenance')->name('admin.accounts.delete_maintenance');
     Route::get('/maintenance/edit/{shop_id}','AccountsController@maintenance_edit')->name('admin.maintenance_edit');
+    Route::get('/maintenance/edit/view/{shop_id}','AccountsController@maintenance_edit_view')->name('admin.maintenance_edit_view');
     Route::post('/maintenance/update/{shop_id}','AccountsController@maintenance_update')->name('admin.maintenance_update');
 //end maintenance
 //Company_Expense

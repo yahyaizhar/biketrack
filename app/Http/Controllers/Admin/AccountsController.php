@@ -415,10 +415,18 @@ class AccountsController extends Controller
         return view('admin.accounts.maintenance_view');
     }
     public function maintenance_edit($id){
+        $readonly=false;
         $maintenance=Maintenance::find($id);
         $workshops=Workshop::where('active_status', 'A')->get();
         $bikes=bike::where("active_status","A")->get();
-        return view('admin.accounts.maintenance_edit',compact('maintenance','workshops','bikes'));
+        return view('admin.accounts.maintenance_edit',compact('readonly','maintenance','workshops','bikes'));
+    }
+    public function maintenance_edit_view($id){
+        $readonly=true;
+        $maintenance=Maintenance::find($id);
+        $workshops=Workshop::where('active_status', 'A')->get();
+        $bikes=bike::where("active_status","A")->get();
+        return view('admin.accounts.maintenance_edit',compact('readonly','maintenance','workshops','bikes'));
     }
     public function maintenance_update(Request $r,$id){
         $maintenance =Maintenance::find($id);
