@@ -191,6 +191,15 @@ class SalikController extends Controller
             $_greater_ra->month=Carbon::parse($request->month)->format("Y-m-d");
             $_greater_ra->type="cr_payable";
             $_greater_ra->save();
+
+            $_greater_ca= new Company_Account;
+            $_greater_ca->source="Salik Extra";
+            $_greater_ca->salik_id="0";
+            $_greater_ca->amount=$used_salik-$allow_salik;
+            $_greater_ca->rider_id=$request->rider_id;
+            $_greater_ca->month=Carbon::parse($request->month)->format("Y-m-d");
+            $_greater_ca->type="cr";
+            $_greater_ca->save();
         }
         else{
             $ca= new Company_Account;

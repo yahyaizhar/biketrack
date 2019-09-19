@@ -24,6 +24,7 @@
             justify-content: center;
             align-items: center;
             font-size: 146%;
+            pointer-events: none; 
         }
         #watermark-text
         {

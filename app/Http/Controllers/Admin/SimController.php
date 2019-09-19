@@ -269,7 +269,8 @@ public function update_simTransaction(Request $request, $id){
                 // }
                 // else {
                     $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
-                        'sim_transaction_id'=>$sim_trans->id
+                        'sim_transaction_id'=>$sim_trans->id,
+                        'type' => 'dr'
                     ]);
                     $ca->sim_transaction_id =$sim_trans->id;
                     $ca->type='dr';
@@ -290,6 +291,18 @@ public function update_simTransaction(Request $request, $id){
                         $ra->source="Sim extra usage"; 
                         $ra->amount=$extra;
                         $ra->save();
+                        
+                        $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+                            'sim_transaction_id'=>$sim_trans->id,
+                            'type' => 'cr'
+                        ]);
+                        $ca->sim_transaction_id =$sim_trans->id;
+                        $ca->type='cr';
+                        $ca->rider_id=$rider_id;
+                        $ca->month = Carbon::parse($data['filterMonth'])->format('Y-m-d');
+                        $ca->source="Sim extra usage";
+                        $ca->amount=$extra;
+                        $ca->save();
                     }
                 //}
                 
