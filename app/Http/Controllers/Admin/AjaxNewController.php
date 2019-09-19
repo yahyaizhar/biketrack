@@ -75,7 +75,7 @@ class AjaxNewController extends Controller
                 <i class="la la-ellipsis-h"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="'.route('admin.id_charges_edit', $id_charge).'"><i class="fa fa-edit"></i> Edit</a>
+                    <a class="dropdown-item" href="'.route('admin.id_charges_edit_view', $id_charge).'"><i class="fa fa-edit"></i> View</a>
                     <button class="dropdown-item" onclick="updateStatus('.$id_charge->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                     <button class="dropdown-item" onclick="deleteRow('.$id_charge->id.');"><i class="fa fa-trash"></i> Delete</button>
                     </div>
@@ -583,7 +583,6 @@ class AjaxNewController extends Controller
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" href="'.route('admin.maintenance_edit_view', $maintenance).'"><i class="fa fa-edit"></i> View</a>
-                    <a class="dropdown-item" href="'.route('admin.maintenance_edit', $maintenance).'"><i class="fa fa-edit"></i> Edit</a>
                     <button class="dropdown-item" onclick="updateStatus('.$maintenance->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                     <button class="dropdown-item" onclick="deleteRow('.$maintenance->id.');"><i class="fa fa-trash"></i> Delete</button>
                 </div>
@@ -626,7 +625,7 @@ class AjaxNewController extends Controller
                 <i class="la la-ellipsis-h"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="'.route('admin.workshop_edit', $workshop).'"><i class="fa fa-edit"></i> Edit</a>
+                    <a class="dropdown-item" href="'.route('admin.workshop_edit_view', $workshop).'"><i class="fa fa-edit"></i> view</a>
                     <button class="dropdown-item" onclick="updateStatus('.$workshop->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                     <button class="dropdown-item" onclick="deleteRow('.$workshop->id.');"><i class="fa fa-trash"></i> Delete</button>
                     </div>
@@ -669,7 +668,7 @@ class AjaxNewController extends Controller
                 <i class="la la-ellipsis-h"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="'.route('admin.edirham_edit', $edirham).'"><i class="fa fa-edit"></i> Edit</a>
+                    <a class="dropdown-item" href="'.route('admin.edirham_edit_view', $edirham).'"><i class="fa fa-edit"></i> View</a>
                     <button class="dropdown-item" onclick="updateStatus('.$edirham->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                     <button class="dropdown-item" onclick="deleteRow('.$edirham->id.');"><i class="fa fa-trash"></i> Delete</button>
                     </div>
@@ -710,7 +709,7 @@ class AjaxNewController extends Controller
                 <i class="la la-ellipsis-h"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="'.route('admin.edit_fuel_expense', $expense).'"><i class="fa fa-edit"></i> Edit</a>
+                    <a class="dropdown-item" href="'.route('admin.edit_fuel_expense_view', $expense).'"><i class="fa fa-edit"></i> View</a>
                     <button class="dropdown-item" onclick="updateStatus('.$expense->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                     <button class="dropdown-item" onclick="deleteRow('.$expense->id.');"><i class="fa fa-trash"></i> Delete</button>
                     </div>
@@ -754,7 +753,7 @@ class AjaxNewController extends Controller
                 <i class="la la-ellipsis-h"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="'.route('admin.CE_edit', $expense).'"><i class="fa fa-edit"></i> Edit</a>
+                    <a class="dropdown-item" href="'.route('admin.CE_edit_view', $expense).'"><i class="fa fa-edit"></i> VIew</a>
                     <button class="dropdown-item" onclick="updateStatus('.$expense->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                     <button class="dropdown-item" onclick="deleteRow('.$expense->id.');"><i class="fa fa-trash"></i> Delete</button>
                     </div>
@@ -805,7 +804,7 @@ class AjaxNewController extends Controller
                 <i class="la la-ellipsis-h"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="'.route('admin.wps_edit', $wps).'"><i class="fa fa-edit"></i> Edit</a>
+                    <a class="dropdown-item" href="'.route('admin.wps_edit_view', $wps).'"><i class="fa fa-edit"></i> View</a>
                     <button class="dropdown-item" onclick="updateStatus('.$wps->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                     <button class="dropdown-item" onclick="deleteRow('.$wps->id.');"><i class="fa fa-trash"></i> Delete</button>
                     </div>
@@ -855,7 +854,7 @@ class AjaxNewController extends Controller
                 <i class="la la-ellipsis-h"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="'.route('admin.AR_edit', $ar).'"><i class="fa fa-edit"></i> Edit</a>
+                    <a class="dropdown-item" href="'.route('admin.AR_edit_view', $ar).'"><i class="fa fa-edit"></i> View</a>
                     <button class="dropdown-item" onclick="updateStatus('.$ar->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                     <button class="dropdown-item" onclick="deleteRow('.$ar->id.');"><i class="fa fa-trash"></i> Delete</button>
                     </div>

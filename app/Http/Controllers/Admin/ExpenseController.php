@@ -106,8 +106,16 @@ class ExpenseController extends Controller
     ]);
 }
 public function CE_edit($id){
+    $readonly=false;
+    $riders=Rider::where('active_status','A')->get();
     $edit_expense=Company_Expense::find($id);
-    return view('admin.accounts.Company_Expense.CE_edit',compact('edit_expense'));
+    return view('admin.accounts.Company_Expense.CE_edit',compact('riders','readonly','edit_expense'));
+}
+public function CE_edit_view($id){
+    $readonly=true;
+    $riders=Rider::where('active_status','A')->get();
+    $edit_expense=Company_Expense::find($id);
+    return view('admin.accounts.Company_Expense.CE_edit',compact('riders','readonly','edit_expense'));
 }
 // End Company Expense
 // WPS
@@ -186,9 +194,16 @@ public function wps_view(){
  return view('admin.accounts.WPS.wps_view');
 }
 public function wps_edit($id){
+    $readonly=false;
     $riders=Rider::where("active_status","A")->get();
     $edit_wps=WPS::find($id);
-    return view('admin.accounts.WPS.wps_edit',compact('edit_wps','riders'));  
+    return view('admin.accounts.WPS.wps_edit',compact('readonly','edit_wps','riders'));  
+}
+public function wps_edit_view($id){
+    $readonly=true;
+    $riders=Rider::where("active_status","A")->get();
+    $edit_wps=WPS::find($id);
+    return view('admin.accounts.WPS.wps_edit',compact('readonly','edit_wps','riders'));  
 }
 public function wps_update(Request $r,$id){
     $wps=WPS::find($id);
@@ -335,9 +350,16 @@ public function AR_delete($id){
     $delete_ar->update();
 }
 public function AR_edit($id){
+    $readonly=false;
     $riders=Rider::where("active_status","A")->get();
     $edit_ar=AdvanceReturn::find($id);
-    return view('admin.accounts.AR.AR_edit',compact('edit_ar','riders'));
+    return view('admin.accounts.AR.AR_edit',compact('readonly','edit_ar','riders'));
+}
+public function AR_edit_view($id){
+    $readonly=true;
+    $riders=Rider::where("active_status","A")->get();
+    $edit_ar=AdvanceReturn::find($id);
+    return view('admin.accounts.AR.AR_edit',compact('readonly','edit_ar','riders'));
 }
 public function AR_store(Request $r){
     $ar = AdvanceReturn::create([

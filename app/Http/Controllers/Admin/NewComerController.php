@@ -45,9 +45,16 @@ class NewComerController extends Controller
         ]);
     }
     public function newComer_edit(Request $request, $id){
+        $readonly=false;
         $newComer_id=$request->id;
         $newcomer=New_comer::find($newComer_id);
-        return view('New_Comer.newcomer_edit',compact('newcomer'));
+        return view('New_Comer.newcomer_edit',compact('readonly','newcomer'));
+    }
+    public function newComer_edit_view(Request $request, $id){
+        $readonly=true;
+        $newComer_id=$request->id;
+        $newcomer=New_comer::find($newComer_id);
+        return view('New_Comer.newcomer_edit',compact('readonly','newcomer'));
     }
     public function updateNewComer(Request $request,$id){
         $newComer_id=$request->id;

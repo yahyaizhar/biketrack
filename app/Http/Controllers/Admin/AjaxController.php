@@ -141,7 +141,7 @@ class AjaxController extends Controller
                 <i class="la la-ellipsis-h"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="'.route('Sim.edit_sim', $sim).'"><i class="fa fa-edit"></i> Edit</a>
+                    <a class="dropdown-item" href="'.route('Sim.edit_sim_view', $sim).'"><i class="fa fa-edit"></i> View</a>
                     <button class="dropdown-item" onclick="updateStatus('.$sim->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                     <button class="dropdown-item" onclick="deleteSim('.$sim->id.');"><i class="fa fa-trash"></i> Delete</button>
                     <a class="dropdown-item" href="'.route('Sim.rider.history', $sim->id).'"><i class="fa fa-eye"></i> View Rider history</a>
@@ -752,7 +752,7 @@ class AjaxController extends Controller
                 <div class="dropdown-menu dropdown-menu-right">
                     <button class="dropdown-item" onclick="updateStatus('.$mobile->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                     
-                    <a class="dropdown-item" href="'.route('mobile.edit', $mobile).'"><i class="fa fa-edit"></i> Edit</a>
+                    <a class="dropdown-item" href="'.route('mobile.edit_view', $mobile).'"><i class="fa fa-edit"></i> View</a>
                     <button class="dropdown-item" onclick="deletemobile('.$mobile->id.')"><i class="fa fa-trash"></i> Delete</button>
                     
                     </div>
@@ -981,7 +981,7 @@ class AjaxController extends Controller
                 <i class="la la-ellipsis-h"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="'.route('account.edit_developer', $riderToMonth).'"><i class="fa fa-edit"></i> Edit</a>
+                    <a class="dropdown-item" href="'.route('account.edit_developer_view', $riderToMonth).'"><i class="fa fa-edit"></i> view</a>
                     <button class="dropdown-item" onclick="updateStatus('.$riderToMonth->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                     <button class="dropdown-item" onclick="deleteDeveloper('.$riderToMonth->id.');"><i class="fa fa-trash"></i> Delete</button>
                     </div>
@@ -1059,7 +1059,7 @@ class AjaxController extends Controller
                 <i class="la la-ellipsis-h"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="'.route('account.edit_month', $monthToRider).'"><i class="fa fa-edit"></i> Edit</a>
+                    <a class="dropdown-item" href="'.route('account.edit_month_view', $monthToRider).'"><i class="fa fa-edit"></i> View</a>
                     <button class="dropdown-item" onclick="updateStatus('.$monthToRider->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                     <button class="dropdown-item" onclick="deleteMonth('.$monthToRider->id.');"><i class="fa fa-trash"></i> Delete</button>
                     </div>
@@ -1187,7 +1187,7 @@ class AjaxController extends Controller
                     <i class="la la-ellipsis-h"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="'.route('NewComer.edit', $newComer).'"><i class="fa fa-edit"></i> Edit</a>
+                        <a class="dropdown-item" href="'.route('NewComer.edit_view', $newComer).'"><i class="fa fa-edit"></i> View</a>
                         <button class="dropdown-item" onclick="deleteNewComer('.$newComer->id.');"><i class="fa fa-trash"></i> Delete</button>
                         </div>
                         <div style="left:32px;transform: translateY(-25px);position:absolute;">
