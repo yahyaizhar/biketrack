@@ -153,23 +153,42 @@ class SalikController extends Controller
         return view('admin.rider.salik_rider',compact('bike'));
     }
     public function add_salik(){
-        $riders=Rider::where("active_status","A")->get();
-        return view('admin.rider.add_salik',compact('riders'));
+        $bikes=bike::where("active_status","A")->get();
+        return view('admin.rider.add_salik',compact('bikes'));
     }
-    public function store_salik($id){
-        $rider=Rider::find($id);
+    public function store_salik(Request $request,$id){
+
+        $bike=bike::find($id);
+        $assign_bike=Assign_bike::where('bike_id', $bike->id)
+        ->whereDate('created_at','<=',Carbon::parse($request->month)->format('Y-m-d'))
+        ->get()
+        ->last();
+        if (isset($assign_bike)) {
+            $rider_id=$assign_bike->rider_id;
+         } 
+         $rider=Rider::find($rider_id);
       $rider_detail=$rider->Rider_detail;
       $salik_amount=$rider_detail->salik_amount;
 
 
         return response()->json([
             'salik_amount'=>$salik_amount,
+            'rider_id'=>$rider,
         ]);
     }
     public function insert_salik(Request $request){
         $used_salik= $request->amount;
-
-        $rider=Rider::find($request->rider_id);
+        
+        $bike=bike::find($request->bike_id);
+        $assign_bike=Assign_bike::where('bike_id', $bike->id)
+        ->whereDate('created_at','<=',Carbon::parse($request->month)->format('Y-m-d'))
+        ->get()
+        ->last();
+        
+         if (isset($assign_bike)) {
+            $rider_id=$assign_bike->rider_id;
+         } 
+         $rider=Rider::find($rider_id);
         $rider_detail=$rider->Rider_detail;
         $allow_salik=$rider_detail->salik_amount;
         
@@ -178,7 +197,7 @@ class SalikController extends Controller
             $_greater_ca->source="Salik";
             $_greater_ca->salik_id="0";
             $_greater_ca->amount=$used_salik;
-            $_greater_ca->rider_id=$request->rider_id;
+            $_greater_ca->rider_id=$rider_id;
             $_greater_ca->month=Carbon::parse($request->month)->format("Y-m-d");
             $_greater_ca->type="dr";
             $_greater_ca->save();
@@ -187,7 +206,7 @@ class SalikController extends Controller
             $_greater_ra->source="Salik";
             $_greater_ra->salik_id="0";
             $_greater_ra->amount=$used_salik-$allow_salik;
-            $_greater_ra->rider_id=$request->rider_id;
+            $_greater_ra->rider_id=$rider_id;
             $_greater_ra->month=Carbon::parse($request->month)->format("Y-m-d");
             $_greater_ra->type="cr_payable";
             $_greater_ra->save();
@@ -206,7 +225,7 @@ class SalikController extends Controller
             $ca->source="Salik";
             $ca->amount=$allow_salik;
             $ca->salik_id="0";
-            $ca->rider_id=$request->rider_id;
+            $ca->rider_id=$rider_id;
             $ca->month=Carbon::parse($request->month)->format("Y-m-d");
             $ca->type="dr";
             $ca->save();
@@ -215,7 +234,7 @@ class SalikController extends Controller
                 $_less_ra->source="Salik";
                 $_less_ra->salik_id="0";
                 $_less_ra->amount=$allow_salik-$used_salik;
-                $_less_ra->rider_id=$request->rider_id;
+                $_less_ra->rider_id=$rider_id;
                 $_less_ra->month=Carbon::parse($request->month)->format("Y-m-d");
                 $_less_ra->type="cr";
                 $_less_ra->save();

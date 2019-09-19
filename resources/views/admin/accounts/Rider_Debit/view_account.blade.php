@@ -156,7 +156,7 @@
                         </div>
                         <div class="form-group">
                             <label>Month:</label>
-                        <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                        <input type="text" id="month_picker" required readonly class=" form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
                             @if ($errors->has('month'))
                                 <span class="invalid-response" role="alert">
                                     <strong>
@@ -232,6 +232,20 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script>
+     $('#month_picker').each(function(){
+        var _initDate = "{{Carbon\Carbon::now()->format('M Y')}}";
+        
+        $(this).fdatepicker({ 
+            format: 'MM yyyy', 
+            // initialDate: 'July 2019',
+            startView:3,
+            minView:3,
+            maxView:4
+        });
+        $(this).fdatepicker('update', new Date(_initDate));
+        
+        
+    });
     var table;
     $(function(){
         

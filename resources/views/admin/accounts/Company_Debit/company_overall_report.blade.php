@@ -123,7 +123,7 @@
                         <th>Date</th>
                         <th>Description</th>
                         <th>Credit</th>
-                        <th>Debit</th>                       
+                        <th>Debit</th>                    
                     </tr>
                 </thead>
             </table>

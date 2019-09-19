@@ -43,6 +43,7 @@ use App\Model\Accounts\Client_Income;
 use App\Model\Accounts\Income_zomato;
 use App\Model\Mobile\Mobile_Transaction;
 
+
 class AjaxNewController extends Controller
 {
     public function getIdCharges()
@@ -1034,7 +1035,7 @@ class AjaxNewController extends Controller
     }
     public function getCompany_overall_REPORT($month)
     {
-        $CO=Company_Account::whereMonth('month',$month)->get();
+        $CO=Company_Account::whereMonth('month',$month)->where('rider_id',null)->where('payment_status','paid')->get();
         $overall_balnce_cr_monthly=Company_Account::where(function($q) {
             $q->where('type','cr')
             ->orWhere('type','dr_receivable')
@@ -1076,15 +1077,18 @@ class AjaxNewController extends Controller
        
         return DataTables::of($CO)
         
+        ->addColumn('cash_against_rider', function($CO) {
+                return $CO->amount;
+        }) 
         ->addColumn('month', function($CO) {
-                return carbon::parse($CO->month)->format('M d, Y');
+            return carbon::parse($CO->month)->format('M d, Y');
         }) 
         ->addColumn('description', function($CO){
             $rider=Rider::find($CO->rider_id);
                 if (isset($rider)) {
                     return $CO->source.' <strong>('.$rider->name.')</strong>';
                 } else {
-                    return $CO->source;;
+                    return $CO->source;
                 }
         }) 
         ->addColumn('cr', function($CO){
@@ -1110,7 +1114,7 @@ class AjaxNewController extends Controller
             'payable_to_riders'=>round($payable_to_riders,2),
         ])
                
-        ->rawColumns(['profit','cr','description','amount','dr','rider_id','month'])
+        ->rawColumns(['profit','cr','cash_against_rider','expense','description','amount','dr','rider_id','month'])
         ->make(true);
     }
 }

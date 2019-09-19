@@ -27,6 +27,7 @@ use App\Model\Accounts\Income_zomato;
 use Arr;
 use Batch;
 use App\Model\Accounts\Company_Account;
+use App\Assign_bike;
 
 
 class AccountsController extends Controller
@@ -335,7 +336,10 @@ class AccountsController extends Controller
                 $maintenance->invoice_image = $filepath;
             }
             $maintenance->save();
-        $assign_bike=\App\Assign_bike::where('bike_id', $maintenance->bike_id)->where('status','active')->get()->first();
+        $assign_bike=Assign_bike::where('bike_id', $maintenance->bike_id)
+        ->whereDate('created_at','<=',Carbon::parse($r->month)->format('Y-m-d'))
+        ->get()
+        ->last();
         $rider_id = null;
         if($assign_bike){
             $rider_id=Rider::find($assign_bike->rider_id)->id;
@@ -477,7 +481,10 @@ class AccountsController extends Controller
             $maintenance->status = 0;
         $maintenance->update();
         
-        $assign_bike=\App\Assign_bike::where('bike_id', $maintenance->bike_id)->where('status','active')->get()->first();
+        $assign_bike=where('bike_id', $maintenance->bike_id)
+        ->whereDate('created_at','<=',Carbon::parse($r->month)->format('Y-m-d'))
+        ->get()
+        ->last();
         $rider_id = null;
         if($assign_bike){
             $rider_id=Rider::find($assign_bike->rider_id)->id;
@@ -1122,13 +1129,18 @@ public function fuel_expense_insert(Request $r){
             $fuel_expense->status = 1;
         else
             $fuel_expense->status = 0;
-    $fuel_expense->save();
-    $assign_bike=\App\Assign_bike::where('bike_id', $fuel_expense->bike_id)->where('status','active')->get()->first();
-    $rider_id = null;
-    if($assign_bike){
-        $rider_id=Rider::find($assign_bike->rider_id)->id;
+        $ab=Assign_bike::where('bike_id', $fuel_expense->bike_id)
+        ->whereDate('created_at','<=',Carbon::parse($r->get('month'))->format('Y-m-d'))
+        ->get()
+        ->last();
+        
+        
+        $fuel_expense->save();
+     $rider_id = null;
+    if($ab){
+        $rider_id=$ab->rider_id;
     }
-if ($fuel_expense->type=="vip_tag") {
+    if ($fuel_expense->type=="vip_tag") {
     
     $ca = new \App\Model\Accounts\Company_Account;
     $ca->type='dr';
@@ -1226,7 +1238,10 @@ public function update_edit_fuel_expense(Request $r,$id){
             $fuel_expense->status = 0;
     $fuel_expense->update();
 
-    $assign_bike=\App\Assign_bike::where('bike_id', $fuel_expense->bike_id)->where('status','active')->get()->first();
+    $assign_bike=Assign_bike::where('bike_id', $fuel_expense->bike_id)
+    ->whereDate('created_at','<=',Carbon::parse($r->get('month'))->format('Y-m-d'))
+    ->get()
+    ->last();
     $rider_id = null;
     if($assign_bike){
         $rider_id=Rider::find($assign_bike->rider_id)->id;
