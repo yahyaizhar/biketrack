@@ -191,12 +191,14 @@ Route::group([
     Route::get('/Month/Salary','AccountsController@salary_by_month_create')->name('account.month_salary');
     Route::post('/month/{month_id}/updateStatus', 'AccountsController@updateStatusmonth')->name('account.updateStatusmonth');
     Route::get('/month/Edit/{month_id}','AccountsController@month_edit')->name('account.edit_month');
+    Route::get('/month/Edit/view/{month_id}','AccountsController@month_edit_view')->name('account.edit_month_view');
     Route::post('/month/update/{month_id}','AccountsController@month_update')->name('account.month_update');
     
     Route::get('/Developer/Salary','AccountsController@salary_by_developer_create')->name('account.developer_salary');
     Route::delete('/developer/{developer_id}', 'AccountsController@DeleteDeveloper')->name('account.DeleteDeveloper');
     Route::post('/developer/{developer_id}/updateStatus', 'AccountsController@updateStatusdeveloper')->name('account.updateStatusdeveloper');
     Route::get('/developer/Edit/{developer_id}','AccountsController@developer_edit')->name('account.edit_developer');
+    Route::get('/developer/Edit/view/{developer_id}','AccountsController@developer_edit_view')->name('account.edit_developer_view');
     Route::post('/developer/update/{developer_id}','AccountsController@developer_update')->name('account.developer_update');
 
     Route::get("/Salary/accounts/rider/account","AccountsController@rider_account")->name("admin.accounts.rider_account");
@@ -231,6 +233,7 @@ Route::group([
     Route::post('/fuel_expense/{expense_id}/updatestatus','AccountsController@update_fuel_expense')->name('admin.update_fuel_expense');
     Route::get('/fuel_expense/edit/{expense_id}','AccountsController@edit_fuel_expense')->name('admin.edit_fuel_expense');
     Route::post('/fuel_expense/update/{expense_id}','AccountsController@update_edit_fuel_expense')->name('admin.update_edit_fuel_expense');
+    Route::get('/fuel_expense/edit/view/{expense_id}','AccountsController@edit_fuel_expense_view')->name('admin.edit_fuel_expense_view');
 // end fuel_expense
 // id-charges
     Route::get("/id-charges","AccountsController@id_charges_index")->name("admin.accounts.id_charges_index");
@@ -240,6 +243,7 @@ Route::group([
     Route::delete('/id-charges/{id_charges_id}', 'AccountsController@delete_id_charges')->name('admin.accounts.delete_id_charges');
     Route::get('/id-charges/edit/{charge_id}','AccountsController@id_charges_edit')->name('admin.id_charges_edit');
     Route::post('/id-charges/update/{charge_id}','AccountsController@id_charges_update')->name('admin.id_charges_update');
+    Route::get('/id-charges/edit/view/{charge_id}','AccountsController@id_charges_edit_view')->name('admin.id_charges_edit_view');
 // end id-charges
 // workshop
     Route::get("/workshop/add","AccountsController@workshop_index")->name("admin.accounts.workshop_index");
@@ -249,6 +253,7 @@ Route::group([
     Route::delete('/workshop/{workshop_id}', 'AccountsController@delete_workshop')->name('admin.accounts.delete_workshop');
     Route::get('/workshop/edit/{shop_id}','AccountsController@workshop_edit')->name('admin.workshop_edit');
     Route::post('/workshop/update/{shop_id}','AccountsController@workshop_update')->name('admin.workshop_update');
+    Route::get('/workshop/edit/view/{shop_id}','AccountsController@workshop_edit_view')->name('admin.workshop_edit_view');
 // end workshop
 //edirham
     Route::get("/edirham/add","AccountsController@edirham_index")->name("admin.accounts.edirham_index");
@@ -258,6 +263,7 @@ Route::group([
     Route::delete('/edirham/{edirham}', 'AccountsController@delete_edirham')->name('admin.accounts.delete_edirham');
     Route::get('/edirham/edit/{id}','AccountsController@edirham_edit')->name('admin.edirham_edit');
     Route::post('/edirham/update/{id}','AccountsController@edirham_update')->name('admin.edirham_update');
+    Route::get('/edirham/edit/view/{id}','AccountsController@edirham_edit_view')->name('admin.edirham_edit_view');
 //end edirham
 // maintenance
     Route::get("/maintenance/add","AccountsController@maintenance_index")->name("admin.accounts.maintenance_index");
@@ -278,6 +284,7 @@ Route::group([
     Route::delete('/CE/delete/{id}','ExpenseController@CE_delete')->name('admin.CE_delete');
     Route::get('/CE/edit/{id}','ExpenseController@CE_edit')->name('admin.CE_edit');
     Route::get('/CE/report','ExpenseController@CE_report')->name('admin.CE_report');
+    Route::get('/CE/edit/view/{id}','ExpenseController@CE_edit_view')->name('admin.CE_edit_view');
 // End Company_Expense
 //     WPS
     Route::get('/wps/index','ExpenseController@wps_index')->name('admin.wps_index');
@@ -287,6 +294,7 @@ Route::group([
     Route::post('/wps/{id}/updatestatus','ExpenseController@wps_updatestatus')->name('admin.wps_updatestatus');
     Route::delete('/wps/delete/{id}','ExpenseController@wps_delete')->name('admin.wps_delete');
     Route::get('/wps/edit/{id}','ExpenseController@wps_edit')->name('admin.wps_edit');
+    Route::get('/wps/edit/view/{id}','ExpenseController@wps_edit_view')->name('admin.wps_edit_view');
 // End WPS
 //ADVANCE & RETURN
     Route::get('/AR/index','ExpenseController@AR_index')->name('admin.AR_index');
@@ -296,6 +304,7 @@ Route::group([
     Route::post('/AR/{id}/updatestatus','ExpenseController@AR_updatestatus')->name('admin.AR_updatestatus');
     Route::delete('/AR/delete/{id}','ExpenseController@AR_delete')->name('admin.AR_delete');
     Route::get('/AR/edit/{id}','ExpenseController@AR_edit')->name('admin.AR_edit');
+    Route::get('/AR/edit/view/{id}','ExpenseController@AR_edit_view')->name('admin.AR_edit_view');
 // End ADVANCE & RETURN
     Route::get("/accounts/testing","HomeController@accounts_testing_v1")->name("admin.accounts.testing_v1");
    
@@ -318,6 +327,7 @@ Route::group([
     Route::get('/newComer/view','NewComerController@new_comer_view')->name('NewComer.view');
     Route::delete('/newComer/delete/{newComer_id}','NewComerController@delete_new_comer')->name('NewCome.delete');
     Route::get('/newComer/Edit/{id}','NewComerController@newComer_edit')->name('NewComer.edit');
+    Route::get('/newComer/Edit/view/{id}','NewComerController@newComer_edit_view')->name('NewComer.edit_view');
     Route::post('/newComer/{id}/update', 'NewComerController@updateNewComer')->name('NewComer.updatenewComer');
     Route::get('/newComer/popup/{newComer_id}','NewComerController@newComer_popup')->name('NewComer.popup');
     
@@ -339,6 +349,7 @@ Route::group([
     Route::post('/store/Sim','SimController@store_sim')->name('Sim.store_sim');
     Route::get('/view/records/Sim','SimController@view_records_sim')->name('Sim.view_records');
     Route::get('/edit/{id}/Sim','SimController@edit_sim')->name('Sim.edit_sim');
+    Route::get('/edit/Sim/view/{id}','SimController@edit_sim_view')->name('Sim.edit_sim_view');
     Route::post('/update/{id}/Sim','SimController@update_sim')->name('Sim.update_sim');
     Route::post('/sim/{sim_id}/updateStatus','SimController@updateStatusSim')->name('Sim.updateStatus_sim');
     Route::delete('/sim/{sim_id}', 'SimController@DeleteSim')->name('Sim.DeleteSim');
@@ -376,6 +387,7 @@ Route::group([
     Route::post('/mobile/create','MobileController@create_mobile_POST')->name('mobile.create_mobile_POST');
     Route::get('/mobiles','MobileController@mobiles')->name('mobile.show');
     Route::get('/mobile/{mobile}/edit','MobileController@update_mobile_GET')->name('mobile.edit');
+    Route::get('/mobile/{mobile}/edit/view','MobileController@update_mobile_GET_view')->name('mobile.edit_view');
     Route::delete('/mobile/delete/{mobile_id}','MobileController@delete_mobile')->name('Mobile.delete_mobile');
     Route::post('/mobile/{id}/updateStatus','MobileController@updateStatusMobile')->name('Mobile.updatetatus');
     Route::post('/mobile/{id}/update','MobileController@update_mobile')->name('Mobile.update');

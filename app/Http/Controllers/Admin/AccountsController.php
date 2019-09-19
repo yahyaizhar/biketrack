@@ -74,9 +74,16 @@ class AccountsController extends Controller
         return view('admin.accounts.id_charges_view');
     }
     public function id_charges_edit($id){
+        $readonly=false;
         $riders=Rider::where('active_status', 'A')->get();
         $id_charges=Id_charge::find($id);
-        return view('admin.accounts.id_charges_edit',compact('id_charges','riders'));
+        return view('admin.accounts.id_charges_edit',compact('readonly','id_charges','riders'));
+    }
+    public function id_charges_edit_view($id){
+        $readonly=true;
+        $riders=Rider::where('active_status', 'A')->get();
+        $id_charges=Id_charge::find($id);
+        return view('admin.accounts.id_charges_edit',compact('readonly','id_charges','riders'));
     }
     public function id_charges_update(Request $r,$id){
         $rider=Rider::find($r->rider_id);
@@ -165,8 +172,14 @@ class AccountsController extends Controller
         return view('admin.accounts.workshop_view');
     }
     public function workshop_edit($id){
+        $readonly=false;
         $workshop=Workshop::find($id);
-        return view('admin.accounts.workshop_edit',compact('workshop'));
+        return view('admin.accounts.workshop_edit',compact('readonly','workshop'));
+    }
+    public function workshop_edit_view($id){
+        $readonly=true;
+        $workshop=Workshop::find($id);
+        return view('admin.accounts.workshop_edit',compact('readonly','workshop'));
     }
     public function workshop_update(Request $r,$id){
         $workshop =Workshop::find($id);
@@ -236,8 +249,14 @@ class AccountsController extends Controller
         return view('admin.accounts.Edirham.edirham_view');
     }
     public function edirham_edit($id){
+        $readonly=false;
         $edirham=Edirham::find($id);
-        return view('admin.accounts.Edirham.edirham_edit',compact('edirham'));
+        return view('admin.accounts.Edirham.edirham_edit',compact('readonly','edirham'));
+    }
+    public function edirham_edit_view($id){
+        $readonly=true;
+        $edirham=Edirham::find($id);
+        return view('admin.accounts.Edirham.edirham_edit',compact('readonly','edirham'));
     }
     public function edirham_update(Request $r,$id){
         $edirham =Edirham::find($id);
@@ -983,9 +1002,16 @@ class AccountsController extends Controller
         ]);
     }
     public function month_edit(Request $request,$month_id){
+        $readonly=false;
         $month_id_array =$request->month_id;
         $month = Rider_salary::find($month_id_array);
-        return view('accounts.month_edit',compact('month'));
+        return view('accounts.month_edit',compact('readonly','month'));
+    }
+    public function month_edit_view(Request $request,$month_id){
+        $readonly=true;
+        $month_id_array =$request->month_id;
+        $month = Rider_salary::find($month_id_array);
+        return view('accounts.month_edit',compact('readonly','month'));
     }
     public function month_update(Request $request,Rider_salary $month,$id){
 
@@ -1045,9 +1071,16 @@ class AccountsController extends Controller
         ]);
     }
     public function developer_edit(Request $request,$developer_id){
+        $readonly=false;
         $developer_id_array =$request->developer_id;
         $developer = Rider_salary::find($developer_id_array);
-        return view('accounts.developer_edit',compact('developer'));
+        return view('accounts.developer_edit',compact('readonly','developer'));
+    }
+    public function developer_edit_view(Request $request,$developer_id){
+        $readonly=true;
+        $developer_id_array =$request->developer_id;
+        $developer = Rider_salary::find($developer_id_array);
+        return view('accounts.developer_edit',compact('readonly','developer'));
     }
     public function developer_update(Request $request,Rider_salary $developer,$id){
 
@@ -1169,9 +1202,16 @@ public function update_fuel_expense($id)
     ]);
 }
 public function edit_fuel_expense($id){
+    $is_readonly=false;
     $expense=Fuel_Expense::find($id);
     $bikes=bike::all();
-    return view('admin.accounts.Fuel_Expense.FE_edit',compact('expense','bikes'));
+    return view('admin.accounts.Fuel_Expense.FE_edit',compact('is_readonly','expense','bikes'));
+}
+public function edit_fuel_expense_view($id){
+    $is_readonly=true;
+    $expense=Fuel_Expense::find($id);
+    $bikes=bike::all();
+    return view('admin.accounts.Fuel_Expense.FE_edit',compact('is_readonly','expense','bikes'));
 }
 public function update_edit_fuel_expense(Request $r,$id){
     $bike_id=bike::find($r->bike_id);

@@ -29,8 +29,14 @@ class MobileController extends Controller
     } 
     // start mobile section
     public function update_mobile_GET($id){
+        $readonly=false;
         $mobile_edit=Mobile::find($id);
-        return view('admin.rider.mobile.edit', compact('mobile_edit'));
+        return view('admin.rider.mobile.edit', compact('readonly','mobile_edit'));
+    }
+    public function update_mobile_GET_view($id){
+        $readonly=true;
+        $mobile_edit=Mobile::find($id);
+        return view('admin.rider.mobile.edit', compact('readonly','mobile_edit'));
     }
 
     public function update_mobile(Request $request,$id){

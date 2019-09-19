@@ -53,8 +53,14 @@ class SimController extends Controller
     }
 
     public function edit_sim($id){
+        $readonly=false;
         $sim=Sim::find($id);
-       return view('SIM.edit_sim',compact('sim')); 
+       return view('SIM.edit_sim',compact('readonly','sim')); 
+    }
+    public function edit_sim_view($id){
+        $readonly=true;
+        $sim=Sim::find($id);
+       return view('SIM.edit_sim',compact('readonly','sim')); 
     }
     public function update_sim(Request $request, $id){
       $sim=Sim::find($id);  
