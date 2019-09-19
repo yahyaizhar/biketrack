@@ -29,14 +29,8 @@ class MobileController extends Controller
     } 
     // start mobile section
     public function update_mobile_GET($id){
-        $readonly=false;
         $mobile_edit=Mobile::find($id);
-        return view('admin.rider.mobile.edit', compact('readonly','mobile_edit'));
-    }
-    public function update_mobile_GET_view($id){
-        $readonly=true;
-        $mobile_edit=Mobile::find($id);
-        return view('admin.rider.mobile.edit', compact('readonly','mobile_edit'));
+        return view('admin.rider.mobile.edit', compact('mobile_edit'));
     }
 
     public function update_mobile(Request $request,$id){
@@ -125,7 +119,7 @@ class MobileController extends Controller
         $ca->rider_id=$r->rider_id;
         $ca->month = $mobile_installment->installment_month;
         $ca->source="Mobile Installment";
-        $ca->amount=$data['per_month_installment_amount'];
+        $ca->amount=$r->per_month_installment_amount;
         $ca->save();
 
         $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
@@ -136,7 +130,7 @@ class MobileController extends Controller
         $ra->rider_id=$r->rider_id;
         $ra->month = $mobile_installment->installment_month;
         $ra->source="Mobile Installment";
-        $ra->amount=$data['per_month_installment_amount'];
+        $ra->amount=$r->per_month_installment_amount;
         $ra->save();
 
         return redirect(route('mobile.show'))->with('message', 'Record Added Successfully.');

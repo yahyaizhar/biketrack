@@ -997,10 +997,10 @@ class AjaxNewController extends Controller
             return '0';
         })
         ->addColumn('month', function($all_mobiles) use ($month,$mob_trans) {
-            $mob_tran =Mobile_Transaction::find($all_mobiles->id)->whereMonth('month', Carbon::parse($month)->format('m'))->get()->first();
-            if(isset($mob_tran)){
-                return Carbon::parse($mob_tran->month)->format('F Y');
-            }
+            // $mob_tran =Mobile_Transaction::find($all_mobiles->id)->whereMonth('month', Carbon::parse($month)->format('m'))->get()->first();
+            // if(isset($mob_tran)){
+            //     return Carbon::parse($mob_tran->month)->format('F Y');
+            // }
             return Carbon::now()->format('F Y');
         })
         ->addColumn('bill_status', function($all_mobiles) use ($month,$mob_trans){

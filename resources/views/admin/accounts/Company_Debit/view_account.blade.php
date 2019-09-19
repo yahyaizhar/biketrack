@@ -114,7 +114,7 @@
                     <i class="kt-font-brand fa fa-hotel"></i>
                 </span>
                 <h3 class="kt-portlet__head-title">
-                    Company Account
+                    Company-Rider Account
                 </h3>
             </div>
             <div class="kt-portlet__head-toolbar">
@@ -142,8 +142,8 @@
                         </th> --}}
                         <th>Date</th>
                         <th>Description</th>
-                        <th>Payout Against Rider</th>
-                        <th>Paid to Rider Account</th>
+                        <th>Credit</th>
+                        <th>Debit</th>
                         <th>Company Profit</th>
                         <th>Running Balance</th>
                         
