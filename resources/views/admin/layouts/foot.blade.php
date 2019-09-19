@@ -290,12 +290,7 @@ jQuery(function($) {
             minView:2,
             maxView:4
         });
-        $(this).trigger('click')
-        $('.datepicker:visible table tbody .day:contains('+_initDate.split(',')[0].split(' ')[1]+')').trigger('click');
-        var _self = $(this);
-        setTimeout(function() {
-            _self.trigger('change') 
-        }, 300);
+        $(this).fdatepicker('update', new Date(_initDate));
         
         
     });

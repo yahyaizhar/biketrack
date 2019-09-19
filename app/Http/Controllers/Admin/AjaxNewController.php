@@ -366,21 +366,39 @@ class AjaxNewController extends Controller
         $ranges = json_decode($ranges, true);
         $from = date($ranges['range']['start_date']);
         $to = date($ranges['range']['end_date']);
-        $company_statements = \App\Model\Accounts\Company_Account::where("rider_id",$ranges['rider_id'])
-        ->where(function($q) {
-            $q->whereNotNull('fuel_expense_id')
-              ->orWhere('maintenance_id', '!=', null)
-              ->orWhere('sim_transaction_id', '!=', null)
-              ->orWhere('salik_id', '!=', null)
-              ->orWhere('salary_id', '!=', null);
-        })
-        ->where('payment_status','paid')
+        $company_statements = collect([]);
+        $company_statements_RAW = \App\Model\Accounts\Company_Account::where("rider_id",$ranges['rider_id'])
+        // ->where(function($q) {
+        //     $q->whereNotNull('fuel_expense_id')
+        //       ->orWhere('maintenance_id', '!=', null)
+        //       ->orWhere('sim_transaction_id', '!=', null)
+        //       ->orWhere('salik_id', '!=', null)
+        //       ->orWhere('salary_id', '!=', null);
+        // })
+        // ->where('payment_status','paid')
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
         ->get();
         // ->whereDate('created_at', '>=',$from)
         // ->whereDate('created_at', '<=',$to)
 
+        foreach ($company_statements_RAW as $company_statement) {
+            $continue = false;
+            if($company_statement->fuel_expense_id != null || 
+            $company_statement->maintenance_id != null ||
+            $company_statement->sim_transaction_id != null ||
+            $company_statement->salik_id != null ||
+            $company_statement->bike_rent_id != null    ){
+                if($company_statement->payment_status=="pending"){
+                    //skip this
+                    $continue = true;
+                }
+            }
+
+            if(!$continue){
+                $company_statements->push($company_statement);
+            }
+        }
         
 
         

@@ -397,6 +397,8 @@ $(function() {
             '<td colspan="2";>'+data.dc_deductions+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >Mcdonalds Deductions:</td>'+
             '<td colspan="2";>'+data.mcdonalds_deductions+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Date:</td>'+
+            '<td colspan="2";>'+data.date+'</td>'+
             '</tr>'+
             
         '</table>';
