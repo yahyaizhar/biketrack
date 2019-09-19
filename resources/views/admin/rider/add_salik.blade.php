@@ -22,11 +22,11 @@
                     <div class="kt-portlet__body">
 
                         <div class="form-group">
-                            <label>Rider:</label>
-                            <select required class="form-control kt-select2-general" name="rider_id" >
-                                @foreach ($riders as $rider)
-                                <option value="{{ $rider->id }}">
-                                    {{ $rider->name }}
+                            <label>Bike:</label>
+                            <select required class="form-control kt-select2-general" name="bike_id" >
+                                @foreach ($bikes as $bike)
+                                <option value="{{ $bike->id }}">
+                                {{ $bike->brand }}-{{$bike->bike_number}}-{{$bike->model}}
                                 </option>     
                                 @endforeach 
                             </select> 
@@ -97,26 +97,26 @@
       $('#datepicker').fdatepicker({format: 'dd-mm-yyyy'}); 
 
   });
-  $('#salik [name="rider_id"],#salik [name="month"]').on('change', function(){
-            var _riderid = $('[name="rider_id"]').val();
-            var _month = $('[name="month"]').val();
+//   $('#salik [name="bike_id"],#salik [name="month"]').on('change', function(){
+//             var _riderid = $('[name="bike_id"]').val();
+//             var _month = $('[name="month"]').val();
             
-            if(_riderid==''||_month=='')return;
-            _month = new Date(_month).format('m');
-            console.log(_riderid, _month);
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }, 
-                url:"{{url('admin/store/salik/')}}"+'/'+_riderid,
-                method: "GET"
-            })
-            .done(function(data) {  
-                console.log(data);
-                $('#salik [name="amount"]').val(data.salik_amount).trigger('change');
+//             if(_riderid==''||_month=='')return;
+//             _month = new Date(_month).format('m');
+//             console.log(_riderid, _month);
+//             $.ajax({
+//                 headers: {
+//                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+//                 }, 
+//                 url:"{{url('admin/store/salik/')}}"+'/'+_riderid,
+//                 method: "GET"
+//             })
+//             .done(function(data) {  
+//                 console.log(data);
+//                 $('#salik [name="amount"]').val(data.salik_amount).trigger('change');
                 
-            });
-        });
+//             });
+//         });
 
 </script>
 @endsection
