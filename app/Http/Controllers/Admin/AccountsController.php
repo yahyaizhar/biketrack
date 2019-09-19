@@ -1745,9 +1745,16 @@ public function client_income_delete(Request $request,$id){
     ]);
 }
 public function client_income_edit($id){
+    $readonly=false;
     $clients=Client::where("active_status","A")->get();
     $edit_client_income=Client_Income::find($id);
-    return view('accounts.Client_income.edit_income',compact('edit_client_income','clients'));
+    return view('accounts.Client_income.edit_income',compact('readonly','edit_client_income','clients'));
+}
+public function client_income_edit_view($id){
+    $readonly=true;
+    $clients=Client::where("active_status","A")->get();
+    $edit_client_income=Client_Income::find($id);
+    return view('accounts.Client_income.edit_income',compact('readonly','edit_client_income','clients'));
 }
 public function client_income_store(Request $request){
     $client = Client::find($request->client_id);
