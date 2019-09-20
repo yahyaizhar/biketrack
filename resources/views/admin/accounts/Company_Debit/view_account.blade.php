@@ -120,7 +120,21 @@
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
-                        {{-- <button class="btn btn-danger btn-elevate btn-icon-sm" id="bulk_delete">Delete Selected</button> --}}
+                        <a href="" data-ajax="{{ route('MobileInstallment.create') }}" class=" btn btn-danger btn-elevate btn-icon-sm">
+                            <i class="fa fa-mobile-alt"></i>
+                            Mobile Installment
+                        </a>
+                        &nbsp;
+                        <a href="" data-ajax="{{ route('admin.create_bike_rent') }}" class=" btn btn-danger btn-elevate btn-icon-sm">
+                            <i class="fa fa-motorcycle"></i>
+                            Bike Rent
+                        </a>
+                        &nbsp;
+                        <a href="" data-ajax="{{ route('admin.accounts.maintenance_index') }}" class=" btn btn-danger btn-elevate btn-icon-sm">
+                            <i class="flaticon2-gear"></i>
+                            Maintenance
+                        </a>
+                        &nbsp;
                         <a href="" data-ajax="{{ route('salik.add_salik') }}" class=" btn btn-danger btn-elevate btn-icon-sm">
                             <i class="flaticon2-lorry"></i>
                             Add Salik

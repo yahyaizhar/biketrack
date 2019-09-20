@@ -86,7 +86,7 @@
     <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/select2.js') }}" type="text/javascript"></script>
     <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/bootstrap-switch.js') }}" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
-    <script>
+    <script data-ajax>
     $(function(){
         $('.dp__custom').fdatepicker({ format: 'MM yyyy',startView:3,minView:3,maxView:4});
         $('.kt-select2').select2({
