@@ -408,7 +408,8 @@ Route::group([
 // transaction Records
     Route::get('/mobile/transaction/view','MobileController@transaction_view')->name('Mobile.transaction_view');
     Route::post('/mobile/transaction/inline_edit','MobileController@edit_inline_MobileTransaction')->name('Transaction.edit_inline_MobileTransaction');
-    
+    Route::get('/mobile/ajax/data/{mobile_id}/{month}','MobileController@consumption_mobile_records')->name('Mobile.consumption_mobile_records');
+    Route::post('/mobile/insert/data/consumption','MobileController@consumption_mobile_records_insert')->name('Mobile.consumption_mobile_records_insert');
 // end transaction Records
 });
 // end mobile

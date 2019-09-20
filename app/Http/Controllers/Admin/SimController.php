@@ -346,7 +346,10 @@ public function update_simTransaction(Request $request, $id){
            // else{
                 //updated
                 $sim=$sim_trans->Sim;
-                $sim_history = $sim->Sim_history()->where('status', 'active')->get()->first();
+                $sim_history =Sim_history::where('sim_id', $sim->id)
+                ->whereDate('created_at','<=',Carbon::parse($sim_trans->month_year)->format('Y-m-d'))
+                ->get()
+                ->last();
                 $rider_id = null;
                 if(isset($sim_history)){
                     $rider_id=$sim_history->rider_id;

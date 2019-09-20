@@ -168,7 +168,8 @@ class MobileController extends Controller
     // end mobile section
     // mobile installment
     public function create_mobileInstallment(){
-        return view('admin.rider.mobile.create_installment');
+        $mobiles=Mobile::where("active_status","A")->get();
+        return view('admin.rider.mobile.create_installment',compact('mobiles'));
     }
     public function store_mobileInstallment(Request $request){
         $installment=new Mobile_installment();
@@ -289,4 +290,66 @@ class MobileController extends Controller
         ]);
     }
     // end transaction Records
-}
+
+    public function consumption_mobile_records($mobile_id,$month){
+        $mobile=Mobile::where("active_status","A")->where('id',$mobile_id)->get()->first();
+            $amount_received=$mobile->amount_received;
+            $sale_price=$mobile->sale_price;
+            $remaining_amount=$sale_price-$amount_received;
+        return response()->json([
+            'data' => true,
+            'amount_received'=>$amount_received,
+            'sale_price'=>$sale_price,
+            'remaining_amount'=>$remaining_amount,
+            'installment_amount'=>0,
+        ]); 
+    }
+
+    public function consumption_mobile_records_insert(Request $r){
+            $id = $r->brand; 
+
+            $mobile=Mobile::find($id);
+            $mobile->amount_received=$r->amount_received;
+            $mobile->sale_price=$r->sale_price;
+            $sp= $mobile->sale_price;
+            $ar=$mobile->amount_received;
+            $RA=$sp-$ar;
+                if($RA!==0){
+                    $mobile_trans= Mobile::firstOrCreate([
+                        'id'=>$id
+                    ]);
+                    $mobile_trans->amount_received=$r->amount_received;
+                    $mobile_trans->update();
+
+                    $mobile_installment=new Mobile_installment;
+                    $mobile_installment->installment_amount=$r->per_month_installment_amount;
+                    $mobile_installment->mobile_id=$mobile_trans->rider_id;
+                    $mobile_installment->installment_month=Carbon::parse($r->month_year)->format('Y-m-d');
+                    $mobile_installment->save();
+    
+                    $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+                        'mobile_installment_id'=>$mobile_installment->id
+                    ]);
+                    $ca->mobile_installment_id =$mobile_installment->id;
+                    $ca->type='cr';
+                    $ca->rider_id=$mobile_trans->rider_id;
+                    $ca->month = $mobile_installment->installment_month;
+                    $ca->source="Mobile Installment";
+                    $ca->amount=$mobile_installment->installment_amount;
+                    $ca->save();
+        
+                    $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
+                        'mobile_installment_id'=>$mobile_installment->id
+                    ]);
+                    $ra->mobile_installment_id =$mobile_installment->id;
+                    $ra->type='cr_payable';
+                    $ra->rider_id=$mobile_trans->rider_id;
+                    $ra->month = $mobile_installment->installment_month;
+                    $ra->source="Mobile Installment";
+                    $ra->amount=$mobile_installment->installment_amount;
+                    $ra->save();   
+                    return redirect(url('/admin/mobiles'));
+                }
+             }
+         }
+
