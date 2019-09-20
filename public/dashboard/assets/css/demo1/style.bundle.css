@@ -10590,8 +10590,8 @@ code {
   -webkit-box-shadow: none !important;
   box-shadow: none !important; }
 
-.form-control[readonly] {
-  background-color: #ffffff; }
+/* .form-control[readonly] {
+  background-color: #ffffff; } */
 
 .form-control.form-control-pill {
   border-radius: 50px; }

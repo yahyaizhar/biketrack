@@ -18,6 +18,7 @@ use App\Model\Sim\Sim;
 use App\Model\Sim\Sim_Transaction;
 use App\Model\Sim\Sim_History;
 use Carbon\Carbon;
+use Arr;
 
 class SimController extends Controller
 {
@@ -122,32 +123,138 @@ class SimController extends Controller
     
     // Start Sim Transaction Section
 public function add_simTransaction(){
-    return view('SIM.create_simTransaction');
+    $sims = Sim::where('active_status', 'A')->get();
+    return view('SIM.create_simTransaction', compact('sims'));
+}
+public function get_active_riders_ajax($rider_id, $date){
+    // $sims_RAW = Sim::all();
+    $sim_history = Sim_history::all();
+    $sim_histories = null;
+    // foreach ($sims_RAW as $sim) {
+        $history_found = Arr::first($sim_history, function ($item, $key) use ($rider_id, $date) {
+            $created_at =Carbon::parse($item->created_at)->format('Y-m-d');
+            $created_at =Carbon::parse($created_at);
+
+            $updated_at =Carbon::parse($item->updated_at)->format('Y-m-d');
+            $updated_at =Carbon::parse($updated_at);
+            $req_date =Carbon::parse($date);
+            if($item->status=="active"){ 
+                // mean its still active, we need to match only created at
+                return $item->rider_id == $rider_id && $req_date->greaterThanOrEqualTo($created_at);
+            }
+            
+            return $item->rider_id == $rider_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
+        });
+
+        if(isset($history_found)){
+            $sim_histories = $history_found;
+        }
+    // }
+
+
+    
+
+
+    return response()->json([
+        'sim_histories' => $sim_histories,
+    ]);
+}
+public function get_sim_ajax($sim_id, $month){
+    $sim = Sim::find($sim_id);
+    $usage_limit = 105;
+
+    $sim_history =Sim_history::where('sim_id', $sim->id)
+    ->whereDate('created_at','<=',Carbon::parse($month)->format('Y-m-d'))
+    ->get()
+    ->last();
+
+    //usage_limit
+    if(isset($sim_history)){
+        if (isset($sim_history->allowed_balance)!=null) {
+            $usage_limit = $sim_history->allowed_balance;
+        }
+    }
+    //usage_limit
+
+
+    return response()->json([
+        'sim' => $sim,
+        'usage_limit' => $usage_limit,
+        'bill_amount' => $usage_limit
+    ]);
 }
 
 public function store_simTransaction(Request $request){
     $this->validate($request, [
-     
         'month_year'=> 'required | string |max:255',
         'bill_amount'=> 'required | string |max:255',
         'extra_usage_amount'=> 'required | string |max:255',
-        'extra_usage_payment_status'=> 'required | string |max:255',
-        'bill_status'=> 'required | string |max:255',
     ]);
-    $sim_transaction=new Sim_Transaction();
-    $sim_transaction->month_year=$request->month_year;
-    $sim_transaction->bill_amount=$request->bill_amount;
-    $sim_transaction->extra_usage_amount=$request->extra_usage_amount;
-    $sim_transaction->extra_usage_payment_status=$request->extra_usage_payment_status;
-    $sim_transaction->bill_status=$request->bill_status;
-    if ($request->status) 
-        $sim_transaction->status=1;
-    else
-        $sim_transaction->status=0;
-        
-    $sim_transaction->save(); 
+    $sim_trans=new Sim_Transaction();
+    $sim_trans->month_year=Carbon::parse($request->month_year)->format('Y-m-d');
+    $sim_trans->bill_amount=$request->bill_amount;
+    $sim_trans->sim_id=$request->sim_id;
+    $extra = $request->bill_amount - $request->usage_limit;
+    if($extra<0){
+        $extra=0;
+    }
+    $sim_trans->extra_usage_amount=$extra;
+    $sim_trans->extra_usage_payment_status="pending";
+    $sim_trans->bill_status="pending";
+    $sim_trans->status=1;
+    $sim_trans->save();
 
-    return redirect(route('SimTransaction.view_records'))->with('message', 'Sim created successfully.');
+
+    $sim=$sim_trans->Sim;
+    $sim_history = Sim_history::where('sim_id', $sim->id)
+    ->whereDate('created_at','<=',Carbon::parse($sim_trans->month_year)->format('Y-m-d'))
+    ->get()
+    ->last();
+    $rider_id = null;
+    if(isset($sim_history)){
+        $rider_id=$sim_history->rider_id;
+    }
+    $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+        'sim_transaction_id'=>$sim_trans->id,
+        'type' => 'dr'
+    ]);
+    $ca->sim_transaction_id =$sim_trans->id;
+    $ca->type='dr';
+    $ca->rider_id=$rider_id;
+    $ca->month = Carbon::parse($sim_trans->month_year)->format('Y-m-d');
+    $ca->source="Sim Transaction"; 
+    $ca->amount=$request->bill_amount;
+    $ca->save();
+
+    if($extra>0){
+        $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
+            'sim_transaction_id'=>$sim_trans->id
+        ]);
+        $ra->sim_transaction_id =$sim_trans->id;
+        $ra->type='cr_payable';
+        $ra->rider_id=$rider_id;
+        $ra->month = Carbon::parse($sim_trans->month_year)->format('Y-m-d');
+        $ra->source="Sim extra usage"; 
+        $ra->amount=$extra;
+        $ra->save();
+        
+        $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+            'sim_transaction_id'=>$sim_trans->id,
+            'type' => 'cr'
+        ]);
+        $ca->sim_transaction_id =$sim_trans->id;
+        $ca->type='cr';
+        $ca->rider_id=$rider_id;
+        $ca->month = Carbon::parse($sim_trans->month_year)->format('Y-m-d');
+        $ca->source="Sim extra usage";
+        $ca->amount=$extra;
+        $ca->save();
+    }
+    
+
+    return response()->json([
+        'status' => true
+    ]);
 }
 
 public function view_sim_transaction_records(){

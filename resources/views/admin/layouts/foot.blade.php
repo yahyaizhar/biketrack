@@ -264,8 +264,36 @@ biketrack.getUrlParameter = function(name) {
     var results = regex.exec(location.search);
     return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 };
+biketrack.refresh_global = function(){
+    
+    
+    $('.bk-select2').each(function(){
+        if(!$(this).hasClass("select2-hidden-accessible")){
+            $(this).select2({
+                placeholder: "Select an option",
+                width:'100%'    
+            });
+        }
+    })
+    $('.month_picker').each(function(){
+        var _initDate = $(this).attr('data-month');
+        if(!$(this).hasClass("ft-init")){
+            $(this).fdatepicker({ 
+                format: 'MM dd, yyyy', 
+                // initialDate: 'July 2019',
+                startView:2,
+                minView:2,
+                maxView:4
+            });
+            $(this).removeClass('ft-init').addClass('ft-init');
+            $(this).fdatepicker('update', new Date(_initDate));
+        }
+    });
+}
 
 jQuery(function($) {
+    biketrack.refresh_global();
+    
     var _psbScroll = null;
     $(document).on("shown.bs.dropdown.psbScroll", function(event, data) {
         var $item = $('.dropdown-menu', event.target)[0];
@@ -280,21 +308,11 @@ jQuery(function($) {
             wheelPropagation:false
         });
     });  
-    $('.month_picker').each(function(){
-        var _initDate = $(this).attr('data-month');
-        
-        $(this).fdatepicker({ 
-            format: 'MM dd, yyyy', 
-            // initialDate: 'July 2019',
-            startView:2,
-            minView:2,
-            maxView:4
-        });
-        $(this).fdatepicker('update', new Date(_initDate));
-        
-        
-    });
+    
 });
+
+
+
 </script>
     <!--end:: Global Optional Vendors -->
 

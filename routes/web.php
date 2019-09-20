@@ -173,6 +173,8 @@ Route::group([
     Route::get('/add/salik','SalikController@add_salik')->name("salik.add_salik");
     Route::get('/store/salik/{rider_id}','SalikController@store_salik')->name("salik.store_salik");
     Route::post('/insert/salik','SalikController@insert_salik')->name('Saik.insert_salik');
+
+    Route::get('/salik/ajax/get_active_riders/{rider_id}/{month}','SalikController@get_active_riders_ajax_salik')->name('Saik.get_active_riders_ajax_salik');
 // end salik   
 
 });
@@ -345,6 +347,9 @@ Route::group([
     ]);
 
  //    Start Sim Section    
+    Route::get('/sim/ajax/data/{sim_id}/{month}','SimController@get_sim_ajax')->name('Sim.get_sim_ajax');
+    Route::get('/sim/ajax/get_active_riders/{rider_id}/{month}','SimController@get_active_riders_ajax')->name('Sim.get_active_riders_ajax');
+
     Route::get('/create/Sim','SimController@add_sim')->name('Sim.new_sim');
     Route::post('/store/Sim','SimController@store_sim')->name('Sim.store_sim');
     Route::get('/view/records/Sim','SimController@view_records_sim')->name('Sim.view_records');

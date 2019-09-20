@@ -23,17 +23,16 @@
                     {{ csrf_field() }}
                      
                     <div class="kt-portlet__body">
-                        <label>Select Rider:</label>
-                        <select class="form-control kt-select2" id="kt_select2_3" name="rider_id" >
-                        @foreach ($riders as $rider)
-                       <option value="{{ $rider->id }}">
-                        {{ $rider->name }}
-                    </option>     
-                      @endforeach 
-                       </select> 
-                   </div>
-
-                    <div class="kt-portlet__body">
+                        <div class="form-group">
+                            <label>Select Rider:</label>
+                            <select class="form-control kt-select2" id="kt_select2_3" name="rider_id" >
+                            @foreach ($riders as $rider)
+                                <option value="{{ $rider->id }}">
+                                    {{ $rider->name }}
+                                </option>     
+                            @endforeach 
+                            </select> 
+                        </div>
                         <div class="form-group">
                             <label>Month:</label>
                             <input type="text" id="datepicker" readonly class="form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
@@ -59,10 +58,6 @@
                             @else
                                 <span class="form-text text-muted">Net salary</span>
                             @endif 
-                                
-                        </div>
-                        <div class="form-group">
-                            
                                 
                         </div>
                         <div class="form-group">
@@ -120,12 +115,6 @@
                                     </label>
                                 </div>
                         </div> --}}
-                        <div class="form-group">
-                            <label>Status:</label>
-                            <div>
-                                <input data-switch="true" name="status" id="status" type="checkbox" checked="checked" data-on-text="Enabled" data-handle-width="70" data-off-text="Disabled" data-on-color="brand">
-                            </div>
-                        </div>
                        
                         <div>
                             <input type="hidden" name="setting">
@@ -179,8 +168,8 @@
             $('#salary [name="remaining_salary"]').val(_recieved_salary-_gross_salary);
         });
         $('#salary [name="rider_id"],#salary [name="month"]').on('change', function(){
-            var _riderid = $('[name="rider_id"]').val();
-            var _month = $('[name="month"]').val();
+            var _riderid = $('#salary [name="rider_id"]').val();
+            var _month = $('#salary [name="month"]').val();
             
             if(_riderid==''||_month=='')return;
             _month = new Date(_month).format('yyyy-mm-dd');
@@ -201,6 +190,11 @@
                 $('#salary [name="total_bonus"]').val(data.total_bonus);
             });
         });
+
+        var gb_rider_id = $('#gb_rider_id').val();
+        if(typeof gb_rider_id !== "undefined"){
+            $('#salary [name="rider_id"]').val(gb_rider_id).trigger('change');
+        }
     });
 </script>
 

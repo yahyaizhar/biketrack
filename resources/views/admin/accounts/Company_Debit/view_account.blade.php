@@ -21,7 +21,7 @@
                 <div class="col-md-4">
                     <div class="my-2 mx-4">
                         <label>Select Rider:</label>
-                        <select class="form-control kt-select2" name="rider_id" >
+                        <select class="form-control kt-select2" name="rider_id" id="gb_rider_id">
                             @foreach ($riders as $rider)
                             <option value="{{ $rider->id }}">
                                 {{ $rider->name }}
@@ -121,7 +121,16 @@
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
                         {{-- <button class="btn btn-danger btn-elevate btn-icon-sm" id="bulk_delete">Delete Selected</button> --}}
-                        {{-- &nbsp;--}}
+                        <a href="" data-ajax="{{ route('salik.add_salik') }}" class=" btn btn-danger btn-elevate btn-icon-sm">
+                            <i class="flaticon2-lorry"></i>
+                            Add Salik
+                        </a>
+                        &nbsp;
+                        <a href="" data-ajax="{{ route('SimTransaction.create_sim') }}" class=" btn btn-danger btn-elevate btn-icon-sm">
+                            <i class="fa fa-sim-card"></i>
+                            Sim Bill
+                        </a>
+                        &nbsp;
                         <a href="" data-ajax="{{ route('account.new_salary') }}" class=" btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
                             Generate Salary
@@ -183,7 +192,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="quick_view" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="quick_view" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
         <div class="modal-header border-bottom-0">
@@ -320,6 +329,12 @@
                             }
                         });
                     });
+
+                    biketrack.refresh_global();
+
+                    
+
+
                     
                 },
                 error: function(error){

@@ -17,79 +17,66 @@
                 <!--begin::Form-->
                 
                 @include('admin.includes.message')
-                <form class="kt-form" action="{{ route('SimTransaction.store_simTransaction') }}" method="POST" enctype="multipart/form-data">
+                <form id="sims" class="kt-form" action="{{ route('SimTransaction.store_simTransaction') }}" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="kt-portlet__body">
                             <div class="form-group">
-                                    <label>Month_Year:</label>
-                                    <input type="text" id="datepicker" class="form-control @if($errors->has('month_year')) invalid-field @endif" name="month_year" placeholder="Enter Month_Year" value="{{ old('month_year') }}">
-                                    @if ($errors->has('month_year'))
-                                        <span class="invalid-response" role="alert">
-                                            <strong>
-                                                {{$errors->first('month_year')}}
-                                            </strong>
-                                        </span>
-                                    @endif
-                                </div>
+                                <label>Date:</label>
+                                <input type="text" data-month="{{carbon\carbon::now()->format('M d, Y')}}" class=" month_picker form-control @if($errors->has('month_year')) invalid-field @endif" name="month_year" placeholder="Enter Month_Year" value="{{ old('month_year') }}">
+                                @if ($errors->has('month_year'))
+                                    <span class="invalid-response" role="alert">
+                                        <strong>
+                                            {{$errors->first('month_year')}}
+                                        </strong>
+                                    </span> 
+                                @endif
+                            </div>
 
                             <div class="form-group">
-                                    <label>Bill Amount:</label>
-                                    <input type="text" class="form-control @if($errors->has('bill_amount')) invalid-field @endif" name="bill_amount" placeholder="Enter Bill Amount" value="{{ old('bill_amount') }}">
-                                    @if ($errors->has('bill_amount'))
-                                        <span class="invalid-response" role="alert">
-                                            <strong>
-                                                {{$errors->first('bill_amount')}}
-                                            </strong>
-                                        </span>
-                                    @endif
-                                </div>
-                                <div class="form-group">
-                                        <label>Extra Usage Amount:</label>
-                                        <input type="text" class="form-control @if($errors->has('extra_usage_amount')) invalid-field @endif" name="extra_usage_amount" placeholder="Enter extra usage amount " value="{{ old('extra_usage_amount') }}">
-                                        @if ($errors->has('extra_usage_amount'))
-                                            <span class="invalid-response" role="alert">
-                                                <strong>
-                                                    {{$errors->first('extra_usage_amount')}}
-                                                </strong>
-                                            </span>
-                                        @endif
-                                    </div>
-                                    <div class="form-group">
-                                            <label>Extra Usage Payment Status:</label>
-                                            <select class="form-control @if($errors->has('extra_usage_payment_status')) invalid-field @endif kt-select2" id="kt_select2_3" name="extra_usage_payment_status" placeholder="Enter extra usage payment status" value="{{ old('extra_usage_payment_status') }}">
-                                                    <option style="font-weight:bold;">Select Payment Status:</option>
-                                                    <option value="pending">Pending</option>
-                                                    <option value="paid">Paid</option>
-                                            </select> 
-                                            @if ($errors->has('extra_usage_payment_status'))
-                                                <span class="invalid-response" role="alert">
-                                                    <strong>
-                                                        {{$errors->first('extra_usage_payment_status')}}
-                                                    </strong>
-                                                </span>
-                                            @endif
-                                        </div>
-                                        <div class="form-group">
-                                                <label>Bill Status:</label>
-                                                <select class="form-control @if($errors->has('bill_status')) invalid-field @endif kt-select2" id="kt_select2_3" name="bill_status" placeholder="Enter bill status" value="{{ old('bill_status') }}">
-                                                        <option style="font-weight:bold;">Select Bill Status:</option>
-                                                        <option value="pending">Pending</option>
-                                                        <option value="paid">Paid</option>
-                                                </select> 
-                                                @if ($errors->has('bill_status'))
-                                                    <span class="invalid-response" role="alert">
-                                                        <strong>
-                                                            {{$errors->first('bill_status')}}
-                                                        </strong>
-                                                    </span>
-                                                @endif
-                                            </div>
-                        <div class="form-group">
-                            <label>Status:</label>
-                            <div>
-                                <input data-switch="true" name="status" id="status" type="checkbox" checked="checked" data-on-text="Enabled" data-handle-width="70" data-off-text="Disabled" data-on-color="brand">
+                                <label>Sim:</label>
+                                <select required class="form-control kt-select2 bk-select2" name="sim_id" >
+                                    @foreach ($sims as $sim)
+                                    <option value="{{ $sim->id }}">
+                                        {{ $sim->sim_number }}
+                                    </option>     
+                                    @endforeach 
+                                </select>
                             </div>
-                        </div>
+
+                            <div class="form-group">
+                                <label>Usage Limit:</label>
+                                <input required readonly type="text" class="form-control @if($errors->has('usage_limit')) invalid-field @endif" name="usage_limit" value="{{ old('usage_limit') }}">
+                                @if ($errors->has('usage_limit'))
+                                    <span class="invalid-response" role="alert">
+                                        <strong>
+                                            {{$errors->first('usage_limit')}}
+                                        </strong>
+                                    </span>
+                                @endif
+                            </div>
+
+                            <div class="form-group">
+                                <label>Bill Amount:</label>
+                                <input required type="text" class="form-control @if($errors->has('bill_amount')) invalid-field @endif" name="bill_amount" placeholder="Enter Bill Amount" value="{{ old('bill_amount') }}">
+                                @if ($errors->has('bill_amount'))
+                                    <span class="invalid-response" role="alert">
+                                        <strong>
+                                            {{$errors->first('bill_amount')}}
+                                        </strong>
+                                    </span>
+                                @endif
+                            </div>
+                            <div class="form-group">
+                                <label>Extra Usage Amount:</label>
+                                <input required readonly type="text" class="form-control @if($errors->has('extra_usage_amount')) invalid-field @endif" name="extra_usage_amount" placeholder="Enter extra usage amount " value="{{ old('extra_usage_amount') }}">
+                                @if ($errors->has('extra_usage_amount'))
+                                    <span class="invalid-response" role="alert">
+                                        <strong>
+                                            {{$errors->first('extra_usage_amount')}}
+                                        </strong>
+                                    </span>
+                                @endif
+                            </div>
                     </div>
                     <div class="kt-portlet__foot">
                         <div class="kt-form__actions kt-form__actions--right">
@@ -105,11 +92,69 @@
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/bootstrap-switch.js') }}" type="text/javascript"></script>
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
- <script>
+ <script data-ajax>
 
     $(document).ready(function(){
-        $('#datepicker').fdatepicker({ format: 'MM_yyyy',startView:3,minView:3,maxView:4});
-          }); 
+        $('#sims [name="month_year"]').on('change', function(){
+            var _month = new Date($(this).val()).format('yyyy-mm-dd');
+            //select current rider
+            var gb_rider_id = $('#gb_rider_id').val();
+            if(typeof gb_rider_id !== "undefined"){
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }, 
+                    url:"{{url('admin/sim/ajax/get_active_riders/')}}"+"/"+gb_rider_id+"/"+_month,
+                    method: "GET"
+                })
+                .done(function(data) {  
+                    console.log(data); 
+                    if(data.sim_histories!==null){
+                        $('#sims [name="sim_id"]').val(data.sim_histories.sim_id).trigger('change');
+                    }
+                    else{
+                        $('#sims [name="sim_id"]')[0].selectedIndex = -1;
+                        $('#sims [name="sim_id"]').trigger('change');
+                    }
+                    // $('#sims [name="usage_limit"], #sims [name="bill_amount"]').val(data.usage_limit).trigger('change');
+                });
+            }
+        })
+        $('#sims [name="month_year"]').trigger('change');
+        $('#sims [name="sim_id"]').on('change', function(){
+            var _simId = $('#sims [name="sim_id"]').val();
+            var _month = $('#sims [name="month_year"]').val();
+            if(_simId== null) {
+                $('#sims [name="usage_limit"]').val('');
+                $('#sims [name="bill_amount"]').val('');
+                $('#sims [name="extra_usage_amount"]').val('');
+                return;
+            }
+            _month = new Date(_month).format('yyyy-mm-dd');
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }, 
+                url:"{{url('admin/sim/ajax/data/')}}"+"/"+_simId+"/"+_month,
+                method: "GET"
+            })
+            .done(function(data) {  
+                console.log(data);
+                $('#sims [name="usage_limit"], #sims [name="bill_amount"]').val(data.usage_limit).trigger('change');
+            });
+        }); 
+        
+        $('#sims [name="bill_amount"]').on('change input', function(){
+            console.warn('asdasd')
+            var _usage_limit = $('#sims [name="usage_limit"]').val();
+            var _billAmt = $(this).val();
+            var _extra =_billAmt - _usage_limit;
+            if(_extra < 0) _extra = 0;
+            $('#sims [name="extra_usage_amount"]').val(_extra);
+        });
+
+    }); 
 
 
 </script>

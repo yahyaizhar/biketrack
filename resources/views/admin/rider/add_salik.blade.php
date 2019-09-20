@@ -23,7 +23,7 @@
 
                         <div class="form-group">
                             <label>Bike:</label>
-                            <select required class="form-control kt-select2-general" name="bike_id" >
+                            <select required class="form-control bk-select2" name="bike_id" >
                                 @foreach ($bikes as $bike)
                                 <option value="{{ $bike->id }}">
                                 {{ $bike->brand }}-{{$bike->bike_number}}-{{$bike->model}}
@@ -58,12 +58,6 @@
                         </div>
                      
                         
-                        <div class="form-group">
-                            <label>Status:</label>
-                            <div>
-                                <input data-switch="true" name="status" id="status" type="checkbox" checked="checked" data-on-text="Enabled" data-handle-width="70" data-off-text="Disabled" data-on-color="brand">
-                            </div>
-                        </div>
                     </div>
                    
                     <div class="kt-portlet__foot">
@@ -91,32 +85,41 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
  
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script>
+<script data-ajax>
   $(document).ready(function(){
-    //   $('#datepicker').datepicker({dateFormat: 'yy-mm-dd'}); 
-      $('#datepicker').fdatepicker({format: 'dd-mm-yyyy'}); 
+    $('#salik [name="month"]').on('change', function(){
+        var _month = $('#salik [name="month"]').val();
+        
+        if(_month=='')return;
+        _month = new Date(_month).format('yyyy-mm-dd');
 
-  });
-//   $('#salik [name="bike_id"],#salik [name="month"]').on('change', function(){
-//             var _riderid = $('[name="bike_id"]').val();
-//             var _month = $('[name="month"]').val();
-            
-//             if(_riderid==''||_month=='')return;
-//             _month = new Date(_month).format('m');
-//             console.log(_riderid, _month);
-//             $.ajax({
-//                 headers: {
-//                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-//                 }, 
-//                 url:"{{url('admin/store/salik/')}}"+'/'+_riderid,
-//                 method: "GET"
-//             })
-//             .done(function(data) {  
-//                 console.log(data);
-//                 $('#salik [name="amount"]').val(data.salik_amount).trigger('change');
+        var gb_rider_id = $('#gb_rider_id').val();
+        if(typeof gb_rider_id !== "undefined"){
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }, 
+                url:"{{url('admin/salik/ajax/get_active_riders/')}}"+'/'+gb_rider_id+"/"+_month,
+                method: "GET"
+            })
+            .done(function(data) {  
+                console.log(data);
+                $('#salik [name="amount"]').val(data.salik_amount).trigger('change');
+                if(data.bike_histories!==null){
+                    $('#salik [name="bike_id"]').val(data.bike_histories.bike_id).trigger('change');
+                }
+                else{
+                    $('#salik [name="bike_id"]')[0].selectedIndex = -1;
+                    $('#salik [name="bike_id"]').trigger('change');
+                    $('#salik [name="amount"]').val('');
+                }
                 
-//             });
-//         });
+            });
+        }
+    });
+    $('#salik [name="month"]').trigger('change');
+  });
+  
 
 </script>
 @endsection
