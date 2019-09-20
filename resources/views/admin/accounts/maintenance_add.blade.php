@@ -17,7 +17,7 @@
                 <!--begin::Form-->
                 
                 @include('admin.includes.message')
-                <form class="kt-form" action="{{ route('admin.accounts.maintenance_post') }}" method="POST" enctype="multipart/form-data">
+                <form class="kt-form" action="{{ route('admin.accounts.maintenance_post') }}" method="POST" id="maintenance" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="kt-portlet__body">
                         <div class="form-group">
@@ -48,7 +48,7 @@
 
                         <div class="form-group">
                             <label>Bike:</label>
-                            <select required class="form-control kt-select2-general" name="bike_id" >
+                            <select required class="form-control bk-select2" name="bike_id" >
                                 @foreach ($bikes as $bikes)
                                 <option value="{{ $bikes->id }}">
                                     {{ $bikes->model }}-{{ $bikes->bike_number }}
@@ -141,19 +141,19 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
  
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script>
+<script data-ajax>
 $(document).ready(function(){
-    $('[name="amount"]').on("change input",function(){
+    $('#maintenance [name="amount"]').on("change input",function(){
         var _val=parseFloat($('[name="amount"]').val());
-        $('[name="paid_by_company"]').val(_val);
-        var _company=parseFloat($('[name="paid_by_company"]').val());
+        $('#maintenance [name="paid_by_company"]').val(_val);
+        var _company=parseFloat($('#maintenance [name="paid_by_company"]').val());
         var _rider=_val-_company;
-        $('[name="paid_by_rider"]').val(_rider);
+        $('#maintenance [name="paid_by_rider"]').val(_rider);
     });
 
-    $('[name="paid_by_company"]').on("change input",function(){
+    $('#maintenance [name="paid_by_company"]').on("change input",function(){
         var _c_val=$(this).val();
-        var _val=parseFloat($('[name="amount"]').val());
+        var _val=parseFloat($('#maintenance [name="amount"]').val());
         var res_rider=_val-_c_val;
         if (_c_val>_val) {
             console.log("Value is greater");
@@ -162,13 +162,13 @@ $(document).ready(function(){
             console.log("Value is less");
             $(this).val(0);
         }else{
-            $('[name="paid_by_rider"]').val(res_rider);
+            $('#maintenance [name="paid_by_rider"]').val(res_rider);
         }
     });
     
-    $('[name="paid_by_rider"]').on("change input",function(){
+    $('#maintenance [name="paid_by_rider"]').on("change input",function(){
         var _c_val=$(this).val();
-        var _val=parseFloat($('[name="amount"]').val());
+        var _val=parseFloat($('#maintenance [name="amount"]').val());
         var res_comany=_val-_c_val;
         if (_c_val>_val) {
             console.log("Value is greater");
@@ -177,27 +177,59 @@ $(document).ready(function(){
             console.log("Value is less");
             $(this).val(0);
         }else{
-            $('[name="paid_by_company"]').val(res_comany); 
+            $('#maintenance [name="paid_by_company"]').val(res_comany); 
         }
     });
 
 
 
-$('[name="maintenance_type"]').on("change",function(){
+$('#maintenance [name="maintenance_type"]').on("change",function(){
     var _val=$(this).val();
     $("#accident_payment_status").show();
    if (_val=="accident") {
        $("#accident_payment_status").show();
-       $('[name="accident_payment_status"]').prop('required', true);
+       $('#maintenance [name="accident_payment_status"]').prop('required', true);
    }
    else{
     $("#accident_payment_status").hide();
     
-    $('[name="accident_payment_status"]').prop('checked', false).prop('required', false);
+    $('#maintenance [name="accident_payment_status"]').prop('checked', false).prop('required', false);
    }
 });
     $('#datepicker').fdatepicker({format: 'dd-mm-yyyy'}); 
 });
+$('#maintenance [name="month"]').on('change', function(){
+        var _month = $('#maintenance [name="month"]').val();
+        
+        if(_month=='')return;
+        _month = new Date(_month).format('yyyy-mm-dd');
+
+        var gb_rider_id = $('#gb_rider_id').val();
+        if(typeof gb_rider_id !== "undefined"){
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }, 
+                url:"{{url('admin/salik/ajax/get_active_riders/')}}"+'/'+gb_rider_id+"/"+_month,
+                method: "GET"
+            })
+            .done(function(data) {  
+                console.log(data);
+
+                // $('#salik [name="amount"]').val(data.salik_amount).trigger('change');
+                if(data.bike_histories!==null){
+                    $('#maintenance [name="bike_id"]').val(data.bike_histories.bike_id).trigger('change');
+                }
+                else{
+                    $('#maintenance [name="bike_id"]')[0].selectedIndex = -1;
+                    $('#maintenance [name="bike_id"]').trigger('change');
+                    $('#maintenance [name="amount"]').val('');
+                }
+                
+            });
+        }
+    });
+    $('#maintenance [name="month"]').trigger('change');
  
 </script>
 @endsection
