@@ -23,7 +23,7 @@
                         <div class="form-group">
                             <label>Maintenance Type:</label>
                             {{-- <input  autocomplete="off" list="model" class="form-control @if($errors->has('model')) invalid-field @endif" name="model"  > --}}
-                            <select required  class="form-control @if($errors->has('maintenance_type')) invalid-field @endif kt-select2-general" name="maintenance_type">
+                            <select required  class="form-control bk-select2 @if($errors->has('maintenance_type')) invalid-field @endif kt-select2-general" name="maintenance_type">
                                 <option value="accident">Accident</option>
                                 <option value="regular">Regular</option>
                             </select> 
@@ -37,7 +37,7 @@
                         </div>
                         <div class="form-group">
                             <label>Workshop:</label>
-                            <select required class="form-control kt-select2-general" name="workshop_id" >
+                            <select required class="form-control bk-select2" name="workshop_id" >
                                 @foreach ($workshops as $workshop)
                                 <option value="{{ $workshop->id }}">
                                     {{ $workshop->name }}
