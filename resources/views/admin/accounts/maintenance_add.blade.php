@@ -109,12 +109,6 @@
                                 <span class="form-text text-muted">Choose Image</span>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label>Status:</label>
-                            <div>
-                                <input data-switch="true" name="status" id="status" type="checkbox" checked="checked" data-on-text="Enabled" data-handle-width="70" data-off-text="Disabled" data-on-color="brand">
-                            </div>
-                        </div>
                     </div>
                     
                     <div class="kt-portlet__foot">
@@ -229,7 +223,7 @@ $('#maintenance [name="month"]').on('change', function(){
             });
         }
     });
-    $('#maintenance [name="month"]').trigger('change');
+    $('#maintenance [name="month"]').trigger('change'); 
  
 </script>
 @endsection
