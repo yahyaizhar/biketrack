@@ -145,6 +145,7 @@
                             <select required class="form-control @if($errors->has('d_type')) invalid-field @endif kt-select2-general" name="d_type">
                                 <option value="cash_paid">Cash Paid</option>
                                 <option value="dr">Debit</option>
+                                <option value="cr">Credit</option>
                             </select> 
                             @if ($errors->has('d_type'))
                                 <span class="invalid-response" role="alert">

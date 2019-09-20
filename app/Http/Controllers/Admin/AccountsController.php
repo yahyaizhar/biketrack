@@ -1918,6 +1918,23 @@ public function client_income_update(Request $request,$id){
             $ra->source=$r->desc;
             $ra->save();
         }
+        else if($d_type=='cr'){
+            $ca = new \App\Model\Accounts\Company_Account;
+            $ca->type='cr';
+            $ca->amount=$r->amount;
+            $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+            $ca->rider_id = $r->cash_rider_id;
+            $ca->source=$r->desc;
+            $ca->save();
+            
+            $ra = new \App\Model\Accounts\Rider_Account;
+            $ra->type='cr';
+            $ra->amount=$r->amount;
+            $ra->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+            $ra->rider_id = $r->cash_rider_id;
+            $ra->source=$r->desc;
+            $ra->save();
+        }
 
         return response()->json([
             'data'=>$r->all(),

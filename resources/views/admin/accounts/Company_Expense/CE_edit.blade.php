@@ -34,7 +34,7 @@
     
                             <div class="form-group">
                                 <label>Select Rider:</label>
-                                <select readonly class="form-control kt-select2" id="kt_select2_3" name="rider_id" >
+                                <select disabled class="form-control kt-select2" id="kt_select2_3" name="rider_id" >
                                     <option value="">No rider<option>
                                     @foreach ($riders as $rider)
                                         <option @if($edit_expense->rider_id==$rider->id) selected @endif value="{{ $rider->id }}">
