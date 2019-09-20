@@ -17,13 +17,13 @@
                 <!--begin::Form-->
                 
                 @include('admin.includes.message')
-                <form class="kt-form" action="{{ route('admin.fuel_expense_insert') }}" method="POST" enctype="multipart/form-data">
+                <form class="kt-form" id="fuel_expense" action="{{ route('admin.fuel_expense_insert') }}" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="kt-portlet__body">
 
                         <div class="form-group">
                             <label>Bike:</label>
-                            <select required class="form-control kt-select2-general" name="bike_id" >
+                            <select required class="form-control bk-select2" name="bike_id" >
                                 @foreach ($bikes as $bike)
                                 <option value="{{ $bike->id }}">
                                     {{ $bike->brand }}-{{$bike->bike_number}}
@@ -36,7 +36,7 @@
                         <div class="form-group">
                             <label>Type:</label>
                             {{-- <input  autocomplete="off" list="model" class="form-control @if($errors->has('model')) invalid-field @endif" name="model"  > --}}
-                            <select required class="form-control @if($errors->has('model')) invalid-field @endif kt-select2-general" name="type">
+                            <select required class="form-control @if($errors->has('model')) invalid-field @endif bk-select2" name="type">
                                 <option value="vip_tag">VIP-Tag</option>
                                 <option value="cash">Cash</option>
                             </select> 
@@ -75,12 +75,6 @@
                         </div>
                      
                         
-                        <div class="form-group">
-                            <label>Status:</label>
-                            <div>
-                                <input data-switch="true" name="status" id="status" type="checkbox" checked="checked" data-on-text="Enabled" data-handle-width="70" data-off-text="Disabled" data-on-color="brand">
-                            </div>
-                        </div>
                     </div>
                     <div class="kt-portlet__foot">
                         <div class="kt-form__actions kt-form__actions--right">
@@ -107,11 +101,41 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
  
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script>
+<script data-ajax>
   $(document).ready(function(){
     //   $('#datepicker').datepicker({dateFormat: 'yy-mm-dd'}); 
-      $('#datepicker').fdatepicker({format: 'dd-mm-yyyy'}); 
+    $('#fuel_expense [name="month"]').on('change', function(){
+        var _month = $('#fuel_expense [name="month"]').val();
+        
+        if(_month=='')return;
+        _month = new Date(_month).format('yyyy-mm-dd');
 
+        var gb_rider_id = $('#gb_rider_id').val();
+        if(typeof gb_rider_id !== "undefined"){
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }, 
+                url:"{{url('admin/salik/ajax/get_active_riders/')}}"+'/'+gb_rider_id+"/"+_month,
+                method: "GET"
+            })
+            .done(function(data) {  
+                console.log(data);
+
+                // $('#salik [name="amount"]').val(data.salik_amount).trigger('change');
+                if(data.bike_histories!==null){
+                    $('#fuel_expense [name="bike_id"]').val(data.bike_histories.bike_id).trigger('change');
+                }
+                else{
+                    $('#fuel_expense [name="bike_id"]')[0].selectedIndex = -1;
+                    $('#fuel_expense [name="bike_id"]').trigger('change');
+                    $('#fuel_expense [name="amount"]').val('');
+                }
+                
+            });
+        }
+    });
+    $('#fuel_expense [name="month"]').trigger('change');
   });
 
 </script>

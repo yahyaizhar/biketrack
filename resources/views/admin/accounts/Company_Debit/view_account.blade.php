@@ -117,6 +117,12 @@
                                     <i class="fa fa-mobile-alt"></i>
                                     Mobile Installment
                                 </a>
+                                
+                                &nbsp;
+                                <a href="" data-ajax="{{ route('admin.fuel_expense_create') }}" class=" btn btn-danger btn-elevate btn-icon-sm">
+                                    <i class="fa fa-gas-pump"></i>
+                                    Fuel
+                                </a>
                                 &nbsp;
                                 <a href="" data-ajax="{{ route('admin.create_bike_rent') }}" class=" btn btn-danger btn-elevate btn-icon-sm">
                                     <i class="fa fa-motorcycle"></i>
@@ -313,8 +319,9 @@
                     _quickViewModal.modal('show');
 
                     //add event handler to submit form in modal
-                    _quickViewModal.find('form').on('submit', function(e){
+                    _quickViewModal.find('form').off('submit').on('submit', function(e){
                         e.preventDefault();
+                        _quickViewModal.modal('hide');
                         var _form = $(this);
                         var _url = _form.attr('action');
                         $.ajax({
@@ -335,6 +342,7 @@
                                     timer: 1500
                                 });
                                 table.ajax.reload(null, false);
+                                table_bills.ajax.reload(null, false);
                             },
                             error: function(error){
                                 swal.fire({
