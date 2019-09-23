@@ -443,6 +443,17 @@ class AjaxController extends Controller
         ->addColumn('new_email', function($riders){
             return $riders->email;
         })
+        ->addColumn('kingriders_id', function($riders){
+            if(!isset($riders->kingriders_id))
+            {
+                $kr_HTML='<a href="" class="dropdown-item" data-toggle="modal" data-target="#kingrider_model" data-rider-id="'.$riders->id.'" ><i class="fa fa-user-plus"></i> Kingrider ID</a>';
+                return $kr_HTML;
+            }
+            else{
+                $kr_HTML='<a href="" class="dropdown-item" data-toggle="modal" current-target="'.$riders->kingriders_id.'" data-target="#kingrider_model" data-rider-id="'.$riders->id.'" >'.'<strong>'.$riders->kingriders_id.'</strong>'.'</a>';
+                return $kr_HTML;
+            }
+        })
         ->addColumn('client_name', function($riders){
             
             $client_rider=$riders->clients()->get()->first();
@@ -695,7 +706,7 @@ class AjaxController extends Controller
         })
         
         // <a class="dropdown-item" href="'.route('Rider.salary', $riders).'"><i class="fa fa-money-bill-wave"></i> Salaries</a> 
-        ->rawColumns(['new_name','sim_number','passport_collected','missing_fields','adress','client_name','emirate_id','mulkiya_expiry','bike_number','official_sim_given_date','licence_expiry','visa_expiry','passport_expiry','official_given_number', 'new_email','date_of_joining', 'phone', 'actions', 'status'])
+        ->rawColumns(['new_name','kingriders_id','sim_number','passport_collected','missing_fields','adress','client_name','emirate_id','mulkiya_expiry','bike_number','official_sim_given_date','licence_expiry','visa_expiry','passport_expiry','official_given_number', 'new_email','date_of_joining', 'phone', 'actions', 'status'])
         ->make(true);
     }
     public function getMobiles(){
@@ -1437,6 +1448,17 @@ class AjaxController extends Controller
            ->addColumn('new_name', function($riders){
                return '<a href="'.route('admin.rider.profile', $riders->id).'">'.$riders->name.'</a>';
            })
+           ->addColumn('kingriders_id', function($riders){
+            if(!isset($riders->kingriders_id))
+            {
+                $kr_HTML='<a href="" class="dropdown-item" data-toggle="modal" data-target="#kingrider_model" data-rider-id="'.$riders->id.'" ><i class="fa fa-user-plus"></i> Kingrider ID</a>';
+                return $kr_HTML;
+            }
+            else{
+                $kr_HTML='<a href="" class="dropdown-item" data-toggle="modal" current-target="'.$riders->kingriders_id.'" data-target="#kingrider_model" data-rider-id="'.$riders->id.'" >'.'<strong>'.$riders->kingriders_id.'</strong>'.'</a>';
+                return $kr_HTML;
+            }
+        })
            ->addColumn('new_email', function($riders){
                return $riders->email;
            })
@@ -1691,7 +1713,7 @@ class AjaxController extends Controller
         })
            
            // <a class="dropdown-item" href="'.route('Rider.salary', $riders).'"><i class="fa fa-money-bill-wave"></i> Salaries</a> 
-           ->rawColumns(['new_name','sim_number','passport_collected','missing_fields','adress','client_name','emirate_id','mulkiya_expiry','bike_number','official_sim_given_date','licence_expiry','visa_expiry','passport_expiry','official_given_number', 'new_email','date_of_joining', 'phone', 'actions', 'status'])
+           ->rawColumns(['new_name','kingriders_id','sim_number','passport_collected','missing_fields','adress','client_name','emirate_id','mulkiya_expiry','bike_number','official_sim_given_date','licence_expiry','visa_expiry','passport_expiry','official_given_number', 'new_email','date_of_joining', 'phone', 'actions', 'status'])
            ->make(true);
        }
        public function getSalik_Bike($id)

@@ -138,7 +138,17 @@
                             <input type="password" class="form-control @if($errors->has('passsword')) invalid-field @endif" name="password_confirmation" placeholder="Enter confirm password">
                         </div>
                     </div>
-                    
+                    <div class="form-group">
+                        <label>Kingriders ID:</label>
+                        <input type="text" class="form-control @if($errors->has('kingriders_id')) invalid-field @endif" name="kingriders_id" placeholder="Enter Kingriders ID" value="{{ $rider->kingriders_id }}">
+                        @if ($errors->has('kingriders_id'))
+                            <span class="invalid-response" role="alert">
+                                <strong>
+                                    {{$errors->first('kingriders_id')}}
+                                </strong>
+                            </span>
+                        @endif
+                    </div>
                     <div class="form-group">
                         <label>City:</label>
                         <input type="text" class="form-control @if($errors->has('address')) invalid-field @endif" name="address" placeholder="Enter city" value="{{ $rider->address }}">

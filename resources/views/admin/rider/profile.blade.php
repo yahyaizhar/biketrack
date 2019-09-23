@@ -93,6 +93,14 @@
                                 </span>
                             @endif
                         </div>
+                        @if ($rider->kingriders_id==null)  
+                        @else 
+                        <div class="form-group">
+                            <label>Kingriders ID:</label>
+                            <input disabled type="text" class="form-control "name="kingriders_id"value="{{ $rider->kingriders_id }}">
+                        </div>  
+                        @endif
+                        
                         @if ( $rider_details->passport_collected=="no")
                         <div style="border: 1px solid #adadc9;padding: 7px;">
                                 <div class="form-group" >
