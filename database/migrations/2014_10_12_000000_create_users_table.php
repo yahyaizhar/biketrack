@@ -46,6 +46,7 @@ class CreateUsersTable extends Migration
         Schema::create('riders', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('area_id')->nullable();
+            $table->integer('kingriders_id')->nullable();
             $table->string('name');
             $table->string('email')->unique();
             $table->string('phone')->nullable();

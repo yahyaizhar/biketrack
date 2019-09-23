@@ -62,6 +62,12 @@ class RiderController extends Controller
         $client_rider->update();
         return $client_rider;
     }
+    public function update_kingriders_id(Request $req){
+        $kingriders_id=Rider::where('id',$req->rider_id)->get()->first();
+        $kingriders_id->kingriders_id=$req->kingriders_id;
+        $kingriders_id->save();
+        return $kingriders_id;
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -89,6 +95,7 @@ class RiderController extends Controller
         $rider->phone = $request->phone;
         $rider->date_of_birth = $request->date_of_birth;
         $rider->password = Hash::make($request->password);
+        $rider->kingriders_id = $request->kingriders_id;
         $rider->address = $request->address;
         $rider->start_time = $request->start_time;
         $rider->end_time = $request->end_time;
@@ -367,6 +374,7 @@ class RiderController extends Controller
         $rider->phone = $request->phone;
         $rider->date_of_birth = $request->date_of_birth;
         $rider->address = $request->address;
+        $rider->kingriders_id = $request->kingriders_id;
         $rider->start_time = $request->start_time;
         $rider->end_time = $request->end_time;
         $rider->break_start_time = $request->break_start_time;
