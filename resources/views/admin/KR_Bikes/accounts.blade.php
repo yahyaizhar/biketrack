@@ -113,41 +113,10 @@
                     <div class="kt-portlet__head-toolbar col-md-12">
                         <div class="kt-portlet__head-wrapper">
                             <div class="kt-portlet__head-actions">
-                                <a href="" data-ajax="{{ route('MobileInstallment.create') }}" class=" btn btn-success btn-elevate btn-icon-sm">
-                                    <i class="fa fa-mobile-alt"></i>
-                                    Mobile Installment
-                                </a>
-                                
-                                &nbsp;
-                                <a href="" data-ajax="{{ route('admin.fuel_expense_create') }}" class=" btn btn-danger btn-elevate btn-icon-sm">
-                                    <i class="fa fa-gas-pump"></i>
-                                    Fuel
-                                </a>
-                                &nbsp;
-                                <a href="" data-ajax="{{ route('admin.create_bike_rent') }}" class=" btn btn-danger btn-elevate btn-icon-sm">
-                                    <i class="fa fa-motorcycle"></i>
-                                    Bike Rent
-                                </a>
-                                &nbsp;
                                 <a href="" data-ajax="{{ route('admin.accounts.maintenance_index') }}" class=" btn btn-danger btn-elevate btn-icon-sm">
                                     <i class="flaticon2-gear"></i>
                                     Maintenance
                                 </a>
-                                &nbsp;
-                                <a href="" data-ajax="{{ route('salik.add_salik') }}" class=" btn btn-danger btn-elevate btn-icon-sm">
-                                    <i class="flaticon2-lorry"></i>
-                                    Add Salik
-                                </a>
-                                &nbsp;
-                                <a href="" data-ajax="{{ route('SimTransaction.create_sim') }}" class=" btn btn-danger btn-elevate btn-icon-sm">
-                                    <i class="fa fa-sim-card"></i>
-                                    Sim Bill
-                                </a>
-                                &nbsp;
-                                <a href="" data-ajax="{{ route('account.new_salary') }}" class=" btn btn-brand btn-elevate btn-icon-sm">
-                                    <i class="la la-plus"></i>
-                                    Generate Salary
-                                </a> 
                             </div>
                         </div>
                     </div>  
@@ -161,7 +130,7 @@
                     <i class="kt-font-brand fa fa-hotel"></i>
                 </span>
                 <h3 class="kt-portlet__head-title">
-                    Company-Rider Account
+                    Kingrider-Bikes Account
                 </h3>
             </div>
         </div>

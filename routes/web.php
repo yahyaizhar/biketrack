@@ -222,6 +222,15 @@ Route::group([
 
 // Expense
 Route::group([
+    'prefix' => 'admin/kr-bikes', 
+    'namespace' => 'Admin',
+    'middleware' => ['roles:kr_bikes']
+], function(){
+    Route::get("/kr-account","KRController@account_view")->name("admin.KR_Bikes.account_view");
+});
+
+// Expense
+Route::group([
     'prefix' => 'admin/accounts', 
     'namespace' => 'Admin',
     'middleware' => ['roles:expense']
