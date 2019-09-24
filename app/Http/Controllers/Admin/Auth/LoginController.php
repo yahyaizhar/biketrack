@@ -25,6 +25,7 @@ class LoginController extends Controller
         $credentials = [
             'email' => $request->email,
             'password' => $request->password,
+            'Active_status'=>'A'
         ];
         if(Auth::guard('admin')->attempt($credentials, $request->remember))
         {

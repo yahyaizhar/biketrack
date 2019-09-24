@@ -471,16 +471,21 @@ Route::group([
 Route::group([
     'prefix' => 'admin',
     'namespace' => 'Admin',
-   
+    'middleware' => ['roles:Custom_Auth']
+], function(){
+    Route::get('/profile', 'HomeController@profile')->name('admin.profile');
+    Route::put('/profile', 'HomeController@updateProfile')->name('admin.profile.update');
+    Route::get('/403','HomeController@request403')->name('request.403');
+});
+
+Route::group([
+    'prefix' => 'admin',
+    'namespace' => 'Admin'
 ], function(){
 // login , dashboard
     Route::get('/login', 'Auth\LoginController@showLoginForm')->name('admin.login');
     Route::post('/login', 'Auth\LoginController@login')->name('admin.login');
     Route::get('/logout', 'Auth\LoginController@logout')->name('admin.logout');
-    Route::get('/profile', 'HomeController@profile')->name('admin.profile');
-    Route::put('/profile', 'HomeController@updateProfile')->name('admin.profile.update');
-//end login , dashboard   
-    Route::get('/403','HomeController@request403')->name('request.403');
 });
 // end for Admin global
 Route::group([

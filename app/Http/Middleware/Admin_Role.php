@@ -17,13 +17,20 @@ class Admin_Role
      */
     public function handle($request, Closure $next,$role)
     {
-        $user_type=$request->user()->type;
-        if ($user_type=="normal") {
-        $users=$request->user()->Role()->where("action_name",$role)->get()->first();
-        if (isset($users)) {
-            return $next($request);   
+        $admin_gaurd = $request->user();
+        if($admin_gaurd->Active_status != "A"){
+            Auth::guard('admin')->logout();
+            return redirect('/admin/login');
         }
-         return redirect(route('request.403'));
+        if($role!="Custom_Auth"){
+            $user_type=$admin_gaurd->type;
+            if ($user_type=="normal") {
+                $users=$admin_gaurd->Role()->where("action_name",$role)->get()->first();
+                if (isset($users)) {
+                    return $next($request);   
+                }
+                return redirect(route('request.403'));
+            }
         }
         return $next($request); 
      
