@@ -11,6 +11,7 @@ use App\Model\Client\Client_Rider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Model\Rider\Rider_area;
+use Illuminate\Support\Facades\Hash;
 use App\Model\Rider\Rider_detail;
 use App\Model\Mobile\Mobile;
 use App\Model\Rider\Rider_Online_Time;
