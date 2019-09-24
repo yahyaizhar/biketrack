@@ -20,7 +20,7 @@ class CreateRiderAccountsTable extends Migration
             $table->string('month')->nullable();
             $table->string('source')->nullable();
             $table->integer('bike_rent_id')->nullable();
-            $table->string('payment-status')->default("pending");
+            $table->string('payment_status')->default("pending");
             $table->integer('rider_id')->nullable();
             $table->integer('salary_id')->nullable();
             $table->integer('client_income_id')->nullable();
