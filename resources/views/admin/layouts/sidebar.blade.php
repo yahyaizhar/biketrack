@@ -121,7 +121,7 @@ if (Auth::user()->type=="su") {
                         </ul>
                     </div>
                 </li>
-                <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "admin/client") !== false && strpos(Request::url(), "client_income") !== false && strpos(Request::url(), "admin/client/ranges") === false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle"><span class="kt-menu__link-icon">
+                <li class="kt-menu__item  kt-menu__item--submenu @if((strpos(Request::url(), "admin/client") !== false || strpos(Request::url(), "client_income") !== false) && strpos(Request::url(), "admin/client/ranges") === false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle"><span class="kt-menu__link-icon">
                 <i class="fa fa-hotel"></i>    
                 </span><span class="kt-menu__link-text">Clients</span><i class="kt-menu__ver-arrow la la-angle-right"></i></a>
                     <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
