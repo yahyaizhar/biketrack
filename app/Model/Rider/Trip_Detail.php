@@ -15,7 +15,7 @@ class Trip_Detail extends Authenticatable
 
     
     protected $fillable = [
-        'transaction_id','rider_id','trip_date','trip_time','transaction_post_date','toll_gate','direction','tag_number','plate','amount_AED',
+        'transaction_id','rider_id','active_status','trip_date','trip_time','transaction_post_date','toll_gate','direction','tag_number','plate','amount_AED',
     ];
 }
  

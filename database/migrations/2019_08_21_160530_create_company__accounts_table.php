@@ -21,6 +21,7 @@ class CreateCompanyAccountsTable extends Migration
             $table->string('source')->nullable();
             $table->string('payment-status')->default("pending");
             $table->integer('rider_id')->nullable();
+            $table->integer('bike_rent_id')->nullable();
             $table->integer('salary_id')->nullable();
             $table->integer('client_income_id')->nullable();
             $table->string('income_zomato_id')->nullable(); 

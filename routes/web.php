@@ -39,6 +39,7 @@ Route::group([
     Route::get('get/ajax/rider/accounts','AjaxController@getRiderAccounts')->name('admin.ajax_rider_accounts');
     Route::get("/accounts/rider/account/{range}","AjaxNewController@getRiderAccounts")->name("admin.accounts.get_rider_account");
     Route::get("/accounts/company/account/{range}","AjaxNewController@getCompanyAccounts")->name("admin.accounts.get_company_account");
+    Route::get("/accounts/kr-bikes/account/{range}","AjaxNewController@getKR_bikes")->name("admin.accounts.getKR_bikes");
     Route::get('/newComer/view/ajax', 'AjaxController@getNewComer')->name('NewComer.view_ajax');
     Route::get('get/ajax/Sim','AjaxController@getSims')->name('Sim.ajax_sim');
     Route::get('/map/testing/{id}','AjaxController@client_name');

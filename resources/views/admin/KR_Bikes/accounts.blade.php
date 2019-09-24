@@ -154,7 +154,7 @@
                 </thead>
             </table>
 
-            <div class="row">
+            <div class="row d-none">
                 <div class="col">
                     <div class="h1 text-center mt-5">Bill Account</div>
                     <table class="table table-striped- table-hover table-checkable table-condensed" id="table-bills">
@@ -451,7 +451,7 @@
 
 
         var getData = function(ranges){
-            var url = "{{ url('admin/accounts/company/account/') }}"+"/"+ranges;
+            var url = "{{ url('admin/accounts/kr-bikes/account/') }}"+"/"+ranges;
             console.warn(url)
             table = $('#data-table').DataTable({
                 lengthMenu: [[-1], ["All"]],
