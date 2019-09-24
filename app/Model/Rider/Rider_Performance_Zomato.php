@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Model\Client\Client;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Database\Eloquent\Model;
 

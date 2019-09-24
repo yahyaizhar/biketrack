@@ -76,6 +76,10 @@
         </div>
     </div>
 </div>
+@php
+    $model = new \App\Model\Accounts\Fuel_Expense;
+    echo get_class($model);
+@endphp
 @endsection
 @section('foot')
 <script src="{{ asset('dashboard/assets/vendors/custom/datatables/datatables.bundle.js') }}" type="text/javascript"></script>
