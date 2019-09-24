@@ -96,18 +96,19 @@
        });
    });
 var riders_data = [];
-var _perData=riders_data;
+
 function export_data(){
+    var _perData=riders_data;
     var export_details=[];
-    _perData.forEach(function(item,index) {
+    _perData.forEach(function(item,index) { 
         export_details.push({
-        "rider_id":item.rider_id,
-        "adt1":item.adt1,
-        "adt2":item.adt2,
-        "improvements":item.improvements,
+        "Rider Name":item.rider_id,
+        "ADT 1":item.adt1,
+        "ADT 2":item.adt2,
+        "Improvements":item.improvements,
     });
 });
-        var export_data = new CSVExport(export_details);
+        var export_data = new CSVExport(export_details, "Kingriders ADT Performance");
         return false;
 }
 
@@ -216,6 +217,7 @@ var getData = function(url){
             'processing': $('.loading').show()
         },
         drawCallback:function(data){
+            riders_data = [];
             var api = this.api();
             var _data = api.data();
             var keys = Object.keys(_data).filter(function(x){return !isNaN(parseInt(x))});

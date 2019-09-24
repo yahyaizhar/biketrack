@@ -11,7 +11,8 @@ Compress with: http://jscompress.com/
     var _CSV = function (JSONData) {
         if (typeof JSONData === 'undefined')
             return;
-
+        var _filename = "kingrider_export.csv";
+        if(typeof arguments[1]!== "undefined") _filename = arguments[1]+".csv";
         var csvData = typeof JSONData != 'object' ? JSON.parse(settings.JSONData) : JSONData,
             csvHeaders,
             csvEncoding = 'data:text/csv;charset=utf-8,',
@@ -19,7 +20,7 @@ Compress with: http://jscompress.com/
             csvRows = [],
             BREAK = '\r\n',
             DELIMITER = ',',
-			FILENAME = "export.csv";
+			FILENAME = _filename; 
 
         // Get and Write the headers
         csvHeaders = Object.keys(csvData[0]);
