@@ -178,11 +178,17 @@ class SalikController extends Controller
             return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
         });
         $rider_id=null;
-        
 
-        if (isset($history_found)) {
+         if (isset($history_found)) {
             $rider_id=$history_found->rider_id;
-         } 
+         }else {
+             $assign_bikeBK = Assign_bike::where('bike_id', $bike_id)
+             ->where('status', 'active')->get()->first();
+             if(isset($assign_bikeBK)){
+                $rider_id=$assign_bikeBK->rider_id;
+             }
+         }
+
          $rider=Rider::find($rider_id);
       $rider_detail=$rider->Rider_detail;
       $salik_amount=$rider_detail->salik_amount;
@@ -213,7 +219,15 @@ class SalikController extends Controller
 
         if(isset($history_found)){
             $bike_histories = $history_found;
+        }else {
+            $assign_bikeBK = Assign_bike::where('rider_id', $rider_id)
+            ->where('status', 'active')->get()->first();
+            if(isset($assign_bikeBK)){
+               $bike_histories = $assign_bikeBK;
+            }
         }
+
+        
     
         $rider = Rider::find($rider_id);
         return response()->json([
@@ -247,7 +261,14 @@ class SalikController extends Controller
 
          if (isset($history_found)) {
             $rider_id=$history_found->rider_id;
-         } 
+         }else {
+             $assign_bikeBK = Assign_bike::where('bike_id', $bike_id)
+             ->where('status', 'active')->get()->first();
+             if(isset($assign_bikeBK)){
+                $rider_id=$assign_bikeBK->rider_id;
+             }
+         }
+
          $rider=Rider::find($rider_id);
         $rider_detail=$rider->Rider_detail;
         $allow_salik=$rider_detail->salik_amount;
