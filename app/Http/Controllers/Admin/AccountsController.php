@@ -51,7 +51,7 @@ class AccountsController extends Controller
             'status'=>$r->status=='on'?1:0,
         ]);
         $ca = new \App\Model\Accounts\Company_Account;
-        $ca->type='dr';
+        $ca->type='dr_receivable';
         $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
         $ca->rider_id=$r->rider_id;
         $ca->amount=$r->amount;
@@ -101,7 +101,7 @@ class AccountsController extends Controller
         $id_charge->update();
 
         $ca =\App\Model\Accounts\Company_Account::where("id_charge_id",$id_charge->id)->get()->first();
-        $ca->type='dr';
+        $ca->type='dr_receivable';
         $ca->rider_id=$r->rider_id;
         $ca->amount=$r->amount;
         $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
@@ -350,7 +350,7 @@ class AccountsController extends Controller
                 'maintenance_id'=>$maintenance->id
             ]);
             $ca->maintenance_id =$maintenance->id;
-            $ca->type='dr';
+            $ca->type='dr_receivable';
             $ca->rider_id=$rider_id;
             $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
             $ca->source="maintenance"; 
@@ -369,11 +369,11 @@ class AccountsController extends Controller
             $ra->save();
         }
         else if($maintenance->accident_payment_status == 'paid'){
-            $ca_check = \App\Model\Accounts\Company_Account::where(['maintenance_id' => $maintenance->id, 'type'=>'dr'])->get()->first();
+            $ca_check = \App\Model\Accounts\Company_Account::where(['maintenance_id' => $maintenance->id, 'type'=>'dr_receivable'])->get()->first();
             if(!isset($ca_check)){
                 $ca_dr = new \App\Model\Accounts\Company_Account;
                 $ca_dr->maintenance_id =$maintenance->id;
-                $ca_dr->type='dr';
+                $ca_dr->type='dr_receivable';
                 $ca_dr->month = Carbon::parse($r->get('month'))->format('Y-m-d');
                 $ca_dr->rider_id=$rider_id;
                 $ca_dr->source="maintenance"; 
@@ -503,7 +503,7 @@ class AccountsController extends Controller
                 'maintenance_id'=>$maintenance->id
             ]);
             $ca->maintenance_id =$maintenance->id;
-            $ca->type='dr';
+            $ca->type='dr_receivable';
             $ca->rider_id=$rider_id;
             $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
             $ca->source="maintenance"; 
@@ -522,11 +522,11 @@ class AccountsController extends Controller
             $ra->save();
         }
         else if($maintenance->accident_payment_status == 'paid'){
-            $ca_check = \App\Model\Accounts\Company_Account::where(['maintenance_id' => $maintenance->id, 'type'=>'dr'])->get()->first();
+            $ca_check = \App\Model\Accounts\Company_Account::where(['maintenance_id' => $maintenance->id, 'type'=>'dr_receivable'])->get()->first();
             if(!isset($ca_check)){
                 $ca_dr = new \App\Model\Accounts\Company_Account;
                 $ca_dr->maintenance_id =$maintenance->id;
-                $ca_dr->type='dr';
+                $ca_dr->type='dr_receivable';
                 $ca_dr->rider_id=$rider_id;
                 $ca_dr->month = Carbon::parse($r->get('month'))->format('Y-m-d');
                 $ca_dr->source="maintenance"; 
@@ -535,7 +535,7 @@ class AccountsController extends Controller
             }
             else {
                 $ca_check->maintenance_id =$maintenance->id;
-                $ca_check->type='dr';
+                $ca_check->type='dr_receivable';
                 $ca_check->rider_id=$rider_id;
                 $ca_check->month = Carbon::parse($r->get('month'))->format('Y-m-d');
                 $ca_check->source="maintenance"; 
@@ -1153,7 +1153,7 @@ public function fuel_expense_insert(Request $r){
 }
 elseif($fuel_expense->type=="cash"){
     $ca = new \App\Model\Accounts\Company_Account;
-    $ca->type='dr';
+    $ca->type='dr_receivable';
     $ca->amount=$r->amount;
     $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
     $ca->rider_id = $rider_id;
@@ -1269,7 +1269,7 @@ elseif($fuel_expense->type=="cash"){
     $ca =\App\Model\Accounts\Company_Account::updateOrCreate([
     'fuel_expense_id'=>$fuel_expense->id,
     ]);
-    $ca->type='dr';
+    $ca->type='dr_receivable';
     $ca->rider_id = $rider_id;
     $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
     $ca->source="fuel_expense"; 

@@ -375,7 +375,7 @@ public function AR_store(Request $r){
         $ca =Company_Account::firstOrCreate([
             'advance_return_id'=>$ar->id
         ]);
-        $ca->type='dr';
+        $ca->type='dr_receivable';
         $ca->amount=$r->amount;
         if($ar->type=="advance"){$ca->source='advance';}
         else if($ar->type=="return"){$ca->source='loan';}    
@@ -429,7 +429,7 @@ public function AR_update(Request $r,$id){
             'advance_return_id'=>$update_ar->id
         ]);
         $ca->advance_return_id =$update_ar->id;
-        $ca->type='dr';
+        $ca->type='dr_receivable';
         $ca->rider_id=$update_ar->rider_id;
         $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         if($update_ar->type=="advance"){$ca->source='advance';}
