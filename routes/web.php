@@ -57,7 +57,7 @@ Route::group([
     Route::get("/accounts/wps/view/data","AjaxNewController@getWPS")->name("admin.getWPS");
     Route::get("/accounts/AR/view/data","AjaxNewController@getAR")->name("admin.getAR");
     Route::get('/accounts/income/zomato/ajax/data','AjaxNewController@income_zomato_ajax')->name('admin.accounts.income_zomato_ajax');
-
+    Route::get('/get/ajax/activity/log','AjaxNewController@getActivityLog')->name('admin.getActivityLog');
     Route::get("/accounts/company/bills/{range}","AjaxNewController@getCompanyAccountsBills")->name("admin.accounts.get_company_account_bills");
 });
 // End Ajax Routes
@@ -346,6 +346,16 @@ Route::group([
     
 });
 // End NewComer
+// Activity
+Route::group([
+    'prefix' => 'admin',
+    'namespace' => 'Admin',
+    'middleware' => ['roles:activity']
+], function(){
+    Route::get('/activity/view','KRController@activity_view')->name('admin.activity.view');
+    Route::delete('/delete/activity/{id}','KRController@delete_activity_log')->name('admin.delete_activity_log');
+});
+// End Activity
 // Sim
 Route::group([
     'prefix' => 'admin',

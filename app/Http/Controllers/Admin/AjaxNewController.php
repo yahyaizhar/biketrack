@@ -42,6 +42,9 @@ use App\Model\Accounts\AdvanceReturn;
 use App\Model\Accounts\Client_Income;
 use App\Model\Accounts\Income_zomato;
 use App\Model\Mobile\Mobile_Transaction;
+use App\Log_activity;
+use Auth;
+use App\Model\Admin\Admin;
 
 
 class AjaxNewController extends Controller
@@ -1218,5 +1221,38 @@ class AjaxNewController extends Controller
         //     'data'=>$bills
         // ]);
 
+    }
+    public function getActivityLog()
+    {
+        $LA=Log_activity::where("active_status","A")->get();
+        return DataTables::of($LA)
+        ->addColumn('id', function($LA) {
+                return '100'.$LA->id;
+        }) 
+        ->addColumn('description', function($LA) {
+            return $LA->description;
+         }) 
+         ->addColumn('subject_type', function($LA) {
+            return $LA->subject_type;
+         }) 
+         ->addColumn('causer', function($LA) {
+             $auth=Admin::find($LA->causer_id);
+            return $auth->name;
+         }) 
+        ->addColumn('actions', function($LA){
+            return '<span class="dtr-data">
+            <span class="dropdown">
+                <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+                <i class="la la-ellipsis-h"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                     <button class="dropdown-item" onclick="deleteActivity('.$LA->id.');"><i class="fa fa-trash"></i> Delete</button>
+                </div>
+            </span>
+        </span>';
+        })
+    
+        ->rawColumns(['id','actions','description','subject_type','causer'])
+        ->make(true);
     }
 }

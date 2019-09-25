@@ -28,6 +28,8 @@ use Arr;
 use Batch;
 use App\Model\Accounts\Company_Account;
 use App\Assign_bike;
+use App\Log_activity;
+
 
 class KRController extends Controller
 {
@@ -40,4 +42,17 @@ class KRController extends Controller
         $riders = Rider::where('active_status', 'A')->get();
         return view('admin.KR_Bikes.accounts',compact('riders')); 
     }
+     
+    public function activity_view(){
+        return view('activity_log_view');
+    }
+    public function delete_activity_log($id){
+    $la=Log_activity::find($id);
+    $la->active_status="D";
+    $la->save();
+    return response()->json([
+        'status' => true
+    ]);
+    }
+  
 }

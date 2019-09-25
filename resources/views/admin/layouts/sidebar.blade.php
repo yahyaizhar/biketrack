@@ -553,6 +553,9 @@ if (Auth::user()->type=="su") {
                     <li class="kt-menu__item @if(strpos(Request::url(), "admin/emails") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.emails.index') }}" class="kt-menu__link "><span class="kt-menu__link-icon">
                     <i class="fa fa-envelope"></i>
                 </span><span class="kt-menu__link-text">Support Emails</span></a></li>
+                <li class="kt-menu__item @if(strpos(Request::url(), "admin/activity") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.activity.view') }}" class="kt-menu__link "><span class="kt-menu__link-icon">
+                    <i class="fa fa-envelope"></i>
+                </span><span class="kt-menu__link-text">Activity Log View</span></a></li>
             </ul>
         </div>
     </div>
