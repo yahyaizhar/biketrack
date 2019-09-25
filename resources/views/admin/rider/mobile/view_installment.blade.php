@@ -53,6 +53,8 @@
                             <input type="checkbox" id="select_all" >
                         </th> --}}
                         <th>ID</th>
+                        <th>Mobile</th>
+                        <th>Rider Name</th>
                         <th>Installment Month</th>
                         <th>Installment Amount</th>
                         {{-- <th>Status</th> --}}
@@ -95,7 +97,9 @@ $(function() {
         ajax: "{!! route('MobileInstallment.getinstallments') !!}",
         columns: [
             //  { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
-            { data: 'id', name: 'id' },          
+            { data: 'id', name: 'id' }, 
+            { data: 'mobile', name: 'mobile' }, 
+            { data: 'rider_name', name: 'rider_name' },          
             { data: 'installment_month', name: 'installment_month' },
             { data: 'installment_amount', name: 'installment_amount' },
             // { data: 'status', name: 'status' },

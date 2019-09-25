@@ -780,6 +780,15 @@ class AjaxController extends Controller
         ->addColumn('installment_month', function($installment){
             return $installment->installment_month;
         })
+        ->addColumn('mobile', function($installment){
+            $mobile=Mobile::find($installment->mobile_id);
+            return $mobile->model;
+        })
+        ->addColumn('rider_name', function($installment){
+            $mobile=Mobile::find($installment->mobile_id);
+            $rider=Rider::find( $mobile->rider_id);
+            return $rider->name;
+        })
         ->addColumn('installment_amount', function($installment){
             return $installment->installment_amount;
         })
@@ -811,7 +820,7 @@ class AjaxController extends Controller
         })
         // <button class="dropdown-item" onclick="updateStatus('.$installment->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                     
-        ->rawColumns(['installment_month','installment_amount','status','actions',])
+        ->rawColumns(['mobile','rider_name','installment_month','installment_amount','status','actions',])
         ->make(true);
     }
 
