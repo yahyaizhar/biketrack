@@ -55,7 +55,7 @@ class AccountsController extends Controller
         $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
         $ca->rider_id=$r->rider_id;
         $ca->amount=$r->amount;
-        $ca->source='id_charges';
+        $ca->source=str_replace('_',' ',ucfirst($r->type))." Charges";
         $ca->id_charge_id=$id_charge->id;
         $ca->save();
 
@@ -64,7 +64,7 @@ class AccountsController extends Controller
         $ra->month=Carbon::parse($r->get('month'))->format('Y-m-d');
         $ra->rider_id=$r->rider_id;
         $ra->amount=$r->amount;
-        $ra->source='id_charges';
+        $ra->source=str_replace('_',' ',ucfirst($r->type))." Charges";
         $ra->id_charge_id=$id_charge->id;
         $ra->save();
 
@@ -105,7 +105,7 @@ class AccountsController extends Controller
         $ca->rider_id=$r->rider_id;
         $ca->amount=$r->amount;
         $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
-        $ca->source='id_charges';
+        $ca->source=str_replace('_',' ',ucfirst($r->type))." Charges";
         $ca->id_charge_id=$id_charge->id;
         $ca->update();
 
@@ -114,7 +114,7 @@ class AccountsController extends Controller
         $ra->month=Carbon::parse($r->get('month'))->format('Y-m-d');
         $ra->rider_id=$r->rider_id;
         $ra->amount=$r->amount;
-        $ra->source='id_charges';
+        $ra->source=str_replace('_',' ',ucfirst($r->type))." Charges";
         $ra->id_charge_id=$id_charge->id;
         $ra->save();
         return redirect(route('admin.accounts.id_charges_view'));
