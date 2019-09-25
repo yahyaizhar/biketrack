@@ -1233,7 +1233,7 @@ class AjaxNewController extends Controller
             return $LA->description;
          }) 
          ->addColumn('subject_type', function($LA) {
-            return $LA->subject_type;
+            return class_basename($LA->subject_type);
          }) 
          ->addColumn('causer', function($LA) {
              $auth=Admin::find($LA->causer_id);
