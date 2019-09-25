@@ -38,6 +38,7 @@ class CreateRiderAccountsTable extends Migration
             $table->string('status')->nullable();
             $table->string('active_status')->default("A");
             $table->string('setting')->nullable();
+            $table->integer('created_by')->nullable();
             $table->timestamps();
         });
     }
