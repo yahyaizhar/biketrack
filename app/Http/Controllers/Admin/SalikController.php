@@ -159,12 +159,29 @@ class SalikController extends Controller
     public function store_salik(Request $request,$id){
 
         $bike=bike::find($id);
-        $assign_bike=Assign_bike::where('bike_id', $bike->id)
-        ->whereDate('created_at','<=',Carbon::parse($request->month)->format('Y-m-d'))
-        ->get()
-        ->last();
-        if (isset($assign_bike)) {
-            $rider_id=$assign_bike->rider_id;
+        
+        $bike_history = Assign_bike::all();
+        $bike_id = $bike->id;
+        $date = $request->month;
+        $history_found = Arr::first($bike_history, function ($item, $key) use ($bike_id, $date) {
+            $created_at =Carbon::parse($item->created_at)->format('Y-m-d');
+            $created_at =Carbon::parse($created_at);
+
+            $updated_at =Carbon::parse($item->updated_at)->format('Y-m-d');
+            $updated_at =Carbon::parse($updated_at);
+            $req_date =Carbon::parse($date);
+            if($item->status=="active"){ 
+                // mean its still active, we need to match only created at
+                return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at);
+            }
+            
+            return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
+        });
+        $rider_id=null;
+        
+
+        if (isset($history_found)) {
+            $rider_id=$history_found->rider_id;
          } 
          $rider=Rider::find($rider_id);
       $rider_detail=$rider->Rider_detail;
@@ -208,13 +225,28 @@ class SalikController extends Controller
         $used_salik= $request->amount;
         
         $bike=bike::find($request->bike_id);
-        $assign_bike=Assign_bike::where('bike_id', $bike->id)
-        ->whereDate('created_at','<=',Carbon::parse($request->month)->format('Y-m-d'))
-        ->get()
-        ->last();
-        
-         if (isset($assign_bike)) {
-            $rider_id=$assign_bike->rider_id;
+
+        $bike_history = Assign_bike::all();
+        $bike_id = $bike->id;
+        $date = $request->month;
+        $history_found = Arr::first($bike_history, function ($item, $key) use ($bike_id, $date) {
+            $created_at =Carbon::parse($item->created_at)->format('Y-m-d');
+            $created_at =Carbon::parse($created_at);
+
+            $updated_at =Carbon::parse($item->updated_at)->format('Y-m-d');
+            $updated_at =Carbon::parse($updated_at);
+            $req_date =Carbon::parse($date);
+            if($item->status=="active"){ 
+                // mean its still active, we need to match only created at
+                return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at);
+            }
+            
+            return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
+        });
+        $rider_id=null;
+
+         if (isset($history_found)) {
+            $rider_id=$history_found->rider_id;
          } 
          $rider=Rider::find($rider_id);
         $rider_detail=$rider->Rider_detail;
