@@ -16,6 +16,7 @@ use App\Model\Bikes\bike;
 use App\Model\Accounts\Company_Account;
 use App\Model\Accounts\Rider_Account;
 use App\Model\Rider\Rider;
+use App\Model\Rider\Rider_detail;
 use Carbon\Carbon;
 
 class SalikController extends Controller
@@ -33,8 +34,72 @@ class SalikController extends Controller
         $assign_bike=Assign_bike::all();
         $rider_details = Rider_detail::all();
         $data = $r->data;
-
         $distinct_data = [];
+        
+        $trip_objects=[];
+        $ca_objects=[];
+        $ca_objects_updates=[];
+
+        $ra_objects=[];
+        $ra_objects_updates=[];
+
+        $zp = Trip_Detail::all(); // r1
+        $update_data = [];
+        $company_accounts=[];
+        $i=0;
+        $unique_id=uniqid().'-'.time();
+        foreach ($data as $item) {
+            $i++;
+            $zp_found = Arr::first($zp, function ($item_zp, $key) use ($item) {
+                return $item_zp->transaction_id == $item['transaction_id'];
+            });
+            $bike_found = Arr::first($bike, function ($item_zp, $key) use ($item) {
+                return $item_zp->bike_number == $item['plate'];
+            });
+            if(isset($bike_found)){
+                $assign_bike_found = Arr::first($assign_bike, function ($item_zp, $key) use ($bike_found) {
+                    return $item_zp->bike_id =="29" && $item_zp->status =="active";
+                });
+            }
+            
+            $rider_id=null;
+            if(isset($assign_bike_found)){
+                $rider_id=$assign_bike_found->rider_id;
+            }
+            if(!isset($zp_found)){
+                $obj = [];
+                $obj['import_id']=$unique_id;
+                $obj['rider_id']=$rider_id;
+                $obj['transaction_id']=isset($item['transaction_id'])?$item['transaction_id']:null;
+                $obj['toll_gate']=isset($item['toll_gate'])?$item['toll_gate']:null;
+                $obj['direction']=isset($item['direction'])?$item['direction']:null;
+                $obj['tag_number']=isset($item['tag_number'])?$item['tag_number']:null;
+                $obj['plate']=isset($item['plate'])?$item['plate']:null; 
+                $obj['amount_aed']=isset($item['amount_aed'])?$item['amount_aed']:null;
+                $obj['trip_date']=isset($item['trip_date'])?$item['trip_date']:null;
+                $obj['trip_time']=isset($item['trip_time'])?$item['trip_time']:null;
+                $obj['transaction_post_date']=isset($item['transaction_post_date'])?$item['transaction_post_date']:null;
+                array_push($trip_objects, $obj);
+            }
+            else{
+                $objUpdate = [];
+                $objUpdate['id']=$zp_found->id;
+                $objUpdate['import_id']=$unique_id; 
+                $objUpdate['transaction_id']=isset($item['transaction_id'])?$item['transaction_id']:null;
+                $objUpdate['toll_gate']=isset($item['toll_gate'])?$item['toll_gate']:null;
+                $objUpdate['direction']=isset($item['direction'])?$item['direction']:null;
+                $objUpdate['tag_number']=isset($item['tag_number'])?$item['tag_number']:null;
+                $objUpdate['plate']=isset($item['plate'])?$item['plate']:null; 
+                $objUpdate['amount_aed']=isset($item['amount_aed'])?$item['amount_aed']:null;
+                $objUpdate['trip_date']=isset($item['trip_date'])?$item['trip_date']:null;
+                $objUpdate['trip_time']=isset($item['trip_time'])?$item['trip_time']:null;
+                $objUpdate['transaction_post_date']=isset($item['transaction_post_date'])?$item['transaction_post_date']:null;
+                array_push($update_data, $objUpdate);
+
+            }
+        }
+
+
         foreach ($data as $item) {
             if(trim($item['transaction_id']) == '') continue;
             $key_found = '';
@@ -116,141 +181,55 @@ class SalikController extends Controller
                 $ca_obj['updated_at']=Carbon::now();
                 array_push($ca_objects, $ca_obj);
 
-                
-            }
-            
-            
-        }
-
-
-
-        if($used_salik>$allow_salik){
-            $_greater_ca= new Company_Account;
-            $_greater_ca->source="Salik";
-            $_greater_ca->salik_id="0";
-            $_greater_ca->amount=$used_salik;
-            $_greater_ca->rider_id=$rider_id;
-            $_greater_ca->month=Carbon::parse($request->month)->format("Y-m-d");
-            $_greater_ca->type="dr";
-            $_greater_ca->save();
-
-            $_greater_ra= new Rider_Account;
-            $_greater_ra->source="Salik";
-            $_greater_ra->salik_id="0";
-            $_greater_ra->amount=$used_salik-$allow_salik;
-            $_greater_ra->rider_id=$rider_id;
-            $_greater_ra->month=Carbon::parse($['trip_date'])->format("Y-m-d");
-            $_greater_ra->type="cr_payable";
-            $_greater_ra->save();
-
-            $_greater_ca= new Company_Account;
-            $_greater_ca->source="Salik Extra";
-            $_greater_ca->salik_id="0";
-            $_greater_ca->amount=$used_salik-$allow_salik;
-            $_greater_ca->rider_id=$request->rider_id;
-            $_greater_ca->month=Carbon::parse($request->month)->format("Y-m-d");
-            $_greater_ca->type="cr";
-            $_greater_ca->save();
-        }
-        else{
-            $ca= new Company_Account;
-            $ca->source="Salik";
-            $ca->amount=$allow_salik;
-            $ca->salik_id="0";
-            $ca->rider_id=$rider_id;
-            $ca->month=Carbon::parse($request->month)->format("Y-m-d");
-            $ca->type="dr";
-            $ca->save();
-            if($used_salik<$allow_salik){
-                $_less_ra= new Rider_Account;
-                $_less_ra->source="Salik";
-                $_less_ra->salik_id="0";
-                $_less_ra->amount=$allow_salik-$used_salik;
-                $_less_ra->rider_id=$rider_id;
-                $_less_ra->month=Carbon::parse($request->month)->format("Y-m-d");
-                $_less_ra->type="cr";
-                $_less_ra->save();
-            }
-        }
-
-        return response()->json([
-            'data'=>$distinct_data,
-            'd' => $bike_found
-        ]);
-        $trip_objects=[];
-        $ca_objects=[];
-        $ca_objects_updates=[];
-        $zp = Trip_Detail::all(); // r1
-        $update_data = [];
-        $company_accounts=[];
-        $i=0;
-        $unique_id=uniqid().'-'.time();
-        foreach ($data as $item) {
-            $i++;
-            $zp_found = Arr::first($zp, function ($item_zp, $key) use ($item) {
-                return $item_zp->transaction_id == $item['transaction_id'];
-            });
-            $bike_found = Arr::first($bike, function ($item_zp, $key) use ($item) {
-                return $item_zp->bike_number == $item['plate'];
-            });
-            if(isset($bike_found)){
-                $assign_bike_found = Arr::first($assign_bike, function ($item_zp, $key) use ($bike_found) {
-                    return $item_zp->bike_id =="29" && $item_zp->status =="active";
-                });
-            }
-            
-            $rider_id=null;
-            if(isset($assign_bike_found)){
-                $rider_id=$assign_bike_found->rider_id;
-            }
-            if(!isset($zp_found)){
-                $obj = [];
-                $obj['import_id']=$unique_id;
-                $obj['rider_id']=$rider_id;
-                $obj['transaction_id']=isset($item['transaction_id'])?$item['transaction_id']:null;
-                $obj['toll_gate']=isset($item['toll_gate'])?$item['toll_gate']:null;
-                $obj['direction']=isset($item['direction'])?$item['direction']:null;
-                $obj['tag_number']=isset($item['tag_number'])?$item['tag_number']:null;
-                $obj['plate']=isset($item['plate'])?$item['plate']:null; 
-                $obj['amount_aed']=isset($item['amount_aed'])?$item['amount_aed']:null;
-                $obj['trip_date']=isset($item['trip_date'])?$item['trip_date']:null;
-                $obj['trip_time']=isset($item['trip_time'])?$item['trip_time']:null;
-                $obj['transaction_post_date']=isset($item['transaction_post_date'])?$item['transaction_post_date']:null;
-                array_push($trip_objects, $obj);
+                $ra_obj = [];
+                $ra_obj['salik_id']=$distinct_item['transaction_id'];
+                $ra_obj['source']='Salik';
+                $ra_obj['amount']=$amount-$max_salik;
+                $ra_obj['rider_id']=$distinct_item['rider_id'];
+                $ra_obj['type']='cr_payable';
+                $ra_obj['month']=Carbon::parse($distinct_item['trip_date'])->format("Y-m-d");
+                $ra_obj['created_at']=Carbon::now();
+                $ra_obj['updated_at']=Carbon::now();
+                array_push($ra_objects, $ra_obj);
 
                 $ca_obj = [];
-                $ca_obj['salik_id']=$obj['transaction_id'];
-                $ca_obj['source']='salik';
-                $ca_obj['amount']=$obj['amount_aed'];
-                $ca_obj['type']='dr';
+                $ca_obj['salik_id']=$distinct_item['transaction_id'];
+                $ca_obj['source']='Salik Extra';
+                $ca_obj['amount']=$amount-$max_salik;
+                $ca_obj['rider_id']=$distinct_item['rider_id'];
+                $ca_obj['type']='cr';
+                $ca_obj['month']=Carbon::parse($distinct_item['trip_date'])->format("Y-m-d");
                 $ca_obj['created_at']=Carbon::now();
                 $ca_obj['updated_at']=Carbon::now();
                 array_push($ca_objects, $ca_obj);
+                
             }
             else{
-                $objUpdate = [];
-                $objUpdate['id']=$zp_found->id;
-                $objUpdate['import_id']=$unique_id; 
-                $objUpdate['transaction_id']=isset($item['transaction_id'])?$item['transaction_id']:null;
-                $objUpdate['toll_gate']=isset($item['toll_gate'])?$item['toll_gate']:null;
-                $objUpdate['direction']=isset($item['direction'])?$item['direction']:null;
-                $objUpdate['tag_number']=isset($item['tag_number'])?$item['tag_number']:null;
-                $objUpdate['plate']=isset($item['plate'])?$item['plate']:null; 
-                $objUpdate['amount_aed']=isset($item['amount_aed'])?$item['amount_aed']:null;
-                $objUpdate['trip_date']=isset($item['trip_date'])?$item['trip_date']:null;
-                $objUpdate['trip_time']=isset($item['trip_time'])?$item['trip_time']:null;
-                $objUpdate['transaction_post_date']=isset($item['transaction_post_date'])?$item['transaction_post_date']:null;
-                array_push($update_data, $objUpdate);
-
                 $ca_obj = [];
-                $ca_obj['salik_id']=$objUpdate['transaction_id'];
-                $ca_obj['source']='salik';
-                $ca_obj['amount']=$objUpdate['amount_aed'];
+                $ca_obj['salik_id']=$distinct_item['transaction_id'];
+                $ca_obj['source']='Salik';
+                $ca_obj['amount']=$max_salik;
+                $ca_obj['rider_id']=$distinct_item['rider_id'];
                 $ca_obj['type']='dr';
+                $ca_obj['month']=Carbon::parse($distinct_item['trip_date'])->format("Y-m-d");
                 $ca_obj['created_at']=Carbon::now();
                 $ca_obj['updated_at']=Carbon::now();
-                array_push($ca_objects_updates, $ca_obj);
+                array_push($ca_objects, $ca_obj);
+                if($amount<$max_salik){
+                    $ra_obj = [];
+                    $ra_obj['salik_id']=$distinct_item['transaction_id'];
+                    $ra_obj['source']='Salik';
+                    $ra_obj['amount']=$max_salik-$amount;
+                    $ra_obj['rider_id']=$distinct_item['rider_id'];
+                    $ra_obj['type']='cr';
+                    $ra_obj['month']=Carbon::parse($distinct_item['trip_date'])->format("Y-m-d");
+                    $ra_obj['created_at']=Carbon::now();
+                    $ra_obj['updated_at']=Carbon::now();
+                    array_push($ra_objects, $ra_obj);
+                }
             }
+            
+            
         }
 
        
@@ -259,10 +238,16 @@ class SalikController extends Controller
 
         DB::table('company__accounts')->insert($ca_objects); //r4
         $data_ca=Batch::update(new Company_Account, $ca_objects_updates, 'salik_id'); //r5  
+
+        DB::table('rider__accounts')->insert($ra_objects); //r4
+        $data_ra=Batch::update(new Rider_Account, $ra_objects_updates, 'salik_id'); //r5  
+
         return response()->json([
             'data'=>$trip_objects,
             'data_ca'=>$ca_objects,
             'data_ca_update'=>$data_ca,
+            'data_ra'=>$ra_objects,
+            'data_ra_update'=>$data_ra,
             'count'=>$i 
         ]);
 
