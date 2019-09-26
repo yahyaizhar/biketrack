@@ -19,10 +19,19 @@
                         <div class="kt-portlet__body">
                             <div class="row">
                                 <div class="col-lg-6 col-md-6 col-sm-12">
-                                    
+                                    <div class="form-group">
+                                        <label>Rider:</label>
+                                        <select disabled  class="form-control kt-select2-general" name="rider_id" >
+                                            @foreach ($riders as $rider)
+                                            <option value="{{ $rider->id }}" @if ($month->rider_id==$rider->id) selected @endif>
+                                                {{ $rider->name }}
+                                            </option>     
+                                            @endforeach 
+                                        </select>
+                                    </div>
                                     <div class="form-group">
                                         <label>Salary:</label>
-                                        <input disabled type="text" class="form-control @if($errors->has('salary')) invalid-field @endif" name="salary" placeholder="salary" value="{{ $month->salary }}">
+                                        <input disabled type="text" class="form-control @if($errors->has('salary')) invalid-field @endif" name="salary" placeholder="salary" value="{{ $month->total_salary }}">
                                         @if ($errors->has('salary'))
                                             <span class="invalid-response" role="alert">
                                                 <strong>
@@ -73,10 +82,19 @@
                         <div class="kt-portlet__body">
                             <div class="row">
                                 <div class="col-lg-6 col-md-6 col-sm-12">
-                                    
+                                    <div class="form-group">
+                                        <label>Rider:</label>
+                                        <select  class="form-control kt-select2-general" name="rider_id" >
+                                            @foreach ($riders as $rider)
+                                            <option value="{{ $rider->id }}" @if ($month->rider_id==$rider->id) selected @endif>
+                                                {{ $rider->name }}
+                                            </option>     
+                                            @endforeach 
+                                        </select>
+                                    </div>
                                     <div class="form-group">
                                         <label>Salary:</label>
-                                        <input type="text" class="form-control @if($errors->has('salary')) invalid-field @endif" name="salary" placeholder="salary" value="{{ $month->salary }}">
+                                        <input type="text" class="form-control @if($errors->has('salary')) invalid-field @endif" name="salary" placeholder="salary" value="{{ $month->total_salary }}">
                                         @if ($errors->has('salary'))
                                             <span class="invalid-response" role="alert">
                                                 <strong>

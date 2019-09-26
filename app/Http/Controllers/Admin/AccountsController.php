@@ -1012,13 +1012,15 @@ class AccountsController extends Controller
         $readonly=false;
         $month_id_array =$request->month_id;
         $month = Rider_salary::find($month_id_array);
-        return view('accounts.month_edit',compact('readonly','month'));
+        $riders=Rider::all();
+        return view('accounts.month_edit',compact('readonly','month','riders'));
     }
     public function month_edit_view(Request $request,$month_id){
         $readonly=true;
         $month_id_array =$request->month_id;
         $month = Rider_salary::find($month_id_array);
-        return view('accounts.month_edit',compact('readonly','month'));
+        $riders=Rider::all();
+        return view('accounts.month_edit',compact('readonly','month','riders'));
     }
     public function month_update(Request $request,Rider_salary $month,$id){
 
