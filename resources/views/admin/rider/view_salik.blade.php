@@ -204,6 +204,7 @@ var export_details=[];
             complete: function(results, file){ 
                var import_data = results.data;
                console.log(import_data);
+            //    return; 
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
