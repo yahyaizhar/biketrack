@@ -161,16 +161,18 @@ class AjaxNewController extends Controller
             $bills->push($model);
         }
         //Salik
-        $model = \App\Model\Accounts\Company_Account::
+        $models = \App\Model\Accounts\Company_Account::
         whereMonth('month', $month)
         ->where("rider_id",$rider_id)
         ->where("type","dr")
         ->whereNotNull('salik_id')
-        ->get()
-        ->first();
-        if(isset($model)){
-            $model->source = "Salik";
-            $bills->push($model);
+        ->get();
+        foreach ($models as $mod) {
+        if(isset($mod)){
+            $mod->source = "Salik";
+            $mod->amount=$mod->amount;
+            $bills->push($mod);
+        }
         }
         //fuel_expense
         $model = \App\Model\Accounts\Company_Account::
@@ -1229,15 +1231,16 @@ class AjaxNewController extends Controller
         ->addColumn('id', function($LA) {
                 return '100'.$LA->id;
         }) 
+        ->addColumn('month', function($LA) {
+            return Carbon::parse($LA->created_at)->format('d M, Y');
+         })
         ->addColumn('description', function($LA) {
-            return $LA->description;
-         }) 
-         ->addColumn('subject_type', function($LA) {
-            return class_basename($LA->subject_type);
-         }) 
-         ->addColumn('causer', function($LA) {
-             $auth=Admin::find($LA->causer_id);
-            return $auth->name;
+            $ST=class_basename($LA->subject_type);
+            $description=$LA->description;
+            $auth=Admin::find($LA->causer_id);
+            $causer= $auth->name;
+            $subject_id='<strong>'.$LA->subject_id.'</strong>';
+            return $causer.' '.$description.' '.$ST.' having id '.$subject_id ;
          }) 
         ->addColumn('actions', function($LA){
             return '<span class="dtr-data">
@@ -1252,7 +1255,7 @@ class AjaxNewController extends Controller
         </span>';
         })
     
-        ->rawColumns(['id','actions','description','subject_type','causer'])
+        ->rawColumns(['id','actions','description','month'])
         ->make(true);
     }
 }

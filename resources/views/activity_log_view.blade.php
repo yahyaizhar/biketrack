@@ -46,9 +46,8 @@
                 <thead>
                     <tr>
                         <th>ID</th> 
-                        <th>Causer</th>
+                        <th>Date</th>
                         <th>Description</th>
-                        <th>Subject Type</th>
                         <th>Action</th>                       
                     </tr>
                 </thead>
@@ -77,9 +76,8 @@ $(function() {
         ajax: "{!! route('admin.getActivityLog') !!}",
         columns: [
             { data: 'id', name: 'id' },
-            { data: 'causer', name: 'causer' },
+            { data: 'month', name: 'month' },
             { data: 'description', name: 'description' },
-            { data: 'subject_type', name: 'subject_type' },
             { data: 'actions', name: 'actions' },
             
         ],
