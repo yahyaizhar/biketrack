@@ -149,17 +149,20 @@ class AjaxNewController extends Controller
 
         $month = Carbon::parse($to)->format('m');
         //sim
-        $model = \App\Model\Accounts\Company_Account::
+        $models = \App\Model\Accounts\Company_Account::
         whereMonth('month', $month)
         ->where("rider_id",$rider_id)
         ->where("type","dr")
         ->whereNotNull('sim_transaction_id')
-        ->get()
-        ->first();
-        if(isset($model)){
-            $model->source = "Sim Usage";
-            $bills->push($model);
+        ->get();
+        foreach ($models as $model) {
+            if(isset($model)){
+                $model->source = "Sim Usage";
+                $model->amount=$model->amount;
+                $bills->push($model);
+            }
         }
+        
         //Salik
         $models = \App\Model\Accounts\Company_Account::
         whereMonth('month', $month)
