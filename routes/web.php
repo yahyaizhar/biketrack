@@ -97,6 +97,7 @@ Route::group([
     Route::delete('/ridesReportRecord/{record}', 'RiderController@deleteRidesReportRecord')->name('admin.rider.ridesReport.delete');
     Route::post('/rider/{rider}/sendMessage', 'RiderController@sendSMS')->name('admin.rider.sendSMS');
     Route::post('/rider/{rider}/updateStatus', 'RiderController@updateStatus')->name('admin.rider.updateStatus');  
+    Route::get('/rider/client_history/{id}',"RiderController@client_history")->name('Client.client_history');
 //  map Routes
     Route::get('/rider/assign-area', 'HomeController@assign_area')->name('admin.assignArea');
     Route::post('/rider/assign-area/assign', 'HomeController@assign_area_POST')->name('admin.post.assignArea');
@@ -354,6 +355,7 @@ Route::group([
 ], function(){
     Route::get('/activity/view','KRController@activity_view')->name('admin.activity.view');
     Route::delete('/delete/activity/{id}','KRController@delete_activity_log')->name('admin.delete_activity_log');
+    Route::get('/tax/KR','KRController@gov_tax')->name('admin.gov_tax');
 });
 // End Activity
 // Sim

@@ -19,6 +19,7 @@ use App\Model\Sim\Sim;
 use App\Model\Sim\Sim_Transaction;
 use App\Model\Sim\Sim_History;
 use App\Model\Client\Client_Rider;
+use App\Model\Client\Client;
 use Illuminate\Support\Arr;
 use Batch;
 use Carbon\Carbon;
@@ -693,6 +694,11 @@ public function destroyer(Rider $rider,$id){
    public function getRider_active(){
     $rider_count=Rider::where('active_status','A')->get()->count();
     return view('admin.rider.active_riders',compact('rider_count'));
+   }
+   public function client_history($id){
+       $rider=Rider::find($id);
+       $clients=$rider->clients;
+       return view('admin.rider.client_history',compact('rider','clients'));
    }
 
 }

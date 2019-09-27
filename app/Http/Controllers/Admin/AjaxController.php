@@ -631,6 +631,7 @@ class AjaxController extends Controller
                     <a class="dropdown-item" href="'.route('Sim.simHistory', $riders).'"><i class="fa fa-eye"></i> View Sim History</a>
                     '.$cr_HTML.'
                     '.$bike_html.'
+                    <a class="dropdown-item" href="'.route('Client.client_history', $riders->id).'"><i class="fa fa-eye"></i> View Client History</a>
                     </div>
                     
                     </div>

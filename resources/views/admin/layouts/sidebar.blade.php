@@ -556,6 +556,9 @@ if (Auth::user()->type=="su") {
                 <li class="kt-menu__item @if(strpos(Request::url(), "admin/activity") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.activity.view') }}" class="kt-menu__link "><span class="kt-menu__link-icon">
                     <i class="fa fa-file-invoice"></i>
                 </span><span class="kt-menu__link-text">Activity Log View</span></a></li>
+                <li class="kt-menu__item @if(strpos(Request::url(), "admin/tax") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.gov_tax') }}" class="kt-menu__link "><span class="kt-menu__link-icon">
+                    <i class="fa fa-file-invoice"></i>
+                </span><span class="kt-menu__link-text">Tax View</span></a></li>
             </ul>
         </div>
     </div>

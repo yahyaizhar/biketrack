@@ -54,5 +54,8 @@ class KRController extends Controller
         'status' => true
     ]);
     }
+    public function gov_tax(){
+        return view('tax');
+    }
   
 }
