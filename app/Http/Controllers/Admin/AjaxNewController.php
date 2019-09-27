@@ -1235,7 +1235,7 @@ class AjaxNewController extends Controller
             return Carbon::parse($LA->created_at)->format('d M, Y');
          })
         ->addColumn('description', function($LA) {
-            $ST=class_basename($LA->subject_type);
+            $ST='<strong>'.class_basename($LA->subject_type).'</strong>';
             $description=$LA->description;
             $auth=Admin::find($LA->causer_id);
             $causer= $auth->name;
