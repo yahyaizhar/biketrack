@@ -208,25 +208,35 @@ class SalikController extends Controller
                 $ca_obj = [];
                 $ca_obj['salik_id']=$distinct_item['transaction_id'];
                 $ca_obj['source']='Salik';
-                $ca_obj['amount']=$max_salik;
+                $ca_obj['amount']=$amount;
                 $ca_obj['rider_id']=$distinct_item['rider_id'];
                 $ca_obj['type']='dr';
                 $ca_obj['month']=Carbon::parse($distinct_item['trip_date'])->format("Y-m-d");
                 $ca_obj['created_at']=Carbon::now();
                 $ca_obj['updated_at']=Carbon::now();
                 array_push($ca_objects, $ca_obj);
-                if($amount<$max_salik){
-                    $ra_obj = [];
-                    $ra_obj['salik_id']=$distinct_item['transaction_id'];
-                    $ra_obj['source']='Salik';
-                    $ra_obj['amount']=$max_salik-$amount;
-                    $ra_obj['rider_id']=$distinct_item['rider_id'];
-                    $ra_obj['type']='cr';
-                    $ra_obj['month']=Carbon::parse($distinct_item['trip_date'])->format("Y-m-d");
-                    $ra_obj['created_at']=Carbon::now();
-                    $ra_obj['updated_at']=Carbon::now();
-                    array_push($ra_objects, $ra_obj);
-                }
+                // $ca_obj = [];
+                // $ca_obj['salik_id']=$distinct_item['transaction_id'];
+                // $ca_obj['source']='Salik';
+                // $ca_obj['amount']=$max_salik;
+                // $ca_obj['rider_id']=$distinct_item['rider_id'];
+                // $ca_obj['type']='dr';
+                // $ca_obj['month']=Carbon::parse($distinct_item['trip_date'])->format("Y-m-d");
+                // $ca_obj['created_at']=Carbon::now();
+                // $ca_obj['updated_at']=Carbon::now();
+                // array_push($ca_objects, $ca_obj);
+                // if($amount<$max_salik){
+                //     $ra_obj = [];
+                //     $ra_obj['salik_id']=$distinct_item['transaction_id'];
+                //     $ra_obj['source']='Salik';
+                //     $ra_obj['amount']=$max_salik-$amount;
+                //     $ra_obj['rider_id']=$distinct_item['rider_id'];
+                //     $ra_obj['type']='cr';
+                //     $ra_obj['month']=Carbon::parse($distinct_item['trip_date'])->format("Y-m-d");
+                //     $ra_obj['created_at']=Carbon::now();
+                //     $ra_obj['updated_at']=Carbon::now();
+                //     array_push($ra_objects, $ra_obj);
+                // }
             }
             
             
@@ -434,22 +444,30 @@ class SalikController extends Controller
         else{
             $ca= new Company_Account;
             $ca->source="Salik";
-            $ca->amount=$allow_salik;
+            $ca->amount=$used_salik;
             $ca->salik_id="0";
             $ca->rider_id=$rider_id;
             $ca->month=Carbon::parse($request->month)->format("Y-m-d");
             $ca->type="dr";
             $ca->save();
-            if($used_salik<$allow_salik){
-                $_less_ra= new Rider_Account;
-                $_less_ra->source="Salik";
-                $_less_ra->salik_id="0";
-                $_less_ra->amount=$allow_salik-$used_salik;
-                $_less_ra->rider_id=$rider_id;
-                $_less_ra->month=Carbon::parse($request->month)->format("Y-m-d");
-                $_less_ra->type="cr";
-                $_less_ra->save();
-            }
+            // $ca= new Company_Account;
+            // $ca->source="Salik";
+            // $ca->amount=$allow_salik;
+            // $ca->salik_id="0";
+            // $ca->rider_id=$rider_id;
+            // $ca->month=Carbon::parse($request->month)->format("Y-m-d");
+            // $ca->type="dr";
+            // $ca->save();
+            // if($used_salik<$allow_salik){
+            //     $_less_ra= new Rider_Account;
+            //     $_less_ra->source="Salik";
+            //     $_less_ra->salik_id="0";
+            //     $_less_ra->amount=$allow_salik-$used_salik;
+            //     $_less_ra->rider_id=$rider_id;
+            //     $_less_ra->month=Carbon::parse($request->month)->format("Y-m-d");
+            //     $_less_ra->type="cr";
+            //     $_less_ra->save();
+            // }
         }
             
         return redirect(route('admin.salik'));

@@ -59,6 +59,8 @@ Route::group([
     Route::get('/accounts/income/zomato/ajax/data','AjaxNewController@income_zomato_ajax')->name('admin.accounts.income_zomato_ajax');
     Route::get('/get/ajax/activity/log','AjaxNewController@getActivityLog')->name('admin.getActivityLog');
     Route::get("/accounts/company/bills/{range}","AjaxNewController@getCompanyAccountsBills")->name("admin.accounts.get_company_account_bills");
+
+    Route::get("/accounts/kr_investment/view/data","AjaxNewController@getCompanyInvestment")->name("admin.getCompanyInvestment");
 });
 // End Ajax Routes
 
@@ -220,6 +222,17 @@ Route::group([
     Route::post("/accounts/company/profit/add","AccountsController@add_company_profit")->name("admin.accounts.add_company_profit");
     Route::get("/company/overall/report","AccountsController@company_overall_report")->name("admin.accounts.company_overall_report");
     Route::put('/bill/payment/{id}/updateStatus','AccountsController@updateBillPaymentStatus')->name('admin.updateBillPaymentStatus');
+
+    // investment 
+    Route::get("/kr_investment/add","AccountsController@kr_investment_index")->name("admin.accounts.kr_investment_index");
+    Route::post("/kr_investment/add-data","AccountsController@kr_investment_post")->name("admin.accounts.kr_investment_post");
+    Route::get("/kr_investment/view","AccountsController@kr_investment_view")->name("admin.accounts.kr_investment_view");
+    Route::POST('/kr_investment/{kr_investment}/updatestatus','AccountsController@updateStatusKr_investment')->name('admin.accounts.updateStatusKr_investment');
+    Route::delete('/kr_investment/{kr_investment}', 'AccountsController@delete_kr_investment')->name('admin.accounts.delete_kr_investment');
+    Route::get('/kr_investment/edit/{shop_id}','AccountsController@kr_investment_edit')->name('admin.kr_investment_edit');
+    Route::get('/kr_investment/edit/view/{shop_id}','AccountsController@kr_investment_edit_view')->name('admin.kr_investment_edit_view');
+    Route::post('/kr_investment/update/{shop_id}','AccountsController@kr_investment_update')->name('admin.kr_investment_update');
+    //end investment
 });
 // end Accounts
 

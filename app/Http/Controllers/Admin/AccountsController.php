@@ -28,6 +28,7 @@ use Arr;
 use Batch;
 use App\Model\Accounts\Company_Account;
 use App\Assign_bike;
+use App\Company_investment;
 
 
 class AccountsController extends Controller
@@ -641,6 +642,99 @@ class AccountsController extends Controller
         ]);
     }
     //ends maintenence
+
+    // investment
+    public function kr_investment_index()
+    {
+        return view('admin.accounts.kr_investment_add');
+    }
+    public function kr_investment_post(Request $r)
+    {
+        $kr_investment = Company_investment::create([
+            'investor_id'=>Auth::user()->id,
+            'amount'=>$r->amount,
+            'notes'=>$r->notes,
+            'month' => Carbon::parse($r->get('month'))->format('Y-m-d'),
+            'status'=>$r->status=='on'?1:0,
+        ]);
+        $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+            'investment_id'=>$kr_investment->id
+        ]);
+        $ca->investment_id =$kr_investment->id;
+        $ca->type='cr';
+        $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
+        $ca->source="Investment"; 
+        $ca->amount=$r->amount;
+        $ca->payment_status='paid';
+        $ca->save();
+        
+        return redirect(route('admin.accounts.kr_investment_view'));
+    } 
+    public function kr_investment_view()
+    { 
+        return view('admin.accounts.kr_investment_view');
+    }
+    public function kr_investment_edit($id){
+        $readonly=false;
+        $kr_investment=Company_investment::find($id);
+        return view('admin.accounts.kr_investment_edit',compact('readonly','kr_investment'));
+    }
+    public function kr_investment_edit_view($id){
+        $readonly=true;
+        $kr_investment=Company_investment::find($id);
+        return view('admin.accounts.kr_investment_edit',compact('readonly','kr_investment'));
+    }
+    public function kr_investment_update(Request $r,$id){
+        $kr_investment =Company_investment::find($id);
+        $kr_investment->investor_id=$r->investor_id;
+        $kr_investment->amount=$r->amount;
+        $kr_investment->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+        
+        // $id_charge->=$r->;
+        if($r->status)
+            $kr_investment->status = 1;
+        else
+            $kr_investment->status = 0;
+        $kr_investment->update();
+        
+        $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+            'investment_id'=>$kr_investment->id
+        ]);
+        $ca->investment_id =$kr_investment->id;
+        $ca->type='cr';
+        $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
+        $ca->source="Investment"; 
+        $ca->amount=$r->amount;
+        $ca->payment_status='paid';
+        $ca->save();
+        
+        
+        return redirect(route('admin.accounts.kr_investment_view'));
+    }
+    public function delete_kr_investment($id)
+    {
+        $kr_investment=Company_investment::find($id);
+        $kr_investment->active_status="D";
+        $kr_investment->status=0;
+        $kr_investment->update();
+    }
+    public function updateStatusKr_investment($kr_investment_id)
+    {
+        $kr_investment=Company_investment::find($kr_investment_id);
+        if($kr_investment->status == 1)
+        {
+            $kr_investment->status = 0;
+        }
+        else
+        {
+            $kr_investment->status = 1;
+        }
+        $kr_investment->update();
+        return response()->json([
+            'status' => true
+        ]);
+    }
+    //ends investment
 
     // add new salary
     public function add_new_salary_create(){

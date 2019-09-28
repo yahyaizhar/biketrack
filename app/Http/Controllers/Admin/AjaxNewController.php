@@ -45,6 +45,7 @@ use App\Model\Mobile\Mobile_Transaction;
 use App\Log_activity;
 use Auth;
 use App\Model\Admin\Admin;
+use App\Company_investment;
 
 
 class AjaxNewController extends Controller
@@ -778,6 +779,49 @@ class AjaxNewController extends Controller
                     <a class="dropdown-item" href="'.route('admin.CE_edit_view', $expense).'"><i class="fa fa-edit"></i> VIew</a>
                     <button class="dropdown-item" onclick="updateStatus('.$expense->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                     <button class="dropdown-item" onclick="deleteRow('.$expense->id.');"><i class="fa fa-trash"></i> Delete</button>
+                    </div>
+            </span>
+        </span>';
+        })
+        ->rawColumns(['status','description','type','amount','actions', 'status'])
+        ->make(true);
+    }
+    public function getCompanyInvestment()
+    {
+        $investments = Company_investment::orderByDesc('created_at')->where('active_status', 'A')->get();
+        // return $clients;
+        return DataTables::of($investments)
+        ->addColumn('status', function($investment){
+            if($investment->status == 1)
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
+            }
+            else
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
+            }
+        })
+        ->addColumn('id', function($investment){
+            return '1000'.$investment->id;
+        })
+        ->addColumn('amount', function($investment){
+            return $investment->amount;
+        })
+        ->addColumn('description', function($investment){
+            return $investment->notes;
+        })
+       
+        ->addColumn('actions', function($investment){
+            $status_text = $investment->status == 1 ? 'Inactive' : 'Active';
+            return '<span class="dtr-data">
+            <span class="dropdown">
+                <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+                <i class="la la-ellipsis-h"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="'.route('admin.kr_investment_edit_view', $investment).'"><i class="fa fa-edit"></i> VIew</a>
+                    <button class="dropdown-item" onclick="updateStatus('.$investment->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
+                    <button class="dropdown-item" onclick="deleteRow('.$investment->id.');"><i class="fa fa-trash"></i> Delete</button>
                     </div>
             </span>
         </span>';

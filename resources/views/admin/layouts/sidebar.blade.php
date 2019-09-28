@@ -316,6 +316,34 @@ if (Auth::user()->type=="su") {
                         <ul class="kt-menu__subnav">
                             <li class="kt-menu__item @if(strpos(Request::url(), "/Salary/accounts") !== false && strpos(Request::url(), "admin/Salary/accounts/company") != false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.accounts.company_account') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Company-Rider Account</span></a></li>
                             <li class="kt-menu__item @if(strpos(Request::url(), "/company") !== false && strpos(Request::url(), "admin/company/overall/report") != false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.accounts.company_overall_report') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">View Company Overall Reports</span></a></li>
+                            
+                            <li class="kt-menu__item kt-menu__item--submenu @if(strpos(Request::url(), "/kr_investment") !== false) kt-menu__item--active kt-menu__item--open @endif "  aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
+                                <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
+                                    <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="kt-menu__link-text">Company Investment</span>
+                                    <i class="kt-menu__ver-arrow la la-angle-right"></i>
+                                </a>
+                                <div class="kt-menu__submenu " kt-hidden-height="160" @if(strpos(Request::url(), "/kr_investment") === false)style="display: none; overflow: hidden;"@endif><span class="kt-menu__arrow"></span>
+                                    <ul class="kt-menu__subnav">
+                                        <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text"></span></span></li>
+                                        <li class="kt-menu__item @if(strpos(Request::url(), "/kr_investment/add") !== false) kt-menu__item--active @endif" aria-haspopup="true">
+                                            <a href="{{ route('admin.accounts.kr_investment_index') }}" class="kt-menu__link ">
+                                                <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
+                                                <span class="kt-menu__link-text">Add Company Investment</span>
+                                            </a>
+                                        </li>
+                                        <li class="kt-menu__item @if(strpos(Request::url(), "/kr_investment/view") !== false) kt-menu__item--active @endif" aria-haspopup="true">
+                                            <a href="{{ route('admin.accounts.kr_investment_view') }}" class="kt-menu__link ">
+                                                <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
+                                                <span class="kt-menu__link-text">View Company Investment</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
                             <li class="kt-menu__item kt-menu__item--submenu @if(strpos(Request::url(), "/accounts/CE") !== false) kt-menu__item--active kt-menu__item--open @endif "  aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
                                 <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
                                     <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
