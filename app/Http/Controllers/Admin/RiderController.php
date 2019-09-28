@@ -630,20 +630,46 @@ class RiderController extends Controller
             'status' => true
         ]);
     }
-    public function updateStatus(Rider $rider)
+    public function updateStatus(Rider $rider,Request $req)
     {
+        
         if($rider->status == 1)
         {
+            // inactive
             $rider->status = 0;
+            if (isset($rider->spell_time)) {
+                $ca=json_decode($rider->spell_time,true);
+                $ca_key=null;
+                $date = Arr::first($ca, function ($item, $key) use (&$ca_key){
+                    $ca_key=$key;
+                    return isset($item['end_time']) && $item['end_time'] == "" ;
+                }); 
+                if(isset($date)){
+                    $ca[$ca_key]['end_time']=Carbon::now()->format('d-m-Y');
+                }
+                $rider->spell_time=json_encode($ca);
+            }
         }
         else
         {
+            //active
             $rider->status = 1;
+                $ca=json_decode($rider->spell_time,true);
+                if (!isset($ca)) {
+                   $ca=[];
+                }
+                $obj=[];
+                $obj['start_time']=Carbon::now()->format('d-m-Y');
+                $obj['end_time']="";
+                array_push($ca, $obj);
+                $rider->spell_time=json_encode($ca);
         }
         $rider->update();
         return response()->json([
-            'status' => true
+            'status' => true,
+            'data'=>$ca, 
         ]);
+       
     }
 
     public function showRidesReport(Rider $rider)
