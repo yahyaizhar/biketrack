@@ -580,13 +580,13 @@
                                                 <label>Other Details:</label>
                                                 <textarea type="text" rows="8"  autocomplete="off" class="form-control @if($errors->has('other_details')) invalid-field @endif" name="other_details" placeholder="Enter Further Details" >{{ $rider_detail->other_details }}</textarea>
                                             </div>
-                                            <div class="form-group">
+                                            {{-- <div class="form-group">
                                                     <label>Status:</label>
                                                     <div>
                                                         <input data-switch="true" name="status" id="status" type="checkbox" {!! $rider->status ==  1 ? 'checked' : '' !!} data-on-text="Enabled" data-handle-width="70" data-off-text="Disabled" data-on-color="brand">
                                                     </div>
                                                     
-                                                </div>
+                                                </div> --}}
                 </div>
                 <div class="kt-portlet__foot">
                     <div class="kt-form__actions kt-form__actions--right">

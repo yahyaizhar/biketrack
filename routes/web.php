@@ -100,6 +100,7 @@ Route::group([
     Route::post('/rider/{rider}/sendMessage', 'RiderController@sendSMS')->name('admin.rider.sendSMS');
     Route::post('/rider/{rider}/updateStatus', 'RiderController@updateStatus')->name('admin.rider.updateStatus');  
     Route::get('/rider/client_history/{id}',"RiderController@client_history")->name('Client.client_history');
+    Route::get('/rider/spell/time/{id}',"RiderController@Spell_time")->name('Rider.spell_time');
 //  map Routes
     Route::get('/rider/assign-area', 'HomeController@assign_area')->name('admin.assignArea');
     Route::post('/rider/assign-area/assign', 'HomeController@assign_area_POST')->name('admin.post.assignArea');

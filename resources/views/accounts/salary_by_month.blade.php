@@ -92,6 +92,7 @@
                         
                         <th>Rider Name</th>
                         <th>Amount</th>
+                        <th>Closing Balnce</th>
                         <th>Payment Date</th>
                         <th>Paid By</th>
                         <th>Payment Status</th>
@@ -216,6 +217,7 @@ $(document).ready(function(){
             //  { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
             { data: 'name', name: 'name' },
             { data: 'salary', name: 'salary' },
+            { data: 'balance', name: 'balance' },
             {data:'updated_at',name:'updated_at'},
             { data: 'paid_by', name: 'paid_by' },
             { data: 'payment_status', name: 'payment_status' },

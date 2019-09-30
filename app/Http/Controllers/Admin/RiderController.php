@@ -102,10 +102,33 @@ class RiderController extends Controller
         $rider->end_time = $request->end_time;
         $rider->break_start_time = $request->break_start_time;
         $rider->break_end_time = $request->break_end_time;
-        if($request->status)
+        if($request->status){
             $rider->status = 1;
-        else
+            $ca=json_decode($rider->spell_time,true);
+            if (!isset($ca)) {
+                $ca=[];
+            }
+            $obj=[];
+            $obj['start_time']=Carbon::now()->format('d-m-Y');
+            $obj['end_time']="";
+            array_push($ca, $obj);
+            $rider->spell_time=json_encode($ca);
+            }
+        else{
+            if (isset($rider->spell_time)) {
+                $ca=json_decode($rider->spell_time,true);
+                $ca_key=null;
+                $date = Arr::first($ca, function ($item, $key) use (&$ca_key){
+                    $ca_key=$key;
+                    return isset($item['end_time']) && $item['end_time'] == "" ;
+                }); 
+                if(isset($date)){
+                    $ca[$ca_key]['end_time']=Carbon::now()->format('d-m-Y');
+                }
+                $rider->spell_time=json_encode($ca);
+            }
             $rider->status = 0;
+        }
         if($request->hasFile('profile_picture'))
         {
             // return 'yes';
@@ -380,10 +403,12 @@ class RiderController extends Controller
         $rider->end_time = $request->end_time;
         $rider->break_start_time = $request->break_start_time;
         $rider->break_end_time = $request->break_end_time;
-        if($request->status)
-            $rider->status = 1;
-        else
-            $rider->status = 0;
+        // if($request->status){
+        //     $rider->status = 1;
+        //     }
+        // else{
+        //     $rider->status = 0;
+        // }
         if($request->hasFile('profile_picture'))
         {
             // return 'yes';
@@ -725,6 +750,11 @@ public function destroyer(Rider $rider,$id){
        $rider=Rider::find($id);
        $clients=$rider->clients;
        return view('admin.rider.client_history',compact('rider','clients'));
+   }
+   public function Spell_time($id){
+    $rider=Rider::find($id);
+    $dates=json_decode($rider->spell_time,true);
+    return view('admin.rider.rider_spell_time',compact('dates','rider'));
    }
 
 }

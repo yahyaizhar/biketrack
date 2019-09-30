@@ -82,6 +82,7 @@
                         
                         <th>Month/Year</th>
                         <th>Amount</th>
+                        <th>Closing Balance</th>
                         <th>Payment Date</th>
                         <th>Paid By</th>
                         <th>Payment Status</th>
@@ -213,6 +214,7 @@ $(document).ready(function(){
             //  { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
             { data: 'month', name: 'month' },
             { data: 'salary', name: 'salary' },
+            { data: 'balance', name: 'balance' },
             { data: 'payment_date', name: 'payment_date' },
             { data: 'paid_by', name: 'paid_by' },
             { data: 'payment_status', name: 'payment_status' },

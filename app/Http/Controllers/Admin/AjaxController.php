@@ -632,6 +632,7 @@ class AjaxController extends Controller
                     '.$cr_HTML.'
                     '.$bike_html.'
                     <a class="dropdown-item" href="'.route('Client.client_history', $riders->id).'"><i class="fa fa-eye"></i> View Client History</a>
+                    <a class="dropdown-item" href="'.route('Rider.spell_time', $riders->id).'"><i class="fa fa-eye"></i> Rider Spell Time</a>
                     </div>
                     
                     </div>
@@ -976,6 +977,10 @@ class AjaxController extends Controller
             
             return  Carbon::parse($riderToMonth->month)->format('M Y');
         })
+        ->addColumn('balance', function($riderToMonth){
+            
+            return  $riderToMonth->gross_salary;
+        })
         ->addColumn('salary', function($riderToMonth){
                $total_salary='<strong>Total Salary</strong>: '.$riderToMonth->total_salary.'<br>';
                $gross_salary='<strong>Gross Salary</strong>: '.$riderToMonth->gross_salary.'<br>';
@@ -1012,7 +1017,7 @@ class AjaxController extends Controller
         // <a class="dropdown-item" href="'.route('bike.bike_assigned', $bike).'"><i class="fa fa-eye"></i> View Bikes</a>
         // <a class="dropdown-item" href="'.route('bike.bike_assignRiders', $bike).'"><i class="fa fa-edit"></i> Assign Bikes</a>
                     
-        ->rawColumns(['created_at','payment_status', 'salary','payment_date', 'paid_by',  'status','actions'])
+        ->rawColumns(['created_at','balance','payment_status', 'salary','payment_date', 'paid_by',  'status','actions'])
         ->make(true);
     }
     public function getMonthToRider($month)
@@ -1052,6 +1057,9 @@ class AjaxController extends Controller
             $c = Rider::find($monthToRider->rider_id);
             return $c->name;
         })
+        ->addColumn('balance', function($monthToRider){
+            return $riderToMonth->gross_salary;
+        })
         ->addColumn('salary', function($riderToMonth){
             $total_salary='<strong>Total Salary</strong>: '.$riderToMonth->total_salary.'<br>';
             $gross_salary='<strong>Gross Salary</strong>: '.$riderToMonth->gross_salary.'<br>';
@@ -1090,7 +1098,7 @@ class AjaxController extends Controller
         // <a class="dropdown-item" href="'.route('bike.bike_assigned', $bike).'"><i class="fa fa-eye"></i> View Bikes</a>
         // <a class="dropdown-item" href="'.route('bike.bike_assignRiders', $bike).'"><i class="fa fa-edit"></i> Assign Bikes</a>
                     
-        ->rawColumns(['name','payment_status','status','salary','created_at','updated_at','paid_by','actions'])
+        ->rawColumns(['name','balance','payment_status','status','salary','created_at','updated_at','paid_by','actions'])
         ->make(true);
     }
     public function getRidersDetails()
@@ -1648,6 +1656,8 @@ class AjaxController extends Controller
                        <a class="dropdown-item" href="'.route('Sim.simHistory', $riders).'"><i class="fa fa-eye"></i> View Sim History</a>
                        '.$cr_HTML.'
                        '.$bike_html.'
+                       <a class="dropdown-item" href="'.route('Client.client_history', $riders->id).'"><i class="fa fa-eye"></i> View Client History</a>
+                       <a class="dropdown-item" href="'.route('Rider.spell_time', $riders->id).'"><i class="fa fa-eye"></i> Rider Spell Time</a>
                        </div>
                        
                        </div>
