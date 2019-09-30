@@ -67,7 +67,7 @@
                     <i class="kt-font-brand fa fa-hotel"></i>
                 </span>
                 <h3 class="kt-portlet__head-title">
-                    Salaries By[Month]
+                    Balance By Month
                 </h3>
             </div>
             <div class="kt-portlet__head-toolbar">
@@ -91,13 +91,13 @@
                     <tr>
                         
                         <th>Rider Name</th>
-                        <th>Amount</th>
+                        {{-- <th>Amount</th> --}}
                         <th>Closing Balnce</th>
-                        <th>Payment Date</th>
+                        {{-- <th>Payment Date</th>
                         <th>Paid By</th>
                         <th>Payment Status</th>
                         <th>Status</th>
-                        <th>Actions</th>                        
+                        <th>Actions</th>                         --}}
                     </tr>
                 </thead>
             </table>
@@ -216,13 +216,13 @@ $(document).ready(function(){
      columns: [
             //  { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
             { data: 'name', name: 'name' },
-            { data: 'salary', name: 'salary' },
+            // { data: 'salary', name: 'salary' },
             { data: 'balance', name: 'balance' },
-            {data:'updated_at',name:'updated_at'},
-            { data: 'paid_by', name: 'paid_by' },
-            { data: 'payment_status', name: 'payment_status' },
-            { data: 'status', name: 'status' },
-            { data: 'actions', name: 'actions' },
+            // {data:'updated_at',name:'updated_at'},
+            // { data: 'paid_by', name: 'paid_by' },
+            // { data: 'payment_status', name: 'payment_status' },
+            // { data: 'status', name: 'status' },
+            // { data: 'actions', name: 'actions' },
         ],
         responsive:true,
         order:[0,'desc'],
