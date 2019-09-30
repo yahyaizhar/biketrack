@@ -1058,7 +1058,7 @@ class AjaxController extends Controller
             return $c->name;
         })
         ->addColumn('balance', function($monthToRider){
-            return $riderToMonth->gross_salary;
+            return $monthToRider->gross_salary;
         })
         ->addColumn('salary', function($riderToMonth){
             $total_salary='<strong>Total Salary</strong>: '.$riderToMonth->total_salary.'<br>';
