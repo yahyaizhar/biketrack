@@ -326,7 +326,7 @@ class AjaxNewController extends Controller
                     $total=$salary_paid->total_salary;
                     $gross=$salary_paid->gross_salary;
                     //not found, can pay
-                    return '<div>Salary Recieved from Kingriders <button type="button" data-total="'.$total.'" id="getting_val" data-gross="'.$gross.'" onclick="remaining_pay()" data-toggle="modal" data-target="#remaining_pay_modal" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
+                    return '<div>Salary Recieved from Kingriders <button type="button" id="getting_val" onclick="remaining_pay('.$rider_statement->id.', '.$total.', '.$gross.')" data-toggle="modal" data-target="#remaining_pay_modal" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
                 }
                 // updateStatus('.$rider_statement->id.')
                 return "Salary Recieved from Kingriders";

@@ -209,8 +209,9 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form class="kt-form" enctype="multipart/form-data" id="salary">
+                <form class="kt-form" enctype="multipart/form-data" id="remaining_salary">
                     <div class="modal-body">
+                        <input type="hidden" name="account_id" value="">
                             <div class="form-group">
                                     <label>Total Salary:</label>
                                     <input readonly type="text" class="form-control @if($errors->has('net_salary')) invalid-field @endif" name="net_salary" value="">
@@ -254,7 +255,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Salary Remaining:</label>
-                                    <input disabled type="text" class="form-control @if($errors->has('remaining_salary')) invalid-field @endif" name="remaining_salary" value="">
+                                    <input readonly type="text" class="form-control @if($errors->has('remaining_salary')) invalid-field @endif" name="remaining_salary" value="">
                                     @if ($errors->has('remaining_salary'))
                                         <span class="invalid-response" role="alert">
                                             <strong>
@@ -328,6 +329,52 @@
             placeholder: "Select a rider",
             width:'100%'    
         });
+        
+        $('form#remaining_salary').on('submit', function(e){
+            e.preventDefault();
+            var _form = $(this);
+            var _modal = _form.parents('.modal');
+            var _cta = _form.find('[type="submit"]');
+            _cta.prop('disabled', true).addClass('btn-icon').html('<i class="fa flaticon2-refresh fa-spin"></i>');
+            var url = '{{route('admin.accounts.rider_remaining_salary_add')}}';
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url : url,
+                type : 'POST',
+                data: _form.serializeArray(),
+                success: function(data){
+                    _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
+                    _modal.modal('hide');
+                    swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Record updated successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    
+                    table.ajax.reload(null, false);
+                },
+                error: function(error){
+                    _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
+                    _modal.modal('hide');
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Unable to update.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+        });
+
+
 
         $('#cash_pay_modal form').on('submit', function(e){
             e.preventDefault();
@@ -529,19 +576,19 @@
         }
         $('[name="sort_by"]:checked').trigger('change')
     })
-    function remaining_pay(){
-        $('#salary [name="remaining_salary"]').val(0);
-        $('#salary [name="recieved_salary"]').on('change input', function(){
-            var _gross_salary = parseFloat($('#salary [name="gross_salary"]').val().trim());
+    function remaining_pay(account_id, total_S, total_G){
+        $('#remaining_salary [name="remaining_salary"]').val(0);
+        
+        $('#remaining_salary [name="account_id"]').val(account_id);
+        $('#remaining_salary [name="recieved_salary"]').off('change input').on('change input', function(){
+            var _gross_salary = parseFloat($('#remaining_salary [name="gross_salary"]').val().trim());
             var _recieved_salary = parseFloat($(this).val().trim());
-            $('#salary [name="remaining_salary"]').val(_recieved_salary-_gross_salary);
+            $('#remaining_salary [name="remaining_salary"]').val(_recieved_salary-_gross_salary);
         });
-        var total_S=$('#getting_val').attr("data-total");
-        var total_G=$('#getting_val').attr("data-gross");
 
-        $('#salary [name="net_salary"]').val(total_S);
-        $('#salary [name="gross_salary"]').val(total_G);
-        $('#salary [name="recieved_salary"]').val(total_G);
+        $('#remaining_salary [name="net_salary"]').val(total_S);
+        $('#remaining_salary [name="gross_salary"]').val(total_G);
+        $('#remaining_salary [name="recieved_salary"]').val(total_G);
        
     }
     function updateStatus(id)

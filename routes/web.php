@@ -234,6 +234,8 @@ Route::group([
     Route::get('/kr_investment/edit/view/{shop_id}','AccountsController@kr_investment_edit_view')->name('admin.kr_investment_edit_view');
     Route::post('/kr_investment/update/{shop_id}','AccountsController@kr_investment_update')->name('admin.kr_investment_update');
     //end investment
+
+    Route::post("/accounts/rider/remaining_salary/add","AccountsController@rider_remaining_salary_add")->name("admin.accounts.rider_remaining_salary_add");
 });
 // end Accounts
 

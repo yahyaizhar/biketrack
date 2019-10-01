@@ -185,9 +185,9 @@
                 console.log(data);
                 $('#salary [name="gross_salary"], #salary [name="recieved_salary"]').val(data.gross_salary).trigger('change');
                 $('#salary [name="net_salary"]').val(data.net_salary).trigger('change');
-                // $('#salary [name="total_deduction"]').val(data.total_deduction);
-                // $('#salary [name="total_salary"]').val(data.total_salary);
-                // $('#salary [name="total_bonus"]').val(data.total_bonus);
+                $('#salary [name="total_deduction"]').val(data.total_deduction);
+                $('#salary [name="total_salary"]').val(data.total_salary);
+                $('#salary [name="total_bonus"]').val(data.total_bonus);
             });
         });
 

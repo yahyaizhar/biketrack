@@ -1984,6 +1984,32 @@ public function client_income_update(Request $request,$id){
         ]);
 
     }
+    
+    public function rider_remaining_salary_add(Request $r){
+        $ra=Rider_Account::find($r->account_id);
+        $salary = Rider_salary::find($ra->salary_id);
+
+        //adding cash
+        $new_ra=new Rider_Account;
+        $new_ra->type="dr";
+        $new_ra->amount=$r->recieved_salary;
+        $new_ra->source="salary_paid";
+        $new_ra->payment_status="paid";
+        $new_ra->rider_id=$ra->rider_id;
+        $new_ra->salary_id=$ra->salary_id;
+        $new_ra->month=$ra->month;
+        $new_ra->save();
+
+        //updating salary
+        $salary->recieved_salary = $r->recieved_salary;
+        $salary->remaining_salary = round($r->remaining_salary,2);
+        $salary->update();
+
+        return response()->json([
+            'data'=>'true',
+            'd'=> $r->all()
+        ]);
+    }
 
     public function rider_cash_add(Request $r){
         $d_type = $r->d_type;
