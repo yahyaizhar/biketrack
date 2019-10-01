@@ -752,16 +752,6 @@ class AjaxNewController extends Controller
         $expense = Company_Expense::orderByDesc('created_at')->where('active_status', 'A')->get();
         // return $clients;
         return DataTables::of($expense)
-        ->addColumn('status', function($expense){
-            if($expense->status == 1)
-            {
-                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
-            }
-            else
-            {
-                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
-            }
-        })
         ->addColumn('id', function($expense){
             return '1000'.$expense->id;
         })
@@ -770,6 +760,10 @@ class AjaxNewController extends Controller
         })
         ->addColumn('description', function($expense){
             return $expense->description;
+        })
+        ->addColumn('month', function($expense){
+            $date=Carbon::parse($expense->month)->format('d M, Y');
+            return $date;
         })
        
         ->addColumn('actions', function($expense){
@@ -787,7 +781,7 @@ class AjaxNewController extends Controller
             </span>
         </span>';
         })
-        ->rawColumns(['status','description','type','amount','actions', 'status'])
+        ->rawColumns(['status','description','type','amount','actions', 'month'])
         ->make(true);
     }
     public function getCompanyInvestment()

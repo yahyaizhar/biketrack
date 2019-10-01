@@ -313,6 +313,7 @@ Route::group([
     Route::get('/CE/edit/{id}','ExpenseController@CE_edit')->name('admin.CE_edit');
     Route::get('/CE/report','ExpenseController@CE_report')->name('admin.CE_report');
     Route::get('/CE/edit/view/{id}','ExpenseController@CE_edit_view')->name('admin.CE_edit_view');
+    Route::get("/company/expense/investment/detail/{month}","ExpenseController@get_investment_detail")->name("admin.get_investment_detail");
 // End Company_Expense
 //     WPS
     Route::get('/wps/index','ExpenseController@wps_index')->name('admin.wps_index');

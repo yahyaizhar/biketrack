@@ -12,6 +12,8 @@ use App\Model\Accounts\Rider_Account;
 use App\Model\Rider\Rider;
 use App\Model\Accounts\WPS;
 use App\Model\Accounts\AdvanceReturn;
+use App\Company_investment;
+use Illuminate\Support\Facades\Auth;
 
 class ExpenseController extends Controller
 {
@@ -23,7 +25,8 @@ class ExpenseController extends Controller
     // Company Expense
     public function CE_index(){
         $riders=Rider::where("active_status","A")->get();
-        return view('admin.accounts.Company_Expense.CE_add', compact('riders'));
+        $available_balance=Company_Account::where("type","pl")->sum("amount");
+        return view('admin.accounts.Company_Expense.CE_add', compact('riders','available_balance'));
     }
     public function CE_store(Request $r){
         $ce=new Company_Expense();
@@ -49,6 +52,33 @@ class ExpenseController extends Controller
         $ca->source=$ce->description;
         $ca->company_expense_id=$ce->id;
         $ca->save();
+        
+        $checked=$r->investment_amount;
+        $amount=$r->amount;
+        $ca_credit=Company_Account::where("type","cr")->whereMonth('month',Carbon::parse($r->get('month'))->format('m'))->sum('amount');
+        $ca_debit=Company_Account::where("type","dr")->whereMonth('month',Carbon::parse($r->get('month'))->format('m'))->sum('amount');
+        $available_balance=$ca_credit-$ca_debit;
+        if ($amount>$available_balance) {
+            if($checked=="on"){
+                $kr_investment = Company_investment::create([
+                    'investor_id'=>Auth::user()->id,
+                    'amount'=>$r->checkbox_amount,
+                    'notes'=>$r->description,
+                    'month' => Carbon::parse($r->get('month'))->format('Y-m-d'),
+                    'status'=>$r->status=='on'?1:0,
+                ]);
+
+                $ca_inv = new Company_Account();
+                $ca_inv->type='cr';
+                $ca_inv->month = Carbon::parse($r->get('month'))->format('Y-m-d');
+                $ca_inv->amount=$r->checkbox_amount;
+                $ca_inv->source="Investment";
+                $ca_inv->investment_id= $kr_investment->id;
+                $ca_inv->save();
+         }
+        }
+        
+        
         return redirect(route('admin.CE_view'));
     }
     public function CE_view(){
@@ -74,6 +104,8 @@ class ExpenseController extends Controller
         $ca->source='company_expense';
         $ca->company_expense_id=$ce->id;
         $ca->save();
+
+        
         return redirect(route('admin.CE_view'));
     }
     public function CE_delete($id)
@@ -109,7 +141,8 @@ public function CE_edit($id){
     $readonly=false;
     $riders=Rider::where('active_status','A')->get();
     $edit_expense=Company_Expense::find($id);
-    return view('admin.accounts.Company_Expense.CE_edit',compact('riders','readonly','edit_expense'));
+    $available_balance=Company_Account::where("type","pl")->sum("amount");
+    return view('admin.accounts.Company_Expense.CE_edit',compact('riders','readonly','edit_expense','available_balance'));
 }
 public function CE_edit_view($id){
     $readonly=true;
@@ -455,5 +488,14 @@ public function AR_update(Request $r,$id){
 
 public function CE_report(){
     return view('admin.accounts.Company_Expense.CE_report');
+}
+public function get_investment_detail($month){   
+   $ca_credit=Company_Account::where("type","cr")->whereMonth('month',Carbon::parse($month)->format('m'))->sum('amount');
+   $ca_debit=Company_Account::where("type","dr")->whereMonth('month',Carbon::parse($month)->format('m'))->sum('amount');
+   $available_balance=$ca_credit-$ca_debit;
+   
+    return response()->json([
+        'available_balance'=>$available_balance,
+    ]);
 }
 }
