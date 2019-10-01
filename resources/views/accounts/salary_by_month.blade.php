@@ -69,6 +69,7 @@
                 <h3 class="kt-portlet__head-title">
                     Balance By Month
                 </h3>
+                <input style="margin-right:10px;" class="btn btn-primary" type="button" onclick="export_data()" value="Export Balance Sheet">
             </div>
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-wrapper">
@@ -171,6 +172,18 @@
 <script>
     var month=null;
     var rider=null;
+    function export_data(){ 
+    var _perData=riders_data;
+    var export_details=[];
+    _perData.forEach(function(item,index) { 
+        export_details.push({
+        "Rider Name":item.rider_id,
+        "Closing Balance":item.balance,
+    });
+});
+        var export_data = new CSVExport(export_details, "Closing Balance Sheet");
+        return false;
+}
 $(document).ready(function(){
     var current_open_target=null;
      $("#invoice_model").on('shown.bs.modal', function (event){
@@ -193,8 +206,6 @@ $(document).ready(function(){
         $('#gross_salary_form').text(gross_salary);  
     });
     
-    
-
   $('#kt_content-b').hide(); 
     $("#kt_select2_3_5").change(function(){
     $('#kt_content-b').show();
@@ -202,6 +213,7 @@ $(document).ready(function(){
         rider.destroy();
      }
      rider =$('#MonthToRider-table').DataTable({
+        "lengthMenu": [[-1], ["All"]],
         processing: true,
         serverSide: true,
         'language': {
@@ -209,6 +221,15 @@ $(document).ready(function(){
             'processing': $('.loading').show()
         },
         drawCallback:function(data){
+            console.log(data);
+            riders_data = [];
+            var api = this.api();
+            var _data = api.data();
+            var keys = Object.keys(_data).filter(function(x){return !isNaN(parseInt(x))});
+            keys.forEach(function(_d,_i) {
+                var __data = JSON.parse(JSON.stringify(_data[_d]).toLowerCase());
+                riders_data.push(__data);
+            });
 	    $('.total_entries').remove();
         $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
     	},

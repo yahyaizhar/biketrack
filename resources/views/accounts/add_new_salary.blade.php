@@ -74,7 +74,7 @@
                             @endif
                                 
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label>Salary Paid to Rider:</label>
                             <input type="text" class="form-control @if($errors->has('recieved_salary')) invalid-field @endif" name="recieved_salary" value="">
                             @if ($errors->has('recieved_salary'))
@@ -87,8 +87,8 @@
                                 <span class="form-text text-muted">Recieved salary</span>
                             @endif
                                 
-                        </div>
-                        <div class="form-group">
+                        </div> --}}
+                        {{-- <div class="form-group">
                             <label>Salary Remaining:</label>
                             <input type="text" class="form-control @if($errors->has('remaining_salary')) invalid-field @endif" name="remaining_salary" value="">
                             @if ($errors->has('remaining_salary'))
@@ -101,7 +101,7 @@
                                 <span class="form-text text-muted">Remaining salary</span>
                             @endif
                                 
-                        </div>
+                        </div> --}}
                         {{-- <div class="form-group">
                                 <label>Payment status:</label>
                                 <div class="kt-radio-inline">
@@ -185,9 +185,9 @@
                 console.log(data);
                 $('#salary [name="gross_salary"], #salary [name="recieved_salary"]').val(data.gross_salary).trigger('change');
                 $('#salary [name="net_salary"]').val(data.net_salary).trigger('change');
-                $('#salary [name="total_deduction"]').val(data.total_deduction);
-                $('#salary [name="total_salary"]').val(data.total_salary);
-                $('#salary [name="total_bonus"]').val(data.total_bonus);
+                // $('#salary [name="total_deduction"]').val(data.total_deduction);
+                // $('#salary [name="total_salary"]').val(data.total_salary);
+                // $('#salary [name="total_bonus"]').val(data.total_bonus);
             });
         });
 

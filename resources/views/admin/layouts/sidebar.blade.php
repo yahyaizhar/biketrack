@@ -405,7 +405,7 @@ if (Auth::user()->type=="su") {
                             <li class="kt-menu__item @if(strpos(Request::url(), "/Developer/Salary") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
                                 <a href="{{ route('account.developer_salary') }}" class="kt-menu__link ">
                                     <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
-                                    <span class="kt-menu__link-text">View Salary By Developer</span>
+                                    <span class="kt-menu__link-text">View Salary By Rider</span>
                                 </a>
                             </li>
                         

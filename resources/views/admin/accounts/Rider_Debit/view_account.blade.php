@@ -200,6 +200,80 @@
             </div>
             </div>
         </div>
+        <div class="modal fade" id="remaining_pay_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title">How much you paid to rider</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form class="kt-form" enctype="multipart/form-data" id="salary">
+                    <div class="modal-body">
+                            <div class="form-group">
+                                    <label>Total Salary:</label>
+                                    <input readonly type="text" class="form-control @if($errors->has('net_salary')) invalid-field @endif" name="net_salary" value="">
+                                    @if ($errors->has('net_salary'))
+                                        <span class="invalid-response" role="alert">
+                                            <strong>
+                                                {{ $errors->first('net_salary') }}
+                                            </strong>
+                                        </span>
+                                    @else
+                                        <span class="form-text text-muted">Net salary</span>
+                                    @endif 
+                                        
+                                </div>
+                                <div class="form-group">
+                                    <label>Gross Salary:</label>
+                                <input readonly type="text" class="form-control @if($errors->has('gross_salary')) invalid-field @endif" name="gross_salary" value="">
+                                    @if ($errors->has('gross_salary'))
+                                        <span class="invalid-response" role="alert">
+                                            <strong>
+                                                {{ $errors->first('gross_salary') }}
+                                            </strong>
+                                        </span>
+                                    @else
+                                        <span class="form-text text-muted">Gross salary</span>
+                                    @endif
+                                        
+                                </div>
+                                <div class="form-group">
+                                    <label>Salary Paid to Rider:</label>
+                                    <input type="text" class="form-control @if($errors->has('recieved_salary')) invalid-field @endif" name="recieved_salary" value="">
+                                    @if ($errors->has('recieved_salary'))
+                                        <span class="invalid-response" role="alert">
+                                            <strong>
+                                                {{ $errors->first('recieved_salary') }}
+                                            </strong>
+                                        </span>
+                                    @else
+                                        <span class="form-text text-muted">Recieved salary</span>
+                                    @endif
+                                </div>
+                                <div class="form-group">
+                                    <label>Salary Remaining:</label>
+                                    <input disabled type="text" class="form-control @if($errors->has('remaining_salary')) invalid-field @endif" name="remaining_salary" value="">
+                                    @if ($errors->has('remaining_salary'))
+                                        <span class="invalid-response" role="alert">
+                                            <strong>
+                                                {{ $errors->first('remaining_salary') }}
+                                            </strong>
+                                        </span>
+                                    @else
+                                        <span class="form-text text-muted">Remaining salary</span>
+                                    @endif
+                                </div>
+                                
+                        <div class="kt-form__actions kt-form__actions--right">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            </div>
+        </div>
         <div class="kt-portlet__body">
                 <!--begin: Datatable -->
             <table class="table table-striped- table-hover table-checkable table-condensed" id="data-table">
@@ -455,6 +529,21 @@
         }
         $('[name="sort_by"]:checked').trigger('change')
     })
+    function remaining_pay(){
+        $('#salary [name="remaining_salary"]').val(0);
+        $('#salary [name="recieved_salary"]').on('change input', function(){
+            var _gross_salary = parseFloat($('#salary [name="gross_salary"]').val().trim());
+            var _recieved_salary = parseFloat($(this).val().trim());
+            $('#salary [name="remaining_salary"]').val(_recieved_salary-_gross_salary);
+        });
+        var total_S=$('#getting_val').attr("data-total");
+        var total_G=$('#getting_val').attr("data-gross");
+
+        $('#salary [name="net_salary"]').val(total_S);
+        $('#salary [name="gross_salary"]').val(total_G);
+        $('#salary [name="recieved_salary"]').val(total_G);
+       
+    }
     function updateStatus(id)
 {
     var url = "{{ url('admin/rider/accounts') }}" + "/" + id + "/updateStatus";

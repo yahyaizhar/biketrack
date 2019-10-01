@@ -322,9 +322,13 @@ class AjaxNewController extends Controller
                     && $item['source'] == "salary_paid";
                 });
                 if(!isset($ra_found)){
+                    $salary_paid=Rider_salary::find($rider_statement->salary_id);
+                    $total=$salary_paid->total_salary;
+                    $gross=$salary_paid->gross_salary;
                     //not found, can pay
-                    return '<div>Salary Recieved from Kingriders <button type="button" onclick="updateStatus('.$rider_statement->id.')" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
+                    return '<div>Salary Recieved from Kingriders <button type="button" data-total="'.$total.'" id="getting_val" data-gross="'.$gross.'" onclick="remaining_pay()" data-toggle="modal" data-target="#remaining_pay_modal" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
                 }
+                // updateStatus('.$rider_statement->id.')
                 return "Salary Recieved from Kingriders";
             }
             if($rider_statement->source == 'salary_paid'){
