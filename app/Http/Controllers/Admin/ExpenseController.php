@@ -74,6 +74,7 @@ class ExpenseController extends Controller
                 $ca_inv->amount=$r->checkbox_amount;
                 $ca_inv->source="Investment";
                 $ca_inv->investment_id= $kr_investment->id;
+                $ca_inv->payment_status='paid';
                 $ca_inv->save();
          }
         }
