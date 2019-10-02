@@ -101,7 +101,7 @@ class ExpenseController extends Controller
                 $ce->status = 1;
             else
                 $ce->status = 0;
-        $ce->save();
+        $ce->update();
         
         $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
             'company_expense_id'=>$ce->id
@@ -111,9 +111,7 @@ class ExpenseController extends Controller
         $ca->amount=$r->amount;
         $ca->source='company_expense';
         $ca->company_expense_id=$ce->id;
-        $ca->save();
-
-        
+        $ca->update();
         return redirect(route('admin.CE_view'));
     }
     public function CE_delete($id)

@@ -248,6 +248,7 @@
                     });
                 });
             });
+            $('#CE [name="month"]').trigger("change");
         });
         
         </script>
