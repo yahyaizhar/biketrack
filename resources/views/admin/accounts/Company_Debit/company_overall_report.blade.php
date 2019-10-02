@@ -317,9 +317,8 @@ $('[name="sort_by"]').on('change', function(){
         var r1d2=biketrack.getUrlParameter('r1d2');
         var sort_by=biketrack.getUrlParameter('sort_by');
         console.log(r1d1, r1d2, sort_by);
-        var already_triggered = false;
         if(r1d1!="" && r1d2!="" && sort_by!=""){
-            $('[name="sort_by"][value="'+sort_by+'"]').prop('checked', true);
+            $('[name="sort_by"][value="'+sort_by+'"]').prop('checked', true)
             $('#custom_range').hide();
             if(sort_by=="custom"){
                 $('#custom_range').fadeIn('fast');
@@ -329,9 +328,8 @@ $('[name="sort_by"]').on('change', function(){
                     dpCallback(picker);
                 });
             }
-            already_triggered = true;
         }
-        if(!already_triggered) $('[name="sort_by"]:checked').trigger('change');
+        $('[name="sort_by"]:checked').trigger('change');
     });
 </script>
     @endsection
