@@ -53,23 +53,37 @@
                 </div>
  @include('client.includes.message')
 <div class="kt-portlet__body">
-<div>
-    <select class="form-control kt-select2" id="kt_select2_3_5" name="month_id">
-        <option >Select Month</option>
-        <option value="01">January</option>   
-        <option value="02">Febuary</option>   
-        <option value="03">March</option>   
-        <option value="04">April</option>   
-        <option value="05">May</option>   
-        <option value="06">June</option>   
-        <option value="07">July</option>   
-        <option value="08">August</option>   
-        <option value="09">September</option>   
-        <option value="10">October</option>   
-        <option value="11">November</option>   
-        <option value="12">December</option>    
-    </select> 
-</div>
+<div class="col-md-6">
+        <div class="mt-2 mx-4">
+            <label>Show result of:</label>
+            <div class="kt-radio-inline">
+                <label class="kt-radio">
+                <input type="radio" data-start="{{Carbon\Carbon::now()->subMonths(1)->startOfMonth()->format('Y-m-d')}}" data-end="{{Carbon\Carbon::now()->subMonths(1)->endOfMonth()->format('Y-m-d')}}" name="sort_by" value="week" checked> Last Month
+                    <span></span>
+                </label>
+                <label class="kt-radio">
+                    <input type="radio" data-start="{{Carbon\Carbon::now()->startOfMonth()->format('Y-m-d')}}" data-end="{{Carbon\Carbon::now()->endOfMonth()->format('Y-m-d')}}" name="sort_by" value="month"> This Month
+                    <span></span>
+                </label>  
+                <label class="kt-radio">
+                    <input type="radio" data-start="{{Carbon\Carbon::now()->startOfYear()->format('Y-m-d')}}" data-end="{{Carbon\Carbon::now()->endOfYear()->format('Y-m-d')}}" name="sort_by" value="year"> This Year
+                    <span></span>
+                </label>
+                <label class="kt-radio">
+                    <input type="radio" name="sort_by" value="custom"> Custom
+                    <span></span>
+                </label>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="mt-2">
+                <div class="kt-portlet__head-actions" id="custom_range" style="display:none">
+                    <label for="dr1">Select range</label>
+                    <input type="text" id="d1" name="dr1" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="kt-widget24">
 <div class="kt-widget24__details">
@@ -85,6 +99,10 @@
         <h4 class="kt-widget24__title">Overall Balance Monthly</h4>
         <span class="kt-widget24__stats kt-font-warning" id="overall_balnce_monthly">0</span>
     </a>
+    <a class="kt-widget24__info">
+            <h4 class="kt-widget24__title">Total Investment</h4>
+            <span class="kt-widget24__stats kt-font-primary" id="total_investment">0</span>
+        </a>
     <a class="kt-widget24__info">
         <h4 class="kt-widget24__title">Payable To Riders</h4>
         <span class="kt-widget24__stats kt-font-danger" id="payable_to_riders">0</span>
@@ -140,56 +158,180 @@
     var month=null;
     var rider=null;
 $(document).ready(function(){
-    $('.kt-select2').select2({
-        placeholder: "Select a month",
-        width:'100%'    
+//   custom month data
+
+$('[name="sort_by"]').on('change', function(){
+            var _SE = $('[name="sort_by"]:checked');
+            var _SortBy = _SE.val();
+            var start = _SE.attr('data-start'),
+                end = _SE.attr('data-end');
+            $('#custom_range').fadeOut('fast');
+            if(_SortBy=='custom'){
+                $('#custom_range').fadeIn('fast');
+                start = $('[name="dr1"]').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                end = $('[name="dr1"]').data('daterangepicker').endDate.format('YYYY-MM-DD');
+            }
+            var _data = {
+                range: {
+                    start_date: start,
+                    end_date: end
+                },
+            };
+            var data = {
+                r1d1:_data.range.start_date, 
+                r1d2:_data.range.end_date,
+                sort_by: $('[name="sort_by"]:checked').val()
+            }
+            
+            console.log(data);
+            biketrack.updateURL(data);
+            var url = JSON.stringify(_data) ;
+            getData(url);
+        });
+
+        $('[name="sort_by"]').on('change', function(){
+            var _SortBy = $(this).val();
+            var start = $(this).attr('data-start'),
+                end = $(this).attr('data-end');
+            $('#custom_range').fadeOut('fast');
+            if(_SortBy=='custom'){
+                $('#custom_range').fadeIn('fast');
+                return;
+            }
+            var _data = {
+                range: {
+                    start_date: start,
+                    end_date: end
+                },
+                rider_id: $('[name="rider_id"]').val()
+            };
+            var data = {
+                r1d1:_data.range.start_date, 
+                r1d2:_data.range.end_date,
+                sort_by: $('[name="sort_by"]:checked').val()
+            }
+            
+            console.log(data);
+            biketrack.updateURL(data);
+            var url = JSON.stringify(_data) ;
+            getData(url);
+            // var _Url = "{{url('/company/debits/get_salary_deduction/')}}"+"/"+_riderId+''
+        });
+
+        $('input[name="dr1"]').daterangepicker({
+            opens: 'left', 
+            locale: {
+                format: 'DD-MM-YYYY'
+            }
+        }, function(start, end, label) {
+            console.log("A new date selection was made: " + start.format('DD-MM-YYYY') + ' to ' + end.format('DD-MM-YYYY'));
+
+            
+        }).on('apply.daterangepicker', function(ev, picker) {
+            dpCallback(picker);
+        });
+
+        var dpCallback = function(picker){
+            console.log(picker.startDate.format('YYYY-MM-DD'));
+            console.log(picker.endDate.format('YYYY-MM-DD'));
+            var _data = {
+                range: {
+                    start_date: picker.startDate.format('YYYY-MM-DD'),
+                    end_date: picker.endDate.format('YYYY-MM-DD')
+                },
+            };
+            var data = {
+                r1d1:_data.range.start_date, 
+                r1d2:_data.range.end_date,
+                sort_by: $('[name="sort_by"]:checked').val()
+            }
+            
+            console.log(data);
+            biketrack.updateURL(data);
+            var url = JSON.stringify(_data) ;
+            getData(url);
+        }
+
+
+        
+
+
+        var getData = function(ranges){
+            var url = "{{ url('admin/accounts/company/overall/account/') }}"+"/"+ranges;
+            console.warn(url)
+            table = $('#CO_report').DataTable({
+                lengthMenu: [[-1], ["All"]],
+                destroy: true,
+                // "dom": 'rft',
+                processing: true,
+                ordering: false,
+                serverSide: true,
+                'language': { 
+                    'loadingRecords': '&nbsp;',
+                    'processing': $('.loading').show()
+                },
+                drawCallback:function(data){
+                    var response = table.ajax.json(); 
+                    var _overall_balnce = response.overall_balnce;
+                    var _total_profit = response.total_profit;
+                    var _overall_balnce_monthly = response.overall_balnce_monthly;
+                    var _payable_to_riders = response.payable_to_riders;
+                    var _total_investment =response.total_investment;
+
+                    $('#overall_balnce').text(_overall_balnce);
+                    $('#total_profit').text(_total_profit);
+                    $('#overall_balnce_monthly').text(_overall_balnce_monthly);
+                    $('#payable_to_riders').text(_payable_to_riders);
+                    $('#total_investment').text(_total_investment);
+
+
+
+                    console.log(data);
+                    $('#btnSend_profit').text('').fadeOut('fast'); 
+                    var response = table.ajax.json();
+                    console.log(response);
+                    
+                    if(typeof response == "undefined") return;
+                    var _ClosingBalance = response.closing_balance;
+                    var _Month = response.last_month;
+                    var _Running_Balance = response.running_static_balance;
+                    $('#closing_balance').text(_ClosingBalance);
+                    var running_closing_balance = parseFloat($('#running_closing_balance').text());
+                    if(running_closing_balance > 0){
+                        $('#btnSend_profit').text('Send '+parseFloat(_Running_Balance).toFixed(2)+' to Company Profit').attr('data-month', _Month).attr('data-profit', _Running_Balance).fadeIn('fast'); 
+                    }
+                    
+                },
+                ajax: url,
+                columns: [
+                    { data: 'month', name: 'month' },
+                    { data: 'description', name: 'description' },
+                    {data:'cr',name:'cr'},
+                    {data:'dr',name:'dr'}, 
+                ],
+                responsive:true,
+            });
+        }
+
+        var r1d1=biketrack.getUrlParameter('r1d1');
+        var r1d2=biketrack.getUrlParameter('r1d2');
+        var sort_by=biketrack.getUrlParameter('sort_by');
+        console.log(r1d1, r1d2, sort_by);
+        var already_triggered = false;
+        if(r1d1!="" && r1d2!="" && sort_by!=""){
+            $('[name="sort_by"][value="'+sort_by+'"]').prop('checked', true);
+            $('#custom_range').hide();
+            if(sort_by=="custom"){
+                $('#custom_range').fadeIn('fast');
+                $('[name="dr1"]')
+                .daterangepicker({ startDate: new Date(r1d1).format('mm/dd/yyyy'), endDate: new Date(r1d2).format('mm/dd/yyyy') })
+                .on('apply.daterangepicker', function(ev, picker) {
+                    dpCallback(picker);
+                });
+            }
+            already_triggered = true;
+        }
+        if(!already_triggered) $('[name="sort_by"]:checked').trigger('change');
     });
-    
-    $("#kt_select2_3_5").change(function(){
-    $('#kt_content-b').show();
-    if(rider !== null){
-        rider.destroy();
-     }
-     rider =$('#CO_report').DataTable({
-        lengthMenu: [[-1], ["All"]],
-        destroy: true,
-        ordering: false,
-        processing: true,
-        serverSide: true,
-        'language': { 
-            'loadingRecords': '&nbsp;',
-            'processing': $('.loading').show()
-        },
-        drawCallback:function(data){
-	    $('.total_entries').remove();
-        $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
-        $('.watermark').html('<p id="watermark-text">C</p>');
-
-        var response = rider.ajax.json(); 
-        var _overall_balnce = response.overall_balnce;
-        var _total_profit = response.total_profit;
-        var _overall_balnce_monthly = response.overall_balnce_monthly;
-        var _payable_to_riders = response.payable_to_riders;
-
-        $('#overall_balnce').text(_overall_balnce);
-        $('#total_profit').text(_total_profit);
-        $('#overall_balnce_monthly').text(_overall_balnce_monthly);
-        $('#payable_to_riders').text(_payable_to_riders);
-    	},
-     ajax: "{{url('admin/Company/Overall/Report/ajax')}}"+"/"+$(this).val(),
-     columns: [
-            { data: 'month', name: 'month' },
-            { data: 'description', name: 'description' },
-            {data:'cr',name:'cr'},
-            {data:'dr',name:'dr'}, 
-
-        ],
-        responsive:true,
-        // order:[0,'desc'], 
-    });
-  });
-  $("#kt_select2_3_5").val('{{carbon\carbon::now()->format('m')}}').trigger('change');
-
-});
 </script>
     @endsection

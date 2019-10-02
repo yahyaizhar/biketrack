@@ -34,11 +34,11 @@ Route::group([
     Route::get('/Rider/To/Month/ajax/{rider_id}','AjaxController@getRiderToMonth')->name('account.RiderToMonth_ajax');
     Route::get('/Month/To/Rider/ajax/{month_id}','AjaxController@getMonthToRider')->name('account.MonthToRider_ajax');
     Route::get('/CE/Report/ajax/{month_id}','AjaxNewController@getCE_REPORT')->name('account.getCE_REPORT');
-    Route::get('/Company/Overall/Report/ajax/{month_id}','AjaxNewController@getCompany_overall_REPORT')->name('account.getCompany_overall_REPORT');
     Route::get('get/ajax/company/accounts','AjaxController@getCompanyAccounts')->name('admin.ajax_company_accounts');
     Route::get('get/ajax/rider/accounts','AjaxController@getRiderAccounts')->name('admin.ajax_rider_accounts');
     Route::get("/accounts/rider/account/{range}","AjaxNewController@getRiderAccounts")->name("admin.accounts.get_rider_account");
     Route::get("/accounts/company/account/{range}","AjaxNewController@getCompanyAccounts")->name("admin.accounts.get_company_account");
+    Route::get("/accounts/company/overall/account/{range}","AjaxNewController@getCompanyOverallAccounts")->name("admin.accounts.getCompanyOverallAccounts");
     Route::get("/accounts/kr-bikes/account/{range}","AjaxNewController@getKR_bikes")->name("admin.accounts.getKR_bikes");
     Route::get('/newComer/view/ajax', 'AjaxController@getNewComer')->name('NewComer.view_ajax');
     Route::get('get/ajax/Sim','AjaxController@getSims')->name('Sim.ajax_sim');

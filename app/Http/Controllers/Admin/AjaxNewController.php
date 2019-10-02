@@ -138,7 +138,6 @@ class AjaxNewController extends Controller
         ->rawColumns(['feid','date','rider_name','total_to_be_paid_out','amount_for_login_hours', 'amount_to_be_paid_against_orders_completed', 'ncw_incentives', 'tips_payouts', 'dc_deductions', 'mcdonalds_deductions'])
         ->make(true);
     }
-
     public function getCompanyAccountsBills($ranges) 
     {
         $ranges = json_decode($ranges, true);
@@ -563,6 +562,112 @@ class AjaxNewController extends Controller
             'running_static_balance' => $running_static_balance
         ])
         ->rawColumns(['desc','date','cr','dr','balance', 'company_profit'])
+        ->make(true);
+    }
+    
+    public function getCompanyOverallAccounts($ranges)
+    {
+        $ranges = json_decode($ranges, true);
+        $from = date($ranges['range']['start_date']);
+        $to = date($ranges['range']['end_date']);
+        $company_statements = collect([]);
+// total investment
+        $total_investment=Company_Account::where("type","cr")
+        ->where("source","Investment")
+        ->where("payment_status","paid")
+        ->sum("amount");
+// end total investment
+
+// total profit
+        $total_profit=Company_Account::where('type','pl')
+        ->sum("amount");
+// end total profit
+
+// overall_balnce
+        $overall_balnce_cr=Company_Account::where('type','cr')
+        ->orWhere('type','dr_receivable')
+        ->sum("amount");
+
+        $overall_balnce_dr=Company_Account::where('type','dr')
+        ->sum("amount");
+        
+        $overall_balnce=$overall_balnce_cr-$overall_balnce_dr;
+// end overall_balnce
+
+// payable_to_riders
+        $payable_to_riders_cr=Company_Account::whereNotNull('rider_id')
+        ->where(function($q) {
+            $q->where('type','cr')
+            ->orWhere('type','dr_receivable');
+        })
+        ->sum('amount');
+
+        $payable_to_riders_dr=Company_Account::whereNotNull('rider_id')
+        ->where('type','dr')
+        ->sum('amount');
+
+        $payable_to_riders=$payable_to_riders_cr-$payable_to_riders_dr;
+//  end payable_to_riders
+
+// overall_balnce_monthly
+        $overall_balnce_cr_monthly=Company_Account::whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where(function($q) {
+            $q->where('type','cr')
+            ->orWhere('type','dr_receivable')
+            ->orWhere('type','pl');
+        })
+        ->sum("amount");
+
+        $overall_balnce_dr_monthly=Company_Account::whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where("type","dr")
+        ->sum("amount");
+
+        $overall_balnce_monthly=$overall_balnce_cr_monthly-$overall_balnce_dr_monthly;
+//  end overall_balnce_monthly
+
+
+        
+        $company_statements_RAW = \App\Model\Accounts\Company_Account::whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where(function($q) {
+            $q->where('type', "cr")
+              ->orWhere('type', 'pl');
+        })
+        ->where("payment_status","paid")
+        ->get();
+
+        return DataTables::of($company_statements_RAW)
+        ->addColumn('date', function($company_statements_RAW){
+         return "asd";
+        })
+        
+       
+        ->addColumn('description', function($company_statements_RAW){
+          return $company_statements_RAW->source;
+        })
+        ->addColumn('cr', function($company_statements_RAW) {
+            if ($company_statements_RAW->type=="pl") {
+                return  $company_statements_RAW->amount;
+            }
+            return 0 ;
+        })
+        ->addColumn('dr', function($company_statements_RAW) {
+            if ($company_statements_RAW->payment_status=="paid" && $company_statements_RAW->type=="cr") {
+                return  $company_statements_RAW->amount;
+            }
+            return 0 ;
+        })
+        
+        ->with([
+            'overall_balnce_monthly' => round($overall_balnce_monthly,2),
+            'total_profit' => round($total_profit,2),
+            'overall_balnce' => round($overall_balnce,2),
+            'payable_to_riders'=>round($payable_to_riders,2),
+            'total_investment'=>round($total_investment,2),
+        ])
+        ->rawColumns(['description','date','cr','dr'])
         ->make(true);
     }
 
@@ -1081,90 +1186,6 @@ class AjaxNewController extends Controller
         })
         
         ->rawColumns(['model','rider_id','month','sale_price','amount_received','bill_status','remaining_amount','per_month_installment_amount', 'status'])
-        ->make(true);
-    }
-    public function getCompany_overall_REPORT($month)
-    {
-        $CO=Company_Account::whereMonth('month',$month)->where('rider_id',null)->where('payment_status','paid')->get();
-        $overall_balnce_cr_monthly=Company_Account::where(function($q) {
-            $q->where('type','cr')
-            ->orWhere('type','dr_receivable')
-            ->orWhere('type','pl');
-        })
-        ->whereMonth('month',$month)
-        ->sum("amount");
-        
-        $overall_balnce_dr_monthly=Company_Account::whereMonth('month',$month)
-        ->where("type","dr")
-        ->sum("amount");
-
-        $overall_balnce_monthly=$overall_balnce_cr_monthly-$overall_balnce_dr_monthly;
-
-        $total_profit=Company_Account::where('type','pl')
-        ->sum("amount");
-
-        $overall_balnce_cr=Company_Account::where('type','cr')
-        ->orWhere('type','dr_receivable')
-        ->sum("amount");
-
-        $overall_balnce_dr=Company_Account::where('type','dr')
-        ->sum("amount");
-        
-        $overall_balnce=$overall_balnce_cr-$overall_balnce_dr;
-
-        $payable_to_riders_cr=Company_Account::whereNotNull('rider_id')
-        ->where(function($q) {
-            $q->where('type','cr')
-            ->orWhere('type','dr_receivable');
-        })
-        ->sum('amount');
-        
-        $payable_to_riders_dr=Company_Account::whereNotNull('rider_id')
-        ->where('type','dr')
-        ->sum('amount');
-
-        $payable_to_riders=$payable_to_riders_cr-$payable_to_riders_dr;
-       
-        return DataTables::of($CO)
-        
-        ->addColumn('cash_against_rider', function($CO) {
-                return $CO->amount;
-        }) 
-        ->addColumn('month', function($CO) {
-            return carbon::parse($CO->month)->format('M d, Y');
-        }) 
-        ->addColumn('description', function($CO){
-            $rider=Rider::find($CO->rider_id);
-                if (isset($rider)) {
-                    return $CO->source.' <strong>('.$rider->name.')</strong>';
-                } else {
-                    return $CO->source;
-                }
-        }) 
-        ->addColumn('cr', function($CO){
-                $type=$CO->type;
-                if ($type=='cr' || $type=='dr_receivable' || $type=='pl') {
-                   return $CO->amount;
-               }
-                return 0 ;
-        }) 
-        ->addColumn('dr', function($CO){
-                $type=$CO->type;
-                if ($type=='dr') {
-                   return $CO->amount;
-               }
-                return 0 ;
-      
-        }) 
-       
-        ->with([
-            'overall_balnce_monthly' => round($overall_balnce_monthly,2),
-            'total_profit' => round($total_profit,2),
-            'overall_balnce' => round($overall_balnce,2),
-            'payable_to_riders'=>round($payable_to_riders,2),
-        ])
-               
-        ->rawColumns(['profit','cr','cash_against_rider','expense','description','amount','dr','rider_id','month'])
         ->make(true);
     }
     public function getKR_bikes($ranges) 
