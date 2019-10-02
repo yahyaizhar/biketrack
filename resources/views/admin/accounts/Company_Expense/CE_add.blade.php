@@ -82,6 +82,12 @@
                                 <span></span>
                         </label>
                     </div>
+                    <div class="form-group">
+                        <div class="custom-file">
+                            <input type="file" name="bill_picture" class="custom-file-input" id="bill_picture">
+                            <label class="custom-file-label" for="bill_picture">Choose Picture</label>
+                        </div>
+                    </div>
                     <div class="kt-portlet__foot">
                         <div class="kt-form__actions kt-form__actions--right">
                             <button type="submit" class="btn btn-primary">Submit</button>

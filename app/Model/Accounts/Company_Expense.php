@@ -50,6 +50,6 @@ class Company_Expense extends Authenticatable
     // ends logging
        
     protected $fillable = [
-        'amount', 'rider_id','month','description','status','active_status','setting'
+        'amount', 'rider_id','month','description','bill_picture','status','active_status','setting'
        ];
 }

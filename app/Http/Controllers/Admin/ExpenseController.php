@@ -14,6 +14,7 @@ use App\Model\Accounts\WPS;
 use App\Model\Accounts\AdvanceReturn;
 use App\Company_investment;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ExpenseController extends Controller
 {
@@ -34,10 +35,16 @@ class ExpenseController extends Controller
         $ce->rider_id=$r->rider_id;
         $ce->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ce->description=$r->description;
-        if($r->status)
-                $ce->status = 1;
-            else
-                $ce->status = 0;
+        $ce->status = 1;
+        if($r->hasFile('bill_picture'))
+        {
+            // return 'yes';
+            $filename = $r->bill_picture->getClientOriginalName();
+            $filesize = $r->bill_picture->getClientSize();
+            // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
+            $filepath = Storage::putfile('public/uploads/riders/bill_picture', $r->file('bill_picture'));
+            $ce->bill_picture = $filepath;
+        }
         $ce->save();
         
         $rider_id = null;
