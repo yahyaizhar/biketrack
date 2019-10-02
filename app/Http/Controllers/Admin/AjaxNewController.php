@@ -870,7 +870,7 @@ class AjaxNewController extends Controller
             $date=Carbon::parse($expense->month)->format('d M, Y');
             return $date;
         })
-       
+        
         ->addColumn('actions', function($expense){
             $status_text = $expense->status == 1 ? 'Inactive' : 'Active';
             return '<span class="dtr-data">

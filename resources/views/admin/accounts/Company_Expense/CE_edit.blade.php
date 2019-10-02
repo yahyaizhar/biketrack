@@ -67,6 +67,14 @@
                                     </span>
                                 @endif
                             </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                @if($edit_expense->bill_picture)
+                                    <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($edit_expense->bill_picture)) }}" alt="image">
+                                @else
+                                    <img class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                                @endif
+                               
+                            </div>
                          
                         </div>
                         <div class="kt-portlet__foot">
@@ -149,13 +157,26 @@
                                 @endif
                             </div>
                             <div class="form-group kt-checkbox-list" id="check_hide">
-                                    <label class="kt-checkbox" id="investment_amount" >
-                                            <input type="checkbox" name="investment_amount">
-                                            <input type="hidden" name="checkbox_amount">
-                                            <span></span>
-                                    </label>
+                                <label class="kt-checkbox" id="investment_amount" >
+                                        <input type="checkbox" name="investment_amount">
+                                        <input type="hidden" name="checkbox_amount">
+                                        <span></span>
+                                </label>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="form-group col-md-8 pull-right mtr-15">
+                                    <div class="custom-file">
+                                        <input type="file" name="bill_picture" class="custom-file-input" id="bill_picture">
+                                        <label class="custom-file-label" for="bill_picture">Choose Picture</label>
+                                    </div>
+                                    <span class="form-text text-muted">Select Picture</span>
                                 </div>
-                         
+                                @if($edit_expense->bill_picture)
+                                    <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($edit_expense->bill_picture)) }}" alt="image">
+                                @else
+                                    <img class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                                @endif
+                            </div>
                         </div>
                         <div class="kt-portlet__foot">
                             <div class="kt-form__actions kt-form__actions--right">
