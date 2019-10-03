@@ -108,7 +108,7 @@ margin-left: 10px;
                         <a style="padding:8.45px 13px;" href="" data-toggle="modal" data-target="#report_data"  class="show-report btn btn-label-success btn-sm btn-upper">Show Report</a>&nbsp;
                   </div>
                 </form>
-                <button class="btn btn-danger"  onclick="delete_lastImport();return false;"><i class="fa fa-trash"></i> Delete Last Import</button>
+                {{-- <button class="btn btn-danger"  onclick="delete_lastImport();return false;"><i class="fa fa-trash"></i> Delete Last Import</button> --}}
               </div>
             </div>
           </div>
