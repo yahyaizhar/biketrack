@@ -29,6 +29,7 @@ use Batch;
 use App\Model\Accounts\Company_Account;
 use App\Assign_bike;
 use App\Company_investment;
+use App\Company_Tax;
 
 
 class AccountsController extends Controller
@@ -1397,7 +1398,9 @@ public function income_zomato_index(){
     return view('admin.accounts.Income.zomato');
 }
 public function income_zomato_import(Request $r){
+    
     $data = $r->data;
+    $tax_data=$r->tax_data;
     $zomato_obj=[];
     $ca_objects=[];
     $ca_objects_updates=[];
@@ -1803,13 +1806,28 @@ public function income_zomato_import(Request $r){
 
     DB::table('rider__accounts')->insert($ra_objects); //r4
     $data_ra=Batch::update(new \App\Model\Accounts\Rider_Account, $ra_objects_updates, 'income_zomato_id'); //r5  
+   
+    $tax=new Company_Tax();
+    $tax->type="vat";
+    $tax->z_import_id=$unique_id;
+    $tax->month=Carbon::parse($tax_data['date'])->format('Y-m-d');
+    $tax->total_to_be_paid_out=$tax_data['total_to_be_paid_out'];
+    $tax->log_in_hours_payable=$tax_data['log_in_hours_payable'];
+    $tax->trips_payable=$tax_data['trips_payable'];
+    $tax->amount_for_login_hours=$tax_data['amount_for_login_hours'];
+    $tax->amount_to_be_paid_against_orders_completed=$tax_data['amount_to_be_paid_against_orders_completed'];
+    $tax->total_to_be_paid_out_with_tax=$tax_data['total_amount_with_tax'];
+    $tax->taxable_amount=$tax_data['taxable_amount'];
+    $tax->save();
+
     return response()->json([
         'data'=>$zomato_obj,
         'data_ca'=>$ca_objects,
         'data_ca_update'=>$ca_objects_updates,
         'data_ra'=>$ra_objects,
         'data_ra_update'=>$ra_objects_updates,
-        'count'=>$i 
+        'count'=>$i,
+        'tax'=>$tax,
     ]);
 }
 

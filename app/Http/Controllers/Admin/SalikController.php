@@ -280,6 +280,9 @@ class SalikController extends Controller
             $performance->update();
         }
         $data_ca=Batch::update(new Company_Account, $ca_deletes, 'salik_id'); //r
+        return response()->json([
+            'a'=>$performances,
+        ]);
 
     }
 

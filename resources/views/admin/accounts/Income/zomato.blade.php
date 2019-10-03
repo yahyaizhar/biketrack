@@ -105,9 +105,7 @@ margin-left: 10px;
                         </div>
                     </div>
                     <div class="modal-footer border-top-0 d-flex justify-content-center">
-                        <button class="upload-button btn btn-success">Import</button>
-                        
-                        
+                        <a style="padding:8.45px 13px;" href="" data-toggle="modal" data-target="#report_data"  class="show-report btn btn-label-success btn-sm btn-upper">Show Report</a>&nbsp;
                   </div>
                 </form>
                 <button class="btn btn-danger"  onclick="delete_lastImport();return false;"><i class="fa fa-trash"></i> Delete Last Import</button>
@@ -115,6 +113,71 @@ margin-left: 10px;
             </div>
           </div>
        </div>
+ 
+       {{-- import data --}}
+       <div>
+            <div class="modal fade" id="report_data" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header border-bottom-0">
+                          <h5 class="modal-title" id="exampleModalLabel">Income Statement</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <form class="kt-form" id="form_tax"  enctype="multipart/form-data">
+                        <div class="container">
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-md-6">Total To Be Paid Out(Without VAT):</label>
+                                    <input disabled type="text" class="form-control col-md-5" name="total_to_be_paid_out">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-md-6">Login Hours Payable:</label>
+                                    <input disabled type="text" class="form-control col-md-5" name="log_in_hours_payable">
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <div class="row">
+                                    <label class="col-md-6">Trips Payable:</label>
+                                    <input disabled type="text" class="form-control col-md-5" name="trips_payable">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-md-6">Amount For Login Hours:</label>
+                                    <input disabled type="text" class="form-control col-md-5" name="amount_for_login_hours">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-md-6">Amount To Be Paid Against Orders Completed:</label>
+                                    <input disabled type="text" class="form-control col-md-5" name="amount_to_be_paid_against_orders_completed">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-md-6">Total To Be Paid Out(With VAT):</label>
+                                    <input disabled type="text" class="form-control col-md-5" name="total_to_be_paid_out_with_tax">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-md-6">Tax Amount Of VAT:</label>
+                                    <input type="text" class="form-control col-md-5" name="taxable_amount">
+                                </div>
+                            </div>
+                            <div class="modal-footer border-top-0 d-flex justify-content-center">
+                                <button class="upload-button btn btn-success">Import</button>
+                          </div>
+                        </div>
+                        </form>
+                       </div>
+                    </div>
+                  </div>
+               </div>
 @endsection
 @section('foot')
 <!--begin::Page Vendors(used by this page) -->
@@ -138,6 +201,7 @@ margin-left: 10px;
     $client_riders=App\Model\Client\Client_Rider::all();
 @endphp
 <script>
+    console.log(riders_data);
         function export_data(){
 var export_details=[];
         riders_data.forEach(function(item,index) {
@@ -178,7 +242,7 @@ var export_details=[];
         $('.uppy_result').html('<span>'+_fileName+'</span>');
     });
   
-    $('.upload-button').on('click', function (e) {
+    $('.show-report').on('click', function (e) {
         e.preventDefault();
         $('#import_data').modal('hide');
         var files = uppy.getFiles();
@@ -196,19 +260,57 @@ var export_details=[];
                 headings[_i]=_d.trim().replace(/ /g, '_').replace(/[0-9]/g, '').replace('(AED)', '_aed').toLowerCase();
                 });
                 rows[0] = headings.join();
-                return rows.join( '\n' );
+                return rows.join( '\n' ); 
             }, 
             error: function(err, file, inputElem, reason){ console.log(err); },
             complete: function(results, file){ 
-               var import_data = results.data;
-               console.log(import_data);
+                var import_data = results.data;
+                console.log(import_data); 
+                var amount_for_login_hours=0;
+                var trips_payable=0;
+                var total_to_be_paid_out=0;
+                var log_in_hours_payable=0;
+                var amount_to_be_paid_against_orders_completed=0;
+                var date=0;
+                import_data.forEach(function( index, value ) {
+                    amount_for_login_hours+=index['amount_for_login_hours'];
+                    trips_payable+=index['trips_payable'];
+                    total_to_be_paid_out+=index['total_to_be_paid_out'];
+                    log_in_hours_payable+=index['log_in_hours_payable'];
+                    amount_to_be_paid_against_orders_completed+=index['amount_to_be_paid_against_orders_completed'];
+                    date=index['onboarding_date'];
+                });
+                var taxable_amount=(amount_for_login_hours / 100)*5;
+                var total_amount_with_tax=total_to_be_paid_out+taxable_amount;
+                $('[name="amount_for_login_hours"]').val(amount_for_login_hours);
+                $('[name="trips_payable"]').val(trips_payable);
+                $('[name="total_to_be_paid_out"]').val(total_to_be_paid_out);
+                $('[name="total_to_be_paid_out_with_tax"]').val(total_amount_with_tax); 
+                $('[name="log_in_hours_payable"]').val(log_in_hours_payable);
+                $('[name="taxable_amount"]').val(taxable_amount);
+                $('[name="amount_to_be_paid_against_orders_completed"]').val((amount_to_be_paid_against_orders_completed).toFixed(2));
+
+               $('.upload-button').on("click",function(e){
+                   e.preventDefault(); 
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     url : "{{route('admin.accounts.income_zomato_import')}}",
                     type : 'POST',
-                    data: {data: import_data},
+                    data: {
+                        data: import_data,
+                        tax_data: {
+                            amount_for_login_hours:amount_for_login_hours,
+                            trips_payable:trips_payable,
+                            total_to_be_paid_out:total_to_be_paid_out,
+                            log_in_hours_payable:log_in_hours_payable,
+                            amount_to_be_paid_against_orders_completed:amount_to_be_paid_against_orders_completed,
+                            taxable_amount:taxable_amount,
+                            total_amount_with_tax:total_amount_with_tax,
+                            date:date,
+                        }
+                    },
                     beforeSend: function() {            
                         $('.loading').show();
                     },
@@ -216,6 +318,7 @@ var export_details=[];
                         $('.loading').hide();
                     },
                     success: function(data){
+                        $('#report_data').modal('hide');
                         // console.log(data);
                         swal.fire({
                             position: 'center',
@@ -237,6 +340,7 @@ var export_details=[];
                         });
                     }
                 });
+               });
             }
         });
     });
