@@ -53,6 +53,7 @@
                             <input type="checkbox" id="select_all" >
                         </th> --}}
                         <th>ID</th>
+                        <th>Month</th>
                         <th>Description</th>
                         <th>Amount</th>
                         <th>Status</th>
@@ -96,6 +97,7 @@ $(function() {
         columns: [
             //  { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
             { data: 'id', name: 'id' },
+            { data: 'date', name: 'date' },
             { data: 'description', name: 'description' },            
             { data: 'amount', name: 'amount' },
             { data: 'status', name: 'status' },
