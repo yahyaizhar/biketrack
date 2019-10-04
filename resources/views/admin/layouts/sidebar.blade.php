@@ -304,7 +304,7 @@ if (Auth::user()->type=="su") {
                         </ul>
                     </div>
                 </li>
-                <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "CE") !== false || strpos(Request::url(), "company") !== false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
+                <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "CE") !== false || strpos(Request::url(), "company") !== false || strpos(Request::url(), "kr_investment") !== false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
                     <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
                         <span class="kt-menu__link-icon">
                             <i class="flaticon2-shelter"></i>    
@@ -584,9 +584,9 @@ if (Auth::user()->type=="su") {
                 <li class="kt-menu__item @if(strpos(Request::url(), "admin/activity") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.activity.view') }}" class="kt-menu__link "><span class="kt-menu__link-icon">
                     <i class="fa fa-file-invoice"></i>
                 </span><span class="kt-menu__link-text">Activity Log View</span></a></li>
-                <li class="kt-menu__item @if(strpos(Request::url(), "admin/tax") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.gov_tax') }}" class="kt-menu__link "><span class="kt-menu__link-icon">
+                {{-- <li class="kt-menu__item @if(strpos(Request::url(), "admin/tax") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.gov_tax') }}" class="kt-menu__link "><span class="kt-menu__link-icon">
                     <i class="fa fa-file-invoice"></i>
-                </span><span class="kt-menu__link-text">Tax View</span></a></li>
+                </span><span class="kt-menu__link-text">Tax View</span></a></li> --}}
             </ul>
         </div>
     </div>
