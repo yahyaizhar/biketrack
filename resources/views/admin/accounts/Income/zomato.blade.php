@@ -105,7 +105,7 @@ margin-left: 10px;
                         </div>
                     </div>
                     <div class="modal-footer border-top-0 d-flex justify-content-center">
-                        <a style="padding:8.45px 13px;" href="" data-toggle="modal" data-target="#report_data"  class="show-report btn btn-label-success btn-sm btn-upper">Show Report</a>&nbsp;
+                        <a style="padding:8.45px 13px;" class="show-report btn btn-label-success btn-sm btn-upper">Show Report</a>&nbsp;
                   </div>
                 </form>
                 {{-- <button class="btn btn-danger"  onclick="delete_lastImport();return false;"><i class="fa fa-trash"></i> Delete Last Import</button> --}}
@@ -250,6 +250,7 @@ var export_details=[];
             alert('Choose .csv file first');
             return;
         }
+        $('#report_data').modal('show'); 
         Papa.parse(files[files.length-1].data, {
             header:true,
             dynamicTyping: true,
