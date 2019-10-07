@@ -23,6 +23,7 @@ use App\Model\Client\Client;
 use Illuminate\Support\Arr;
 use Batch;
 use Carbon\Carbon;
+use App\Assign_bike;
 
 class RiderController extends Controller
 {
@@ -661,6 +662,23 @@ class RiderController extends Controller
         if($rider->status == 1)
         {
             // inactive
+            $assign_bike=Assign_bike::where("rider_id",$rider->id)->where("status","active")->get()->first();
+            if (isset($assign_bike)) {
+                $assign_bike->status="deactive";
+                $assign_bike->update();
+                $bike=bike::find($assign_bike->bike_id);
+                if (isset($bike)) {
+                    $bike->availability="yes";
+                    $bike->update();
+                }
+            }
+           
+            $sim_history=Sim_History::where("rider_id",$rider->id)->where("status","active")->get()->first();
+            if (isset($sim_history)) {
+                $sim_history->status="deactive";
+                $sim_history->update();
+            }
+           
             $rider->status = 0;
             if (isset($rider->spell_time)) {
                 $ca=json_decode($rider->spell_time,true);
@@ -678,7 +696,8 @@ class RiderController extends Controller
         else
         {
             //active
-            $rider->status = 1;
+
+                $rider->status = 1;
                 $ca=json_decode($rider->spell_time,true);
                 if (!isset($ca)) {
                    $ca=[];
