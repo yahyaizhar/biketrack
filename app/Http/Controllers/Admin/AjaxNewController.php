@@ -1311,12 +1311,27 @@ class AjaxNewController extends Controller
             return $causer.' '.$description.' '.$ST.' having id '.$subject_id ;
          }) 
         ->addColumn('actions', function($LA){
+            $view_url = '';
+            $subject = $LA->subject_type;
+            $subject_id = $LA->subject_id;
+            $subjectClassName = class_basename($subject);
+            switch ($subjectClassName) {
+                case 'Company_Expense':
+                    $subObj = $subject::find($subject_id);
+                    $view_url = '<a class="dropdown-item" href="'.route('admin.CE_edit_view', $subObj).'"><i class="fa fa-edit"></i> View</a>';
+                    break;
+                
+                default:
+                    # code...
+                    break;
+            }
             return '<span class="dtr-data">
             <span class="dropdown">
                 <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
                 <i class="la la-ellipsis-h"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
+                '.$view_url.'
                      <button class="dropdown-item" onclick="deleteActivity('.$LA->id.');"><i class="fa fa-trash"></i> Delete</button>
                 </div>
             </span>

@@ -820,7 +820,7 @@ class AccountsController extends Controller
             // add
             $ra_cr += abs($closing_balance_prev);
         }
-        
+        $total_salary_amt = 0;
         $feid = $rider->clients()->first()->pivot->client_rider_id;
         if(isset($feid)){ // rider belongs to zomato
             $ra_zomatos=Income_zomato::where("rider_id",$rider_id)
@@ -838,6 +838,8 @@ class AccountsController extends Controller
             $ra_deduction = $ra_payable;
             $ra_salary=$ra_zomatos_no_of_hours + $ra_zomatos_no_of_trips + $ra_cr;
             $ra_recieved=$ra_salary - $ra_deduction;
+
+            $total_salary_amt = round($ra_zomatos_no_of_hours+$ra_zomatos_no_of_trips,2);
         }
         else { // other clients
             $fixed_salary = $rider->Rider_Detail->salary;
@@ -845,12 +847,14 @@ class AccountsController extends Controller
             $ra_deduction = $ra_payable;
             $ra_salary= $fixed_salary + $ra_cr;
             $ra_recieved=$ra_salary - $ra_deduction;
+
+            $total_salary_amt = $fixed_salary;
         }
        
         return response()->json([
             'net_salary'=>round($ra_salary,2),
-            'gross_salary'=>round($ra_recieved,2) ,
-            'total_salary'=>round($ra_zomatos_no_of_hours+$ra_zomatos_no_of_trips,2),
+            'gross_salary'=>round($ra_recieved,2),
+            'total_salary'=>$total_salary_amt,
             'total_deduction'=>round($ra_payable,2),
             'total_bonus'=>round($ra_cr,2),
 
@@ -1810,7 +1814,7 @@ public function income_zomato_import(Request $r){
     $tax=new Company_Tax();
     $tax->type="vat";
     $tax->z_import_id=$unique_id;
-    $tax->month=Carbon::parse($tax_data['date'])->format('Y-m-d');
+    $tax->month=Carbon::createFromFormat('d/m/Y',$tax_data['date'])->format('Y-m-d');
     $tax->total_to_be_paid_out=$tax_data['total_to_be_paid_out'];
     $tax->log_in_hours_payable=$tax_data['log_in_hours_payable'];
     $tax->trips_payable=$tax_data['trips_payable'];

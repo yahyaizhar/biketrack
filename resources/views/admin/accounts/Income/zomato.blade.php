@@ -283,15 +283,15 @@ var export_details=[];
                 });
                 var taxable_amount=(amount_for_login_hours / 100)*5;
                 var total_amount_with_tax=total_to_be_paid_out+taxable_amount;
-                $('[name="amount_for_login_hours"]').val(amount_for_login_hours);
-                $('[name="trips_payable"]').val(trips_payable);
-                $('[name="total_to_be_paid_out"]').val(total_to_be_paid_out);
-                $('[name="total_to_be_paid_out_with_tax"]').val(total_amount_with_tax); 
-                $('[name="log_in_hours_payable"]').val(log_in_hours_payable);
-                $('[name="taxable_amount"]').val(taxable_amount);
-                $('[name="amount_to_be_paid_against_orders_completed"]').val((amount_to_be_paid_against_orders_completed).toFixed(2));
+                $('[name="amount_for_login_hours"]').val(amount_for_login_hours.toFixed(2));
+                $('[name="trips_payable"]').val(trips_payable.toFixed(2));
+                $('[name="total_to_be_paid_out"]').val(total_to_be_paid_out.toFixed(2));
+                $('[name="total_to_be_paid_out_with_tax"]').val(total_amount_with_tax.toFixed(2)); 
+                $('[name="log_in_hours_payable"]').val(log_in_hours_payable.toFixed(2));
+                $('[name="taxable_amount"]').val(taxable_amount.toFixed(2));
+                $('[name="amount_to_be_paid_against_orders_completed"]').val(amount_to_be_paid_against_orders_completed.toFixed(2));
 
-               $('.upload-button').on("click",function(e){
+               $('.upload-button').off('click').on("click",function(e){
                    e.preventDefault(); 
                 $.ajax({
                     headers: {
