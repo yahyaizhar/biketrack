@@ -99,7 +99,7 @@ class HomeController extends Controller
 
         }
         // return $logged_rider;
-        return view('admin.home', compact('logged_rider','notlogged_rider','ve__riders','pe__riders','me__bikes','le__riders','riders', 'clients', 'online_riders', 'clients_online', 'latest_riders', 'latest_clients'));
+        return view('admin.home', compact('all_riders','logged_rider','notlogged_rider','ve__riders','pe__riders','me__bikes','le__riders','riders', 'clients', 'online_riders', 'clients_online', 'latest_riders', 'latest_clients'));
     }
 
     public function livemap()
@@ -170,5 +170,46 @@ class HomeController extends Controller
     }
     public function request403(){
         return view("403");
+    }
+    public function cash_paid_to_rider($id){
+        $rider_profile=Rider::find($id);
+        $rider_profile->profile_picture=asset(Storage::url($rider_profile->profile_picture));
+        $payable_to_rider=0;
+       if (isset( $rider_profile->id)) {
+        $payable_to_rider_cr=Rider_Account::where('rider_id',$rider_profile->id)
+        ->where(function($q) {
+            $q->where('type','cr')
+            ->orWhere('type','dr_receivable');
+        })
+        ->sum('amount');
+
+        $payable_to_rider_dr=Rider_Account::where('rider_id',$rider_profile->id)
+        ->where(function($q) {
+            $q->where('type','dr')
+            ->orWhere('type','cr_payable');
+        })
+        ->sum('amount');
+
+        $payable_to_rider=$payable_to_rider_cr-$payable_to_rider_dr;
+       }
+        
+        return response()->json([
+            'riders_data' => $rider_profile,
+            'closing_balance'=> $payable_to_rider,
+        ]);
+    }
+    public function cash_paid_rider(Request $r, $id){
+        $rider=Rider::find($id);
+        $ra = new \App\Model\Accounts\Rider_Account;
+        $ra->type='dr';
+        $ra->amount=$r->amount;
+        $ra->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+        $ra->rider_id = $rider->id;
+        $ra->source=$r->description;
+        $ra->payment_status="paid";
+        $ra->save();
+        return response()->json([
+            'a' =>$ra,
+        ]);
     }
 }

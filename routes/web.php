@@ -59,7 +59,7 @@ Route::group([
     Route::get('/accounts/income/zomato/ajax/data','AjaxNewController@income_zomato_ajax')->name('admin.accounts.income_zomato_ajax');
     Route::get('/get/ajax/activity/log','AjaxNewController@getActivityLog')->name('admin.getActivityLog');
     Route::get("/accounts/company/bills/{range}","AjaxNewController@getCompanyAccountsBills")->name("admin.accounts.get_company_account_bills");
-
+    Route::get('/cash/paid/to/rider/{rider_id}','HomeController@cash_paid_to_rider')->name('admin.cash_paid_to_rider');
     Route::get("/accounts/kr_investment/view/data","AjaxNewController@getCompanyInvestment")->name("admin.getCompanyInvestment");
 });
 // End Ajax Routes
@@ -523,6 +523,7 @@ Route::group([
     'middleware' => ['roles:dashboard']
 ], function(){
     Route::get('/', 'HomeController@index')->name('admin.home');
+    Route::post('/cash/paid/rider/{id}','HomeController@cash_paid_rider')->name('admin.cash_paid_rider');
 });
 
 
