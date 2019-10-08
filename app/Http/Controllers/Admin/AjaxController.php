@@ -1644,6 +1644,12 @@ class AjaxController extends Controller
             else{
                 $sim_change='<a class="dropdown-item" href="'.route('SimHistory.addsim', $riders).'"><i class="fa fa-eye"></i> Assign Sim</a>';
             }
+            if (isset($riders->active_month)) {
+                $month=$riders->active_month;
+            }
+            else{
+                $month=null;
+            }
                return '<span class="dtr-data">
                <span class="dropdown psbScroll">
                    <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
@@ -1652,7 +1658,7 @@ class AjaxController extends Controller
                    <div class="dropdown-menu dropdown-menu-right">
                        <a class="dropdown-item" href="'.route('admin.rider.profile', $riders->id).'"><i class="fa fa-eye"></i> View</a>
                        <a class="dropdown-item" href="'.route('admin.rider.ridesReport', $riders->id).'"><i class="fa fa-eye"></i> View Rides Report</a>
-                       <button class="dropdown-item" onclick="updateStatus('.$riders->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
+                       <button  class="dropdown-item status_new" data-active-month="'.$month.'" onclick="updateStatus('.$riders->id.','.$riders->status.',this)"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                        <a class="dropdown-item" href="'.route('admin.rider.location', $riders->id).'"><i class="fa fa-map-marker-alt"></i> View Location</a>
                        <a class="dropdown-item" href="'.route('admin.riders.edit', $riders).'"><i class="fa fa-edit"></i> Edit</a>
                        <button class="dropdown-item" onclick="deleteRider('.$riders->id.')"><i class="fa fa-trash"></i> Delete</button>
