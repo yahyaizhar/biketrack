@@ -1444,6 +1444,7 @@ public function income_zomato_import(Request $r){
             $obj['denials_penalty']=isset($item['denials_penalty'])?$item['denials_penalty']:null;
             $obj['dc_deductions']=isset($item['dc_deductions'])?$item['dc_deductions']:null;
             $obj['mcdonalds_deductions']=isset($item['mcdonalds_deductions'])?$item['mcdonalds_deductions']:null;
+            $obj['settlements']=isset($item['settlements'])?$item['settlements']:null;
             
             $obj['date']=isset($item['onboarding_date'])?Carbon::createFromFormat('d/m/Y',$item['onboarding_date'])->format('Y-m-d'):null;
             $obj['created_at']=Carbon::now();
@@ -1498,6 +1499,35 @@ public function income_zomato_import(Request $r){
                 $ra_obj = [];
                 $ra_obj['income_zomato_id']=$p_id;
                 $ra_obj['source']='Tips Payouts';
+                $ra_obj['rider_id']=$rider_id;
+                $ra_obj['amount']=$ra_amt2;
+                $ra_obj['month']=$obj['date'];
+                $ra_obj['type']='cr';
+                $ra_obj['created_at']=Carbon::now();
+                $ra_obj['updated_at']=Carbon::now();
+                array_push($ra_objects, $ra_obj);
+            }
+
+            $ca_amt2 = $obj['settlements'];
+            if($ca_amt2 > 0){
+                $ca_obj = [];
+                $ca_obj['income_zomato_id']=$p_id;
+                $ca_obj['source']='Settlements';
+                $ca_obj['rider_id']=$rider_id;
+                $ca_obj['amount']=$ca_amt2;
+                $ca_obj['month']=$obj['date'];
+                $ca_obj['type']='dr';
+                $ca_obj['created_at']=Carbon::now();
+                $ca_obj['updated_at']=Carbon::now();
+                array_push($ca_objects, $ca_obj);
+            }
+
+            
+            $ra_amt2 = $obj['settlements'];
+            if($ra_amt2 > 0){
+                $ra_obj = [];
+                $ra_obj['income_zomato_id']=$p_id;
+                $ra_obj['source']='Settlements';
                 $ra_obj['rider_id']=$rider_id;
                 $ra_obj['amount']=$ra_amt2;
                 $ra_obj['month']=$obj['date'];
@@ -1627,6 +1657,7 @@ public function income_zomato_import(Request $r){
             $objUpdate['denials_penalty']=isset($item['denials_penalty'])?$item['denials_penalty']:null;
             $objUpdate['dc_deductions']=isset($item['dc_deductions'])?$item['dc_deductions']:null;
             $objUpdate['mcdonalds_deductions']=isset($item['mcdonalds_deductions'])?$item['mcdonalds_deductions']:null;
+            $objUpdate['settlements']=isset($item['settlements'])?$item['settlements']:null;
             $objUpdate['date']=isset($item['onboarding_date'])?Carbon::createFromFormat('d/m/Y',$item['onboarding_date'])->format('Y-m-d'):null;
             $objUpdate['created_at']=Carbon::now();
             $objUpdate['updated_at']=Carbon::now();
@@ -1693,6 +1724,36 @@ public function income_zomato_import(Request $r){
                 array_push($ra_objects_updates, $ra_obj);
             }
 
+            $ca_amt2 = $objUpdate['settlements'];
+            if($ca_amt2 > 0){
+                $ca_obj = [];
+                $p_id1=$objUpdate['p_id'];
+                $ca_obj['income_zomato_id']=$p_id1;
+                $ca_obj['source']='Settlements';
+                $ca_obj['rider_id']=$rider_id;
+                $ca_obj['amount']=$ca_amt2;
+                $ca_obj['month']=$objUpdate['date'];
+                $ca_obj['type']='dr';
+                $ca_obj['created_at']=Carbon::now();
+                $ca_obj['updated_at']=Carbon::now();
+                array_push($ca_objects_updates, $ca_obj);
+            }
+
+            
+            $ra_amt2 = $objUpdate['settlements'];
+            if($ra_amt2 > 0){
+                $ra_obj = [];
+                $p_id1=$objUpdate['p_id'];
+                $ra_obj['income_zomato_id']=$p_id1;
+                $ra_obj['source']='Settlements';
+                $ra_obj['rider_id']=$rider_id;
+                $ra_obj['amount']=$ra_amt2;
+                $ra_obj['month']=$objUpdate['date'];
+                $ra_obj['type']='cr';
+                $ra_obj['created_at']=Carbon::now();
+                $ra_obj['updated_at']=Carbon::now();
+                array_push($ra_objects_updates, $ra_obj);
+            }
             $ra_amt2 = $objUpdate['ncw_incentives'];
                 if($ra_amt2 > 0){
                 $ra_obj = [];

@@ -29,6 +29,7 @@ class CreateIncomeZomatosTable extends Migration
             $table->string('denials_penalty')->nullable();
             $table->string('dc_deductions')->nullable();
             $table->string('mcdonalds_deductions')->nullable();
+            $table->string('settlements')->nullable();
             $table->string('date')->nullable();
             $table->string('active_status')->default("A");
             $table->string('setting')->nullable();
