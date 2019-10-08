@@ -508,7 +508,7 @@ function deleteRider(id){
     sendDeleteRequest(url, false, null, riders_table);
 }
 
-function updateStatus(rider_id,status)
+function updateStatus(rider_id,status,$this)
 { 
     if (status==1) {
        $('#inactive_reasons').modal("show");
@@ -568,7 +568,7 @@ function updateStatus(rider_id,status)
         });
        });
 } else {
-    var active_month=$("#status_new").attr("data-active-month");  
+    var active_month=$($this).attr("data-active-month");  
     var url = "{{ url('admin/rider') }}" + "/" + rider_id + "/updateStatus";
     swal.fire({
         title: 'Are you sure?',
