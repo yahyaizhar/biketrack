@@ -58,6 +58,8 @@ class CreateUsersTable extends Migration
             $table->string('end_time')->nullable();
             $table->string('break_start_time')->nullable();
             $table->string('break_end_time')->nullable();
+            $table->string('inactive_month')->nullable();
+            $table->string('inactive_reason')->nullable();
             $table->text('spell_time')->nullable();
             $table->boolean('online')->nullable();
             $table->boolean('status')->nullable();

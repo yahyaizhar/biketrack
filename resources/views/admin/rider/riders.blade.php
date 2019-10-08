@@ -145,14 +145,45 @@ margin-left: 10px;
         </div>
     </div>
 </div>
+<div>
+    <div class="modal fade" id="inactive_reasons" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title" id="exampleModalLabel">Inactive Reasons</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form class="kt-form" id="inactive"  enctype="multipart/form-data">
+                    <div class="container">
+                        <div class="form-group">
+                            <label>Month:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('inactive_month')) invalid-field @endif" name="inactive_month" placeholder="Enter Month" value="">
+                        </div>
+                        <div class="form-group">
+                            <label>Reason:</label>
+                            <textarea type="text"  rows="6" autocomplete="off" class="form-control" name="inactive_reason" placeholder="Enter Details" ></textarea>
+                        </div>
+                        <div class="modal-footer border-top-0 d-flex justify-content-center">
+                            <button class="upload-button btn btn-success">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- end:: Content -->
-
+<input type="hidden" id="active_month">
 @endsection
 @section('foot')
 
 <!--begin::Page Vendors(used by this page) -->
 <script src="{{ asset('dashboard/assets/vendors/custom/datatables/datatables.bundle.js') }}" type="text/javascript"></script>
 <script src="{{ asset('https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js') }}" type="text/javascript"></script>
+<link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
 
 
 <!--end::Page Vendors -->
@@ -162,9 +193,8 @@ margin-left: 10px;
 
 <!--end::Page Scripts -->
 
-<script>
-    
-
+<script> 
+$('#month').fdatepicker({format: 'dd-mm-yyyy'}); 
 var riders_table;
 var riders_data = [];
 $(function() {
@@ -478,19 +508,79 @@ function deleteRider(id){
     sendDeleteRequest(url, false, null, riders_table);
 }
 
-function updateStatus(rider_id)
-{
+function updateStatus(rider_id,status)
+{ 
+    if (status==1) {
+       $('#inactive_reasons').modal("show");
+       $("form#inactive").on("submit",function(e){
+           e.preventDefault();
+           var _form = $(this);
+           var _modal = _form.parents('.modal');
+           var url = "{{ url('admin/rider') }}" + "/" + rider_id + "/updateStatus";
+            swal.fire({
+                title: 'Are you sure?',
+                text: "You want update status!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes!'
+            }).then(function(result) {
+                if (result.value) {
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                    $.ajax({
+                        url : url,
+                        type : 'POST',
+                        data: _form.serializeArray(),
+                        beforeSend: function() {            
+                            $('.loading').show();
+                        },
+                        complete: function(){
+                            $('.loading').hide();
+                        },
+                        success: function(data){
+                            console.log(data);
+                            _modal.modal('hide');
+                            swal.fire({
+                                position: 'center',
+                                type: 'success',
+                                title: 'Record updated successfully.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                            riders_table.ajax.reload(null, false);
+                        },
+                        error: function(error){
+                            _modal.modal('hide');
+                            swal.fire({
+                                position: 'center',
+                                type: 'error',
+                                title: 'Oops...',
+                                text: 'Unable to update.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        }
+                    });
+                }
+        });
+       });
+} else {
+    var active_month=$("#status_new").attr("data-active-month");  
     var url = "{{ url('admin/rider') }}" + "/" + rider_id + "/updateStatus";
     swal.fire({
         title: 'Are you sure?',
         text: "You want update status!",
         type: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Yes!'
+        confirmButtonText: 'Yes!', 
+        footer: '<p><strong>Last Active Status: </strong>'+active_month+'</p>'
     }).then(function(result) {
         if (result.value) {
             $.ajaxSetup({
-                headers: {
+                headers: { 
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
@@ -525,7 +615,9 @@ function updateStatus(rider_id)
                 }
             });
         }
-    });
+    });    
+}
+
 }
 </script>
 <style>

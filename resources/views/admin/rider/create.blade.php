@@ -139,6 +139,10 @@
                                 </span>
                             @endif
                         </div>
+                        <div class="form-group">
+                                <label>Rider Active Date:</label>
+                                <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('active_month')) invalid-field @endif" name="active_month" placeholder="Enter Month" value="">
+                            </div>
                         <div class="row">
                             <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">

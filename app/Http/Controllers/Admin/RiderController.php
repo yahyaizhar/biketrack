@@ -103,6 +103,8 @@ class RiderController extends Controller
         $rider->end_time = $request->end_time;
         $rider->break_start_time = $request->break_start_time;
         $rider->break_end_time = $request->break_end_time;
+        $rider->active_month = Carbon::parse($request->active_month)->format('Y-m-d');
+
         if($request->status){
             $rider->status = 1;
             $ca=json_decode($rider->spell_time,true);
@@ -404,6 +406,7 @@ class RiderController extends Controller
         $rider->end_time = $request->end_time;
         $rider->break_start_time = $request->break_start_time;
         $rider->break_end_time = $request->break_end_time;
+        $rider->active_month = Carbon::parse($request->active_month)->format('Y-m-d');
         // if($request->status){
         //     $rider->status = 1;
         //     }
@@ -658,10 +661,12 @@ class RiderController extends Controller
     }
     public function updateStatus(Rider $rider,Request $req)
     {
-        
+        $r_active_month=$rider->active_month; 
         if($rider->status == 1)
         {
             // inactive
+            $rider->inactive_month=Carbon::parse($req->inactive_month)->format('Y-m-d');
+            $rider->inactive_reason=$req->inactive_reason;
             $assign_bike=Assign_bike::where("rider_id",$rider->id)->where("status","active")->get()->first();
             if (isset($assign_bike)) {
                 $assign_bike->status="deactive";
@@ -712,6 +717,7 @@ class RiderController extends Controller
         return response()->json([
             'status' => true,
             'data'=>$ca, 
+            '$rider'=>$rider,
         ]);
        
     }
