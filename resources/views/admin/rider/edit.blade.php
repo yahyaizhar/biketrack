@@ -169,56 +169,29 @@
                             <div class="form-group">
                                 <label>Start Time:</label>
                                 <input type="hidden" id="start_timer1" name="start_time" value="{{ $rider->start_time }}">
-                                <input type="text" autocomplete="off" id="timepicker1" class="form-control @if($errors->has('start_time')) invalid-field @endif" placeholder="Start Time" value="{{ $rider->start_time }}">
-                                @if ($errors->has('start_time'))
-                                    <span class="invalid-response" role="alert">
-                                        <strong>
-                                            {{$errors->first('start_time')}}
-                                        </strong>
-                                    </span>
-                                @endif
+                                <input type="text" autocomplete="off" id="timepicker1" class="form-control" placeholder="Start Time" value="{{ $rider->start_time }}">
+                               
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
                                 <label>End Time:</label>
                                 <input type="hidden" id="start_timer2" name="end_time" value="{{ $rider->end_time }}">
-                                <input type="text" autocomplete="off" id="timepicker2" class="form-control @if($errors->has('end_time')) invalid-field @endif"  placeholder="End Time" value="{{ $rider->end_time }}">
-                                @if ($errors->has('end_time'))
-                                    <span class="invalid-response" role="alert">
-                                        <strong>
-                                            {{$errors->first('end_time')}}
-                                        </strong>
-                                    </span>
-                                @endif
+                                <input type="text" autocomplete="off" id="timepicker2" class="form-control"  placeholder="End Time" value="{{ $rider->end_time }}">
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
                                 <label>Break Start Time:</label>
                                 <input type="hidden" id="start_timer3" name="break_start_time" value="{{ $rider->break_start_time }}">
-                                <input type="text" autocomplete="off" id="timepicker3" class="form-control @if($errors->has('break_start_time')) invalid-field @endif"  placeholder="Break Start Time" value="{{ $rider->break_start_time }}">
-                                @if ($errors->has('break_start_time'))
-                                    <span class="invalid-response" role="alert">
-                                        <strong>
-                                            {{$errors->first('break_start_time')}}
-                                        </strong>
-                                    </span>
-                                @endif
+                                <input type="text" autocomplete="off" id="timepicker3" class="form-control "  placeholder="Break Start Time" value="{{ $rider->break_start_time }}">
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
                                 <label>Break End Time:</label>
                                 <input type="hidden" id="start_timer4" name="break_end_time" value="{{ $rider->break_end_time }}">
-                                <input type="text" autocomplete="off" id="timepicker4" class="form-control @if($errors->has('break_end_time')) invalid-field @endif"  placeholder="Break End Time" value="{{ $rider->break_end_time }}">
-                                @if ($errors->has('break_end_time'))
-                                    <span class="invalid-response" role="alert">
-                                        <strong>
-                                            {{$errors->first('break_end_time')}}
-                                        </strong>
-                                    </span>
-                                @endif
+                                <input type="text" autocomplete="off" id="timepicker4" class="form-control"  placeholder="Break End Time" value="{{ $rider->break_end_time }}">
                             </div>
                         </div>
                             </div>
