@@ -1451,7 +1451,7 @@ public function income_zomato_import(Request $r){
             $obj['updated_at']=Carbon::now();
             array_push($zomato_obj, $obj);
 
-            $ca_amt1 = ($obj['amount_for_login_hours']+$obj['amount_to_be_paid_against_orders_completed']+$obj['ncw_incentives']+$obj['tips_payouts'])
+            $ca_amt1 = ($obj['amount_for_login_hours']+$obj['settlements']+$obj['amount_to_be_paid_against_orders_completed']+$obj['ncw_incentives']+$obj['tips_payouts'])
             - ($obj['dc_deductions'] + $obj['mcdonalds_deductions'] + $obj['denials_penalty']);
             $ca_obj = [];
             $ca_obj['income_zomato_id']=$p_id;
@@ -1512,7 +1512,7 @@ public function income_zomato_import(Request $r){
             if($ca_amt2 > 0){
                 $ca_obj = [];
                 $ca_obj['income_zomato_id']=$p_id;
-                $ca_obj['source']='Settlements';
+                $ca_obj['source']='Zomato Settlements';
                 $ca_obj['rider_id']=$rider_id;
                 $ca_obj['amount']=$ca_amt2;
                 $ca_obj['month']=$obj['date'];
@@ -1527,7 +1527,7 @@ public function income_zomato_import(Request $r){
             if($ra_amt2 > 0){
                 $ra_obj = [];
                 $ra_obj['income_zomato_id']=$p_id;
-                $ra_obj['source']='Settlements';
+                $ra_obj['source']='Zomato Settlements';
                 $ra_obj['rider_id']=$rider_id;
                 $ra_obj['amount']=$ra_amt2;
                 $ra_obj['month']=$obj['date'];
@@ -1663,7 +1663,7 @@ public function income_zomato_import(Request $r){
             $objUpdate['updated_at']=Carbon::now();
             array_push($update_data, $objUpdate);
 
-            $ca_amt1 = ($objUpdate['amount_for_login_hours']+$objUpdate['amount_to_be_paid_against_orders_completed']+$objUpdate['ncw_incentives']+$objUpdate['tips_payouts'])
+            $ca_amt1 = ($objUpdate['amount_for_login_hours']+$objUpdate['settlements']+$objUpdate['amount_to_be_paid_against_orders_completed']+$objUpdate['ncw_incentives']+$objUpdate['tips_payouts'])
             - ($objUpdate['dc_deductions'] + $objUpdate['mcdonalds_deductions'] + $objUpdate['denials_penalty']);
             $ca_obj = [];
             $ca_obj['income_zomato_id']=$objUpdate['p_id'];
@@ -1729,7 +1729,7 @@ public function income_zomato_import(Request $r){
                 $ca_obj = [];
                 $p_id1=$objUpdate['p_id'];
                 $ca_obj['income_zomato_id']=$p_id1;
-                $ca_obj['source']='Settlements';
+                $ca_obj['source']='Zomato Settlements';
                 $ca_obj['rider_id']=$rider_id;
                 $ca_obj['amount']=$ca_amt2;
                 $ca_obj['month']=$objUpdate['date'];
@@ -1745,7 +1745,7 @@ public function income_zomato_import(Request $r){
                 $ra_obj = [];
                 $p_id1=$objUpdate['p_id'];
                 $ra_obj['income_zomato_id']=$p_id1;
-                $ra_obj['source']='Settlements';
+                $ra_obj['source']='Zomato Settlements';
                 $ra_obj['rider_id']=$rider_id;
                 $ra_obj['amount']=$ra_amt2;
                 $ra_obj['month']=$objUpdate['date'];
