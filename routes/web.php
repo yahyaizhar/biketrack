@@ -163,6 +163,7 @@ Route::group([
     Route::post('/bike/update/{id}','bikeController@bike_update')->name('Bike.bike_update');
     Route::get('/riders/{rider}/history','ClientController@Bike_assigned_to_riders_history')->name('Bike.assignedToRiders_History');
     Route::get('/bike/{bike_id}/history','ClientController@rider_history')->name('bike.rider_history');
+    Route::get('/change/{rider_id}/history/{bike_id}','ClientController@change_dates_history')->name('admin.change_dates_history');
     Route::get('/bike/{bike_id}/profile/{rider_id}','ClientController@bike_profile')->name('bike.bike_profile');
     Route::get('view/bike/salik/{id}','SalikController@bike_salik')->name('bike.bike_salik');
     Route::get('view/rider/salik/{id}','SalikController@rider_salik')->name('rider.rider_salik');
@@ -417,6 +418,7 @@ Route::group([
     Route::get('/view/Sim/{id}','SimController@view_assigned_sim')->name('Sim.view_assigned');
     Route::delete('/sim/{rider_id}/removeSim/{sim_id}', 'SimController@removeSim')->name('Sim.removeSim');
     Route::get('/view/{rider_id}/simHistory','SimController@sim_History')->name('Sim.simHistory');
+    Route::get('/change/sim/{rider_id}/history/{assign_sim_id}','SimController@sim_dates_History')->name('Sim.sim_dates_History');
 // end Sim history section 
 });
 // End Sim

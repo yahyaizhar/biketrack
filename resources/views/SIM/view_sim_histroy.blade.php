@@ -1,5 +1,70 @@
 @extends('admin.layouts.app')
 @section('main-content')
+<script>
+function updateDates(rider_id,assign_sim_id,created,updated){  
+            $("#sim_status").modal("show");
+            $('input[name="rider_id"]').val(rider_id);
+            $('input[name="assign_sim_id"]').val(assign_sim_id);
+            $('input[name="created_at"]').val(created);
+            $('input[name="updated_at"]').val(updated);
+            $("form#active_sim_status").on("submit",function(e){
+                e.preventDefault();
+                var _form = $(this);
+                var rider_id=$("#rider_id").val();
+                var assign_sim_id=$("#assign_sim_id").val();
+                var _modal = _form.parents('.modal');
+                var url = "{{ url('admin/change/sim') }}" + "/" + rider_id + "/history" + "/" + assign_sim_id;
+                swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want update status!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes!'
+                }).then(function(result) {
+                    if (result.value) {
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                    $.ajax({
+                        url : url,
+                        type : 'GET',
+                        data: _form.serializeArray(),
+                        beforeSend: function() {            
+                            $('.loading').show();
+                        },
+                        complete: function(){
+                            $('.loading').hide();
+                        },
+                        success: function(data){
+                            console.log(data);
+                            _modal.modal('hide');
+                            swal.fire({
+                                position: 'center',
+                                type: 'success',
+                                title: 'Record updated successfully.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        },
+                        error: function(error){
+                            _modal.modal('hide');
+                            swal.fire({
+                                position: 'center',
+                                type: 'error',
+                                title: 'Oops...',
+                                text: 'Unable to update.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        }
+                    });
+                }
+            });
+        }); 
+        }
+</script>
 <div class="kt-subheader   kt-grid__item" id="kt_subheader">
     <div class="kt-subheader__main">
         
@@ -70,21 +135,18 @@
                                 @php
                                 $mytimestamp = strtotime($history['created_at']);
                                 $timestampupdated=strtotime($history['updated_at']);
+                                $created=Carbon\Carbon::parse($history['created_at'])->format('F d, Y');
+                                $updated=Carbon\Carbon::parse($history['updated_at'])->format('F d, Y');
                               @endphp
                                 @if($history->status=='active')
-                                 <h6 style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}}</h6> 
+                                 <h6 style="float:right;color:green;" onclick="updateDates({{$rider->id}},{{$history['id']}},'{{$created}}','{{$updated}}')">{{gmdate("d-m-Y", $mytimestamp)}}</h6> 
                             
                             @else
-                            <h6 style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}} {{'to'}} {{gmdate("d-m-Y", $timestampupdated)}}</h6>
+                            <h6 style="float:right;color:green;" onclick="updateDates({{$rider->id}},{{$history['id']}},'{{$created}}','{{$updated}}')">{{gmdate("d-m-Y", $mytimestamp)}} {{'to'}} {{gmdate("d-m-Y", $timestampupdated)}}</h6>
                             @endif
-                                
                             </div>
-        
-                           
                         </div>
                     </div>
-                    
-                  
                 </div>
             </div>
         </div>
@@ -138,12 +200,14 @@
                                 @php
                                 $mytimestamp = strtotime($history['created_at']);
                                 $timestampupdated=strtotime($history['updated_at']);
+                                $created=Carbon\Carbon::parse($history['created_at'])->format('F d, Y');
+                                $updated=Carbon\Carbon::parse($history['updated_at'])->format('F d, Y');
                               @endphp
                                 @if($history->status=='active')
-                                 <h6 style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}}</h6> 
+                            <h6 style="float:right;color:green;" onclick="updateDates({{$rider->id}},{{$history['id']}},'{{$created}}','{{$updated}}')">{{gmdate("d-m-Y", $mytimestamp)}}</h6> 
                             
                             @else
-                            <h6 style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}} {{'to'}} {{gmdate("d-m-Y", $timestampupdated)}}</h6>
+                            <h6 style="float:right;color:green;" onclick="updateDates({{$rider->id}},{{$history['id']}},'{{$created}}','{{$updated}}')">{{gmdate("d-m-Y", $mytimestamp)}} {{'to'}} {{gmdate("d-m-Y", $timestampupdated)}}</h6>
                             @endif
                                 
                             </div>
@@ -177,8 +241,42 @@
      @endif
 </div> 
 <!-- end:: Content -->
+<div>
+    <div class="modal fade" id="sim_status" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title" id="exampleModalLabel">Change Created Or Updated Dates</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form class="kt-form" id="active_sim_status"  enctype="multipart/form-data">
+                    <div class="container">
+                        <input type="hidden" name="rider_id" id="rider_id" >
+                        <input type="hidden" name="assign_sim_id" id="assign_sim_id">
+                        <div class="form-group">
+                            <label>Started Month:</label>
+                            <input  type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control" name="created_at" placeholder="Enter Month" value="">
+                        </div>
+                        <div class="form-group">
+                            <label>Ended Month:</label>
+                            <input  type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control" name="updated_at" placeholder="Enter Month" value="">
+                        </div>
+                        <div class="modal-footer border-top-0 d-flex justify-content-center">
+                            <button class="upload-button btn btn-success">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 @section('foot')
+<link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
+
 <script>
     function sendSMS(id)
     {
@@ -209,5 +307,6 @@
             console.log(url);
             sendDeleteRequest(url, true);
         }
+        
 </script>
 @endsection

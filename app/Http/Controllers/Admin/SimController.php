@@ -513,5 +513,17 @@ $simHistory_count=$sim_history->count();
 // return $simHistory_count; 
 return view('SIM.view_sim_histroy',compact('rider','sim_history','simHistory_count','sim'));
   }
+  public function sim_dates_History(Request $request,$rider_id,$assign_sim_id){
+      
+      $assign_sim=Sim_History::where("rider_id",$rider_id)->where("id",$assign_sim_id)->get()->first();
+      if (isset($assign_sim)) {
+        $assign_sim->created_at=Carbon::parse($request->created_at)->format('Y-m-d');
+        $assign_sim->updated_at=Carbon::parse($request->updated_at)->format('Y-m-d');
+      }
+      $assign_sim->update();
+    return response()->json([
+        'status' =>$assign_sim,
+    ]);
+  }
 
 }

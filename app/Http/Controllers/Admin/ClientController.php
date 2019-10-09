@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use App\Model\Bikes\bike;
 use App\Model\Bikes\bike_detail;
 use App\Assign_bike;
+use Carbon\Carbon;
 
 class ClientController extends Controller
 {
@@ -418,9 +419,20 @@ return view('admin.Bike.bike_profile',compact('bike_profile','rider','assign_bik
 }
 return redirect('admin/riders');
 }
-
-
 // end bikeController
-
+public function change_dates_history(Request $request,$rider_id,$assign_bike_id){
+    $rider=Rider::find($rider_id);
+    $assign_bike=Assign_bike::where("rider_id",$rider->id)->where("id",$assign_bike_id)->get()->first();
+    if (isset($assign_bike)) {
+        $assign_bike->created_at=Carbon::parse($request->created_at)->format("Y-m-d");
+        $assign_bike->updated_at=Carbon::parse($request->updated_at)->format("Y-m-d");  
+    }
+    $assign_bike->update();
+    return response()->json([
+        'status' =>  $assign_bike,
+        'a'=>$assign_bike->created_at,
+        'b'=>$assign_bike->updated_at,
+    ]);
+}
 
 }
