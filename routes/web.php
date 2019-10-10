@@ -517,8 +517,18 @@ Route::group([
     Route::get('/login', 'Auth\LoginController@showLoginForm')->name('admin.login');
     Route::post('/login', 'Auth\LoginController@login')->name('admin.login');
     Route::get('/logout', 'Auth\LoginController@logout')->name('admin.logout');
+    Route::get('/NewComer/add','GuestController@newComer_view')->name('guest.newComer_view');
 });
 // end for Admin global
+
+Route::group([
+    'prefix' => 'guest',
+], function(){
+// Guest routes
+    Route::get('/newcomer/add','GuestController@newComer_view')->name('guest.newComer_view');
+});
+
+
 Route::group([
     'prefix' => 'admin',
     'namespace' => 'Admin',
@@ -527,7 +537,7 @@ Route::group([
     Route::get('/', 'HomeController@index')->name('admin.home');
     Route::post('/cash/paid/rider/{id}','HomeController@cash_paid_rider')->name('admin.cash_paid_rider');
 });
-    Route::get('/NewComer/add','GuestController@newComer_view')->name('guest.newComer_view');
+    
 
 
 
