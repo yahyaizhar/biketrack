@@ -26,6 +26,9 @@
         color: white;
         background-color: #5578eb;
     }
+    .streric{
+        color: red;
+    }
 </style>
 <!-- begin:: Content -->
 <div class="progress-bar sticky-top" id="myBar" style="height: 10px;background: #4caf50;width: 0%;"></div>
@@ -51,7 +54,7 @@
                     <div class="kt-portlet__body">
                                 
                         <div class="form-group">
-                            <label>Full Name:</label>
+                            <label>Full Name: <span class="streric">*</span></label>
                             <input type="text" class="form-control @if($errors->has('name')) invalid-field @endif" name="name" placeholder="Enter full name" value="{{ old('name') }}">
                             @if ($errors->has('name'))
                                 <span class="invalid-response" role="alert">
@@ -64,7 +67,7 @@
                             @endif
                         </div>
                         <div class="form-group">
-                            <label>Email address:</label>
+                            <label>Email address: <span class="streric">*</span></label>
                             <input type="email" class="form-control @if($errors->has('email')) invalid-field @endif" name="email" placeholder="Enter email" value="{{ old('email') }}">
                             @if ($errors->has('email'))
                                 <span class="invalid-response" role="alert">
@@ -77,7 +80,7 @@
                             @endif
                         </div>
                         <div class="form-group">
-                            <label>Personal Phone Number:</label>
+                            <label>Personal Phone Number: <span class="streric">*</span></label>
                             <input type="text" class="form-control @if($errors->has('phone')) invalid-field @endif" name="phone" placeholder="Enter phone number" value="{{ old('phone') }}">
                             @if ($errors->has('phone'))
                                 <span class="invalid-response" role="alert">
@@ -91,19 +94,12 @@
                         </div>
                         <div class="form-group"> 
                             <label>Date Of Birth:</label>
-                            <input type="text" id="date_of_birth" autocomplete="off" class="form-control @if($errors->has('date_of_birth')) invalid-field @endif" name="date_of_birth" placeholder="Enter Date Of Birth" value="{{ old('date_of_birth') }}">
-                            @if ($errors->has('date_of_birth'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{ $errors->first('date_of_birth') }}
-                                    </strong>
-                                </span>
-                            @else
+                            <input type="text" id="date_of_birth" autocomplete="off" class="form-control" name="date_of_birth" placeholder="Enter Date Of Birth" >
                                 <span class="form-text text-muted">Please enter your Date Of Birth</span>
-                            @endif
+                           
                         </div>
                         <div class="form-group">
-                            <label>Password:</label>
+                            <label>Password: <span class="streric">*</span></label>
                             <input type="password" class="form-control @if($errors->has('passsword')) invalid-field @endif" name="password" placeholder="Enter password">
                             @if ($errors->has('password'))
                                 <span class="invalid-response" role="alert">
@@ -114,34 +110,20 @@
                             @endif
                         </div>
                         <div class="form-group">
-                            <label>Confirm Password:</label>
+                            <label>Confirm Password: <span class="streric">*</span></label>
                             <input type="password" class="form-control @if($errors->has('passsword')) invalid-field @endif" name="password_confirmation" placeholder="Enter confirm password">
                         </div>
                         <div class="form-group">
                             <label>Kingriders ID:</label>
-                            <input type="text" class="form-control @if($errors->has('kingriders_id')) invalid-field @endif" name="kingriders_id" placeholder="Enter Kingriders ID" value="{{ old('kingriders_id') }}">
-                            @if ($errors->has('kingriders_id'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{$errors->first('kingriders_id')}}
-                                    </strong>
-                                </span>
-                            @endif
+                            <input type="text" class="form-control" name="kingriders_id" placeholder="Enter Kingriders ID" >
                         </div>
                         <div class="form-group">
                             <label>City:</label>
-                            <input type="text" class="form-control @if($errors->has('address')) invalid-field @endif" name="address" placeholder="Enter city" value="{{ old('address') }}">
-                            @if ($errors->has('address'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{$errors->first('address')}}
-                                    </strong>
-                                </span>
-                            @endif
+                            <input type="text" class="form-control" name="address" placeholder="Enter city">
                         </div>
                         <div class="form-group">
                                 <label>Rider Active Date:</label>
-                                <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('active_month')) invalid-field @endif" name="active_month" placeholder="Enter Month" value="">
+                                <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}"  readonly class="month_picker form-control @if($errors->has('active_month')) invalid-field @endif" name="active_month" placeholder="Enter Month" value="">
                             </div>
                         <div class="row">
                             <div class="col-lg-3 col-md-3 col-sm-12">
@@ -175,44 +157,25 @@
                         </div>
                         <div class="form-group">
                             <div class="custom-file">
+                                <label>Profile Picture</label>
                                 <input type="file" name="profile_picture" class="custom-file-input" id="profile_picture">
                                 <label class="custom-file-label" for="profile_picture">Choose Picture</label>
+                                <span class="form-text text-muted">Select Profile Picture</span>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label>Date of Joining:</label>
-                            <input type="text" id="datepicker1" autocomplete="off" class="form-control @if($errors->has('date_of_joining')) invalid-field @endif" name="date_of_joining" placeholder="Enter Joining Date">
-                            @if ($errors->has('date_of_joining'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>{{ $errors->first('date_of_joining') }}</strong>
-                                </span>
-                            @else
-                                <span class="form-text text-muted">Please enter your Joining Date</span>
-                            @endif
+                            <input type="text" id="datepicker1" autocomplete="off" class="form-control" name="date_of_joining" placeholder="Enter Joining Date">
                         </div>
                         <div class="form-group">
                                 <label>Salary:</label>
-                                <input type="text" required class="form-control @if($errors->has('salary')) invalid-field @endif" name="salary" placeholder="Enter An Amount">
-                                @if ($errors->has('salary'))
-                                    <span class="invalid-response" role="alert">
-                                        <strong>{{ $errors->first('salary') }}</strong>
-                                    </span>
-                                @else
-                                    <span class="form-text text-muted">Please enter Rider Salary</span>
-                                @endif
+                                <input type="text" class="form-control" name="salary" placeholder="Enter An Amount">
                             </div>
                             
                             <div class="form-group">
-                                <label>Salik Amount:</label>
-                                 <input type="text" required class="form-control @if($errors->has('salik_amount')) invalid-field @endif" name="salik_amount" placeholder="Enter A Salik Amount" value="50">
-                                @if ($errors->has('salik_amount'))
-                                    <span class="invalid-response" role="alert">
-                                        <strong>{{ $errors->first('salik_amount') }}</strong>
-                                    </span>
-                                @else
-                                    <span class="form-text text-muted">Please enter Salik Amount</span>
-                                @endif
+                                
+                                 <input type="hidden" class="form-control " name="salik_amount" placeholder="Enter A Salik Amount" value="50">
                             </div>
                         <div class="form-group">
                             <label>Is Passport Collected:</label>
@@ -284,13 +247,9 @@
 <div class="form-group">
     <label>Passport Expiry:</label>
     <input type="text" id="datepicker3" autocomplete="off" class="form-control @if($errors->has('passport_expiry')) invalid-field @endif" name="passport_expiry" placeholder="Enter Passport Expiry">
-    @if ($errors->has('passport_expiry'))
-        <span class="invalid-response" role="alert">
-            <strong>{{ $errors->first('passport_expiry') }}</strong>
-        </span>
-    @else
+   
         <span class="form-text text-muted">Please enter your Passport Expiry Date</span>
-    @endif
+  
 </div>
 </div>
 <div class="col-lg-6 col-md-6 col-sm-12">
@@ -319,13 +278,9 @@
 <div class="form-group">
     <label>Visa Expiry:</label>
     <input type="text" id="datepicker4" autocomplete="off" class="form-control @if($errors->has('visa_expiry')) invalid-field @endif" name="visa_expiry" placeholder="Enter Visa Expiry">
-    @if ($errors->has('visa_expiry'))
-        <span class="invalid-response" role="alert">
-            <strong>{{ $errors->first('visa_expiry') }}</strong>
-        </span>
-    @else
+    
         <span class="form-text text-muted">Please enter your Visa Expiry Date</span>
-    @endif
+   
 </div>
 </div>
 <div class="col-lg-6 col-md-6 col-sm-12">
@@ -352,14 +307,10 @@
  <div class="col-lg-6 col-md-6 col-sm-12">
     <div class="form-group">
         <label>Emirates ID:</label>
-        <input type="text"  class="form-control @if($errors->has('emirate_id')) invalid-field @endif" name="emirate_id" placeholder="Enter Emirate ID">
-        @if ($errors->has('emirate_id'))
-            <span class="invalid-response" role="alert">
-                <strong>{{ $errors->first('emirate_id') }}</strong>
-            </span>
-        @else
+        <input type="text"  class="form-control" name="emirate_id" placeholder="Enter Emirate ID">
+       
             <span class="form-text text-muted">Please enter your Emirate ID.</span>
-        @endif
+       
     </div>
     </div>
     <div class="col-lg-3 col-md-3 col-sm-12">
@@ -387,13 +338,9 @@
 <div class="form-group">
     <label>Licence Expiry:</label>
     <input type="text" id="datepicker5" autocomplete="off" class="form-control @if($errors->has('licence_expiry')) invalid-field @endif" name="licence_expiry" placeholder="Enter Licence Expiry">
-    @if ($errors->has('licence_expiry'))
-        <span class="invalid-response" role="alert">
-            <strong>{{ $errors->first('licence_expiry') }}</strong>
-        </span>
-    @else
+    
         <span class="form-text text-muted">Please enter your Licence Expiry Date</span>
-    @endif
+
 </div>
 </div>
 <div class="col-lg-3 col-md-3 col-sm-12">
@@ -419,12 +366,12 @@
             <label>Other Details:</label>
             <textarea type="text"  rows="8" autocomplete="off" class="form-control @if($errors->has('other_details')) invalid-field @endif" name="other_details" placeholder="Enter Further Details" ></textarea>
         </div>
-        <div class="form-group">
+        {{-- <div class="form-group">
                 <label>Status:</label>
                 <div>
                     <input data-switch="true" name="status" id="status" type="checkbox" checked="checked" data-on-text="Enabled" data-handle-width="70" data-off-text="Disabled" data-on-color="brand">
                 </div>
-            </div>
+            </div> --}}
  </div>
                     <div class="kt-portlet__foot">
                         <div class="kt-form__actions kt-form__actions--right">

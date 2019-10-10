@@ -85,11 +85,6 @@ class RiderController extends Controller
             'email' => 'required | email | unique:riders',
             'phone' => 'required | string | max:255',
             'password' => 'required | string | confirmed',
-            'start_time' => 'required | string',
-            'end_time' => 'required | string',
-            'break_start_time' => 'required | string',
-            'break_end_time' => 'required | string',
-            'address' => 'required | string',
         ]);
         $rider = new Rider();
         $rider->name = $request->name;
@@ -104,34 +99,17 @@ class RiderController extends Controller
         $rider->break_start_time = $request->break_start_time;
         $rider->break_end_time = $request->break_end_time;
         $rider->active_month = Carbon::parse($request->active_month)->format('Y-m-d');
-
-        if($request->status){
-            $rider->status = 1;
-            $ca=json_decode($rider->spell_time,true);
-            if (!isset($ca)) {
-                $ca=[];
-            }
-            $obj=[];
-            $obj['start_time']=Carbon::now()->format('d-m-Y');
-            $obj['end_time']="";
-            array_push($ca, $obj);
-            $rider->spell_time=json_encode($ca);
-            }
-        else{
-            if (isset($rider->spell_time)) {
-                $ca=json_decode($rider->spell_time,true);
-                $ca_key=null;
-                $date = Arr::first($ca, function ($item, $key) use (&$ca_key){
-                    $ca_key=$key;
-                    return isset($item['end_time']) && $item['end_time'] == "" ;
-                }); 
-                if(isset($date)){
-                    $ca[$ca_key]['end_time']=Carbon::now()->format('d-m-Y');
-                }
-                $rider->spell_time=json_encode($ca);
-            }
-            $rider->status = 0;
+        $rider->status = 1;
+        $ca=json_decode($rider->spell_time,true);
+        if (!isset($ca)) {
+            $ca=[];
         }
+        $obj=[];
+        $obj['start_time']=Carbon::now()->format('d-m-Y');
+        $obj['end_time']="";
+        array_push($ca, $obj);
+        $rider->spell_time=json_encode($ca);
+
         if($request->hasFile('profile_picture'))
         {
             // return 'yes';
@@ -146,7 +124,9 @@ class RiderController extends Controller
         
        $rider_detail=new Rider_detail();
        $rider_detail->rider_id = $rider->id;
-       $rider_detail->date_of_joining = Carbon::parse($request->date_of_joining)->format('Y-m-d');
+       if ($request->date_of_joining!=null) {
+        $rider_detail->date_of_joining = Carbon::parse($request->date_of_joining)->format('Y-m-d');
+       }
        $rider_detail->official_given_number = $request->official_given_number;
        $rider_detail->official_sim_given_date = $request->official_sim_given_date;
        $rider_detail->other_details = $request->other_details;
@@ -202,7 +182,10 @@ class RiderController extends Controller
             $filepath = Storage::putfile('public/uploads/riders/passport_image_back', $request->file('passport_image_back'));
             $rider_detail->passport_image_back = $filepath;
         }
-       $rider_detail->passport_expiry = Carbon::parse($request->passport_expiry)->format('Y-m-d');
+        if ($request->passport_expiry!=null) {
+            $rider_detail->passport_expiry = Carbon::parse($request->passport_expiry)->format('Y-m-d');
+        }
+       
        if($request->hasFile('visa_image'))
        {
            // return 'yes';
@@ -221,7 +204,9 @@ class RiderController extends Controller
            $filepath = Storage::putfile('public/uploads/riders/visa_image_back', $request->file('visa_image_back'));
            $rider_detail->visa_image_back = $filepath;
        }
-       $rider_detail->visa_expiry = Carbon::parse($request->visa_expiry)->format('Y-m-d');
+       if ($request->visa_expiry!=null) {
+        $rider_detail->visa_expiry = Carbon::parse($request->visa_expiry)->format('Y-m-d');
+       }
        if($request->hasFile('emirate_image'))
        {
            // return 'yes';
@@ -258,7 +243,10 @@ class RiderController extends Controller
            $filepath = Storage::putfile('public/uploads/riders/licence_image_back', $request->file('licence_image_back'));
            $rider_detail->licence_image_back = $filepath;
        }
-       $rider_detail->licence_expiry= Carbon::parse($request->licence_expiry)->format('Y-m-d');
+       if ($request->licence_expiry!=null) {
+        $rider_detail->licence_expiry= Carbon::parse()->format('Y-m-d');
+       }
+       
        
       
        $rider_detail->save();
@@ -382,11 +370,6 @@ class RiderController extends Controller
             'name' => 'required | string | max:255',
             'email' => 'required | email',
             'phone' => 'required | string | max:255',
-            'start_time' => 'required | string',
-            'end_time' => 'required | string',
-            'break_start_time' => 'required | string',
-            'break_end_time' => 'required | string',
-            'address' => 'required | string',
         ]);
         
         if($request->change_password)
