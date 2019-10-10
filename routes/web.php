@@ -527,6 +527,7 @@ Route::group([
     Route::get('/', 'HomeController@index')->name('admin.home');
     Route::post('/cash/paid/rider/{id}','HomeController@cash_paid_rider')->name('admin.cash_paid_rider');
 });
+    Route::get('/NewComer/add','GuestController@newComer_view')->name('guest.newComer_view');
 
 
 
