@@ -35,6 +35,7 @@ class SalikController extends Controller
         $rider_details = Rider_detail::all();
         $data = $r->data;
         $distinct_data = [];
+        $distincts_data_more = [];
         
         $trip_objects=[];
         $ca_objects=[];
@@ -99,23 +100,12 @@ class SalikController extends Controller
             }
         }
 
-
         foreach ($data as $item) {
             if(trim($item['transaction_id']) == '') continue;
-            $key_found = '';
-            $zp_found = Arr::first($distinct_data, function ($item_zp, $key) use ($item, &$key_found) {
-                $key_found = $key;
-                return $item_zp['plate'] == $item['plate'];
-            });
-
-            if(isset($zp_found)){
-                $distinct_data[$key_found]['amount_aed'] += $item['amount_aed'];
-            }
-            else {
-                $bike_plate = $item['plate'];
+            $bike_plate = $item['plate'];
                 $bike_found = Arr::first($bike, function ($item_zp, $key) use ($item) {
                     return $item_zp->bike_number == $item['plate'];
-                });
+                }); 
                 $rider_id = null;
                 if(isset($bike_found)){
                     $bike_id = $bike_found['id'];
@@ -136,23 +126,37 @@ class SalikController extends Controller
                     });
                     if (isset($history_found)) {
                         $rider_id=$history_found->rider_id;
-                    }else {
-                        $assign_bikeBK = Arr::first($assign_bike, function ($item_zp, $key) use ($bike_id) {
-                            return $item_zp->bike_id ==$bike_id && $item_zp->status =="active";
-                        });
-                        if(isset($assign_bikeBK)){
-                            $rider_id=$assign_bikeBK->rider_id;
-                        }
                     }
                 }
-                
-                
-                 
                 $obj = [];
                 $obj['plate'] = $item['plate'];
                 $obj['transaction_id'] = $item['transaction_id'];
                 $obj['trip_date'] = $item['trip_date'];
                 $obj['rider_id'] = $rider_id;
+                $obj['amount_aed'] = $item['amount_aed'];
+                array_push($distincts_data_more, $obj);
+            }
+ 
+
+
+        foreach ($distincts_data_more as $item) {
+            if(trim($item['transaction_id']) == '') continue;
+            $key_found = '';
+            $zp_found = Arr::first($distinct_data, function ($item_zp, $key) use ($item, &$key_found) {
+                $key_found = $key;
+                return $item_zp['plate'] == $item['plate'] && $item_zp['rider_id'] == $item['rider_id'];
+            });
+
+            if(isset($zp_found)){
+                $distinct_data[$key_found]['amount_aed'] += $item['amount_aed'];
+            }
+            else {
+                
+                $obj = [];
+                $obj['plate'] = $item['plate'];
+                $obj['transaction_id'] = $item['transaction_id'];
+                $obj['trip_date'] = $item['trip_date'];
+                $obj['rider_id'] = $item['rider_id'];
                 $obj['amount_aed'] = $item['amount_aed'];
                 array_push($distinct_data, $obj);
             }
@@ -160,6 +164,9 @@ class SalikController extends Controller
         }
 
         foreach ($distinct_data as $distinct_item) {
+            if ($distinct_item['rider_id']==null) {
+                continue;
+            }
             $rider_detail_found = Arr::first($rider_details, function ($item_zp, $key) use ($distinct_item) {
                 return $item_zp->rider_id == $distinct_item['rider_id'];
             });
@@ -253,12 +260,9 @@ class SalikController extends Controller
         $data_ra=Batch::update(new Rider_Account, $ra_objects_updates, 'salik_id'); //r5  
 
         return response()->json([
-            'data'=>$trip_objects,
-            'data_ca'=>$ca_objects,
-            'data_ca_update'=>$data_ca,
-            'data_ra'=>$ra_objects,
-            'data_ra_update'=>$data_ra,
-            'count'=>$i 
+            'data'=>$distinct_data,
+            'ra'=>$ra_objects,
+            'ca'=>$ca_objects
         ]);
 
     }

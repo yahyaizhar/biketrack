@@ -164,30 +164,33 @@ class AjaxNewController extends Controller
         }
         
         //Salik
-        $models = \App\Model\Accounts\Company_Account::
+        $modelArr = \App\Model\Accounts\Company_Account::
         whereMonth('month', $month)
         ->where("rider_id",$rider_id)
         ->where("type","dr")
         ->whereNotNull('salik_id')
         ->get();
-        foreach ($models as $mod) {
-        if(isset($mod)){
-            $mod->source = "Salik";
-            $mod->amount=$mod->amount;
-            $bills->push($mod);
+        $model = $modelArr->first();
+        foreach ($modelArr as $mod) {
+        if(isset($mod) && $mod->id !=$model->id){
+            $model->amount+=$mod->amount;
+            
         }
         }
+        $bills->push($model);
         //fuel_expense
-        $model = \App\Model\Accounts\Company_Account::
+        $modelArr = \App\Model\Accounts\Company_Account::
         whereMonth('month', $month)
         ->where("rider_id",$rider_id)
         ->whereNotNull('fuel_expense_id')
-        ->get()
-        ->first();
-        if(isset($model)){
-            $model->source = "Fuel Expense";
-            $bills->push($model);
+        ->get();
+        $model = $modelArr->first();
+        foreach ($modelArr as $mod) {
+        if(isset($mod) && $mod->id != $model->id){
+                $model->amount+=$mod->amount;
+            }
         }
+        $bills->push($model);
         //maintenance
         $model = \App\Model\Accounts\Company_Account::
         whereMonth('month', $month)
@@ -214,22 +217,36 @@ class AjaxNewController extends Controller
 
         return DataTables::of($bills)
         ->addColumn('date', function($bill){
-            return Carbon::parse($bill->month)->format('M d, Y');
+            if (isset($bill->month)) {
+                return Carbon::parse($bill->month)->format('M, Y');
+            }
         })
         ->addColumn('bill', function($bill){
-            return $bill->source;
-        })
-        ->addColumn('amount', function($bill){
-            return $bill->amount;
-        })
-        ->addColumn('payment_status', function($bill){
-            if($bill->payment_status == 'pending'){
-                //enable pay
-                return '<div>Pending <button type="button" onclick="updateStatus('.$bill->id.')" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
+            if (isset($bill->source)) {
+                return $bill->source;
             }
             
-            return ucfirst($bill->payment_status).' <i class="flaticon2-correct text-success h5"></i>';
         })
+        ->addColumn('amount', function($bill){
+            if (isset($bill->amount)) {
+                return $bill->amount;
+            }
+            
+        })
+        ->addColumn('payment_status', function($bill){
+            if (isset($bill->payment_status)) {
+                if($bill->payment_status == 'pending'){
+                    //enable pay
+                    $month=$bill->month;
+                    $rider_id=$bill->rider_id;
+                    $type=$bill->source;
+                    return '<div>Pending <button type="button" onclick="updateStatus('.$rider_id.',\''.$month.'\',\''.$type.'\')" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
+                }
+                
+                return ucfirst($bill->payment_status).' <i class="flaticon2-correct text-success h5"></i>';
+            
+            }
+          })
         ->addColumn('action', function($bill){
 
             return '';
@@ -1320,9 +1337,21 @@ class AjaxNewController extends Controller
                     $subObj = $subject::find($subject_id);
                     $view_url = '<a class="dropdown-item" href="'.route('admin.CE_edit_view', $subObj).'"><i class="fa fa-edit"></i> View</a>';
                     break;
+                    case 'Rider':
+                    $subObj = $subject::find($subject_id);
+                    if (isset($subObj)) {
+                        $view_url = '<a class="dropdown-item" href="'.route('admin.rider.profile', $subObj).'"><i class="fa fa-edit"></i> View</a>';
+                    }
+                    break;
+                    case 'Sim':
+                    $subObj = $subject::find($subject_id);
+                    if (isset($subObj)) {
+                        $view_url = '<a class="dropdown-item" href="'.route('Sim.edit_sim_view', $subObj).'"><i class="fa fa-edit"></i> View</a>';
+                    }
+                    break;
                 
                 default:
-                    # code...
+                   
                     break;
             }
             return '<span class="dtr-data">

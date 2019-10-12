@@ -111,6 +111,7 @@ Route::group([
     Route::get('/destroyer/{id}','RiderController@destroyer');
     Route::get('/livemap', 'HomeController@livemap')->name('admin.livemap');
 // end rider further details
+    Route::delete('/delete/Rider/{rider_id}','RiderController@destroy');
 });
 // end Riders
 // clients
@@ -119,7 +120,7 @@ Route::group([
     'namespace' => 'Admin',
     'middleware' => ['roles:clients']
 ], function(){
-    Route::post('/update/client/riders','RiderController@update_ClientRiders')->name('ClientRiders.admin.update');
+    Route::post('/update/client/riders/{rider_id}','RiderController@update_ClientRiders')->name('ClientRiders.admin.update');
     Route::get('/client/rider/performance','RiderController@RiderPerformance')->name('admin.riderPerformance');
     Route::resource('/clients', 'ClientController', [
         'as' => 'admin'
@@ -223,7 +224,7 @@ Route::group([
 
     Route::post("/accounts/company/profit/add","AccountsController@add_company_profit")->name("admin.accounts.add_company_profit");
     Route::get("/company/overall/report","AccountsController@company_overall_report")->name("admin.accounts.company_overall_report");
-    Route::put('/bill/payment/{id}/updateStatus','AccountsController@updateBillPaymentStatus')->name('admin.updateBillPaymentStatus');
+    Route::put('/bill/payment/{rider_id}/updateStatus/{month}/{type}','AccountsController@updateBillPaymentStatus')->name('admin.updateBillPaymentStatus');
 
     // investment 
     Route::get("/kr_investment/add","AccountsController@kr_investment_index")->name("admin.accounts.kr_investment_index");

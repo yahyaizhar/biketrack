@@ -58,8 +58,8 @@ class RiderController extends Controller
         return view('admin.rider.create');
     }
 
-    public function update_ClientRiders(Request $req){
-        $client_rider=Client_Rider::where('client_id',$req->client_id)->where('rider_id',$req->rider_id)->get()->first();
+    public function update_ClientRiders($rider_id,Request $req){
+        $client_rider=Client_Rider::where('client_id',$req->client_id)->where('rider_id',$rider_id)->get()->first();
         $client_rider->client_rider_id=$req->client_rider_id;
         $client_rider->update();
         return $client_rider;
@@ -570,20 +570,13 @@ class RiderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Rider $rider)
+    public function destroy($rider_id)
     {
-        
-        // if($rider->profile_picture)
-        // {
-        //     Storage::delete($rider->profile_picture);
-        // }
-        $rider->active_status="D";
-        $rider->status='0';
-        $rider->update();
+        $rider=Rider::find($rider_id);
+        $rider->delete();
 
         $rider_detail=$rider->Rider_detail;
-        $rider_detail->active_status="D";
-        $rider_detail->update();
+        $rider_detail->delete();
         
         $clients = $rider->clients()->detach();
 
@@ -600,7 +593,7 @@ class RiderController extends Controller
             $sim_history->status='deactive';
             $sim_history->update();
         }
-        
+        return redirect(url('admin/riders'))->with('message', 'Record Deleted Successfully.');
     }
     // public function showMessages(Rider $rider)
     // {
@@ -628,7 +621,9 @@ class RiderController extends Controller
         if(isset($sim_history)){
         $sim=Sim::find($sim_history->sim_id);
         }
-        return view('admin.rider.profile', compact('rider','rider_details','bike','sim','sim_history'));
+        $bike_html=$rider->Assign_bike()->get()->first();
+        $sim_history_change = $rider->Sim_history()->where('status', 'active')->get()->first();
+        return view('admin.rider.profile', compact('rider','sim_history_change','rider_details','bike','sim','sim_history','bike_html','assign_bike'));
     }
     
     public function sendSMS(Rider $rider, Request $request)
@@ -666,7 +661,8 @@ class RiderController extends Controller
                 $sim_history->status="deactive";
                 $sim_history->update();
             }
-           
+            $client=$rider->clients()->detach();
+
             $rider->status = 0;
             if (isset($rider->spell_time)) {
                 $ca=json_decode($rider->spell_time,true);
@@ -699,8 +695,6 @@ class RiderController extends Controller
         $rider->update();
         return response()->json([
             'status' => true,
-            'data'=>$ca, 
-            '$rider'=>$rider,
         ]);
        
     }

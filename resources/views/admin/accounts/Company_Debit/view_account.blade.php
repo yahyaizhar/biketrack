@@ -359,11 +359,6 @@
                     });
 
                     biketrack.refresh_global();
-
-                    
-
-
-                    
                 },
                 error: function(error){
                     console.log(error);
@@ -591,9 +586,9 @@
 
     })
 
-    function updateStatus(id)
+    function updateStatus(rider_id,month,type)
 {
-    var url = "{{ url('admin/bill/payment') }}" + "/" + id + "/updateStatus";
+    var url = "{{ url('admin/bill/payment') }}" + "/" + rider_id + "/updateStatus" + "/" + month + "/" + type;
     console.log(url,true);
     swal.fire({
         title: 'Are you sure?',

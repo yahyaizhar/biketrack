@@ -197,7 +197,6 @@ class ClientController extends Controller
 
     public function showRiders(Client $client)
     {
-        // $riders = $client->getRiders;
         $riders = $client->riders;
         return view('admin.client.riders', compact('client', 'riders'));
     }

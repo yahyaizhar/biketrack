@@ -117,12 +117,13 @@
                                             $bike=App\Model\Bikes\bike::find($assign_bike->bike_id);
                                             $bike_number=$bike->bike_number;
                                         } 
-                                        $feid='No FIED';
-                                        if(isset($client_rider->client_rider_id)){
-                                            $feid=$client_rider->client_rider_id;
-                                        }
+                                      
                                         @endphp
-                                        <a>FEID: {{$feid}}</a>
+                                        @if (isset($client_rider->client_rider_id))
+                                        <a>FEID: {{$client_rider->client_rider_id}}</a>; 
+                                        @else
+                                        <a onclick="updatefied({{$rider->id}})" ><i class="fa fa-user-plus"></i>No FEID</a> 
+                                        @endif
                                         <a href="mailto:{{ $rider->email }}"><i class="flaticon2-new-email"></i>{{ $rider->email }}</a>
                                         <a><i class="flaticon2-calendar-3"></i>{{ $rider->phone }} </a>
                                         <a><i class="fa fa-motorcycle"></i>{{ $bike_number }}</a>
@@ -166,10 +167,79 @@
     </div>
     @endif
 </div>
+<div class="modal fade" id="client_rider_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-bottom-0">
+            <h5 class="modal-title" id="exampleModalLabel">Assign Client's Rider ID</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <form id="client_rider_form" class="kt-form" enctype="multipart/form-data">
+                <div class="modal-body">
+                <div class="form-group">
+                    <input type="hidden" name="rider_id">
+                    <input type="hidden" name="client_id" value="{{$client->id}}">
+                </div>
+                <div class="form-group">
+                    <label>Enter Rider Id:</label>
+                    <input type="text" class="form-control @if($errors->has('client_rider_id')) invalid-field @endif" name="client_rider_id" placeholder="Client's Rider ID"  >
+                </div>
+            </div>
+                    
+            <div class="modal-footer border-top-0 d-flex justify-content-center">
+                <button type="submit" class="btn btn-success">Save</button>
+            </div>
+            </form>
+        </div>
+        </div>
+    </div>
 <!-- end:: Content -->
 @endsection
 @section('foot')
     <script>
+ var current_open_target=null;
+ function updatefied(rider_id){
+    $("#client_rider_model").modal("show");
+   var client_id=$('input[name="client_id"]').val();
+   var rider_id=$('input[name="rider_id"]').val(rider_id);
+   $('#client_rider_form').submit(function(e){
+        e.preventDefault();
+        $('#client_rider_model').modal('hide');
+        var form=$(this);
+        var rider_id=$('input[name="rider_id"]').val();
+        var url="{{ url('admin/update/client/riders') }}" + "/" + rider_id;
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }, 
+            url:  url,
+            data: form.serializeArray(),
+            method: "POST"
+        })
+        .done(function(data) {  
+            console.log(data);
+            swal.fire({
+                position: 'center',
+                type: 'success',
+                title: 'Record updated successfully.',
+                showConfirmButton: false,
+                timer: 1500
+            });
+            if(current_open_target){
+                current_open_target.text(data.rider_id);
+            }
+        });
+        
+    });
+ }
+    
+   
+
+
+
+
         function sendSMS(id)
         {
             var rider_id = id;

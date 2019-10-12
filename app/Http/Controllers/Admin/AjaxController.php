@@ -473,10 +473,11 @@ class AjaxController extends Controller
             $sim_history = $rider->Sim_history()->where('status', 'active')->get()->first();
             if(isset($sim_history)){
                 $sim = $sim_history->Sim;
-                return '<a href="'.route('Sim.simHistory', $rider->id).'">'.$sim->sim_number.'</a>';
+                return '<a class="text-success" href="'.route('Sim.simHistory', $rider->id).'">'.$sim->sim_number.'</a>';
             }
-            return '<a href="'.route('SimHistory.addsim', $rider->id).'">No sim</a>';
+            return '<a class="text-danger" href="'.route('SimHistory.addsim', $rider->id).'">Assign Sim</a>';
         })
+     
         ->addColumn('missing_fields', function($riders){
             $data='';
             $rider_detail =$riders->Rider_detail;
@@ -583,68 +584,10 @@ class AjaxController extends Controller
             }
         })
         ->addColumn('actions', function($riders){
-            $status_text = $riders->status == 1 ? 'Inactive' : 'Active';
-            $client=$riders->clients()->get()->first();
-            $cr_HTML='';
-            if(isset($client))
-            {
-                $client_rider=Client_Rider::where('client_id',$client->id)->where('rider_id',$riders->id)->get()->first();
-                if(isset($client_rider)){
-                    $cr_HTML='<a href="" class="dropdown-item" data-toggle="modal" data-target="#client_rider_model" data-rider-id="'.$riders->id.'" data-client-id="'.$client->id.'" data-client-rider-id="'.$client_rider->client_rider_id.'"><i class="fa fa-user-plus"></i> Client\'s Rider ID</a>';
-                }
-            }
-            
-            $assign_bike=$riders->Assign_bike()->get()->first();
-            $bike_html="";
-            if(isset($assign_bike)){
-                $bike_html='<a class="dropdown-item" href="'.route('rider.rider_salik', $riders).'"><i class="fa fa-eye"></i> View Salik</a>';
-            }
-            $assign_bike_change=$riders->Assign_bike()->where("status","active")->get()->first();
-            if (isset($assign_bike_change)) {
-                $bike_change='<a class="dropdown-item" href="'.route('bike.bike_assignRiders', $riders).'"><i class="fa fa-eye"></i> Change Bike</a>';
-            }
-            else{
-                $bike_change='<a class="dropdown-item" href="'.route('bike.bike_assignRiders', $riders).'"><i class="fa fa-eye"></i> Assign Bike</a>';
-            }
-            $sim_history_change = $riders->Sim_history()->where('status', 'active')->get()->first();
-            if(isset($sim_history_change)){
-             $sim_change='<a class="dropdown-item" href="'.route('SimHistory.addsim', $riders).'"><i class="fa fa-eye"></i> Change Sim</a>';
-            }
-            else{
-                $sim_change='<a class="dropdown-item" href="'.route('SimHistory.addsim', $riders).'"><i class="fa fa-eye"></i> Assign Sim</a>';
-            }
-            if (isset($riders->active_month)) {
-                $month=$riders->active_month;
-            }
-            else{
-                $month=null;
-            }
-            return '<span class="dtr-data">
-            <span class="dropdown psbScroll">
-                <a href="#"  class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
-                <i class="la la-ellipsis-h"></i>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right" data-ktmenu-vertical="1" data-ktmenu-scroll="1" data-ktmenu-dropdown-timeout="500">
-                    <a class="dropdown-item" href="'.route('admin.rider.profile', $riders->id).'"><i class="fa fa-eye"></i> View</a>
-                    <a class="dropdown-item" href="'.route('admin.rider.ridesReport', $riders->id).'"><i class="fa fa-eye"></i> View Rides Report</a>
-                    <button  class="dropdown-item status_new" data-active-month="'.$month.'" onclick="updateStatus('.$riders->id.','.$riders->status.',this)"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
-                    <a class="dropdown-item" href="'.route('admin.rider.location', $riders->id).'"><i class="fa fa-map-marker-alt"></i> View Location</a>
-                    <a class="dropdown-item" href="'.route('admin.riders.edit', $riders).'"><i class="fa fa-edit"></i> Edit</a>
-                    <button class="dropdown-item" onclick="deleteRider('.$riders->id.')"><i class="fa fa-trash"></i> Delete</button>
-                    <a class="dropdown-item" href="'.route('Bike.assignedToRiders_History', $riders).'"><i class="fa fa-eye"></i>View Bikes History</a>
-                    '.$bike_change.'
-                    '.$sim_change.'
-                    <a class="dropdown-item" href="'.route('Sim.simHistory', $riders).'"><i class="fa fa-eye"></i> View Sim History</a>
-                    '.$cr_HTML.'
-                    '.$bike_html.'
-                    <a class="dropdown-item" href="'.route('Client.client_history', $riders->id).'"><i class="fa fa-eye"></i> View Client History</a>
-                    <a class="dropdown-item" href="'.route('Rider.spell_time', $riders->id).'"><i class="fa fa-eye"></i> Rider Spell Time</a>
-                    </div>
-                    
-                    </div>
-            </span>
-        </span>';
+            return '<a class="dropdown-item" href="'.route('admin.rider.profile', $riders->id).'"><i class="fa fa-eye"></i></a>';
         })
+        // <a class="dropdown-item" href="'.route('admin.rider.location', $riders->id).'"><i class="fa fa-map-marker-alt"></i> View Location</a>
+        // <a class="dropdown-item" href="'.route('admin.rider.ridesReport', $riders->id).'"><i class="fa fa-eye"></i> View Rides Report</a>
         ->addColumn('date_of_joining', function($riders){
             $rider_detail =$riders->Rider_detail()->get()->first();
            return $rider_detail->date_of_joining;
@@ -685,10 +628,10 @@ class AjaxController extends Controller
             if ($a) {
                 $bike=bike::where("id",$a->bike_id)->get()->first();
                 
-                return '<a href="'.url('admin/bike/'.$bike['id'].'/profile'.'/'.$riders->id) .'">'.$bike['bike_number'].'</a>';
+                return '<a class="text-success" href="'.url('admin/bike/'.$bike['id'].'/profile'.'/'.$riders->id) .'">'.$bike['bike_number'].'</a>';
             }
             else{
-               return 'Bike is not assigned to Rider';
+               return '<a class="text-danger" href="'.route('bike.bike_assignRiders', $riders->id).'">Assign Bike</a>';
             }
         
         })
@@ -1505,10 +1448,12 @@ class AjaxController extends Controller
                $sim_history = $rider->Sim_history()->where('status', 'active')->get()->first();
                if(isset($sim_history)){
                    $sim = $sim_history->Sim;
-                   return '<a href="'.route('Sim.simHistory', $rider->id).'">'.$sim->sim_number.'</a>';
+                   return '<a class="text-success" href="'.route('Sim.simHistory', $rider->id).'">'.$sim->sim_number.'</a>';
                }
-               return '<a href="'.route('SimHistory.addsim', $rider->id).'">No sim</a>';
+               return '<a class="text-danger" href="'.route('SimHistory.addsim', $rider->id).'">Assign Sim</a>';
            })
+           
+           
            ->addColumn('missing_fields', function($riders){
                $data='';
                $rider_detail =$riders->Rider_detail;
@@ -1615,66 +1560,8 @@ class AjaxController extends Controller
                }
            })
            ->addColumn('actions', function($riders){
-               $status_text = $riders->status == 1 ? 'Inactive' : 'Active';
-               $client=$riders->clients()->get()->first();
-               $cr_HTML='';
-               if(isset($client))
-               {
-                   $client_rider=Client_Rider::where('client_id',$client->id)->where('rider_id',$riders->id)->get()->first();
-                   if(isset($client_rider)){
-                       $cr_HTML='<a href="" class="dropdown-item" data-toggle="modal" data-target="#client_rider_model" data-rider-id="'.$riders->id.'" data-client-id="'.$client->id.'" data-client-rider-id="'.$client_rider->client_rider_id.'"><i class="fa fa-user-plus"></i> Client\'s Rider ID</a>';
-                   }
-               }
-               $assign_bike=$riders->Assign_bike()->get()->first();
-            $bike_html="";
-            if(isset($assign_bike)){
-                $bike_html='<a class="dropdown-item" href="'.route('rider.rider_salik', $riders).'"><i class="fa fa-eye"></i> View Salik</a>';
-            }
-            $assign_bike_change=$riders->Assign_bike()->where("status","active")->get()->first();
-            if (isset($assign_bike_change)) {
-                $bike_change='<a class="dropdown-item" href="'.route('bike.bike_assignRiders', $riders).'"><i class="fa fa-eye"></i> Change Bike</a>';
-            }
-            else{
-                $bike_change='<a class="dropdown-item" href="'.route('bike.bike_assignRiders', $riders).'"><i class="fa fa-eye"></i> Assign Bike</a>';
-            }
-            $sim_history_change = $riders->Sim_history()->where('status', 'active')->get()->first();
-            if(isset($sim_history_change)){
-             $sim_change='<a class="dropdown-item" href="'.route('SimHistory.addsim', $riders).'"><i class="fa fa-eye"></i> Change Sim</a>';
-            }
-            else{
-                $sim_change='<a class="dropdown-item" href="'.route('SimHistory.addsim', $riders).'"><i class="fa fa-eye"></i> Assign Sim</a>';
-            }
-            if (isset($riders->active_month)) {
-                $month=$riders->active_month;
-            }
-            else{
-                $month=null;
-            }
-               return '<span class="dtr-data">
-               <span class="dropdown psbScroll">
-                   <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
-                   <i class="la la-ellipsis-h"></i>
-                   </a>
-                   <div class="dropdown-menu dropdown-menu-right">
-                       <a class="dropdown-item" href="'.route('admin.rider.profile', $riders->id).'"><i class="fa fa-eye"></i> View</a>
-                       <a class="dropdown-item" href="'.route('admin.rider.ridesReport', $riders->id).'"><i class="fa fa-eye"></i> View Rides Report</a>
-                       <button  class="dropdown-item status_new" data-active-month="'.$month.'" onclick="updateStatus('.$riders->id.','.$riders->status.',this)"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
-                       <a class="dropdown-item" href="'.route('admin.rider.location', $riders->id).'"><i class="fa fa-map-marker-alt"></i> View Location</a>
-                       <a class="dropdown-item" href="'.route('admin.riders.edit', $riders).'"><i class="fa fa-edit"></i> Edit</a>
-                       <button class="dropdown-item" onclick="deleteRider('.$riders->id.')"><i class="fa fa-trash"></i> Delete</button>
-                       <a class="dropdown-item" href="'.route('Bike.assignedToRiders_History', $riders).'"><i class="fa fa-eye"></i>View Bikes History</a>
-                       '.$bike_change.'
-                       '.$sim_change.'
-                       <a class="dropdown-item" href="'.route('Sim.simHistory', $riders).'"><i class="fa fa-eye"></i> View Sim History</a>
-                       '.$cr_HTML.'
-                       '.$bike_html.'
-                       <a class="dropdown-item" href="'.route('Client.client_history', $riders->id).'"><i class="fa fa-eye"></i> View Client History</a>
-                       <a class="dropdown-item" href="'.route('Rider.spell_time', $riders->id).'"><i class="fa fa-eye"></i> Rider Spell Time</a>
-                       </div>
-                       
-                       </div>
-               </span>
-           </span>';
+       
+               return '<a class="dropdown-item" href="'.route('admin.rider.profile', $riders->id).'"><i class="fa fa-eye"></i></a>';
            })
            ->addColumn('date_of_joining', function($riders){
                $rider_detail =$riders->Rider_detail()->get()->first();
@@ -1716,12 +1603,11 @@ class AjaxController extends Controller
                if ($a) {
                    $bike=bike::where("id",$a->bike_id)->get()->first();
                    
-                   return '<a href="'.url('admin/bike/'.$bike['id'].'/profile'.'/'.$riders->id) .'">'.$bike['bike_number'].'</a>';
+                   return '<a class="text-success" href="'.url('admin/bike/'.$bike['id'].'/profile'.'/'.$riders->id) .'">'.$bike['bike_number'].'</a>';
                }
                else{
-                  return 'Bike is not assigned to Rider';
+                return '<a class="text-danger" href="'.route('bike.bike_assignRiders', $riders->id).'">Assign Bike</a>';
                }
-           
            })
            ->addColumn('emirate_id', function($riders){
                $rider_detail =$riders->Rider_detail()->get()->first();

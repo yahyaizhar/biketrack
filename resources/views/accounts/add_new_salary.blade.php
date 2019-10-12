@@ -126,10 +126,10 @@
                     </div>
                     <div class="kt-portlet__foot">
                         <div class="kt-form__actions kt-form__actions--right">
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="upload-button btn btn-primary">Submit</button>
                             {{-- <span class="kt-margin-l-10">or <a href="{{ route('admin.riders.index') }}" class="kt-link kt-font-bold">Cancel</a></span> --}}
                         </div>
-                    </div>
+                    </div> 
                 </form>
             
 
@@ -161,7 +161,6 @@
             minView:3,
             maxView:4
         });
-
         $('#salary [name="recieved_salary"]').on('change input', function(){
             var _gross_salary = parseFloat($('#salary [name="gross_salary"]').val().trim());
             var _recieved_salary = parseFloat($(this).val().trim());
@@ -173,7 +172,6 @@
             
             if(_riderid==''||_month=='')return;
             _month = new Date(_month).format('yyyy-mm-dd');
-            console.log(_riderid, _month);
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -183,11 +181,19 @@
             })
             .done(function(data) {  
                 console.log(data);
+                $('#salary [name="is_paid"]').val(data.is_paid);
                 $('#salary [name="gross_salary"], #salary [name="recieved_salary"]').val(data.gross_salary).trigger('change');
                 $('#salary [name="net_salary"]').val(data.net_salary).trigger('change');
                 $('#salary [name="total_deduction"]').val(data.total_deduction);
                 $('#salary [name="total_salary"]').val(data.total_salary);
-                $('#salary [name="total_bonus"]').val(data.total_bonus);
+                $('#salary [name="total_bonus"]').val(data.total_bonus); 
+                var is_paid=data.is_paid; 
+                if (is_paid) {
+                    $('.upload-button').html("The Rider has already paid").prop("disabled",true);
+                }else{
+                    $('.upload-button').html("Submit").prop("disabled",false);
+                }
+
             });
         });
 
@@ -195,7 +201,9 @@
         if(typeof gb_rider_id !== "undefined"){
             $('#salary [name="rider_id"]').val(gb_rider_id).trigger('change');
         }
+       
     });
+            
 </script>
 
 @endsection

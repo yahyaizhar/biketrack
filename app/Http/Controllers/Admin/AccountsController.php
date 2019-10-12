@@ -850,6 +850,17 @@ class AccountsController extends Controller
 
             $total_salary_amt = $fixed_salary;
         }
+        
+       $is_paid= \App\Model\Accounts\Company_Account::where("source","salary")
+       ->where("rider_id",$rider_id)
+       ->whereMonth("month",$onlyMonth)
+       ->get()
+       ->first();
+       if (isset($is_paid)) {
+           $is_paid_salary=true;
+       }else{
+        $is_paid_salary=false;
+       }
        
         return response()->json([
             'net_salary'=>round($ra_salary,2),
@@ -857,8 +868,8 @@ class AccountsController extends Controller
             'total_salary'=>$total_salary_amt,
             'total_deduction'=>round($ra_payable,2),
             'total_bonus'=>round($ra_cr,2),
-
-            'closing_balance_prev'=>$closing_balance_prev
+            'closing_balance_prev'=>$closing_balance_prev,
+            'is_paid'=>$is_paid_salary,
         ]);
     }
     public function new_salary_added(Request $request){
@@ -2151,12 +2162,18 @@ public function client_income_update(Request $request,$id){
       return view('admin.accounts.Company_Debit.company_overall_report');
   }
 
-  public function updateBillPaymentStatus($id){
-    $ca=Company_Account::find($id);
-    $ca->payment_status="paid";
-    $ca->save();
+  public function updateBillPaymentStatus($rider_id,$month,$type){
+      $month_a=Carbon::parse($month)->format('m');
+    $ca=Company_Account::where("rider_id",$rider_id)->whereMonth("month",$month_a)->where("source",$type)->get();
+    foreach ($ca as $ca_all) {
+      $ca_all->payment_status="paid";
+      $ca_all->save();
+    }
+    
+    // $ca->save();
     return response()->json([
         'data'=>'true',
+        'ca'=>$ca,
     ]);
 
 }

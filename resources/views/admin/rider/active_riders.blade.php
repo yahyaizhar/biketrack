@@ -66,6 +66,7 @@ margin-left: 10px;
                         <th>Name</th>
                         <th>Assigned To</th>
                         <th>Sim Number</th>
+                        <th>Bike Number</th>
                         <th>Passport Collected</th>
                         <th>Missing Fields</th>
                         <th>Status</th>
@@ -211,47 +212,8 @@ $(function() {
         }
     });
 
-    var current_open_target=null;
-     $("#client_rider_model").on('shown.bs.modal', function (event){
-         console.log(event);
-        current_open_target=$(event.relatedTarget);
-        var current_target = $(event.currentTarget);
-        
-        var client_rider_id_val=$(event.relatedTarget).attr("data-client-rider-id");
-        var rider_id_val=$(event.relatedTarget).attr("data-rider-id");
-        var client_id = $(event.relatedTarget).attr('data-client-id');
-        current_target.find('[name="client_rider_id"]').val(client_rider_id_val);
-        current_target.find('[name="rider_id"]').val(rider_id_val);
-        current_target.find('[name="client_id"]').val(client_id);
-
-    });
-    $('#client_rider_form').submit(function(e){
-        e.preventDefault();
-        $('#client_rider_model').modal('hide');
-        var form=$(this);
-        $.ajax({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }, 
-            url:"{{route('ClientRiders.admin.update')}}",
-            data: form.serializeArray(),
-            method: "POST"
-        })
-        .done(function(data) {  
-            console.log(data);
-            swal.fire({
-                position: 'center',
-                type: 'success',
-                title: 'Record updated successfully.',
-                showConfirmButton: false,
-                timer: 1500
-            });
-            if(current_open_target){
-                current_open_target.attr("data-client-rider-id", data.client_rider_id);
-            }
-        });
-        
-    });
+   
+    
     $('#kingrider_form').submit(function(e){
         e.preventDefault();
         $('#kingrider_model').modal('hide');
@@ -320,6 +282,7 @@ $(function() {
             { "data": 'new_name', "name": 'name' },
             { "data": 'client_name', "name": 'client_name' },
             { "data": 'sim_number', "name": 'sim_number' },
+            { "data": 'bike_number', "name": 'bike_number' },
             { "data": 'passport_collected', "name": 'passport_collected' },
             { "data": 'missing_fields', "name": 'missing_fields' },
             { "data": 'status', "name": 'status' },
@@ -337,24 +300,25 @@ $(function() {
         _settings.responsive=false;
         _settings.columnDefs=[
             {
-                "targets": [ 10,11,12,13,14,15,16,17,18 ],
+                "targets": [ 11,12,13,14,15,16,17,18,19 ],
                 "visible": false,
                 searchable: true,
             },
         ];
     }
     else{
-        $('#riders-table thead tr th').eq(7).before('<th>Date Of Joining</th>');
-        $('#riders-table thead tr th').eq(8).before('<th>Passport Expiry</th>');
-        $('#riders-table thead tr th').eq(9).before('<th>Visa Expiry</th>');
-        $('#riders-table thead tr th').eq(10).before('<th>Licence Expiry</th>');
-        $('#riders-table thead tr th').eq(11).before('<th>Mulkiya Expiry</th>');
+        $('#riders-table thead tr th').eq(8).before('<th>Date Of Joining</th>');
+        $('#riders-table thead tr th').eq(9).before('<th>Passport Expiry</th>');
+        $('#riders-table thead tr th').eq(10).before('<th>Visa Expiry</th>');
+        $('#riders-table thead tr th').eq(11).before('<th>Licence Expiry</th>');
+        $('#riders-table thead tr th').eq(12).before('<th>Mulkiya Expiry</th>');
         _settings.columns=[
         { "data": 'new_id', "name": 'new_id' },
         { "data": 'kingriders_id', "name": 'kingriders_id' },
             { "data": 'new_name', "name": 'name' },
             { "data": 'new_email', "name": 'email' },
             { "data": 'sim_number', "name": 'sim_number' },
+            { "data": 'bike_number', "name": 'bike_number' },
             { "data": 'passport_collected', "name": 'passport_collected' },
             { "data": 'address', "name": 'address' },
             { "data": 'status', "name": 'status' },
@@ -502,122 +466,11 @@ if(window.outerWidth>=720){
 
 });
 
-function deleteRider(id){
-    var url = "{{ url('admin/riders') }}"+ "/" + id;
-    sendDeleteRequest(url, false, null, riders_table);
-}
 
-function updateStatus(rider_id,status,$this)
-{ 
-    if (status==1) {
-       $('#inactive_reasons').modal("show");
-       $("form#inactive").on("submit",function(e){
-           e.preventDefault();
-           var _form = $(this);
-           var _modal = _form.parents('.modal');
-           var url = "{{ url('admin/rider') }}" + "/" + rider_id + "/updateStatus";
-            swal.fire({
-                title: 'Are you sure?',
-                text: "You want update status!",
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes!'
-            }).then(function(result) {
-                if (result.value) {
-                    $.ajaxSetup({
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        }
-                    });
-                    $.ajax({
-                        url : url,
-                        type : 'POST',
-                        data: _form.serializeArray(),
-                        beforeSend: function() {            
-                            $('.loading').show();
-                        },
-                        complete: function(){
-                            $('.loading').hide();
-                        },
-                        success: function(data){
-                            console.log(data);
-                            _modal.modal('hide');
-                            swal.fire({
-                                position: 'center',
-                                type: 'success',
-                                title: 'Record updated successfully.',
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                            riders_table.ajax.reload(null, false);
-                        },
-                        error: function(error){
-                            _modal.modal('hide');
-                            swal.fire({
-                                position: 'center',
-                                type: 'error',
-                                title: 'Oops...',
-                                text: 'Unable to update.',
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                        }
-                    });
-                }
-        });
-       });
-} else {
-    var active_month=$($this).attr("data-active-month");  
-    var url = "{{ url('admin/rider') }}" + "/" + rider_id + "/updateStatus";
-    swal.fire({
-        title: 'Are you sure?',
-        text: "You want update status!",
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes!', 
-        footer: '<p><strong>Last Active Status: </strong>'+active_month+'</p>'
-    }).then(function(result) {
-        if (result.value) {
-            $.ajaxSetup({
-                headers: { 
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                url : url,
-                type : 'POST',
-                beforeSend: function() {            
-                    $('.loading').show();
-                },
-                complete: function(){
-                    $('.loading').hide();
-                },
-                success: function(data){
-                    swal.fire({
-                        position: 'center',
-                        type: 'success',
-                        title: 'Record updated successfully.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                    riders_table.ajax.reload(null, false);
-                },
-                error: function(error){
-                    swal.fire({
-                        position: 'center',
-                        type: 'error',
-                        title: 'Oops...',
-                        text: 'Unable to update.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                }
-            });
-        }
-    });    
-}
 
-}
+
+
+
 </script>
 <style>
     td.details-control {
