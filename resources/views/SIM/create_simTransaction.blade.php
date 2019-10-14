@@ -22,7 +22,7 @@
                     <div class="kt-portlet__body">
                             <div class="form-group">
                                 <label>Date:</label>
-                                <input type="text" data-month="{{carbon\carbon::now()->format('M d, Y')}}" class=" month_picker form-control @if($errors->has('month_year')) invalid-field @endif" name="month_year" placeholder="Enter Month_Year" value="{{ old('month_year') }}">
+                                <input type="text" data-month="{{carbon\carbon::now()->format('M, Y')}}" class=" month_picker form-control @if($errors->has('month_year')) invalid-field @endif" name="month_year" placeholder="Enter Month_Year" value="{{ old('month_year') }}">
                                 @if ($errors->has('month_year'))
                                     <span class="invalid-response" role="alert">
                                         <strong>
@@ -30,6 +30,16 @@
                                         </strong>
                                     </span> 
                                 @endif
+                            </div>
+                            <div class="form-group">
+                                <label>Select Rider:</label>
+                                <select class="form-control bk-select2 kt-select2" id="kt_select2_3" name="rider_id" >
+                                @foreach ($riders as $rider)
+                                    <option value="{{ $rider->id }}">
+                                        {{ $rider->name }}
+                                    </option>     
+                                @endforeach 
+                                </select> 
                             </div>
 
                             <div class="form-group">
@@ -42,10 +52,9 @@
                                     @endforeach 
                                 </select>
                             </div>
-
-                            <div class="form-group">
-                                <label>Usage Limit:</label>
-                                <input required readonly type="text" class="form-control @if($errors->has('usage_limit')) invalid-field @endif" name="usage_limit" value="{{ old('usage_limit') }}">
+                            <div class="form-group ">
+                                <label>Allowed Balance:</label>
+                                <input required readonly type="text" class="form-control @if($errors->has('usage_limit')) invalid-field @endif" name="usage_limit" >
                                 @if ($errors->has('usage_limit'))
                                     <span class="invalid-response" role="alert">
                                         <strong>
@@ -53,18 +62,10 @@
                                         </strong>
                                     </span>
                                 @endif
-                            </div>
-
+                            </div>       
                             <div class="form-group">
                                 <label>Bill Amount:</label>
-                                <input required type="text" class="form-control @if($errors->has('bill_amount')) invalid-field @endif" name="bill_amount" placeholder="Enter Bill Amount" value="{{ old('bill_amount') }}">
-                                @if ($errors->has('bill_amount'))
-                                    <span class="invalid-response" role="alert">
-                                        <strong>
-                                            {{$errors->first('bill_amount')}}
-                                        </strong>
-                                    </span>
-                                @endif
+                                <input required type="text" class="form-control @if($errors->has('bill_amount')) invalid-field @endif" name="bill_amount">
                             </div>
                             <div class="form-group">
                                 <label>Extra Usage Amount:</label>
@@ -77,6 +78,7 @@
                                     </span>
                                 @endif
                             </div>
+                            <input type="hidden" name="total_month_days">
                     </div>
                     <div class="kt-portlet__foot">
                         <div class="kt-form__actions kt-form__actions--right">
@@ -121,12 +123,14 @@
             }
         })
         $('#sims [name="month_year"]').trigger('change');
-        $('#sims [name="sim_id"]').on('change', function(){
+        $('#sims [name="rider_id"]').trigger('change');
+            $(' #sims [name="sim_id"]').on('change', function(){
             var _simId = $('#sims [name="sim_id"]').val();
             var _month = $('#sims [name="month_year"]').val();
+            var _rider_id=$('#sims [name="rider_id"]').val();
             if(_simId== null) {
                 $('#sims [name="usage_limit"]').val('');
-                $('#sims [name="bill_amount"]').val('');
+                $('#sims [name="original_bill_amount"]').val('');
                 $('#sims [name="extra_usage_amount"]').val('');
                 return;
             }
@@ -136,20 +140,20 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }, 
-                url:"{{url('admin/sim/ajax/data/')}}"+"/"+_simId+"/"+_month,
+                url:"{{url('admin/sim/ajax/data/')}}"+"/"+_simId+"/"+_month +"/"+_rider_id,
                 method: "GET"
             })
-            .done(function(data) {  
-                console.log(data);
-                $('#sims [name="usage_limit"], #sims [name="bill_amount"]').val(data.usage_limit).trigger('change');
+            .done(function(data) { 
+                $('#sims [name="usage_limit"], #sims [name="bill_amount"]').val(data.sim_history.allowed_balance).trigger('change');
+
             });
-        }); 
+    });
         
         $('#sims [name="bill_amount"]').on('change input', function(){
-            console.warn('asdasd')
             var _usage_limit = $('#sims [name="usage_limit"]').val();
             var _billAmt = $(this).val();
             var _extra =_billAmt - _usage_limit;
+            console.log(_extra);
             if(_extra < 0) _extra = 0;
             $('#sims [name="extra_usage_amount"]').val(_extra);
         });

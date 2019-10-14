@@ -124,7 +124,8 @@ class SimController extends Controller
     // Start Sim Transaction Section
 public function add_simTransaction(){
     $sims = Sim::where('active_status', 'A')->get();
-    return view('SIM.create_simTransaction', compact('sims'));
+    $riders=Rider::where('active_status','A')->get();
+    return view('SIM.create_simTransaction', compact('sims','riders'));
 }
 public function get_active_riders_ajax($rider_id, $date){
     // $sims_RAW = Sim::all();
@@ -159,28 +160,86 @@ public function get_active_riders_ajax($rider_id, $date){
         'sim_histories' => $sim_histories,
     ]);
 }
-public function get_sim_ajax($sim_id, $month){
+public function get_sim_ajax($sim_id, $month,$rider_id){
+    $rider_data=[];
     $sim = Sim::find($sim_id);
     $usage_limit = 105;
-
-    $sim_history =Sim_history::where('sim_id', $sim->id)
-    ->whereDate('created_at','<=',Carbon::parse($month)->format('Y-m-d'))
-    ->get()
-    ->last();
-
-    //usage_limit
-    if(isset($sim_history)){
-        if (isset($sim_history->allowed_balance)!=null) {
-            $usage_limit = $sim_history->allowed_balance;
+    $sim_history = Sim_history::all()->toArray();
+    $history_found = Arr::first($sim_history, function ($item, $key) use ($sim_id, $month, $rider_id) {
+        $created_at =Carbon::parse($item['created_at'])->format('m');
+        $updated_at =Carbon::parse($item['updated_at'])->format('m');
+        $req_date =Carbon::parse($month)->format('m');
+        if ($item['status']=='active') {
+            return $item['sim_id'] == $sim_id && $item['rider_id'] == $rider_id;
         }
+        return $item['sim_id'] == $sim_id && $item['rider_id'] == $rider_id && ($created_at == $req_date || $updated_at == $req_date);
+    });
+
+    $day_created = null;
+    $day_updated = null;
+    //usage_limit
+    if(isset($history_found)){
+        if ($history_found['allowed_balance']!=null) {
+            $usage_limit =$history_found['allowed_balance'];
+        }
+        
+        $day_created = $history_found['created_at'];
+        $day_updated = $history_found['updated_at'];
+
+        $day_created_t=Carbon::parse($day_created);
+        $day_updated_t=Carbon::parse($day_updated);
+
+        $req_date_start =Carbon::parse($month)->firstOfMonth();
+        $req_date_end =Carbon::parse($month)->lastOfMonth();
+        if ($day_updated_t->greaterThan($req_date_end)) {
+            $day_updated_t=$req_date_end;
+        }
+        if ($day_created_t->lessThan($req_date_start)) {
+            $day_created_t=$req_date_start; 
+        }
+        $days_sim_used=$day_created_t->diffInDays(Carbon::parse($day_updated_t));
+        $total_days_of_month=Carbon::parse($month)->daysInMonth;
     }
     //usage_limit
+        // $totaldays=Arr::where($sim_history, function ($item, $key) use ($sim_id, $month) {
+        //     $created_at =Carbon::parse($item['created_at'])->format('m');
+        //     $updated_at =Carbon::parse($item['updated_at'])->format('m');
+        //     $req_date =Carbon::parse($month)->format('m');
+        //     if ($item['status']=='active') {
+        //         return $item['sim_id'] == $sim_id;
+        //     }
+        //     return $item['sim_id'] == $sim_id && ($created_at == $req_date || $updated_at == $req_date);
+        // });
+        // $total_month_days= 0;
+        // foreach ($totaldays as $days) {
+        //     $created_total =Carbon::parse($days['created_at']);
+        //     $updated_total =Carbon::parse($days['updated_at']);
+        //     $days_in_month=$created_total->diffInDays(Carbon::parse($updated_total));
 
-
+        //     $total_month_days += $days_in_month;
+        // }
+        // foreach ($totaldays as $days) {
+        //     $created_total =Carbon::parse($days['created_at']);
+        //     $updated_total =Carbon::parse($days['updated_at']);
+        //     $days_in_month=$created_total->diffInDays(Carbon::parse($updated_total)); 
+        //     $obj=[]; 
+        //     $obj['rider_id']=$days['rider_id']; 
+        //     $obj['allowed_balance']=$days['allowed_balance']; 
+        //     $obj['created_at']=$days['created_at']; 
+        //     $obj['updated_at']=$days['updated_at']; 
+        //     array_push($rider_data,$obj);
+        // }
+        
+        
+    
     return response()->json([
-        'sim' => $sim,
-        'usage_limit' => $usage_limit,
-        'bill_amount' => $usage_limit
+        // 'sim' => $sim,
+        // 'usage_limit' => $usage_limit,
+        // 'bill_amount' => $usage_limit,
+        // 'days_sim_used'=>$days_sim_used ,
+        // 'total_month_days'=>$total_month_days,
+        // 'rider_data'=>$rider_data,
+        'sim_history'=>$history_found,
     ]);
 }
 

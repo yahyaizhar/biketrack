@@ -389,7 +389,7 @@ Route::group([
     ]);
 
  //    Start Sim Section    
-    Route::get('/sim/ajax/data/{sim_id}/{month}','SimController@get_sim_ajax')->name('Sim.get_sim_ajax');
+    Route::get('/sim/ajax/data/{sim_id}/{month}/{rider_id}','SimController@get_sim_ajax')->name('Sim.get_sim_ajax');
     Route::get('/sim/ajax/get_active_riders/{rider_id}/{month}','SimController@get_active_riders_ajax')->name('Sim.get_active_riders_ajax');
 
     Route::get('/create/Sim','SimController@add_sim')->name('Sim.new_sim');
