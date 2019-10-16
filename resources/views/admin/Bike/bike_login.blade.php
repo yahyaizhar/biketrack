@@ -81,39 +81,15 @@
                             </div>
                             <div class="form-group"> 
                                     <label>Chassis Number:</label>
-                                    <input type="text" class="form-control @if($errors->has('chassis_number')) invalid-field @endif" name="chassis_number" placeholder="Enter Chassis_Number" required value="{{ old('chassis_number') }}">
-                                    @if ($errors->has('chassis_number'))
-                                        <span class="invalid-response" role="alert">
-                                            <strong>
-                                                {{$errors->first('chassis_number')}}
-                                            </strong>
-                                        </span>
-                                    @endif
+                                    <input type="text" class="form-control" name="chassis_number" placeholder="Enter Chassis_Number" value="{{ old('chassis_number') }}">
                                 </div>
-                     
-                       
-                      
                         <div class="form-group">
                                 <label>Mulkiya Number:</label>
-                                <input type="text" required class="form-control @if($errors->has('mulkiya_number')) invalid-field @endif" name="mulkiya_number" placeholder="Enter Mulkiya Number" value="{{ old('mulkiya_number') }}">
-                                @if ($errors->has('mulkiya_number'))
-                                    <span class="invalid-response" role="alert">
-                                        <strong>
-                                            {{$errors->first('mulkiya_number')}}
-                                        </strong>
-                                    </span>
-                                @endif
+                                <input type="text" class="form-control" name="mulkiya_number" placeholder="Enter Mulkiya Number" value="{{ old('mulkiya_number') }}">
                             </div>
                             <div class="form-group">
                                     <label>Mulkiya Expiry:</label>
-                                    <input type="text" id="datepicker" autocomplete="off" class="form-control @if($errors->has('mulkiya_expiry')) invalid-field @endif" name="mulkiya_expiry" placeholder="Enter Mulkiya Expiry" value="{{ old('mulkiya_expiry') }}">
-                                    @if ($errors->has('mulkiya_expiry'))
-                                        <span class="invalid-response" role="alert">
-                                            <strong>
-                                                {{$errors->first('mulkiya_expiry')}}
-                                            </strong>
-                                        </span>
-                                    @endif
+                                    <input type="text" id="datepicker" autocomplete="off" class="form-control" name="mulkiya_expiry" placeholder="Enter Mulkiya Expiry" value="{{ old('mulkiya_expiry') }}">
                                 </div>
                                 <div class="row">
                                 <div class="col-lg-6 col-md-6 col-sm-12">
@@ -142,22 +118,6 @@
                             </div>
                         </div>
                     </div>
-                    
-                    {{-- <div class="kt-portlet__body">
-                            <h1>Bike Registration Detail</h1>
-                            <div class="form-group">
-                                    <label>Registration Number:</label>
-                                    <input type="text" class="form-control @if($errors->has('registration_number')) invalid-field @endif" name="registration_number" placeholder="Registration Number" value="{{ old('registration_number') }}">
-                                    @if ($errors->has('registration_number'))
-                                        <span class="invalid-response" role="alert">
-                                            <strong>
-                                                {{$errors->first('registration_number')}}
-                                            </strong>
-                                        </span>
-                                    @endif
-                                </div>
-                               
-                    </div> --}}
 
                     <div class="kt-portlet__foot">
                         <div class="kt-form__actions kt-form__actions--right">
