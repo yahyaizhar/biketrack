@@ -80,17 +80,10 @@
                             @endif
                         </div>
                         <div class="form-group">
-                            <label>Personal Phone Number: <span class="streric">*</span></label>
-                            <input type="text" class="form-control @if($errors->has('phone')) invalid-field @endif" name="phone" placeholder="Enter phone number" value="{{ old('phone') }}">
-                            @if ($errors->has('phone'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{ $errors->first('phone') }}
-                                    </strong>
-                                </span>
-                            @else
-                                <span class="form-text text-muted">Please enter your phone number</span>
-                            @endif
+                            <label>Personal Phone Number:</label>
+                            <input type="text" class="form-control " name="phone" placeholder="Enter phone number" value="{{ old('phone') }}">
+                            <span class="form-text text-muted">Please enter your phone number</span>
+                           
                         </div>
                         <div class="form-group"> 
                             <label>Date Of Birth:</label>

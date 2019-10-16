@@ -83,7 +83,7 @@ class RiderController extends Controller
         $this->validate($request, [
             'name' => 'required | string | max:255',
             'email' => 'required | email | unique:riders',
-            'phone' => 'required | string | max:255',
+            // 'phone' => 'required | string | max:255',
             'password' => 'required | string | confirmed',
         ]);
         $rider = new Rider();
@@ -369,7 +369,7 @@ class RiderController extends Controller
         $this->validate($request, [
             'name' => 'required | string | max:255',
             'email' => 'required | email',
-            'phone' => 'required | string | max:255',
+            // 'phone' => 'required | string | max:255',
         ]);
         
         if($request->change_password)
