@@ -501,7 +501,7 @@
                     var _Month = response.last_month;
                     var _Running_Balance = response.running_static_balance;
                     $('#closing_balance').text(_ClosingBalance);
-                    var running_closing_balance = parseFloat($('#running_closing_balance').text());
+                    var running_closing_balance =_Running_Balance;
                     if(running_closing_balance > 0){
                         $('#btnSend_profit').text('Send '+parseFloat(_Running_Balance).toFixed(2)+' to Company Profit').attr('data-month', _Month).attr('data-profit', _Running_Balance).fadeIn('fast'); 
                     }
@@ -542,7 +542,7 @@
                     var _Month = response.last_month;
                     var _Running_Balance = response.running_static_balance;
                     $('#closing_balance').text(_ClosingBalance);
-                    var running_closing_balance = parseFloat($('#running_closing_balance').text());
+                    var running_closing_balance = _Running_Balance;
                     if(running_closing_balance > 0){
                         $('#btnSend_profit').text('Send '+parseFloat(_Running_Balance).toFixed(2)+' to Company Profit').attr('data-month', _Month).attr('data-profit', _Running_Balance).fadeIn('fast'); 
                     }

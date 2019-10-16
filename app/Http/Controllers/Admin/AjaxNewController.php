@@ -568,7 +568,7 @@ class AjaxNewController extends Controller
                 $running_balance += $company_statements->amount;
             }
             $_id = $company_statements->source=="Closing Balance"? 'running_closing_balance':'running_opening_balance';
-            if($company_statements->type=='pl') return 0;
+            // if($company_statements->type=='pl') return 0;
             if($company_statements->type=='skip') return '<strong id="'.$_id.'"> '.round($running_balance,2).'</strong>';
             return round($running_balance,2);
         })
