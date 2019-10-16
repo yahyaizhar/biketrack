@@ -528,8 +528,6 @@ Route::group([
 // Guest routes
     Route::get('/newcomer/add','GuestController@newComer_view')->name('guest.newComer_view');
 });
-
-
 Route::group([
     'prefix' => 'admin',
     'namespace' => 'Admin',
@@ -538,7 +536,14 @@ Route::group([
     Route::get('/', 'HomeController@index')->name('admin.home');
     Route::post('/cash/paid/rider/{id}','HomeController@cash_paid_rider')->name('admin.cash_paid_rider');
 });
-    
+Route::group([
+    'prefix' => 'admin',
+    'namespace' => 'Admin',
+    'middleware' => ['roles:admin']
+], function(){
+   Route::get('/add/invoice/tax','InvoiceController@add_invoice')->name('tax.add_invoice');
+   Route::get('/invoice/tax/ajax/get_clients_details/{client_id}','InvoiceController@get_ajax_client_details')->name('tax.get_ajax_client_details');
+});    
 
 
 
