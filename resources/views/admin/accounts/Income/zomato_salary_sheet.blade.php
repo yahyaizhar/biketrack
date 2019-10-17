@@ -181,7 +181,7 @@ console.log(riders_data);
         riders_data.forEach(function(item,index) {
            export_details.push({
             "KR-ID":item.rider_id, 
-            "FEID":item.client_rider_id.toUpperCase(), 
+            "FEID":item.client_rider_id, 
             "Name":item.name.toUpperCase(),
             "Bike No": item.bike_number,
             "Advance":item.advance,
