@@ -82,6 +82,7 @@
 var workshop_table;
 $(function() {
     workshop_table = $('#charges-table').DataTable({
+        lengthMenu: [[-1], ["All"]],
         processing: true,
         serverSide: true,
         'language': { 

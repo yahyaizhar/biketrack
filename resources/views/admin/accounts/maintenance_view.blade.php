@@ -85,6 +85,7 @@
 var maintenance_table;
 $(function() {
     maintenance_table = $('#charges-table').DataTable({
+        lengthMenu: [[-1], ["All"]],
         processing: true,
         serverSide: true,
         'language': { 

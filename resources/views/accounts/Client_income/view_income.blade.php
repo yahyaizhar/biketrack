@@ -84,6 +84,7 @@
 var client_income_table;
 $(function() {
     client_income_table = $('#client_income-table').DataTable({
+        lengthMenu: [[-1], ["All"]],
         processing: true,
         serverSide: true,
         'language': { 

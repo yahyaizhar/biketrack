@@ -355,6 +355,7 @@ $(function() {
     // performance_table = $('').DataTable({
         var _settings={   processing: true,
         serverSide: true,
+        lengthMenu: [[-1], ["All"]],
         'language': {
             'loadingRecords': '&nbsp;',
             'processing': $('.loading').show()

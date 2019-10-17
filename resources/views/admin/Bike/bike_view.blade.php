@@ -85,6 +85,7 @@
 var bike_table;
 $(function() {
     bike_table = $('#bike-table').DataTable({
+        lengthMenu: [[-1], ["All"]],
         processing: true,
         serverSide: true,
         'language': { 

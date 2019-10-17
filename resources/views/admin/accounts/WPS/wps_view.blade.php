@@ -84,6 +84,7 @@
 var wps_table;
 $(function() {
     wps_table = $('#wps-table').DataTable({
+        lengthMenu: [[-1], ["All"]],
         processing: true,
         serverSide: true,
         'language': { 

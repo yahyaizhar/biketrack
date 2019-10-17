@@ -85,6 +85,7 @@ var installment_table;
 $(function() {
     installment_table = $('#Installment-table').DataTable({
         processing: true,
+        lengthMenu: [[-1], ["All"]],
         serverSide: true,
         'language': {
             'loadingRecords': '&nbsp;',

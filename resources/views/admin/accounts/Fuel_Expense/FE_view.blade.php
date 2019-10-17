@@ -83,6 +83,7 @@
 var expense_table;
 $(function() {
     expense_table = $('#fuelExpense-table').DataTable({
+        lengthMenu: [[-1], ["All"]],
         processing: true,
         serverSide: true,
         'language': { 

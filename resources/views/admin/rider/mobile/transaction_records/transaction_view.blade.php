@@ -101,6 +101,7 @@ $(function() {
     var getData = function(){
         simTransaction_table = $('#simTransaction-table').DataTable({
             processing: true,
+            lengthMenu: [[-1], ["All"]], 
             destroy:true,
             serverSide: true,
             'language': {

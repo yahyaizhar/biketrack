@@ -60,8 +60,6 @@ margin-left: 10px;
             <table class="table table-striped table-hover table-checkable table-condensed" id="riders-table">
                 <thead>
                     <tr>
-                        
-                        <th>ID</th>
                         <th>KR-ID</th>
                         <th>Name</th>
                         <th>Assigned To</th>
@@ -107,33 +105,6 @@ margin-left: 10px;
                 <div class="form-group">
                     <label>Enter Rider Id:</label>
                     <input type="text" class="form-control @if($errors->has('client_rider_id')) invalid-field @endif" name="client_rider_id" placeholder="Client's Rider ID"  >
-                </div>
-            </div>
-                    
-            <div class="modal-footer border-top-0 d-flex justify-content-center">
-                <button type="submit" class="btn btn-success">Save</button>
-            </div>
-            </form>
-        </div>
-        </div>
-    </div>
-    <div class="modal fade" id="kingrider_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header border-bottom-0">
-            <h5 class="modal-title" id="exampleModalLabel">Assign Kingriders ID</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            </div>
-            <form id="kingrider_form" class="kt-form" enctype="multipart/form-data">
-                <div class="modal-body">
-                <div class="form-group">
-                    <input type="hidden" name="rider_id">
-                </div>
-                <div class="form-group">
-                    <label>Enter Kingriders Id:</label>
-                    <input required autocomplete="off" type="text" class="form-control @if($errors->has('kingriders_id')) invalid-field @endif" name="kingriders_id" placeholder="Kingriders ID"  >
                 </div>
             </div>
                     
@@ -198,51 +169,8 @@ margin-left: 10px;
 var riders_table;
 var riders_data = [];
 $(function() {
-    var kingrider_target=null;
-    $("#kingrider_model").on('shown.bs.modal', function (event){
-         console.log(event);
-         kingrider_target=$(event.relatedTarget);
-        var current_target = $(event.currentTarget);
-        
-        var rider_id_val=$(event.relatedTarget).attr("data-rider-id");
-        var kingriders_id_val=$(event.relatedTarget).attr("current-target");
-        current_target.find('[name="rider_id"]').val(rider_id_val);
-        if (kingriders_id_val!=null) {
-            current_target.find('[name="kingriders_id"]').val(kingriders_id_val);
-        }
-    });
-
-   
-    
-    $('#kingrider_form').submit(function(e){
-        e.preventDefault();
-        $('#kingrider_model').modal('hide');
-        var form=$(this);
-        $.ajax({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }, 
-            url:"{{route('KingRiders.admin.update')}}",
-            data: form.serializeArray(),
-            method: "POST"
-        })
-        .done(function(data) {  
-            console.log(data);
-            swal.fire({
-                position: 'center',
-                type: 'success',
-                title: 'Record updated successfully.',
-                showConfirmButton: false,
-                timer: 1500
-            });
-            console.log(kingrider_target);
-            if(kingrider_target){
-                kingrider_target.html('<strong>'+data.kingriders_id+'</strong>');
-            }
-        });
-        
-    });
     var _settings = {
+        lengthMenu: [[-1], ["All"]],
         processing: true,
         serverSide: true,
         'language': {
@@ -278,7 +206,6 @@ $(function() {
             "defaultContent": ''
         },
         { "data": 'new_id', "name": 'new_id' },
-        { "data": 'kingriders_id', "name": 'kingriders_id' },
             { "data": 'new_name', "name": 'name' },
             { "data": 'client_name', "name": 'client_name' },
             { "data": 'sim_number', "name": 'sim_number' },
@@ -300,21 +227,20 @@ $(function() {
         _settings.responsive=false;
         _settings.columnDefs=[
             {
-                "targets": [ 11,12,13,14,15,16,17,18,19 ],
+                "targets": [ 10,11,12,13,14,15,16,17,18 ],
                 "visible": false,
                 searchable: true,
             },
         ];
     }
     else{
-        $('#riders-table thead tr th').eq(8).before('<th>Date Of Joining</th>');
-        $('#riders-table thead tr th').eq(9).before('<th>Passport Expiry</th>');
-        $('#riders-table thead tr th').eq(10).before('<th>Visa Expiry</th>');
-        $('#riders-table thead tr th').eq(11).before('<th>Licence Expiry</th>');
-        $('#riders-table thead tr th').eq(12).before('<th>Mulkiya Expiry</th>');
+        $('#riders-table thead tr th').eq(7).before('<th>Date Of Joining</th>');
+        $('#riders-table thead tr th').eq(8).before('<th>Passport Expiry</th>');
+        $('#riders-table thead tr th').eq(9).before('<th>Visa Expiry</th>');
+        $('#riders-table thead tr th').eq(10).before('<th>Licence Expiry</th>');
+        $('#riders-table thead tr th').eq(11).before('<th>Mulkiya Expiry</th>');
         _settings.columns=[
         { "data": 'new_id', "name": 'new_id' },
-        { "data": 'kingriders_id', "name": 'kingriders_id' },
             { "data": 'new_name', "name": 'name' },
             { "data": 'new_email', "name": 'email' },
             { "data": 'sim_number', "name": 'sim_number' },

@@ -106,10 +106,10 @@
                             <label>Confirm Password: <span class="streric">*</span></label>
                             <input type="password" class="form-control @if($errors->has('passsword')) invalid-field @endif" name="password_confirmation" placeholder="Enter confirm password">
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label>Kingriders ID:</label>
                             <input type="text" class="form-control" name="kingriders_id" placeholder="Enter Kingriders ID" >
-                        </div>
+                        </div> --}}
                         <div class="form-group">
                             <label>City:</label>
                             <input type="text" class="form-control" name="address" placeholder="Enter city">

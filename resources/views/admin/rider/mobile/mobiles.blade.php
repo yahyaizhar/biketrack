@@ -87,6 +87,7 @@ var mobile_table;
 $(function() {
     mobile_table = $('#mobile-table').DataTable({
         processing: true,
+        lengthMenu: [[-1], ["All"]],
         serverSide: true,
         'language': {
             'loadingRecords': '&nbsp;',

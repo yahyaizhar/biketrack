@@ -981,7 +981,11 @@ class AjaxNewController extends Controller
         })
         ->addColumn('rider_id', function($wps){
             $rider=Rider::find($wps->rider_id);
-            return $rider->name ;
+            if (isset($rider)) {
+                return $rider->name ;
+            }
+            return 'No rider is assigned';
+            
         })
        
         ->addColumn('actions', function($wps){
