@@ -1504,7 +1504,7 @@ class AjaxNewController extends Controller
             return $rta_fine;
         }) 
         ->addColumn('dicipline_fine', function($rider) use ($month) {
-            return '123';
+            return '0';
         }) 
         ->addColumn('total_deduction', function($rider) use ($month) {
             $total_deduction=Rider_Account::where('rider_id',$rider->rider_id)
