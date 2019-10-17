@@ -1639,6 +1639,7 @@ class AjaxNewController extends Controller
             $ra_cr=Rider_Account::where("rider_id",$rider_id)
             ->whereMonth("month",$onlyMonth)
             ->where("type","cr")
+            ->where('source', '!=', 'salary')
             ->sum('amount');  
             if($closing_balance_prev < 0){ //deduct
                 $ra_payable += abs($closing_balance_prev);
