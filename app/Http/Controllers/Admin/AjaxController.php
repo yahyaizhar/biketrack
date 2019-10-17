@@ -435,7 +435,7 @@ class AjaxController extends Controller
         $riders = Rider::orderByDesc('created_at')->where("active_status","A")->get();
         return DataTables::of($riders)
         ->addColumn('new_id', function($riders){
-            return '1000'.$riders->id;
+            return $riders->id;
         })
         ->addColumn('new_name', function($riders){
             return '<a href="'.route('admin.rider.profile', $riders->id).'">'.$riders->name.'</a>';
@@ -738,7 +738,10 @@ class AjaxController extends Controller
         ->addColumn('rider_name', function($installment){
             $mobile=Mobile::find($installment->mobile_id);
             $rider=Rider::find( $mobile->rider_id);
-            return $rider->name;
+            if (isset($rider)) {
+                return $rider->name;
+            }
+            return 'No rider is assigned';
         })
         ->addColumn('installment_amount', function($installment){
             return $installment->installment_amount;
@@ -1410,7 +1413,7 @@ class AjaxController extends Controller
            $riders = Rider::orderByDesc('created_at')->where("active_status","A")->where("status","1")->get();
            return DataTables::of($riders)
            ->addColumn('new_id', function($riders){
-               return '1000'.$riders->id;
+               return $riders->id;
            })
            ->addColumn('new_name', function($riders){
                return '<a href="'.route('admin.rider.profile', $riders->id).'">'.$riders->name.'</a>';

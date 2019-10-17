@@ -64,12 +64,6 @@ class RiderController extends Controller
         $client_rider->update();
         return $client_rider;
     }
-    public function update_kingriders_id(Request $req){
-        $kingriders_id=Rider::where('id',$req->rider_id)->get()->first();
-        $kingriders_id->kingriders_id=$req->kingriders_id;
-        $kingriders_id->save();
-        return $kingriders_id;
-    }
 
     /**
      * Store a newly created resource in storage.

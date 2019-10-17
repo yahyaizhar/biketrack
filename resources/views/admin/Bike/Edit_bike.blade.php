@@ -82,40 +82,19 @@
                             </div>
                             <div class="form-group">
                                     <label>Chassis Number:</label>
-                                    <input type="text" required class="form-control @if($errors->has('chassis_number')) invalid-field @endif" name="chassis_number" placeholder="Enter Chassis Number" value="{{ $bike->chassis_number }}">
-                                
-                                    @if ($errors->has('chassis_number'))
-                                        <span class="invalid-response" role="alert">
-                                            <strong>
-                                                {{ $errors->first('chassis_number') }}
-                                            </strong>
-                                        </span>
-                                    @else
-                                        <span class="form-text text-muted">Enter Your Chassis Number.</span>
-                                    @endif
+                                    <input type="text"  class="form-control " name="chassis_number" placeholder="Enter Chassis Number" value="{{ $bike->chassis_number }}">
+                                    <span class="form-text text-muted">Enter Your Chassis Number.</span>
                                 </div> 
                       
                         <div class="form-group">
                                 <label>Mulkiya Number:</label>
-                                <input type="text" required class="form-control @if($errors->has('mulkiya_number')) invalid-field @endif" name="mulkiya_number" placeholder="Enter Mulkiya Nnumber" value="{{ $bike->mulkiya_number }}">
-                                @if ($errors->has('mulkiya_number'))
-                                    <span class="invalid-response" role="alert">
-                                        <strong>
-                                            {{$errors->first('mulkiya_number')}}
-                                        </strong>
-                                    </span>
-                                @endif
+                                <input type="text"  class="form-control" name="mulkiya_number" placeholder="Enter Mulkiya Nnumber" value="{{ $bike->mulkiya_number }}">
+                               
                             </div> 
                             <div class="form-group">
                                     <label>Mulkiya Expiry:</label>
-                                    <input type="text" id="datepicker" autocomplete="off" class="form-control @if($errors->has('mulkiya_expiry')) invalid-field @endif" name="mulkiya_expiry" placeholder="Enter Mulkiya Expiry" value="{{ $bike->mulkiya_expiry}}">
-                                    @if ($errors->has('mulkiya_expiry'))
-                                        <span class="invalid-response" role="alert">
-                                            <strong>
-                                                {{$errors->first('mulkiya_expiry')}}
-                                            </strong>
-                                        </span>
-                                    @endif
+                                    <input type="text" id="datepicker" autocomplete="off" class="form-control " name="mulkiya_expiry" placeholder="Enter Mulkiya Expiry" value="{{ $bike->mulkiya_expiry}}">
+                                   
                                 </div>
                         </div>
                            

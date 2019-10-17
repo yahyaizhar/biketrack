@@ -85,6 +85,7 @@ $(function() {
     investment_table = $('#Companyinvestment-table').DataTable({
         processing: true,
         serverSide: true,
+        lengthMenu: [[-1], ["All"]],
         'language': { 
             'loadingRecords': '&nbsp;',
             'processing': $('.loading').show()

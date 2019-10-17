@@ -118,10 +118,10 @@
                             <input type="password" class="form-control @if($errors->has('passsword')) invalid-field @endif" name="password_confirmation" placeholder="Enter confirm password">
                         </div>
                     </div>
-                    <div class="form-group">
+                    {{-- <div class="form-group">
                         <label>Kingriders ID:</label>
                         <input type="text" class="form-control" name="kingriders_id" placeholder="Enter Kingriders ID" value="{{ $rider->kingriders_id }}">
-                    </div>
+                    </div> --}}
                     <div class="form-group">
                         <label>City:</label>
                         <input type="text" class="form-control" name="address" placeholder="Enter city" value="{{ $rider->address }}">
@@ -190,7 +190,7 @@
                                             <span class="form-text text-muted">Please enter your official phone number</span>
                                     </div>
                                     <div class="col-md-6">
-                                        <button type="button" style="width:100px;" class="btn btn-danger" data-toggle="modal" data-target="#form">
+                                        <button type="button" style="width:100px;" class="btn btn-danger"  onclick="updateSimBalance({{$rider->id}})">
                                             EDIT                                             
                                         </button>
                                     </div>
@@ -736,7 +736,8 @@ $(document).ready(function () {
         </script>
 {{-- edit_sim_number --}}
 <script>
-$(document).ready(function(){
+    function updateSimBalance(rider_id) {
+    $('#form').modal('show');
     // submit_btn_dates
     $('#form_dates').submit(function(e){
         e.preventDefault();
@@ -747,7 +748,7 @@ $(document).ready(function(){
             }
         });
     $.ajax({
-            url:"{{route('SimHistory.update',$rider->id)}}",  
+            url:"{{url('admin/update/History')}}"+'/'+rider_id +'/Sim',  
             data: form.serializeArray(),
             method: "POST"
         })
@@ -758,7 +759,7 @@ $(document).ready(function(){
         });
         
     });
-});
+}
 </script>
 <script>
 $(document).ready(function(){

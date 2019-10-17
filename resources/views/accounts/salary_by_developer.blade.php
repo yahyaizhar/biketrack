@@ -201,6 +201,7 @@ $(document).ready(function(){
      month =$('#RiderToMonth-table').DataTable({
         processing: true,
         serverSide: true,
+        lengthMenu: [[-1], ["All"]],
         'language': {
             'loadingRecords': '&nbsp;',
             'processing': $('.loading').show()

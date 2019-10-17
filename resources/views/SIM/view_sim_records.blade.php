@@ -84,6 +84,7 @@ var sim_table;
 $(function() {
     sim_table = $('#sim-table').DataTable({
         processing: true,
+        lengthMenu: [[-1], ["All"]],
         serverSide: true,
         'language': {
             'loadingRecords': '&nbsp;',

@@ -84,6 +84,7 @@
 var clients_table;
 $(function() {
     clients_table = $('#clients-table').DataTable({
+        lengthMenu: [[-1], ["All"]],
         processing: true,
         serverSide: true,
         'language': {

@@ -91,7 +91,6 @@ Route::group([
     Route::resource('/riders', 'RiderController', [
         'as' => 'admin'
     ]);
-    Route::post('/update/kingriders/ID','RiderController@update_kingriders_id')->name('KingRiders.admin.update');
     Route::get('/rider/{rider}/location', 'RiderController@showRiderLocation')->name('admin.rider.location');
     Route::get('/rider/{rider}/profile', 'RiderController@showRiderProfile')->name('admin.rider.profile');
     Route::get('/active_riders','RiderController@getRider_active')->name('admin.riders.active');
