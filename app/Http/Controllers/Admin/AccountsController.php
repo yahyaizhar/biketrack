@@ -2188,4 +2188,7 @@ public function client_income_update(Request $request,$id){
     ]);
 
 }
+    public function zomato_salary_sheet_export(){
+        return view('admin.accounts.Income.zomato_salary_sheet');
+    }
 }

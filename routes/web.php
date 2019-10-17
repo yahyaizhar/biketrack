@@ -61,6 +61,7 @@ Route::group([
     Route::get("/accounts/company/bills/{range}","AjaxNewController@getCompanyAccountsBills")->name("admin.accounts.get_company_account_bills");
     Route::get('/cash/paid/to/rider/{rider_id}','HomeController@cash_paid_to_rider')->name('admin.cash_paid_to_rider');
     Route::get("/accounts/kr_investment/view/data","AjaxNewController@getCompanyInvestment")->name("admin.getCompanyInvestment");
+    Route::get("/zomato/salary/sheet/export/ajax/{month_name}","AjaxNewController@zomato_salary_export")->name("admin.zomato_salary_export");
 });
 // End Ajax Routes
 
@@ -138,6 +139,7 @@ Route::group([
 //import Zomato
     Route::post('/import/zomato','RiderController@import_zomato')->name('import.zomato');
     Route::delete('/delete/last/import','RiderController@delete_lastImport')->name('delete.import_data');
+    Route::get("/zomato/salary/sheet/export","AccountsController@zomato_salary_sheet_export")->name("admin.zomato_salary_sheet_export");
 //ends import Zomato
 });
 // clients

@@ -1374,4 +1374,29 @@ class AjaxNewController extends Controller
         ->rawColumns(['id','actions','description','month'])
         ->make(true);
     }
+    public function zomato_salary_export($month)
+    {
+        $zomato=Client::where("name","Zomato Food Delivery")->get()->first();
+        $client_riders=$zomato->riders();
+        return DataTables::of($client_riders)
+        ->addColumn('rider_name', function($rider) {
+            return $rider->name;
+        }) 
+        ->addColumn('bike_number', function($rider) {
+              $assign_bike=Assign_bike::where("rider_id",$rider->rider_id)->where("status","active")->get()->first();             
+            if (isset($assign_bike)) {
+                $bike=bike::find($assign_bike->bike_id);
+                return $bike->bike_number;
+            }
+              return 'No Bike is assigned';
+        }) 
+        ->addColumn('advance', function($rider) use ($month) {
+            
+            return $month;
+        }) 
+        
+        
+        ->rawColumns(['rider_name','bike_number','advance'])
+        ->make(true);
+    }
 }
