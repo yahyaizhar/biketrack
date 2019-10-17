@@ -84,8 +84,8 @@ margin-left: 10px;
                         </div>
                         &nbsp;
                         
-                        <a style="padding:8.45px 13px;" href="" data-toggle="modal" data-target="#import_data"  class="btn btn-label-success btn-sm btn-upper">Import Zomato Income</a>&nbsp;
-                        <input class="btn btn-primary" type="button" onclick="export_data();" value="Export Zomato Income">
+                        {{-- <a style="padding:8.45px 13px;" href="" data-toggle="modal" data-target="#import_data"  class="btn btn-label-success btn-sm btn-upper">Import Zomato Income</a>&nbsp; --}}
+                        <input class="btn btn-primary" type="button" onclick="export_data();" value="Export Zomato Salary Sheet">
                         
                         {{-- <a href="{{ route('Sim.new_sim') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
@@ -174,20 +174,37 @@ margin-left: 10px;
     $client_riders=App\Model\Client\Client_Rider::all();
 @endphp
 <script>
-    console.log(riders_data);
         function export_data(){
 var export_details=[];
+console.log(riders_data);
         riders_data.forEach(function(item,index) {
            export_details.push({
-            "FEID":item.feid,
-            "Onboarding Date": item.date,
-            "Total to be paid out":item.total_to_be_paid_out,
-            "Amount for login hours":item.amount_for_login_hours,
-            "Amount to be paid against orders completed":item.amount_to_be_paid_against_orders_completed,
-            "NCW Incentives":item.ncw_incentives,
-            "Tips Payouts":item.tips_payouts,
-            "DC Deductions":item.dc_deductions,
-            "Mcdonalds Deductions":item.mcdonalds_deductions,
+            "Name":item.name,
+            "Bike No": item.bike_number,
+            "Advance":item.advance,
+            "Salik":item.salik,
+            "Sim Charges":item.sim_charges,
+            "POOR PERFORMANCE":item.poor_performance,
+            "DC":item.dc,
+            "COD ":item.cod,
+            "Visa Charges":item.visa,
+            "RTA Fine":item.rta_fine,
+            "mobile charges":item.mobile,
+            "displan fine":item.dicipline_fine,
+            "Total deduction":item.total_deduction,
+            "No of hours ":item.number_of_hours,
+            "No of Trip ":item.number_of_trips,
+            "AED hours":item.aed_hours,
+            "AED TRIP":item.aed_trips,
+            "Total":item.total_salary,
+            "NCW":item.ncw,
+            "Tip":item.tips,
+            "Bones":'',
+            "Bike allowns":'',
+            "Net Salary ":item.net_salary,
+            "Gross Salary":item.gross_salary,
+            "cash paid":'',
+            "advance":'',
            });
         });
         var export_data = new CSVExport(export_details);
