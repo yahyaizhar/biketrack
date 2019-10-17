@@ -94,7 +94,7 @@
                                 </div> --}}
                                 <div class="kt-widget__content">
                                     <div class="kt-widget__head">
-                                        <a class="kt-widget__username">
+                                        <a class="kt-widget__username" href="{{route('admin.rider.profile',$rider->id)}}">
                                             {{ $rider->name }}
                                             @if ($rider->online)
                                                 <i class="flaticon2-correct"></i>                                            
