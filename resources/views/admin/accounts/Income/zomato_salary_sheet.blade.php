@@ -124,6 +124,9 @@ margin-left: 10px;
                         <th>AED_Trips</th>
                         <th>NCW</th>
                         <th>TIPS</th>
+                        
+                        <th>Net Salary</th>
+                        <th>Gross Salary</th>
                     </tr>
                 </thead>
             </table>
@@ -389,6 +392,9 @@ $(function() {
             { "data": 'aed_trips', "name": 'aed_trips' },
             { "data": 'ncw', "name": 'ncw' },
             { "data": 'tips', "name": 'tips' },
+            
+            { "data": 'net_salary', "name": 'net_salary' },
+            { "data": 'gross_salary', "name": 'gross_salary' },
         ];
         _settings.columnDefs=[
             {
