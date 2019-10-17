@@ -180,7 +180,7 @@ var export_details=[];
 console.log(riders_data);
         riders_data.forEach(function(item,index) {
            export_details.push({
-            "Name":item.name,
+            "Name":item.name.toUpperCase(),
             "Bike No": item.bike_number,
             "Advance":item.advance,
             "Salik":item.salik,
@@ -191,7 +191,7 @@ console.log(riders_data);
             "Visa Charges":item.visa,
             "RTA Fine":item.rta_fine,
             "mobile charges":item.mobile,
-            "displan fine":item.dicipline_fine,
+            "displan fine":"",
             "Total deduction":item.total_deduction,
             "No of hours ":item.number_of_hours,
             "No of Trip ":item.number_of_trips,
@@ -200,15 +200,15 @@ console.log(riders_data);
             "Total":item.total_salary,
             "NCW":item.ncw,
             "Tip":item.tips,
-            "Bones":'',
-            "Bike allowns":'',
+            "Bones":"",
+            "Bike allowns":"",
             "Net Salary ":item.net_salary,
             "Gross Salary":item.gross_salary,
-            "cash paid":'',
-            "advance":'',
+            "Cash Paid":"",
+            "Advance":"",
            });
         });
-        var export_data = new CSVExport(export_details);
+        var export_data = new CSVExport(export_details, 'Zomato Salary Sheet '+$('[name="month_id"] option:selected').text());
         return false;
     }  
     
