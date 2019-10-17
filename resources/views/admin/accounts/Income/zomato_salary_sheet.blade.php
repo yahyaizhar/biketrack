@@ -116,9 +116,14 @@ margin-left: 10px;
                         <th>AED Hours</th>
                         <th>Total</th>
 
-                        <th class="d-none">h1</th>
-                        <th class="d-none">h2</th>
-                        {{-- <th>Actions</th> --}}
+                        <th>Poor Performance</th>
+                        <th>visa</th>
+                        <th>Mobile</th>
+                        <th>Number of Hours</th>
+                        <th>Number Of trips</th>
+                        <th>AED_Trips</th>
+                        <th>NCW</th>
+                        <th>TIPS</th>
                     </tr>
                 </thead>
             </table>
@@ -375,6 +380,15 @@ $(function() {
             { "data": 'total_deduction', "name": 'total_deduction' },
             { "data": 'aed_hours', "name": 'aed_hours' },
             { "data": 'total_salary', "name": 'total_salary' },
+            
+            { "data": 'poor_performance', "name": 'poor_performance' },
+            { "data": 'visa', "name": 'visa' },
+            { "data": 'mobile', "name": 'mobile' },
+            {"data": 'number_of_hours', "name": 'number_of_hours'},
+            { "data": 'number_of_trips', "name": 'number_of_trips' },
+            { "data": 'aed_trips', "name": 'aed_trips' },
+            { "data": 'ncw', "name": 'ncw' },
+            { "data": 'tips', "name": 'tips' },
         ];
         _settings.columnDefs=[
             {
