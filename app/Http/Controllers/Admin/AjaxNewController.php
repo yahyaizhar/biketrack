@@ -1391,12 +1391,79 @@ class AjaxNewController extends Controller
               return 'No Bike is assigned';
         }) 
         ->addColumn('advance', function($rider) use ($month) {
-            
-            return $month;
+            $advance_sum=Rider_Account::where('rider_id',$rider->rider_id)
+            ->whereNotNull('advance_return_id')
+            ->whereMonth('month',$month)
+            ->get()
+            ->sum('amount');
+                return $advance_sum;
+        }) 
+        ->addColumn('poor_performance', function($rider) use ($month) {
+            $poor_performance_sum=Rider_Account::where('source',"Denials Penalty")
+            ->where('rider_id',$rider->rider_id)
+            ->whereNotNull('income_zomato_id')
+            ->whereMonth('month',$month)
+            ->get()
+            ->sum('amount');
+                return $poor_performance_sum;
+        }) 
+        ->addColumn('visa', function($rider) use ($month) {
+            $visa_sum=Rider_Account::where('source',"Visa Charges")
+            ->where('rider_id',$rider->rider_id)
+            ->whereNotNull('id_charge_id')
+            ->whereMonth('month',$month)
+            ->get()
+            ->sum('amount');
+                return $visa_sum;
+        }) 
+        ->addColumn('mobile', function($rider) use ($month) {
+            $mobile_sum=Rider_Account::where('source',"Mobile Installment")
+            ->where('rider_id',$rider->rider_id)
+            ->whereNotNull('mobile_installment_id')
+            ->whereMonth('month',$month)
+            ->get()
+            ->sum('amount');
+                return $mobile_sum;
+        }) 
+        ->addColumn('number_of_hours', function($rider) use ($month) {
+            $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('log_in_hours_payable');
+            if($number_of_hours_sum > 286) $number_of_hours_sum = 286;
+                return $number_of_hours_sum; 
+        }) 
+        ->addColumn('number_of_trips', function($rider) use ($month) {
+            $number_of_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('trips_payable');
+                return $number_of_trips_sum; 
+        }) 
+        ->addColumn('aed_trips', function($rider) use ($month) {
+            $aed_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('trips_payable');
+                return $aed_trips_sum*2; 
+        }) 
+        ->addColumn('ncw', function($rider) use ($month) {
+            $ncw_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('ncw_incentives');
+                return $ncw_sum; 
+        }) 
+        ->addColumn('tips', function($rider) use ($month) {
+            $tips_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('tips_payouts');
+                return $tips_sum; 
         }) 
         
         
-        ->rawColumns(['rider_name','bike_number','advance'])
+        ->rawColumns(['rider_name','tips','aed_trips','ncw','number_of_trips','number_of_hours','bike_number','advance','poor_performance','visa','mobile'])
         ->make(true);
     }
 }

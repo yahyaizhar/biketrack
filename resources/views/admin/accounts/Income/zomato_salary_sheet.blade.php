@@ -37,7 +37,7 @@ margin-left: 10px;
  @include('client.includes.message')
                  <div class="kt-portlet__body">
                             <div>
-                                 <select class="form-control kt-select2" id="kt_select2_3_5" name="month_id" >
+                                 <select class="form-control bk-select2" id="kt_select2_3_5" name="month_id" >
                                 <option >Select Month</option>
                                 <option value="01">January</option>   
                                 <option value="02">Febuary</option>   
@@ -106,9 +106,14 @@ margin-left: 10px;
                         <th>Rider Name</th>
                         <th>Bike Number</th>
                         <th>Advance</th> 
-                        <th>Salik</th>
-                        <th>Sim Charges</th>
                         <th>Poor Performance</th>
+                        <th>visa</th>
+                        <th>Mobile</th>
+                        <th>Number of Hours</th>
+                        <th>Number Of trips</th>
+                        <th>AED_Trips</th>
+                        <th>NCW</th>
+                        <th>TIPS</th>
 
                         <th class="d-none">h1</th>
                         <th class="d-none">h2</th>
@@ -360,14 +365,14 @@ $(function() {
             { "data": 'rider_name', "name": 'rider_name' },
             { "data": 'bike_number', "name": 'bike_number' },
             { "data": 'advance', "name": 'advance' },
-            // { "data": 'amount_to_be_paid_against_orders_completed', "name": 'amount_to_be_paid_against_orders_completed' },
-            // { "data": 'ncw_incentives', "name": 'ncw_incentives' },
-            // // { "data": 'actions', "name": 'actions' }
-            // { "data": 'tips_payouts', "name": 'tips_payouts' },
-            // { "data": 'mcdonalds_deductions', "name": 'mcdonalds_deductions' },
-            // { "data": 'dc_deductions', "name": 'dc_deductions' },
-            // { "data": 'date', "name": 'date' },
-            // { "data": 'feid', "name": 'feid' },
+            { "data": 'poor_performance', "name": 'poor_performance' },
+            { "data": 'visa', "name": 'visa' },
+            { "data": 'mobile', "name": 'mobile' },
+            {"data": 'number_of_hours', "name": 'number_of_hours'},
+            { "data": 'number_of_trips', "name": 'number_of_trips' },
+            { "data": 'aed_trips', "name": 'aed_trips' },
+            { "data": 'ncw', "name": 'ncw' },
+            { "data": 'tips', "name": 'tips' },
         ];
         _settings.columnDefs=[
             {
