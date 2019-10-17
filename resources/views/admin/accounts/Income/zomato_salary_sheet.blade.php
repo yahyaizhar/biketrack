@@ -105,28 +105,26 @@ margin-left: 10px;
                         </th> --}}
                         <th>Rider Name</th>
                         <th>Bike Number</th>
-                        <th>Advance</th> 
-                        <th>Salik</th>
-                        <th>Sim Charges</th>
-                        <th>DC</th>
-                        <th>COD</th>
-                        <th>RTA Fine</th>
-                        <th>Dicipline Fine</th>
-                        <th>Total Deduction</th>
+                        <th>AED Trips</th>
                         <th>AED Hours</th>
                         <th>Total</th>
-
-                        <th>Poor Performance</th>
-                        <th>visa</th>
-                        <th>Mobile</th>
-                        <th>Number of Hours</th>
-                        <th>Number Of trips</th>
-                        <th>AED_Trips</th>
-                        <th>NCW</th>
-                        <th>TIPS</th>
-                        
                         <th>Net Salary</th>
                         <th>Gross Salary</th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
                     </tr>
                 </thead>
             </table>
@@ -390,6 +388,12 @@ $(function() {
             },
             { "data": 'rider_name', "name": 'rider_name' },
             { "data": 'bike_number', "name": 'bike_number' },
+            { "data": 'aed_trips', "name": 'aed_trips' },
+            { "data": 'aed_hours', "name": 'aed_hours' },
+            { "data": 'total_salary', "name": 'total_salary' },
+            { "data": 'net_salary', "name": 'net_salary' },
+            { "data": 'gross_salary', "name": 'gross_salary' },
+
             { "data": 'advance', "name": 'advance' },
             { "data": 'salik', "name": 'salik' },
             { "data": 'sim_charges', "name": 'sim_charges' },
@@ -398,24 +402,19 @@ $(function() {
             { "data": 'rta_fine', "name": 'rta_fine' },
             { "data": 'dicipline_fine', "name": 'dicipline_fine' },
             { "data": 'total_deduction', "name": 'total_deduction' },
-            { "data": 'aed_hours', "name": 'aed_hours' },
-            { "data": 'total_salary', "name": 'total_salary' },
-            
             { "data": 'poor_performance', "name": 'poor_performance' },
             { "data": 'visa', "name": 'visa' },
             { "data": 'mobile', "name": 'mobile' },
             {"data": 'number_of_hours', "name": 'number_of_hours'},
             { "data": 'number_of_trips', "name": 'number_of_trips' },
-            { "data": 'aed_trips', "name": 'aed_trips' },
             { "data": 'ncw', "name": 'ncw' },
             { "data": 'tips', "name": 'tips' },
             
-            { "data": 'net_salary', "name": 'net_salary' },
-            { "data": 'gross_salary', "name": 'gross_salary' },
+            
         ];
         _settings.columnDefs=[
             {
-                // "targets": [ 7,8,9, 10 ],
+                "targets": [8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
                 "visible": false,
                 searchable: true, 
             },
@@ -430,17 +429,29 @@ $(function() {
         $('#zomato_salary_sheet thead tr th').eq(7).before('<th>Trip Time:</th>');
         $('#zomato_salary_sheet thead tr th').eq(8).before('<th>Transaction Post Date:</th>');
         _settings.columns=[
-            { "data": 'rider_name', "name": 'rider_name' },
-            // { "data": 'total_to_be_paid_out', "name": 'total_to_be_paid_out' },
-            // { "data": 'amount_for_login_hours', "name": 'amount_for_login_hours' },
-            // { "data": 'amount_to_be_paid_against_orders_completed', "name": 'amount_to_be_paid_against_orders_completed' },
-            // { "data": 'ncw_incentives', "name": 'ncw_incentives' },
-            // // { "data": 'actions', "name": 'actions' }
-            // { "data": 'tips_payouts', "name": 'tips_payouts' },
-            // { "data": 'mcdonalds_deductions', "name": 'mcdonalds_deductions' },
-            // { "data": 'dc_deductions', "name": 'dc_deductions' },
-            // { "data": 'date', "name": 'date' },
-            // { "data": 'feid', "name": 'feid' },
+             { "data": 'rider_name', "name": 'rider_name' },
+            { "data": 'bike_number', "name": 'bike_number' },
+            { "data": 'aed_trips', "name": 'aed_trips' },
+            { "data": 'aed_hours', "name": 'aed_hours' },
+            { "data": 'total_salary', "name": 'total_salary' },
+            { "data": 'net_salary', "name": 'net_salary' },
+            { "data": 'gross_salary', "name": 'gross_salary' },
+
+            { "data": 'advance', "name": 'advance' },
+            { "data": 'salik', "name": 'salik' },
+            { "data": 'sim_charges', "name": 'sim_charges' },
+            { "data": 'dc', "name": 'dc' },
+            { "data": 'cod', "name": 'cod' },
+            { "data": 'rta_fine', "name": 'rta_fine' },
+            { "data": 'dicipline_fine', "name": 'dicipline_fine' },
+            { "data": 'total_deduction', "name": 'total_deduction' },
+            { "data": 'poor_performance', "name": 'poor_performance' },
+            { "data": 'visa', "name": 'visa' },
+            { "data": 'mobile', "name": 'mobile' },
+            {"data": 'number_of_hours', "name": 'number_of_hours'},
+            { "data": 'number_of_trips', "name": 'number_of_trips' },
+            { "data": 'ncw', "name": 'ncw' },
+            { "data": 'tips', "name": 'tips' },
             
         ];
      
@@ -508,17 +519,49 @@ $(function() {
 
     function format ( data ) {
     // `d` is the original data object for the row
-    // return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
-    //         '<tr>'+
-    //         '<td colspan="1"; style="font-weight:900;">DC Deductions:</td>'+
-    //         '<td colspan="2";>'+data.dc_deductions+'</td>'+
-    //         '<td colspan="1"; style="font-weight:900;" >Mcdonalds Deductions:</td>'+
-    //         '<td colspan="2";>'+data.mcdonalds_deductions+'</td>'+
-    //         '<td colspan="1"; style="font-weight:900;" >Date:</td>'+
-    //         '<td colspan="2";>'+data.date+'</td>'+
-    //         '</tr>'+
+    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+            '<tr>'+
+            '<td colspan="1"; style="font-weight:900;">Advance :</td>'+
+            '<td colspan="2";>'+data.advance+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Salik:</td>'+
+            '<td colspan="2";>'+data.salik+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Sim Charges:</td>'+
+            '<td colspan="2";>'+data.sim_charges+'</td>'+
+            '</tr>'+
+            '<tr>'+
+            '<td colspan="1"; style="font-weight:900;">DC :</td>'+
+            '<td colspan="2";>'+data.dc+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >COD:</td>'+
+            '<td colspan="2";>'+data.cod+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Poor Performance:</td>'+
+            '<td colspan="2";>'+data.poor_performance+'</td>'+
+            '</tr>'+
+            '<tr>'+
+            '<td colspan="1"; style="font-weight:900;">Visa :</td>'+
+            '<td colspan="2";>'+data.visa+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >RTA Fine:</td>'+
+            '<td colspan="2";>'+data.rta_fine+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Mobile:</td>'+
+            '<td colspan="2";>'+data.mobile+'</td>'+
+            '</tr>'+
+            '<tr>'+
+            '<td colspan="1"; style="font-weight:900;">Dicipline Fine :</td>'+
+            '<td colspan="2";>'+data.dicipline_fine+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Total Deduction:</td>'+
+            '<td colspan="2";>'+data.total_deduction+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Number of Hours:</td>'+
+            '<td colspan="2";>'+data.number_of_hours+'</td>'+
+            '</tr>'+
+            '<tr>'+
+            '<td colspan="1"; style="font-weight:900;">Number Of trips :</td>'+
+            '<td colspan="2";>'+data.number_of_trips+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >NCW:</td>'+
+            '<td colspan="2";>'+data.ncw+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Tips:</td>'+
+            '<td colspan="2";>'+data.tips+'</td>'+
+            '</tr>'+
             
-    //     '</table>';
+        '</table>';
 }
 
     if(window.outerWidth>=521){
