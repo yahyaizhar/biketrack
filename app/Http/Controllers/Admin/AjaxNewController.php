@@ -1394,9 +1394,91 @@ class AjaxNewController extends Controller
             
             return $month;
         }) 
+        ->addColumn('salik', function($rider) use ($month) {
+            $salik_amount=Rider_Account::where('rider_id',$rider->rider_id)
+            ->whereNotNull('salik_id')
+            ->whereMonth('month', $month)
+            ->get()
+            ->sum('amount');
+            return $salik_amount;
+        }) 
+        ->addColumn('sim_charges', function($rider) use ($month) {
+            $sim_charges=Rider_Account::where('rider_id',$rider->rider_id)
+            ->whereNotNull('sim_transaction_id')
+            ->whereMonth('month', $month)
+            ->get()
+            ->sum('amount');
+            return $sim_charges;
+        }) 
+        ->addColumn('cod', function($rider) use ($month) {
+            $cod=Rider_Account::where('rider_id',$rider->rider_id)
+            ->whereNotNull('income_zomato_id')
+            ->whereMonth('month', $month)
+            ->where('source',"Mcdonalds Deductions")
+            ->get()
+            ->sum('amount');
+            return $cod;
+        }) 
+        ->addColumn('dc', function($rider) use ($month) {
+            $dc=Rider_Account::where('rider_id',$rider->rider_id)
+            ->whereNotNull('income_zomato_id')
+            ->where('source',"DC Deductions")
+            ->whereMonth('month', $month)
+            ->get()
+            ->sum('amount');
+            return $dc;
+        }) 
+        ->addColumn('rta_fine', function($rider) use ($month) {
+            $rta_fine=Rider_Account::where('rider_id',$rider->rider_id)
+            ->whereNotNull('id_charge_id')
+            ->whereMonth('month', $month)
+            ->get()
+            ->sum('amount');
+            return $rta_fine;
+        }) 
+        ->addColumn('dicipline_fine', function($rider) use ($month) {
+            return '123';
+        }) 
+        ->addColumn('total_deduction', function($rider) use ($month) {
+            $total_deduction=Rider_Account::where('rider_id',$rider->rider_id)
+            ->where(function($q) {
+                $q->where('type', "cr_payable")
+                  ->orWhere('type', 'dr');
+            })
+            ->where('payment_status','pending')
+            ->whereMonth('month', $month)
+            ->get()
+            ->sum('amount');
+            return $total_deduction;
+        }) 
+        ->addColumn('aed_hours', function($rider) use ($month) {
+            $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('log_in_hours_payable');
+
+            return $number_of_hours_sum * 7.87;
+        })
+        ->addColumn('total_salary', function($rider) use ($month) {
+            $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('log_in_hours_payable');
+            if($number_of_hours_sum > 286) $number_of_hours_sum = 286;
+            $number_of_hours_sum = $number_of_hours_sum * 7.87;
+            
+            $aed_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('trips_payable');
+            $aed_trips_sum = $aed_trips_sum * 2;
+            
+            $total_salary =$number_of_hours_sum + $aed_trips_sum;
+            return $total_salary;
+        })
         
         
-        ->rawColumns(['rider_name','bike_number','advance'])
+        ->rawColumns(['rider_name','bike_number','advance', 'salik', 'sim_charges', 'dc', 'cod', 'rta_fine', 'total_deduction', 'aed_hours', 'total_salary'])
         ->make(true);
     }
 }

@@ -37,7 +37,7 @@ margin-left: 10px;
  @include('client.includes.message')
                  <div class="kt-portlet__body">
                             <div>
-                                 <select class="form-control kt-select2" id="kt_select2_3_5" name="month_id" >
+                                 <select class="form-control bk-select2" id="kt_select2_3_5" name="month_id" >
                                 <option >Select Month</option>
                                 <option value="01">January</option>   
                                 <option value="02">Febuary</option>   
@@ -108,7 +108,13 @@ margin-left: 10px;
                         <th>Advance</th> 
                         <th>Salik</th>
                         <th>Sim Charges</th>
-                        <th>Poor Performance</th>
+                        <th>DC</th>
+                        <th>COD</th>
+                        <th>RTA Fine</th>
+                        <th>Dicipline Fine</th>
+                        <th>Total Deduction</th>
+                        <th>AED Hours</th>
+                        <th>Total</th>
 
                         <th class="d-none">h1</th>
                         <th class="d-none">h2</th>
@@ -360,14 +366,15 @@ $(function() {
             { "data": 'rider_name', "name": 'rider_name' },
             { "data": 'bike_number', "name": 'bike_number' },
             { "data": 'advance', "name": 'advance' },
-            // { "data": 'amount_to_be_paid_against_orders_completed', "name": 'amount_to_be_paid_against_orders_completed' },
-            // { "data": 'ncw_incentives', "name": 'ncw_incentives' },
-            // // { "data": 'actions', "name": 'actions' }
-            // { "data": 'tips_payouts', "name": 'tips_payouts' },
-            // { "data": 'mcdonalds_deductions', "name": 'mcdonalds_deductions' },
-            // { "data": 'dc_deductions', "name": 'dc_deductions' },
-            // { "data": 'date', "name": 'date' },
-            // { "data": 'feid', "name": 'feid' },
+            { "data": 'salik', "name": 'salik' },
+            { "data": 'sim_charges', "name": 'sim_charges' },
+            { "data": 'dc', "name": 'dc' },
+            { "data": 'cod', "name": 'cod' },
+            { "data": 'rta_fine', "name": 'rta_fine' },
+            { "data": 'dicipline_fine', "name": 'dicipline_fine' },
+            { "data": 'total_deduction', "name": 'total_deduction' },
+            { "data": 'aed_hours', "name": 'aed_hours' },
+            { "data": 'total_salary', "name": 'total_salary' },
         ];
         _settings.columnDefs=[
             {
