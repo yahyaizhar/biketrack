@@ -158,7 +158,6 @@ Route::group([
     Route::get('/bike/{bike}/assigned', 'ClientController@bike_assigned_show')->name('bike.bike_assigned');
     Route::get('/bike/{id}/assignRider', 'ClientController@bike_assigned_toRider')->name('bike.bike_assignRiders');
     Route::put('/bike/{rider}/assignRider', 'ClientController@updateAssignedBike')->name('bike.bike_assignRiders');
-    Route::delete('/rider/{rider_id}/removeBike/{bike_id}', 'ClientController@removeBikes')->name('admin.removeBikes');
     Route::post('/bike/{bike}/updateStatus', 'ClientController@updateStatusbike')->name('bike.updateStatusbike');
     Route::delete('/bike/{bike_id}', 'ClientController@mutlipleDeleteBike')->name('bike.mutlipleDeleteBike');
     Route::get('/bike/Edit/{id}','bikeController@bike_edit')->name('Bike.edit_bike');
@@ -171,6 +170,7 @@ Route::group([
     Route::get('view/rider/salik/{id}','SalikController@rider_salik')->name('rider.rider_salik');
     Route::get('/bike/rent/view','bikeController@create_bike_rent')->name('admin.create_bike_rent');
     Route::post('/insert/bike/rent','bikeController@post_bike_rent')->name('admin.post_bike_rent');
+    Route::get('/bike/deactive/{rider_id}/date/{bike_id}','bikeController@deactive_date')->name('admin.deactive_date');
 // salik 
     Route::resource('/salik', 'SalikController', [
     'as' => 'admin'
@@ -421,6 +421,7 @@ Route::group([
     Route::delete('/sim/{rider_id}/removeSim/{sim_id}', 'SimController@removeSim')->name('Sim.removeSim');
     Route::get('/view/{rider_id}/simHistory','SimController@sim_History')->name('Sim.simHistory');
     Route::get('/change/sim/{rider_id}/history/{assign_sim_id}','SimController@sim_dates_History')->name('Sim.sim_dates_History');
+    Route::get('/sim/deactive/{rider_id}/date/{sim_id}','SimController@sim_deactive_date')->name('admin.sim_deactive_date');
 // end Sim history section 
 });
 // End Sim

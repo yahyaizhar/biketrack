@@ -190,4 +190,20 @@ class bikeController extends Controller
       
     }
     // end Bike Rent
+    public function deactive_date(Request $request,$rider_id,$assign_bike_id){ 
+      $assign_bike=Assign_bike::where("rider_id",$rider_id)->where("id",$assign_bike_id)->get()->first();
+    if (isset($assign_bike)) {
+        $assign_bike->updated_at=Carbon::parse($request->updated_at)->format("Y-m-d");  
+        $assign_bike->status='deactive';
+    }
+    $assign_bike->update();
+    if (isset($assign_bike->bike_id)) {
+      $bikes_availability=bike::find($assign_bike->bike_id);    
+      $bikes_availability->availability='yes'; 
+    }
+    $bikes_availability->update();
+      return response()->json([
+        'updated_at' => $assign_bike->updated_at
+    ]);
+    }
 }

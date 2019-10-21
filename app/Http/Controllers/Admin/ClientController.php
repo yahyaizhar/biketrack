@@ -347,25 +347,6 @@ public function bike_assigned_show($id){
 
 return redirect()->route('bike.bike_assigned', ['id'=>$rider->id]) ;
 }
-  public function removeBikes($rider_id,$bike_id){
-    
-    $record = Assign_bike::where('rider_id', $rider_id)->where('bike_id', $bike_id)->orderBy('created_at', 'desc')->first();
-   
-    if($record->bike_id){
-    $bikes_availability=bike::find($record->bike_id);    
-    $bikes_availability->availability='yes'; 
-    $bikes_availability->save();
-    
-}
-$record->status='deactive';
-$record->save();
-
-
-    return response()->json([
-        'status' => true
-    ]);
-   
-  }
   public function mutlipleDeleteBike(Request $request)
   {
     $bike_id_array =$request->bike_id;

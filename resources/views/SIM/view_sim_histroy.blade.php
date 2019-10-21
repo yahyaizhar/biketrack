@@ -153,6 +153,36 @@ function updateDates(rider_id,assign_sim_id,created,updated){
     </div>
     <!--end:: Widgets/Applications/User/Profile3-->    
 </div>
+<div>
+        <div class="modal fade" id="deactive_date" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header border-bottom-0">
+                        <h5 class="modal-title" id="exampleModalLabel">Deactive Sim</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form class="kt-form" id="dective_sim_date"  enctype="multipart/form-data">
+                        <div class="container">
+                            <input type="hidden" id="sim_id" >
+                            <div class="form-group">
+                                <label>Started Month:</label>
+                                <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::parse($history['created_at'])->format('M d, Y')}}" required readonly class="month_picker form-control" name="created_at" id="2nd_created" placeholder="Enter Month" value="">
+                            </div>
+                            <div class="form-group">
+                                <label>Ended Month:</label>
+                                <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::parse($history['updated_at'])->format('M d, Y')}}" required readonly class="month_picker form-control" name="updated_at" placeholder="Enter Month" value="">
+                            </div>
+                            <div class="modal-footer border-top-0 d-flex justify-content-center">
+                                <button class="upload-button btn btn-success">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 @endif
 @endforeach
 {{-- End active sim --}}
@@ -272,6 +302,7 @@ function updateDates(rider_id,assign_sim_id,created,updated){
         </div>
     </div>
 </div>
+<input type="hidden" name="rider_id"  >
 @endsection
 @section('foot')
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
@@ -300,13 +331,80 @@ function updateDates(rider_id,assign_sim_id,created,updated){
             $(textbox_id).val('');
         }
     }
-    function deleteSim(sim_id, rider_id)
-        {
-            // console.log(client_id + ' , ' + rider_id);
-            var url = "{{ url('admin/sim') }}" + "/" + rider_id + "/removeSim/"+sim_id ;
-            console.log(url);
-            sendDeleteRequest(url, true);
+function deleteSim(rider_id, sim_id,url, enablePageReload = false, reloadLocation = null, ajaxReloadId){
+    var active_date=$("#2nd_created").attr("data-month");
+    $('[name="rider_id"]').val(rider_id);
+    swal.fire({
+        title: 'Click to select the deactive date',
+        type: 'warning',
+        showCancelButton: true,
+        // confirmButtonText: false,
+        showConfirmButton: false,
+        footer:'<a class="rise-modal text-warning" data-sim="'+sim_id+'" id="deactive_sim_date">Last Active Date: '+active_date+'</a>',
+        });
+    }
+    $(document).on("click","#deactive_sim_date",function(){
+    $("#deactive_date").modal("show");
+    $(".swal2-cancel").trigger("click");
+    var rider_id=$('[name="rider_id"]').val();
+    var assign_sim_id=$("#deactive_sim_date").attr('data-sim');
+    $("form#dective_sim_date").on("submit",function(e){
+        e.preventDefault();
+        var _form = $(this);
+        var _modal = _form.parents('.modal');
+        var url = "{{ url('admin/sim/deactive') }}" + "/" + rider_id + "/date" + "/" + assign_sim_id;
+        console.log(url);
+        swal.fire({
+            title: 'Are you sure?',
+            text: "You want update status!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes!'
+        }).then(function(result) {
+            if (result.value) {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+            $.ajax({
+                url : url,
+                type : 'GET',
+                data: _form.serializeArray(),
+                beforeSend: function() {            
+                    $('.loading').show();
+                },
+                complete: function(){
+                    $('.loading').hide();
+                },
+                success: function(data){
+                    console.log(data);
+                    _modal.modal('hide');
+                    swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Record updated successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    window.location.reload();
+                },
+                error: function(error){
+                    _modal.modal('hide');
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Unable to update.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
         }
-        
+    });
+});
+
+});
 </script>
 @endsection
