@@ -53,6 +53,7 @@
                             <input type="checkbox" id="select_all" >
                         </th> --}}
                         <th>ID</th>
+                        <th>Owner</th>
                         <th>Brand</th>
                         <th>Model</th>
                         <th>Bike Number</th>
@@ -100,6 +101,7 @@ $('.total_entries').remove();
         columns: [
             //  { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
             { data: 'id', name: 'id' },
+            { data: 'owner', name: 'owner' }, 
             { data: 'brand', name: 'brand' },            
             { data: 'model', name: 'model' },
             { data: 'bike_number', name: 'bike_number' },

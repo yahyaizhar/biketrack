@@ -166,10 +166,10 @@ function updateDates(rider_id,assign_sim_id,created,updated){
                     <form class="kt-form" id="dective_sim_date"  enctype="multipart/form-data">
                         <div class="container">
                             <input type="hidden" id="sim_id" >
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label>Started Month:</label>
                                 <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::parse($history['created_at'])->format('M d, Y')}}" required readonly class="month_picker form-control" name="created_at" id="2nd_created" placeholder="Enter Month" value="">
-                            </div>
+                            </div> --}}
                             <div class="form-group">
                                 <label>Ended Month:</label>
                                 <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::parse($history['updated_at'])->format('M d, Y')}}" required readonly class="month_picker form-control" name="updated_at" placeholder="Enter Month" value="">
@@ -332,31 +332,16 @@ function updateDates(rider_id,assign_sim_id,created,updated){
         }
     }
 function deleteSim(rider_id, sim_id,url, enablePageReload = false, reloadLocation = null, ajaxReloadId){
-    var active_date=$("#2nd_created").attr("data-month");
-    $('[name="rider_id"]').val(rider_id);
-    swal.fire({
-        title: 'Click to select the deactive date',
-        type: 'warning',
-        showCancelButton: true,
-        // confirmButtonText: false,
-        showConfirmButton: false,
-        footer:'<a class="rise-modal text-warning" data-sim="'+sim_id+'" id="deactive_sim_date">Last Active Date: '+active_date+'</a>',
-        });
-    }
-    $(document).on("click","#deactive_sim_date",function(){
     $("#deactive_date").modal("show");
-    $(".swal2-cancel").trigger("click");
-    var rider_id=$('[name="rider_id"]').val();
-    var assign_sim_id=$("#deactive_sim_date").attr('data-sim');
     $("form#dective_sim_date").on("submit",function(e){
         e.preventDefault();
         var _form = $(this);
         var _modal = _form.parents('.modal');
-        var url = "{{ url('admin/sim/deactive') }}" + "/" + rider_id + "/date" + "/" + assign_sim_id;
+        var url = "{{ url('admin/sim/deactive') }}" + "/" + rider_id + "/date" + "/" + sim_id;
         console.log(url);
         swal.fire({
             title: 'Are you sure?',
-            text: "You want update status!",
+            text: "You want unassign Sim!",
             type: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Yes!'
@@ -404,7 +389,7 @@ function deleteSim(rider_id, sim_id,url, enablePageReload = false, reloadLocatio
         }
     });
 });
+}
 
-});
 </script>
 @endsection

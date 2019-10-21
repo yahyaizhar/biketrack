@@ -127,10 +127,10 @@
                                 <form class="kt-form" id="dective_bike_date"  enctype="multipart/form-data">
                                     <div class="container">
                                         <input type="hidden" id="bike_id" >
-                                        <div class="form-group">
+                                        {{-- <div class="form-group">
                                             <label>Started Month:</label>
                                             <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::parse($assign_bike->created_at)->format('M d, Y')}}" required readonly class="month_picker form-control" name="created_at" id="2nd_created" placeholder="Enter Month" value="">
-                                        </div>
+                                        </div> --}}
                                         <div class="form-group">
                                             <label>Ended Month:</label>
                                             <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::parse($assign_bike->updated_at)->format('M d, Y')}}" required readonly class="month_picker form-control" name="updated_at" placeholder="Enter Month" value="">
@@ -259,29 +259,16 @@
 
 function deleteBike(rider_id, bike_id,url, enablePageReload = false, reloadLocation = null, ajaxReloadId)
 {
-    var active_date=$("#2nd_created").attr("data-month");
-    swal.fire({
-        title: 'Click to select the deactive date',
-        type: 'warning',
-        showCancelButton: true,
-        // confirmButtonText: false,
-        showConfirmButton: false,
-        footer:'<a class="rise-modal text-warning" data-bike="'+bike_id+'" id="deactive_bike_date">Last Active Date: '+active_date+'</a>',
-    });
-}
-$(document).on("click","#deactive_bike_date",function(){
     $("#deactive_date").modal("show");
-    $(".swal2-cancel").trigger("click");
-    var rider_id=$("#rider_id").val();
-    var assign_bike_id=$("#deactive_bike_date").attr('data-bike');
     $("form#dective_bike_date").on("submit",function(e){
         e.preventDefault();
         var _form = $(this);
         var _modal = _form.parents('.modal');
-        var url = "{{ url('admin/bike/deactive') }}" + "/" + rider_id + "/date" + "/" + assign_bike_id;
+        var url = "{{ url('admin/bike/deactive') }}" + "/" + rider_id + "/date" + "/" + bike_id;
+        console.log(url);
         swal.fire({
             title: 'Are you sure?',
-            text: "You want update status!",
+            text: "You want unassign bike!",
             type: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Yes!'
@@ -329,8 +316,8 @@ $(document).on("click","#deactive_bike_date",function(){
         }
     });
 });
+}
 
-});
 
 
     </script>

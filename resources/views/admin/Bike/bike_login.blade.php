@@ -29,10 +29,16 @@
                 <form class="kt-form" action="{{ route('bike.bike_create') }}" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="kt-portlet__body">
-                        
+                            <div class="form-group">
+                                <label>Owner:</label>
+                                <select class="form-control bk-select2 @if($errors->has('owner')) invalid-field @endif kt-select2" id="kt_select2_3" name="owner" placeholder="Enter Owner" value="{{ old('owner') }}">
+                                    <option value="self">Rider Own Bike</option>
+                                    <option value="kr_bike">KR-Bike</option>
+                                    <option value="rent">Rental Bike</option>
+                                </select> 
+                            </div>
                         <div class="form-group">
                             <label>Model(2015):</label>
-                            {{-- <input  autocomplete="off" list="model" class="form-control @if($errors->has('model')) invalid-field @endif" name="model"  > --}}
                             <select class="form-control @if($errors->has('model')) invalid-field @endif kt-select2" id="kt_select2_3" name="model" placeholder="Enter model" value="{{ old('model') }}">
                                     <option value="2010">2010</option>
                                     <option value="2011">2011</option>

@@ -37,6 +37,7 @@ class bikeController extends Controller
     }
     public function create_bike(Request $r){
       $bike_object=new bike;
+      $bike_object->owner = $r->owner;
       $bike_object->model = $r->model;
       $bike_object->bike_number = $r->bike_number;
       $bike_object->mulkiya_number = $r->mulkiya_number;
@@ -96,6 +97,7 @@ class bikeController extends Controller
     ]);
     $bike_id_array =$request->id;
     $bike = bike::find($bike_id_array);
+    $bike->owner = $request->owner;
     $bike->model = $request->model;
     $bike->bike_number = $request->bike_number;
     // $bike->availability = $request->availability;

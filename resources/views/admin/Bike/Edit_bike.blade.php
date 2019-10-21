@@ -10,7 +10,6 @@
                     <div class="kt-portlet__head-label">
                         <h3 class="kt-portlet__head-title">
                             Edit Bike Information
-                            
                         </h3>
                     </div>
                 </div>
@@ -23,8 +22,15 @@
                     {{ csrf_field() }}
                     <div class="kt-portlet__body">
                         <div class="row">
-                            <div class="col-lg-6 col-md-6 col-sm-12">
-                                
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="form-group">
+                                    <label>Owner:</label>
+                                    <select class="form-control bk-select2 @if($errors->has('owner')) invalid-field @endif kt-select2" id="kt_select2_3" name="owner" placeholder="Enter Owner" value="{{ old('owner') }}">
+                                        <option @if ($bike->owner=="self") selected @endif value="self">Rider Own Bike</option>
+                                        <option @if ($bike->owner=="kr_bike") selected @endif  value="kr_bike">KR-Bike</option>
+                                        <option @if ($bike->owner=="rent") selected @endif  value="rent">Rental Bike</option>
+                                    </select> 
+                                </div>
                                 <div class="form-group">
                                     <label>Model(2015):</label>
                                     {{-- <input type="text" class="form-control @if($errors->has('model')) invalid-field @endif" name="model" placeholder="Model" value="{{ $bike->model }}"> --}}

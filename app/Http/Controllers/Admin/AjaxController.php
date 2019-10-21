@@ -313,6 +313,9 @@ class AjaxController extends Controller
         ->addColumn('id', function($bike){
             return '1000'.$bike->id;
         })
+        ->addColumn('owner', function($bike){
+           return '<strong>'.$bike->owner.'</strong>';
+        })
         ->addColumn('assigned_to', function($bike){
             // $bike_id = $bike->id;
             $assign_bike=\App\Assign_bike::where('bike_id', $bike->id)->where('status','active')->get()->first();
@@ -369,7 +372,7 @@ class AjaxController extends Controller
         // <a class="dropdown-item" href="'.route('bike.bike_assigned', $bike).'"><i class="fa fa-eye"></i> View Bikes</a>
         // <a class="dropdown-item" href="'.route('bike.bike_assignRiders', $bike).'"><i class="fa fa-edit"></i> Assign Bikes</a>
                     
-        ->rawColumns(['model','brand','chassis_number', 'Bike_number', 'detail', 'assigned_to','availability', 'status'])
+        ->rawColumns(['model','owner','brand','chassis_number', 'Bike_number', 'detail', 'assigned_to','availability', 'status'])
         ->make(true);
     }
     public function getSalary_by_developer()

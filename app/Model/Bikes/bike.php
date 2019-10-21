@@ -55,7 +55,7 @@ class bike extends Authenticatable
     // ends logging
 
     protected $fillable = [
-        'model','brand','chassis_number','mulkiya_number','mulkiya_expiry','mulkiya_picture','mulkiya_picture_back','bike_number','rider_id','availability','other','status',
+        'model','owner','brand','chassis_number','mulkiya_number','mulkiya_expiry','mulkiya_picture','mulkiya_picture_back','bike_number','rider_id','availability','other','status',
        ];
    
        

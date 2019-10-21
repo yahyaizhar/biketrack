@@ -15,6 +15,7 @@ class CreateBikesTable extends Migration
     {
         Schema::create('bikes', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('owner')->nullable();
             $table->string('model')->nullable();
             $table->string('bike_number')->nullable();
             $table->string('brand')->nullable();
