@@ -1,3 +1,30 @@
+<style>
+    span.kt-menu__link-text {
+        color:#5d78ff !important;
+        font-size: 20px;
+}
+.kt-menu__subnav{
+    /* border-left: 2px solid black; */
+    margin-left:25px !important;
+   
+}
+.kt-menu__subnav .kt-menu__subnav .kt-menu__link-text {
+        font-size: 11px;
+    color: #52ea81 !important;
+}
+.kt-menu__link {
+    background-color: transparent  !important;
+    padding-left: 20px !important;  
+    padding: 0 10px !important;
+}   
+.kt-menu__subnav .kt-menu__link-text {
+    color: #aaafac !important;
+}
+.kt-menu__ver-arrow{
+color: #5d78ff !important;
+}
+
+</style>     
 <button class="kt-aside-close " id="kt_aside_close_btn"><i class="la la-close"></i></button>
 <div class="kt-aside  kt-aside--fixed  kt-grid__item kt-grid kt-grid--desktop kt-grid--hor-desktop" id="kt_aside">
 
@@ -93,7 +120,7 @@ if (Auth::user()->type=="su") {
 @endphp 
 <div class="kt-aside-menu-wrapper kt-grid__item kt-grid__item--fluid" id="kt_aside_menu_wrapper">
         <div id="kt_aside_menu" class="kt-aside-menu " data-ktmenu-vertical="1" data-ktmenu-scroll="1" data-ktmenu-dropdown-timeout="500">
-            <ul class="kt-menu__nav ">
+            <ul class="kt-menu__nav">
                 <li class="kt-menu__item  @if(substr(Request::url(), -6) == "/admin") kt-menu__item--active @endif " aria-haspopup="true"><a href="{{ route('admin.home') }}" class="kt-menu__link "><span class="kt-menu__link-icon"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" class="kt-svg-icon">
                     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                         <polygon id="Bound" points="0 0 24 0 24 24 0 24" />

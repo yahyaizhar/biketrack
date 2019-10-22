@@ -123,13 +123,13 @@ function updateDates(rider_id,assign_sim_id,created,updated){
         
                                 <div class="kt-widget__action">
                                   
-                                    <button onclick="deleteSim({{$rider->id}},{{$hasSim['id']}})" class="btn btn-label-info btn-sm btn-upper">Remove</button>&nbsp;
+                                    <button onclick="deleteSim({{$rider->id}},{{$hasSim['id']}})" class="btn btn-label-info btn-sm btn-upper">Unassign Sim</button>&nbsp;
                                 {{-- <button class="btn btn-label-success btn-sm btn-upper"><span class="label label-success">sohaib</span></button> --}}
                                  </div>
                             </div>
         
                             <div class="kt-widget__subhead">
-                                <a><i class="flaticon2-calendar-3"></i>Allowed Balance:&nbsp;{{$history->allowed_balance}} </a>
+                                <a onclick="updateAllowedBalance({{$history->allowed_balance}},{{$rider->id}},{{$hasSim['id']}},this)"><i class="flaticon2-calendar-3"></i>Allowed Balance:&nbsp;<span class="balance_allowed">{{$history->allowed_balance}}</span></a>
                                 {{-- <a><i class="flaticon2-calendar-3"></i>{{ $bike1['availability'] }} </a> --}}
                                 {{-- <a><i class="fa fa-motorcycle"></i>{{ $bike1['bike_number'] }}</a> --}}
                                 @php
@@ -139,7 +139,7 @@ function updateDates(rider_id,assign_sim_id,created,updated){
                                 $updated=Carbon\Carbon::parse($history['updated_at'])->format('F d, Y');
                               @endphp
                                 @if($history->status=='active')
-                                 <h6 style="float:right;color:green;" onclick="updateDates({{$rider->id}},{{$history['id']}},'{{$created}}','{{$updated}}')">{{gmdate("d-m-Y", $mytimestamp)}}</h6> 
+                                <h6 style="float:right;color:green;" onclick="updateDates({{$rider->id}},{{$history['id']}},'{{$created}}','{{$updated}}')">{{gmdate("d-m-Y", $mytimestamp)}}</h6> 
                             
                             @else
                             <h6 style="float:right;color:green;" onclick="updateDates({{$rider->id}},{{$history['id']}},'{{$created}}','{{$updated}}')">{{gmdate("d-m-Y", $mytimestamp)}} {{'to'}} {{gmdate("d-m-Y", $timestampupdated)}}</h6>
@@ -158,7 +158,7 @@ function updateDates(rider_id,assign_sim_id,created,updated){
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header border-bottom-0">
-                        <h5 class="modal-title" id="exampleModalLabel">Deactive Sim</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Unassign Sim</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                         </button>
@@ -171,11 +171,11 @@ function updateDates(rider_id,assign_sim_id,created,updated){
                                 <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::parse($history['created_at'])->format('M d, Y')}}" required readonly class="month_picker form-control" name="created_at" id="2nd_created" placeholder="Enter Month" value="">
                             </div> --}}
                             <div class="form-group">
-                                <label>Ended Month:</label>
+                                <label>When Sim is unassigned:</label>
                                 <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::parse($history['updated_at'])->format('M d, Y')}}" required readonly class="month_picker form-control" name="updated_at" placeholder="Enter Month" value="">
                             </div>
                             <div class="modal-footer border-top-0 d-flex justify-content-center">
-                                <button class="upload-button btn btn-success">Submit</button>
+                                <button class="upload-button btn btn-success">Save</button>
                             </div>
                         </div>
                     </form>
@@ -302,6 +302,34 @@ function updateDates(rider_id,assign_sim_id,created,updated){
         </div>
     </div>
 </div>
+
+<div>
+        <div class="modal fade" id="allowed_balance" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header border-bottom-0">
+                        <h5 class="modal-title" id="exampleModalLabel">Change Created Or Updated Dates</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form class="kt-form" id="sim_allowed_balance"  enctype="multipart/form-data">
+                        <div class="container">
+                            <input type="hidden" name="rider_id" id="rider_id" >
+                            <input type="hidden" name="assign_sim_id" id="assign_sim_id">
+                            <div class="form-group">
+                                <label>Allowed Balance:</label>
+                                <input  type="number" required class="form-control" name="allowed_balance" placeholder="Enter Balance" value="">
+                            </div>
+                            <div class="modal-footer border-top-0 d-flex justify-content-center">
+                                <button class="upload-button btn btn-success">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 <input type="hidden" name="rider_id"  >
 @endsection
 @section('foot')
@@ -309,6 +337,66 @@ function updateDates(rider_id,assign_sim_id,created,updated){
 <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
 
 <script>
+    function updateAllowedBalance(allowed_balance,rider_id,sim_id,_this){
+        $("#allowed_balance").modal("show");
+        $('[name="allowed_balance"]').val(allowed_balance);
+        console.log(_this);
+        $("form#sim_allowed_balance").on("submit",function(e){
+        e.preventDefault();
+        var _form = $(this);
+        var _modal = _form.parents('.modal');
+        var url = "{{ url('admin/sim/allowed/balance') }}" + "/" + rider_id + "/update" + "/" + sim_id;
+        swal.fire({
+            title: 'Are you sure?',
+            text: "You want update Allowed Balance!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes!'
+        }).then(function(result) {
+            if (result.value) {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+            $.ajax({
+                url : url,
+                type : 'GET',
+                data: _form.serializeArray(),
+                beforeSend: function() {            
+                    $('.loading').show();
+                },
+                complete: function(){
+                    $('.loading').hide();
+                },
+                success: function(data){
+                    $(_this).find(".balance_allowed").text(data.status.allowed_balance);
+                    _modal.modal('hide');
+                    swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Record updated successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    // window.location.reload(); 
+                },
+                error: function(error){
+                    _modal.modal('hide');
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Unable to update.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+        }
+    });
+});
+    }
     function sendSMS(id)
     {
         var rider_id = id;

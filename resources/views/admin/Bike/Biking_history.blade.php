@@ -54,7 +54,7 @@
                 
                                         <div class="kt-widget__action">
                                             @if ($assign_bike->status==='active')
-                                            <button onclick="deleteBike({{$rider->id}},{{$assign_bike->id}})" class="btn btn-label-info btn-sm btn-upper">Remove</button>&nbsp;
+                                            <button onclick="deleteBike({{$rider->id}},{{$assign_bike->id}})" class="btn btn-label-info btn-sm btn-upper">Unassign Bike</button>&nbsp;
                                             @endif
                                         {{-- <button class="btn btn-label-success btn-sm btn-upper"><span class="label label-success">{{$bike_id['status']}}</span></button> --}}
                                         </div>
@@ -119,7 +119,7 @@
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-header border-bottom-0">
-                                    <h5 class="modal-title" id="exampleModalLabel">Deactive Bike</h5>
+                                    <h5 class="modal-title" id="exampleModalLabel">Unassign Bike</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                     </button>
@@ -132,11 +132,11 @@
                                             <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::parse($assign_bike->created_at)->format('M d, Y')}}" required readonly class="month_picker form-control" name="created_at" id="2nd_created" placeholder="Enter Month" value="">
                                         </div> --}}
                                         <div class="form-group">
-                                            <label>Ended Month:</label>
+                                            <label>When bike is unassigned:</label>
                                             <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::parse($assign_bike->updated_at)->format('M d, Y')}}" required readonly class="month_picker form-control" name="updated_at" placeholder="Enter Month" value="">
                                         </div>
                                         <div class="modal-footer border-top-0 d-flex justify-content-center">
-                                            <button class="upload-button btn btn-success">Submit</button>
+                                            <button class="upload-button btn btn-success">Save</button>
                                         </div>
                                     </div>
                                 </form>

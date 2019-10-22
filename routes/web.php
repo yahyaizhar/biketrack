@@ -422,6 +422,7 @@ Route::group([
     Route::get('/view/{rider_id}/simHistory','SimController@sim_History')->name('Sim.simHistory');
     Route::get('/change/sim/{rider_id}/history/{assign_sim_id}','SimController@sim_dates_History')->name('Sim.sim_dates_History');
     Route::get('/sim/deactive/{rider_id}/date/{sim_id}','SimController@sim_deactive_date')->name('admin.sim_deactive_date');
+    Route::get('/sim/allowed/balance/{rider_id}/update/{sim_id}','SimController@update_allowed_abalance')->name('Sim.update_allowed_abalance');
 // end Sim history section 
 });
 // End Sim
