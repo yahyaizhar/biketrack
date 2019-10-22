@@ -66,7 +66,9 @@
             <table class="table table-striped- table-hover table-checkable table-condensed" id="bike-table">
                 <thead>
                     <tr>
+                        <th>FEID</th>
                         <th>Rider Name</th>
+                        <th>Area</th>
                         <th>Range1 ADT</th>
                         <th>Range2 ADT</th>
                         <th>Improvement %</th>                       
@@ -76,10 +78,10 @@
         </div>
     </div>
 </div>
-@php
+{{-- @php
     $model = new \App\Model\Accounts\Fuel_Expense;
     echo get_class($model);
-@endphp
+@endphp --}}
 @endsection
 @section('foot')
 <script src="{{ asset('dashboard/assets/vendors/custom/datatables/datatables.bundle.js') }}" type="text/javascript"></script>
@@ -102,14 +104,31 @@
 var riders_data = [];
 
 function export_data(){
+    var r1d1=biketrack.getUrlParameter('r1d1');
+    var r1d2=biketrack.getUrlParameter('r1d2');
+    var r2d1=biketrack.getUrlParameter('r2d1');
+    var r2d2=biketrack.getUrlParameter('r2d2');
+    var r1=(new Date(r1d1)).format('dd mmm');
+    var r2=(new Date(r1d2)).format('dd mmm');
+    var r3=(new Date(r2d1)).format('dd mmm');
+    var r4=(new Date(r2d2)).format('dd mmm');
+    var date1=r1 +'-'+r2;
+    var date2=r3 +'-'+r4;
     var _perData=riders_data;
     var export_details=[];
     _perData.forEach(function(item,index) { 
         export_details.push({
+        "FEID":item.feid,    
         "Rider Name":item.rider_id,
+        "Locality":item.area,
+        "DATE 1":date1,
         "ADT 1":item.adt1,
+        "DATE 2":date2,
         "ADT 2":item.adt2,
         "Improvements":item.improvements,
+        "Called Over":"",
+        "Status":"",
+        "Operator Comments":"",
     });
 });
         var export_data = new CSVExport(export_details, "Kingriders ADT Performance");
@@ -228,6 +247,7 @@ var getData = function(url){
             keys.forEach(function(_d,_i) {
                 var __data = JSON.parse(JSON.stringify(_data[_d]).toLowerCase());
                 riders_data.push(__data);
+                console.log(riders_data)
             });
             $('.total_entries').remove();
             $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
@@ -236,7 +256,6 @@ var getData = function(url){
             url : url,
             dataSrc: function(json) {
                 var rows = [];
-                console.log(json);
                 for (var i=0;i<json.data.length;i++) {
                     //skip rows "if a condition is met"
                     //here just any rows except row #1
@@ -248,7 +267,9 @@ var getData = function(url){
             }
         },
         columns: [
-            { data: 'rider_id', name: 'rider_id' },            
+            { data: 'feid', name: 'feid' },
+            { data: 'rider_id', name: 'rider_id' },    
+            { data: 'area', name: 'area' },        
             { data: 'adt1', name: 'adt1' },
             { data: 'adt2', name: 'adt2' },
             { data: 'improvements', name: 'improvements' },

@@ -1821,6 +1821,20 @@ class AjaxController extends Controller
            ->addColumn('rider_id', function($rider){
             return $rider->name;
            })
+           ->addColumn('area', function($rider){
+            $zomato=Rider_performance_zomato::where('rider_id',$rider->id)->get()->first();
+            if(isset($zomato)){
+            return $zomato->area;
+            }
+            return 'no area';
+           })
+           ->addColumn('feid', function($rider){
+               $zomato=Rider_performance_zomato::where('rider_id',$rider->id)->get()->first();
+               if(isset($zomato)){
+            return $zomato->feid;
+            }
+            return 'no feid';
+           })
            ->addColumn('adt1', function($rider) use ($ranges){
             $client=$rider->clients()->get()->first();
             if(isset($client)){
@@ -1886,7 +1900,7 @@ class AjaxController extends Controller
             }
                 return '0%';
             })
-           ->rawColumns(['rider_id','adt1','adt2','improvements'])
+           ->rawColumns(['feid','area','rider_id','adt1','adt2','improvements'])
            ->make(true);
        }
        
