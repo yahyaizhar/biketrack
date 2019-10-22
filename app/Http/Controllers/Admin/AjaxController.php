@@ -1829,9 +1829,10 @@ class AjaxController extends Controller
             return 'no area';
            })
            ->addColumn('feid', function($rider){
-               $zomato=Rider_performance_zomato::where('rider_id',$rider->id)->get()->first();
-               if(isset($zomato)){
-            return $zomato->feid;
+            //    $zomato=Rider_performance_zomato::where('rider_id',$rider->id)->get()->first();
+            $feid=Client_Rider::where("client_id","2")->where('rider_id',$rider->id)->get()->first();
+               if(isset($feid)){
+            return $feid->client_rider_id;
             }
             return 'no feid';
            })
