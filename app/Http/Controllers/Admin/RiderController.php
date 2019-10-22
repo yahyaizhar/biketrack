@@ -285,6 +285,7 @@ class RiderController extends Controller
                 $obj = [];
                 $obj['import_id']=$unique_id;
                 $obj['date']=isset($item['date'])?$date:null;
+                $obj['area']=isset($item['area'])?$item['area']:null;
                 $obj['feid']=isset($item['feid'])?$item['feid']:null;
                 $obj['adt']=isset($item['adt'])?$item['adt']:null;
                 $obj['trips']=isset($item['trips'])?$item['trips']:null;
@@ -302,6 +303,7 @@ class RiderController extends Controller
                 $objUpdate['id']=$zp_found->id;
                 $objUpdate['import_id']=$unique_id;
                 $objUpdate['date']=isset($item['date'])?$date:null;
+                $objUpdate['area']=isset($item['area'])?$item['area']:null;
                 $objUpdate['feid']=isset($item['feid'])?$item['feid']:null;
                 $objUpdate['adt']=isset($item['adt'])?$item['adt']:null;
                 $objUpdate['trips']=isset($item['trips'])?$item['trips']:null;

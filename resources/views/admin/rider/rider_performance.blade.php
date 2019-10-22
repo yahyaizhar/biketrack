@@ -68,6 +68,7 @@ margin-left: 10px;
                         </th> --}}
                         <th>FIED</th>
                         <th>Rider Name</th>
+                        <th>Area</th>
                         <th>Date</th> 
                         <th>Trips</th>
                         <th>Adt</th>
@@ -162,6 +163,7 @@ function export_data(){
         export_details.push({
         "FIED":item.feid,
         "Date":item.date,
+        "Area":item.area,
         "Trips":item.trips,
         "ADT":item.adt,
         "Total Logedin Hours":item.total_loged_in_hours,
@@ -324,6 +326,7 @@ $(function() {
         // { "data": 'new_id', "name": 'new_id' },
             { "data": 'feid', "name": 'feid' },
             { "data": 'rider_name', "name": 'rider_name' },
+            { "data": 'area', "name": 'area' },
             { "data": 'date', "name": 'date' },
             { "data": 'trips', "name": 'trips' },
             { "data": 'adt', "name": 'adt' },
@@ -338,21 +341,22 @@ $(function() {
         _settings.responsive=false;
         _settings.columnDefs=[
             {
-                "targets": [ 7,8,9,10,11 ],
+                "targets": [ 8,9,10,11,12 ],
                 "visible": false,
                 searchable: true,
             },
         ];
     }
     else{
-        $('#ridePerformance-table thead tr th').eq(4).before('<th>Pickup Time:</th>');
-        $('#ridePerformance-table thead tr th').eq(5).before('<th>Shift Time:</th>');
-        $('#ridePerformance-table thead tr th').eq(6).before('<th>Drop Time:</th>');
-        $('#ridePerformance-table thead tr th').eq(7).before('<th>COD Orders:</th>');
-        $('#ridePerformance-table thead tr th').eq(8).before('<th>COD Amount:</th>');
+        $('#ridePerformance-table thead tr th').eq(5).before('<th>Pickup Time:</th>');
+        $('#ridePerformance-table thead tr th').eq(6).before('<th>Shift Time:</th>');
+        $('#ridePerformance-table thead tr th').eq(7).before('<th>Drop Time:</th>');
+        $('#ridePerformance-table thead tr th').eq(8).before('<th>COD Orders:</th>');
+        $('#ridePerformance-table thead tr th').eq(9).before('<th>COD Amount:</th>');
         _settings.columns=[
             { "data": 'feid', "name": 'feid' },
             { "data": 'rider_name', "name": 'rider_name' },
+            { "data": 'area', "name": 'area' },
             { "data": 'date', "name": 'date' },
             { "data": 'trips', "name": 'trips' },
             { "data": 'adt', "name": 'adt' },

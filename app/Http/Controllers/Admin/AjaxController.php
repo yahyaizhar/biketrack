@@ -1283,6 +1283,9 @@ class AjaxController extends Controller
          ->addColumn('feid', function($performance){
                return $performance->feid;
            })
+           ->addColumn('area', function($performance){
+            return $performance->area;
+        })
            ->addColumn('date', function($performance){
             return $performance->date;
         })
@@ -1338,7 +1341,7 @@ class AjaxController extends Controller
                </span>
            </span>';
            })
-           ->rawColumns([ 'feid','adt','average_pickup_time','average_drop_time','loged_in_during_shift_time','total_loged_in_hours','date','cod_orders','cod_amount','trips', 'actions', 'status'])
+           ->rawColumns([ 'area','feid','adt','average_pickup_time','average_drop_time','loged_in_during_shift_time','total_loged_in_hours','date','cod_orders','cod_amount','trips', 'actions', 'status'])
            ->make(true);
        }
 

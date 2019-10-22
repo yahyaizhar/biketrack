@@ -28,4 +28,7 @@ class InvoiceController extends Controller
             'billing_address' => $billing_address,
         ]);
     }
+    public function view_invoices(){ 
+        return view('admin.Invoices.view_invoice'); 
+    }
 }
