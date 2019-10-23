@@ -135,6 +135,7 @@ Route::group([
     Route::resource('emails', 'ClientEmailController', [
         'as' => 'admin'
     ]);
+    Route::get('update/extra/fields/adt/performance/{feid}','RiderController@update_extra_adt')->name('admin.update_extra_adt');
     Route::get('/client/ranges/adt','RiderController@Rider_Range_ADT')->name('admin.ranges.adt'); 
 //import Zomato
     Route::post('/import/zomato','RiderController@import_zomato')->name('import.zomato');

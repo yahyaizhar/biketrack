@@ -1836,6 +1836,32 @@ class AjaxController extends Controller
             }
             return 'no feid';
            })
+           ->addColumn('status', function($rider){
+               $data='';
+            $feid=Client_Rider::where("client_id","2")->where('rider_id',$rider->id)->get()->first();
+            if(isset($feid)){
+             $id=$feid->client_rider_id;
+             $zomato=Rider_Performance_Zomato::where("feid",$id)->get()->first();
+             if (isset($zomato)) {
+                $status=$zomato->status;
+                $called_over=$zomato->called_over;
+                $comments=$zomato->comments;
+                if(!isset($status)){
+                    $data.='<a class="dropdown-item"><span>status is missing</span></a>';
+                }
+                if(!isset($called_over)){
+                    $data.='<a class="dropdown-item"><span>called_over is missing</span></a>';
+                }
+                if(!isset($comments)){
+                    $data.='<a class="dropdown-item"><span>comments are missing</span></a>';
+                }
+               
+             }
+             return '<a class="dropdown-item" onclick="extraFields(\''.$id.'\')"><i class="fa fa-eye"></i></a>'.$data.'';
+             
+            }
+           
+           })
            ->addColumn('adt1', function($rider) use ($ranges){
             $client=$rider->clients()->get()->first();
             if(isset($client)){
@@ -1901,7 +1927,7 @@ class AjaxController extends Controller
             }
                 return '0%';
             })
-           ->rawColumns(['feid','area','rider_id','adt1','adt2','improvements'])
+           ->rawColumns(['status','feid','area','rider_id','adt1','adt2','improvements','called_over'])
            ->make(true);
        }
        

@@ -71,11 +71,60 @@
                         <th>Area</th>
                         <th>Range1 ADT</th>
                         <th>Range2 ADT</th>
-                        <th>Improvement %</th>                       
+                        <th>Improvement %</th>
+                        <th>Status</th>                       
                     </tr>
                 </thead>
             </table>
         </div>
+    </div>
+</div>
+<div class="modal fade" id="extraStatus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header border-bottom-0">
+        <h5 class="modal-title" >Additional Data</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <form id="extraStatusField" class="kt-form" enctype="multipart/form-data">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Called Over:</label>
+                    <select class="form-control bk-select2 "  name="called_over">
+                        <option value="over the phone">over the phone</option>
+                        <option value="office">office</option>
+                    </select> 
+                </div>
+                <div class="form-group">
+                    <label>Status:</label>
+                    <select class="form-control bk-select2 " name="status">
+                        <option value="Appreciated">Appreciated</option>
+                        <option value="Warning Given">Warning Given</option>
+                        <option value="Replaced">Replaced</option>
+                    </select> 
+                </div>
+                <div class="form-group">
+                    <label>Operator Comments:</label>
+                    <select class="form-control bk-select2" name="comments" >
+                        <option value="wished them for the performance but also motivated them so they can do better">wished them for the performance but also motivated them so they can do better</option>
+                        <option value="given first warning to improve">given first warning to improve</option>
+                        <option value="ask them their issues if improvement can be done more">ask them their issues if improvement can be done more</option>
+                        <option value="asked him to improve more">asked him to improve more</option>
+                        <option value="first warning given">first warning given</option>
+                        <option value="tried to solve issues so improvement can be made">tried to solve issues so improvement can be made</option>
+                        <option value="replaced him for his behaviour">replaced him for his behaviour</option>
+                        <option value="replaced as he met with an accident">replaced as he met with an accident</option>
+                        <option value="replaced him Due to accident">replaced him Due to accident</option>
+                    </select> 
+                </div>
+            </div>
+        <div class="modal-footer border-top-0 d-flex justify-content-center">
+            <button type="submit" class="btn btn-success">Save</button>
+        </div>
+        </form>
+    </div>
     </div>
 </div>
 {{-- @php
@@ -88,6 +137,7 @@
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/datatables/basic/basic.js') }}" type="text/javascript"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script>
+ 
    $(document).ready(function(){
        $("#ranges_adt").hide();
        $('.range_report').eq(0).trigger('change');
@@ -115,6 +165,7 @@ function export_data(){
     var date1=r1 +'-'+r2;
     var date2=r3 +'-'+r4;
     var _perData=riders_data;
+    console.log(_perData);
     var export_details=[];
     _perData.forEach(function(item,index) { 
         export_details.push({
@@ -273,10 +324,38 @@ var getData = function(url){
             { data: 'adt1', name: 'adt1' },
             { data: 'adt2', name: 'adt2' },
             { data: 'improvements', name: 'improvements' },
+            { data: 'status', name: 'status' },
         ],
         responsive:true,
         order:[0,'desc'],
     });
+}
+function extraFields(feid){
+$("#extraStatus").modal("show");
+$('form#extraStatusField').on("submit",function(e){
+    e.preventDefault(); 
+    var form=$(this);
+    var url="{{ url('admin/update/extra/fields/adt/performance') }}"+ "/" +feid;
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }, 
+        url:  url,
+        data: form.serializeArray(),
+        method: "GET"
+    })
+    .done(function(data) {  
+        console.log(data);
+        $("#extraStatus").modal("hide");
+        swal.fire({
+            position: 'center',
+            type: 'success',
+            title: 'Record updated successfully.',
+            showConfirmButton: false,
+            timer: 1500
+        });
+    });
+});
 }
 </script>
 @endsection

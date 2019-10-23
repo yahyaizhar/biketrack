@@ -740,6 +740,16 @@ public function destroyer(Rider $rider,$id){
     }
     return view('admin.rider.rider_ranges_adt',compact('ZAD'));
    }
+   public function update_extra_adt(Request $request,$feid){
+      $zomato=Rider_Performance_Zomato::where("feid",$feid)->get()->first();
+      $zomato->called_over=$request->called_over;
+      $zomato->status=$request->status;
+      $zomato->comments=$request->comments;
+      $zomato->save();
+    return response()->json([
+        'status' => $zomato,
+    ]);
+   }
    public function getRider_active(){
     $rider_count=Rider::where('active_status','A')->get()->count();
     return view('admin.rider.active_riders',compact('rider_count'));
