@@ -1377,10 +1377,12 @@ class AjaxNewController extends Controller
     public function zomato_salary_export($month)
     {
         $zomato=Client::where("name","Zomato Food Delivery")->get()->first();
-        $client_riders=$zomato->riders();
+        // $client_riders=$zomato->riders();
+        $client_riders=Client_Rider::where('client_id', $zomato->id)->get();
         return DataTables::of($client_riders)
         ->addColumn('rider_name', function($rider) {
-            return $rider->name;
+            $riderFound = Rider::find($rider->rider_id);
+            return $riderFound->name;
         }) 
         ->addColumn('bike_number', function($rider) {
               $assign_bike=Assign_bike::where("rider_id",$rider->rider_id)->where("status","active")->get()->first();             
