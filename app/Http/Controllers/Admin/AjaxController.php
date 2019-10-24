@@ -1816,12 +1816,55 @@ class AjaxController extends Controller
            $riders = Rider::orderByDesc('created_at')->where("active_status","A")->get();
            array_push($data, $riders);
            array_push($data, $ranges);
-           return DataTables::of($riders)
+           return DataTables::of($riders) 
            
            ->addColumn('rider_id', function($rider){
             return $rider->name;
            })
-           ->addColumn('area', function($rider){
+           ->addColumn('called_over', function($rider) use ($ranges){
+            $feid=Client_Rider::where("client_id","2")->where('rider_id',$rider->id)->get()->first();
+            if (isset($feid)) {
+                $start_date=$ranges['range1']['start_date'];
+                $end_date=$ranges['range1']['end_date'];
+                $from = date($start_date);
+                $to = date($end_date);
+                $zomato=Rider_Performance_Zomato::where("feid",$feid->client_rider_id)->get()->first();
+                if (isset($zomato)) {
+                    return $zomato->called_over;
+                }
+            }
+           })
+           ->addColumn('status', function($rider) use ($ranges){
+            $feid=Client_Rider::where("client_id","2")->where('rider_id',$rider->id)->get()->first();
+            if (isset($feid)) {
+                $start_date=$ranges['range1']['start_date'];
+                $end_date=$ranges['range1']['end_date'];
+                $from = date($start_date);
+                $to = date($end_date);
+                $zomato=Rider_Performance_Zomato::where("feid",$feid->client_rider_id)->get()->first();
+                if (isset($zomato)) {
+                    return $zomato->status;
+                }
+            }
+           })
+           ->addColumn('comments', function($rider) use ($ranges){
+            $feid=Client_Rider::where("client_id","2")->where('rider_id',$rider->id)->get()->first();
+            if (isset($feid)) {
+                $start_date=$ranges['range1']['start_date'];
+                $end_date=$ranges['range1']['end_date'];
+                $from = date($start_date);
+                $to = date($end_date);
+                $zomato=Rider_Performance_Zomato::where("feid",$feid->client_rider_id)->get()->first();
+                if (isset($zomato)) {
+                    return $zomato->comments;
+                }
+            }
+           })
+           ->addColumn('area', function($rider) use ($ranges){
+            $start_date=$ranges['range1']['start_date'];
+            $end_date=$ranges['range1']['end_date'];
+            $from = date($start_date);
+            $to = date($end_date);
             $zomato=Rider_performance_zomato::where('rider_id',$rider->id)->get()->first();
             if(isset($zomato)){
             return $zomato->area;
@@ -1836,11 +1879,15 @@ class AjaxController extends Controller
             }
             return 'no feid';
            })
-           ->addColumn('status', function($rider){
+           ->addColumn('action', function($rider) use ($ranges){
                $data='';
             $feid=Client_Rider::where("client_id","2")->where('rider_id',$rider->id)->get()->first();
             if(isset($feid)){
              $id=$feid->client_rider_id;
+             $start_date=$ranges['range1']['start_date'];
+             $end_date=$ranges['range1']['end_date'];
+             $from = date($start_date);
+             $to = date($end_date);
              $zomato=Rider_Performance_Zomato::where("feid",$id)->get()->first();
              if (isset($zomato)) {
                 $status=$zomato->status;
@@ -1927,7 +1974,7 @@ class AjaxController extends Controller
             }
                 return '0%';
             })
-           ->rawColumns(['status','feid','area','rider_id','adt1','adt2','improvements','called_over'])
+           ->rawColumns(['action','comments','status','feid','area','rider_id','adt1','adt2','improvements','called_over'])
            ->make(true);
        }
        

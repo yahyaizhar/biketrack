@@ -177,9 +177,9 @@ function export_data(){
         "DATE 2":date2,
         "ADT 2":item.adt2,
         "Improvements":item.improvements,
-        "Called Over":"",
-        "Status":"",
-        "Operator Comments":"",
+        "Called Over":item.called_over,
+        "Status":item.status,
+        "Operator Comments":item.comments,
     });
 });
         var export_data = new CSVExport(export_details, "Kingriders ADT Performance");
@@ -324,7 +324,7 @@ var getData = function(url){
             { data: 'adt1', name: 'adt1' },
             { data: 'adt2', name: 'adt2' },
             { data: 'improvements', name: 'improvements' },
-            { data: 'status', name: 'status' },
+            { data: 'action', name: 'action' },
         ],
         responsive:true,
         order:[0,'desc'],
@@ -347,6 +347,7 @@ $('form#extraStatusField').on("submit",function(e){
     .done(function(data) {  
         console.log(data);
         $("#extraStatus").modal("hide");
+        window.location.reload();
         swal.fire({
             position: 'center',
             type: 'success',
