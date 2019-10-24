@@ -119,60 +119,60 @@
           <td colspan="6"><h1>King Rider's Performance Report Audit</h1></td>
         </tr>
         <tr>
-          <th>Date Duration</th>
+          <th style="text-align:left">Date Duration</th>
           <td class="date_append"></td>
         </tr>
          <tr>
-          <th>Supervisor</th>
+          <th style="text-align:left">Supervisor</th>
           <td>Danish Munir</td>
         </tr>
          <tr>
-          <th>Operator</th>
+          <th style="text-align:left">Operator</th>
           <td>Sohaib Faheem</td>
         </tr>
         <tr><td></td></tr>
         <tr>
-          <th>Performance</th>
-          <th>Color Presentation</th>
-          <th>Number of riders</th>
+          <th style="text-align:left">Performance</th>
+          <th style="text-align:left">Color Presentation</th>
+          <th style="text-align:left">Number of riders</th>
         </tr>
         <tr>
           <td>Good ADT</td>
           <td style="background-color:#c5e0b3">Good Performance</td>
-          <th class="good_performance"></th>
+          <th style="text-align:left" class="good_performance"></th>
         </tr>
         <tr>
           <td>Average ADT</td>
           <td style="background-color:#ffff00">Warning Given</td>
-          <th class="warning_given"></th>
+          <th style="text-align:left" class="warning_given"></th>
         </tr>
         <tr>
           <td>Unavailable</td>
           <td style="background-color:#ff0000">Rider Replaced</td>
-          <th class="replaced"></th>
+          <th style="text-align:left" class="replaced"></th>
         </tr>
          <tr><td></td></tr>
          <tr>
-         <th colspan="2">Supervisor Comment</th>
+         <th style="text-align:left" colspan="2">Supervisor Comment</th>
          <td colspan="4">Some riders are performing well and some are improving their performance. Hopefull statistics will better in next report.</td>
          </tr>
          <tr>
-           <th colspan="2">Operator Comment</th>
+           <th style="text-align:left" colspan="2">Operator Comment</th>
            <td colspan="4">We're working hard to improve our rider's performance in such a way that they perform their duties with hardworking. You will get awesome results very soon.</td>
          </tr>
          <tr><td></td></tr>
          <tr><td></td></tr>
          <tr>
-            <th>FEID</th> 
-            <th>Rider Name</th>
-            <th>Area</th>
-            <th>Range1 ADT</th>
-            <th>Range2 ADT</th>
-            <th>Improvement %</th>
-            <th>Called Over</th>
-            <th>Status</th>
-            <th>Operator Comments</th>
-            <th></th>
+            <th style="text-align:left">FEID</th> 
+            <th style="text-align:left">Rider Name</th>
+            <th style="text-align:left">Area</th>
+            <th style="text-align:left">Range1 ADT</th>
+            <th style="text-align:left">Range2 ADT</th>
+            <th style="text-align:left">Improvement %</th>
+            <th style="text-align:left">Called Over</th>
+            <th style="text-align:left">Status</th>
+            <th style="text-align:left">Operator Comments</th>
+            <th style="text-align:left"></th>
         </tr>
     </tbody>
     </table>
