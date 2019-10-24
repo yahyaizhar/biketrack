@@ -92,32 +92,18 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label>Called Over:</label>
-                    <select class="form-control bk-select2 "  name="called_over">
-                        <option value="over the phone">over the phone</option>
-                        <option value="office">office</option>
-                    </select> 
+                    <input type="text" class="form-control" name="called_over" placeholder="Enter Source Of Contact">
+                    <span class="form-text text-muted">Please enter your Source of Contact</span>
                 </div>
                 <div class="form-group">
                     <label>Status:</label>
-                    <select class="form-control bk-select2 " name="status">
-                        <option value="Appreciated">Appreciated</option>
-                        <option value="Warning Given">Warning Given</option>
-                        <option value="Replaced">Replaced</option>
-                    </select> 
+                    <input type="text" class="form-control" name="status" placeholder="Enter Status">
+                    <span class="form-text text-muted">What Your Status in Kingriders</span>
                 </div>
                 <div class="form-group">
-                    <label>Operator Comments:</label>
-                    <select class="form-control bk-select2" name="comments" >
-                        <option value="wished them for the performance but also motivated them so they can do better">wished them for the performance but also motivated them so they can do better</option>
-                        <option value="given first warning to improve">given first warning to improve</option>
-                        <option value="ask them their issues if improvement can be done more">ask them their issues if improvement can be done more</option>
-                        <option value="asked him to improve more">asked him to improve more</option>
-                        <option value="first warning given">first warning given</option>
-                        <option value="tried to solve issues so improvement can be made">tried to solve issues so improvement can be made</option>
-                        <option value="replaced him for his behaviour">replaced him for his behaviour</option>
-                        <option value="replaced as he met with an accident">replaced as he met with an accident</option>
-                        <option value="replaced him Due to accident">replaced him Due to accident</option>
-                    </select> 
+                    <label>Status:</label>
+                    <input type="text" class="form-control" name="comments" placeholder="Enter Comments">
+                    <span class="form-text text-muted">Comments Given By Kingriders</span>
                 </div>
             </div>
         <div class="modal-footer border-top-0 d-flex justify-content-center">
@@ -127,6 +113,69 @@
     </div>
     </div>
 </div>
+<table style="display:none;" id="export_excel_table">
+        <tbody>
+        <tr> 
+          <td colspan="6"><h1>King Rider's Performance Report Audit</h1></td>
+        </tr>
+        <tr>
+          <th>Date Duration</th>
+          <td class="date_append"></td>
+        </tr>
+         <tr>
+          <th>Supervisor</th>
+          <td>Danish Munir</td>
+        </tr>
+         <tr>
+          <th>Operator</th>
+          <td>Sohaib Faheem</td>
+        </tr>
+        <tr><td></td></tr>
+        <tr>
+          <th>Performance</th>
+          <th>Color Presentation</th>
+          <th>Number of riders</th>
+        </tr>
+        <tr>
+          <td>Good ADT</td>
+          <td style="background-color:#c5e0b3">Good Performance</td>
+          <th class="good_performance"></th>
+        </tr>
+        <tr>
+          <td>Average ADT</td>
+          <td style="background-color:#ffff00">Warning Given</td>
+          <th class="warning_given"></th>
+        </tr>
+        <tr>
+          <td>Unavailable</td>
+          <td style="background-color:#ff0000">Rider Replaced</td>
+          <th class="replaced"></th>
+        </tr>
+         <tr><td></td></tr>
+         <tr>
+         <th colspan="2">Supervisor Comment</th>
+         <td colspan="4">Some riders are performing well and some are improving their performance. Hopefull statistics will better in next report.</td>
+         </tr>
+         <tr>
+           <th colspan="2">Operator Comment</th>
+           <td colspan="4">We're working hard to improve our rider's performance in such a way that they perform their duties with hardworking. You will get awesome results very soon.</td>
+         </tr>
+         <tr><td></td></tr>
+         <tr><td></td></tr>
+         <tr>
+            <th>FEID</th> 
+            <th>Rider Name</th>
+            <th>Area</th>
+            <th>Range1 ADT</th>
+            <th>Range2 ADT</th>
+            <th>Improvement %</th>
+            <th>Called Over</th>
+            <th>Status</th>
+            <th>Operator Comments</th>
+            <th></th>
+        </tr>
+    </tbody>
+    </table>
 {{-- @php
     $model = new \App\Model\Accounts\Fuel_Expense;
     echo get_class($model);
@@ -136,6 +185,8 @@
 <script src="{{ asset('dashboard/assets/vendors/custom/datatables/datatables.bundle.js') }}" type="text/javascript"></script>
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/datatables/basic/basic.js') }}" type="text/javascript"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<script src="{{ asset('/dashboard/assets/js/jquery.tableToExcel.js') }}" type="text/javascript"></script>
+
 <script>
  
    $(document).ready(function(){
@@ -153,6 +204,10 @@
    });
 var riders_data = [];
 
+$(".date_append").html("");
+$(".good_performance").html("");
+$(".warning_given").html("");
+$(".replaced").html("");
 function export_data(){
     var r1d1=biketrack.getUrlParameter('r1d1');
     var r1d2=biketrack.getUrlParameter('r1d2');
@@ -164,25 +219,72 @@ function export_data(){
     var r4=(new Date(r2d2)).format('dd mmm');
     var date1=r1 +'-'+r2;
     var date2=r3 +'-'+r4;
+    var date3=r1 +'-'+r4;
     var _perData=riders_data;
-    console.log(_perData);
-    var export_details=[];
-    _perData.forEach(function(item,index) { 
-        export_details.push({
-        "FEID":item.feid,    
-        "Rider Name":item.rider_id,
-        "Locality":item.area,
-        "DATE 1":date1,
-        "ADT 1":item.adt1,
-        "DATE 2":date2,
-        "ADT 2":item.adt2,
-        "Improvements":item.improvements,
-        "Called Over":item.called_over,
-        "Status":item.status,
-        "Operator Comments":item.comments,
-    });
-});
-        var export_data = new CSVExport(export_details, "Kingriders ADT Performance");
+//     var export_details=[];
+//     _perData.forEach(function(item,index) { 
+//         export_details.push({
+//         "FEID":item.feid,    
+//         "Rider Name":item.rider_id,
+//         "Locality":item.area,
+//         "DATE 1":date1,
+//         "ADT 1":item.adt1,
+//         "DATE 2":date2,
+//         "ADT 2":item.adt2,
+//         "Improvements":item.improvements,
+//         "Called Over":item.called_over,
+//         "Status":item.status,
+//         "Operator Comments":item.comments,
+//     });
+// });
+        // var export_data = new CSVExport(export_details, "Kingriders ADT Performance");
+        
+            
+            var val='';
+            var good_performance=0;
+            var warning=0;
+            var replaced=0;
+            $(".main_row").remove();
+            $(".date_append").html(date3);
+            _perData.sort(function(a,b){
+                return a.adt2 <b.adt2?-1:a.adt2 > b.adt2?1:0;
+            });
+        _perData.forEach(function(item,index){
+            var tr='';
+            var type='';
+            if(item.adt2 <= 40){
+                good_performance++;
+                type='good_performance';
+            }
+            if(item.adt2 > 40 && item.adt2 <=50){
+                warning++;
+                type='warning';
+            }
+            if(item.adt2 > 50){
+                replaced++;
+                type='replaced';
+            }
+            tr+='<td class="feid">'+item.feid+'</td>';
+            tr+='<td class="rider_name">'+item.name+'</td>'
+            tr+='<td class="area">'+item.area+'</td>'
+            tr+='<td class="adt1">'+item.adt1+'</td>'
+            tr+='<td class="adt2">'+item.adt2+'</td>'
+            tr+='<td class="improvements">'+item.improvements+'</td>'
+            tr+='<td class="called_over">'+item.called_over+'</td>'
+            tr+='<td class="status">'+item.status+'</td>'
+            tr+='<td class="comments" colspan="2">'+item.comments+'</td>'
+            val+='<tr class="main_row" data-type="'+type+'">'+tr+'</tr>'
+        });
+        console.log(_perData);
+        $(".good_performance").html(good_performance);
+        $(".warning_given").html(warning);
+        $(".replaced").html(replaced);
+        $("#export_excel_table tbody").append(val);
+
+        $('tr.main_row[data-type="good_performance"]').eq(0).append('<td style="background-color:#c5e0b3; font-size:32px; text-align:center;" colspan="4" rowspan="'+good_performance+'">Good Performers</td>');
+        $('tr.main_row[data-type="warning"]').eq(0).append('<td style="background-color:#ffff00; font-size:32px; text-align:center;" colspan="4" rowspan="'+warning+'">Average Performers</td>');
+        $('tr.main_row[data-type="replaced"]').eq(0).append('<td style="background-color:#ff0000; font-size:32px; text-align:center;" colspan="4" rowspan="'+replaced+'">Repaced/Bad Performers</td>');
+        $("#export_excel_table").tblToExcel();
         return false;
 }
 
