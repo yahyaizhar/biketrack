@@ -279,7 +279,7 @@ function export_data(){
         $(".good_performance").html(good_performance);
         $(".warning_given").html(warning);
         $(".replaced").html(replaced);
-        $("#export_excel_table tbody").append(val);
+        $("#export_excel_table tbody").append(val); 
 
         $('tr.main_row[data-type="good_performance"]').eq(0).append('<td style="background-color:#c5e0b3; font-size:32px; text-align:center;" colspan="4" rowspan="'+good_performance+'">Good Performers</td>');
         $('tr.main_row[data-type="warning"]').eq(0).append('<td style="background-color:#ffff00; font-size:32px; text-align:center;" colspan="4" rowspan="'+warning+'">Average Performers</td>');
