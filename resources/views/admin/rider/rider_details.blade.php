@@ -58,31 +58,23 @@
                                             <div class="kt-widget__content">
                                                 <div class="kt-widget__head">
                                                     <a class="kt-widget__username">
-                                                        {{ 'asma' }}
-                                                        {{-- @if ($rider->online)
-                                                            <i class="flaticon2-correct"></i>                                            
-                                                        @endif --}}
+                                                        <h5><span class="bike_name"></span></h5>
                                                     </a>
                                                     <div class="kt-widget__action">
-                                                        <a href="" class="btn btn-label-info btn-sm btn-upper">Edit</a>&nbsp;
-                                                        <a href="" class="btn btn-label-danger btn-sm btn-upper">View Location</a>&nbsp;
-                                                        {{-- <button class="btn btn-label-info btn-sm btn-upper">Remove</button>&nbsp; --}}
+                                                        {{-- <a href="" class="btn btn-label-info btn-sm btn-upper">Edit</a>&nbsp; --}}
+                                                        <h6>Assign_date:<span class="assign_date"></span></h6>
                                                     </div>
                                                 </div>
                                                 <div class="kt-widget__subhead">
-                                                    {{-- <a href="mailto:{{ $rider->email }}"><i class="flaticon2-new-email"></i>{{ $rider->email }}</a> --}}
-                                                    <a><i class="flaticon2-calendar-3"></i>09090990 </a>
-                                                    {{-- @if ($bike==null) --}}
-                                                    <a><i class="fa fa-motorcycle"></i>No Bike assigned to this rider</a>     
-                                                    {{-- @else --}}
-                                                    <a><i class="fa fa-motorcycle"></i>{{ 'ferty6657' }}</a> 
-                                                    {{-- @endif --}}
+                                                    <a>Bike Number:: <span class="bike_number"></span></a> 
+                                                    
                                                     
                                                 </div>
                                                 <div class="kt-widget__info">
                                                     <i class="flaticon-location"></i>&nbsp;
                                                     <div class="kt-widget__desc">
-                                                        {{ 'lahore' }}
+                                                        <a>Salik_Amount:: <span class="salik"></span></a> 
+                                                        <a>Fuel Expense:: <span class="fuel_expense"></span></a> 
                                                     </div>
                                                 </div>
                                             </div>
@@ -124,6 +116,12 @@ $(document).ready(function(){
         })
         .done(function(data) {  
             console.log(data);
+            $(".bike_name").html(data.brand + " " + data.model);
+            $(".assign_date").html(data.assign_bike_date);
+            $(".bike_number").html(data.bike_number);
+            $(".salik").html(data.salik);
+            $(".fuel_expense").html(data.fuel_expense);
+            
             swal.fire({
                 position: 'center',
                 type: 'success',
