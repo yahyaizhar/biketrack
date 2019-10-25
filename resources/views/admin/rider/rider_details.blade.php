@@ -52,12 +52,9 @@
                                 <div class="kt-portlet__body">
                                     <div class="kt-widget kt-widget--user-profile-3">
                                         <div class="kt-widget__top">
-                                            <div class="kt-widget__media kt-hidden-">
-                                                <h4>Bike Detail</h4>
+                                            <div style="color:#ccc;" class="kt-widget__media kt-hidden-">
+                                                <h2>Bike Detail</h2>
                                             </div>
-                                                {{-- <div class="kt-widget__pic kt-widget__pic--danger kt-font-danger kt-font-boldest kt-font-light kt-hidden">
-                                                    JM
-                                                </div> --}}
                                             <div class="kt-widget__content">
                                                 <div class="kt-widget__head">
                                                     <a class="kt-widget__username">
@@ -113,14 +110,30 @@
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/bootstrap-switch.js') }}" type="text/javascript"></script>
 <script>
 $(document).ready(function(){
-      $('[name="month_id"]').on("change",function(){
-         $('[name="rider_id"]').on("change",function(){
-           var month=$('[name="month_id"]').val();
-           var rider_id=$('[name="rider_id"]').val();
-           console.log(month);
-           console.log(rider_id);
-         });
-      });
+    $('[name="month_id"]').on("change",function(){
+        $('[name="rider_id"]').on("change",function(){
+        var month=$('[name="month_id"]').val();
+        var rider_id=$('[name="rider_id"]').val();
+        var url="{{ url('admin/rider/detail/ajax') }}" + "/" + rider_id + "/" + month;
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }, 
+            url:  url,
+            method: "GET"
+        })
+        .done(function(data) {  
+            console.log(data);
+            swal.fire({
+                position: 'center',
+                type: 'success',
+                title: 'Record updated successfully.',
+                showConfirmButton: false,
+                timer: 1500
+                });
+        });
+        });
+    });
 });
 </script>
 @endsection
