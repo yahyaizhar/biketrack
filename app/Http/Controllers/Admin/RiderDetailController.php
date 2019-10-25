@@ -24,6 +24,9 @@ use Illuminate\Support\Arr;
 use Batch;
 use Carbon\Carbon;
 use App\Assign_bike;
+use App\Model\Accounts\Company_Account;
+use App\Model\Accounts\Rider_Account;
+
 class RiderDetailController extends Controller
 {
     public function __construct()
