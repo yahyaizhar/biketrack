@@ -40,12 +40,15 @@ class RiderDetailController extends Controller
     public function get_data_ajax_detail($rider_id,$month){
         //  bike
       $assign_bike=Assign_bike::where("rider_id",$rider_id)->whereMonth('created_at',$month)->get()->last();
-      $assign_bike_date=Carbon::parse($assign_bike->created_at)->format('d m, Y');
-      $bike=bike::where('id',$assign_bike->bike_id)->get()->first();
-      $brand=$bike->brand;
-      $model=$bike->model;
-      $bike_number=$bike->bike_number;
-
+      if (isset( $assign_bike)) {
+        $assign_bike_date=Carbon::parse($assign_bike->created_at)->format('d m, Y');
+        $bike=bike::where('id',$assign_bike->bike_id)->get()->first();
+        if (isset($bike)) {
+            $brand=$bike->brand;
+            $model=$bike->model;
+            $bike_number=$bike->bike_number;
+        }
+      }
       $salik=Company_Account::where("rider_id",$rider_id)->where("source","Salik")->whereMonth("month",$month)->sum('amount');
       $fuel_expense=Company_Account::where("rider_id",$rider_id)->whereNotNull("fuel_expense_id")->whereMonth("month",$month)->sum('amount');
         // end bike
