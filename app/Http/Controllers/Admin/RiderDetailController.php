@@ -59,13 +59,21 @@ class RiderDetailController extends Controller
         // sim
         $allowed_balance='';
         $assign_sim_date='';
-        $sim=''; 
+        $sim='';
+        $sim_company='';
+        $sim_number ='';
         $assign_sim=Sim_History::where("rider_id",$rider_id)->whereMonth('created_at',$month)->get()->last();
         if (isset($assign_sim)) {
             $allowed_balance=$assign_sim->allowed_balance;
             $assign_sim_date=Carbon::parse($assign_sim->created_at)->format('d m, Y');
             $sim=Sim::where("id",$assign_sim->sim_id)->get()->first();
+            if (isset($sim)) {
+                $sim_company=$sim->sim_company;
+                $sim_number=$sim->sim_number;
+            }
         }
+        $sim_useage=Company_Account::where("rider_id",$rider_id)->where("source","Sim Transaction")->whereMonth("month",$month)->sum('amount');
+        $sim_Extra_useage=Company_Account::where("rider_id",$rider_id)->where("source","Sim extra usage")->whereMonth("month",$month)->sum('amount');
         // end sim
         return response()->json([
             // 'assign_bike_date'=>$assign_bike_date,
@@ -78,6 +86,10 @@ class RiderDetailController extends Controller
             'allowed_balance'=>$allowed_balance,
             'assign_sim_date'=>$assign_sim_date,
             'sim'=>$sim,
+            'sim_company'=>$sim_company,
+            'sim_number'=>$sim_number,
+            'sim_useage'=>$sim_useage,
+            'sim_Extra_useage'=>$sim_Extra_useage,
         ]);
     }
 }
