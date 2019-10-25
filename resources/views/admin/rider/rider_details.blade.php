@@ -43,69 +43,61 @@
                     
                 </div>
                 @include('admin.includes.message')
-                <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
-                        <div class="row">
-                            <div class="col-xl-12">
+                <div class="" id="hidden_area">
+{{-- for bike --}}
+                <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="bike_detail">
+                    <div class="row">
+                        <div class="col-xl-12">
                             <div class="kt-portlet kt-portlet--height-fluid">
-                                    <div class="kt-portlet__body">
-                                        <div class="kt-widget kt-widget--user-profile-3">
-                                            <div class="kt-widget__top">
-                                                <div class="kt-widget__media kt-hidden-">
-                                                    @if($rider->profile_picture)
-                                                        <img src="{{ asset(Storage::url($rider->profile_picture)) }}" alt="image">
-                                                    @else
-                                                        <img src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
-                                                    @endif
-                                                </div>
+                                <div class="kt-portlet__body">
+                                    <div class="kt-widget kt-widget--user-profile-3">
+                                        <div class="kt-widget__top">
+                                            <div class="kt-widget__media kt-hidden-">
+                                                <h4>Bike Detail</h4>
+                                            </div>
                                                 {{-- <div class="kt-widget__pic kt-widget__pic--danger kt-font-danger kt-font-boldest kt-font-light kt-hidden">
                                                     JM
                                                 </div> --}}
-                                                <div class="kt-widget__content">
-                                                    <div class="kt-widget__head">
-                                                        <a class="kt-widget__username">
-                                                            {{ 'asma' }}
-                                                            {{-- @if ($rider->online)
-                                                                <i class="flaticon2-correct"></i>                                            
-                                                            @endif --}}
-                                                        </a>
-                                
-                                                        <div class="kt-widget__action">
-                                                            <a href="" class="btn btn-label-info btn-sm btn-upper">Edit</a>&nbsp;
-                                                            <a href="" class="btn btn-label-danger btn-sm btn-upper">View Location</a>&nbsp;
-                                                            {{-- <button class="btn btn-label-info btn-sm btn-upper">Remove</button>&nbsp; --}}
-                                                        </div>
+                                            <div class="kt-widget__content">
+                                                <div class="kt-widget__head">
+                                                    <a class="kt-widget__username">
+                                                        {{ 'asma' }}
+                                                        {{-- @if ($rider->online)
+                                                            <i class="flaticon2-correct"></i>                                            
+                                                        @endif --}}
+                                                    </a>
+                                                    <div class="kt-widget__action">
+                                                        <a href="" class="btn btn-label-info btn-sm btn-upper">Edit</a>&nbsp;
+                                                        <a href="" class="btn btn-label-danger btn-sm btn-upper">View Location</a>&nbsp;
+                                                        {{-- <button class="btn btn-label-info btn-sm btn-upper">Remove</button>&nbsp; --}}
                                                     </div>
-                                
-                                                    <div class="kt-widget__subhead">
-                                                        {{-- <a href="mailto:{{ $rider->email }}"><i class="flaticon2-new-email"></i>{{ $rider->email }}</a> --}}
-                                                        <a><i class="flaticon2-calendar-3"></i>09090990 </a>
-                                                        {{-- @if ($bike==null) --}}
-                                                        <a><i class="fa fa-motorcycle"></i>No Bike assigned to this rider</a>     
-                                                        {{-- @else --}}
-                                                        <a><i class="fa fa-motorcycle"></i>{{ 'ferty6657' }}</a> 
-                                                        {{-- @endif --}}
-                                                       
-                                                    </div>
-                                
-                                                    <div class="kt-widget__info">
-                                                        <i class="flaticon-location"></i>&nbsp;
-                                                        <div class="kt-widget__desc">
-                                                            {{ 'lahore' }}
-                                                        </div>
-                                                     
+                                                </div>
+                                                <div class="kt-widget__subhead">
+                                                    {{-- <a href="mailto:{{ $rider->email }}"><i class="flaticon2-new-email"></i>{{ $rider->email }}</a> --}}
+                                                    <a><i class="flaticon2-calendar-3"></i>09090990 </a>
+                                                    {{-- @if ($bike==null) --}}
+                                                    <a><i class="fa fa-motorcycle"></i>No Bike assigned to this rider</a>     
+                                                    {{-- @else --}}
+                                                    <a><i class="fa fa-motorcycle"></i>{{ 'ferty6657' }}</a> 
+                                                    {{-- @endif --}}
+                                                    
+                                                </div>
+                                                <div class="kt-widget__info">
+                                                    <i class="flaticon-location"></i>&nbsp;
+                                                    <div class="kt-widget__desc">
+                                                        {{ 'lahore' }}
                                                     </div>
                                                 </div>
                                             </div>
-                                         
-                                         </div>
-                                            </div>
-                                            
                                         </div>
                                     </div>
-                                </div>
-                            </div>   
+                                </div>          
+                            </div>
                         </div>
                     </div>
+                </div>   
+{{-- end for bike --}}  
+                </div> 
             </div>
         </div>
     </div>
@@ -123,7 +115,10 @@
 $(document).ready(function(){
       $('[name="month_id"]').on("change",function(){
          $('[name="rider_id"]').on("change",function(){
-
+           var month=$('[name="month_id"]').val();
+           var rider_id=$('[name="rider_id"]').val();
+           console.log(month);
+           console.log(rider_id);
          });
       });
 });
