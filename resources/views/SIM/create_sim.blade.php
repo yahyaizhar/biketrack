@@ -65,4 +65,6 @@
 @endsection
 @section('foot')
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/bootstrap-switch.js') }}" type="text/javascript"></script>
+<script>
+alert("kharchi parchi");</script>
 @endsection
