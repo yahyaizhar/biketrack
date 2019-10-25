@@ -59,7 +59,7 @@ class RiderDetailController extends Controller
         // sim
         $allowed_balance='';
         $assign_sim_date='';
-        $sim='';
+        $sim=''; 
         $assign_sim=Sim_History::where("rider_id",$rider_id)->whereMonth('created_at',$month)->get()->last();
         if (isset($assign_sim)) {
             $allowed_balance=$assign_sim->allowed_balance;
