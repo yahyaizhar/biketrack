@@ -39,6 +39,10 @@ class RiderDetailController extends Controller
     }
     public function get_data_ajax_detail($rider_id,$month){
         //  bike
+        $assign_bike_date='';
+        $brand='';
+        $model='';
+        $bike_number='';
       $assign_bike=Assign_bike::where("rider_id",$rider_id)->whereMonth('created_at',$month)->get()->last();
       if (isset( $assign_bike)) {
         $assign_bike_date=Carbon::parse($assign_bike->created_at)->format('d m, Y');
