@@ -43,7 +43,7 @@
                     
                 </div>
                 @include('admin.includes.message')
-                <div style="display:none;" id="hidden_area">
+                <div  id="hidden_area">
 {{-- for bike --}}
                 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="bike_detail">
                     <div class="row">
@@ -103,10 +103,12 @@
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/bootstrap-switch.js') }}" type="text/javascript"></script>
 <script>
 $(document).ready(function(){
+    $("#hidden_area").hide();
     $('[name="month_id"]').on("change",function(){
         $('[name="rider_id"]').on("change",function(){
         var month=$('[name="month_id"]').val();
         var rider_id=$('[name="rider_id"]').val();
+        $("#hidden_area").show();
         var url="{{ url('admin/rider/detail/ajax') }}" + "/" + rider_id + "/" + month;
         $.ajax({
             headers: {
