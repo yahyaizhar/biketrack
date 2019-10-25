@@ -36,7 +36,7 @@ class RiderDetailController extends Controller
     }
     public function get_data_ajax_detail($rider_id,$month){
         //  bike
-      $assign_bike=Assign_bike::where("rider_id",$rider_id)->get();
+      $assign_bike=Assign_bike::where("rider_id",$rider_id)->whereMonth('created_at',$month)->get()->last();
         // end bike
         return response()->json([
             'assign_bike'=>$assign_bike,
