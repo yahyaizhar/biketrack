@@ -43,7 +43,7 @@
                     
                 </div>
                 @include('admin.includes.message')
-                <div class="" id="hidden_area">
+                <div style="display:none;" id="hidden_area">
 {{-- for bike --}}
                 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="bike_detail">
                     <div class="row">
@@ -58,23 +58,24 @@
                                             <div class="kt-widget__content">
                                                 <div class="kt-widget__head">
                                                     <a class="kt-widget__username">
-                                                        <h5><span class="bike_name"></span></h5>
+                                                        <h2><span class="bike_name"></span></h2>
                                                     </a>
                                                     <div class="kt-widget__action">
                                                         {{-- <a href="" class="btn btn-label-info btn-sm btn-upper">Edit</a>&nbsp; --}}
-                                                        <h6>Assign_date:<span class="assign_date"></span></h6>
+                                                        <h6>Assign_date:<strong><span class="assign_date"></span></strong></h6>
                                                     </div>
                                                 </div>
                                                 <div class="kt-widget__subhead">
-                                                    <a>Bike Number:: <span class="bike_number"></span></a> 
+                                                    <a>Bike Number:: <strong><span class="bike_number"></span></strong></a> 
                                                     
                                                     
                                                 </div>
                                                 <div class="kt-widget__info">
-                                                    <i class="flaticon-location"></i>&nbsp;
                                                     <div class="kt-widget__desc">
-                                                        <a>Salik_Amount:: <span class="salik"></span></a> 
-                                                        <a>Fuel Expense:: <span class="fuel_expense"></span></a> 
+                                                        <a>Salik_Amount:: <strong><span class="salik"></span></strong></a> 
+                                                    </div>
+                                                    <div class="kt-widget__desc">
+                                                        <a>Fuel Expense:: <strong><span class="fuel_expense"></span></strong></a> 
                                                     </div>
                                                 </div>
                                             </div>
