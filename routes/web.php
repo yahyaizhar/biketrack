@@ -112,6 +112,7 @@ Route::group([
     Route::get('/livemap', 'HomeController@livemap')->name('admin.livemap');
 // end rider further details
     Route::delete('/delete/Rider/{rider_id}','RiderController@destroy');
+    Route::get('/rider/complete/detail/view','RiderDetailController@view_detail')->name('rider.view_detail');
 });
 // end Riders
 // clients
