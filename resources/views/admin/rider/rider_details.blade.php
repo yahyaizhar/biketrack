@@ -14,16 +14,7 @@
                     </div>
                 </div>
                 <div class="kt-portlet__body">
-                    <div>
-                        <select class="form-control kt-select2 bk-select2" id="rider_id" name="rider_id" >
-                        <option value="Select Rider">Select Rider</option>
-                            @foreach ($riders as $rider)
-                                <option value="{{ $rider->id }}" 
-                                    >{{ $rider->name }}</option>    
-                                 @endforeach
-                        </select> 
-                    </div>
-                    <div>
+                    <div class="p-2">
                         <select class="form-control kt-select2 bk-select2" id="month_id" name="month_id" >
                             <option >Select Month</option>
                             <option value="01">January</option>   
@@ -40,6 +31,16 @@
                             <option value="12">December</option>    
                         </select> 
                     </div>
+                    <div class="p-2">
+                        <select class="form-control kt-select2 bk-select2" id="rider_id" name="rider_id" >
+                        <option value="Select Rider">Select Rider</option>
+                            @foreach ($riders as $rider)
+                                <option value="{{ $rider->id }}" 
+                                    >{{ $rider->name }}</option>    
+                                 @endforeach
+                        </select> 
+                    </div>
+                    
                 </div>
                 @include('admin.includes.message')
                 <div class="kt-portlet__body">
@@ -59,8 +60,10 @@
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/bootstrap-switch.js') }}" type="text/javascript"></script>
 <script>
 $(document).ready(function(){
-      $('[name="rider_id"] , [name="month_id"]').on("change",function(){
-         alert("rider and month");
+      $('[name="month_id"]').on("change",function(){
+         $('[name="rider_id"]').on("change",function(){
+            alert("rider and month");
+         });
       });
 });
 </script>
