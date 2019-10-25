@@ -47,6 +47,7 @@ class RiderDetailController extends Controller
       $bike_number=$bike->bike_number;
 
       $salik=Company_Account::where("rider_id",$rider_id)->where("source","Salik")->whereMonth("month",$month)->sum('amount');
+      $fuel_expense=Company_Account::where("rider_id",$rider_id)->whereNotNull("fuel_expense_id")->whereMonth("month",$month)->sum('amount');
         // end bike
         return response()->json([
             'assign_bike_date'=>$assign_bike_date,
@@ -54,6 +55,7 @@ class RiderDetailController extends Controller
             'model'=>$model,
             'bike_number'=>$bike_number,
             'salik'=>$salik,
+            'fuel_expense'=>$fuel_expense,
         ]);
     }
 }
