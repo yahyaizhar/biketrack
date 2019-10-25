@@ -57,7 +57,15 @@ class RiderDetailController extends Controller
       $fuel_expense=Company_Account::where("rider_id",$rider_id)->whereNotNull("fuel_expense_id")->whereMonth("month",$month)->sum('amount');
         // end bike
         // sim
+        $allowed_balance='';
+        $assign_sim_date='';
+        $sim='';
         $assign_sim=Sim_History::where("rider_id",$rider_id)->whereMonth('created_at',$month)->get()->last();
+        if (isset($assign_sim)) {
+            $allowed_balance=$assign_sim->allowed_balance;
+            $assign_sim_date=Carbon::parse($assign_sim->created_at)->format('d m, Y');
+            $sim=Sim::where("id",$assign_sim->sim_id)->get()->first();
+        }
         // end sim
         return response()->json([
             // 'assign_bike_date'=>$assign_bike_date,
@@ -67,7 +75,9 @@ class RiderDetailController extends Controller
             // 'salik'=>$salik,
             // 'fuel_expense'=>$fuel_expense,
 
-            'assign_sim'=>$assign_sim,
+            'allowed_balance'=>$allowed_balance,
+            'assign_sim_date'=>$assign_sim_date,
+            'sim'=>$sim,
         ]);
     }
 }
