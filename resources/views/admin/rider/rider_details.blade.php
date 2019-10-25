@@ -45,7 +45,7 @@
                 @include('admin.includes.message')
                 <div  id="hidden_area">
 {{-- for bike --}}
-                {{-- <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="bike_detail">
+                <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="bike_detail">
                     <div class="row">
                         <div class="col-xl-12">
                             <div class="kt-portlet kt-portlet--height-fluid">
@@ -60,9 +60,9 @@
                                                     <a class="kt-widget__username">
                                                         <h2><span class="bike_name"></span></h2>
                                                     </a>
-                                                    <div class="kt-widget__action"> --}}
+                                                    <div class="kt-widget__action">
                                                         {{-- <a href="" class="btn btn-label-info btn-sm btn-upper">Edit</a>&nbsp; --}}
-                                                        {{-- <h6>Assign_date: <strong><span class="assign_date"></span></strong></h6>
+                                                        <h6>Assign_date: <strong><span class="assign_date"></span></strong></h6>
                                                     </div>
                                                 </div>
                                                 <div class="kt-widget__subhead">
@@ -83,7 +83,7 @@
                             </div>
                         </div>
                     </div>
-                </div>    --}}
+                </div>   
 {{-- end for bike --}} 
 {{-- for sim  --}}
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="sim_detail">

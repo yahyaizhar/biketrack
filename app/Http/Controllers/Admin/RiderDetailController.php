@@ -45,7 +45,7 @@ class RiderDetailController extends Controller
         $bike_number='';
       $assign_bike=Assign_bike::where("rider_id",$rider_id)->whereMonth('created_at',$month)->get()->last();
       if (isset( $assign_bike)) {
-        $assign_bike_date=Carbon::parse($assign_bike->created_at)->format('d m, Y');
+        $assign_bike_date=Carbon::parse($assign_bike->created_at)->format('d M, Y');
         $bike=bike::where('id',$assign_bike->bike_id)->get()->first();
         if (isset($bike)) {
             $brand=$bike->brand;
@@ -65,7 +65,7 @@ class RiderDetailController extends Controller
         $assign_sim=Sim_History::where("rider_id",$rider_id)->whereMonth('created_at',$month)->get()->last();
         if (isset($assign_sim)) {
             $allowed_balance=$assign_sim->allowed_balance;
-            $assign_sim_date=Carbon::parse($assign_sim->created_at)->format('d m, Y');
+            $assign_sim_date=Carbon::parse($assign_sim->created_at)->format('d M, Y');
             $sim=Sim::where("id",$assign_sim->sim_id)->get()->first();
             if (isset($sim)) {
                 $sim_company=$sim->sim_company;
