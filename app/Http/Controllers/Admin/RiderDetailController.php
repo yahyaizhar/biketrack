@@ -85,7 +85,6 @@ class RiderDetailController extends Controller
 
             'allowed_balance'=>$allowed_balance,
             'assign_sim_date'=>$assign_sim_date,
-            'sim'=>$sim,
             'sim_company'=>$sim_company,
             'sim_number'=>$sim_number,
             'sim_useage'=>$sim_useage,

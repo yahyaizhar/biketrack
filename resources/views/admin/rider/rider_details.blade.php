@@ -99,7 +99,7 @@
                                 <div class="kt-widget__content">
                                     <div class="kt-widget__head">
                                         <a class="kt-widget__username">
-                                            <h2><span class="sim_name"></span></h2>
+                                            <h2><span class="sim_company_name"></span></h2>
                                         </a>
                                         <div class="kt-widget__action">
                                             {{-- <a href="" class="btn btn-label-info btn-sm btn-upper">Edit</a>&nbsp; --}}
@@ -111,11 +111,14 @@
                                     </div>
                                     <div class="">
                                         <p>
-                                            Sim_Charges: <strong><span class="sim_charges"></span></strong>
+                                            Allowed Blance: <strong><span class="allowed_balance"></span></strong>
                                         </p>
-                                        {{-- <p>
-                                            Fuel Expense: <strong><span class="fuel_expense"></span></strong>
-                                        </p> --}}
+                                        <p>
+                                            Useage: <strong><span class="useage"></span></strong>
+                                        </p>
+                                        <p>
+                                            Extra Useage: <strong><span class="extra_useage"></span></strong>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -158,12 +161,20 @@ $(document).ready(function(){
         })
         .done(function(data) {  
             console.log(data);
+            
             // $(".bike_name").html(data.brand + " " + data.model);
             // $(".assign_date").html(data.assign_bike_date);
             // $(".bike_number").html(data.bike_number);
             // $(".salik").html(data.salik);
             // $(".fuel_expense").html(data.fuel_expense);
             
+            $(".sim_company_name").html(data.sim_company);
+            $(".assign_date_sim").html(data.assign_sim_date);
+            $(".sim_number").html(data.sim_number);
+            $(".allowed_balance").html(data.allowed_balance);
+            $(".useage").html(data.sim_useage);
+            $(".extra_useage").html(data.sim_Extra_useage); 
+
             swal.fire({
                 position: 'center',
                 type: 'success',
