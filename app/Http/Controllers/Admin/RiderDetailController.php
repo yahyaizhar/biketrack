@@ -31,6 +31,7 @@ class RiderDetailController extends Controller
         $this->middleware('auth:admin');
     }
     public function view_detail(){
-        return view('admin.rider.rider_details');
+        $riders=Rider::where("active_status","A")->get();
+        return view('admin.rider.rider_details',compact('riders'));
     }
 }
