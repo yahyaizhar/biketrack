@@ -35,9 +35,11 @@ class RiderDetailController extends Controller
         return view('admin.rider.rider_details',compact('riders'));
     }
     public function get_data_ajax_detail($rider_id,$month){
+        //  bike
+      $assign_bike=Assign_bike::where("rider_id",$rider_id)->get();
+        // end bike
         return response()->json([
-            'status'=>$rider_id,
-            'month'=>$month,
+            'assign_bike'=>$assign_bike,
         ]);
     }
 }
