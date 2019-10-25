@@ -145,12 +145,12 @@
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/bootstrap-switch.js') }}" type="text/javascript"></script>
 <script>
 $(document).ready(function(){
-    // $("#hidden_area").hide();
+    $("#hidden_area").hide();
     $('[name="month_id"]').on("change",function(){
         $('[name="rider_id"]').on("change",function(){
         var month=$('[name="month_id"]').val();
         var rider_id=$('[name="rider_id"]').val();
-        // $("#hidden_area").show();
+        $("#hidden_area").show();
         var url="{{ url('admin/rider/detail/ajax') }}" + "/" + rider_id + "/" + month;
         $.ajax({
             headers: {
@@ -162,11 +162,11 @@ $(document).ready(function(){
         .done(function(data) {  
             console.log(data);
             
-            // $(".bike_name").html(data.brand + " " + data.model);
-            // $(".assign_date").html(data.assign_bike_date);
-            // $(".bike_number").html(data.bike_number);
-            // $(".salik").html(data.salik);
-            // $(".fuel_expense").html(data.fuel_expense);
+            $(".bike_name").html(data.brand + " " + data.model);
+            $(".assign_date").html(data.assign_bike_date);
+            $(".bike_number").html(data.bike_number);
+            $(".salik").html(data.salik);
+            $(".fuel_expense").html(data.fuel_expense);
             
             $(".sim_company_name").html(data.sim_company);
             $(".assign_date_sim").html(data.assign_sim_date);

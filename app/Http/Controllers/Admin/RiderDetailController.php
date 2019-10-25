@@ -76,12 +76,12 @@ class RiderDetailController extends Controller
         $sim_Extra_useage=Company_Account::where("rider_id",$rider_id)->where("source","Sim extra usage")->whereMonth("month",$month)->sum('amount');
         // end sim
         return response()->json([
-            // 'assign_bike_date'=>$assign_bike_date,
-            // 'brand'=>$brand,
-            // 'model'=>$model,
-            // 'bike_number'=>$bike_number,
-            // 'salik'=>$salik,
-            // 'fuel_expense'=>$fuel_expense,
+            'assign_bike_date'=>$assign_bike_date,
+            'brand'=>$brand,
+            'model'=>$model,
+            'bike_number'=>$bike_number,
+            'salik'=>$salik,
+            'fuel_expense'=>$fuel_expense,
 
             'allowed_balance'=>$allowed_balance,
             'assign_sim_date'=>$assign_sim_date,
