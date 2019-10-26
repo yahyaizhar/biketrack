@@ -1773,7 +1773,7 @@ class AjaxNewController extends Controller
                 $ra_salary=$total_salary + $ra_cr;
                 $ra_recieved=$ra_salary - $ra_payable;
                 
-                $kingrider_salaries='<div>Total Salary: <span>'.round($ra_salary,2).'</span></div>';
+                $kingrider_salaries=round($ra_salary,2);
                 return  $kingrider_salaries;
             })
             ->addColumn('profit', function($riders){
