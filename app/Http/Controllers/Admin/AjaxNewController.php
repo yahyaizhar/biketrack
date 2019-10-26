@@ -1809,7 +1809,8 @@ class AjaxNewController extends Controller
                 $used_days=$date_arr[0]['count'];
                 $total_rent=550;
                 $total_month_days=Carbon::parse('1-09-2019')->daysInMonth;
-                return $total_month_days;
+                $bike_rent=($used_days/$total_month_days)*550;
+                return $bike_rent;
               }
               return '0';
               
