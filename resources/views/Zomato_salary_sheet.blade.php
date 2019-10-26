@@ -37,7 +37,7 @@
                         <th>Hours</th>
                         <th>Trips</th>
                         <th>Total Payout</th>
-                        {{-- <th>Bike Rent</th> --}}
+                        <th>Bike Rent</th>
                         <th>Bike Salik </th>
                         <th>Bike Fuel </th>
                         <th>Sim Charges</th>
@@ -74,7 +74,7 @@ $(function() {
             { data: 'no_of_hours', name: 'no_of_hours' },
             { data: 'no_of_trips', name: 'no_of_trips' },
             { data: 'payouts', name: 'payouts' },
-            // { data: '', name: '' },
+            { data: 'bike_rent', name: 'bike_rent' },
             { data: 'salik', name: 'salik' },
             { data: 'fuel', name: 'fuel' },
             { data: 'sim_charges', name: 'sim_charges' },

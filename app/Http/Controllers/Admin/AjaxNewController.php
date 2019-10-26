@@ -1784,7 +1784,12 @@ class AjaxNewController extends Controller
                 ->sum("amount");
                 return $total_profit;
             })
-            ->rawColumns(['profit','kingrider_salaries','rider_id','no_of_hours','no_of_trips','payouts','salik','sim_charges','fuel'])
+            ->addColumn('bike_rent', function($riders){
+               $zomato_performance=Rider_Performance_Zomato::where("feid",$riders->client_rider_id)->get();
+                return $zomato_performance->date;
+            })
+
+            ->rawColumns(['bike_rent','profit','kingrider_salaries','rider_id','no_of_hours','no_of_trips','payouts','salik','sim_charges','fuel'])
             ->make(true);
         }
 }
