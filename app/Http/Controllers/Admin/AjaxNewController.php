@@ -1765,14 +1765,14 @@ class AjaxNewController extends Controller
                 }
     
                 //total salary
-                $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
+                $number_of_hours_sum=Income_zomato::where('rider_id',$riders->rider_id)
                 ->whereMonth('date',$onlyMonth)
                 ->get()
                 ->sum('log_in_hours_payable');
                 if($number_of_hours_sum > 286) $number_of_hours_sum = 286;
                 $number_of_hours_sum = $number_of_hours_sum * 7.87;
                 
-                $aed_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
+                $aed_trips_sum=Income_zomato::where('rider_id',$riders->rider_id)
                 ->whereMonth('date',$onlyMonth)
                 ->get()
                 ->sum('trips_payable');
@@ -1823,14 +1823,14 @@ class AjaxNewController extends Controller
                 }
     
                 //total salary
-                $number_of_hours_sum_salary=Income_zomato::where('rider_id',$rider->rider_id)
+                $number_of_hours_sum_salary=Income_zomato::where('rider_id',$riders->rider_id)
                 ->whereMonth('date',$onlyMonth)
                 ->get()
                 ->sum('log_in_hours_payable');
                 if($number_of_hours_sum_salary > 286) $number_of_hours_sum_salary = 286;
                 $number_of_hours_sum_salary = $number_of_hours_sum_salary * 7.87;
                 
-                $aed_trips_sum_salary=Income_zomato::where('rider_id',$rider->rider_id)
+                $aed_trips_sum_salary=Income_zomato::where('rider_id',$riders->rider_id)
                 ->whereMonth('date',$onlyMonth)
                 ->get()
                 ->sum('trips_payable');
