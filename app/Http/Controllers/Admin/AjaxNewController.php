@@ -1680,10 +1680,10 @@ class AjaxNewController extends Controller
     }
     public function zomato_septemmber_sheet(){
            $clients=Client_Rider::where('client_id','2')->get();
-            return DataTables::of($clients)
-           
-            ->addColumn('rider_id', function($clients){
-                return $clients;
+           $riders=$clients->riders();
+            return DataTables::of($riders)
+            ->addColumn('rider_id', function($riders){
+                return $riders;
             })
             ->rawColumns(['rider_id',])
             ->make(true);
