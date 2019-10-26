@@ -1786,7 +1786,7 @@ class AjaxNewController extends Controller
             })
             ->addColumn('bike_rent', function($riders){
                 $date_arr=[];
-                $zomato=Rider_Performance_Zomato::whereMonth("date","09")->get();
+                $zomato=Rider_Performance_Zomato::whereMonth("date","08")->get();
               foreach ($zomato as $item) {
                $obj=[];
                $obj['feid']+=$item['feid'];
