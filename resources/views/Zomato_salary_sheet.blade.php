@@ -41,7 +41,7 @@
                         <th>Bike Salik </th>
                         <th>Bike Fuel </th>
                         <th>Sim Charges</th>
-                        {{-- <th>Kingrider Salaries</th>    --}}
+                        <th>Kingrider Salaries</th>
                         {{-- <th>Company Profit</th>                      --}}
                     </tr>
                 </thead>
@@ -78,7 +78,7 @@ $(function() {
             { data: 'salik', name: 'salik' },
             { data: 'fuel', name: 'fuel' },
             { data: 'sim_charges', name: 'sim_charges' },
-            // { data: '', name: '' },
+            { data: 'kingrider_salaries', name: 'kingrider_salaries' },
             // { data: '', name: '' },
             
         ],
