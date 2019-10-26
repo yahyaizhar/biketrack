@@ -1689,21 +1689,21 @@ class AjaxNewController extends Controller
             ->addColumn('no_of_hours', function($riders){
                 $feid=$riders->client_rider_id;
                 $rider_id=$riders->rider_id;
-                $month=Carbon::parse('09')->format('m');
+                $month='09';
                 $no_of_hours=Income_zomato::where("feid",$feid)->where("rider_id",$rider_id)->whereMonth("date",$month)->sum('log_in_hours_payable');
                 return $no_of_hours;
             })
             ->addColumn('no_of_trips', function($riders){
                 $feid=$riders->client_rider_id;
                 $rider_id=$riders->rider_id;
-                $month=Carbon::parse('09')->format('m');
+                $month='09';
                 $no_of_trips=Income_zomato::where("feid",$feid)->where("rider_id",$rider_id)->whereMonth("date",$month)->sum('trips_payable');
                 return $no_of_trips;
             })
             ->addColumn('payouts', function($riders){
                 $feid=$riders->client_rider_id;
                 $rider_id=$riders->rider_id;
-                $month=Carbon::parse('09')->format('m');
+                $month='09';
                 $payouts=Income_zomato::where("feid",$feid)->where("rider_id",$rider_id)->whereMonth("date",$month)->sum('total_to_be_paid_out');
                 return $payouts;
             })
