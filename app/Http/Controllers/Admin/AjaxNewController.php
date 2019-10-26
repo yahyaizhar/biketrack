@@ -1678,4 +1678,14 @@ class AjaxNewController extends Controller
         ->rawColumns(['net_salary','gross_salary','rider_name','bike_number','advance','poor_performance', 'salik', 'sim_charges', 'dc', 'cod', 'rta_fine', 'total_deduction', 'aed_hours', 'total_salary','visa','mobile','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
         ->make(true);
     }
+    public function zomato_septemmber_sheet(){
+           $clients=Client_Rider::where('client_id','2')->get();
+            return DataTables::of($clients)
+           
+            ->addColumn('rider_id', function($clients){
+                return $clients;
+            })
+            ->rawColumns(['rider_id',])
+            ->make(true);
+        }
 }

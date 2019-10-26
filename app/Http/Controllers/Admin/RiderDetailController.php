@@ -91,4 +91,7 @@ class RiderDetailController extends Controller
             'sim_Extra_useage'=>$sim_Extra_useage,
         ]);
     }
+    public function Zomato_salary_sheet_view(){
+        return view('Zomato_salary_sheet');
+    }
 }
