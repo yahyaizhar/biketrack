@@ -1773,11 +1773,18 @@ class AjaxNewController extends Controller
                 $ra_salary=$total_salary + $ra_cr;
                 $ra_recieved=$ra_salary - $ra_payable;
                 
-                $kingrider_salaries='<div>Total Salary:<span>'. round($ra_salary,2).'</span></div>';
+                $kingrider_salaries='<div>Total Salary: <span>'.round($ra_salary,2).'</span></div>';
                 return  $kingrider_salaries;
             })
-            
-            ->rawColumns(['kingrider_salaries','rider_id','no_of_hours','no_of_trips','payouts','salik','sim_charges','fuel'])
+            ->addColumn('profit', function($riders){
+                $total_profit=Company_Account::where('type','pl')
+                ->whereMonth("month","09")
+                ->where("rider_id",$riders->rider_id)
+                ->where("source","Profit")
+                ->sum("amount");
+                return $total_profit;
+            })
+            ->rawColumns(['profit','kingrider_salaries','rider_id','no_of_hours','no_of_trips','payouts','salik','sim_charges','fuel'])
             ->make(true);
         }
 }

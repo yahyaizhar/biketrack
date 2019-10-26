@@ -42,7 +42,7 @@
                         <th>Bike Fuel </th>
                         <th>Sim Charges</th>
                         <th>Kingrider Salaries</th>
-                        {{-- <th>Company Profit</th>                      --}}
+                        <th>Company Profit</th>
                     </tr>
                 </thead>
             </table>
@@ -79,7 +79,7 @@ $(function() {
             { data: 'fuel', name: 'fuel' },
             { data: 'sim_charges', name: 'sim_charges' },
             { data: 'kingrider_salaries', name: 'kingrider_salaries' },
-            // { data: '', name: '' },
+            { data: 'profit', name: 'profit' },
             
         ],
         responsive:true,
