@@ -1785,10 +1785,17 @@ class AjaxNewController extends Controller
                 return $total_profit;
             })
             ->addColumn('bike_rent', function($riders){
-               $zomato_performance=Rider_Performance_Zomato::where("feid",$riders->client_rider_id)->get();
-               foreach ($zomato_performance as $value) {
-                return $value->date;
-               } 
+                $date_arr=[];
+                $zomato=Rider_Performance_Zomato::whereMonth("date","09")->get();
+              foreach ($zomato as $item) {
+                $zp_found = Arr::first($zomato, function ($item_zp, $key) use ($item) {
+                    return $item_zp->feid == $item['feid'];
+                });
+                if(isset($zp_found)){
+                return $zp_found;
+            }
+              }
+               
               
             })
 
