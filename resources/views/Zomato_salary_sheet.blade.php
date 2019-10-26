@@ -34,15 +34,15 @@
                 <thead>
                     <tr>
                         <th>Riders</th>
-                        {{-- <th>Hours</th>
-                        <th>Trips</th>
-                        <th>Total Payout</th>
-                        <th>Bike Rent</th>
-                        <th>Bike Salik </th>
-                        <th>Bike Fuel </th>
-                        <th>Sim Charges</th>
-                        <th>Kingrider Salaries</th>   
-                        <th>Company Profit</th>                      --}}
+                        <th>Hours</th>
+                        {{-- <th>Trips</th> --}}
+                        {{-- <th>Total Payout</th> --}}
+                        {{-- <th>Bike Rent</th> --}}
+                        {{-- <th>Bike Salik </th> --}}
+                        {{-- <th>Bike Fuel </th> --}}
+                        {{-- <th>Sim Charges</th> --}}
+                        {{-- <th>Kingrider Salaries</th>    --}}
+                        {{-- <th>Company Profit</th>                      --}}
                     </tr>
                 </thead>
             </table>
@@ -71,7 +71,7 @@ $(function() {
         ajax: "{!! route('ajax.zomato_septemmber_sheet') !!}",
         columns: [
             { data: 'rider_id', name: 'rider_id' },
-            // { data: '', name: '' },
+            { data: 'no_of_hours', name: 'no_of_hours' },
             // { data: '', name: '' },
             // { data: '', name: '' },
             // { data: '', name: '' },

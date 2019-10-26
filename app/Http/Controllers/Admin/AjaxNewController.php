@@ -1686,7 +1686,10 @@ class AjaxNewController extends Controller
                 $riderFound = Rider::find($riders->rider_id);
                 return $riderFound->name;
             })
-            ->rawColumns(['rider_id',])
+            ->addColumn('no_of_hours', function($riders){
+                return $riders;
+            })
+            ->rawColumns(['rider_id','no_of_hours'])
             ->make(true);
         }
 }
