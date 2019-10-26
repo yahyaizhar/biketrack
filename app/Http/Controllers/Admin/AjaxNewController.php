@@ -1736,23 +1736,7 @@ class AjaxNewController extends Controller
                 $month = Carbon::parse($month)->format('Y-m-d');
                 $onlyMonth = Carbon::parse($month)->format('m');
     
-                //prev payables
-                $rider_debits_cr_prev_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
-                ->where(function($q) {
-                    $q->where('type', "cr");
-                })
-                ->whereDate('month', '<',$startMonth)
-                ->sum('amount');
                 
-                $rider_debits_dr_prev_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
-                ->where(function($q) {
-                    $q->where('type', "cr_payable")
-                    ->orWhere('type', 'dr');
-                })
-                ->whereDate('month', '<',$startMonth)
-                ->sum('amount');
-                $closing_balance_prev = $rider_debits_cr_prev_payable - $rider_debits_dr_prev_payable;
-                //ends prev payables
     
                 $ra_payable=Rider_Account::where("rider_id",$rider_id)
                 ->whereMonth("month",$onlyMonth)
@@ -1768,13 +1752,7 @@ class AjaxNewController extends Controller
                 ->where("type","cr")
                 ->where('source', '!=', 'salary')
                 ->sum('amount');  
-                if($closing_balance_prev < 0){ //deduct
-                    $ra_payable += abs($closing_balance_prev);
-                }
-                else {
-                    // add
-                    $ra_cr += abs($closing_balance_prev);
-                }
+                
     
                 //total salary
                 $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
@@ -1795,7 +1773,7 @@ class AjaxNewController extends Controller
                 $ra_salary=$total_salary + $ra_cr;
                 $ra_recieved=$ra_salary - $ra_payable;
                 
-                $kingrider_salaries='<div>Total Salary:<span>'. round($ra_salary,2).'</span></div><div>Salary Received:<span>'. round($ra_recieved,2).'</span></div>';
+                $kingrider_salaries='<div>Total Salary:<span>'. round($ra_salary,2).'</span></div>';
                 return  $kingrider_salaries;
             })
             
