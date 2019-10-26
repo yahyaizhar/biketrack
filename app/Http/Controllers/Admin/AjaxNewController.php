@@ -1806,7 +1806,10 @@ class AjaxNewController extends Controller
                     
               }
               if (count($date_arr)>0) {
-                return $date_arr[0]['count'];
+                $used_days=$date_arr[0]['count'];
+                $total_rent=550;
+                $total_month_days=Carbon\Carbon::parse('09')->daysInMonth;
+                return $total_month_days;
               }
               return '0';
               
