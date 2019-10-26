@@ -1805,7 +1805,10 @@ class AjaxNewController extends Controller
                     }
                     
               }
-              return $date_arr[0]['count'];
+              if (count($date_arr)>0) {
+                return $date_arr[0]['count'];
+              }
+              return '0';
               
             })
 
