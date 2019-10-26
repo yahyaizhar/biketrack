@@ -1793,7 +1793,7 @@ class AjaxNewController extends Controller
                $obj['feid']=$item['feid'];
             //    $obj['count']=$i++;
                array_push($date_arr, $obj);
-               return $obj;
+               return $item['feid'];
               }
                return $date_arr;
               
