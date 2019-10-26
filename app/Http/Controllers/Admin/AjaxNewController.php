@@ -509,7 +509,8 @@ class AjaxNewController extends Controller
         
 
         $closing_balance_prev = $c_debits_cr_prev_payable - $c_debits_dr_prev_payable;
-        $running_balance =$closing_balance_prev;
+        // $running_balance =$closing_balance_prev;
+        $running_balance =0;
 
         $flag = new \App\Model\Accounts\Company_Account;
         $flag->month='';
