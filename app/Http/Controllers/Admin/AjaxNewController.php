@@ -1728,8 +1728,8 @@ class AjaxNewController extends Controller
                 ->sum('amount');
                 return $sim_charges;
             })
-            ->addColumn('kingrider_salaries', function($riders){
-                $month = '01-'.$month.'-'.Carbon::now()->format('Y');
+            ->addColumn('kingrider_salaries', function($rider){
+                $month = '01-09-'.Carbon::now()->format('Y');
                 $rider_id = $rider->rider_id;
     
                 $startMonth = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
