@@ -1786,7 +1786,10 @@ class AjaxNewController extends Controller
             })
             ->addColumn('bike_rent', function($riders){
                $zomato_performance=Rider_Performance_Zomato::where("feid",$riders->client_rider_id)->get();
-                return $zomato_performance->date;
+               foreach ($zomato_performance as $value) {
+                return $value->date;
+               } 
+              
             })
 
             ->rawColumns(['bike_rent','profit','kingrider_salaries','rider_id','no_of_hours','no_of_trips','payouts','salik','sim_charges','fuel'])
