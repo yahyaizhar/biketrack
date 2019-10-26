@@ -1794,7 +1794,7 @@ class AjaxNewController extends Controller
             //    $obj['count']=$i++;
                array_push($date_arr, $obj);
               }
-               return $date_arr;
+               return $obj;
               
             })
 
