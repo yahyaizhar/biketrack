@@ -38,9 +38,9 @@
                         <th>Trips</th>
                         <th>Total Payout</th>
                         {{-- <th>Bike Rent</th> --}}
-                        {{-- <th>Bike Salik </th> --}}
-                        {{-- <th>Bike Fuel </th> --}}
-                        {{-- <th>Sim Charges</th> --}}
+                        <th>Bike Salik </th>
+                        <th>Bike Fuel </th>
+                        <th>Sim Charges</th>
                         {{-- <th>Kingrider Salaries</th>    --}}
                         {{-- <th>Company Profit</th>                      --}}
                     </tr>
@@ -75,9 +75,9 @@ $(function() {
             { data: 'no_of_trips', name: 'no_of_trips' },
             { data: 'payouts', name: 'payouts' },
             // { data: '', name: '' },
-            // { data: '', name: '' },
-            // { data: '', name: '' },
-            // { data: '', name: '' },
+            { data: 'salik', name: 'salik' },
+            { data: 'fuel', name: 'fuel' },
+            { data: 'sim_charges', name: 'sim_charges' },
             // { data: '', name: '' },
             // { data: '', name: '' },
             

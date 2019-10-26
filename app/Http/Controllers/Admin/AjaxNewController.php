@@ -1707,7 +1707,28 @@ class AjaxNewController extends Controller
                 $payouts=Income_zomato::where("feid",$feid)->where("rider_id",$rider_id)->whereMonth("date",$month)->sum('total_to_be_paid_out');
                 return $payouts;
             })
-            ->rawColumns(['rider_id','no_of_hours','no_of_trips','payouts'])
+            ->addColumn('salik', function($riders) {
+                $salik_amount=Rider_Account::where('rider_id',$riders->rider_id)
+                ->whereNotNull('salik_id')
+                ->whereMonth('month','09')
+                ->sum('amount');
+                return $salik_amount;
+            }) 
+            ->addColumn('fuel', function($riders) {
+                $fuel_amount=Rider_Account::where('rider_id',$riders->rider_id)
+                ->whereNotNull('fuel_expense_id')
+                ->whereMonth('month','09')
+                ->sum('amount');
+                return $fuel_amount;
+            }) 
+            ->addColumn('sim_charges', function($riders){
+                $sim_charges=Rider_Account::where('rider_id',$riders->rider_id)
+                ->whereNotNull('sim_transaction_id')
+                ->whereMonth('month','09')
+                ->sum('amount');
+                return $sim_charges;
+            })
+            ->rawColumns(['rider_id','no_of_hours','no_of_trips','payouts','salik','sim_charges','fuel'])
             ->make(true);
         }
 }
