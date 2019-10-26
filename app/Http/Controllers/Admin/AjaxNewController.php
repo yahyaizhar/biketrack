@@ -1782,7 +1782,7 @@ class AjaxNewController extends Controller
                 ->where("rider_id",$riders->rider_id)
                 ->where("source","Profit")
                 ->sum("amount");
-                return $total_profit;
+                return round($total_profit,2);
             })
             ->addColumn('bike_rent', function($riders){
                 $date_arr=[];
