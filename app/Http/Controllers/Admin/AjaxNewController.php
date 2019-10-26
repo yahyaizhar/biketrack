@@ -1793,9 +1793,9 @@ class AjaxNewController extends Controller
                $obj['date']=$item['date'];
                $obj['count']=$i++;
                array_push($date_arr, $obj);
-              }
-               return $date_arr;
               
+               return $date_arr;
+            }
             })
 
             ->rawColumns(['bike_rent','profit','kingrider_salaries','rider_id','no_of_hours','no_of_trips','payouts','salik','sim_charges','fuel'])
