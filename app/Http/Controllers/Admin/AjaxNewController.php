@@ -1789,11 +1789,15 @@ class AjaxNewController extends Controller
                 $zomato=Rider_Performance_Zomato::whereMonth("date","10")->where("feid",$riders->client_rider_id)->get();
                 // $i=0;
                 foreach ($zomato as $item) {
-               $obj=[];
-               $obj['feid']=$item['feid'];
-            //    $obj['count']=$i++;
-               array_push($date_arr, $obj);
-               return $item['feid'];
+                    $zp_found = Arr::first($item, function ($item_zp, $key){
+                        return $item_zp->feid == $item['feid'];
+                    });
+                    if (isset($zp_found)) {
+                        $obj=[];
+                        $obj['feid']=$item['feid'];
+                        //    $obj['count']=$i++;
+                        array_push($date_arr, $obj);
+                    }
               }
                return $date_arr;
               
