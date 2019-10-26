@@ -1790,16 +1790,17 @@ class AjaxNewController extends Controller
                 // $i=0;
                 foreach ($zomato as $item) {
                     $zp_found = Arr::first($item, function ($item_zp, $key) use ($riders){
-                        return $item_zp->feid == $riders->client_rider_id;
+                        return $item_zp->feid;
                     });
-                    if (isset($zp_found)) {
-                        $obj=[];
-                        $obj['feid']=$item['feid'];
-                        //    $obj['count']=$i++;
-                        array_push($date_arr, $obj);
-                    }
+                    // if (isset($zp_found)) {
+                    //     $obj=[];
+                    //     $obj['feid']=$item['feid'];
+                    //     //    $obj['count']=$i++;
+                    //     array_push($date_arr, $obj);
+                    // }
+                    return $zp_found;
               }
-               return $date_arr;
+               
               
             })
 
