@@ -1790,7 +1790,7 @@ class AjaxNewController extends Controller
                 // $i=0;
                 foreach ($zomato as $item) {
                $obj=[];
-               $obj['feid']=$item->feid;
+               $obj['feid']='123';
             //    $obj['count']=$i++;
                array_push($date_arr, $obj);
               }
