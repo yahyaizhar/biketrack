@@ -1708,21 +1708,21 @@ class AjaxNewController extends Controller
                 return $payouts;
             })
             ->addColumn('salik', function($riders) {
-                $salik_amount=Rider_Account::where('rider_id',$riders->rider_id)
+                $salik_amount=Company_Account::where('rider_id',$riders->rider_id)
                 ->whereNotNull('salik_id')
                 ->whereMonth('month','09')
                 ->sum('amount');
                 return round($salik_amount,2);
             }) 
             ->addColumn('fuel', function($riders) {
-                $fuel_amount=Rider_Account::where('rider_id',$riders->rider_id)
+                $fuel_amount=Company_Account::where('rider_id',$riders->rider_id)
                 ->whereNotNull('fuel_expense_id')
                 ->whereMonth('month','09')
                 ->sum('amount');
                 return round($fuel_amount,2);
             }) 
             ->addColumn('sim_charges', function($riders){
-                $sim_charges=Rider_Account::where('rider_id',$riders->rider_id)
+                $sim_charges=Company_Account::where('rider_id',$riders->rider_id)
                 ->whereNotNull('sim_transaction_id')
                 ->whereMonth('month','09')
                 ->sum('amount');
