@@ -1790,7 +1790,7 @@ class AjaxNewController extends Controller
                 // $i=0;
                 foreach ($zomato as $item) {
                     $zp_found = Arr::first($item, function ($item_zp, $key) use($item){
-                        return $item_zp->feid == $item['feid'];
+                        return $item_zp->feid == $item->feid;
                     });
                     if (isset($zp_found)) {
                         $obj=[];
