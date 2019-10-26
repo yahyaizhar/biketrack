@@ -35,8 +35,8 @@
                     <tr>
                         <th>Riders</th>
                         <th>Hours</th>
-                        {{-- <th>Trips</th> --}}
-                        {{-- <th>Total Payout</th> --}}
+                        <th>Trips</th>
+                        <th>Total Payout</th>
                         {{-- <th>Bike Rent</th> --}}
                         {{-- <th>Bike Salik </th> --}}
                         {{-- <th>Bike Fuel </th> --}}
@@ -72,8 +72,8 @@ $(function() {
         columns: [
             { data: 'rider_id', name: 'rider_id' },
             { data: 'no_of_hours', name: 'no_of_hours' },
-            // { data: '', name: '' },
-            // { data: '', name: '' },
+            { data: 'no_of_trips', name: 'no_of_trips' },
+            { data: 'payouts', name: 'payouts' },
             // { data: '', name: '' },
             // { data: '', name: '' },
             // { data: '', name: '' },

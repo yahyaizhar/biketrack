@@ -1687,9 +1687,27 @@ class AjaxNewController extends Controller
                 return $riderFound->name;
             })
             ->addColumn('no_of_hours', function($riders){
-                return $riders;
+                $feid=$riders->client_rider_id;
+                $rider_id=$riders->rider_id;
+                $month=Carbon::parse('09')->format('m');
+                $no_of_hours=Income_zomato::where("feid",$feid)->where("rider_id",$rider_id)->whereMonth("date",$month)->sum('log_in_hours_payable');
+                return $no_of_hours;
             })
-            ->rawColumns(['rider_id','no_of_hours'])
+            ->addColumn('no_of_trips', function($riders){
+                $feid=$riders->client_rider_id;
+                $rider_id=$riders->rider_id;
+                $month=Carbon::parse('09')->format('m');
+                $no_of_trips=Income_zomato::where("feid",$feid)->where("rider_id",$rider_id)->whereMonth("date",$month)->sum('trips_payable');
+                return $no_of_trips;
+            })
+            ->addColumn('payouts', function($riders){
+                $feid=$riders->client_rider_id;
+                $rider_id=$riders->rider_id;
+                $month=Carbon::parse('09')->format('m');
+                $payouts=Income_zomato::where("feid",$feid)->where("rider_id",$rider_id)->whereMonth("date",$month)->sum('total_to_be_paid_out');
+                return $payouts;
+            })
+            ->rawColumns(['rider_id','no_of_hours','no_of_trips','payouts'])
             ->make(true);
         }
 }
