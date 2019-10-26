@@ -1805,7 +1805,7 @@ class AjaxNewController extends Controller
                     }
                     
               }
-              return json_encode($date_arr);
+              return json_encode($date_arr[0]['count']);
               
             })
 
