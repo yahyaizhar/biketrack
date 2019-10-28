@@ -125,6 +125,8 @@ margin-left: 10px;
                         <th class="d-none"></th>
                         <th class="d-none"></th>
                         <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
                     </tr>
                 </thead>
             </table>
@@ -411,12 +413,14 @@ $(function() {
             { "data": 'number_of_trips', "name": 'number_of_trips' },
             { "data": 'ncw', "name": 'ncw' },
             { "data": 'tips', "name": 'tips' },
+            { "data": 'extra_trips', "name": 'extra_trips' },
+            { "data": 'aed_extra_trips', "name": 'aed_extra_trips' },
             
             
         ];
         _settings.columnDefs=[
             {
-                "targets": [8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
+                "targets": [8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24],
                 "visible": false,
                 searchable: true, 
             },
@@ -454,6 +458,8 @@ $(function() {
             { "data": 'number_of_trips', "name": 'number_of_trips' },
             { "data": 'ncw', "name": 'ncw' },
             { "data": 'tips', "name": 'tips' },
+            { "data": 'extra_trips', "name": 'extra_trips' },
+            { "data": 'aed_extra_trips', "name": 'aed_extra_trips' },
             
         ];
      
@@ -529,38 +535,41 @@ $(function() {
             '<td colspan="2";>'+data.salik+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >Sim Charges:</td>'+
             '<td colspan="2";>'+data.sim_charges+'</td>'+
-            '</tr>'+
-            '<tr>'+
             '<td colspan="1"; style="font-weight:900;">DC :</td>'+
             '<td colspan="2";>'+data.dc+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >COD:</td>'+
             '<td colspan="2";>'+data.cod+'</td>'+
-            '<td colspan="1"; style="font-weight:900;" >Poor Performance:</td>'+
-            '<td colspan="2";>'+data.poor_performance+'</td>'+
             '</tr>'+
             '<tr>'+
+            '<td colspan="1"; style="font-weight:900;" >Poor Performance:</td>'+
+            '<td colspan="2";>'+data.poor_performance+'</td>'+
             '<td colspan="1"; style="font-weight:900;">Visa :</td>'+
             '<td colspan="2";>'+data.visa+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >RTA Fine:</td>'+
             '<td colspan="2";>'+data.rta_fine+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >Mobile:</td>'+
             '<td colspan="2";>'+data.mobile+'</td>'+
-            '</tr>'+
-            '<tr>'+
             '<td colspan="1"; style="font-weight:900;">Dicipline Fine :</td>'+
             '<td colspan="2";>'+data.dicipline_fine+'</td>'+
+            '</tr>'+
+           
+            '<tr>'+
             '<td colspan="1"; style="font-weight:900;" >Total Deduction:</td>'+
             '<td colspan="2";>'+data.total_deduction+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >Number of Hours:</td>'+
             '<td colspan="2";>'+data.number_of_hours+'</td>'+
-            '</tr>'+
-            '<tr>'+
             '<td colspan="1"; style="font-weight:900;">Number Of trips :</td>'+
             '<td colspan="2";>'+data.number_of_trips+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >NCW:</td>'+
             '<td colspan="2";>'+data.ncw+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >Tips:</td>'+
             '<td colspan="2";>'+data.tips+'</td>'+
+            '</tr>'+
+            '<tr>'+
+            '<td colspan="1"; style="font-weight:900;" >Extra Trip:</td>'+
+            '<td colspan="2";>'+data.extra_trips+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >AED Extra Trip:</td>'+
+            '<td colspan="2";>'+data.aed_extra_trips+'</td>'+
             '</tr>'+
             
         '</table>';

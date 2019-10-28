@@ -1441,6 +1441,7 @@ class AjaxNewController extends Controller
             ->whereMonth('date',$month)
             ->get()
             ->sum('trips_payable');
+            if ( $number_of_trips_sum > 400) $number_of_trips_sum=400; 
                 return $number_of_trips_sum; 
         }) 
         ->addColumn('aed_trips', function($rider) use ($month) {
@@ -1448,7 +1449,26 @@ class AjaxNewController extends Controller
             ->whereMonth('date',$month)
             ->get()
             ->sum('trips_payable');
+            if ( $aed_trips_sum > 400) $aed_trips_sum=400; 
                 return $aed_trips_sum*2; 
+        }) 
+        ->addColumn('extra_trips', function($rider) use ($month) {
+            $number_of__extra_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('trips_payable');
+            if ( $number_of__extra_trips_sum > 400){; 
+                return $number_of__extra_trips_sum-400; 
+            }
+        }) 
+        ->addColumn('aed_extra_trips', function($rider) use ($month) {
+            $aed_extra_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('trips_payable');
+            if ( $aed_extra_trips_sum > 400){; 
+                return ($aed_extra_trips_sum-400)*4; 
+            }
         }) 
         ->addColumn('ncw', function($rider) use ($month) {
             $ncw_sum=Income_zomato::where('rider_id',$rider->rider_id)
@@ -1526,6 +1546,10 @@ class AjaxNewController extends Controller
             ->whereMonth('date',$month)
             ->get()
             ->sum('log_in_hours_payable');
+            if ($number_of_hours_sum > 286) {
+                $number_of_hours_sum=286;
+                return $number_of_hours_sum * 7.87;
+            }
 
             return $number_of_hours_sum * 7.87;
         })
@@ -1675,7 +1699,7 @@ class AjaxNewController extends Controller
         })
         
         
-        ->rawColumns(['net_salary','gross_salary','rider_name','bike_number','advance','poor_performance', 'salik', 'sim_charges', 'dc', 'cod', 'rta_fine', 'total_deduction', 'aed_hours', 'total_salary','visa','mobile','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
+        ->rawColumns(['aed_extra_trips','extra_trips','net_salary','gross_salary','rider_name','bike_number','advance','poor_performance', 'salik', 'sim_charges', 'dc', 'cod', 'rta_fine', 'total_deduction', 'aed_hours', 'total_salary','visa','mobile','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
         ->make(true);
     }
     public function zomato_septemmber_sheet(){
