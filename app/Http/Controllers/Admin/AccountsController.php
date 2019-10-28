@@ -831,7 +831,8 @@ class AccountsController extends Controller
             if(isset($ra_zomatos)){
                 $ra_zomatos_no_of_hours = $ra_zomatos->log_in_hours_payable > 286?286:$ra_zomatos->log_in_hours_payable;
                 $ra_zomatos_no_of_hours = $ra_zomatos_no_of_hours * 7.87;
-                $ra_zomatos_no_of_trips = $ra_zomatos->trips_payable * 2;
+                $ra_zomatos_no_of_trips = $ra_zomatos->trips_payable > 400?400:$ra_zomatos->trips_payable;
+                $ra_zomatos_no_of_trips = $ra_zomatos_no_of_trips * 2;
             }
         
             
