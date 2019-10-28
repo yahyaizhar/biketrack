@@ -1436,6 +1436,14 @@ class AjaxNewController extends Controller
             ->sum('amount');
                 return $bike_allowns;
         }) 
+        ->addColumn('bonus', function($rider) use ($month) {
+            $bonus=Rider_Account::where('source',"Bonus")
+            ->where('rider_id',$rider->rider_id)
+            ->whereMonth('month',$month)
+            ->get()
+            ->sum('amount');
+                return $bonus;
+        }) 
         ->addColumn('number_of_hours', function($rider) use ($month) {
             $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
             ->whereMonth('date',$month)
@@ -1648,7 +1656,19 @@ class AjaxNewController extends Controller
             
             $total_salary =$number_of_hours_sum + $aed_total;
 
-            $ra_salary=$total_salary + $ra_cr;
+            $bonus=Rider_Account::where('source',"Bonus")
+            ->where('rider_id',$rider->rider_id)
+            ->whereMonth('month',$month)
+            ->get()
+            ->sum('amount');
+
+            $bike_allowns=Rider_Account::where('source',"Bike Allowns")
+            ->where('rider_id',$rider->rider_id)
+            ->whereMonth('month',$month)
+            ->get()
+            ->sum('amount');
+
+            $ra_salary=$total_salary + $ra_cr + $bonus +$bike_allowns;
 
             return round($ra_salary,2);
 
@@ -1734,7 +1754,7 @@ class AjaxNewController extends Controller
         })
         
         
-        ->rawColumns(['bike_allowns','aed_extra_trips','extra_trips','net_salary','gross_salary','rider_name','bike_number','advance','poor_performance', 'salik', 'sim_charges', 'dc', 'cod', 'rta_fine', 'total_deduction', 'aed_hours', 'total_salary','visa','mobile','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
+        ->rawColumns(['bonus','bike_allowns','aed_extra_trips','extra_trips','net_salary','gross_salary','rider_name','bike_number','advance','poor_performance', 'salik', 'sim_charges', 'dc', 'cod', 'rta_fine', 'total_deduction', 'aed_hours', 'total_salary','visa','mobile','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
         ->make(true);
     }
     public function zomato_septemmber_sheet(){
