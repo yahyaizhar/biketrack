@@ -2033,15 +2033,16 @@ public function client_income_update(Request $request,$id){
     public function rider_expense_post(Request $r)
     {
         $d_type = $r->d_type;
+        $type=explode('@',$d_type);
         $ca = new \App\Model\Accounts\Company_Account;
         $ca->type='dr';
         $ca->amount=$r->amount;
         $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
         $ca->rider_id = $r->rider_id;
-        $ca->source=$r->desc;
+        $ca->source=$type[1];
         $ca->save();
         $ra = new \App\Model\Accounts\Rider_Account;
-        if($d_type=='payable'){
+        if($type[0]=='0'){
             // cr_payable
             $ra->type='cr_payable';
         }
@@ -2052,9 +2053,8 @@ public function client_income_update(Request $request,$id){
         $ra->amount=$r->amount;
         $ra->month=Carbon::parse($r->get('month'))->format('Y-m-d');
         $ra->rider_id = $r->rider_id;
-        $ra->source=$r->desc;
+        $ra->source=$type[1];
         $ra->save();
-        
         return redirect(route('admin.accounts.rider_account'));
     }
     public function updatePaymentStatus($id){

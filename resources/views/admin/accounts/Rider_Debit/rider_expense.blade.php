@@ -37,8 +37,12 @@
                             <label>Deduction Type:</label>
                             {{-- <input  autocomplete="off" list="model" class="form-control @if($errors->has('model')) invalid-field @endif" name="model"  > --}}
                             <select required class="form-control @if($errors->has('d_type')) invalid-field @endif kt-select2-general" name="d_type">
-                                <option value="cr">No deduction</option>
-                                <option value="payable">Deduct from salary</option>
+                                {{-- <option value="cr">No deduction</option>
+                                <option value="payable">Deduct from salary</option> --}}
+                                <option value="1@Bonus">Bonus</option>
+                                <option value="1@Bike Allowns">Bike Allowns</option>
+                                <option value="0@Discipline Fine">Discipline Fine</option>
+                                <option value="1@Bike Rent">Bike Rent</option>
                             </select> 
                             @if ($errors->has('d_type'))
                                 <span class="invalid-response" role="alert">
@@ -73,7 +77,7 @@
                             @endif
                         </div>
 
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label>Description:</label>
                             <textarea required class="form-control @if($errors->has('desc')) invalid-field @endif" name="desc" cols="3" rows="5"></textarea>
                             @if ($errors->has('desc'))
@@ -83,7 +87,7 @@
                                     </strong>
                                 </span>
                             @endif
-                        </div>
+                        </div> --}}
                      
                         
                         <div class="form-group">
