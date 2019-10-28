@@ -1567,12 +1567,15 @@ class AjaxNewController extends Controller
             ->sum('trips_payable');
             if ($aed_trips_sum > 400) {
                 $aed_extra_trips=($aed_trips_sum - 400)*4;
+                $aed_trips_sum = $aed_trips_sum * 2;
+                $aed_total=$aed_trips_sum + $aed_extra_trips;
             }
-            else{
+            if($aed_trips_sum <= 400){
                 $aed_extra_trips=0;
+                $aed_trips_sum = $aed_trips_sum * 2;
+                $aed_total=$aed_trips_sum + $aed_extra_trips;
             }
-            $aed_trips_sum = $aed_trips_sum * 2;
-            $aed_total=$aed_trips_sum + $aed_extra_trips;
+            
             $total_salary =$number_of_hours_sum + $aed_total;
             return $total_salary;
         })
