@@ -127,6 +127,7 @@ margin-left: 10px;
                         <th class="d-none"></th>
                         <th class="d-none"></th>
                         <th class="d-none"></th>
+                        <th class="d-none"></th>
                     </tr>
                 </thead>
             </table>
@@ -415,12 +416,13 @@ $(function() {
             { "data": 'tips', "name": 'tips' },
             { "data": 'extra_trips', "name": 'extra_trips' },
             { "data": 'aed_extra_trips', "name": 'aed_extra_trips' },
+            { "data": 'bike_allowns', "name": 'bike_allowns' },
             
             
         ];
         _settings.columnDefs=[
             {
-                "targets": [8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24],
+                "targets": [8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25],
                 "visible": false,
                 searchable: true, 
             },
@@ -460,6 +462,7 @@ $(function() {
             { "data": 'tips', "name": 'tips' },
             { "data": 'extra_trips', "name": 'extra_trips' },
             { "data": 'aed_extra_trips', "name": 'aed_extra_trips' },
+            { "data": 'bike_allowns', "name": 'bike_allowns' },
             
         ];
      
@@ -570,6 +573,8 @@ $(function() {
             '<td colspan="2";>'+data.extra_trips+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >AED Extra Trip:</td>'+
             '<td colspan="2";>'+data.aed_extra_trips+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >AED Bike Allowns:</td>'+
+            '<td colspan="2";>'+data.bike_allowns+'</td>'+
             '</tr>'+
             
         '</table>';

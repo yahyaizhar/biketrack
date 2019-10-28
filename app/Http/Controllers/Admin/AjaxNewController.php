@@ -1428,6 +1428,14 @@ class AjaxNewController extends Controller
             ->sum('amount');
                 return $mobile_sum;
         }) 
+        ->addColumn('bike_allowns', function($rider) use ($month) {
+            $bike_allowns=Rider_Account::where('source',"Bike Allowns")
+            ->where('rider_id',$rider->rider_id)
+            ->whereMonth('month',$month)
+            ->get()
+            ->sum('amount');
+                return $bike_allowns;
+        }) 
         ->addColumn('number_of_hours', function($rider) use ($month) {
             $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
             ->whereMonth('date',$month)
@@ -1726,7 +1734,7 @@ class AjaxNewController extends Controller
         })
         
         
-        ->rawColumns(['aed_extra_trips','extra_trips','net_salary','gross_salary','rider_name','bike_number','advance','poor_performance', 'salik', 'sim_charges', 'dc', 'cod', 'rta_fine', 'total_deduction', 'aed_hours', 'total_salary','visa','mobile','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
+        ->rawColumns(['bike_allowns','aed_extra_trips','extra_trips','net_salary','gross_salary','rider_name','bike_number','advance','poor_performance', 'salik', 'sim_charges', 'dc', 'cod', 'rta_fine', 'total_deduction', 'aed_hours', 'total_salary','visa','mobile','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
         ->make(true);
     }
     public function zomato_septemmber_sheet(){
