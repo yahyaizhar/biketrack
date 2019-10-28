@@ -1565,9 +1565,15 @@ class AjaxNewController extends Controller
             ->whereMonth('date',$month)
             ->get()
             ->sum('trips_payable');
+            if ($aed_trips_sum > 400) {
+                $aed_extra_trips=($aed_trips_sum - 400)*4;
+            }
+            else{
+                $aed_extra_trips=0;
+            }
             $aed_trips_sum = $aed_trips_sum * 2;
-            
-            $total_salary =$number_of_hours_sum + $aed_trips_sum;
+            $aed_total=$aed_trips_sum + $aed_extra_trips;
+            $total_salary =$number_of_hours_sum + $aed_total;
             return $total_salary;
         })
         ->addColumn('net_salary', function($rider) use ($month) {
