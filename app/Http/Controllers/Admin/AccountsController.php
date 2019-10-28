@@ -833,6 +833,10 @@ class AccountsController extends Controller
                 $ra_zomatos_no_of_hours = $ra_zomatos_no_of_hours * 7.87;
                 $ra_zomatos_no_of_trips = $ra_zomatos->trips_payable > 400?400:$ra_zomatos->trips_payable;
                 $ra_zomatos_no_of_trips = $ra_zomatos_no_of_trips * 2;
+
+                $ra_zomatos_no_of_trips_EXTRA = $ra_zomatos->trips_payable > 400?$ra_zomatos->trips_payable-400:0;
+                $ra_zomatos_no_of_trips_EXTRA = $ra_zomatos_no_of_trips_EXTRA * 4;
+                $ra_zomatos_no_of_trips+=$ra_zomatos_no_of_trips_EXTRA;
             }
         
             
