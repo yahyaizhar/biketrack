@@ -831,12 +831,24 @@ class AccountsController extends Controller
             if(isset($ra_zomatos)){
                 $ra_zomatos_no_of_hours = $ra_zomatos->log_in_hours_payable > 286?286:$ra_zomatos->log_in_hours_payable;
                 $ra_zomatos_no_of_hours = $ra_zomatos_no_of_hours * 7.87;
-                $ra_zomatos_no_of_trips = $ra_zomatos->trips_payable > 400?400:$ra_zomatos->trips_payable;
-                $ra_zomatos_no_of_trips = $ra_zomatos_no_of_trips * 2;
+                $ra_zomatos_no_of_trips = $ra_zomatos->trips_payable;
+                if ($ra_zomatos_no_of_trips > 400) {
+                    $trips_extra=($ra_zomatos_no_of_trips-400)*4;
+                    $trips=400*2;
+                    $ra_zomatos_no_of_trips= $trips_extra+ $trips;
+                }
+                if($ra_zomatos_no_of_trips <= 400){
+                    $trips_extra=0;
+                    $trips=$ra_zomatos_no_of_trips*2;
+                    $ra_zomatos_no_of_trips= $trips_extra+ $trips;
+                }
+               
+                // $ra_zomatos_no_of_trips = $ra_zomatos->trips_payable > 400?400:$ra_zomatos->trips_payable;
+                // $ra_zomatos_no_of_trips = $ra_zomatos_no_of_trips * 2;
 
-                $ra_zomatos_no_of_trips_EXTRA = $ra_zomatos->trips_payable > 400?$ra_zomatos->trips_payable-400:0;
-                $ra_zomatos_no_of_trips_EXTRA = $ra_zomatos_no_of_trips_EXTRA * 4;
-                $ra_zomatos_no_of_trips+=$ra_zomatos_no_of_trips_EXTRA;
+                // $ra_zomatos_no_of_trips_EXTRA = $ra_zomatos->trips_payable > 400?$ra_zomatos->trips_payable-400:0;
+                // $ra_zomatos_no_of_trips_EXTRA = $ra_zomatos_no_of_trips_EXTRA * 4;
+                // $ra_zomatos_no_of_trips+=$ra_zomatos_no_of_trips_EXTRA;
             }
         
             
