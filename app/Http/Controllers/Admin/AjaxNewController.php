@@ -1036,7 +1036,10 @@ class AjaxNewController extends Controller
         })
         ->addColumn('rider_id', function($ar){
             $rider=Rider::find($ar->rider_id);
-            return $rider->name ;
+            if (isset($rider)) {
+                return $rider->name ;
+            }
+            return 'No rider is assigned' ;
         })
        
         ->addColumn('actions', function($ar){
