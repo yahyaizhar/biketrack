@@ -1778,6 +1778,9 @@ class AjaxNewController extends Controller
                 $rider_id=$riders->rider_id;
                 $month='09';
                 $no_of_hours=Income_zomato::where("feid",$feid)->where("rider_id",$rider_id)->whereMonth("date",$month)->sum('log_in_hours_payable');
+                if ($no_of_hours > 286) {
+                    $no_of_hours=286;
+                }
                 return $no_of_hours;
             })
             ->addColumn('no_of_trips', function($riders){
