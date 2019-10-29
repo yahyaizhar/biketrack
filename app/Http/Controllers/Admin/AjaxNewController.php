@@ -1821,24 +1821,29 @@ class AjaxNewController extends Controller
                 return $total_salary;
             })
             ->addColumn('salik', function($riders) {
-                $salik_amount=Company_Account::where('rider_id',$riders->rider_id)
-                ->whereNotNull('salik_id')
+                $salik_amount=Company_Account::whereNotNull('salik_id')
+                ->where("source","Salik")
+                ->where("source","Salik Extra")
                 ->whereMonth('month','09')
                 ->sum('amount');
                 return round($salik_amount,2);
             }) 
             ->addColumn('fuel', function($riders) {
-                $fuel_amount=Company_Account::where('rider_id',$riders->rider_id)
-                ->whereNotNull('fuel_expense_id')
+                $fuel_amount=Company_Account::whereNotNull('fuel_expense_id')
                 ->whereMonth('month','09')
                 ->sum('amount');
                 return round($fuel_amount,2);
             }) 
             ->addColumn('sim_charges', function($riders){
-                $sim_charges=Company_Account::where('rider_id',$riders->rider_id)
-                ->whereNotNull('sim_transaction_id')
+                $sim_charges_ca=Company_Account::whereNotNull('sim_transaction_id')
                 ->whereMonth('month','09')
+                ->where("source","Sim Transaction")
                 ->sum('amount');
+                $sim_charges_ra=Rider_Account::whereNotNull('sim_transaction_id')
+                ->whereMonth('month','09')
+                ->where("source","Sim extra usage")
+                ->sum('amount');
+                $sim_charges=$sim_charges_ca+$sim_charges_ra;
                 return round($sim_charges,2);
             })
             ->addColumn('kingrider_salaries', function($rider){
