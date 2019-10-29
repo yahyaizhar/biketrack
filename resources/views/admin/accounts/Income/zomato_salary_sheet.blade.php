@@ -129,6 +129,7 @@ margin-left: 10px;
                         <th class="d-none"></th>
                         <th class="d-none"></th>
                         <th class="d-none"></th>
+                        <th class="d-none"></th>
                     </tr>
                 </thead>
             </table>
@@ -419,12 +420,13 @@ $(function() {
             { "data": 'aed_extra_trips', "name": 'aed_extra_trips' },
             { "data": 'bike_allowns', "name": 'bike_allowns' },
             { "data": 'bonus', "name": 'bonus' },
+            { "data": 'mobile_charges', "name": 'mobile_charges' },
             
             
         ];
         _settings.columnDefs=[
             {
-                "targets": [8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26],
+                "targets": [8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27],
                 "visible": false,
                 searchable: true, 
             },
@@ -466,6 +468,7 @@ $(function() {
             { "data": 'aed_extra_trips', "name": 'aed_extra_trips' },
             { "data": 'bike_allowns', "name": 'bike_allowns' },
             { "data": 'bonus', "name": 'bonus' },
+            { "data": 'mobile_charges', "name": 'mobile_charges' },
             
         ];
      
@@ -580,6 +583,8 @@ $(function() {
             '<td colspan="2";>'+data.bike_allowns+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >Bonus:</td>'+
             '<td colspan="2";>'+data.bonus+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Mobile Charges:</td>'+
+            '<td colspan="2";>'+data.mobile_charges+'</td>'+
             '</tr>'+
             
         '</table>';
