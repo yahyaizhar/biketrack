@@ -1575,14 +1575,12 @@ class AjaxNewController extends Controller
         ->addColumn('total_salary', function($rider) use ($month) {
             $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
             ->whereMonth('date',$month)
-            ->get()
             ->sum('log_in_hours_payable');
             if($number_of_hours_sum > 286) $number_of_hours_sum = 286;
             $number_of_hours_sum = $number_of_hours_sum * 7.87;
             
             $aed_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
             ->whereMonth('date',$month)
-            ->get()
             ->sum('trips_payable');
             if ($aed_trips_sum > 400) {
                 $aed_extra_trips=($aed_trips_sum - 400)*4;
@@ -1631,7 +1629,7 @@ class AjaxNewController extends Controller
             ->sum('amount');  
             if($closing_balance_prev > 0){
                 // add
-                //$ra_cr += abs($closing_balance_prev);
+                $ra_cr += abs($closing_balance_prev);
             }
 
             //total salary
@@ -1718,11 +1716,11 @@ class AjaxNewController extends Controller
             ->where('source', '!=', 'salary')
             ->sum('amount');  
             if($closing_balance_prev < 0){ //deduct
-                //$ra_payable += abs($closing_balance_prev);
+                $ra_payable += abs($closing_balance_prev);
             }
             else {
                 // add
-                //$ra_cr += abs($closing_balance_prev);
+                $ra_cr += abs($closing_balance_prev);
             }
 
             //total salary
