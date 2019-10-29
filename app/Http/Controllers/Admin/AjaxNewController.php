@@ -1803,7 +1803,7 @@ class AjaxNewController extends Controller
                 if($number_of_hours_sum > 286) $number_of_hours_sum = 286;
                 $number_of_hours_sum = $number_of_hours_sum * 7.87;
                 
-                $aed_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
+                $aed_trips_sum=Income_zomato::where('rider_id',$riders->rider_id)
                 ->whereMonth('date',$month)
                 ->sum('trips_payable');
                 if ($aed_trips_sum > 400) {
