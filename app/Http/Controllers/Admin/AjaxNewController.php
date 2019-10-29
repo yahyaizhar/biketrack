@@ -1820,7 +1820,6 @@ class AjaxNewController extends Controller
                 $total_salary =$number_of_hours_sum + $aed_total;
                 return $total_salary;
             })
-            
             ->addColumn('salik', function($riders) {
                 $salik_amount=Company_Account::where('rider_id',$riders->rider_id)
                 ->whereNotNull('salik_id')
@@ -1845,29 +1844,38 @@ class AjaxNewController extends Controller
             ->addColumn('kingrider_salaries', function($rider){
                 $month = '01-09-'.Carbon::now()->format('Y');
                 $rider_id = $rider->rider_id;
-    
                 $startMonth = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
                 $month = Carbon::parse($month)->format('Y-m-d');
                 $onlyMonth = Carbon::parse($month)->format('m');
-    
+
+                    //prev payables
+                $rider_debits_cr_prev_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+                ->where(function($q) {
+                    $q->where('type', "cr");
+                })
+                ->whereDate('month', '<',$startMonth)
+                ->sum('amount');
                 
-    
-                $ra_payable=Rider_Account::where("rider_id",$rider_id)
-                ->whereMonth("month",$onlyMonth)
-                ->where("payment_status","pending")
+                $rider_debits_dr_prev_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
                 ->where(function($q) {
                     $q->where('type', "cr_payable")
                     ->orWhere('type', 'dr');
                 })
+                ->whereDate('month', '<',$startMonth)
                 ->sum('amount');
-    
+                $closing_balance_prev = $rider_debits_cr_prev_payable - $rider_debits_dr_prev_payable;
+                //ends prev payables
+
                 $ra_cr=Rider_Account::where("rider_id",$rider_id)
                 ->whereMonth("month",$onlyMonth)
                 ->where("type","cr")
                 ->where('source', '!=', 'salary')
                 ->sum('amount');  
-                
-    
+                if($closing_balance_prev > 0){
+                    // add
+                    $ra_cr += abs($closing_balance_prev);
+                }
+
                 //total salary
                 $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
                 ->whereMonth('date',$onlyMonth)
@@ -1880,15 +1888,104 @@ class AjaxNewController extends Controller
                 ->whereMonth('date',$onlyMonth)
                 ->get()
                 ->sum('trips_payable');
-                $aed_trips_sum = $aed_trips_sum * 2;
+                if ($aed_trips_sum > 400) {
+                    $aed_extra_trips=($aed_trips_sum - 400)*4;
+                    $aed_trips = 400 * 2;
+                    $aed_total=$aed_trips + $aed_extra_trips;
+                }
+                if($aed_trips_sum <= 400){
+                    $aed_extra_trips=0;
+                    $aed_trips_sum = $aed_trips_sum * 2;
+                    $aed_total=$aed_trips_sum + $aed_extra_trips;
+                }
                 
-                $total_salary =$number_of_hours_sum + $aed_trips_sum;
-    
-                $ra_salary=$total_salary + $ra_cr;
-                $ra_recieved=$ra_salary - $ra_payable;
+                $total_salary =$number_of_hours_sum + $aed_total;
+
+                $bonus=Rider_Account::where('source',"Bonus")
+                ->where('rider_id',$rider->rider_id)
+                ->whereMonth('month',$month)
+                ->get()
+                ->sum('amount');
+
+                $bike_allowns=Rider_Account::where('source',"Bike Allowns")
+                ->where('rider_id',$rider->rider_id)
+                ->whereMonth('month',$month)
+                ->get()
+                ->sum('amount');
+
+                $ra_salary=$total_salary + $ra_cr + $bonus +$bike_allowns;
+
+
+                //prev payables
+                $rider_debits_cr_prev_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+                ->where(function($q) {
+                    $q->where('type', "cr");
+                })
+                ->whereDate('month', '<',$startMonth)
+                ->sum('amount');
                 
-                $kingrider_salaries=round($ra_salary,2);
-                return  $kingrider_salaries;
+                $rider_debits_dr_prev_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+                ->where(function($q) {
+                    $q->where('type', "cr_payable")
+                    ->orWhere('type', 'dr');
+                })
+                ->whereDate('month', '<',$startMonth)
+                ->sum('amount');
+                $closing_balance_prev = $rider_debits_cr_prev_payable - $rider_debits_dr_prev_payable;
+                //ends prev payables
+
+                $ra_payable=Rider_Account::where("rider_id",$rider_id)
+                ->whereMonth("month",$onlyMonth)
+                ->where("payment_status","pending")
+                ->where(function($q) {
+                    $q->where('type', "cr_payable")
+                    ->orWhere('type', 'dr');
+                })
+                ->sum('amount');
+
+                $ra_cr=Rider_Account::where("rider_id",$rider_id)
+                ->whereMonth("month",$onlyMonth)
+                ->where("type","cr")
+                ->where('source', '!=', 'salary')
+                ->sum('amount');  
+                if($closing_balance_prev < 0){ //deduct
+                    $ra_payable += abs($closing_balance_prev);
+                }
+                else {
+                    // add
+                    $ra_cr += abs($closing_balance_prev);
+                }
+
+                //total salary
+                $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
+                ->whereMonth('date',$onlyMonth)
+                ->get()
+                ->sum('log_in_hours_payable');
+                if($number_of_hours_sum > 286) $number_of_hours_sum = 286;
+                $number_of_hours_sum = $number_of_hours_sum * 7.87;
+                
+                $aed_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
+                ->whereMonth('date',$onlyMonth)
+                ->get()
+                ->sum('trips_payable');
+                if ($aed_trips_sum > 400) {
+                    $aed_extra_trips=($aed_trips_sum - 400)*4;
+                    $aed_trips = 400 * 2;
+                    $aed_total=$aed_trips + $aed_extra_trips;
+                }
+                if($aed_trips_sum <= 400){
+                    $aed_extra_trips=0;
+                    $aed_trips_sum = $aed_trips_sum * 2;
+                    $aed_total=$aed_trips_sum + $aed_extra_trips;
+                }
+                
+                $total_salary =$number_of_hours_sum + $aed_total;
+
+                $ra_salary=round($total_salary + $ra_cr,2);
+                $ra_recieved=round($ra_salary - $ra_payable,2);
+
+                $kingriders_salaries='<div>Net: <strong>'. $ra_salary.'</strong></div><div>Gross: <strong>'. $ra_recieved.'</strong></div>';
+                return  $kingriders_salaries;
             })
             ->addColumn('profit', function($riders){
                 $total_profit=Company_Account::where('type','pl')
