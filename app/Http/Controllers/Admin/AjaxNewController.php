@@ -1631,7 +1631,7 @@ class AjaxNewController extends Controller
             ->sum('amount');  
             if($closing_balance_prev > 0){
                 // add
-                $ra_cr += abs($closing_balance_prev);
+                //$ra_cr += abs($closing_balance_prev);
             }
 
             //total salary
@@ -1718,11 +1718,11 @@ class AjaxNewController extends Controller
             ->where('source', '!=', 'salary')
             ->sum('amount');  
             if($closing_balance_prev < 0){ //deduct
-                $ra_payable += abs($closing_balance_prev);
+                //$ra_payable += abs($closing_balance_prev);
             }
             else {
                 // add
-                $ra_cr += abs($closing_balance_prev);
+                //$ra_cr += abs($closing_balance_prev);
             }
 
             //total salary
