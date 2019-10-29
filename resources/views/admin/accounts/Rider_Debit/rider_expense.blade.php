@@ -43,6 +43,7 @@
                                 <option value="1@Bike Allowns">Bike Allowns</option>
                                 <option value="0@Discipline Fine">Discipline Fine</option>
                                 <option value="1@Bike Rent">Bike Rent</option>
+                                <option value="0@Mobile Charges">Mobile Charges</option>
                             </select> 
                             @if ($errors->has('d_type'))
                                 <span class="invalid-response" role="alert">
