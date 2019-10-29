@@ -1788,15 +1788,39 @@ class AjaxNewController extends Controller
                 $rider_id=$riders->rider_id;
                 $month='09';
                 $no_of_trips=Income_zomato::where("feid",$feid)->where("rider_id",$rider_id)->whereMonth("date",$month)->sum('trips_payable');
+                if ($no_of_trips > 400) {
+                    $no_of_trips=400;
+                }
                 return $no_of_trips;
             })
             ->addColumn('payouts', function($riders){
                 $feid=$riders->client_rider_id;
                 $rider_id=$riders->rider_id;
                 $month='09';
-                $payouts=Income_zomato::where("feid",$feid)->where("rider_id",$rider_id)->whereMonth("date",$month)->sum('total_to_be_paid_out');
-                return $payouts;
+                $number_of_hours_sum=Income_zomato::where('rider_id',$rider_id)
+                ->whereMonth('date',$month)
+                ->sum('log_in_hours_payable');
+                if($number_of_hours_sum > 286) $number_of_hours_sum = 286;
+                $number_of_hours_sum = $number_of_hours_sum * 7.87;
+                
+                $aed_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
+                ->whereMonth('date',$month)
+                ->sum('trips_payable');
+                if ($aed_trips_sum > 400) {
+                    $aed_extra_trips=($aed_trips_sum - 400)*4;
+                    $aed_trips = 400 * 2;
+                    $aed_total=$aed_trips + $aed_extra_trips;
+                }
+                if($aed_trips_sum <= 400){
+                    $aed_extra_trips=0;
+                    $aed_trips_sum = $aed_trips_sum * 2;
+                    $aed_total=$aed_trips_sum + $aed_extra_trips;
+                }
+                
+                $total_salary =$number_of_hours_sum + $aed_total;
+                return $total_salary;
             })
+            
             ->addColumn('salik', function($riders) {
                 $salik_amount=Company_Account::where('rider_id',$riders->rider_id)
                 ->whereNotNull('salik_id')
