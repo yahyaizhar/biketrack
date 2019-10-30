@@ -1760,8 +1760,6 @@ class AjaxNewController extends Controller
 
             return round($ra_recieved,2);
         })
-        
-        
         ->rawColumns(['mobile_charges','bonus','bike_allowns','aed_extra_trips','extra_trips','net_salary','gross_salary','rider_name','bike_number','advance','poor_performance', 'salik', 'sim_charges', 'dc', 'cod', 'rta_fine', 'total_deduction', 'aed_hours', 'total_salary','visa','mobile','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
         ->make(true);
     }
@@ -1777,11 +1775,9 @@ class AjaxNewController extends Controller
                 $month='09';
                 $number_of_hours_sum=Income_zomato::whereMonth('date',$month)
                 ->sum('log_in_hours_payable');
-                foreach ( $number_of_hours_sum as $hours) {
-                    if($hours > 286) {$hours = 286;}
-                    $hours += $hours * 7.87;
-                }
-                return $hours;
+                if($number_of_hours_sum > 286) {$number_of_hours_sum = 286;}
+                $number_of_hours_sum += $number_of_hours_sum ;
+                return $number_of_hours_sum;
                 // $aed_trips_sum=Income_zomato::where('rider_id',$riders->rider_id)
                 // ->whereMonth('date',$month)
                 // ->sum('trips_payable');
