@@ -97,6 +97,14 @@ class RiderDetailController extends Controller
         return view('Zomato_salary_sheet');
     }
     public function zomato_faisla(){
+        $a = Trip_Detail::all();
+        foreach ($a as $b) {
+            $c = Carbon::parse($b->trip_date)->format('Y-m-d');
+            $b->trip_date=$c;
+            $b->save();
+        }
+
+        return; 
         $time=[];
         $start_month='01-09-'.Carbon::now()->format('Y');
         $end_month='31-09-'.Carbon::now()->format('Y');
@@ -122,8 +130,7 @@ class RiderDetailController extends Controller
             if(isset($assign_bike)){
             $bike=bike::find($assign_bike->bike_id);
             $salik_amount=Trip_Detail::whereNotNull('rider_id')
-            // ->where('trip_date','>=',Carbon::parse($start_month)->format('d M Y'))
-            // // ->where('trip_date','<=',Carbon::parse($end_month)->format('d M Y'))
+            ->whereMonth('trip_date','09') 
             ->where('plate',$bike->bike_number)
             ->sum('amount_aed'); 
             $salik+=$salik_amount; 
@@ -147,9 +154,9 @@ class RiderDetailController extends Controller
         return response()->json([
         'payout'=>round($payout_total,2),
         'bike_fuel'=>round($fuel,2),
-        'salik'=>round($salik,2),
+        // 'salik'=>round($salik_amount,2),
         'sim'=>round($sim,2),
-         
+         'a'=>$salik_amount,
         ]);
     }
 }
