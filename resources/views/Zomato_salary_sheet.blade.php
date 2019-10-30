@@ -76,9 +76,9 @@
                         console.log(data);
                         $payout=data.payout;
                         $fuel=data.bike_fuel;
-                        $salik=(data.salik)*4;
+                        $salik=(data.salik);
                         $sim=data.sim;
-                        $rent=0;
+                        $rent=data.bike_rent;
                         $profit=$payout-($fuel+$salik+$sim+$rent);
                         $('#total_payout').val($payout);
                         $('#salik').val($salik);
