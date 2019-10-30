@@ -29,7 +29,13 @@
                 <form class="kt-form" action="{{ route('bike.bike_create') }}" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="kt-portlet__body">
-                          <input type="text" class="form-control" id="total_payout">
+                          Total Payout: <input type="text" class="form-control" id="total_payout">
+                          Salik: <input type="text" class="form-control" id="salik">
+                          Fuel: <input type="text" class="form-control" id="fuel">
+                          Sim: <input type="text" class="form-control" id="sim">
+                          Rent: <input type="text" class="form-control" id="rent">
+                          Profit: <input type="text" class="form-control" id="profit">
+                          
                     </div>
 
                     
@@ -68,6 +74,18 @@
                     },
                     success: function(data){
                         console.log(data);
+                        $payout=data.payout;
+                        $fuel=data.bike_fuel;
+                        $salik=data.salik;
+                        $sim=data.sim;
+                        $rent=0;
+                        $profit=$payout-($fuel+$salik+$sim+$rent);
+                        $('#total_payout').val($payout);
+                        $('#salik').val($fuel);
+                        $('#fuel').val($salik);
+                        $('#sim').val($sim);
+                        $('#rent').val($rent);
+                        $('#profit').val($profit);
                         swal.fire({
                             position: 'center',
                             type: 'success',
