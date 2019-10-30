@@ -35,11 +35,11 @@
                     <tr>
                         <th>Total Payout</th>
                         {{-- <th>Bike Rent</th>
-                        <th>Bike Salik </th>
+                        <th>Bike Salik </th> --}}
                         <th>Bike Fuel </th>
-                        <th>Sim Charges</th>
+                        {{-- <th>Sim Charges</th>
                         <th>Kingrider Salaries</th>
-                        <th>Company Profit</th> --}}
+                        <th>Company Profit</th> --}} 
                     </tr>
                 </thead>
             </table>
@@ -70,7 +70,7 @@ $(function() {
             { data: 'payouts', name: 'payouts' },
             // { data: 'bike_rent', name: 'bike_rent' },
             // { data: 'salik', name: 'salik' },
-            // { data: 'fuel', name: 'fuel' },
+            { data: 'fuel', name: 'fuel' },
             // { data: 'sim_charges', name: 'sim_charges' },
             // { data: 'kingrider_salaries', name: 'kingrider_salaries' },
             // { data: 'profit', name: 'profit' },
