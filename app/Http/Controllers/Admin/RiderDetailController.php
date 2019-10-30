@@ -27,6 +27,7 @@ use App\Assign_bike;
 use App\Model\Accounts\Company_Account;
 use App\Model\Accounts\Rider_Account;
 use App\Model\Accounts\Income_zomato;
+use App\Model\Rider\Trip_Detail;
 
 class RiderDetailController extends Controller
 {
@@ -110,7 +111,7 @@ class RiderDetailController extends Controller
         $fuel=Company_Account::whereNotNull('fuel_expense_id')->whereMonth('month','09')->sum('amount');
         $sim=Company_Account::where("source","Sim Transaction")->whereMonth('month','09')->where('type','dr')->whereNotNull('sim_transaction_id')->sum('amount');
         $salik=Trip_Detail::whereNotNull('rider_id')->whereMonth('trip_date','09')->where('plate','89406')->sum('amount');
-        
+
 
         return response()->json([
         'payout'=>round($payout_total,2),
