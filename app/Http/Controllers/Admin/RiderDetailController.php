@@ -122,24 +122,13 @@ class RiderDetailController extends Controller
             if(isset($assign_bike)){
             $bike=bike::find($assign_bike->bike_id);
             $salik_amount=Trip_Detail::whereNotNull('rider_id')
-            ->where(function($q) use ($start_month , $end_month) {
-               $q->where('trip_date','>=',Carbon::parse($start_month)->format('d M Y'))
-                ->orWhere('trip_date','<=',Carbon::parse($end_month)->format('d M Y'));
-            })
+            // ->where('trip_date','>=',Carbon::parse($start_month)->format('d M Y'))
+            // // ->where('trip_date','<=',Carbon::parse($end_month)->format('d M Y'))
             ->where('plate',$bike->bike_number)
             ->sum('amount_aed'); 
             $salik+=$salik_amount; 
             $performance=Rider_Performance_Zomato::all();
-            $obj=[]; 
-            $feid=$riders->client_rider_id;
-            $_performance_found=Arr::first($performance, function ($item_zp, $key) use($riders) {
-                return $item_zp->feid==$riders->client_rider_id;
-            });
-            if (isset($_performance_found)){
-                $arr=[];
-                $arr['feid']='12122';
-                array_push($obj,$arr);
-            }  
+            
         }
         $fuel_amount=Company_Account::whereNotNull('fuel_expense_id')
         ->where('rider_id',$riders->rider_id)
@@ -160,8 +149,7 @@ class RiderDetailController extends Controller
         'bike_fuel'=>round($fuel,2),
         'salik'=>round($salik,2),
         'sim'=>round($sim,2),
-        'bike_rent'=>$bike_rent,
-        'u'=>$_performance_found, 
+         
         ]);
     }
 }
