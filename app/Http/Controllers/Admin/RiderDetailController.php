@@ -110,9 +110,10 @@ class RiderDetailController extends Controller
         $payout_total+=$obj['total_payout'];
 
         }
-        $fuel=Company_Account::whereNotNull('fuel_expense_id')->whereMonth('month','09')->sum('amount');
+        
         $sim=Company_Account::where("source","Sim Transaction")->whereMonth('month','09')->where('type','dr')->whereNotNull('sim_transaction_id')->sum('amount');
          $salik=0;
+         $fuel=0;
         $clients=Client::where("name",'Zomato Food Delivery')->get()->first();
         $client_riders=Client_Rider::where("client_id",$clients->id)->get();
         foreach ($client_riders as $riders) {
@@ -125,6 +126,8 @@ class RiderDetailController extends Controller
             ->sum('amount_aed'); 
             $salik+=$salik_amount; 
         }
+        $fuel_amount=Company_Account::whereNotNull('fuel_expense_id')->where('rider_id',$riders->rider_id)->whereMonth('month','09')->sum('amount');
+         $fuel+=$fuel_amount;
     }
         return response()->json([
         'payout'=>round($payout_total,2),
