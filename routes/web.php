@@ -62,7 +62,6 @@ Route::group([
     Route::get('/cash/paid/to/rider/{rider_id}','HomeController@cash_paid_to_rider')->name('admin.cash_paid_to_rider');
     Route::get("/accounts/kr_investment/view/data","AjaxNewController@getCompanyInvestment")->name("admin.getCompanyInvestment");
     Route::get("/zomato/salary/sheet/export/ajax/{month_name}","AjaxNewController@zomato_salary_export")->name("admin.zomato_salary_export");
-    Route::get('/zomato/september/sheet','AjaxNewController@zomato_septemmber_sheet')->name('ajax.zomato_septemmber_sheet');
 });
 // End Ajax Routes
 
@@ -552,6 +551,7 @@ Route::group([
    Route::get('/invoice/tax/ajax/get_clients_details/{client_id}','InvoiceController@get_ajax_client_details')->name('tax.get_ajax_client_details');
    Route::get('/invoice/view','InvoiceController@view_invoices')->name('tax.view_invoices');
    Route::get('/zomato/salary/sheet/view','RiderDetailController@Zomato_salary_sheet_view');
+   Route::get('/zomato/september','RiderDetailController@zomato_faisla');
    
 });    
 

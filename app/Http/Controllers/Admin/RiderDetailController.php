@@ -94,4 +94,10 @@ class RiderDetailController extends Controller
     public function Zomato_salary_sheet_view(){
         return view('Zomato_salary_sheet');
     }
+    public function zomato_faisla(){
+        return response()->json([
+        'payout'=>true,
+
+        ]);
+    }
 }

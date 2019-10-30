@@ -1,84 +1,94 @@
 @extends('admin.layouts.app')
-@section('head')
-    <!--begin::Page Vendors Styles(used by this page) -->
-    <link href="{{ asset('dashboard/assets/vendors/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />
-    <style>
-        .dataTables_length{
-           display: block;   
-        }
-        .total_entries{
-        display: inline-block;
-        margin-left: 10px;
-        }
-        .dataTables_info{
-            display:none;
-        }
-        </style>
-@endsection
 @section('main-content')
-@include('admin.includes.message')
+<!-- begin:: Content -->
+<style>
+    .custom-file-label::after{
+           color: white;
+           background-color: #5578eb;
+       }
+       .custom-file-label{
+        overflow: hidden;
+    }
+   </style>
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
-    <div class="kt-portlet kt-portlet--mobile">
-        <div class="kt-portlet__head kt-portlet__head--lg">
-            <div class="kt-portlet__head-label">
-                <span class="kt-portlet__head-icon">
-                    <i class="kt-font-brand fa fa-hotel"></i>
-                </span>
-                <h3 class="kt-portlet__head-title">
-                    Zomato Salary Sheet September
-                </h3>
+    <div class="row">
+        <div class="col-md-12">
+        <!--begin::Portlet-->
+            <div class="kt-portlet">
+                <div class="kt-portlet__head">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title">
+                            Zomato September Sheet
+                        </h3>
+                    </div>
+                </div>
+
+                <!--begin::Form-->
+                
+                @include('admin.includes.message')
+                <form class="kt-form" action="{{ route('bike.bike_create') }}" method="POST" enctype="multipart/form-data">
+                    {{ csrf_field() }}
+                    <div class="kt-portlet__body">
+                          <input type="text" class="form-control" id="total_payout">
+                    </div>
+
+                    
+                </form>
             </div>
-        </div>
-        <div class="kt-portlet__body">
-            <table class="table table-striped- table-hover table-checkable table-condensed" id="bike-table">
-                <thead>
-                    <tr>
-                        <th>Total Payout</th>
-                        {{-- <th>Bike Rent</th>
-                        <th>Bike Salik </th> --}}
-                        <th>Bike Fuel </th>
-                        {{-- <th>Sim Charges</th>
-                        <th>Kingrider Salaries</th>
-                        <th>Company Profit</th> --}} 
-                    </tr>
-                </thead>
-            </table>
-        </div>
     </div>
 </div>
+</div>
+
 @endsection
 @section('foot')
-<script src="{{ asset('dashboard/assets/vendors/custom/datatables/datatables.bundle.js') }}" type="text/javascript"></script>
-<script src="{{ asset('dashboard/assets/js/demo1/pages/crud/datatables/basic/basic.js') }}" type="text/javascript"></script>
+    
+<script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/bootstrap-switch.js') }}" type="text/javascript"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
+ 
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
-var bike_table;
-$(function() {
-    bike_table = $('#bike-table').DataTable({
-        lengthMenu: [[-1], ["All"]],
-        processing: true,
-        serverSide: true,
-        'language': { 
-            'loadingRecords': '&nbsp;',
-            'processing': $('.loading').show()
-        },
-        drawCallback:function(data){
-        $('.total_entries').remove();
-        $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
-    },
-        ajax: "{!! route('ajax.zomato_septemmber_sheet') !!}",
-        columns: [
-            { data: 'payouts', name: 'payouts' },
-            // { data: 'bike_rent', name: 'bike_rent' },
-            // { data: 'salik', name: 'salik' },
-            { data: 'fuel', name: 'fuel' },
-            // { data: 'sim_charges', name: 'sim_charges' },
-            // { data: 'kingrider_salaries', name: 'kingrider_salaries' },
-            // { data: 'profit', name: 'profit' },
-            
-        ],
-        responsive:true,
-        order:[0,'desc'],
-    });
-});
+    $(document).ready(function(){
+    var url = "{{ url('admin/zomato/september') }}";
+    $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+                    });
+                $.ajax({
+                    url : url,
+                    type : 'GET',
+                    beforeSend: function() {            
+                        $('.loading').show();
+                    },
+                    complete: function(){
+                        $('.loading').hide();
+                    },
+                    success: function(data){
+                        console.log(data);
+                        swal.fire({
+                            position: 'center',
+                            type: 'success',
+                            title: 'Record updated successfully.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    },
+                    error: function(error){
+                        _modal.modal('hide');
+                        swal.fire({
+                            position: 'center',
+                            type: 'error',
+                            title: 'Oops...',
+                            text: 'Unable to update.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+                });
+            });
+
 </script>
 @endsection
