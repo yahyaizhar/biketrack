@@ -96,17 +96,25 @@ class RiderDetailController extends Controller
         return view('Zomato_salary_sheet');
     }
     public function zomato_faisla(){
-        // $time=[];
-        //  $payout=Income_zomato::whereNotNull('rider_id')->whereMonth('date','09')->get();
-        //  foreach ($payout as $hours) {
-        //      $obj=[];
-        //      $obj['log_in_hours_payable'] += $hours['log_in_hours_payable'];
-        //      array_push($time,$obj);
-        //  }
-         $fuel=Company_Account::whereNotNull('fuel_expense_id')->whereMonth('month','09')->sum('amount');
+        $time=[];
+        $payout=Income_zomato::whereNotNull('rider_id')->whereMonth('date','09')->get();
+        $payout_total=0;
+        foreach ($payout as $hours) {
+        $obj=[];
+        $obj['log_in_hours_payable'] = $hours['log_in_hours_payable']>286?$obj['log_in_hours_payable']=286 : $hours['log_in_hours_payable'];
+        $obj['trips'] = $hours['trips_payable']>400?$obj['trips']=400 : $hours['trips_payable'];
+        $obj['trips_extra'] = $hours['trips_payable']>400?$obj['trips_extra']=$hours['trips_payable']-400 :$obj['trips_extra']=0;
+        $obj['total_payout']=$obj['log_in_hours_payable']*7.87 +  $obj['trips']*2 + $obj['trips_extra']*4;
+        $payout_total+=$obj['total_payout'];
+        }
+        $fuel=Company_Account::whereNotNull('fuel_expense_id')->whereMonth('month','09')->sum('amount');
+        $salik=Company_Account::where("source","Salik")->whereMonth('month','09')->where('type','dr')->whereNotNull('salik_id')->sum('amount');
+        $sim=Company_Account::where("source","Sim Transaction")->whereMonth('month','09')->where('type','dr')->whereNotNull('sim_transaction_id')->sum('amount');
         return response()->json([
-        // 'payout'=>$time,
+        'payout'=>$payout_total,
         'bike_fuel'=>$fuel,
+        'salik'=>$salik,
+        'sim'=>$sim,
         ]);
     }
 }
