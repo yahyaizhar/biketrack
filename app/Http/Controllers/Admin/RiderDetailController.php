@@ -111,10 +111,10 @@ class RiderDetailController extends Controller
         $salik=Company_Account::where("source","Salik")->whereMonth('month','09')->where('type','dr')->whereNotNull('salik_id')->sum('amount');
         $sim=Company_Account::where("source","Sim Transaction")->whereMonth('month','09')->where('type','dr')->whereNotNull('sim_transaction_id')->sum('amount');
         return response()->json([
-        'payout'=>$payout_total,
-        'bike_fuel'=>$fuel,
-        'salik'=>$salik,
-        'sim'=>$sim,
+        'payout'=>round($payout_total,2),
+        'bike_fuel'=>round($fuel,2),
+        'salik'=>round($salik,2),
+        'sim'=>round($sim,2),
         ]);
     }
 }
