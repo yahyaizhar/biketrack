@@ -1779,7 +1779,7 @@ class AjaxNewController extends Controller
                 ->sum('log_in_hours_payable');
                 if($number_of_hours_sum > 286) $number_of_hours_sum = 286;
                 $number_of_hours_sum += $number_of_hours_sum * 7.87;
-                
+                return $number_of_hours_sum;
                 // $aed_trips_sum=Income_zomato::where('rider_id',$riders->rider_id)
                 // ->whereMonth('date',$month)
                 // ->sum('trips_payable');
@@ -1794,8 +1794,8 @@ class AjaxNewController extends Controller
                 //     $aed_total=$aed_trips_sum + $aed_extra_trips;
                 // }
                 
-                $total_salary =$number_of_hours_sum + $aed_total;
-                return $total_salary;
+                // $total_salary =$number_of_hours_sum + $aed_total;
+                // return $total_salary;
             })
             ->addColumn('salik', function($riders) {
                 $salik_amount=Company_Account::whereNotNull('salik_id')
