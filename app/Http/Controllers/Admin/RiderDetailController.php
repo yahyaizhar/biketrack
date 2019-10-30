@@ -122,8 +122,8 @@ class RiderDetailController extends Controller
             $bike=bike::find($assign_bike->bike_id);
             $salik_amount=Trip_Detail::whereNotNull('rider_id')
             ->where(function($q) use ($start_month , $end_month) {
-               $q->where('trip_date','>=',$start_month)
-                ->orWhere('trip_date','<=',$end_month);
+               $q->whereDate('trip_date','>=',Carbon::parse($start_month)->format('d M Y'))
+                ->orWhereDate('trip_date','<=',Carbon::parse($end_month)->format('d M Y'));
             })
             ->where('plate',$bike->bike_number)
             ->sum('amount_aed'); 
@@ -149,7 +149,6 @@ class RiderDetailController extends Controller
         'salik'=>round($salik,2),
         'sim'=>round($sim,2),
         'riders'=>$bike, 
-
         ]);
     }
 }
