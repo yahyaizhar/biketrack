@@ -98,6 +98,7 @@ class RiderDetailController extends Controller
     }
     public function zomato_faisla(){
         $time=[];
+        $static_month = '01-09-'.Carbon::now()->format('Y');
         $payout=Income_zomato::whereNotNull('rider_id')->whereMonth('date','09')->get();
         $payout_total=0;
         foreach ($payout as $hours) {
@@ -107,17 +108,31 @@ class RiderDetailController extends Controller
         $obj['trips_extra'] = $hours['trips_payable']>400?$obj['trips_extra']=$hours['trips_payable']-400 :$obj['trips_extra']=0;
         $obj['total_payout']=$obj['log_in_hours_payable']*7.87 +  $obj['trips']*2 + $obj['trips_extra']*4;
         $payout_total+=$obj['total_payout'];
+
         }
         $fuel=Company_Account::whereNotNull('fuel_expense_id')->whereMonth('month','09')->sum('amount');
         $sim=Company_Account::where("source","Sim Transaction")->whereMonth('month','09')->where('type','dr')->whereNotNull('sim_transaction_id')->sum('amount');
-        $salik=Trip_Detail::whereNotNull('rider_id')->whereMonth('trip_date','09')->where('plate','89406')->sum('amount');
-
-
+         $salik=0;
+        $clients=Client::where("name",'Zomato Food Delivery')->get()->first();
+        $client_riders=Client_Rider::where("client_id",$clients->id)->get();
+        foreach ($client_riders as $riders) {
+            $assign_bike=Assign_bike::where('rider_id',$riders->rider_id)->where('status','active')->get()->first();
+            if(isset($assign_bike)){
+            $bike=bike::find($assign_bike->bike_id);
+            $salik_amount=Trip_Detail::whereNotNull('rider_id')
+            ->where('trip_date',Carbon::parse($static_month)->format('d M Y'))
+            ->where('plate',$bike->bike_number)
+            ->sum('amount_aed'); 
+            $salik+=$salik_amount; 
+        }
+    }
         return response()->json([
         'payout'=>round($payout_total,2),
         'bike_fuel'=>round($fuel,2),
         'salik'=>round($salik,2),
         'sim'=>round($sim,2),
+        'riders'=>$bike, 
+
         ]);
     }
 }

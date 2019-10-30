@@ -76,7 +76,7 @@
                         console.log(data);
                         $payout=data.payout;
                         $fuel=data.bike_fuel;
-                        $salik=data.salik;
+                        $salik=(data.salik)*4;
                         $sim=data.sim;
                         $rent=0;
                         $profit=$payout-($fuel+$salik+$sim+$rent);
@@ -95,7 +95,6 @@
                         });
                     },
                     error: function(error){
-                        _modal.modal('hide');
                         swal.fire({
                             position: 'center',
                             type: 'error',
