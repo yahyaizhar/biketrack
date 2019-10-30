@@ -1769,53 +1769,30 @@ class AjaxNewController extends Controller
         $zomato=Client::where("name","Zomato Food Delivery")->get()->first();
         $client_riders=Client_Rider::where('client_id', $zomato->id)->get();
             return DataTables::of($client_riders)
-            ->addColumn('rider_id', function($riders){
-                $riderFound = Rider::find($riders->rider_id);
-                return $riderFound->name;
-            })
-            ->addColumn('no_of_hours', function($riders){
-                $feid=$riders->client_rider_id;
-                $rider_id=$riders->rider_id;
-                $month='09';
-                $no_of_hours=Income_zomato::where("feid",$feid)->where("rider_id",$rider_id)->whereMonth("date",$month)->sum('log_in_hours_payable');
-                if ($no_of_hours > 286) {
-                    $no_of_hours=286;
-                }
-                return $no_of_hours;
-            })
-            ->addColumn('no_of_trips', function($riders){
-                $feid=$riders->client_rider_id;
-                $rider_id=$riders->rider_id;
-                $month='09';
-                $no_of_trips=Income_zomato::where("feid",$feid)->where("rider_id",$rider_id)->whereMonth("date",$month)->sum('trips_payable');
-                if ($no_of_trips > 400) {
-                    $no_of_trips=400;
-                }
-                return $no_of_trips;
-            })
+            
+           
             ->addColumn('payouts', function($riders){
                 $feid=$riders->client_rider_id;
                 $rider_id=$riders->rider_id;
                 $month='09';
-                $number_of_hours_sum=Income_zomato::where('rider_id',$rider_id)
-                ->whereMonth('date',$month)
+                $number_of_hours_sum=Income_zomato::whereMonth('date',$month)
                 ->sum('log_in_hours_payable');
                 if($number_of_hours_sum > 286) $number_of_hours_sum = 286;
-                $number_of_hours_sum = $number_of_hours_sum * 7.87;
+                $number_of_hours_sum += $number_of_hours_sum * 7.87;
                 
-                $aed_trips_sum=Income_zomato::where('rider_id',$riders->rider_id)
-                ->whereMonth('date',$month)
-                ->sum('trips_payable');
-                if ($aed_trips_sum > 400) {
-                    $aed_extra_trips=($aed_trips_sum - 400)*4;
-                    $aed_trips = 400 * 2;
-                    $aed_total=$aed_trips + $aed_extra_trips;
-                }
-                if($aed_trips_sum <= 400){
-                    $aed_extra_trips=0;
-                    $aed_trips_sum = $aed_trips_sum * 2;
-                    $aed_total=$aed_trips_sum + $aed_extra_trips;
-                }
+                // $aed_trips_sum=Income_zomato::where('rider_id',$riders->rider_id)
+                // ->whereMonth('date',$month)
+                // ->sum('trips_payable');
+                // if ($aed_trips_sum > 400) {
+                //     $aed_extra_trips=($aed_trips_sum - 400)*4;
+                //     $aed_trips = 400 * 2;
+                //     $aed_total=$aed_trips + $aed_extra_trips;
+                // }
+                // if($aed_trips_sum <= 400){
+                //     $aed_extra_trips=0;
+                //     $aed_trips_sum = $aed_trips_sum * 2;
+                //     $aed_total=$aed_trips_sum + $aed_extra_trips;
+                // }
                 
                 $total_salary =$number_of_hours_sum + $aed_total;
                 return $total_salary;
