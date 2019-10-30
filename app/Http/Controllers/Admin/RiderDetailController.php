@@ -98,7 +98,8 @@ class RiderDetailController extends Controller
     }
     public function zomato_faisla(){
         $time=[];
-        $static_month = '01-09-'.Carbon::now()->format('Y');
+        $start_month='01-09-'.Carbon::now()->format('Y');
+        $end_month='31-09-'.Carbon::now()->format('Y');
         $payout=Income_zomato::whereNotNull('rider_id')->whereMonth('date','09')->get();
         $payout_total=0;
         foreach ($payout as $hours) {
@@ -110,8 +111,6 @@ class RiderDetailController extends Controller
         $payout_total+=$obj['total_payout'];
 
         }
-        
-        
          $salik=0;
          $fuel=0;
          $sim=0;
@@ -122,7 +121,10 @@ class RiderDetailController extends Controller
             if(isset($assign_bike)){
             $bike=bike::find($assign_bike->bike_id);
             $salik_amount=Trip_Detail::whereNotNull('rider_id')
-            ->where('trip_date',Carbon::parse($static_month)->format('d M Y'))
+            ->where(function($q) use ($start_month , $end_month) {
+               $q->where('trip_date','>=',$start_month)
+                ->orWhere('trip_date','<=',$end_month);
+            })
             ->where('plate',$bike->bike_number)
             ->sum('amount_aed'); 
             $salik+=$salik_amount; 
