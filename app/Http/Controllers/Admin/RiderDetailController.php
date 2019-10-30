@@ -26,6 +26,7 @@ use Carbon\Carbon;
 use App\Assign_bike;
 use App\Model\Accounts\Company_Account;
 use App\Model\Accounts\Rider_Account;
+use App\Model\Accounts\Income_zomato;
 
 class RiderDetailController extends Controller
 {
@@ -95,9 +96,17 @@ class RiderDetailController extends Controller
         return view('Zomato_salary_sheet');
     }
     public function zomato_faisla(){
+        // $time=[];
+        //  $payout=Income_zomato::whereNotNull('rider_id')->whereMonth('date','09')->get();
+        //  foreach ($payout as $hours) {
+        //      $obj=[];
+        //      $obj['log_in_hours_payable'] += $hours['log_in_hours_payable'];
+        //      array_push($time,$obj);
+        //  }
+         $fuel=Company_Account::whereNotNull('fuel_expense_id')->where('month','09')->sum('amount');
         return response()->json([
-        'payout'=>true,
-
+        // 'payout'=>$time,
+        'bike_fuel'=>$fuel,
         ]);
     }
 }
