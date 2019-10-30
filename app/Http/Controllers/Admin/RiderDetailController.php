@@ -103,7 +103,7 @@ class RiderDetailController extends Controller
         //      $obj['log_in_hours_payable'] += $hours['log_in_hours_payable'];
         //      array_push($time,$obj);
         //  }
-         $fuel=Company_Account::whereNotNull('fuel_expense_id')->where('month','09')->sum('amount');
+         $fuel=Company_Account::whereNotNull('fuel_expense_id')->whereMonth('month','09')->sum('amount');
         return response()->json([
         // 'payout'=>$time,
         'bike_fuel'=>$fuel,
