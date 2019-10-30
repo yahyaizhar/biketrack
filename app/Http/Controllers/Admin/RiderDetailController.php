@@ -108,8 +108,10 @@ class RiderDetailController extends Controller
         $payout_total+=$obj['total_payout'];
         }
         $fuel=Company_Account::whereNotNull('fuel_expense_id')->whereMonth('month','09')->sum('amount');
-        $salik=Company_Account::where("source","Salik")->whereMonth('month','09')->where('type','dr')->whereNotNull('salik_id')->sum('amount');
         $sim=Company_Account::where("source","Sim Transaction")->whereMonth('month','09')->where('type','dr')->whereNotNull('sim_transaction_id')->sum('amount');
+        $salik=Trip_Detail::whereNotNull('rider_id')->whereMonth('trip_date','09')->where('plate','89406')->sum('amount');
+        
+
         return response()->json([
         'payout'=>round($payout_total,2),
         'bike_fuel'=>round($fuel,2),

@@ -81,8 +81,8 @@
                         $rent=0;
                         $profit=$payout-($fuel+$salik+$sim+$rent);
                         $('#total_payout').val($payout);
-                        $('#salik').val($fuel);
-                        $('#fuel').val($salik);
+                        $('#salik').val($salik);
+                        $('#fuel').val($fuel);
                         $('#sim').val($sim);
                         $('#rent').val($rent);
                         $('#profit').val($profit);
