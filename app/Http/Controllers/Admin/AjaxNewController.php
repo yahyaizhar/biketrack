@@ -1774,6 +1774,7 @@ class AjaxNewController extends Controller
                 $rider_id=$riders->rider_id;
                 $month='09';
                 $number_of_hours_sum=Income_zomato::whereMonth('date',$month)
+                ->whereNotNull('rider_id')
                 ->sum('log_in_hours_payable');
                 if($number_of_hours_sum > 286) {$number_of_hours_sum = 286;}
                 $number_of_hours_sum += $number_of_hours_sum ;
