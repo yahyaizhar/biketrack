@@ -108,6 +108,8 @@ class RiderDetailController extends Controller
         $time=[];
         $total_hours=Income_zomato::whereNotNull('rider_id')->whereMonth('date','09')->sum('log_in_hours_payable');
         $total_trips=Income_zomato::whereNotNull('rider_id')->whereMonth('date','09')->sum('trips_payable');
+        $ncw=Income_zomato::whereNotNull('rider_id')->whereMonth('date','09')->sum('ncw_incentives');
+        $tips=Income_zomato::whereNotNull('rider_id')->whereMonth('date','09')->sum('tips_payouts');
         $payout=Income_zomato::whereNotNull('rider_id')->whereMonth('date','09')->sum('total_to_be_paid_out');
         // $payout_total=0;
         // foreach ($payout as $hours) {
@@ -159,7 +161,9 @@ class RiderDetailController extends Controller
     }
         return response()->json([
         'total_trips'=>round($total_trips,2),
-        'total_hours'=>round($total_hours,2),   
+        'total_hours'=>round($total_hours,2), 
+        'ncw'=>round($ncw,2), 
+        'tips'=>round($tips,2),   
         'payout'=>round($payout,2),
         'bike_fuel'=>round($fuel,2),
         'salik'=>round($salik,2),
