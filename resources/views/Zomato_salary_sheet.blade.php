@@ -86,7 +86,7 @@
                         $('#fuel').val($fuel);
                         $('#sim').val($sim);
                         $('#salary').val($salary);
-                        $('#profit').val($profit);
+                        $('#profit').val($profit.toFixed(2));
                         swal.fire({
                             position: 'center',
                             type: 'success',
