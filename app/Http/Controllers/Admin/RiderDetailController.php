@@ -108,17 +108,17 @@ class RiderDetailController extends Controller
         $time=[];
         $start_month='01-09-'.Carbon::now()->format('Y');
         $end_month='31-09-'.Carbon::now()->format('Y');
-        $payout=Income_zomato::whereNotNull('rider_id')->whereMonth('date','09')->get();
-        $payout_total=0;
-        foreach ($payout as $hours) {
-        $obj=[];
-        $obj['log_in_hours_payable'] = $hours['log_in_hours_payable']>286?$obj['log_in_hours_payable']=286 : $hours['log_in_hours_payable'];
-        $obj['trips'] = $hours['trips_payable']>400?$obj['trips']=400 : $hours['trips_payable'];
-        $obj['trips_extra'] = $hours['trips_payable']>400?$obj['trips_extra']=$hours['trips_payable']-400 :$obj['trips_extra']=0;
-        $obj['total_payout']=$obj['log_in_hours_payable']*7.87 +  $obj['trips']*2 + $obj['trips_extra']*4;
-        $payout_total+=$obj['total_payout'];
+        $payout=Income_zomato::whereNotNull('rider_id')->whereMonth('date','09')->sum('total_to_be_paid_out');
+        // $payout_total=0;
+        // foreach ($payout as $hours) {
+        // $obj=[];
+        // $obj['log_in_hours_payable'] = $hours['log_in_hours_payable']>286?$obj['log_in_hours_payable']=286 : $hours['log_in_hours_payable'];
+        // $obj['trips'] = $hours['trips_payable']>400?$obj['trips']=400 : $hours['trips_payable'];
+        // $obj['trips_extra'] = $hours['trips_payable']>400?$obj['trips_extra']=$hours['trips_payable']-400 :$obj['trips_extra']=0;
+        // $obj['total_payout']=$obj['log_in_hours_payable']*7.87 +  $obj['trips']*2 + $obj['trips_extra']*4;
+        // $payout_total+=$obj['total_payout'];
 
-        }
+        // }
          $salik=0;
          $fuel=0;
          $sim=0;
@@ -152,7 +152,7 @@ class RiderDetailController extends Controller
          $sim+=$sim_amount;
     }
         return response()->json([
-        'payout'=>round($payout_total,2),
+        'payout'=>round($payout,2),
         'bike_fuel'=>round($fuel,2),
         'salik'=>round($salik,2),
         'sim'=>round($sim,2),
