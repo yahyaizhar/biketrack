@@ -139,7 +139,7 @@ class RiderDetailController extends Controller
             ->where('plate',$bike->bike_number)
             ->sum('amount_aed'); 
             $salik+=$salik_amount; 
-            $performance=Rider_Performance_Zomato::all();
+            $cod=Rider_Performance_Zomato::whereNotNull('rider_id')->whereMonth('date','09')->sum('cod_amount');        
             
         }
         $fuel_amount=Company_Account::whereNotNull('fuel_expense_id')
@@ -167,6 +167,7 @@ class RiderDetailController extends Controller
         'total_hours'=>round($total_hours,2), 
         'ncw'=>round($ncw,2), 
         'tips'=>round($tips,2),  
+        'cod'=>round($cod,2),  
         'denials_penalty'=>round($denials_penalty,2),   
         'DC_deduction'=>round($DC_deduction,2),   
         'payout'=>round($payout,2),
