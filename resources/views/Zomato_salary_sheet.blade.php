@@ -29,24 +29,21 @@
                 <form class="kt-form" action="{{ route('bike.bike_create') }}" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="kt-portlet__body">
-                        Total Hours: <input type="text" class="form-control" id="hour">
-                        Total Trips: <input type="text" class="form-control" id="trip">
-                        AED Hours: <input type="text" class="form-control" id="aed_hour">
-                        AED Trips: <input type="text" class="form-control" id="aed_trips">
-                        Incentives: <input type="text" class="form-control" id="ncw">
-                        Tips: <input type="text" class="form-control" id="tips">
-                        Denial Penalty: <input type="text" class="form-control" id="penalty">
-                        DC Chrges & COD Amount: <input type="text" class="form-control" id="dc_cod">
-                        Total Payout: <input type="text" class="form-control" id="total_payout">
-                        Salik: <input type="text" class="form-control" id="salik">
-                        Fuel: <input type="text" class="form-control" id="fuel">
-                        Sim: <input type="text" class="form-control" id="sim">
-                        Salary: <input type="text" class="form-control" id="salary">
-                        Profit: <input type="text" class="form-control" id="profit">
-                          
+                        <div class="hour"></div>
+                        <div class="trip"></div>
+                        <div class="aed_hour"></div>
+                        <div class="aed_trips"></div>
+                        <div class="ncw"></div>
+                        <div class="tips"></div>
+                        <div class="penalty"></div>
+                        <div class="dc_cod"></div>
+                        <div class="total_payout"></div>
+                        <div class="salik"></div>
+                        <div class="fuel"></div>
+                        <div class="sim"></div>
+                        <div class="salary"></div>
+                        <div class="profit"></div>
                     </div>
-
-                    
                 </form>
             </div>
     </div>
@@ -98,20 +95,21 @@
                         $dc_cod= $cod+$dc_charges;
                         $payout=$aed_hour+$aed_trip;
                         $profit=$payout-($fuel+$salik+$sim+$salary);
-                        $('#hour').val($hour);
-                        $('#trip').val($trip);
-                        $('#aed_hour').val($aed_hour);
-                        $('#aed_trips').val($aed_trip);
-                        $('#ncw').val($ncw);
-                        $('#tips').val($tips);
-                        $('#penalty').val($penalty);
-                        $('#dc_cod').val($dc_cod);
-                        $('#total_payout').val($payout);
-                        $('#salik').val($salik);
-                        $('#fuel').val($fuel);
-                        $('#sim').val($sim);
-                        $('#salary').val($salary);
-                        $('#profit').val($profit.toFixed(2));
+                        
+                        $('#hour').html('Total Hours: <stron>'.$hour.'</strong>');
+                        $('#trip').html('Total Trips: <stron>'.$trip.'</strong>');
+                        $('#aed_hour').html('AED Hours: <stron>'.$aed_hour.'</strong>');
+                        $('#aed_trips').html('AED Trips: <stron>'.$aed_trip.toFixed(2).'</strong>');
+                        $('#ncw').html('Incentives: <stron>'.$ncw.'</strong>');
+                        $('#tips').html('Tips: <stron>'.$tips.'</strong>');
+                        $('#penalty').html('Denial Penalty: <stron>'.$penalty.'</strong>');
+                        $('#dc_cod').html('DC Chrges & COD Amount: <stron>'.$dc_cod.'</strong>');
+                        $('#total_payout').html('Total Payout: <stron>'.$payout.toFixed(2).'</strong>');
+                        $('#salik').html('Salik: <stron>'.$salik.'</strong>');
+                        $('#fuel').html('Fuel: <stron>'.$fuel.'</strong>');
+                        $('#sim').html('Sim: <stron>'.$sim.'</strong>');
+                        $('#salary').html('Salary: <stron>'.$salary.'</strong>' );
+                        $('#profit').html('Profit: <stron>'.$profit.toFixed(2).'</strong>' );
                         swal.fire({
                             position: 'center',
                             type: 'success',
