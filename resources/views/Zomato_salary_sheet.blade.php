@@ -96,20 +96,20 @@
                         $payout=$aed_hour+$aed_trip;
                         $profit=$payout-($fuel+$salik+$sim+$salary);
                         
-                        $('#hour').html('Total Hours: <stron>'.$hour.'</strong>');
-                        $('#trip').html('Total Trips: <stron>'.$trip.'</strong>');
-                        $('#aed_hour').html('AED Hours: <stron>'.$aed_hour.'</strong>');
-                        $('#aed_trips').html('AED Trips: <stron>'.$aed_trip.toFixed(2).'</strong>');
-                        $('#ncw').html('Incentives: <stron>'.$ncw.'</strong>');
-                        $('#tips').html('Tips: <stron>'.$tips.'</strong>');
-                        $('#penalty').html('Denial Penalty: <stron>'.$penalty.'</strong>');
-                        $('#dc_cod').html('DC Chrges & COD Amount: <stron>'.$dc_cod.'</strong>');
-                        $('#total_payout').html('Total Payout: <stron>'.$payout.toFixed(2).'</strong>');
-                        $('#salik').html('Salik: <stron>'.$salik.'</strong>');
-                        $('#fuel').html('Fuel: <stron>'.$fuel.'</strong>');
-                        $('#sim').html('Sim: <stron>'.$sim.'</strong>');
-                        $('#salary').html('Salary: <stron>'.$salary.'</strong>' );
-                        $('#profit').html('Profit: <stron>'.$profit.toFixed(2).'</strong>' );
+                        $('.hour').html('Total Hours: <stron>'.$hour.'</strong>');
+                        $('.trip').html('Total Trips: <stron>'.$trip.'</strong>');
+                        $('.aed_hour').html('AED Hours: <stron>'.$aed_hour.'</strong>');
+                        $('.aed_trips').html('AED Trips: <stron>'.$aed_trip.toFixed(2).'</strong>');
+                        $('.ncw').html('Incentives: <stron>'.$ncw.'</strong>');
+                        $('.tips').html('Tips: <stron>'.$tips.'</strong>');
+                        $('.penalty').html('Denial Penalty: <stron>'.$penalty.'</strong>');
+                        $('.dc_cod').html('DC Chrges & COD Amount: <stron>'.$dc_cod.'</strong>');
+                        $('.total_payout').html('Total Payout: <stron>'.$payout.toFixed(2).'</strong>');
+                        $('.salik').html('Salik: <stron>'.$salik.'</strong>');
+                        $('.fuel').html('Fuel: <stron>'.$fuel.'</strong>');
+                        $('.sim').html('Sim: <stron>'.$sim.'</strong>');
+                        $('.salary').html('Salary: <stron>'.$salary.'</strong>' );
+                        $('.profit').html('Profit: <stron>'.$profit.toFixed(2).'</strong>' );
                         swal.fire({
                             position: 'center',
                             type: 'success',
