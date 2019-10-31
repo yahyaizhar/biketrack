@@ -82,7 +82,6 @@
                     },
                     success: function(data){
                         console.log(data);
-                        $payout=data.payout;
                         $fuel=data.bike_fuel;
                         $salik=data.salik;
                         $sim=data.sim;
@@ -95,8 +94,9 @@
                         $cod=data.cod;
                         $dc_charges=data.DC_deduction;
                         $aed_hour=$hour * 6;
-                        $aed_trip=$trip * 6.86;
+                        $aed_trip=$trip * 6.86059;
                         $dc_cod= $cod+$dc_charges;
+                        $payout=$aed_hour+$aed_trip;
                         $profit=$payout-($fuel+$salik+$sim+$salary);
                         $('#hour').val($hour);
                         $('#trip').val($trip);
@@ -106,7 +106,6 @@
                         $('#tips').val($tips);
                         $('#penalty').val($penalty);
                         $('#dc_cod').val($dc_cod);
-
                         $('#total_payout').val($payout);
                         $('#salik').val($salik);
                         $('#fuel').val($fuel);
