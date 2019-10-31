@@ -28,7 +28,7 @@
                 @include('admin.includes.message')
                 <form class="kt-form" action="{{ route('bike.bike_create') }}" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
-                    <div class="kt-portlet__body">
+                    <div class="kt-portlet__body" style="display:flex; flex-flow:wrap column;">
                         <div class="row">
                             <div class="hour col-md-3"></div>
                             <div class="trip col-md-3"></div>
