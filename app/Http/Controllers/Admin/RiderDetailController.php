@@ -150,12 +150,15 @@ class RiderDetailController extends Controller
          ->whereNotNull('sim_transaction_id')
          ->sum('amount');
          $sim+=$sim_amount;
+
+         $salary=Company_Account::whereNotNull('rider_id')->where('source','salary')->where('type','dr')->sum('amount');
     }
         return response()->json([
         'payout'=>round($payout,2),
         'bike_fuel'=>round($fuel,2),
         'salik'=>round($salik,2),
         'sim'=>round($sim,2),
+        'salary'=>round($salary,2),
         ]);
     }
 }

@@ -33,7 +33,7 @@
                           Salik: <input type="text" class="form-control" id="salik">
                           Fuel: <input type="text" class="form-control" id="fuel">
                           Sim: <input type="text" class="form-control" id="sim">
-                          {{-- Rent: <input type="text" class="form-control" id="rent"> --}}
+                          Salary: <input type="text" class="form-control" id="salary">
                           Profit: <input type="text" class="form-control" id="profit">
                           
                     </div>
@@ -78,13 +78,14 @@
                         $fuel=data.bike_fuel;
                         $salik=(data.salik);
                         $sim=data.sim;
+                        $salary=data.salary;
                         // $rent=data.bike_rent;
-                        $profit=$payout-($fuel+$salik+$sim);
+                        $profit=$payout-($fuel+$salik+$sim+$salary);
                         $('#total_payout').val($payout);
                         $('#salik').val($salik);
                         $('#fuel').val($fuel);
                         $('#sim').val($sim);
-                        // $('#rent').val($rent);
+                        $('#salary').val($salary);
                         $('#profit').val($profit);
                         swal.fire({
                             position: 'center',
