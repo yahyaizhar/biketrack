@@ -112,6 +112,8 @@ class RiderDetailController extends Controller
         $tips=Income_zomato::whereNotNull('rider_id')->whereMonth('date','09')->sum('tips_payouts');
         $denials_penalty=Income_zomato::whereNotNull('rider_id')->whereMonth('date','09')->sum('denials_penalty');
         $payout=Income_zomato::whereNotNull('rider_id')->whereMonth('date','09')->sum('total_to_be_paid_out');
+
+        $DC_deduction=Income_zomato::whereNotNull('rider_id')->whereMonth('date','09')->sum('dc_deductions');
         // $payout_total=0;
         // foreach ($payout as $hours) {
         // $obj=[];
@@ -166,6 +168,7 @@ class RiderDetailController extends Controller
         'ncw'=>round($ncw,2), 
         'tips'=>round($tips,2),  
         'denials_penalty'=>round($denials_penalty,2),   
+        'DC_deduction'=>round($DC_deduction,2),   
         'payout'=>round($payout,2),
         'bike_fuel'=>round($fuel,2),
         'salik'=>round($salik,2),
