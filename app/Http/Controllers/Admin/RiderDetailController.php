@@ -106,8 +106,6 @@ class RiderDetailController extends Controller
 
         // return; 
         $time=[];
-        $start_month='01-09-'.Carbon::now()->format('Y');
-        $end_month='31-09-'.Carbon::now()->format('Y');
         $payout=Income_zomato::whereNotNull('rider_id')->whereMonth('date','09')->sum('total_to_be_paid_out');
         // $payout_total=0;
         // foreach ($payout as $hours) {
