@@ -1855,7 +1855,6 @@ class AjaxNewController extends Controller
                 return $dc_sum; 
         }) 
         ->addColumn('salik', function($rider) use ($month) {
-            $salik=0;
             $assign_bike=Assign_bike::where('rider_id',$rider->rider_id)->where('status','active')->get()->first();
             if (isset($assign_bike)) {
                 $bike=bike::find($assign_bike->bike_id);
@@ -1864,11 +1863,10 @@ class AjaxNewController extends Controller
                     ->whereMonth('trip_date',$month) 
                     ->where('plate',$bike->bike_number)
                     ->sum('amount_aed');
-                    $salik+=$salik_amount;
-                     
+                    return $salik_amount;
                 }
             }
-            return $salik;
+            
         }) 
         ->addColumn('sim_charges', function($rider) use ($month) {
             $sim_charges=Company_Account::where("source","Sim Transaction")
