@@ -1946,7 +1946,7 @@ class AjaxNewController extends Controller
             }
 
             $profit=($payout_sum+$dc_sum+$cod_sum+$penalty_sum)-($salary+$ncw_sum+$tips_sum+$fuel_amount+$sim_charges+$salik_amount);
-            return $profit;
+            return round($profit,2);
         })
 
         ->rawColumns(['profit','fuel','payout','penalty','aed_extra_trips','net_salary','rider_name','bike_number', 'salik', 'sim_charges', 'dc', 'cod', 'aed_hours','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
