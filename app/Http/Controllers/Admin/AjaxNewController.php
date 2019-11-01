@@ -1862,10 +1862,11 @@ class AjaxNewController extends Controller
                     $salik_amount=Trip_Detail::where('rider_id',$rider->rider_id)
                     ->whereMonth('trip_date',$month) 
                     ->where('plate',$bike->bike_number)
-                    ->sum('amount_aed'); 
+                    ->sum('amount_aed');
+                    return $salik_amount; 
                 }
             }
-            return $salik_amount;
+            return '0';
         }) 
         ->addColumn('sim_charges', function($rider) use ($month) {
             $sim_charges=Company_Account::where("source","Sim Transaction")
