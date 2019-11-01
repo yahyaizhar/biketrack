@@ -1807,7 +1807,7 @@ class AjaxNewController extends Controller
             ->whereMonth('date',$month)
             ->get()
             ->sum('log_in_hours_payable');
-            if($number_of_hours_sum > 286) $number_of_hours_sum = 286;
+            // if($number_of_hours_sum > 286) $number_of_hours_sum = 286;
                 return $number_of_hours_sum; 
         }) 
         ->addColumn('number_of_trips', function($rider) use ($month) {
@@ -1815,7 +1815,7 @@ class AjaxNewController extends Controller
             ->whereMonth('date',$month)
             ->get()
             ->sum('trips_payable');
-            if ( $number_of_trips_sum > 400) $number_of_trips_sum=400; 
+            // if ( $number_of_trips_sum > 400) $number_of_trips_sum=400; 
                 return $number_of_trips_sum; 
         }) 
         ->addColumn('ncw', function($rider) use ($month) {
