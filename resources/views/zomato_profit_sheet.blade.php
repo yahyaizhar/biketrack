@@ -399,17 +399,17 @@ $(function() {
     else{
         
         
-        $('#zomato_salary_sheet thead tr th').eq(6).before('<th>Trip Date:</th>');
-        $('#zomato_salary_sheet thead tr th').eq(7).before('<th>Trip Time:</th>');
-        $('#zomato_salary_sheet thead tr th').eq(8).before('<th>Transaction Post Date:</th>');
+        // $('#zomato_salary_sheet thead tr th').eq(6).before('<th>Trip Date:</th>');
+        // $('#zomato_salary_sheet thead tr th').eq(7).before('<th>Trip Time:</th>');
+        // $('#zomato_salary_sheet thead tr th').eq(8).before('<th>Transaction Post Date:</th>');
         _settings.columns=[
-             { "data": 'rider_name', "name": 'rider_name' },
+            { "data": 'rider_name', "name": 'rider_name' },
             { "data": 'bike_number', "name": 'bike_number' },
             { "data": 'aed_trips', "name": 'aed_trips' },
             { "data": 'aed_hours', "name": 'aed_hours' },
-            { "data": 'total_salary', "name": 'total_salary' },
+            { "data": 'payout', "name": 'total_salary' },
             { "data": 'net_salary', "name": 'net_salary' },
-            { "data": 'gross_salary', "name": 'gross_salary' },
+            { "data": 'profit', "name": 'profit' },
 
             { "data": 'number_of_trips', "name": 'number_of_trips' },
             {"data": 'number_of_hours', "name": 'number_of_hours'},
