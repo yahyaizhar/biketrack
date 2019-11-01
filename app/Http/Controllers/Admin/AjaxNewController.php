@@ -1934,7 +1934,7 @@ class AjaxNewController extends Controller
             ->where('type','dr')
             ->whereNotNull('sim_transaction_id')
             ->sum('amount');
-
+             $salik_amount=0;
             $assign_bike=Assign_bike::where('rider_id',$rider->rider_id)->where('status','active')->get()->first();
             if (isset($assign_bike)) {
                 $bike=bike::find($assign_bike->bike_id);
