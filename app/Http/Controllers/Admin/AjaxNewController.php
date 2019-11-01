@@ -1863,39 +1863,31 @@ class AjaxNewController extends Controller
             return $salik_amount;
         }) 
         ->addColumn('sim_charges', function($rider) use ($month) {
-            $sim_charges=Rider_Account::where('rider_id',$rider->rider_id)
+            $sim_charges=Company_Account::where("source","Sim Transaction")
+            ->where('rider_id',$rider->rider_id)
+            ->whereMonth('month',$month)
+            ->where('type','dr')
             ->whereNotNull('sim_transaction_id')
-            ->whereMonth('month', $month)
-            ->get()
             ->sum('amount');
             return $sim_charges;
         }) 
+        ->addColumn('fuel', function($rider) use ($month) {
+            $fuel_amount=Company_Account::whereNotNull('fuel_expense_id')
+            ->where('rider_id',$rider->rider_id)
+            ->whereMonth('month',$month)
+            ->sum('amount');
+            return $fuel_amount;
+        }) 
         ->addColumn('net_salary', function($rider) use ($month) {
-            $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$month)
-            ->sum('log_in_hours_payable');
-            if($number_of_hours_sum > 286) $number_of_hours_sum = 286;
-            $number_of_hours_sum = $number_of_hours_sum * 7.87;
-            
-            $aed_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$month)
-            ->sum('trips_payable');
-            if ($aed_trips_sum > 400) {
-                $aed_extra_trips=($aed_trips_sum - 400)*4;
-                $aed_trips = 400 * 2;
-                $aed_total=$aed_trips + $aed_extra_trips;
-            }
-            if($aed_trips_sum <= 400){
-                $aed_extra_trips=0;
-                $aed_trips_sum = $aed_trips_sum * 2;
-                $aed_total=$aed_trips_sum + $aed_extra_trips;
-            }
-            
-            $total_salary =$number_of_hours_sum + $aed_total;
-            return $total_salary;
+            $salary=Company_Account::where('rider_id',$rider->rider_id)
+            ->whereMonth('month',$month)
+            ->where('source','salary')
+            ->where('type','dr')
+            ->sum('amount');
+            return $salary;
         })
         //    fuel
-        ->rawColumns(['payout','penalty','aed_extra_trips','net_salary','rider_name','bike_number', 'salik', 'sim_charges', 'dc', 'cod', 'aed_hours','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
+        ->rawColumns(['fuel','payout','penalty','aed_extra_trips','net_salary','rider_name','bike_number', 'salik', 'sim_charges', 'dc', 'cod', 'aed_hours','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
         ->make(true);
     }
 

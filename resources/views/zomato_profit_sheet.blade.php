@@ -508,11 +508,11 @@ $(function() {
             '<td colspan="1"; style="font-weight:900;">DC:</td>'+
             '<td colspan="2";>'+data.dc+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >Fuel:</td>'+
-            '<td colspan="2";>'+'0'+'</td>'+
+            '<td colspan="2";>'+data.fuel+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >Salik:</td>'+
             '<td colspan="2";>'+'0'+'</td>'+
             '<td colspan="1"; style="font-weight:900;">Sim:</td>'+
-            '<td colspan="2";>'+'0'+'</td>'+
+            '<td colspan="2";>'+data.sim_charges+'</td>'+
             '</tr>'+
         '</table>';
 }
