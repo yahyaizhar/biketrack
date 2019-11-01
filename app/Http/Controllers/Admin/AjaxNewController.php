@@ -1891,8 +1891,65 @@ class AjaxNewController extends Controller
             ->sum('amount');
             return round($salary,2);
         })
-        //    fuel
-        ->rawColumns(['fuel','payout','penalty','aed_extra_trips','net_salary','rider_name','bike_number', 'salik', 'sim_charges', 'dc', 'cod', 'aed_hours','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
+        ->addColumn('profit', function($rider) use ($month) {
+            $payout_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('total_to_be_paid_out');
+            $dc_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('dc_deductions');
+            $cod_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('mcdonalds_deductions');
+            $penalty_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('denials_penalty');
+
+            $ncw_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('ncw_incentives');
+
+            $tips_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('tips_payouts');
+
+            $salary=Company_Account::where('rider_id',$rider->rider_id)
+            ->whereMonth('month',$month)
+            ->where('source','salary')
+            ->where('type','dr')
+            ->sum('amount');
+            $fuel_amount=Company_Account::whereNotNull('fuel_expense_id')
+            ->where('rider_id',$rider->rider_id)
+            ->whereMonth('month',$month)
+            ->sum('amount');
+            $sim_charges=Company_Account::where("source","Sim Transaction")
+            ->where('rider_id',$rider->rider_id)
+            ->whereMonth('month',$month)
+            ->where('type','dr')
+            ->whereNotNull('sim_transaction_id')
+            ->sum('amount');
+
+            $assign_bike=Assign_bike::where('rider_id',$rider->rider_id)->where('status','active')->get()->first();
+            if (isset($assign_bike)) {
+                $bike=bike::find($assign_bike->bike_id);
+                if (isset($bike)) {
+                    $salik_amount=Trip_Detail::whereMonth('trip_date',$month) 
+                    ->where('plate',$bike->bike_number)
+                    ->sum('amount_aed');
+                }
+            }
+
+            $profit=($payout_sum+$dc_sum+$cod_sum+$penalty_sum)-($salary+$ncw_sum+$tips_sum+$fuel_amount+$sim_charges+$salik_amount);
+            return $profit;
+        })
+
+        ->rawColumns(['profit','fuel','payout','penalty','aed_extra_trips','net_salary','rider_name','bike_number', 'salik', 'sim_charges', 'dc', 'cod', 'aed_hours','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
         ->make(true);
     }
 
