@@ -496,9 +496,9 @@ $(function() {
             '<td colspan="1"; style="font-weight:900;" >No of Hours:</td>'+
             '<td colspan="2";>'+data.number_of_hours+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >NCW:</td>'+
-            '<td colspan="2";>'+'0'+'</td>'+
+            '<td colspan="2";>'+data.ncw+'</td>'+
             '<td colspan="1"; style="font-weight:900;">Tips:</td>'+
-            '<td colspan="2";>'+'0'+'</td>'+
+            '<td colspan="2";>'+data.tips+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >COD:</td>'+
             '<td colspan="2";>'+'0'+'</td>'+
             '</tr>'+
