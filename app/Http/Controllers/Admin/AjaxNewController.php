@@ -1833,13 +1833,13 @@ class AjaxNewController extends Controller
             ->sum('denials_penalty');
                 return $penalty_sum; 
         }) 
-        // ->addColumn('payout', function($rider) use ($month) {
-        //     $payout_sum=Income_zomato::where('rider_id',$rider->rider_id)
-        //     ->whereMonth('date',$month)
-        //     ->get()
-        //     ->sum('total_to_be_paid_out');
-        //         return $payout; 
-        // }) 
+        ->addColumn('payout', function($rider) use ($month) {
+            $payout_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('total_to_be_paid_out');
+                return $payout_sum; 
+        }) 
         ->addColumn('cod', function($rider) use ($month) {
             $cod=Rider_Account::where('rider_id',$rider->rider_id)
             ->whereNotNull('income_zomato_id')
