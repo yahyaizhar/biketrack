@@ -407,7 +407,7 @@ $(function() {
             { "data": 'bike_number', "name": 'bike_number' },
             { "data": 'aed_trips', "name": 'aed_trips' },
             { "data": 'aed_hours', "name": 'aed_hours' },
-            { "data": 'payout', "name": 'total_salary' },
+            { "data": 'payout', "name": 'payout' },
             { "data": 'net_salary', "name": 'net_salary' },
             { "data": 'profit', "name": 'profit' },
 
