@@ -1833,6 +1833,13 @@ class AjaxNewController extends Controller
             ->sum('denials_penalty');
                 return $penalty_sum; 
         }) 
+        ->addColumn('payout', function($rider) use ($month) {
+            $payout_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('total_to_be_paid_out');
+                return $payout; 
+        }) 
         ->addColumn('cod', function($rider) use ($month) {
             $cod=Rider_Account::where('rider_id',$rider->rider_id)
             ->whereNotNull('income_zomato_id')
@@ -1891,8 +1898,8 @@ class AjaxNewController extends Controller
             $total_salary =$number_of_hours_sum + $aed_total;
             return $total_salary;
         })
-        // payout danial penalty fuel
-        ->rawColumns(['penalty','aed_extra_trips','net_salary','rider_name','bike_number', 'salik', 'sim_charges', 'dc', 'cod', 'aed_hours','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
+        //    fuel
+        ->rawColumns(['payout','penalty','aed_extra_trips','net_salary','rider_name','bike_number', 'salik', 'sim_charges', 'dc', 'cod', 'aed_hours','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
         ->make(true);
     }
 
