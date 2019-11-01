@@ -500,13 +500,13 @@ $(function() {
             '<td colspan="1"; style="font-weight:900;">Tips:</td>'+
             '<td colspan="2";>'+data.tips+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >COD:</td>'+
-            '<td colspan="2";>'+'0'+'</td>'+
+            '<td colspan="2";>'+data.cod+'</td>'+
             '</tr>'+
             '<tr>'+
             '<td colspan="1"; style="font-weight:900;" >Denials Penalty:</td>'+
             '<td colspan="2";>'+data.penalty+'</td>'+
             '<td colspan="1"; style="font-weight:900;">DC:</td>'+
-            '<td colspan="2";>'+'0'+'</td>'+
+            '<td colspan="2";>'+data.dc+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >Fuel:</td>'+
             '<td colspan="2";>'+'0'+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >Salik:</td>'+
