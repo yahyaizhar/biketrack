@@ -199,6 +199,7 @@ Route::group([
     'namespace' => 'Admin',
     'middleware' => ['roles:accounts']
 ], function(){
+    Route::get('/zomato/profit/sheet','RiderDetailController@profit_zomato')->name('account.profit_sheet_view');
     Route::get('/Add/Salary','AccountsController@add_new_salary_create')->name('account.new_salary');
     Route::post('/Salary/Added','AccountsController@new_salary_added')->name('account.added_salary');
     
@@ -553,7 +554,6 @@ Route::group([
    Route::get('/invoice/view','InvoiceController@view_invoices')->name('tax.view_invoices');
    Route::get('/zomato/salary/sheet/view','RiderDetailController@Zomato_salary_sheet_view');
    Route::get('/zomato/september','RiderDetailController@zomato_faisla');
-   Route::get('/zomato/profit/sheet','RiderDetailController@profit_zomato');
 });    
 
 
