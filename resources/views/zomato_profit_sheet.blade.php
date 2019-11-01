@@ -492,9 +492,9 @@ $(function() {
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
             '<tr>'+
             '<td colspan="1"; style="font-weight:900;">No of Trips :</td>'+
-            '<td colspan="2";>'+'0'+'</td>'+
+            '<td colspan="2";>'+data.number_of_trips+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >No of Hours:</td>'+
-            '<td colspan="2";>'+'0'+'</td>'+
+            '<td colspan="2";>'+data.number_of_hours+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >NCW:</td>'+
             '<td colspan="2";>'+'0'+'</td>'+
             '<td colspan="1"; style="font-weight:900;">Tips:</td>'+
