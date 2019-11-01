@@ -2196,4 +2196,7 @@ public function client_income_update(Request $request,$id){
     public function zomato_salary_sheet_export(){
         return view('admin.accounts.Income.zomato_salary_sheet');
     }
+    public function salary_slip(){
+        return view('salary_slip_month');
+    }
 }
