@@ -1841,22 +1841,18 @@ class AjaxNewController extends Controller
                 return $payout_sum; 
         }) 
         ->addColumn('cod', function($rider) use ($month) {
-            $cod=Rider_Account::where('rider_id',$rider->rider_id)
-            ->whereNotNull('income_zomato_id')
-            ->whereMonth('month', $month)
-            ->where('source',"Mcdonalds Deductions")
+            $cod_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
             ->get()
-            ->sum('amount');
-            return $cod;
+            ->sum('mcdonalds_deductions');
+                return $cod_sum; 
         }) 
         ->addColumn('dc', function($rider) use ($month) {
-            $dc=Rider_Account::where('rider_id',$rider->rider_id)
-            ->whereNotNull('income_zomato_id')
-            ->where('source',"DC Deductions")
-            ->whereMonth('month', $month)
+            $dc_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
             ->get()
-            ->sum('amount');
-            return $dc;
+            ->sum('dc_deductions');
+                return $dc_sum; 
         }) 
         ->addColumn('salik', function($rider) use ($month) {
             $salik_amount=Rider_Account::where('rider_id',$rider->rider_id)
