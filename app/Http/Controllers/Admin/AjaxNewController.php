@@ -1859,8 +1859,7 @@ class AjaxNewController extends Controller
             if (isset($assign_bike)) {
                 $bike=bike::find($assign_bike->bike_id);
                 if (isset($bike)) {
-                    $salik_amount=Trip_Detail::where('rider_id',$rider->rider_id)
-                    ->whereMonth('trip_date',$month) 
+                    $salik_amount=Trip_Detail::whereMonth('trip_date',$month) 
                     ->where('plate',$bike->bike_number)
                     ->sum('amount_aed');
                     return $salik_amount;
