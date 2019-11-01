@@ -177,4 +177,7 @@ class RiderDetailController extends Controller
         'salary'=>round($salary,2),
         ]);
     }
+    public function profit_zomato(){
+        return view('zomato_profit_sheet');
+    }
 }

@@ -1764,4 +1764,135 @@ class AjaxNewController extends Controller
         ->make(true);
     }
 
+    public function zomato_profit_export($month)
+    {
+        $zomato=Client::where("name","Zomato Food Delivery")->get()->first();
+        // $client_riders=$zomato->riders();
+        $client_riders=Client_Rider::where('client_id', $zomato->id)->get();
+        return DataTables::of($client_riders)
+        ->addColumn('rider_name', function($rider) {
+            $riderFound = Rider::find($rider->rider_id);
+            return $riderFound->name;
+        }) 
+        ->addColumn('bike_number', function($rider) {
+              $assign_bike=Assign_bike::where("rider_id",$rider->rider_id)->where("status","active")->get()->first();             
+            if (isset($assign_bike)) {
+                $bike=bike::find($assign_bike->bike_id);
+                return $bike->bike_number;
+            }
+              return 'No Bike is assigned';
+        }) 
+        ->addColumn('aed_trips', function($rider) use ($month) {
+            $aed_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('trips_payable');
+            if ( $aed_trips_sum > 400) $aed_trips_sum=400; 
+                return $aed_trips_sum*2; 
+        }) 
+        ->addColumn('aed_hours', function($rider) use ($month) {
+            $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('log_in_hours_payable');
+            if ($number_of_hours_sum > 286) {
+                $number_of_hours_sum=286;
+                return $number_of_hours_sum * 7.87;
+            }
+
+            return $number_of_hours_sum * 7.87;
+        })
+        ->addColumn('number_of_hours', function($rider) use ($month) {
+            $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('log_in_hours_payable');
+            if($number_of_hours_sum > 286) $number_of_hours_sum = 286;
+                return $number_of_hours_sum; 
+        }) 
+        ->addColumn('number_of_trips', function($rider) use ($month) {
+            $number_of_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('trips_payable');
+            if ( $number_of_trips_sum > 400) $number_of_trips_sum=400; 
+                return $number_of_trips_sum; 
+        }) 
+        ->addColumn('ncw', function($rider) use ($month) {
+            $ncw_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('ncw_incentives');
+                return $ncw_sum; 
+        }) 
+        ->addColumn('tips', function($rider) use ($month) {
+            $tips_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('tips_payouts');
+                return $tips_sum; 
+        }) 
+        ->addColumn('salik', function($rider) use ($month) {
+            $salik_amount=Rider_Account::where('rider_id',$rider->rider_id)
+            ->whereNotNull('salik_id')
+            ->whereMonth('month', $month)
+            ->get()
+            ->sum('amount');
+            return $salik_amount;
+        }) 
+        ->addColumn('sim_charges', function($rider) use ($month) {
+            $sim_charges=Rider_Account::where('rider_id',$rider->rider_id)
+            ->whereNotNull('sim_transaction_id')
+            ->whereMonth('month', $month)
+            ->get()
+            ->sum('amount');
+            return $sim_charges;
+        }) 
+        ->addColumn('cod', function($rider) use ($month) {
+            $cod=Rider_Account::where('rider_id',$rider->rider_id)
+            ->whereNotNull('income_zomato_id')
+            ->whereMonth('month', $month)
+            ->where('source',"Mcdonalds Deductions")
+            ->get()
+            ->sum('amount');
+            return $cod;
+        }) 
+        ->addColumn('dc', function($rider) use ($month) {
+            $dc=Rider_Account::where('rider_id',$rider->rider_id)
+            ->whereNotNull('income_zomato_id')
+            ->where('source',"DC Deductions")
+            ->whereMonth('month', $month)
+            ->get()
+            ->sum('amount');
+            return $dc;
+        }) 
+        ->addColumn('net_salary', function($rider) use ($month) {
+            $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->sum('log_in_hours_payable');
+            if($number_of_hours_sum > 286) $number_of_hours_sum = 286;
+            $number_of_hours_sum = $number_of_hours_sum * 7.87;
+            
+            $aed_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->sum('trips_payable');
+            if ($aed_trips_sum > 400) {
+                $aed_extra_trips=($aed_trips_sum - 400)*4;
+                $aed_trips = 400 * 2;
+                $aed_total=$aed_trips + $aed_extra_trips;
+            }
+            if($aed_trips_sum <= 400){
+                $aed_extra_trips=0;
+                $aed_trips_sum = $aed_trips_sum * 2;
+                $aed_total=$aed_trips_sum + $aed_extra_trips;
+            }
+            
+            $total_salary =$number_of_hours_sum + $aed_total;
+            return $total_salary;
+        })
+        // payout danial penalty fuel
+        ->rawColumns(['aed_extra_trips','net_salary','rider_name','bike_number', 'salik', 'sim_charges', 'dc', 'cod', 'aed_hours','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
+        ->make(true);
+    }
+
 }
