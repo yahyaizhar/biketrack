@@ -260,7 +260,7 @@ function export_data(){
                 warning++;
                 type='warning';
             }
-            if(item.adt2 > 50){
+            if(item.adt2 > 50 || item.adt2 == 0){
                 replaced++;
                 type='replaced';
             }
