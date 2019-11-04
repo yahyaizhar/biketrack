@@ -26,7 +26,8 @@ class bikeController extends Controller
         $this->middleware('auth:admin');
     }
     public function bike_login(){
-      return view('admin.Bike.bike_login');
+      $riders=Rider::where('active_status','A')->get(); 
+      return view('admin.Bike.bike_login',compact('riders'));
     
 
     }
@@ -44,7 +45,20 @@ class bikeController extends Controller
       $bike_object->brand = $r->brand;
       $bike_object->chassis_number = $r->chassis_number;
       $bike_object->mulkiya_expiry = $r->mulkiya_expiry;
-      
+      $bike_object->rental_company =$r->rental_company;
+      $bike_object->bike_allowns =$r->bike_allowns;
+      $bike_object->contract_start=null; 
+      $bike_object->contract_end=null;
+      if ($bike_object->owner == 'rent') {
+        $bike_object->contract_start =Carbon::parse($r->contract_start)->format('Y-m-d');
+        $bike_object->contract_end =Carbon::parse($r->contract_end)->format('Y-m-d');
+      }
+      $bike_object->rent_amount =$r->rent_amount;
+      $bike_object->amount =$r->amount;
+      $bike_object->rider_id=null;
+      if ($bike_object->owner == 'self') {
+        $bike_object->rider_id = $r->rider_id;
+      }
       if($r->status)
             $bike_object->status = 1;
         else
@@ -67,10 +81,10 @@ class bikeController extends Controller
                 $filepath = Storage::putfile('public/uploads/riders/mulkiya_picture_back', $r->file('mulkiya_picture_back'));
                 $bike_object->mulkiya_picture_back = $filepath;
             }
+            // return $bike_object;
             $bike_object->save();
       $bike_detail = $bike_object->Bike_detail()->create([
-      'registration_number'=> $r->get('registration_number'),
-        
+      'registration_number'=> $r->get('registration_number'),   
 ]);
       return view('admin.Bike.bike_view');
     
@@ -85,7 +99,8 @@ class bikeController extends Controller
     public function bike_edit(Request $request,$id){
       $bike_id_array =$request->id;
       $bike = bike::find($bike_id_array);
-      return view('admin.Bike.Edit_bike',compact('bike'));
+      $riders=Rider::where('active_status','A')->get();
+      return view('admin.Bike.Edit_bike',compact('bike','riders'));
       // return $bike;
     }
     public function bike_update(Request $request,bike $bike,$id){
@@ -105,6 +120,20 @@ class bikeController extends Controller
     $bike->chassis_number = $request->chassis_number;
     $bike->mulkiya_number = $request->mulkiya_number;
     $bike->mulkiya_expiry = $request->mulkiya_expiry;
+    $bike->rental_company = $request->rental_company;
+    $bike->contract_start=null; 
+    $bike->contract_end=null;
+    if ($bike->owner == 'rent') {
+      $bike->contract_start =Carbon::parse($request->contract_start)->format('Y-m-d');
+      $bike->contract_end =Carbon::parse($request->contract_end)->format('Y-m-d');
+    }
+    $bike->rent_amount = $request->rent_amount;
+    $bike->amount = $request->amount;
+    $bike->rider_id=null;
+    if ($bike->owner == 'self') {
+      $bike->rider_id = $request->rider_id;
+    }
+    $bike->bike_allowns =$request->bike_allowns;
     if($request->status)
         $bike->status = 1;
     else

@@ -99,7 +99,6 @@ $('.total_entries').remove();
     },
         ajax: "{!! route('bike.bike_show') !!}",
         columns: [
-            //  { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
             { data: 'id', name: 'id' },
             { data: 'owner', name: 'owner' }, 
             { data: 'brand', name: 'brand' },            
@@ -111,17 +110,6 @@ $('.total_entries').remove();
             { data: 'availability', name: 'availability' },
         ],
         responsive:true,
-        // 'columnDefs': [
-        //     {
-        //         'targets': 0,
-        //         'checkboxes': {
-        //         'selectRow': true
-        //         }
-        //     }
-        // ],
-        // 'select': {
-        //     'style': 'multi'
-        // },
         order:[0,'desc'],
     });
 });

@@ -29,14 +29,54 @@
                 <form class="kt-form" action="{{ route('bike.bike_create') }}" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="kt-portlet__body">
-                            <div class="form-group">
-                                <label>Owner:</label>
-                                <select class="form-control bk-select2 @if($errors->has('owner')) invalid-field @endif kt-select2" id="kt_select2_3" name="owner" placeholder="Enter Owner" value="{{ old('owner') }}">
-                                    <option value="self">Rider Own Bike</option>
-                                    <option value="kr_bike">KR-Bike</option>
-                                    <option value="rent">Rental Bike</option>
-                                </select> 
+                        <div class="form-group">
+                            <label>Owner:</label>
+                            <select class="form-control bk-select2 @if($errors->has('owner')) invalid-field @endif kt-select2" id="kt_select2_3" name="owner" placeholder="Enter Owner" value="{{ old('owner') }}">
+                                <option value="rent">Rental Bike</option>
+                                <option value="kr_bike">KR-Bike</option>
+                                <option value="self">Rider Own Bike</option>
+                            </select> 
+                        </div>
+                        <div class="all_details_kr">
+                            <div class="row rental_bike_details">
+                                <div class="form-group col-md-5"> 
+                                    <label>Rental Company:</label>
+                                    <input type="text" class="form-control" name="rental_company" placeholder="Enter Rental Company Name">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>Contract Start Date:</label>
+                                    <input type="text" id="datepicker_con_1" autocomplete="off" class="form-control" name="contract_start" placeholder="Enter Contract Start Date">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>Contract End Date:</label>
+                                    <input type="text" id="datepicker_con_2" autocomplete="off" class="form-control" name="contract_end" placeholder="Enter Contract End Date">
+                                </div>
                             </div>
+                            <div class="form-group monthly_rent"> 
+                                <label>Monthly Rent:</label>
+                                <input type="text" class="form-control" name="rent_amount" placeholder="Ente Amount of Rent">
+                            </div>
+                            <div class="form-group purchase_price"> 
+                                <label>Purchase price:</label>
+                                <input type="text" class="form-control" id='purchase_price' name="amount" placeholder="Ente Bike Price">
+                            </div>
+                            <div class="row rider_self_detail">
+                                <div class="col-md-9">
+                                    <label>Select Rider:</label>
+                                    <select class="form-control kt-select2 bk-select2" id="rider_id" name="rider_id" >
+                                        <option value="Select Rider">Select Rider</option>
+                                        @foreach ($riders as $rider)
+                                        <option value="{{ $rider->id }}" 
+                                            >{{ $rider->name }}</option>    
+                                        @endforeach
+                                    </select>
+                                </div> 
+                                <div class="form-group col-md-3"> 
+                                    <label>Bike Allowns:</label>
+                                    <input type="text" class="form-control" id="bike_allowns" name="bike_allowns" placeholder="Ente Bike Allowns">
+                                </div>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label>Model(2015):</label>
                             <select class="form-control @if($errors->has('model')) invalid-field @endif kt-select2" id="kt_select2_3" name="model" placeholder="Enter model" value="{{ old('model') }}">
@@ -155,7 +195,45 @@
   $(document).ready(function(){
     //   $('#datepicker').datepicker({dateFormat: 'yy-mm-dd'}); 
       $('#datepicker').fdatepicker({format: 'dd-mm-yyyy'}); 
+      $('#datepicker_con_1').fdatepicker({format: 'dd-mm-yyyy'}); 
+      $('#datepicker_con_2').fdatepicker({format: 'dd-mm-yyyy'});
+      $(".purchase_price").hide();
+      $(".monthly_rent").hide();
+      $(".rider_self_detail").hide();
+      $('#kt_select2_3').on('change',function(){
+          var opt=$(this).val();
+          if (opt == 'rent'){
+            $(".rental_bike_details").show();
+            $('.monthly_rent').show();
+            $('.purchase_price').hide();
+            $(".rider_self_detail").hide();
+            $('#purchase_price').val('');
+            // $('#bike_allowns').val('');
+          }
+          if (opt == 'kr_bike'){
+            $(".rental_bike_details").hide();
+            $(".rider_self_detail").hide();
+            $('.purchase_price').show();
+            $('.monthly_rent').show();
+            $('[name="rental_company"]').val('');   
+            $('[name="contract_start"]').val('');  
+            $('[name="contract_end"]').val('');
+            // $('#bike_allowns').val('');
 
+          }
+          if (opt == 'self'){
+            $(".rental_bike_details").hide();
+            $('.purchase_price').hide();
+            $('.monthly_rent').hide();
+            $(".rider_self_detail").show();
+            $('[name="rental_company"]').val('');   
+            $('[name="contract_start"]').val('');  
+            $('[name="contract_end"]').val('');
+            $('[name="rent_amount"]').val('');
+            $('#purchase_price').val('');
+          }
+      });
+      $('#kt_select2_3').trigger('change');
   });
 
 </script>
