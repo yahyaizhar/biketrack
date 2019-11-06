@@ -55,7 +55,5 @@ class Bike_Accounts extends Authenticatable
         'maintenance_id',
         'status',
     ];
-// ALTER TABLE `bike__accounts` ADD `maintenance_id` INT(11) NULL AFTER `bike_id`;
-// ALTER TABLE `bikes` ADD `is_given` VARCHAR(191) NULL AFTER `active_status`;
 
 }
