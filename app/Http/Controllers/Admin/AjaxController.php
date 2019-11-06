@@ -359,7 +359,7 @@ class AjaxController extends Controller
         ->addColumn('availability', function($bike){
             $status_text = $bike->status == 1 ? 'Inactive' : 'Active';
             $assign_bike_to_kingriders='';
-            if ($bike->is_given=='') {
+            if ($bike->is_given=='1') {
                 $assign_bike_to_kingriders='<a class="dropdown-item" href="'.route('bike.give_bike_to_company', $bike->id).'"><i class="fa fa-eye"></i>Give Bike To Comapany</a>';
             }
             return '<span class="dtr-data">
