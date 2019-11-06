@@ -253,26 +253,14 @@ class bikeController extends Controller
       return view('admin.Bike.assign_bike_to_kingriders_company',compact('bike'));
     }
     public function is_given_bike_status(Request $request,$id){
-      // $bike=bike::find($id);
-      // $bike->is_given='0';
-      // if ($bike->rider_id==null) {
-      //   $bike->rent_amount=$request->monthly_rent;
-      // }
-      // else{
-      //   $bike->bike_allowns=$request->bike_allowns;
-      // }
-          $bikes=bike::all();
-    foreach ($bikes as $bike) {
-      if ($bike->availability=='yes') {
-        $bike->is_given='1';
+      $bike=bike::find($id);
+      $bike->is_given='0';
+      if ($bike->rider_id==null) {
+        $bike->rent_amount=$request->monthly_rent;
       }
-      if ($bike->availability=='no') {
-        $bike->is_given='0';
+      else{
+        $bike->bike_allowns=$request->bike_allowns;
       }
-        $bike->save();
-    }
-   
-      // return redirect(route('bike.bike_view'));
-      return 'han ho gaya';
+      return redirect(route('bike.bike_view'));
     } 
 }
