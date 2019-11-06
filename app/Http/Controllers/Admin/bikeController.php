@@ -272,6 +272,7 @@ class bikeController extends Controller
         $bike->save();
     }
    
-      return redirect(route('bike.bike_view'));
+      // return redirect(route('bike.bike_view'));
+      return 'han ho gaya';
     } 
 }
