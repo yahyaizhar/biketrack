@@ -119,7 +119,7 @@
                          &nbsp;
                         <a href="" class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_modal" >
                             <i class="la la-money"></i>
-                             Add Cash
+                             Pay Cash
                         </a>
                          &nbsp;
                         <a href="{{ route('admin.accounts.rider_expense_get') }}" class="btn btn-brand btn-elevate btn-icon-sm">

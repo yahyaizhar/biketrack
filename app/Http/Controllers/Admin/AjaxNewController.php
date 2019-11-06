@@ -289,7 +289,7 @@ class AjaxNewController extends Controller
         $salary=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
-        ->where('type','cr')
+        ->where('source','salary_paid')
         ->where('payment_status','paid')
         ->sum('amount');
         $ncw=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
