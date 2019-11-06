@@ -1,169 +1,136 @@
-@extends('admin.layouts.app')
-@section('head')
-    <link href="{{ asset('dashboard/assets/vendors/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />
-    <style>
-        .dataTables_length{
-            display: block;   
-        }
-        .total_entries{
-        display: inline-block;
-        margin-left: 10px;
-        }
-        .dataTables_info{
-            display:none;
-        }
-        </style>
-@endsection
-@section('main-content')
-@include('admin.includes.message')
-<div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
-    <div class="kt-portlet kt-portlet--mobile">
-        <div class="kt-portlet__head kt-portlet__head--lg">
-            <div class="kt-portlet__head-label">
-                <span class="kt-portlet__head-icon">
-                    <i class="kt-font-brand fa fa-hotel"></i>
-                </span>
-                <h3 class="kt-portlet__head-title">
-                   layout is better
-                </h3>
-            </div>
-            <div class="kt-portlet__head-toolbar">
-                <div class="kt-portlet__head-wrapper">
-                    <div class="kt-portlet__head-actions">
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="kt-portlet__body">
-            <div class="row">
-                <div class="col-md-12" style="text-align: center;border: 1px solid #dddd; background-color:cyan"><h4>SALARY SLIP</h4></div>
-            </div>
-            <div class="row">
-                <div class="col-md-12" style="text-align: center;border: 1px solid #dddd;">Aug 2019</div>
-            </div>
-            <br>
-            <div class="row">
-                <div class="col-md-3" style="border: 1px solid #dddd;">NAME:</div>
-                <div class="col-md-3" style="border: 1px solid #dddd;">Waqas</div>
-                <div class="col-md-3" style="border: 1px solid #dddd;">Designation:</div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-3" style="border: 1px solid #dddd;">EMPLOYEE ID:</div>
-                <div class="col-md-3" style="border: 1px solid #dddd;">KRD-104</div>
-                <div class="col-md-3" style="border: 1px solid #dddd;">WORKPLACE:</div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-3" style="border: 1px solid #dddd;">DATE OF JOINING:</div>
-                <div class="col-md-3" style="border: 1px solid #dddd;">7/17/2019</div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-            </div>
-            <br>
-            <div class="row">
-                <div class="col-md-6" style="text-align: center;border: 1px solid #dddd;">DESCRIPTION</div>
-                <div class="col-md-3" style="text-align: center;border: 1px solid #dddd;">EARNINGS</div>
-                <div class="col-md-3" style="text-align: center;border: 1px solid #dddd;">DEDUCTIONS</div>
-            </div>
-            <div class="row">
-                <div class="col-md-6" style="border: 1px solid #dddd;">BASIC SALARY</div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-6" style="border: 1px solid #dddd;">NCW ALLOWANCE</div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-6" style="border: 1px solid #dddd;">CUSTOMER TIP</div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-6" style="border: 1px solid #dddd;">BIKE ALLOWANCE</div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-6" style="border: 1px solid #dddd;">BONES</div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-6" style="border: 1px solid #dddd;">ADVANCE</div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-6" style="border: 1px solid #dddd;">SALIK PLANTI</div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-6" style="border: 1px solid #dddd;">SIM PLANTI</div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-6" style="border: 1px solid #dddd;">ZOMATO PLANTI</div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-6" style="border: 1px solid #dddd;">DC DEDUCTION</div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-6" style="border: 1px solid #dddd;">MCDONALD DEDUCTION</div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-6" style="border: 1px solid #dddd;">RTA FINE</div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-6" style="border: 1px solid #dddd;">MOBILE EMI</div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-6" style="border: 1px solid #dddd;">DISPLAN FINE</div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-6" style="border: 1px solid #dddd;">MICS CHARGES</div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-6" style="border: 1px solid #dddd;">TOTAL</div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-                <div class="col-md-3" style="border: 1px solid #dddd;"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-6" style="border: 1px solid #dddd;">PAYMENT DATE:Tuesday, September 24,2019</div>
-                <div class="col-md-6" style="text-align:center;border: 1px solid #dddd; background-color:cyan">NET PAY</div>
-            </div>
-            <div class="row">
-                <div class="col-md-6" style="border: 1px solid #dddd;"></div>
-                <div class="col-md-6" style="text-align:center;border: 1px solid #dddd;background-color:cyan">2986.82</div>
-            </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div style="display:grid;padding: 15px 50px 0px 50px;">
+        <table style="">
+            <tr><th style="border:1px solid #dddd;background-color:#73acac69;">SALARY SLIP</th></tr>
+            <tr><th class="month_year" style="border:1px solid #dddd;">AUG 2019</th></tr>
+        </table>
+        <table style=" margin-top: 20px;">
+            <tr>
+                <th style="border:1px solid #dddd;width:25%;text-align:left;">NAME</th>
+                <td class="rider_name" style="border:1px solid #dddd;width:25%;text-align:left;"></td>
+                <th style="border:1px solid #dddd;width:25%;text-align:left;">Designation:</th>
+                <td style="border:1px solid #dddd;width:25%;text-align:left;"></td>
+            </tr>
+            <tr>
+                <th style="border:1px solid #dddd;width:25%;text-align:left;">EMPLOYEE ID:</th>
+                <td class="employee_id" style="border:1px solid #dddd;width:25%;text-align:left;"></td>
+                <th style="border:1px solid #dddd;width:25%;text-align:left;">WORKPLACE:</th>
+                <td style="border:1px solid #dddd;width:25%;text-align:left;"></td>
+            </tr>
+            <tr>
+                <th style="border:1px solid #dddd;width:25%;text-align:left;">DATE OF JOINING:</th>
+                <td class="today_date" style="border:1px solid #dddd;width:25%;text-align:left;"></td>
+                <th style="border:1px solid #dddd;width:25%;text-align:left;"></th>
+                <td style="border:1px solid #dddd;width:25%;text-align:left;"></td>
+            </tr>
+        </table>
 
-        </div>
+        <table style=" margin-top: 20px;">
+            <tr>
+                <th style="border:1px solid #dddd;width:50%;text-align:center;">DESCRIPTION</th>
+                <th style="border:1px solid #dddd;width:25%;text-align:center;">EARNINGS</th>
+                <th style="border:1px solid #dddd;width:25%;text-align:center;">DEDUCTIONS:</th>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">BASIC SALARY</td>
+                <td class="salary" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">NCW ALLOWANCE</td>
+                <td class="ncw" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">CUSTOMER TIP</td>
+                <td class="tip" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">BIKE ALLOWANCE</td>
+                <td class="bike_allowns" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">BONES</td>
+                <td class="bones" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">ADVANCE</td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td class="advance" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">SALIK PLANTI</td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td class="salik" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">SIM PLANTI</td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td class="sim" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">ZOMATO PLANTI</td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td class="zomato" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">DC DEDUCTION</td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td class="dc" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">MCDONALD DEDUCTION</td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td class="macdonald" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">RTA FINE</td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td class="rta" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">MOBILE EMI</td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td class="mobile" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">DISPLAN FINE</td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td class="discipline" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">MICS CHARGES</td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td class="mics" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">TOTAL</td>
+                <td class="total_cr" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td class="total_dr" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            
+        </table>
+        <table style="">
+            <tr>
+                <td class="payment_date" style="border:1px solid #dddd;width:50%;text-align:left;"></td>
+                <td style="border:1px solid #dddd;width:50%;text-align:center;background-color:#73acac69;">NET PAY</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;"></td>
+                <td class="net_pay" style="border:1px solid #dddd;width:50%;text-align:center;background-color:#73acac69;"></td>
+            </tr>
+        </table>
     </div>
-</div>
-@endsection
-@section('foot')
-<script src="{{ asset('dashboard/assets/vendors/custom/datatables/datatables.bundle.js') }}" type="text/javascript"></script>
-
-<script src="{{ asset('dashboard/assets/js/demo1/pages/crud/datatables/basic/basic.js') }}" type="text/javascript"></script>
-
-@endsection
-
+</body>
+</html>

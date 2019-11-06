@@ -345,8 +345,12 @@ class AjaxController extends Controller
         ->addColumn('brand', function($bike){
             return $bike->brand;
         })
-        ->addColumn('chassis_number', function($bike){
-            return $bike->chassis_number;
+        ->addColumn('rent', function($bike){
+            if ($bike->rider_id==null) {
+                return $bike->rent_amount;
+            } else {
+                return $bike->bike_allowns;
+            }
         })
         ->addColumn('Bike_number', function($bike){
             return '<a href="'.route('bike.bike_assigned', $bike).'">'.$bike->bike_number.'</a>';
@@ -354,6 +358,10 @@ class AjaxController extends Controller
         
         ->addColumn('availability', function($bike){
             $status_text = $bike->status == 1 ? 'Inactive' : 'Active';
+            $assign_bike_to_kingriders='';
+            if ($bike->is_given=='1') {
+                $assign_bike_to_kingriders='<a class="dropdown-item" href="'.route('bike.give_bike_to_company', $bike->id).'"><i class="fa fa-eye"></i>Give Bike To Comapany</a>';
+            }
             return '<span class="dtr-data">
             <span class="dropdown">
                 <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
@@ -365,6 +373,7 @@ class AjaxController extends Controller
                     <button class="dropdown-item" onclick="deleteBike('.$bike->id.');"><i class="fa fa-trash"></i> Delete</button>
                     <a class="dropdown-item" href="'.route('bike.rider_history', $bike).'"><i class="fa fa-eye"></i> View Rider history</a>
                     <a class="dropdown-item" href="'.route('bike.bike_salik', $bike->id).'"><i class="fa fa-eye"></i> View Salik</a>
+                    '.$assign_bike_to_kingriders.'
                     </div>
             </span>
         </span>';
@@ -372,7 +381,7 @@ class AjaxController extends Controller
         // <a class="dropdown-item" href="'.route('bike.bike_assigned', $bike).'"><i class="fa fa-eye"></i> View Bikes</a>
         // <a class="dropdown-item" href="'.route('bike.bike_assignRiders', $bike).'"><i class="fa fa-edit"></i> Assign Bikes</a>
                     
-        ->rawColumns(['model','owner','brand','chassis_number', 'Bike_number', 'detail', 'assigned_to','availability', 'status'])
+        ->rawColumns(['model','rent','owner','brand','chassis_number', 'Bike_number', 'detail', 'assigned_to','availability', 'status'])
         ->make(true);
     }
     public function getSalary_by_developer()

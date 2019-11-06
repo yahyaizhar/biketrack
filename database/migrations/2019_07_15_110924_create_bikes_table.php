@@ -35,6 +35,7 @@ class CreateBikesTable extends Migration
             $table->timestamps();
             $table->string('status')->nullable();
             $table->string('active_status')->default("A");
+            $table->string('is_given')->nullable();
             $table->string('others')->nullable();
           
         });

@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use carbon\carbon;
 use \App\Model\Accounts\Company_Account;
+use \App\Model\Accounts\Bike_Accounts;
 use App\Assign_bike;
 use Arr;
 
@@ -83,8 +84,18 @@ class bikeController extends Controller
             }
             // return $bike_object;
             $bike_object->save();
+            if ($bike_object->owner == 'kr_bike') {
+              $ba= new Bike_Accounts();
+              $ba->type='dr';
+              $ba->amount=$bike_object->amount;
+              $ba->month=Carbon::parse($bike_object->created_at)->format('Y-m-d');
+              $ba->bike_id =$bike_object->id;
+              $ba->source='Purchase Bike';
+              $ba->payment_status='paid';
+              $ba->save();
+            }
       $bike_detail = $bike_object->Bike_detail()->create([
-      'registration_number'=> $r->get('registration_number'),   
+      'registration_number'=> $r->get('registration_number'),
 ]);
       return view('admin.Bike.bike_view');
     
@@ -92,7 +103,7 @@ class bikeController extends Controller
     }
     public function bike_assigned_show(Client $client){
       $bike = $client->bike;
-      // return view('Bike.bike_assigned', compact('client', 'bike'));
+      return view('Bike.bike_assigned', compact('client', 'bike'));
       return $bike;
       
     }
@@ -237,4 +248,30 @@ class bikeController extends Controller
         'updated_at' => $assign_bike->updated_at
     ]);
     }
+    public function give_bike_to_company($bike_id){
+      $bike=bike::find($bike_id);
+      return view('admin.Bike.assign_bike_to_kingriders_company',compact('bike'));
+    }
+    public function is_given_bike_status(Request $request,$id){
+      $bike=bike::find($id);
+      $bike->is_given='0';
+      if ($bike->rider_id==null) {
+        $bike->rent_amount=$request->monthly_rent;
+      }
+      else{
+        $bike->bike_allowns=$request->bike_allowns;
+      }
+    //       $bikes=bike::all();
+    // foreach ($bikes as $bike) {
+    //   if ($bike->availability=='yes') {
+    //     $bike->is_given='1';
+    //   }
+    //   if ($bike->availability=='no') {
+    //     $bike->is_given='0';
+    //   }
+        $bike->save();
+    // }
+   
+      return redirect(route('bike.bike_view'));
+    } 
 }

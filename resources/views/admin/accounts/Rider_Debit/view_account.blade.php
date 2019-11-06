@@ -113,6 +113,10 @@
             <div class="kt-portlet__head-toolbar"> 
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
+                        <button class="btn btn-warning btn-elevate btn-icon-sm" id="for_print" type="button" onclick="printJS('print_slip_for_rider', 'html')">
+                            Print Salary Slip
+                         </button>
+                         &nbsp;
                         <a href="" class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_modal" >
                             <i class="la la-money"></i>
                              Add Cash
@@ -296,14 +300,149 @@
         </div>
     </div>
 </div>
+{{-- salary slip --}}
+<div style="display:none;">
+<div style="display:grid;padding: 15px 50px 0px 50px;" id="print_slip_for_rider">
+    <table style="">
+        <tr><th style="border:1px solid #dddd;background-color:#73acac69;text-align:center;">SALARY SLIP</th></tr>
+        <tr><th class="month_year" style="border:1px solid #dddd;text-align:center;"></th></tr>
+    </table>
+    <table style=" margin-top: 10px;">
+        <tr>
+            <th style="border:1px solid #dddd;width:25%;text-align:left;">NAME</th>
+            <td class="rider_name" style="border:1px solid #dddd;width:25%;text-align:left;"></td>
+            <th style="border:1px solid #dddd;width:25%;text-align:left;">Designation:</th>
+            <td style="border:1px solid #dddd;width:25%;text-align:left;"></td>
+        </tr>
+        <tr>
+            <th style="border:1px solid #dddd;width:25%;text-align:left;">EMPLOYEE ID:</th>
+            <td class="employee_id" style="border:1px solid #dddd;width:25%;text-align:left;"></td>
+            <th style="border:1px solid #dddd;width:25%;text-align:left;">WORKPLACE:</th>
+            <td style="border:1px solid #dddd;width:25%;text-align:left;"></td>
+        </tr>
+        <tr>
+            <th style="border:1px solid #dddd;width:25%;text-align:left;">DATE OF JOINING:</th>
+            <td class="today_date" style="border:1px solid #dddd;width:25%;text-align:left;"></td>
+            <th style="border:1px solid #dddd;width:25%;text-align:left;"></th>
+            <td style="border:1px solid #dddd;width:25%;text-align:left;"></td>
+        </tr>
+    </table>
+
+    <table style=" margin-top: 10px;">
+        <tr>
+            <th style="border:1px solid #dddd;width:50%;text-align:center;">DESCRIPTION</th>
+            <th style="border:1px solid #dddd;width:25%;text-align:center;">EARNINGS</th>
+            <th style="border:1px solid #dddd;width:25%;text-align:center;">DEDUCTIONS:</th>
+        </tr>
+        <tr>
+            <td style="border:1px solid #dddd;width:50%;text-align:left;">BASIC SALARY</td>
+            <td class="salary" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #dddd;width:50%;text-align:left;">NCW ALLOWANCE</td>
+            <td class="ncw" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #dddd;width:50%;text-align:left;">CUSTOMER TIP</td>
+            <td class="tip" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #dddd;width:50%;text-align:left;">BIKE ALLOWANCE</td>
+            <td class="bike_allowns" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #dddd;width:50%;text-align:left;">BONES</td>
+            <td class="bones" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #dddd;width:50%;text-align:left;">ADVANCE</td>
+            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td class="advance" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #dddd;width:50%;text-align:left;">SALIK PLANTI</td>
+            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td class="salik" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #dddd;width:50%;text-align:left;">SIM PLANTI</td>
+            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td class="sim" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #dddd;width:50%;text-align:left;">ZOMATO PLANTI</td>
+            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td class="zomato" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #dddd;width:50%;text-align:left;">DC DEDUCTION</td>
+            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td class="dc" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #dddd;width:50%;text-align:left;">MCDONALD DEDUCTION</td>
+            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td class="macdonald" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #dddd;width:50%;text-align:left;">RTA FINE</td>
+            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td class="rta" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #dddd;width:50%;text-align:left;">MOBILE EMI</td>
+            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td class="mobile" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #dddd;width:50%;text-align:left;">DISPLAN FINE</td>
+            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td class="discipline" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #dddd;width:50%;text-align:left;">MICS CHARGES</td>
+            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td class="mics" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #dddd;width:50%;text-align:left;">TOTAL</td>
+            <td class="total_cr" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td class="total_dr" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+        </tr>
+        
+    </table>
+    <table style="">
+        <tr>
+            <td class="payment_date" style="border:1px solid #dddd;width:50%;text-align:left;"></td>
+            <td style="border:1px solid #dddd;width:50%;text-align:center;background-color:#73acac69;">NET PAY</td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #dddd;width:50%;text-align:left;"></td>
+            <td class="net_pay" style="border:1px solid #dddd;width:50%;text-align:center;background-color:#73acac69;"></td>
+        </tr>
+    </table>
+</div>
+</div>
+{{-- end salary slip --}}
 @endsection
 @section('foot')
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
 <script src="{{ asset('dashboard/assets/vendors/custom/datatables/datatables.bundle.js') }}" type="text/javascript"></script>
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/datatables/basic/basic.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/select2.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/bootstrap-switch.js') }}" type="text/javascript"></script>
-    
+<script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/select2.js') }}" type="text/javascript"></script>
+<script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/bootstrap-switch.js') }}" type="text/javascript"></script>
+
+ {{-- <script src="{{ asset('dashboard/assets/js/print.js') }}" type="text/javascript"></script> --}}
+{{-- <link href="{{ asset('dashboard/assets/css/print.min.csss') }}" rel="stylesheet"> --}}
+
+<script src=" https://printjs-4de6.kxcdn.com/print.min.js" type="text/javascript"></script>
+<link href=" https://printjs-4de6.kxcdn.com/print.min.css" rel="stylesheet">
+
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
@@ -535,11 +674,38 @@
                     console.log(data);
                     var response = table.ajax.json();
                     console.log(response);
-                    
                     var _ClosingBalance = 0;
                     if(response && typeof response.closing_balance !== "undefined")_ClosingBalance = response.closing_balance;
-                    
                     $('#closing_balance').text(_ClosingBalance);
+                    $('.rider_name').html(response.rider);
+                    $('.month_year').html(response.month_year);
+                    $('.today_date').html(response.today_date);
+                    $('.employee_id').html('KRD-'+response.employee_id);
+                    $('.payment_date').html('PAYMENT DATE: '+response.payment_date);
+                    $('.salary').html(response.salary);
+                    $('.ncw').html(response.ncw);
+                    $('.bike_allowns').html(response.bike_allowns);
+                    $('.tip').html(response.tip);
+                    $('.bones').html(response.bones);
+
+                    $('.advance').html(response.advance);
+                    $('.salik').html(response.salik);
+                    $('.sim').html(response.sim);
+                    $('.macdonald').html(response.dc);
+                    $('.dc').html(response.macdonald);
+                    $('.rta').html(response.rta);
+                    $('.discipline').html(response.mobile);
+                    $('.mobile').html(response.dicipline);
+                    $('.zomato').html(response.denial_penalty);
+                    $('.mics').html(response.mics);
+
+                    var total_cr=parseFloat(response.salary)+parseFloat(response.ncw)+parseFloat(response.bike_allowns)+parseFloat(response.tip)+parseFloat(response.bones);
+                    var total_dr=parseFloat(response.mics)+parseFloat(response.denial_penalty)+parseFloat(response.dicipline)+parseFloat(response.mobile)+parseFloat(response.rta)+parseFloat(response.advance)+parseFloat(response.salik)+parseFloat(response.sim)+parseFloat(response.dc)+parseFloat(response.macdonald);
+                    var net_pay=total_cr-total_dr;
+                    $('.total_cr').html(total_cr);
+                    $('.total_dr').html(total_dr);
+                    $('.net_pay').html(net_pay);
+                   
                 },
                 ajax: url,
                 columns: [

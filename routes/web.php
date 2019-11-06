@@ -38,6 +38,7 @@ Route::group([
     Route::get('get/ajax/rider/accounts','AjaxController@getRiderAccounts')->name('admin.ajax_rider_accounts');
     Route::get("/accounts/rider/account/{range}","AjaxNewController@getRiderAccounts")->name("admin.accounts.get_rider_account");
     Route::get("/accounts/company/account/{range}","AjaxNewController@getCompanyAccounts")->name("admin.accounts.get_company_account");
+    Route::get("/accounts/bike/account/{range}","AjaxNewController@getBikeAccounts")->name("admin.accounts.get_bike_account");
     Route::get("/accounts/company/overall/account/{range}","AjaxNewController@getCompanyOverallAccounts")->name("admin.accounts.getCompanyOverallAccounts");
     Route::get("/accounts/kr-bikes/account/{range}","AjaxNewController@getKR_bikes")->name("admin.accounts.getKR_bikes");
     Route::get('/newComer/view/ajax', 'AjaxController@getNewComer')->name('NewComer.view_ajax');
@@ -59,6 +60,7 @@ Route::group([
     Route::get('/accounts/income/zomato/ajax/data','AjaxNewController@income_zomato_ajax')->name('admin.accounts.income_zomato_ajax');
     Route::get('/get/ajax/activity/log','AjaxNewController@getActivityLog')->name('admin.getActivityLog');
     Route::get("/accounts/company/bills/{range}","AjaxNewController@getCompanyAccountsBills")->name("admin.accounts.get_company_account_bills");
+    Route::get("/accounts/bike/bills/{range}","AjaxNewController@getBikeAccountsBills")->name("admin.accounts.get_bike_account_bills");
     Route::get('/cash/paid/to/rider/{rider_id}','HomeController@cash_paid_to_rider')->name('admin.cash_paid_to_rider');
     Route::get("/accounts/kr_investment/view/data","AjaxNewController@getCompanyInvestment")->name("admin.getCompanyInvestment");
     Route::get("/zomato/salary/sheet/export/ajax/{month_name}","AjaxNewController@zomato_salary_export")->name("admin.zomato_salary_export");
@@ -174,6 +176,8 @@ Route::group([
     Route::get('view/rider/salik/{id}','SalikController@rider_salik')->name('rider.rider_salik');
     Route::get('/bike/rent/view','bikeController@create_bike_rent')->name('admin.create_bike_rent');
     Route::post('/insert/bike/rent','bikeController@post_bike_rent')->name('admin.post_bike_rent');
+    Route::get('/assigned/company/{bike}', 'bikeController@give_bike_to_company')->name('bike.give_bike_to_company');
+    Route::post('/is/given/bike/to/company/{bike_id}','bikeController@is_given_bike_status')->name('bike.is_given_bike_status');
     Route::get('/bike/deactive/{rider_id}/date/{bike_id}','bikeController@deactive_date')->name('admin.deactive_date');
 // salik 
     Route::resource('/salik', 'SalikController', [
@@ -219,6 +223,7 @@ Route::group([
 
     Route::get("/Salary/accounts/rider/account","AccountsController@rider_account")->name("admin.accounts.rider_account");
     Route::get("/Salary/accounts/company/account","AccountsController@company_account")->name("admin.accounts.company_account");
+    Route::get("/Salary/accounts/bike/account","AccountsController@bike_account")->name("admin.accounts.bike_account");
     Route::get('/rider/accounts/{id}/updateStatus','AccountsController@updatePaymentStatus')->name('Rider.updatePaymentStatus');
 
     Route::get("/accounts/company/debits/get_salary_deduction/{month}/{rider_id}","AccountsController@get_salary_deduction")->name("admin.accounts.get_salary_deduction");

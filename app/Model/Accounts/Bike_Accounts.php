@@ -1,28 +1,22 @@
 <?php
 
-
-namespace App\Model\Bikes;
+namespace App\Model\Accounts;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use App\Model\Rider\Rider;
-use App\Model\Bikes\bike;
-use App\Assign_bike;
 use Auth;
 
-
-
-class bike extends Authenticatable
+class Bike_Accounts extends Authenticatable
 {
-    /**
-     * Start logging.
-     *
-     * @return void
-     */
     protected static function boot()
     {
         parent::boot();
+
+        // auto-sets values on creation
+        static::creating(function ($query) {
+            $query->created_by = Auth::user()->id;
+        });
 
         // auto-sets values on creation
         self::created(function($model){
@@ -52,39 +46,16 @@ class bike extends Authenticatable
             $activity_model->save();
         });
     }
-    // ends logging
-
     protected $fillable = [
-        'model','owner','is_given','amount','rider_id','bike_allowns','brand','rental_company','contract_end','contract_start','rent_amount','chassis_number','mulkiya_number','mulkiya_expiry','mulkiya_picture','mulkiya_picture_back','bike_number','rider_id','availability','other','status',
-       ];
-   
-       
-       protected $hidden = [
-           'password', 'remember_token',
-       ];
-   
-      
-       protected $casts = [
-           'email_verified_at' => 'datetime',
-       ];
-    //    public function riders()
-    //    {
-    //        return $this->belongsTo(Rider::class,'riders' ,'rider_id')->withTimestamps();
-    //    }
-    // public function Rider(){
-    //     return $this->belongsTo(Rider::class);
-    // }
-       public function bike_detail(){
-           return $this->hasOne('App\Model\Bikes\bike_detail');
-       }
-       public function Assign_bike(){ 
-        return $this->hasMany('App\Assign_bike','bike_id');
-  
-      }
-      public function Rider(){
-        return $this->belongsTo(Rider::class);
-    }
-    //    public function Bike_detail(){
-    //        return $this->hasOne('App\Model\Bike\Bike_detail');
-    //    }
+        'type', 
+        'month',
+        'amount',
+        'bike_id',
+        'payment_status',
+        'maintenance_id',
+        'status',
+    ];
+// ALTER TABLE `bike__accounts` ADD `maintenance_id` INT(11) NULL AFTER `bike_id`;
+// ALTER TABLE `bikes` ADD `is_given` VARCHAR(191) NULL AFTER `active_status`;
+
 }

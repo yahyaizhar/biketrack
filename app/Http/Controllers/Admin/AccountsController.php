@@ -2199,4 +2199,8 @@ public function client_income_update(Request $request,$id){
     public function salary_slip(){
         return view('salary_slip_month');
     }
+    public function bike_account(){
+        $bikes =bike::all();
+        return view('admin.accounts.Bike-Debit.bike_accounts',compact('bikes'));
+    }
 }

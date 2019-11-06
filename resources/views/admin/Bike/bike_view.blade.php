@@ -44,44 +44,30 @@
             </div>
         </div>
         <div class="kt-portlet__body">
-
-            <!--begin: Datatable -->
             <table class="table table-striped- table-hover table-checkable table-condensed" id="bike-table">
                 <thead>
                     <tr>
-                        {{-- <th>
-                            <input type="checkbox" id="select_all" >
-                        </th> --}}
                         <th>ID</th>
                         <th>Owner</th>
                         <th>Brand</th>
                         <th>Model</th>
                         <th>Bike Number</th>
-                        <th>Chassis Number</th>
+                        <th>Rent</th>
                         <th>Assigned To</th>
                         <th>Status</th>
                         <th>Actions</th>                        
                     </tr>
                 </thead>
             </table>
-
-            <!--end: Datatable -->
         </div>
     </div>
 </div>
-
-<!-- end:: Content -->
 @endsection
 @section('foot')
-<!--begin::Page Vendors(used by this page) -->
 <script src="{{ asset('dashboard/assets/vendors/custom/datatables/datatables.bundle.js') }}" type="text/javascript"></script>
 
-<!--end::Page Vendors -->
-
-<!--begin::Page Scripts(used by this page) -->
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/datatables/basic/basic.js') }}" type="text/javascript"></script>
 
-<!--end::Page Scripts -->
 <script>
 var bike_table;
 $(function() {
@@ -104,7 +90,7 @@ $('.total_entries').remove();
             { data: 'brand', name: 'brand' },            
             { data: 'model', name: 'model' },
             { data: 'bike_number', name: 'bike_number' },
-            { data: 'chassis_number', name: 'chassis_number' },
+            { data: 'rent', name: 'rent' },
             { data: 'assigned_to', name: 'assigned_to' },
             { data: 'status', name: 'status' },
             { data: 'availability', name: 'availability' },

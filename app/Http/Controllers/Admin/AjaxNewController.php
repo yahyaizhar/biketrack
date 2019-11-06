@@ -29,6 +29,7 @@ use App\Model\Rider\Rider_Performance_Zomato;
 use App\Assign_bike;
 use App\Model\Rider\Trip_Detail;
 use App\Model\Accounts\Company_Account;
+use App\Model\Accounts\Bike_Accounts;
 use App\Model\Accounts\Rider_Account;
 use App\Model\Accounts\Id_charge;
 use App\Model\Accounts\Workshop;
@@ -272,6 +273,86 @@ class AjaxNewController extends Controller
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
         ->get();
+
+        // rider name
+        $rider='';
+        $date='';
+        $rider_name=Rider::find($ranges['rider_id']);
+        if (isset($rider_name)) {
+            $rider=$rider_name->name;
+        }
+        $date_of_joining=Rider_detail::where('rider_id',$ranges['rider_id'])->get()->first();
+        if (isset($date_of_joining)) {
+            $date=$date_of_joining->date_of_joining;
+        }
+        // salary
+        $salary=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('type','cr')
+        ->where('payment_status','paid')
+        ->sum('amount');
+        $ncw=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','NCW Incentives')
+        ->sum('amount');
+        $tip=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','Tips Payouts')
+        ->sum('amount');
+        $bike_allowns=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','Bike Allowns')
+        ->sum('amount');
+        $bones=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','Bonus')
+        ->sum('amount');
+        $advance=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','advance')
+        ->sum('amount');
+        $salik=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','Salik')
+        ->sum('amount');
+        $sim=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','Sim Transaction')
+        ->sum('amount');
+        $dc=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','DC Deductions')
+        ->sum('amount');
+        $macdonald=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','Mcdonalds Deductions')
+        ->sum('amount');
+        $rta=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->whereNotNull('id_charge_id')
+        ->sum('amount');
+        $mobile=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','Mobile Charges')
+        ->sum('amount');
+        $denial_penalty=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','Denials Penalty')
+        ->sum('amount');
+      
         
         $rider_debits_cr_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->where(function($q) {
@@ -399,8 +480,29 @@ class AjaxNewController extends Controller
         ->with([
             'closing_balance' => round($closing_balance,2),
             'rider_debits_cr_prev_payable'=>$rider_debits_cr_prev_payable,
-            'rider_debits_dr_prev_payable'=>$rider_debits_dr_prev_payable
+            'rider_debits_dr_prev_payable'=>$rider_debits_dr_prev_payable,
+            'rider'=>$rider,
+            'month_year'=>Carbon::parse($from)->format('M, Y'),
+            'today_date'=>Carbon::parse($date)->format('m/d/Y'),
+            'employee_id'=>$ranges['rider_id'],
+            'payment_date'=>Carbon::now()->format('M d, Y'),
+            'salary'=>$salary,
+            'bike_allowns'=>$bike_allowns,
+            'ncw'=>$ncw,
+            'tip'=>$tip,
+            'bones'=>$bones,
+            'advance'=>$advance,
+            'salik'=>$salik,
+            'sim'=>$sim,
+            'dc'=>$dc,
+            'macdonald'=>$macdonald,
+            'rta'=>$rta,
+            'mobile'=>$mobile,
+            'dicipline'=>0,
+            'denial_penalty'=>$denial_penalty,
+            'mics'=>0,
         ])
+    
         ->rawColumns(['closing_balance','cash_paid','desc','date','cr','dr','balance'])
         ->make(true);
     }
@@ -1952,5 +2054,241 @@ class AjaxNewController extends Controller
         ->rawColumns(['profit','fuel','payout','penalty','aed_extra_trips','net_salary','rider_name','bike_number', 'salik', 'sim_charges', 'dc', 'cod', 'aed_hours','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
         ->make(true);
     }
+    public function getBikeAccounts($ranges)
+    {    
+        $ranges = json_decode($ranges, true);
+        $from = date($ranges['range']['start_date']);
+        $to = date($ranges['range']['end_date']);
+        $bike_statements = collect([]);
+        $bike_statements_RAW = \App\Model\Accounts\Bike_Accounts::where("bike_id",$ranges['bike_id'])
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->get();
 
+        foreach ($bike_statements_RAW as $bike_statement) {
+            $continue = false;
+            if(
+            $bike_statement->maintenance_id != null){
+                if($bike_statement->payment_status=="pending" && $bike_statement->type!="cr"){
+                    $continue = true;
+                }
+            }
+
+            if(!$continue){
+                $bike_statements->push($bike_statement);
+            }
+        }
+        
+
+        
+        $c_debits_cr_payable = \App\Model\Accounts\Bike_Accounts::where("bike_id",$ranges['bike_id'])
+        ->where(function($q) {
+            $q->where('type', "dr_receivable")
+              ->orWhere('type', 'cr');
+        })
+        ->sum('amount');
+        
+        $c_debits_dr_payable = \App\Model\Accounts\Bike_Accounts::where("bike_id",$ranges['bike_id'])
+        ->where('type', 'dr')
+        ->sum('amount');
+        
+        //
+        $c_debits_rn_cr_payable = \App\Model\Accounts\Bike_Accounts::where("bike_id",$ranges['bike_id'])
+        ->where(function($q) {
+            $q->where('type', "dr_receivable")
+              ->orWhere('type', 'cr');
+        })
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->sum('amount');
+        
+        $c_debits_rn_dr_payable = \App\Model\Accounts\Bike_Accounts::where("bike_id",$ranges['bike_id'])
+        ->where('type', 'dr')
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->sum('amount');
+
+        $c_debits_rn_pl_payable = \App\Model\Accounts\Bike_Accounts::where("bike_id",$ranges['bike_id'])
+        ->where('type', 'pl')
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->sum('amount');
+        $running_static_balance = $c_debits_rn_cr_payable - $c_debits_rn_dr_payable - $c_debits_rn_pl_payable;
+        //
+        $c_debits_rn_pl_total = \App\Model\Accounts\Bike_Accounts::where("bike_id",$ranges['bike_id'])
+        ->where('type', 'pl')
+        ->whereDate('month', '<',$from)
+        ->sum('amount');
+        $profit = $c_debits_rn_pl_total;
+
+        $c_debits_cr_prev_payable = \App\Model\Accounts\Bike_Accounts::where("bike_id",$ranges['bike_id'])
+        ->where(function($q) {
+            $q->where('type', "dr_receivable")
+              ->orWhere('type', 'cr');
+        })
+        ->whereDate('month', '<',$from)
+        ->sum('amount');
+        
+        $c_debits_dr_prev_payable = \App\Model\Accounts\Bike_Accounts::where("bike_id",$ranges['bike_id'])
+        ->where(function($q) {
+            $q->where('type', "dr")
+            ->orWhere('type', 'pl');
+        })
+        ->whereDate('month', '<',$from)
+        ->sum('amount');
+
+        $closing_balance = $c_debits_cr_payable - $c_debits_dr_payable;
+        $first_month = Carbon::now()->format('Y-m-d');
+        if(count($bike_statements) > 0){
+            $first_month = $bike_statements->last()->month;
+        }
+        
+
+        $closing_balance_prev = $c_debits_cr_prev_payable - $c_debits_dr_prev_payable;
+        // $running_balance =$closing_balance_prev;
+        $running_balance =0;
+
+        $flag = new \App\Model\Accounts\Bike_Accounts;
+        $flag->month='';
+        $flag->source='Opening Balance';
+        $flag->type='skip';
+        $flag->amount=0;
+        $bike_statements->prepend($flag);
+
+        $flag = new \App\Model\Accounts\Bike_Accounts;
+        $flag->month='';
+        $flag->source='Closing Balance';
+        $flag->type='skip';
+        $flag->amount=0;
+        $bike_statements->push($flag);
+        return DataTables::of($bike_statements)
+        ->addColumn('date', function($bike_statements){
+            if($bike_statements->type=='skip') return '';
+            return Carbon::parse($bike_statements->month)->format('M d, Y');
+        })
+        ->addColumn('desc', function($bike_statements){
+            if($bike_statements->type=='skip') return '<strong >'.$bike_statements->source.'</strong>';
+            return $bike_statements->source;
+        })
+        ->addColumn('cr', function($bike_statements){
+            if($bike_statements->type=='pl') return 0;
+            if($bike_statements->type=='skip') return '';
+            if ($bike_statements->type=='cr' || $bike_statements->type=='dr_receivable')
+            {
+                return '<span >'.$bike_statements->amount.'</span>';
+            }
+            return 0;
+        })
+        ->addColumn('dr', function($bike_statements){
+            if($bike_statements->type=='pl') return 0;
+            if($bike_statements->type=='skip') return '';
+            if($bike_statements->type=='dr'){
+                return '<span>('.$bike_statements->amount.')</span>';
+            }
+            return 0;
+        })
+        ->addColumn('company_profit', function($bike_statements) use (&$profit){
+            
+            if($bike_statements->type=='pl'){
+                $profit +=$bike_statements->amount;
+                return round($bike_statements->amount, 2);
+            }
+            if($bike_statements->type=='skip') return '<strong>'.round($profit, 2).'</strong>';
+            return 0;
+        })
+        ->addColumn('balance', function($bike_statements) use (&$running_balance){
+            
+            if($bike_statements->type=='dr' || $bike_statements->type=='pl'){
+                $running_balance -= $bike_statements->amount;
+            }
+            else{
+                $running_balance += $bike_statements->amount;
+            }
+            $_id = $bike_statements->source=="Closing Balance"? 'running_closing_balance':'running_opening_balance';
+            // if($company_statements->type=='pl') return 0;
+            if($bike_statements->type=='skip') return '<strong id="'.$_id.'"> '.round($running_balance,2).'</strong>';
+            return round($running_balance,2);
+        })
+        
+        ->with([
+            'closing_balance' => round($closing_balance,2),
+            'last_month' => $first_month,
+            'running_static_balance' => $running_static_balance
+        ])
+        ->rawColumns(['desc','date','cr','dr','balance', 'company_profit'])
+        ->make(true);
+    }
+    public function getBikeAccountsBills($ranges) 
+    {
+        $ranges = json_decode($ranges, true);
+        $from = date($ranges['range']['start_date']);
+        $to = date($ranges['range']['end_date']);
+        $bike_id = $ranges['bike_id'];
+
+        $bills = collect([]);
+
+        $month = Carbon::parse($to)->format('m');
+      
+        //maintenance
+        $model = \App\Model\Accounts\Bike_Accounts::
+        whereMonth('month', $month)
+        ->where("bike_id",$bike_id)
+        ->whereNotNull('maintenance_id')
+        ->get()
+        ->first();
+        if(isset($model)){
+            $model->source = "Bike Maintenance";
+            $bills->push($model);
+        }
+        //bike_rent
+        $model = \App\Model\Accounts\Bike_Accounts::
+        whereMonth('month', $month)
+        ->where("bike_id",$bike_id)
+        ->whereNotNull('bike_rent_id')
+        ->get()
+        ->first();
+        if(isset($model)){
+            $model->source = "Bike Rent";
+            $bills->push($model);
+        }
+
+
+        return DataTables::of($bills)
+        ->addColumn('date', function($bill){
+            if (isset($bill->month)) {
+                return Carbon::parse($bill->month)->format('M, Y');
+            }
+        })
+        ->addColumn('bill', function($bill){
+            if (isset($bill->source)) {
+                return $bill->source;
+            }
+            
+        })
+        ->addColumn('amount', function($bill){
+            if (isset($bill->amount)) {
+                return $bill->amount;
+            }
+            
+        })
+        ->addColumn('payment_status', function($bill){
+            if (isset($bill->payment_status)) {
+                if($bill->payment_status == 'pending'){
+                    //enable pay
+                    $month=$bill->month;
+                    $bike_id=$bill->bike_id;
+                    $type=$bill->source;
+                    return '<div>Pending <button type="button" onclick="updateStatus('.$bike_id.',\''.$month.'\',\''.$type.'\')" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
+                }
+                
+                return ucfirst($bill->payment_status).' <i class="flaticon2-correct text-success h5"></i>';
+            
+            }
+          })
+        ->addColumn('action', function($bill){
+            return '';
+        })
+        ->rawColumns(['amount','bill','payment_status','date','action'])
+        ->make(true);
+    }
 }
