@@ -358,10 +358,10 @@ class AjaxController extends Controller
         
         ->addColumn('availability', function($bike){
             $status_text = $bike->status == 1 ? 'Inactive' : 'Active';
-            $assign_bike_to_kingriders='';
-            if ($bike->is_given=='1') {
+            // $assign_bike_to_kingriders='';
+            // if ($bike->is_given=='') {
                 $assign_bike_to_kingriders='<a class="dropdown-item" href="'.route('bike.give_bike_to_company', $bike->id).'"><i class="fa fa-eye"></i>Give Bike To Comapany</a>';
-            }
+            // }
             return '<span class="dtr-data">
             <span class="dropdown">
                 <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
