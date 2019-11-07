@@ -18,6 +18,7 @@ use carbon\carbon;
 use \App\Model\Accounts\Company_Account;
 use \App\Model\Accounts\Bike_Accounts;
 use App\Assign_bike;
+use App\insurance_company;
 use Arr;
 
 class bikeController extends Controller 
@@ -28,7 +29,8 @@ class bikeController extends Controller
     }
     public function bike_login(){
       $riders=Rider::where('active_status','A')->get(); 
-      return view('admin.Bike.bike_login',compact('riders'));
+      $insurance_co_name=insurance_company::all();
+      return view('admin.Bike.bike_login',compact('riders','insurance_co_name'));
     
 
     }
@@ -50,6 +52,10 @@ class bikeController extends Controller
       $bike_object->bike_allowns =$r->bike_allowns;
       $bike_object->contract_start=null; 
       $bike_object->contract_end=null;
+      $bike_object->insurance_co_name = $r->insurance_co;
+      $bike_object->issue_date =Carbon::parse($r->issue_date)->format('Y-m-d');
+      $bike_object->expiry_date =Carbon::parse($r->expiry_date)->format('Y-m-d');
+
       if ($bike_object->owner == 'rent') {
         $bike_object->contract_start =Carbon::parse($r->contract_start)->format('Y-m-d');
         $bike_object->contract_end =Carbon::parse($r->contract_end)->format('Y-m-d');
@@ -111,7 +117,8 @@ class bikeController extends Controller
       $bike_id_array =$request->id;
       $bike = bike::find($bike_id_array);
       $riders=Rider::where('active_status','A')->get();
-      return view('admin.Bike.Edit_bike',compact('bike','riders'));
+      $insurance_co_name=insurance_company::all();
+      return view('admin.Bike.Edit_bike',compact('bike','riders','insurance_co_name'));
       // return $bike;
     }
     public function bike_update(Request $request,bike $bike,$id){
@@ -132,6 +139,9 @@ class bikeController extends Controller
     $bike->mulkiya_number = $request->mulkiya_number;
     $bike->mulkiya_expiry = $request->mulkiya_expiry;
     $bike->rental_company = $request->rental_company;
+    $bike->insurance_co_name = $request->insurance_co;
+    $bike->issue_date = Carbon::parse($request->issue_date)->format('Y-m-d');
+    $bike->expiry_date =Carbon::parse($request->expiry_date)->format('Y-m-d');
     $bike->contract_start=null; 
     $bike->contract_end=null;
     if ($bike->owner == 'rent') {
@@ -263,4 +273,9 @@ class bikeController extends Controller
       }
       return redirect(route('bike.bike_view'));
     } 
+    public function insurance_co_name(Request $request){
+      $insurance_co_name=new insurance_company();
+      $insurance_co_name->insurance_co_name=$request->data;
+      $insurance_co_name->save();
+    }
 }

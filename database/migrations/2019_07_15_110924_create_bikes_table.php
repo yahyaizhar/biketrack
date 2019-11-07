@@ -27,6 +27,9 @@ class CreateBikesTable extends Migration
             $table->string('bike_allowns')->nullable();
             $table->integer('rider_id')->nullable();
             $table->string('chassis_number')->nullable();
+            $table->string('insurance_co_name')->nullable();
+            $table->string('issue_date')->nullable();
+            $table->string('expiry_date')->nullable();
             $table->string('mulkiya_number')->nullable();
             $table->string('mulkiya_picture')->nullable();
             $table->string('mulkiya_expiry')->nullable();

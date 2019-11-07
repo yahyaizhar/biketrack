@@ -127,10 +127,28 @@
                                 @endif
                             </div>
                             <div class="form-group">
-                                    <label>Chassis Number:</label>
-                                    <input type="text"  class="form-control " name="chassis_number" placeholder="Enter Chassis Number" value="{{ $bike->chassis_number }}">
-                                    <span class="form-text text-muted">Enter Your Chassis Number.</span>
-                                </div> 
+                                <label>Chassis Number:</label>
+                                <input type="text"  class="form-control " name="chassis_number" placeholder="Enter Chassis Number" value="{{ $bike->chassis_number }}">
+                                <span class="form-text text-muted">Enter Your Chassis Number.</span>
+                            </div> 
+                            <div class="form-group">
+                                <label>Insurance Company:</label>
+                                <select class="form-control bk-select2 kt-select2" id="insurance_co" name="insurance_co" placeholder="Enter Insurance Company">
+                                    @foreach ($insurance_co_name as $item)
+                                        <option @if ($bike->insurance_co_name==$item->insurance_co_name) selected @endif value="{{$item->insurance_co_name}}">{{$item->insurance_co_name}}</option>
+                                    @endforeach
+                                </select> 
+                            </div>
+                            <div class="form-group">
+                                <label>Issue Date:</label>
+                                <input type="text" data-month="{{Carbon\Carbon::parse($bike->issue_date)->format('M d, Y')}}"  readonly class="month_picker form-control" name="issue_date" placeholder="Enter Issue Date">
+                                <span class="form-text text-muted">Please enter Issue Bike Date</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Expiry Date:</label>
+                                <input type="text" data-month="{{Carbon\Carbon::parse($bike->expiry_date)->format('M d, Y')}}"  readonly class="month_picker form-control" name="expiry_date" placeholder="Enter Expiry Date">
+                                <span class="form-text text-muted">Please enter Bike Expiry Date</span>
+                            </div>
                       
                         <div class="form-group">
                                 <label>Mulkiya Number:</label>

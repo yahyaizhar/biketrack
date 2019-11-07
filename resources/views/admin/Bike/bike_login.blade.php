@@ -31,7 +31,7 @@
                     <div class="kt-portlet__body">
                         <div class="form-group">
                             <label>Owner:</label>
-                            <select class="form-control bk-select2 @if($errors->has('owner')) invalid-field @endif kt-select2" id="kt_select2_3" name="owner" placeholder="Enter Owner" value="{{ old('owner') }}">
+                            <select class="form-control @if($errors->has('owner')) invalid-field @endif kt-select2" id="kt_select2_3" name="owner" placeholder="Enter Owner" value="{{ old('owner') }}">
                                 <option value="rent">Rental Bike</option>
                                 <option value="kr_bike">KR-Bike</option>
                                 <option value="self">Rider Own Bike</option>
@@ -63,7 +63,7 @@
                             <div class="row rider_self_detail">
                                 <div class="col-md-9">
                                     <label>Select Rider:</label>
-                                    <select class="form-control kt-select2 bk-select2" id="rider_id" name="rider_id" >
+                                    <select class="form-control kt-select2 " id="rider_id" name="rider_id" >
                                         <option value="Select Rider">Select Rider</option>
                                         @foreach ($riders as $rider)
                                         <option value="{{ $rider->id }}" 
@@ -126,9 +126,27 @@
                                 @endif
                             </div>
                             <div class="form-group"> 
-                                    <label>Chassis Number:</label>
-                                    <input type="text" class="form-control" name="chassis_number" placeholder="Enter Chassis_Number" value="{{ old('chassis_number') }}">
-                                </div>
+                                <label>Chassis Number:</label>
+                                <input type="text" class="form-control" name="chassis_number" placeholder="Enter Chassis_Number" value="{{ old('chassis_number') }}">
+                            </div>
+                            <div class="form-group">
+                                <label>Insurance Company:</label>
+                                <select class="form-control bk-select2 kt-select2" id="insurance_co" name="insurance_co" placeholder="Enter Insurance Company">
+                                    @foreach ($insurance_co_name as $item)
+                                <option value="{{$item->insurance_co_name}}">{{$item->insurance_co_name}}</option>
+                                    @endforeach
+                                </select> 
+                            </div>
+                            <div class="form-group">
+                                <label>Issue Date:</label>
+                                <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}"  readonly class="month_picker form-control" name="issue_date" placeholder="Enter Issue Date">
+                                <span class="form-text text-muted">Please enter Issue Bike Date</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Expiry Date:</label>
+                                <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}"  readonly class="month_picker form-control" name="expiry_date" placeholder="Enter Expiry Date">
+                                <span class="form-text text-muted">Please enter Bike Expiry Date</span>
+                            </div>
                         <div class="form-group">
                                 <label>Mulkiya Number:</label>
                                 <input type="text" class="form-control" name="mulkiya_number" placeholder="Enter Mulkiya Number" value="{{ old('mulkiya_number') }}">
@@ -234,6 +252,35 @@
           }
       });
       $('#kt_select2_3').trigger('change');
+
+      $(document).on("keyup",'.select2-search__field',function(event){
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            var  selected_option=$('.select2-search__field').val();
+            if (keycode==13) {
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }, 
+                    url:"{{url('admin/get/company/insurance/name/')}}",
+                    method: "POST",
+                    data:{data: selected_option},
+                })
+                .done(function(data) {  
+                    console.log(data);
+                    window.location.reload();
+                    swal.fire({
+                                position: 'center',
+                                type: 'success',
+                                title: 'Record updated successfully.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                });
+            }
+        });
+      $(document).on("change input",'.select2-search__field',function(){
+         var  selected_option=$(this).val();
+        });
   });
 
 </script>

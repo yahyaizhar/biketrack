@@ -176,6 +176,7 @@ Route::group([
     Route::get('view/rider/salik/{id}','SalikController@rider_salik')->name('rider.rider_salik');
     Route::get('/bike/rent/view','bikeController@create_bike_rent')->name('admin.create_bike_rent');
     Route::post('/insert/bike/rent','bikeController@post_bike_rent')->name('admin.post_bike_rent');
+    Route::post('/get/company/insurance/name/','bikeController@insurance_co_name')->name('bike.insurance_co_name');
     Route::get('/assigned/company/{bike}', 'bikeController@give_bike_to_company')->name('bike.give_bike_to_company');
     Route::post('/is/given/bike/to/company/{bike_id}','bikeController@is_given_bike_status')->name('bike.is_given_bike_status');
     Route::get('/bike/deactive/{rider_id}/date/{bike_id}','bikeController@deactive_date')->name('admin.deactive_date');

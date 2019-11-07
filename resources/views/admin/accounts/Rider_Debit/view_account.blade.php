@@ -303,11 +303,12 @@
 {{-- salary slip --}}
 <div style="display:none;">
 <div style="display:grid;padding: 15px 50px 0px 50px;" id="print_slip_for_rider">
+    <div style="height:140px"></div>
     <table style="">
         <tr><th style="border:1px solid #dddd;background-color:#73acac69;text-align:center;">SALARY SLIP</th></tr>
         <tr><th class="month_year" style="border:1px solid #dddd;text-align:center;"></th></tr>
     </table>
-    <table style=" margin-top: 10px;">
+    <table style=" margin-top: 8px;">
         <tr>
             <th style="border:1px solid #dddd;width:25%;text-align:left;">NAME</th>
             <td class="rider_name" style="border:1px solid #dddd;width:25%;text-align:left;"></td>
@@ -328,7 +329,7 @@
         </tr>
     </table>
 
-    <table style=" margin-top: 10px;">
+    <table style=" margin-top: 8px;">
         <tr>
             <th style="border:1px solid #dddd;width:50%;text-align:center;">DESCRIPTION</th>
             <th style="border:1px solid #dddd;width:25%;text-align:center;">EARNINGS</th>
@@ -426,6 +427,21 @@
             <td class="net_pay" style="border:1px solid #dddd;width:50%;text-align:center;background-color:#73acac69;"></td>
         </tr>
     </table>
+    <div style=" margin-top: 5px;"> 
+        <p style="font-size:14px;"><strong>Note: </strong>MR <span id="rider_id_1"></span> received <span id="total_net_pay"></span> from King Riders Delivery Services LLC, and MR <span id="rider_id_2"></span> no is not valid for any kind of Gratuity, yearly tickets or any other expenses other than the salary.
+        </p>
+    </div>
+    <div style=" margin-top: 4px;">  
+        <p><strong>Signature:</strong>________________________</p>
+    </div>
+    <div style=" margin-top: 4px;"> 
+        <p><strong>Thumb:</strong>__________________________</p>
+    </div>
+    <div style=" margin-top: 4px;text-align:end;"> 
+        <p><strong>KING RIDERS DELIVERY SERVICES LLC</strong></p>
+        <p><Strong>ACCOUNTANT</Strong></p>
+        <p><strong>DANISH MUNIR</strong></p>
+    </div>
 </div>
 </div>
 {{-- end salary slip --}}
@@ -705,6 +721,9 @@
                     $('.total_cr').html(total_cr);
                     $('.total_dr').html(total_dr);
                     $('.net_pay').html(net_pay);
+                    $('#total_net_pay').html(net_pay);
+                    $('#rider_id_1').html(response.rider);
+                    $('#rider_id_2').html(response.rider);
                    
                 },
                 ajax: url,
