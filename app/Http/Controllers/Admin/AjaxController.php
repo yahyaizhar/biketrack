@@ -1991,7 +1991,7 @@ class AjaxController extends Controller
                         return round($better,2).'%';
                 }
                 if( $zomato_adt2==0  && $zomato_adt1!=0){
-                    return "100%";
+                    return "0%";
                 }
             }
                 return '0%';
