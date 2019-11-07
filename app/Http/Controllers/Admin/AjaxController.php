@@ -1874,7 +1874,11 @@ class AjaxController extends Controller
             $end_date=$ranges['range1']['end_date'];
             $from = date($start_date);
             $to = date($end_date);
-            $zomato=Rider_performance_zomato::where('rider_id',$rider->id)->get()->first();
+            $zomato=Rider_performance_zomato::where('rider_id',$rider->id)
+            ->whereDate('date', '>=',$from)
+            ->whereDate('date', '<=',$to)
+            ->get()
+            ->first();
             if(isset($zomato)){
             return $zomato->area;
             }
