@@ -1835,9 +1835,19 @@ class AjaxController extends Controller
             if (isset($feid)) {
                 $start_date=$ranges['range1']['start_date'];
                 $end_date=$ranges['range1']['end_date'];
+                if($start_date=="" || $end_date == ""){
+                    $start_date=$ranges['range2']['start_date'];
+                    $end_date=$ranges['range2']['end_date'];    
+                }
+                else{
+                    $end_date=$ranges['range2']['end_date'];
+                }
                 $from = date($start_date);
                 $to = date($end_date);
-                $zomato=Rider_Performance_Zomato::where("feid",$feid->client_rider_id)->get()->first();
+                $zomato=Rider_Performance_Zomato::where("feid",$feid->client_rider_id)
+                ->whereBetween('date',[$from,$to])
+                ->get()
+                ->first();
                 if (isset($zomato)) {
                     return $zomato->called_over;
                 }
@@ -1848,9 +1858,19 @@ class AjaxController extends Controller
             if (isset($feid)) {
                 $start_date=$ranges['range1']['start_date'];
                 $end_date=$ranges['range1']['end_date'];
+                if($start_date=="" || $end_date == ""){
+                    $start_date=$ranges['range2']['start_date'];
+                    $end_date=$ranges['range2']['end_date'];    
+                }
+                else{
+                    $end_date=$ranges['range2']['end_date'];
+                }
                 $from = date($start_date);
                 $to = date($end_date);
-                $zomato=Rider_Performance_Zomato::where("feid",$feid->client_rider_id)->get()->first();
+                $zomato=Rider_Performance_Zomato::where("feid",$feid->client_rider_id)
+                ->whereBetween('date',[$from,$to])
+                ->get()
+                ->first();
                 if (isset($zomato)) {
                     return $zomato->status;
                 }
@@ -1863,7 +1883,17 @@ class AjaxController extends Controller
                 $end_date=$ranges['range1']['end_date'];
                 $from = date($start_date);
                 $to = date($end_date);
-                $zomato=Rider_Performance_Zomato::where("feid",$feid->client_rider_id)->get()->first();
+                if($start_date=="" || $end_date == ""){
+                    $start_date=$ranges['range2']['start_date'];
+                    $end_date=$ranges['range2']['end_date'];    
+                }
+                else{
+                    $end_date=$ranges['range2']['end_date'];
+                }
+                $zomato=Rider_Performance_Zomato::where("feid",$feid->client_rider_id)
+                ->whereBetween('date',[$from,$to])
+                ->get()
+                ->first();
                 if (isset($zomato)) {
                     return $zomato->comments;
                 }

@@ -252,7 +252,7 @@ function export_data(){
         _perData.forEach(function(item,index){
             var tr='';
             var type='';
-            if(item.adt2 <= 40){
+            if(item.adt2 <= 40 && item.adt2 !=0){
                 good_performance++;
                 type='good_performance';
             }
