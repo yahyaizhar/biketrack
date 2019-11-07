@@ -1872,11 +1872,20 @@ class AjaxController extends Controller
            ->addColumn('area', function($rider) use ($ranges){
             $start_date=$ranges['range1']['start_date'];
             $end_date=$ranges['range1']['end_date'];
+
+            if($start_date=="" || $end_date == ""){
+                $start_date=$ranges['range2']['start_date'];
+                $end_date=$ranges['range2']['end_date'];    
+            }
+            else{
+                $end_date=$ranges['range2']['end_date'];
+            }
+
             $from = date($start_date);
             $to = date($end_date);
+            
             $zomato=Rider_performance_zomato::where('rider_id',$rider->id)
-            ->whereDate('date', '>=',$from)
-            ->whereDate('date', '<=',$to)
+            ->whereBetween('date',[$from,$to])
             ->get()
             ->first();
             if(isset($zomato)){
