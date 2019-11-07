@@ -256,7 +256,10 @@
       $(document).on("keyup",'.select2-search__field',function(event){
             var keycode = (event.keyCode ? event.keyCode : event.which);
             var  selected_option=$('.select2-search__field').val();
-            if (keycode==13) {
+            if($('.select2-results__options').find('.select2-results__message').length >0){ 
+                $('.select2-results__message').text('No results found! Click Enter to save Data');
+            }
+            if (keycode==13) { 
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
