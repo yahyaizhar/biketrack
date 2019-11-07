@@ -740,8 +740,13 @@ public function destroyer(Rider $rider,$id){
     }
     return view('admin.rider.rider_ranges_adt',compact('ZAD'));
    }
-   public function update_extra_adt(Request $request,$feid){
-      $zomato=Rider_Performance_Zomato::where("feid",$feid)->get()->first();
+   public function update_extra_adt(Request $request,$feid,$start_date,$end_date){
+    $from = date($start_date);
+    $to = date($end_date);
+      $zomato=Rider_Performance_Zomato::where("feid",$feid)
+      ->whereBetween('date',[$from,$to])
+      ->get()
+      ->first();
       $zomato->called_over=$request->called_over;
       $zomato->status=$request->status;
       $zomato->comments=$request->comments;

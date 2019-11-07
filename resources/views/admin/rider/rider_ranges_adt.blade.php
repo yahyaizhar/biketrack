@@ -435,9 +435,13 @@ var getData = function(url){
 function extraFields(feid){
 $("#extraStatus").modal("show");
 $('form#extraStatusField').on("submit",function(e){
+    var r1d1=biketrack.getUrlParameter('r1d1');
+    var r1d2=biketrack.getUrlParameter('r1d2');
+    var r2d1=biketrack.getUrlParameter('r2d1');
+    var r2d2=biketrack.getUrlParameter('r2d2');
     e.preventDefault(); 
     var form=$(this);
-    var url="{{ url('admin/update/extra/fields/adt/performance') }}"+ "/" +feid;
+    var url="{{ url('admin/update/extra/fields/adt/performance') }}"+ "/" +feid+'/'+ r1d1+'/'+r2d2;
     $.ajax({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
