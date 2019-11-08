@@ -936,22 +936,22 @@ class AjaxNewController extends Controller
         $expense = Fuel_Expense::orderByDesc('created_at')->where('active_status', 'A')->get();
         // return $clients;
         return DataTables::of($expense)
-        ->addColumn('status', function($expense){
-            if($expense->status == 1)
-            {
-                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
-            }
-            else
-            {
-                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
-            }
-        })
         ->addColumn('id', function($expense){
             return '1000'.$expense->id;
         })
         ->addColumn('bike_id', function($expense){
             $bike = bike::find($expense->bike_id);
-            return $bike->bike_number;
+            if (isset($bike)) {
+                return $bike->bike_number;
+            }
+            return 'No Bike Assigned';
+        })
+        ->addColumn('rider_id', function($expense){
+            $rider = Rider::find($expense->rider_id);
+            if (isset($rider)) {
+                return $rider->name;
+            }
+            return 'No Rider Assigned';
         })
         ->addColumn('actions', function($expense){
             $status_text = $expense->status == 1 ? 'Inactive' : 'Active';
@@ -962,13 +962,12 @@ class AjaxNewController extends Controller
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" href="'.route('admin.edit_fuel_expense_view', $expense).'"><i class="fa fa-edit"></i> View</a>
-                    <button class="dropdown-item" onclick="updateStatus('.$expense->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                     <button class="dropdown-item" onclick="deleteRow('.$expense->id.');"><i class="fa fa-trash"></i> Delete</button>
                     </div>
             </span>
         </span>';
         })
-        ->rawColumns(['status','bike_id','type','amount','actions', 'status'])
+        ->rawColumns(['status','bike_id','type','amount','actions', 'rider_id'])
         ->make(true);
     }
 

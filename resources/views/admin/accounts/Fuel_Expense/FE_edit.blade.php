@@ -16,7 +16,16 @@
                     </div>
                     @include('admin.includes.message')
                         <div class="kt-portlet__body">
-    
+                        <div class="form-group">
+                            <label>Rider:</label>
+                            <select disabled class="form-control bk-select2 kt-select2-general" name="rider_id" >
+                                @foreach ($riders as $rider)
+                                <option value="{{ $rider->id }}" @if ($expense->rider_id==$rider->id) selected @endif>
+                                    {{ $rider->name }}
+                                </option>     
+                                @endforeach 
+                            </select>
+                        </div>
                         <div class="form-group">
                                 <label>Bike:</label>
                                 <select disabled class="form-control kt-select2-general" name="bike_id" >
@@ -70,15 +79,6 @@
                                     </span>
                                 @endif
                         </div>
-    
-    
-                         
-                        <div class="form-group">
-                                <label>Status:</label>
-                                <div>
-                                    <input disabled data-switch="true" name="status" id="status" type="checkbox" {!! $expense->status ==  1 ? 'checked' : '' !!} data-on-text="Enabled" data-handle-width="70" data-off-text="Disabled" data-on-color="brand">
-                                </div>
-                            </div>
                         </div>
                         
                         <div class="kt-portlet__foot">
@@ -105,20 +105,28 @@
                     <!--begin::Form-->
                     
                     @include('admin.includes.message')
-                    <form class="kt-form" action="{{ route('admin.update_edit_fuel_expense',$expense->id) }}" method="POST" enctype="multipart/form-data">
+                    <form class="kt-form" id="fuel_expense" action="{{ route('admin.update_edit_fuel_expense',$expense->id) }}" method="POST" enctype="multipart/form-data">
                         {{ csrf_field() }}
                         <div class="kt-portlet__body">
-    
                         <div class="form-group">
-                                <label>Bike:</label>
-                                <select required class="form-control kt-select2-general" name="bike_id" >
-                                    @foreach ($bikes as $bike)
-                                    <option value="{{ $bike->id }}" @if ($expense->bike_id==$bike->id) selected @endif>
-                                        {{ $bike->brand }}-{{$bike->bike_number}}
-                                    </option>     
-                                    @endforeach 
-                                </select>
-                                    
+                            <label>Rider:</label>
+                            <select class="form-control bk-select2 kt-select2-general" name="rider_id" >
+                                @foreach ($riders as $rider)
+                                <option value="{{ $rider->id }}" @if ($expense->rider_id==$rider->id) selected @endif>
+                                    {{ $rider->name }}
+                                </option>     
+                                @endforeach 
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Bike:</label>
+                            <select required class="form-control kt-select2-general" name="bike_id" >
+                                @foreach ($bikes as $bike)
+                                <option value="{{ $bike->id }}" @if ($expense->bike_id==$bike->id) selected @endif>
+                                    {{ $bike->brand }}-{{$bike->bike_number}}
+                                </option>     
+                                @endforeach 
+                            </select>    
                         </div>
                             
                         <div class="form-group">
@@ -162,15 +170,6 @@
                                     </span>
                                 @endif
                         </div>
-    
-    
-                         
-                        <div class="form-group">
-                                <label>Status:</label>
-                                <div>
-                                    <input data-switch="true" name="status" id="status" type="checkbox" {!! $expense->status ==  1 ? 'checked' : '' !!} data-on-text="Enabled" data-handle-width="70" data-off-text="Disabled" data-on-color="brand">
-                                </div>
-                            </div>
                         </div>
                         
                         <div class="kt-portlet__foot">
@@ -204,7 +203,22 @@
   $(document).ready(function(){
     //   $('#datepicker').datepicker({dateFormat: 'yy-mm-dd'}); 
       $('#datepicker').fdatepicker({format: 'dd-mm-yyyy'}); 
-
+      $('#fuel_expense [name="rider_id"]').on('change', function(){
+        var rider_id=$(this).val();
+        var bike_id=$('#fuel_expense [name="bike_id"]').val();
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }, 
+            url:"{{url('admin/accounts/fuel/expense/select/riders/bike')}}"+'/'+rider_id+"/"+bike_id,
+            method: "GET"
+        })
+        .done(function(data) {  
+            console.log(data);
+            $('#fuel_expense [name="bike_id"]').val(data.assign_bike.bike_id).trigger('change');
+        });
+    });
+    $('#fuel_expense [name="rider_id"]').trigger('change');
   });
 
 </script>

@@ -48,5 +48,5 @@ class Fuel_Expense extends Authenticatable
         });
     }
 
-    protected $fillable = ['type', 'amount', 'month', 'status','active_status'];
+    protected $fillable = ['type','rider_id', 'amount', 'month', 'status','active_status'];
 }

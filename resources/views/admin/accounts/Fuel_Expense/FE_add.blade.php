@@ -20,6 +20,16 @@
                 <form class="kt-form" id="fuel_expense" action="{{ route('admin.fuel_expense_insert') }}" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="kt-portlet__body">
+                        <div class="form-group">
+                            <label>Rider:</label>
+                            <select class="form-control bk-select2 kt-select2-general" name="rider_id" >
+                                @foreach ($riders as $rider)
+                                <option value="{{ $rider->id }}">
+                                    {{ $rider->name }}
+                                </option>     
+                                @endforeach 
+                            </select>
+                        </div>
 
                         <div class="form-group">
                             <label>Bike:</label>
@@ -136,6 +146,23 @@
         }
     });
     $('#fuel_expense [name="month"]').trigger('change');
+
+    $('#fuel_expense [name="rider_id"]').on('change', function(){
+        var rider_id=$(this).val();
+        var bike_id=$('#fuel_expense [name="bike_id"]').val();
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }, 
+            url:"{{url('admin/accounts/fuel/expense/select/riders/bike')}}"+'/'+rider_id+"/"+bike_id,
+            method: "GET"
+        })
+        .done(function(data) {  
+            console.log(data);
+            $('#fuel_expense [name="bike_id"]').val(data.assign_bike.bike_id).trigger('change');
+        });
+    });
+    $('#fuel_expense [name="rider_id"]').trigger('change');
   });
 
 </script>

@@ -272,7 +272,7 @@ Route::group([
     Route::get('/fuel_expense/create','AccountsController@fuel_expense_create')->name('admin.fuel_expense_create');
     Route::post('/fuel_expense/insert','AccountsController@fuel_expense_insert')->name('admin.fuel_expense_insert');
     Route::get('/fuel_expense/view','AccountsController@fuel_expense_view')->name('admin.fuel_expense_view');
-    
+    Route::get('/fuel/expense/select/riders/bike/{rider_id}/{bike_id}','AccountsController@fuel_rider_selector')->name('fuel.fuel_rider_selector');
     Route::delete('/fuel_expense/delete/{expense_id}','AccountsController@delete_fuel_expense')->name('admin.delete_fuel_expense');
     Route::post('/fuel_expense/{expense_id}/updatestatus','AccountsController@update_fuel_expense')->name('admin.update_fuel_expense');
     Route::get('/fuel_expense/edit/{expense_id}','AccountsController@edit_fuel_expense')->name('admin.edit_fuel_expense');

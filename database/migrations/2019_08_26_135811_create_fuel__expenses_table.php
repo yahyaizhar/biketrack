@@ -16,6 +16,7 @@ class CreateFuelExpensesTable extends Migration
         Schema::create('fuel__expenses', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('bike_id')->nullable();
+            $table->integer('rider_id')->nullable();
             $table->string('type')->nullable();
             $table->string('amount')->nullable();
             $table->string('month')->nullable();

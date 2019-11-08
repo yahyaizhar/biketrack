@@ -53,10 +53,10 @@
                             <input type="checkbox" id="select_all" >
                         </th> --}}
                         <th>ID</th>
+                        <th>Rider</th>
                         <th>Bike_id</th>
                         <th>Type</th>
                         <th>Amount</th>
-                        <th>Status</th>
                         <th>Actions</th>                        
                     </tr>
                 </thead>
@@ -98,10 +98,10 @@ $(function() {
         columns: [
             //  { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
             { data: 'id', name: 'id' },
+            { data: 'rider_id', name: 'rider_id' },
             { data: 'bike_id', name: 'bike_id' },            
             { data: 'type', name: 'type' },
             { data: 'amount', name: 'amount' },
-            { data: 'status', name: 'status' },
             { data: 'actions', name: 'actions' },
         ],
         responsive:true,

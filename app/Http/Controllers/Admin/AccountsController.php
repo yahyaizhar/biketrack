@@ -1232,8 +1232,15 @@ class AccountsController extends Controller
 }
 //   Fuel Expense
 public function fuel_expense_create(){
+    $riders=Rider::where('active_status','A')->get();
     $bikes=bike::where('active_status', 'A')->get();
-    return view('admin.accounts.Fuel_Expense.FE_add',compact('bikes'));
+    return view('admin.accounts.Fuel_Expense.FE_add',compact('bikes','riders'));
+}
+public function fuel_rider_selector($rider_id,$bike_id){
+    $assign_bike=Assign_bike::where('status','active')->where('rider_id',$rider_id)->get()->first();
+    return response()->json([
+    'assign_bike'=>$assign_bike,
+    ]);
 }
 public function fuel_expense_insert(Request $r){
     $bike_id=$r->bike_id;
@@ -1243,6 +1250,7 @@ public function fuel_expense_insert(Request $r){
     $fuel_expense->type=$r->type;
     $fuel_expense->month=Carbon::parse($r->get('month'))->format('Y-m-d');
     $fuel_expense->bike_id=$bike->id;
+    $fuel_expense->rider_id=$r->rider_id;
     if($r->status)
             $fuel_expense->status = 1;
         else
@@ -1345,13 +1353,15 @@ public function edit_fuel_expense($id){
     $is_readonly=false;
     $expense=Fuel_Expense::find($id);
     $bikes=bike::all();
-    return view('admin.accounts.Fuel_Expense.FE_edit',compact('is_readonly','expense','bikes'));
+    $riders=Rider::all();
+    return view('admin.accounts.Fuel_Expense.FE_edit',compact('is_readonly','expense','bikes','riders'));
 }
 public function edit_fuel_expense_view($id){
     $is_readonly=true;
     $expense=Fuel_Expense::find($id);
     $bikes=bike::all();
-    return view('admin.accounts.Fuel_Expense.FE_edit',compact('is_readonly','expense','bikes'));
+    $riders=Rider::all();
+    return view('admin.accounts.Fuel_Expense.FE_edit',compact('is_readonly','expense','bikes','riders'));
 }
 public function update_edit_fuel_expense(Request $r,$id){
     $bike_id=bike::find($r->bike_id);
@@ -1360,10 +1370,7 @@ public function update_edit_fuel_expense(Request $r,$id){
     $fuel_expense->month=Carbon::parse($r->get('month'))->format('Y-m-d');
     $fuel_expense->type=$r->type;
     $fuel_expense->bike_id=$bike_id->id;
-    if($r->status)
-            $fuel_expense->status = 1;
-        else
-            $fuel_expense->status = 0;
+    $fuel_expense->rider_id=$r->rider_id;
     $fuel_expense->update();
 
     $assign_bike=Assign_bike::where('bike_id', $fuel_expense->bike_id)
