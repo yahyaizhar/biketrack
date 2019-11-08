@@ -159,9 +159,22 @@
                                 </span>
                             @endif
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label>Month:</label>
                         <input type="text" id="month_picker" required readonly class=" form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                            @if ($errors->has('month'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('month') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Month</span>
+                            @endif
+                        </div> --}}
+                        <div class="form-group">
+                            <label>Rider Cash Paid Date:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
                             @if ($errors->has('month'))
                                 <span class="invalid-response" role="alert">
                                     <strong>
@@ -559,6 +572,7 @@
                 type : 'POST',
                 data: _form.serializeArray(),
                 success: function(data){
+                    $('#rider_cash_add').modal('hide');
                     _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
                     swal.fire({
                         position: 'center',
