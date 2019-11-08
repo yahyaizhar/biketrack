@@ -2114,7 +2114,7 @@ public function client_income_update(Request $request,$id){
         $new_ra->payment_status="paid";
         $new_ra->rider_id=$ra->rider_id;
         $new_ra->salary_id=$ra->salary_id;
-        $new_ra->month=$ra->month;
+        $new_ra->month=Carbon::parse($r->month_paid_rider)->format('Y-m-d'); 
         $new_ra->save();
 
         //updating salary

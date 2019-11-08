@@ -216,6 +216,19 @@
                 <form class="kt-form" enctype="multipart/form-data" id="remaining_salary">
                     <div class="modal-body">
                         <input type="hidden" name="account_id" value="">
+                        <div class="form-group">
+                            <label>Rider Date Paid:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month_paid_rider')) invalid-field @endif" name="month_paid_rider" placeholder="Enter Month" value="">
+                            @if ($errors->has('month'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('month') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Month</span>
+                            @endif
+                        </div>
                             <div class="form-group">
                                     <label>Total Salary:</label>
                                     <input readonly type="text" class="form-control @if($errors->has('net_salary')) invalid-field @endif" name="net_salary" value="">
@@ -228,7 +241,6 @@
                                     @else
                                         <span class="form-text text-muted">Net salary</span>
                                     @endif 
-                                        
                                 </div>
                                 <div class="form-group">
                                     <label>Gross Salary:</label>

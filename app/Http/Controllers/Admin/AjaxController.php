@@ -939,7 +939,7 @@ class AjaxController extends Controller
         
         ->addColumn('month', function($riderToMonth){
             
-            return  Carbon::parse($riderToMonth->month)->format('M Y');
+            return  Carbon::parse($riderToMonth->month)->format('d M, Y');
         })
         ->addColumn('balance', function($riderToMonth){
             
