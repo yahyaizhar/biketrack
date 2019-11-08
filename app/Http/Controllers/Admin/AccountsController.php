@@ -1283,28 +1283,28 @@ public function fuel_expense_insert(Request $r){
         $ca->amount=$r->amount;
         $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
         $ca->rider_id = $rider_id;
-        $ca->source='fuel_expense';
+        $ca->source='fuel_expense_vip';
         $ca->fuel_expense_id=$fuel_expense->id;
         $ca->save();
     }
     elseif($fuel_expense->type=="cash"){
         $ca = new \App\Model\Accounts\Company_Account;
-        $ca->type='dr_receivable';
+        $ca->type='dr';
         $ca->amount=$r->amount;
         $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
         $ca->rider_id = $rider_id;
-        $ca->source='fuel_expense';
+        $ca->source='fuel_expense_cash';
         $ca->fuel_expense_id=$fuel_expense->id;
         $ca->save();
 
-        $ra = new \App\Model\Accounts\Rider_Account;
-        $ra->type='cr_payable';
-        $ra->amount=$r->amount;
-        $ra->month=Carbon::parse($r->get('month'))->format('Y-m-d');
-        $ra->rider_id = $rider_id;
-        $ra->source='fuel_expense';
-        $ra->fuel_expense_id=$fuel_expense->id;
-        $ra->save();
+        // $ra = new \App\Model\Accounts\Rider_Account;
+        // $ra->type='cr_payable';
+        // $ra->amount=$r->amount;
+        // $ra->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+        // $ra->rider_id = $rider_id;
+        // $ra->source='fuel_expense';
+        // $ra->fuel_expense_id=$fuel_expense->id;
+        // $ra->save();
     }
     return redirect(route('admin.fuel_expense_view'));
 }
@@ -1389,7 +1389,7 @@ if ($fuel_expense->type=="vip_tag") {
     $ca->type='dr';
     $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
     $ca->rider_id = $rider_id;
-    $ca->source="fuel_expense"; 
+    $ca->source="fuel_expense_vip"; 
     $ca->amount=$r->amount;
     $ca->save();
 
@@ -1404,24 +1404,24 @@ elseif($fuel_expense->type=="cash"){
     $ca =\App\Model\Accounts\Company_Account::updateOrCreate([
     'fuel_expense_id'=>$fuel_expense->id,
     ]);
-    $ca->type='dr_receivable';
+    $ca->type='dr';
     $ca->rider_id = $rider_id;
     $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
-    $ca->source="fuel_expense"; 
+    $ca->source="fuel_expense_cash"; 
     $ca->amount=$r->amount;
     $ca->save();
     
 
-    $ra =\App\Model\Accounts\Rider_Account::updateOrCreate([
-    'fuel_expense_id'=>$fuel_expense->id,
-    ]);
-    $ra->fuel_expense_id=$fuel_expense->id;
-    $ra->type='cr_payable';
-    $ra->rider_id = $rider_id;
-    $ra->month=Carbon::parse($r->get('month'))->format('Y-m-d');
-    $ra->source="fuel_expense"; 
-    $ra->amount=$r->amount;
-    $ra->save();
+    // $ra =\App\Model\Accounts\Rider_Account::updateOrCreate([
+    // 'fuel_expense_id'=>$fuel_expense->id,
+    // ]);
+    // $ra->fuel_expense_id=$fuel_expense->id;
+    // $ra->type='cr_payable';
+    // $ra->rider_id = $rider_id;
+    // $ra->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+    // $ra->source="fuel_expense"; 
+    // $ra->amount=$r->amount;
+    // $ra->save();
     
 }
     return redirect(route('admin.fuel_expense_view'));

@@ -184,6 +184,20 @@ class AjaxNewController extends Controller
         whereMonth('month', $month)
         ->where("rider_id",$rider_id)
         ->whereNotNull('fuel_expense_id')
+        ->where('source','fuel_expense_vip')
+        ->get();
+        $model = $modelArr->first();
+        foreach ($modelArr as $mod) {
+        if(isset($mod) && $mod->id != $model->id){
+                $model->amount+=$mod->amount;
+            }
+        }
+        $bills->push($model);
+        $modelArr = \App\Model\Accounts\Company_Account::
+        whereMonth('month', $month)
+        ->where("rider_id",$rider_id)
+        ->whereNotNull('fuel_expense_id')
+        ->where('source','fuel_expense_cash')
         ->get();
         $model = $modelArr->first();
         foreach ($modelArr as $mod) {
