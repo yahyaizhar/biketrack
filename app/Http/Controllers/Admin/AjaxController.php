@@ -1372,9 +1372,16 @@ class AjaxController extends Controller
             return $detail->transaction_id;
         })
         ->addColumn('rider_id', function($detail){
-           $rider=Rider::find($detail->rider_id);
-           if(isset($rider)){
-            return $rider->name;
+        $plate=$detail->plate;
+        $bike=bike::where('bike_number',$plate)->get()->first();
+        if (isset($bike)) {
+            $rider_id=Assign_bike::where('bike_id',$bike->id)->where('status','active')->get()->first();
+            if (isset($rider_id)) {
+                $rider=Rider::find($rider_id->rider_id);
+                if(isset($rider)){
+                    return $rider->name;
+                }
+            }
         }
         return "No Rider is Assigned";
         })
