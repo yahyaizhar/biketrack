@@ -131,7 +131,7 @@
                         <a href="" class="btn btn-info btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_modal" >
                             <i class="la la-money"></i>
                              Bike Allowns
-                        </a>
+                        </a> 
                         &nbsp;
                         <a href="" class="btn btn-warning btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_modal" >
                             <i class="la la-money"></i>
