@@ -229,11 +229,14 @@ Route::group([
     Route::get('/rider/accounts/{id}/updateStatus','AccountsController@updatePaymentStatus')->name('Rider.updatePaymentStatus');
 
     Route::get("/accounts/company/debits/get_salary_deduction/{month}/{rider_id}","AccountsController@get_salary_deduction")->name("admin.accounts.get_salary_deduction");
-
+    
     Route::get("/Salary/accounts/rider/expense","AccountsController@rider_expense_get")->name("admin.accounts.rider_expense_get");
     Route::post("/accounts/rider/expense/add","AccountsController@rider_expense_post")->name("admin.accounts.rider_expense_post");
-
-    Route::post("/accounts/rider/cash/add","AccountsController@rider_cash_add")->name("admin.accounts.rider_cash_add");
+    Route::get('/rider/expense/bonus/','RiderDetailController@rider_expense_bonus')->name('expense.rider_expense_bonus');
+    Route::get('/rider/expense/discipline/','RiderDetailController@rider_expense_discipline')->name('expense.rider_expense_discipline');
+    Route::post("/accounts/rider/cash/paid","RiderDetailController@cash_paid")->name("admin.cash_paid");
+    Route::post("/accounts/rider/cash/credit","RiderDetailController@cash_credit_rider")->name("admin.cash_credit_rider");
+    Route::post("/accounts/rider/cash/debit","RiderDetailController@cash_debit_rider")->name("admin.cash_debit_rider");
 
     Route::post("/accounts/company/profit/add","AccountsController@add_company_profit")->name("admin.accounts.add_company_profit");
     Route::get("/company/overall/report","AccountsController@company_overall_report")->name("admin.accounts.company_overall_report");

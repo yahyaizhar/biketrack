@@ -180,4 +180,89 @@ class RiderDetailController extends Controller
     public function profit_zomato(){
         return view('zomato_profit_sheet');
     }
+    public function rider_expense_bonus(Request $request)
+    {
+        $ca = new \App\Model\Accounts\Company_Account;
+        $ca->type='dr';
+        $ca->amount=$request->amount;
+        $ca->month=Carbon::parse($request->get('month'))->format('Y-m-d');
+        $ca->rider_id = $request->rider_id;
+        $ca->source='Bonus';
+        $ca->save();
+
+        $ra = new \App\Model\Accounts\Rider_Account;
+        $ra->type='cr';
+        $ra->amount=$request->amount;
+        $ra->month=Carbon::parse($request->get('month'))->format('Y-m-d');
+        $ra->rider_id = $request->rider_id;
+        $ra->source='Bonus';
+        $ra->save();
+        
+    }
+    public function rider_expense_discipline(Request $request)
+    {
+        $ca = new \App\Model\Accounts\Company_Account;
+        $ca->type='dr';
+        $ca->amount=$request->amount;
+        $ca->month=Carbon::parse($request->get('month'))->format('Y-m-d');
+        $ca->rider_id = $request->rider_id;
+        $ca->source='Discipline Fine';
+        $ca->save();
+
+        $ra = new \App\Model\Accounts\Rider_Account;
+        $ra->type='cr_payable';
+        $ra->amount=$request->amount;
+        $ra->month=Carbon::parse($request->get('month'))->format('Y-m-d');
+        $ra->rider_id = $request->rider_id;
+        $ra->source='Discipline Fine';
+        $ra->save();
+        
+    }
+    public function cash_paid(Request $r){
+            $ra = new \App\Model\Accounts\Rider_Account;
+            $ra->type='dr';
+            $ra->amount=$r->amount;
+            $ra->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+            $ra->rider_id = $r->cash_rider_id;
+            $ra->source=$r->desc;
+            $ra->payment_status="paid";
+            $ra->save();
+     
+}
+public function cash_debit_rider(Request $r){
+
+        $ca = new \App\Model\Accounts\Company_Account;
+        $ca->type='cr';
+        $ca->amount=$r->amount;
+        $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+        $ca->rider_id = $r->cash_rider_id;
+        $ca->source=$r->desc;
+        $ca->save();
+        
+        $ra = new \App\Model\Accounts\Rider_Account;
+        $ra->type='dr';
+        $ra->amount=$r->amount;
+        $ra->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+        $ra->rider_id = $r->cash_rider_id;
+        $ra->source=$r->desc;
+        $ra->save();
+    
+}
+public function cash_credit_rider(Request $r){
+        $ca = new \App\Model\Accounts\Company_Account;
+        $ca->type='dr';
+        $ca->amount=$r->amount;
+        $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+        $ca->rider_id = $r->cash_rider_id;
+        $ca->source=$r->desc;
+        $ca->save();
+        
+        $ra = new \App\Model\Accounts\Rider_Account;
+        $ra->type='cr';
+        $ra->amount=$r->amount;
+        $ra->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+        $ra->rider_id = $r->cash_rider_id;
+        $ra->source=$r->desc;
+        $ra->save();
+}
 }
