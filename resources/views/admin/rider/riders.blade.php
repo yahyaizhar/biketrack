@@ -116,11 +116,11 @@ var riders_data = [];
 $(function() {
    
     var _settings = {
-        lengthMenu: [[-1], ["All"]],
+        lengthMenu: [[50,-1], [50,"All"]],
         processing: true,
         serverSide: true,
         'language': {
-            'loadingRecords': '&nbsp;',
+            // 'loadingRecords': '&nbsp;',
             'processing': $('.loading').show() 
         },
         drawCallback:function(data){

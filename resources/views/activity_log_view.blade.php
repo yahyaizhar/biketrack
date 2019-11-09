@@ -64,10 +64,10 @@ var activity_table;
 $(function() {
     activity_table = $('#activity-table').DataTable({
         processing: true,
-        lengthMenu: [[-1], ["All"]],
+        lengthMenu: [[50,-1], [50,"All"]],
         serverSide: true,
         'language': { 
-            'loadingRecords': '&nbsp;',
+            // 'loadingRecords': '&nbsp;',
             'processing': $('.loading').show()
         },
         drawCallback:function(data){
