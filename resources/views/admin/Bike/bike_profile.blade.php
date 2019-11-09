@@ -49,7 +49,7 @@
             
                                     <div class="kt-widget__action">
                                       
-                                        <button onclick="deleteBike({{$rider->id}},{{$bike->id}})" class="btn btn-label-info btn-sm btn-upper">Remove</button>&nbsp;
+                                        <button onclick="deleteBike({{$rider->id}},{{$bike->id}})" class="btn btn-label-info btn-sm btn-upper">unassign Bike</button>&nbsp;
                                         <a href="{{route('Bike.edit_bike',$bike_profile->id)}}"> <button class="btn btn-label-success btn-sm btn-upper"><span class="label label-success">Edit</span></button></a>
                                     </div>
                                 </div>

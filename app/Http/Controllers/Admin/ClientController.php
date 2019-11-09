@@ -399,6 +399,16 @@ return view('admin.Bike.bike_profile',compact('bike_profile','rider','assign_bik
 }
 return redirect('admin/riders');
 }
+public function deletebikeprofile($rider_id,$bike_id){
+$assign_bike=Assign_bike::where('rider_id',$rider_id)->where('bike_id',$bike_id)->get()->first();
+   if (isset($assign_bike)) {
+       $assign_bike->status='deactive';
+       $assign_bike->save();
+       $bike=bike::find($bike_id);
+       $bike->availability='yes';
+       $bike->save();
+   }
+}
 // end bikeController
 public function change_dates_history(Request $request,$rider_id,$assign_bike_id){
     $rider=Rider::find($rider_id);
