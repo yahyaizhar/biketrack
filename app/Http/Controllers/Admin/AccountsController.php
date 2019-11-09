@@ -1295,6 +1295,7 @@ public function fuel_expense_insert(Request $r){
         $ca->rider_id = $rider_id;
         $ca->source='fuel_expense_cash';
         $ca->fuel_expense_id=$fuel_expense->id;
+        $ca->payment_status='paid';
         $ca->save();
 
         // $ra = new \App\Model\Accounts\Rider_Account;
@@ -1409,6 +1410,7 @@ elseif($fuel_expense->type=="cash"){
     $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
     $ca->source="fuel_expense_cash"; 
     $ca->amount=$r->amount;
+    $ca->payment_status='paid';
     $ca->save();
     
 

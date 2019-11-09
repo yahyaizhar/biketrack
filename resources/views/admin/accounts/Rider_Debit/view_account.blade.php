@@ -10,9 +10,20 @@
     .table th, .table td{
         padding:0 !important;
     }
+    .kt-header.kt-grid__item.kt-header--fixed{
+        display: none !important;
+    } 
+    .kt-grid__item.kt-grid__item--fluid.kt-grid.kt-grid--hor.mt-minus-60 {
+    margin-top: -140px;
+    }   
 </style>
 @endsection
 @section('main-content') 
+{{-- <ul class="kt-sticky-toolbar" style="margin-top: 0px !important;top:6% !important;">
+	<li class="kt-sticky-toolbar__item kt-sticky-toolbar__item--demo-toggle" id="kt_demo_panel_toggle" data-toggle="kt-tooltip" title="" data-placement="right" data-original-title="Check out more demos">
+		<a class="">Admin</a>
+	</li>
+</ul> --}}
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <div class="kt-portlet">
             <div class="row row-no-padding">
@@ -86,14 +97,13 @@
             </div> --}}
             <div class="col-md-12 col-lg-6 col-xl-6">
                 <!--begin::New Users-->
-                <div class="kt-widget24">
-                    <div class="kt-widget24__details">
+                <div class="kt-widget24" style="padding:5px !important;padding-left:25px !important;">
+                    <div class="kt-widget24__details" >
                         <a href="https://kingridersapp.solutionwin.net/admin/livemap" class="kt-widget24__info">
                             <h4 class="kt-widget24__title">
-                                Closing Balance
+                                Closing Balance:  <span style="font-size: 1.2rem !important;" class="kt-widget24__stats kt-font-success" id="closing_balance"> </span>
                             </h4>
-                            <span class="kt-widget24__stats kt-font-success" id="closing_balance">
-                            </span>
+                            
                         </a>
                     </div>
                 </div>
@@ -113,19 +123,44 @@
             <div class="kt-portlet__head-toolbar"> 
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
+                        <a href="" class="btn btn-success btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_modal" >
+                            <i class="la la-money"></i>
+                             Bonus
+                        </a>
+                        &nbsp;
+                        <a href="" class="btn btn-info btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_modal" >
+                            <i class="la la-money"></i>
+                             Bike Allowns
+                        </a>
+                        &nbsp;
+                        <a href="" class="btn btn-warning btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_modal" >
+                            <i class="la la-money"></i>
+                             Discipiline Fine
+                        </a>
+                        &nbsp;
+                        <a href="" class="btn btn-primary btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_modal" >
+                            <i class="la la-money"></i>
+                             Bike Rent
+                        </a>
+                        &nbsp;
+                        <a href="" class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_modal" >
+                            <i class="la la-money"></i>
+                             Mobile Charges
+                        </a>
+                        &nbsp;
                         <button class="btn btn-warning btn-elevate btn-icon-sm" id="for_print" type="button" onclick="printJS('print_slip_for_rider', 'html')">
                             Print Salary Slip
                          </button>
-                         &nbsp;
-                        <a href="" class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_modal" >
+                         {{-- &nbsp; --}}
+                        <a style="margin-top:7px;" href="" class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_modal" >
                             <i class="la la-money"></i>
                              Pay Cash
                         </a>
                          &nbsp;
-                        <a href="{{ route('admin.accounts.rider_expense_get') }}" class="btn btn-brand btn-elevate btn-icon-sm">
+                        {{-- <a href="{{ route('admin.accounts.rider_expense_get') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
                             New Record
-                        </a> 
+                        </a>  --}}
                     </div>
                 </div>
             </div> 
