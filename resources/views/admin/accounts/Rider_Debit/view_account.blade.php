@@ -46,11 +46,11 @@
                         <label>Show result of:</label>
                         <div class="kt-radio-inline">
                             <label class="kt-radio">
-                                    <input type="radio" data-start="{{Carbon\Carbon::now()->subMonths(1)->startOfMonth()->format('Y-m-d')}}" data-end="{{Carbon\Carbon::now()->subMonths(1)->endOfMonth()->format('Y-m-d')}}" name="sort_by" value="week" checked> Last Month
+                                    <input type="radio" data-start="{{Carbon\Carbon::now()->subMonths(1)->startOfMonth()->format('Y-m-d')}}" data-end="{{Carbon\Carbon::now()->subMonths(1)->endOfMonth()->format('Y-m-d')}}" name="sort_by" value="week" > Last Month
                                 <span></span>
                             </label>
                             <label class="kt-radio">
-                                <input type="radio" data-start="{{Carbon\Carbon::now()->startOfMonth()->format('Y-m-d')}}" data-end="{{Carbon\Carbon::now()->endOfMonth()->format('Y-m-d')}}" name="sort_by" value="month"> This Month
+                                <input type="radio" data-start="{{Carbon\Carbon::now()->startOfMonth()->format('Y-m-d')}}" data-end="{{Carbon\Carbon::now()->endOfMonth()->format('Y-m-d')}}" name="sort_by" value="month" checked> Current Month
                                 <span></span>
                             </label>  
                             <label class="kt-radio">
@@ -145,26 +145,23 @@
                         &nbsp;
                         <a href="" class="btn btn-info btn-elevate btn-icon-sm" data-toggle="modal" data-target="#rider_expense_discipline" >
                             <i class="la la-money"></i>
-                             Discipiline Fine
+                             KingRiders Fine
                         </a>
                         &nbsp;
-                        <button class="btn btn-warning btn-elevate btn-icon-sm" id="for_print" type="button" onclick="printJS('print_slip_for_rider', 'html')">
-                            Print Salary Slip
-                         </button>
-                         &nbsp;
+                         {{-- &nbsp; --}}
                         <a style="" href="" class="btn btn-info btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_paid" >
                             <i class="la la-money"></i>
-                                 Cash Paid
+                                 Pay Cash To Rider
                         </a>
                          &nbsp;
                          <a style="" href="" class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_debit" >
                             <i class="la la-money"></i>
-                                Receiveable From Rider
+                                Receive Loan Amount
                         </a>
                         {{-- &nbsp; --}}
-                        <a style="margin-top:7px;" href="" class="btn btn-success btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_credit" >
+                        <a style="" href="" class="btn btn-success btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_credit" >
                             <i class="la la-money"></i>
-                                Payable to Rider
+                                Loan
                         </a>
                         &nbsp;
                         {{-- <a href="{{ route('admin.accounts.rider_expense_get') }}" class="btn btn-brand btn-elevate btn-icon-sm">
@@ -198,7 +195,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Month:</label>
+                        <label>Date:</label>
                         <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
                         @if ($errors->has('month'))
                             <span class="invalid-response" role="alert">
@@ -222,7 +219,7 @@
                         @endif
                     </div>
                     <div class="kt-form__actions kt-form__actions--right">
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="submit" class="btn btn-success">Add Bonus</button>
                     </div>
                 </div>
             </form>
@@ -251,7 +248,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Month:</label>
+                            <label>Date:</label>
                             <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
                             @if ($errors->has('month'))
                                 <span class="invalid-response" role="alert">
@@ -275,7 +272,7 @@
                             @endif
                         </div>
                         <div class="kt-form__actions kt-form__actions--right">
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-danger">Add Fine</button>
                         </div>
                     </div>
                 </form>
@@ -332,7 +329,7 @@
                                 @endif
                             </div>
                             <div class="kt-form__actions kt-form__actions--right">
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="submit" class="btn btn-primary">Pay Cash To Rider</button>
                             </div>
                         </div>
                     </form>
@@ -387,7 +384,7 @@
                                     @endif
                                 </div>
                                 <div class="kt-form__actions kt-form__actions--right">
-                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    <button type="submit" class="btn btn-danger">Receive Loan</button>
                                 </div>
                             </div>
                         </form>
@@ -442,7 +439,7 @@
                                         @endif
                                     </div>
                                     <div class="kt-form__actions kt-form__actions--right">
-                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                        <button type="submit" class="btn btn-warning">Loan</button>
                                     </div>
                                 </div>
                             </form>
@@ -556,6 +553,11 @@
                 </thead>
             </table>
             <!--end: Datatable -->
+            <div>
+                <button style="float:right;" class="btn btn-warning btn-elevate btn-icon-sm" id="for_print" type="button" onclick="printJS('print_slip_for_rider', 'html')">
+                    Print Salary Slip
+                </button>
+            </div>
         </div>
     </div>
 </div>

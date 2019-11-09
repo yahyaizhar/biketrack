@@ -563,7 +563,7 @@ public function removeSim($sim_id,$rider_id){
    
   }
   public function sim_deactive_date(Request $request,$rider_id,$sim_id){
-    $deactive_sim =Sim_History::where('sim_id', $sim_id)->where('rider_id', $rider_id)->get()->first();
+    $deactive_sim =Sim_History::where('sim_id', $sim_id)->where('rider_id', $rider_id)->where('status','active')->get()->first();
     if (isset( $deactive_sim)) {
         $deactive_sim->updated_at=Carbon::parse($request->updated_at)->format("Y-m-d");  
         $deactive_sim->status='deactive';
