@@ -114,11 +114,11 @@ $('#month').fdatepicker({format: 'dd-mm-yyyy'});
 var riders_table;
 var riders_data = [];
 $(function() {
-   
+
     var _settings = {
         lengthMenu: [[50,-1], [50,"All"]],
         processing: true,
-        serverSide: true,
+        serverSide: false,
         'language': {
             // 'loadingRecords': '&nbsp;',
             'processing': $('.loading').show() 
@@ -203,9 +203,15 @@ $(function() {
         ];
      
     }
+    var mark_table=function(){};
     riders_table = $('#riders-table').DataTable(_settings);
-    var mark_table = function(){
-        var _val = riders_table.search();
+    mark_table = function(){
+        var _val = '';
+        try {
+            _val=riders_table.search();
+        } catch (error) {
+            console.warn("Error: ",error);
+        }
         if(_val===''){
             $("#riders-table tbody").unmark();
             $("#riders-table tbody > tr:visible").each(function() {

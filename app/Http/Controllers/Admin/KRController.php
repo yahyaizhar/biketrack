@@ -57,5 +57,4 @@ class KRController extends Controller
     public function gov_tax(){
         return view('tax');
     }
-  
 }
