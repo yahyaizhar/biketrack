@@ -105,16 +105,17 @@ class RiderDetailController extends Controller
         // }
 
         // return; 
+        $month='10';
         $time=[];
-        $total_hours=Income_zomato::whereNotNull('rider_id')->whereMonth('date','09')->sum('log_in_hours_payable');
-        $total_trips=Income_zomato::whereNotNull('rider_id')->whereMonth('date','09')->sum('trips_payable');
-        $ncw=Income_zomato::whereNotNull('rider_id')->whereMonth('date','09')->sum('ncw_incentives');
-        $tips=Income_zomato::whereNotNull('rider_id')->whereMonth('date','09')->sum('tips_payouts');
-        $denials_penalty=Income_zomato::whereNotNull('rider_id')->whereMonth('date','09')->sum('denials_penalty');
-        $payout=Income_zomato::whereNotNull('rider_id')->whereMonth('date','09')->sum('total_to_be_paid_out');
-        $cod=Income_zomato::whereNotNull('rider_id')->whereMonth('date','09')->sum('mcdonalds_deductions');
+        $total_hours=Income_zomato::whereNotNull('rider_id')->whereMonth('date',$month)->sum('log_in_hours_payable');
+        $total_trips=Income_zomato::whereNotNull('rider_id')->whereMonth('date',$month)->sum('trips_payable');
+        $ncw=Income_zomato::whereNotNull('rider_id')->whereMonth('date',$month)->sum('ncw_incentives');
+        $tips=Income_zomato::whereNotNull('rider_id')->whereMonth('date',$month)->sum('tips_payouts');
+        $denials_penalty=Income_zomato::whereNotNull('rider_id')->whereMonth('date',$month)->sum('denials_penalty');
+        $payout=Income_zomato::whereNotNull('rider_id')->whereMonth('date',$month)->sum('total_to_be_paid_out');
+        $cod=Income_zomato::whereNotNull('rider_id')->whereMonth('date',$month)->sum('mcdonalds_deductions');
 
-        $DC_deduction=Income_zomato::whereNotNull('rider_id')->whereMonth('date','09')->sum('dc_deductions');
+        $DC_deduction=Income_zomato::whereNotNull('rider_id')->whereMonth('date',$month)->sum('dc_deductions');
         // $payout_total=0;
         // foreach ($payout as $hours) {
         // $obj=[];
@@ -136,7 +137,7 @@ class RiderDetailController extends Controller
             if(isset($assign_bike)){
             $bike=bike::find($assign_bike->bike_id);
             $salik_amount=Trip_Detail::whereNotNull('rider_id')
-            ->whereMonth('trip_date','09') 
+            ->whereMonth('trip_date',$month) 
             ->where('plate',$bike->bike_number)
             ->sum('amount_aed'); 
             $salik+=$salik_amount; 
@@ -144,20 +145,20 @@ class RiderDetailController extends Controller
         }
         $fuel_amount=Company_Account::whereNotNull('fuel_expense_id')
         ->where('rider_id',$riders->rider_id)
-        ->whereMonth('month','09')
+        ->whereMonth('month',$month)
         ->sum('amount');
          $fuel+=$fuel_amount;
 
          $sim_amount=Company_Account::where("source","Sim Transaction")
          ->where('rider_id',$riders->rider_id)
-         ->whereMonth('month','09')
+         ->whereMonth('month',$month)
          ->where('type','dr')
          ->whereNotNull('sim_transaction_id')
          ->sum('amount');
          $sim+=$sim_amount;
 
          $salary=Company_Account::whereNotNull('rider_id')
-         ->whereMonth('month','09')
+         ->whereMonth('month',$month)
          ->where('source','salary')
          ->where('type','dr')
          ->sum('amount');
