@@ -1181,19 +1181,53 @@ $('form#bonus').on('submit', function(e){
         }
         $('[name="sort_by"]:checked').trigger('change')
     })
-    function remaining_pay(account_id, total_S, total_G){
-        $('#remaining_salary [name="remaining_salary"]').val(0);
-        
-        $('#remaining_salary [name="account_id"]').val(account_id);
-        $('#remaining_salary [name="recieved_salary"]').off('change input').on('change input', function(){
-            var _gross_salary = parseFloat($('#remaining_salary [name="gross_salary"]').val().trim());
-            var _recieved_salary = parseFloat($(this).val().trim());
-            $('#remaining_salary [name="remaining_salary"]').val(_recieved_salary-_gross_salary);
-        });
+    function remaining_pay($rider_id, account_id){
+        var r1d1=biketrack.getUrlParameter('r1d1');
+        $('#remaining_salary [name="month_paid_rider"]').fdatepicker('update', new Date(r1d1));
+        _month = new Date(r1d1).format('yyyy-mm-dd');
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }, 
+                url:"{{url('admin/accounts/company/debits/get_salary_deduction/')}}"+'/'+_month+'/'+$rider_id,
+                method: "GET"
+            })
+            .done(function(data) {  
+                console.log(data);
+                $('#remaining_salary [name="account_id"]').val(account_id);
+                $('#remaining_salary [name="recieved_salary"]').off('change input').on('change input', function(){
+                    var _gross_salary = parseFloat($('#remaining_salary [name="gross_salary"]').val().trim());
+                    var _recieved_salary = parseFloat($(this).val().trim());
+                    $('#remaining_salary [name="remaining_salary"]').val(_recieved_salary-_gross_salary);
+                });
+                $('#remaining_salary [name="is_paid"]').val(data.is_paid);
+                $('#remaining_salary [name="gross_salary"], #remaining_salary [name="recieved_salary"]').val(data.gross_salary).trigger('change');
+                $('#remaining_salary [name="net_salary"]').val(data.net_salary).trigger('change');
+                $('#remaining_salary [name="total_deduction"]').val(data.total_deduction);
+                $('#remaining_salary [name="total_salary"]').val(data.total_salary);
+                $('#remaining_salary [name="total_bonus"]').val(data.total_bonus); 
+                var is_paid=data.is_paid; 
+                if (is_paid) {
+                    $('#remaining_salary [type="submit"]').html("The Rider has already paid").prop("disabled",true);
+                }else{
+                    $('#remaining_salary [type="submit"]').html("Submit").prop("disabled",false);
+                }
+                
 
-        $('#remaining_salary [name="net_salary"]').val(total_S);
-        $('#remaining_salary [name="gross_salary"]').val(total_G);
-        $('#remaining_salary [name="recieved_salary"]').val(total_G);
+            });
+            
+        // $('#remaining_salary [name="remaining_salary"]').val(0);
+        
+        // $('#remaining_salary [name="account_id"]').val(account_id);
+        // $('#remaining_salary [name="recieved_salary"]').off('change input').on('change input', function(){
+        //     var _gross_salary = parseFloat($('#remaining_salary [name="gross_salary"]').val().trim());
+        //     var _recieved_salary = parseFloat($(this).val().trim());
+        //     $('#remaining_salary [name="remaining_salary"]').val(_recieved_salary-_gross_salary);
+        // });
+
+        // $('#remaining_salary [name="net_salary"]').val(total_S);
+        // $('#remaining_salary [name="gross_salary"]').val(total_G);
+        // $('#remaining_salary [name="recieved_salary"]').val(total_G);
        
     }
     

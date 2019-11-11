@@ -156,7 +156,7 @@ console.log(riders_data);
            export_details.push({
             "KR-ID":item.rider_id, 
             "FEID":item.client_rider_id, 
-            "Name":item.name.toUpperCase(),
+            "Name":item.name, 
             "Bike No": item.bike_number,
             "Advance":item.advance,
             "Salik":item.salik,
@@ -184,7 +184,7 @@ console.log(riders_data);
             "Advance":"",
            });
         });
-        // var export_data = new CSVExport(export_details, 'Zomato Salary Sheet '+$('[name="month_id"] option:selected').text());
+        var export_data = new CSVExport(export_details, 'Zomato Salary Sheet '+$('[name="month_id"] option:selected').text());
         return false;
     }  
     
