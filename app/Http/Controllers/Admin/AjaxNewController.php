@@ -600,7 +600,8 @@ class AjaxNewController extends Controller
         ->where('type', 'pl')
         ->whereDate('month', '<',$from)
         ->sum('amount');
-        $profit = $c_debits_rn_pl_total;
+        // $profit = $c_debits_rn_pl_total;
+        $profit = 0;
 
         $c_debits_cr_prev_payable = \App\Model\Accounts\Company_Account::where("rider_id",$ranges['rider_id'])
         ->where(function($q) {
