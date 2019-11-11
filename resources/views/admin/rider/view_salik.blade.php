@@ -251,9 +251,10 @@ var riders_data = [];
 $(function() {
 
     // performance_table = $('').DataTable({
-        var _settings={   processing: true,
+        var _settings={   
+            processing: true,
             lengthMenu: [[-1], ["All"]],
-        serverSide: false,
+            serverSide: false,
         'language': {
             'loadingRecords': '&nbsp;',
             'processing': $('.loading').show()
