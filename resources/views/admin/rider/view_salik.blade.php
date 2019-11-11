@@ -253,7 +253,7 @@ $(function() {
     // performance_table = $('').DataTable({
         var _settings={   processing: true,
             lengthMenu: [[-1], ["All"]],
-        serverSide: true,
+        serverSide: false,
         'language': {
             'loadingRecords': '&nbsp;',
             'processing': $('.loading').show()
@@ -329,8 +329,10 @@ $(function() {
             
         ];
      
-    }
-    var mark_table = function(){
+    }   
+        var mark_table=function(){};
+        performance_table = $('#trip_details').DataTable(_settings);
+        var mark_table = function(){
         var _val = performance_table.search();
         if(_val===''){
             $("#trip_details tbody").unmark();
@@ -369,7 +371,7 @@ $(function() {
         }); 
         
     }
-    performance_table = $('#trip_details').DataTable(_settings);
+    // performance_table = $('#trip_details').DataTable(_settings);
     performance_table.on( 'search.dt', function () {
         mark_table();
     });
