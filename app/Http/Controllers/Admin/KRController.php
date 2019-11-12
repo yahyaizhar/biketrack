@@ -146,7 +146,7 @@ class KRController extends Controller
         $ra->rider_id=$rider_id;
         $ra->source='Bike Fine Paid';
         $ra->bike_fine=$bike_fine_id;
-        $ra->payment_status='paid';
+        $ra->payment_status='pending';
         $ra->save();
 
 return response()->json([
