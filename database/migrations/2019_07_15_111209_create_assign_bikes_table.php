@@ -18,6 +18,8 @@ class CreateAssignBikesTable extends Migration
             $table->integer('rider_id')->nullable();
             $table->integer('bike_id')->nullable();
             $table->string('status')->nullable();
+            $table->string('bike_assign_date')->nullable();
+            $table->string('bike_unassign_date')->nullable();
             $table->string('settings')->nullable();
             $table->timestamps();
         });

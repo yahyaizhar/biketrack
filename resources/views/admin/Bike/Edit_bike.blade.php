@@ -140,12 +140,12 @@
                                 </select> 
                             </div>
                             <div class="form-group">
-                                <label>Issue Date:</label>
+                                <label>Insurance Issue Date:</label>
                                 <input type="text" data-month="{{Carbon\Carbon::parse($bike->issue_date)->format('M d, Y')}}"  readonly class="month_picker form-control" name="issue_date" placeholder="Enter Issue Date">
                                 <span class="form-text text-muted">Please enter Issue Bike Date</span>
                             </div>
                             <div class="form-group">
-                                <label>Expiry Date:</label>
+                                <label>Insurance Expiry Date:</label>
                                 <input type="text" data-month="{{Carbon\Carbon::parse($bike->expiry_date)->format('M d, Y')}}"  readonly class="month_picker form-control" name="expiry_date" placeholder="Enter Expiry Date">
                                 <span class="form-text text-muted">Please enter Bike Expiry Date</span>
                             </div>

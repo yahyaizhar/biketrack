@@ -138,12 +138,12 @@
                                 </select> 
                             </div>
                             <div class="form-group">
-                                <label>Issue Date:</label>
+                                <label>Insurance Issue Date:</label>
                                 <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}"  readonly class="month_picker form-control" name="issue_date" placeholder="Enter Issue Date">
                                 <span class="form-text text-muted">Please enter Issue Bike Date</span>
                             </div>
                             <div class="form-group">
-                                <label>Expiry Date:</label>
+                                <label>Insurance Expiry Date:</label>
                                 <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}"  readonly class="month_picker form-control" name="expiry_date" placeholder="Enter Expiry Date">
                                 <span class="form-text text-muted">Please enter Bike Expiry Date</span>
                             </div>
@@ -213,8 +213,8 @@
   $(document).ready(function(){
     //   $('#datepicker').datepicker({dateFormat: 'yy-mm-dd'}); 
       $('#datepicker').fdatepicker({format: 'dd-mm-yyyy'}); 
-      $('#datepicker_con_1').fdatepicker({format: 'dd-mm-yyyy'}); 
-      $('#datepicker_con_2').fdatepicker({format: 'dd-mm-yyyy'});
+      $('#datepicker_con_1').fdatepicker({format: 'M d, yyyy'}); 
+      $('#datepicker_con_2').fdatepicker({format: 'M d, yyyy'});
       $(".purchase_price").hide();
       $(".monthly_rent").hide();
       $(".rider_self_detail").hide();
