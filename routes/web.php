@@ -50,6 +50,7 @@ Route::group([
     Route::get('/mobile/data','AjaxController@getMobiles')->name('mobile.getMobiles');
     Route::get("/client_income/view/data","AjaxNewController@getclient_income")->name("admin.getclient_income");
     Route::get("/accounts/fuel_expense/view/data","AjaxNewController@getFuelExpense")->name("admin.accounts.ajax_fuelExpense");
+    Route::get("/accounts/bike_fine/view/ajax","AjaxNewController@getBikeFine")->name("admin.accounts.getBikeFine");
     Route::get("/accounts/id-charges/view/data","AjaxNewController@getIdCharges")->name("admin.accounts.id_charges_view_data");
     Route::get("/accounts/workshop/view/data","AjaxNewController@getWorkShops")->name("admin.accounts.workshop_view_data");
     Route::get("/accounts/edirham/view/data","AjaxNewController@getEdirhams")->name("admin.accounts.edirham_view_data");
@@ -355,6 +356,16 @@ Route::group([
     Route::get('/AR/edit/{id}','ExpenseController@AR_edit')->name('admin.AR_edit');
     Route::get('/AR/edit/view/{id}','ExpenseController@AR_edit_view')->name('admin.AR_edit_view');
 // End ADVANCE & RETURN
+//Bike Fine
+    Route::get('/BF/index','KRController@BF_index')->name('admin.BF_index');
+    Route::get('/BF/view','KRController@BF_view')->name('admin.BF_view');
+    Route::post('/BF/insert','KRController@BF_store')->name('admin.BF_store');
+    Route::post('/BF/{id}/update','KRController@BF_update')->name('admin.BF_update');
+    Route::delete('/BF/delete/{id}','KRController@BF_delete')->name('admin.BF_delete');
+    Route::get('/BF/edit/{id}','KRController@BF_edit')->name('admin.BF_edit');
+    Route::get('/BF/edit/view/{id}','KRController@BF_edit_view')->name('admin.BF_edit_view');
+    Route::get('/fine/paid/Rider/{rider_id}/{bike_fine_id}/{amount}/{month}','KRController@paid_fine_by_rider');
+// End Bike Fine
     Route::get("/accounts/testing","HomeController@accounts_testing_v1")->name("admin.accounts.testing_v1");
    
 

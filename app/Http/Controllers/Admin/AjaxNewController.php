@@ -23,6 +23,7 @@ use App\New_comer;
 use App\Model\Rider\Rider_Report;
 use Illuminate\Support\Facades\Storage;
 use App\Model\Sim\Sim;
+use App\Model\Accounts\Bike_Fine;
 use App\Model\Sim\Sim_Transaction;
 use App\Model\Mobile\Mobile_installment;
 use App\Model\Rider\Rider_Performance_Zomato;
@@ -170,6 +171,22 @@ class AjaxNewController extends Controller
         ->where("rider_id",$rider_id)
         ->where("type","dr")
         ->whereNotNull('salik_id')
+        ->get();
+        $model = $modelArr->first();
+        foreach ($modelArr as $mod) {
+        if(isset($mod) && $mod->id !=$model->id){
+            $model->amount+=$mod->amount;
+            
+        }
+        }
+        $bills->push($model);
+        
+        // bike_fine
+        $modelArr = \App\Model\Accounts\Company_Account::
+        whereMonth('month', $month)
+        ->where("rider_id",$rider_id)
+        ->where("type","dr")
+        ->whereNotNull('bike_fine')
         ->get();
         $model = $modelArr->first();
         foreach ($modelArr as $mod) {
@@ -548,6 +565,7 @@ class AjaxNewController extends Controller
             $company_statement->maintenance_id != null ||
             $company_statement->sim_transaction_id != null ||
             $company_statement->salik_id != null ||
+            $company_statement->bike_fine != null ||
             $company_statement->bike_rent_id != null    ){
                 if($company_statement->payment_status=="pending" && $company_statement->type!="cr"){
                     //skip this
@@ -648,9 +666,29 @@ class AjaxNewController extends Controller
             if($company_statements->type=='skip') return '';
             return Carbon::parse($company_statements->month)->format('M d, Y');
         })
-        ->addColumn('desc', function($company_statements){
-            if($company_statements->type=='skip') return '<strong >'.$company_statements->source.'</strong>';
-            return $company_statements->source;
+        ->addColumn('desc', function($company_statement)  use ($company_statements){
+            if($company_statement->type=='skip') return '<strong >'.$company_statement->source.'</strong>';
+            $ras = $company_statements->toArray();
+            if($company_statement->source == 'Bike Fine'){
+                $ca_found = Arr::first($ras, function ($item, $key) use ($company_statement) { 
+                    if($item['type']=='skip') return false;
+                    return $item['bike_fine'] == $company_statement->bike_fine 
+                    && $item['type'] == "cr"
+                    && $item['rider_id'] == $company_statement->rider_id
+                    && $item['source'] == "Bike Fine Paid";
+                });
+                if(!isset($ca_found)){
+                    $rider_id=$company_statement->rider_id;
+                    $amount=$company_statement->amount;
+                    $bike_fine_id=$company_statement->bike_fine;
+                    return '<div>Fine Paid By Kingriders <button type="button" id="getting_val" onclick="FineBike('.$amount.','.$rider_id.','.$bike_fine_id.')" data-toggle="modal" data-target="#bike_fine" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
+                }
+                return "Bike Fine Paid By King Riders";
+            }
+            if($company_statement->source == 'Bike Fine Paid'){
+                return "Bike Fine Paid";
+            }
+            return $company_statement->source;
         })
         ->addColumn('cr', function($company_statements){
             if($company_statements->type=='pl') return 0;
@@ -2304,6 +2342,49 @@ class AjaxNewController extends Controller
             return '';
         })
         ->rawColumns(['amount','bill','payment_status','date','action'])
+        ->make(true);
+    }
+    public function getBikeFine()
+    {
+        $bike_f = Bike_Fine::orderByDesc('created_at')->get();
+        return DataTables::of($bike_f)
+        ->addColumn('id', function($bike_f){
+            return $bike_f->id;
+        })
+        ->addColumn('desc', function($bike_f){
+            return $bike_f->description;
+        })
+        ->addColumn('amount', function($bike_f){
+            return $bike_f->amount;
+        })
+        ->addColumn('bike_id', function($bike_f){
+            $bike = bike::find($bike_f->bike_id);
+            if (isset($bike)) {
+                return $bike->bike_number;
+            }
+            return 'No Bike Assigned';
+        })
+        ->addColumn('rider_id', function($bike_f){
+            $rider = Rider::find($bike_f->rider_id);
+            if (isset($rider)) {
+                return $rider->name;
+            }
+            return 'No Rider Assigned';
+        })
+        ->addColumn('actions', function($bike_f){
+            return '<span class="dtr-data">
+            <span class="dropdown">
+                <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+                <i class="la la-ellipsis-h"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="'.route('admin.BF_edit_view', $bike_f).'"><i class="fa fa-edit"></i> View</a>
+                    <button class="dropdown-item" onclick="deleteBikeFine('.$bike_f->id.');"><i class="fa fa-trash"></i> Delete</button>
+                    </div>
+            </span>
+        </span>';
+        })
+        ->rawColumns(['status','bike_id','desc','amount','actions', 'rider_id'])
         ->make(true);
     }
 }
