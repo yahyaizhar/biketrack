@@ -131,7 +131,7 @@ class KRController extends Controller
     public function paid_fine_by_rider($amount,$rider_id,$bike_fine_id,$month){
         $ca = new Company_Account();
         $ca->type='cr';
-        $ca->month = Carbon::now()->format('Y-m-d');
+        $ca->month = Carbon::parse($month)->format('Y-m-d');
         $ca->amount=$amount;
         $ca->rider_id=$rider_id;
         $ca->source='Bike Fine Paid';
@@ -141,7 +141,7 @@ class KRController extends Controller
 
         $ra = new Rider_Account();
         $ra->type='dr';
-        $ra->month = Carbon::now()->format('Y-m-d');
+        $ra->month = Carbon::parse($month)->format('Y-m-d');
         $ra->amount=$amount;
         $ra->rider_id=$rider_id;
         $ra->source='Bike Fine Paid';

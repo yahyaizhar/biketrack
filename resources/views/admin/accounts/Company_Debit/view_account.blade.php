@@ -585,9 +585,9 @@
         
 
     })
-function FineBike(rider_id,bike_fine_id,amount){
-    var r1d1=biketrack.getUrlParameter('r1d1');
-    var url = "{{ url('admin/accounts/fine/paid/Rider') }}" + "/" + rider_id +"/"+bike_fine_id+"/"+amount+"/"+r1d1;
+function FineBike(rider_id,bike_fine_id,amount,month){
+    console.log(month)
+    var url = "{{ url('admin/accounts/fine/paid/Rider') }}" + "/" + rider_id +"/"+bike_fine_id+"/"+amount+"/"+month;
    console.log(url)
     $.ajaxSetup({
                 headers: {
