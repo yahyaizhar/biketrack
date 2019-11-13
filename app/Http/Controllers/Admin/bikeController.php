@@ -216,7 +216,7 @@ class bikeController extends Controller
         $ba->type='cr';
         $ba->amount=$r->amount;
         $ba->month=Carbon::parse($r->get('month'))->format('Y-m-d');
-        $ba->bike_rent_id =$r->bike_id;
+        $ba->bike_id =$r->bike_id;
         $ba->rider_id=$rider_id;
         $ba->source='Bike Rent';
         $ba->save();
@@ -226,7 +226,7 @@ class bikeController extends Controller
         $ba->type='cr';
         $ba->amount=$r->amount;
         $ba->month=Carbon::parse($r->get('month'))->format('Y-m-d');
-        $ba->bike_rent_id =$r->bike_id;
+        $ba->bike_id =$r->bike_id;
         $ba->rider_id=$rider_id;
         $ba->source='Bike Rent';
         $ba->save();
@@ -235,7 +235,7 @@ class bikeController extends Controller
         $ba->type='dr';
         $ba->amount=$r->amount;
         $ba->month=Carbon::parse($r->get('month'))->format('Y-m-d');
-        $ba->bike_rent_id =$r->bike_id;
+        $ba->bike_id =$r->bike_id;
         $ba->rider_id=$rider_id;
         $ba->source='Bike Rent paid to rental comapny';
         $ba->save();
