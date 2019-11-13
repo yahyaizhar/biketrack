@@ -66,18 +66,18 @@
                                         @php
                                         $mytimestamp = strtotime($assign_bike->bike_assign_date);
                                         $timestampupdated=strtotime($assign_bike->bike_unassign_date);
-                                        // if ($assign_bike->bike_assign_date!=null) {
-                                        //     $created=Carbon\Carbon::now()->format('F d, Y');
-                                        // }
-                                        // else{
-                                        //     $created=Carbon\Carbon::now()->format('F d, Y');
-                                        // }
-                                        // if ($assign_bike->bike_unassign_date!=null) {
-                                        //     $updated=Carbon\Carbon::now()->format('F d, Y');
-                                        // }
-                                        // else{
-                                        //     $updated=Carbon\Carbon::now()->format('F d, Y');
-                                        // }
+                                        if ($assign_bike->bike_assign_date!=null) {
+                                            $created=Carbon\Carbon::now()->format('F d, Y');
+                                        }
+                                        else{
+                                            $created=Carbon\Carbon::now()->format('F d, Y');
+                                        }
+                                        if ($assign_bike->bike_unassign_date!=null) {
+                                            $updated=Carbon\Carbon::now()->format('F d, Y');
+                                        }
+                                        else{
+                                            $updated=Carbon\Carbon::now()->format('F d, Y');
+                                        }
                                         
                                     @endphp
                                         @if($assign_bike->status=='active')
@@ -204,8 +204,8 @@
         }
         function updateDates(rider_id, assign_bike_id, created ,updated) {
             $("#bike_id").val(assign_bike_id);
-            // $('input[name="created_at"]').val(created);
-            // $('input[name="updated_at"]').val(updated);
+            $('input[name="created_at"]').val(created);
+            $('input[name="updated_at"]').val(updated);
         $(".rise-modal").on("click",function(){
             $("#bike_status").modal("show");
             $("form#active_bike_status").on("submit",function(e){
