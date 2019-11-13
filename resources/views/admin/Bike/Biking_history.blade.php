@@ -66,13 +66,13 @@
                                         @php
                                         $mytimestamp = strtotime($assign_bike->bike_assign_date);
                                         $timestampupdated=strtotime($assign_bike->bike_unassign_date);
-                                        $created=Carbon\Carbon::parse($assign_bike->bike_assign_date)->format('F d, Y');
-                                        $updated=Carbon\Carbon::parse($assign_bike->bike_unassign_date)->format('F d, Y');
+                                        // $created=Carbon\Carbon::parse($assign_bike->bike_assign_date)->format('F d, Y');
+                                        // $updated=Carbon\Carbon::parse($assign_bike->bike_unassign_date)->format('F d, Y');
                                     @endphp
                                         @if($assign_bike->status=='active')
                                     <h6  class="rise-modal" onclick="updateDates({{$rider->id}},{{$assign_bike->id}},'{{$created}}','{{$updated}}')" style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}}</h6>
                                     @else
-                                    {{-- <h6 class="rise-modal" onclick="updateDates({{$rider->id}},{{$assign_bike->id}},'{{$created}}','{{$updated}}')"  style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}} {{'to'}} {{gmdate("d-m-Y", $timestampupdated)}}</h6> --}}
+                                    <h6 class="rise-modal" onclick="updateDates({{$rider->id}},{{$assign_bike->id}},'{{$created}}','{{$updated}}')"  style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}} {{'to'}} {{gmdate("d-m-Y", $timestampupdated)}}</h6>
                                     @endif   
                                     </div>
                                 </div>
