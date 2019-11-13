@@ -34,6 +34,7 @@
                         <div class="form-group">
                             <label>Bike:</label>
                             <select required class="form-control bk-select2" name="bike_id" >
+                                    <option value="">Select a Bike<option>
                                 @foreach ($bikes as $bike)
                                 <option value="{{ $bike->id }}">
                                     {{ $bike->brand }} - {{$bike->bike_number}}
