@@ -72,7 +72,7 @@
                                         else{
                                             $created=Carbon\Carbon::now()->format('F d, Y');
                                         }
-                                        if ($assign_bike->bike_assign_date!=null) {
+                                        if ($assign_bike->bike_unassign_date!=null) {
                                             $updated=Carbon\Carbon::parse($assign_bike->bike_unassign_date)->format('F d, Y');
                                         }
                                         else{
