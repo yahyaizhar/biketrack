@@ -67,13 +67,13 @@
                                         $mytimestamp = strtotime($assign_bike->bike_assign_date);
                                         $timestampupdated=strtotime($assign_bike->bike_unassign_date);
                                         if ($assign_bike->bike_assign_date!=null) {
-                                            $created=Carbon\Carbon::parse($assign_bike->bike_assign_date)->format('F d, Y');
+                                            $created=Carbon\Carbon::now()->format('F d, Y');
                                         }
                                         else{
                                             $created=Carbon\Carbon::now()->format('F d, Y');
                                         }
                                         if ($assign_bike->bike_unassign_date!=null) {
-                                            $updated=Carbon\Carbon::parse($assign_bike->bike_unassign_date)->format('F d, Y');
+                                            $updated=Carbon\Carbon::now()->format('F d, Y');
                                         }
                                         else{
                                             $updated=Carbon\Carbon::now()->format('F d, Y');
