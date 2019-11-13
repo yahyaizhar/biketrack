@@ -418,8 +418,13 @@ public function change_dates_history(Request $request,$rider_id,$assign_bike_id)
     $rider=Rider::find($rider_id);
     $assign_bike=Assign_bike::where("rider_id",$rider->id)->where("id",$assign_bike_id)->get()->first();
     if (isset($assign_bike)) {
-        $assign_bike->bike_assign_date=Carbon::parse($request->bike_assign_date)->format("Y-m-d");
-        $assign_bike->bike_unassign_date=Carbon::parse($request->bike_unassign_date)->format("Y-m-d");  
+        if ($request->bike_assign_date!=null ) {
+            $assign_bike->bike_assign_date=Carbon::parse($request->bike_assign_date)->format("Y-m-d");
+        }
+        if ($request->bike_unassign_date!=null ) {
+            $assign_bike->bike_unassign_date=Carbon::parse($request->bike_unassign_date)->format("Y-m-d"); 
+        }
+         
     }
     $assign_bike->update();
     return response()->json([
