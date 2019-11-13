@@ -211,7 +211,7 @@ class bikeController extends Controller
       $ca->source='Bike Rent';
       $ca->save();
        
-      if ($bike_own="kr_own") {
+      if ($bike_own=="kr_own") {
         $ba=new Bike_Accounts();
         $ba->type='cr';
         $ba->amount=$r->amount;
@@ -221,7 +221,7 @@ class bikeController extends Controller
         $ba->source='Bike Rent';
         $ba->save();
       }
-      if ($bike_own="rent") {
+      if ($bike_own=="rent") {
         $ba=new Bike_Accounts();
         $ba->type='cr';
         $ba->amount=$r->amount;
@@ -240,7 +240,7 @@ class bikeController extends Controller
         $ba->source='Bike Rent paid to rental comapny';
         $ba->save();
       }
-      if ($bike_own="rider_bike") {
+      if ($bike_own=="rider_bike") {
 
         $ra=new Rider_Account();
         $ra->type='cr';
