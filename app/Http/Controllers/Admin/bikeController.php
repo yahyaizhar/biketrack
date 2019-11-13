@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use carbon\carbon;
 use \App\Model\Accounts\Company_Account;
 use \App\Model\Accounts\Bike_Accounts;
+use \App\Model\Accounts\Rider_Account;
 use App\Assign_bike;
 use App\insurance_company;
 use Arr;
@@ -195,48 +196,98 @@ class bikeController extends Controller
     // Bike Rent
     public function create_bike_rent(){
       $bikes=bike::where('active_status','A')->get();
-      return view('admin.Bike.bike_rent',compact('bikes'));
+      $riders=Rider::where('active_status','A')->get();
+      return view('admin.Bike.bike_rent',compact('bikes','riders'));
     }
     public function post_bike_rent(Request $r){
-      $bike_rent=new bike;
-      $bike_rent->bike_id=$r->bike_id;
-      $bike_rent->month=carbon::parse($r->month)->format('Y-m-d');
-      $bike_rent->amount=$r->amount;
-        
-       $date=$bike_rent->month;
-       $bike_id=$r->bike_id;
-      $bike_history = Assign_bike::all();
-      $bike_histories = null;
-      $history_found = Arr::first($bike_history, function ($item, $key) use ($bike_id, $date) {
-          $created_at =Carbon::parse($item->created_at)->format('Y-m-d');
-          $created_at =Carbon::parse($created_at);
-
-          $updated_at =Carbon::parse($item->updated_at)->format('Y-m-d');
-          $updated_at =Carbon::parse($updated_at);
-          $req_date =Carbon::parse($date);
-          if($item->status=="active"){ 
-            // mean its still active, we need to match only created at
-              return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at);
-          }
-          
-          return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
-      });
-
-  
-      $ca = new Company_Account;
+      $bike_own=$r->owner;
+      $rider_id=$r->rider_id;
+      $ca=new Company_Account();
       $ca->type='dr';
-      if (isset($history_found)) {
-        $rider_id=$history_found->rider_id;
-        $ca->rider_id=$rider_id;
-      }
-      else{
-        $ca->rider_id=NULL;
-      }
       $ca->amount=$r->amount;
       $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
-      $ca->bike_rent_id ='0';
+      $ca->bike_rent_id =$r->bike_id;
+      $ca->rider_id=$rider_id;
       $ca->source='Bike Rent';
       $ca->save();
+       
+      if ($bike_own="kr_own") {
+        $ba=new Bike_Accounts();
+        $ba->type='cr';
+        $ba->amount=$r->amount;
+        $ba->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+        $ba->bike_rent_id =$r->bike_id;
+        $ba->rider_id=$rider_id;
+        $ba->source='Bike Rent';
+        $ba->save();
+      }
+      if ($bike_own="rent") {
+        $ba=new Bike_Accounts();
+        $ba->type='cr';
+        $ba->amount=$r->amount;
+        $ba->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+        $ba->bike_rent_id =$r->bike_id;
+        $ba->rider_id=$rider_id;
+        $ba->source='Bike Rent';
+        $ba->save();
+
+        $ba=new Bike_Accounts();
+        $ba->type='dr';
+        $ba->amount=$r->amount;
+        $ba->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+        $ba->bike_rent_id =$r->bike_id;
+        $ba->rider_id=$rider_id;
+        $ba->source='Bike Rent paid to rental comapny';
+        $ba->save();
+      }
+      if ($bike_own="rider_bike") {
+
+        $ra=new Rider_Account();
+        $ra->type='cr';
+        $ra->amount=$r->amount;
+        $ra->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+        $ra->bike_rent_id =$r->bike_id;
+        $ra->rider_id=$rider_id;
+        $ra->source='Bike Allowns';
+        $ra->save();
+      }
+
+
+        
+      //  $date=$bike_rent->month;
+      //  $bike_id=$r->bike_id;
+      // $bike_history = Assign_bike::all();
+      // $bike_histories = null;
+      // $history_found = Arr::first($bike_history, function ($item, $key) use ($bike_id, $date) {
+      //     $created_at =Carbon::parse($item->created_at)->format('Y-m-d');
+      //     $created_at =Carbon::parse($created_at);
+
+      //     $updated_at =Carbon::parse($item->updated_at)->format('Y-m-d');
+      //     $updated_at =Carbon::parse($updated_at);
+      //     $req_date =Carbon::parse($date);
+      //     if($item->status=="active"){ 
+      //       // mean its still active, we need to match only created at
+      //         return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at);
+      //     }
+          
+      //     return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
+      // });
+
+  
+      // $ca = new Company_Account;
+      // $ca->type='dr';
+      // if (isset($history_found)) {
+      //   $rider_id=$history_found->rider_id;
+      //   $ca->rider_id=$rider_id;
+      // }
+      // else{
+      //   $ca->rider_id=NULL;
+      // }
+      // $ca->amount=$r->amount;
+      // $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+      // $ca->bike_rent_id ='0';
+      // $ca->source='Bike Rent';
+      // $ca->save();
     
       return redirect(route('bike.bike_view'));
       

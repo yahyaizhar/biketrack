@@ -20,7 +20,16 @@
                 <form class="kt-form" action="{{ route('admin.post_bike_rent') }}" id="bike_rent" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="kt-portlet__body">
-
+                        <div class="form-group">
+                            <label>Rider:</label>
+                            <select class="form-control bk-select2 kt-select2-general" name="rider_id" >
+                                @foreach ($riders as $rider)
+                                <option value="{{ $rider->id }}">
+                                    {{ $rider->name }}
+                                </option>     
+                                @endforeach 
+                            </select>
+                        </div>
                         <div class="form-group">
                             <label>Bike:</label>
                             <select required class="form-control bk-select2" name="bike_id" >
@@ -31,7 +40,6 @@
                                 @endforeach 
                             </select> 
                         </div>
-                      
                         <div class="form-group">
                             <label>Month:</label>
                         <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
@@ -56,20 +64,19 @@
                                 </span>
                             @endif
                         </div>
-                     
-                        
                         <div class="form-group">
-                            <label>Status:</label>
-                            <div>
-                                <input data-switch="true" name="status" id="status" type="checkbox" checked="checked" data-on-text="Enabled" data-handle-width="70" data-off-text="Disabled" data-on-color="brand">
-                            </div>
+                            <label>Owner:</label>
+                            <select  class="form-control bk-select2" name="owner" >
+                                <option value="kr_own">Kr-Bike</option>
+                                <option value="rent">Rental Bike</option>
+                                <option value="rider_bike">Rider Own Bike</option>
+                            </select> 
                         </div>
                     </div>
                    
                     <div class="kt-portlet__foot">
                         <div class="kt-form__actions kt-form__actions--right">
                             <button type="submit" class="btn btn-primary">Submit</button>
-                            
                         </div>
                     </div>
                 </form>
@@ -128,6 +135,22 @@
         }
     });
     $('#bike_rent [name="month"]').trigger('change');
+    $('#bike_rent [name="rider_id"]').on('change', function(){
+        var rider_id=$(this).val();
+        var bike_id=$('#bike_rent [name="bike_id"]').val();
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }, 
+            url:"{{url('admin/accounts/fuel/expense/select/riders/bike')}}"+'/'+rider_id+"/"+bike_id,
+            method: "GET"
+        })
+        .done(function(data) {  
+            console.log(data);
+            $('#bike_rent [name="bike_id"]').val(data.assign_bike.bike_id).trigger('change');
+        });
+    });
+    $('#bike_rent [name="rider_id"]').trigger('change');
   });
   
 
