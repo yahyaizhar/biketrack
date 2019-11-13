@@ -60,7 +60,7 @@
                                         </div>
                                     </div>
                 
-                                    <div class="kt-widget__subhead">
+                                    {{-- <div class="kt-widget__subhead">
                                         <a><i class="flaticon2-calendar-3"></i>{{ $bike->availability }} </a>
                                         <a><i class="fa fa-motorcycle"></i>{{ $bike->bike_number }}</a>
                                         @php
@@ -74,7 +74,7 @@
                                     @else
                                     <h6 class="rise-modal" onclick="updateDates({{$rider->id}},{{$assign_bike->id}},'{{$created}}','{{$updated}}')"  style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}} {{'to'}} {{gmdate("d-m-Y", $timestampupdated)}}</h6>
                                     @endif   
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>
