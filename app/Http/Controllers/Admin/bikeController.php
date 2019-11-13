@@ -247,6 +247,7 @@ class bikeController extends Controller
     if (isset($assign_bike)) {
         $assign_bike->updated_at=Carbon::parse($request->updated_at)->format("Y-m-d");  
         $assign_bike->status='deactive';
+        $assign_bike->bike_unassign_date=Carbon::parse($request->updated_at)->format("Y-m-d");
     }
     $assign_bike->update();
     if (isset($assign_bike->bike_id)) {

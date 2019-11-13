@@ -644,6 +644,7 @@ class RiderController extends Controller
             $assign_bike=Assign_bike::where("rider_id",$rider->id)->where("status","active")->get()->first();
             if (isset($assign_bike)) {
                 $assign_bike->status="deactive";
+                $assign_bike->bike_unassign_date=Carbon::parse($req->inactive_month)->format('Y-m-d');
                 $assign_bike->update();
                 $bike=bike::find($assign_bike->bike_id);
                 if (isset($bike)) {

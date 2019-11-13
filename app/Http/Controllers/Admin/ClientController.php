@@ -318,6 +318,7 @@ public function bike_assigned_show($id){
   }
   public function updateAssignedBike(Request $request,$id)
   { 
+    $month=Carbon::parse($request->bike_assign_date)->format('Y-m-d');
     $rider=Rider::find($id);
     $assign_bike = $rider->Assign_bike()->where('status', 'active')->get();
     $hasBike = $assign_bike->count();
@@ -327,6 +328,7 @@ public function bike_assigned_show($id){
         $assign_bike_id = $assign_bike->first()->id;
         $ab = Assign_bike::find($assign_bike_id);
         $ab->status='deactive';
+        $ab->bike_unassign_date=$month;
         $ab->save();
         $bikes_availability=bike::find($assign_bike->first()->bike_id);
         $bikes_availability->availability='yes'; 
@@ -340,11 +342,13 @@ public function bike_assigned_show($id){
     'bike_id' => $request->get('bike_id'),
     'status'=>'active'
     ]);
+    $assign_bikes->bike_assign_date=$month;
+    $assign_bikes->save();
     $bikes->availability='no';
     // return $assign_bikes;
     
     $bikes->save();
-
+// return $assign_bikes; 
 return redirect()->route('bike.bike_assigned', ['id'=>$rider->id]) ;
 }
   public function mutlipleDeleteBike(Request $request)
@@ -414,14 +418,14 @@ public function change_dates_history(Request $request,$rider_id,$assign_bike_id)
     $rider=Rider::find($rider_id);
     $assign_bike=Assign_bike::where("rider_id",$rider->id)->where("id",$assign_bike_id)->get()->first();
     if (isset($assign_bike)) {
-        $assign_bike->created_at=Carbon::parse($request->created_at)->format("Y-m-d");
-        $assign_bike->updated_at=Carbon::parse($request->updated_at)->format("Y-m-d");  
+        $assign_bike->bike_assign_date=Carbon::parse($request->bike_assign_date)->format("Y-m-d");
+        $assign_bike->bike_unassign_date=Carbon::parse($request->bike_unassign_date)->format("Y-m-d");  
     }
     $assign_bike->update();
     return response()->json([
         'status' =>  $assign_bike,
-        'a'=>$assign_bike->created_at,
-        'b'=>$assign_bike->updated_at,
+        'a'=>$assign_bike->bike_assign_date,
+        'b'=>$assign_bike->bike_unassign_date,
     ]);
 }
 
