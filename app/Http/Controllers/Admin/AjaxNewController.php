@@ -234,7 +234,17 @@ class AjaxNewController extends Controller
             $model->source = "Bike Maintenance";
             $bills->push($model);
         }
-       
+        //bike_rent
+        $model = \App\Model\Accounts\Company_Account::
+        whereMonth('month', $month)
+        ->where("rider_id",$rider_id)
+        ->whereNotNull('bike_rent_id')
+        ->get()
+        ->first();
+        if(isset($model)){
+            $model->source = "Bike Rent";
+            $bills->push($model);
+        }
 
 
         return DataTables::of($bills)
