@@ -23,6 +23,7 @@
                         <div class="form-group">
                             <label>Rider:</label>
                             <select class="form-control bk-select2 kt-select2-general" name="rider_id" >
+                                <option value="">Select a Rider<option>
                                 @foreach ($riders as $rider)
                                 <option value="{{ $rider->id }}">
                                     {{ $rider->name }}
