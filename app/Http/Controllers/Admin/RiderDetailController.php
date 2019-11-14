@@ -107,15 +107,15 @@ class RiderDetailController extends Controller
         // return; 
         $month='10';
         $time=[];
-        $total_hours=Income_zomato::whereNotNull('rider_id')->whereMonth('date',$month)->sum('log_in_hours_payable');
+        $total_hours=Income_zomato::whereMonth('date',$month)->sum('log_in_hours_payable');
         $total_trips=Income_zomato::whereMonth('date',$month)->sum('trips_payable');
-        $ncw=Income_zomato::whereNotNull('rider_id')->whereMonth('date',$month)->sum('ncw_incentives');
-        $tips=Income_zomato::whereNotNull('rider_id')->whereMonth('date',$month)->sum('tips_payouts');
-        $denials_penalty=Income_zomato::whereNotNull('rider_id')->whereMonth('date',$month)->sum('denials_penalty');
-        $payout=Income_zomato::whereNotNull('rider_id')->whereMonth('date',$month)->sum('total_to_be_paid_out');
-        $cod=Income_zomato::whereNotNull('rider_id')->whereMonth('date',$month)->sum('mcdonalds_deductions');
+        $ncw=Income_zomato::whereMonth('date',$month)->sum('ncw_incentives');
+        $tips=Income_zomato::whereMonth('date',$month)->sum('tips_payouts');
+        $denials_penalty=Income_zomato::whereMonth('date',$month)->sum('denials_penalty');
+        $payout=Income_zomato::whereMonth('date',$month)->sum('total_to_be_paid_out');
+        $cod=Income_zomato::whereMonth('date',$month)->sum('mcdonalds_deductions');
 
-        $DC_deduction=Income_zomato::whereNotNull('rider_id')->whereMonth('date',$month)->sum('dc_deductions');
+        $DC_deduction=Income_zomato::whereMonth('date',$month)->sum('dc_deductions');
         // $payout_total=0;
         // foreach ($payout as $hours) {
         // $obj=[];
