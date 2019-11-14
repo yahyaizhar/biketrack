@@ -1675,6 +1675,14 @@ class AjaxNewController extends Controller
             ->sum('amount');
             return $salik_amount;
         }) 
+        ->addColumn('fuel', function($rider) use ($month) {
+            $fuel_amount=Company_Account::where('rider_id',$rider->rider_id)
+            ->whereNotNull('fuel_expense_id')
+            ->whereMonth('month', $month)
+            ->get()
+            ->sum('amount');
+            return $fuel_amount;
+        }) 
         ->addColumn('sim_charges', function($rider) use ($month) {
             $sim_charges=Rider_Account::where('rider_id',$rider->rider_id)
             ->whereNotNull('sim_transaction_id')
@@ -1917,7 +1925,7 @@ class AjaxNewController extends Controller
 
             return round($ra_recieved,2);
         })
-        ->rawColumns(['mobile_charges','bonus','bike_allowns','aed_extra_trips','extra_trips','net_salary','gross_salary','rider_name','bike_number','advance','poor_performance', 'salik', 'sim_charges', 'dc', 'cod', 'rta_fine', 'total_deduction', 'aed_hours', 'total_salary','visa','mobile','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
+        ->rawColumns(['fuel','mobile_charges','bonus','bike_allowns','aed_extra_trips','extra_trips','net_salary','gross_salary','rider_name','bike_number','advance','poor_performance', 'salik', 'sim_charges', 'dc', 'cod', 'rta_fine', 'total_deduction', 'aed_hours', 'total_salary','visa','mobile','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
         ->make(true);
     }
 

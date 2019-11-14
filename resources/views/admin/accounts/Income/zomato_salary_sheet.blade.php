@@ -130,6 +130,7 @@ margin-left: 10px;
                         <th class="d-none"></th>
                         <th class="d-none"></th>
                         <th class="d-none"></th>
+                        <th class="d-none"></th>
                     </tr>
                 </thead>
             </table>
@@ -402,7 +403,8 @@ $(function() {
             { "data": 'total_salary', "name": 'total_salary' },
             { "data": 'net_salary', "name": 'net_salary' },
             { "data": 'gross_salary', "name": 'gross_salary' },
-
+            
+            { "data": 'fuel', "name": 'fuel' },
             { "data": 'advance', "name": 'advance' },
             { "data": 'salik', "name": 'salik' },
             { "data": 'sim_charges', "name": 'sim_charges' },
@@ -428,7 +430,7 @@ $(function() {
         ];
         _settings.columnDefs=[
             {
-                "targets": [8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27],
+                "targets": [8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28],
                 "visible": false,
                 searchable: true, 
             },
@@ -451,6 +453,7 @@ $(function() {
             { "data": 'net_salary', "name": 'net_salary' },
             { "data": 'gross_salary', "name": 'gross_salary' },
 
+            { "data": 'fuel', "name": 'fuel' },
             { "data": 'advance', "name": 'advance' },
             { "data": 'salik', "name": 'salik' },
             { "data": 'sim_charges', "name": 'sim_charges' },
@@ -540,6 +543,8 @@ $(function() {
     // `d` is the original data object for the row
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
             '<tr>'+
+            '<td colspan="1"; style="font-weight:900;">Fuel :</td>'+
+            '<td colspan="2";>'+data.fuel+'</td>'+
             '<td colspan="1"; style="font-weight:900;">Advance :</td>'+
             '<td colspan="2";>'+data.advance+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >Salik:</td>'+
