@@ -101,7 +101,7 @@
                         $aed_hour=$hour * 6;
                         $aed_trip=$trip * 6.75;
                         $dc_cod= $cod+$dc_charges;
-                        $payout=$aed_hour+$aed_trip;
+                        $payout=data.payout;
                         $profit=$payout-($fuel+$salik+$sim+$salary);
                         
                         $('.hour').html('Total Hours: <strong>'+$hour+'</strong>');
