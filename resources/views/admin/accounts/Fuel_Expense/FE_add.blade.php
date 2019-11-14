@@ -114,19 +114,19 @@
 <script data-ajax>
   $(document).ready(function(){
     //   $('#datepicker').datepicker({dateFormat: 'yy-mm-dd'}); 
-    $('#fuel_expense [name="month"]').on('change', function(){
+    $('#fuel_expense [name="month"], #fuel_expense [name="bike_id"]').on('change', function(){
         var _month = $('#fuel_expense [name="month"]').val();
         
         if(_month=='')return;
         _month = new Date(_month).format('yyyy-mm-dd');
 
-        var gb_rider_id = $('#gb_rider_id').val();
+        var gb_rider_id = $('#fuel_expense [name="bike_id"]').val();
         if(typeof gb_rider_id !== "undefined"){
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }, 
-                url:"{{url('admin/salik/ajax/get_active_riders/')}}"+'/'+gb_rider_id+"/"+_month,
+                url:"{{url('admin/salik/ajax/get_active_bikes/')}}"+'/'+gb_rider_id+"/"+_month,
                 method: "GET"
             })
             .done(function(data) {  
@@ -134,7 +134,7 @@
 
                 // $('#salik [name="amount"]').val(data.salik_amount).trigger('change');
                 if(data.bike_histories!==null){
-                    $('#fuel_expense [name="bike_id"]').val(data.bike_histories.bike_id).trigger('change');
+                    $('#fuel_expense [name="rider"]').val(data.bike_histories.rider_id).trigger('change');
                 }
                 else{
                     $('#fuel_expense [name="bike_id"]')[0].selectedIndex = -1;
@@ -147,22 +147,22 @@
     });
     $('#fuel_expense [name="month"]').trigger('change');
 
-    $('#fuel_expense [name="rider_id"]').on('change', function(){
-        var rider_id=$(this).val();
-        var bike_id=$('#fuel_expense [name="bike_id"]').val();
-        $.ajax({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }, 
-            url:"{{url('admin/accounts/fuel/expense/select/riders/bike')}}"+'/'+rider_id+"/"+bike_id,
-            method: "GET"
-        })
-        .done(function(data) {  
-            console.log(data);
-            $('#fuel_expense [name="bike_id"]').val(data.assign_bike.bike_id).trigger('change');
-        });
-    });
-    $('#fuel_expense [name="rider_id"]').trigger('change');
+    // $('#fuel_expense [name="rider_id"]').on('change', function(){
+    //     var rider_id=$(this).val();
+    //     var bike_id=$('#fuel_expense [name="bike_id"]').val();
+    //     $.ajax({
+    //         headers: {
+    //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //         }, 
+    //         url:"{{url('admin/accounts/fuel/expense/select/riders/bike')}}"+'/'+rider_id+"/"+bike_id,
+    //         method: "GET"
+    //     })
+    //     .done(function(data) {  
+    //         console.log(data);
+    //         $('#fuel_expense [name="bike_id"]').val(data.assign_bike.bike_id).trigger('change');
+    //     });
+    // });
+    //$('#fuel_expense [name="rider_id"]').trigger('change');
   });
 
 </script>

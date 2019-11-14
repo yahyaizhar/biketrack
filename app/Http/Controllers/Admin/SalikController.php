@@ -383,6 +383,40 @@ class SalikController extends Controller
             'salik_amount' => $rider->Rider_Detail->salik_amount
         ]);
     }
+    public function get_active_bikes_ajax_salik($bike_id, $date){
+        $bike_history = Assign_bike::all();
+        $bike_histories = null;
+        $history_found = Arr::first($bike_history, function ($item, $key) use ($bike_id, $date) {
+            $created_at =Carbon::parse($item->created_at)->format('Y-m-d');
+            $created_at =Carbon::parse($created_at);
+
+            $updated_at =Carbon::parse($item->updated_at)->format('Y-m-d');
+            $updated_at =Carbon::parse($updated_at);
+            $req_date =Carbon::parse($date);
+            if($item->status=="active"){ 
+                // mean its still active, we need to match only created at
+                return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at);
+            }
+            
+            return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
+        });
+
+        if(isset($history_found)){
+            $bike_histories = $history_found;
+        }else {
+            $assign_bikeBK = Assign_bike::where('bike_id', $bike_id)
+            ->where('status', 'active')->get()->first();
+            if(isset($assign_bikeBK)){
+               $bike_histories = $assign_bikeBK;
+            }
+        }
+
+        
+    
+        return response()->json([
+            'bike_histories' => $bike_histories,
+        ]);
+    }
     public function insert_salik(Request $request){
         $used_salik= $request->amount;
         

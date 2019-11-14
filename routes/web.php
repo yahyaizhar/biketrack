@@ -195,6 +195,7 @@ Route::group([
     Route::post('/insert/salik','SalikController@insert_salik')->name('Saik.insert_salik');
 
     Route::get('/salik/ajax/get_active_riders/{rider_id}/{month}','SalikController@get_active_riders_ajax_salik')->name('Saik.get_active_riders_ajax_salik');
+    Route::get('/salik/ajax/get_active_bikes/{rider_id}/{month}','SalikController@get_active_bikes_ajax_salik')->name('Saik.get_active_bikes_ajax_salik');
 // end salik   
 
 });
