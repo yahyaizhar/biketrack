@@ -204,6 +204,8 @@ console.log(riders_data);
             "No of Trip ":item.number_of_trips,
             "AED hours":item.aed_hours,
             "AED TRIP":item.aed_trips,
+            "Extra Trip":item.extra_trips,
+            "Extra Trip Amount":item.extra_trips*4,
             "Total":item.total_salary,
             "NCW":item.ncw,
             "Tip":item.tips,
