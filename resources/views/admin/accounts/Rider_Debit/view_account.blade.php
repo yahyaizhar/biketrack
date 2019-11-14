@@ -554,17 +554,25 @@
             </table>
             <!--end: Datatable -->
             <div>
-                <button style="float:right;" class="btn btn-warning btn-elevate btn-icon-sm" id="for_print" type="button" onclick="printJS('print_slip_for_rider', 'html')">
-                    Print Salary Slip
-                </button>
+                <div>
+                    <button style="float:right;" class="btn btn-warning btn-elevate btn-icon-sm" id="for_print" type="button" onclick="printJS('print_slip_for_rider', 'html')">
+                        Print Salary Slip
+                    </button>
+                </div>
+                <div>
+                    <button style="float:right;" class="btn btn-info btn-elevate btn-icon-sm" id="for_edit" type="button">
+                        Edit Salary Slip
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 </div>
 {{-- salary slip --}}
-<div style="display:none;">
+<div>
+<div class="print_slip_editable" style="">
 <div style="display:grid;padding: 15px 50px 0px 50px;" id="print_slip_for_rider">
-    <div style="height:140px"></div>
+    <div style="height:100px"></div>
     <table style="">
         <tr><th style="border:1px solid #dddd;background-color:#73acac69;text-align:center;">SALARY SLIP</th></tr>
         <tr><th class="month_year" style="border:1px solid #dddd;text-align:center;"></th></tr>
@@ -598,78 +606,78 @@
         </tr>
         <tr>
             <td style="border:1px solid #dddd;width:50%;text-align:left;">BASIC SALARY</td>
-            <td class="salary" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td contenteditable='true' class="salary" style="border:1px solid #dddd;width:25%;text-align:end;"></td> 
             <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
         </tr>
         <tr>
             <td style="border:1px solid #dddd;width:50%;text-align:left;">NCW ALLOWANCE</td>
-            <td class="ncw" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td contenteditable='true' class="ncw" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
             <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
         </tr>
         <tr>
             <td style="border:1px solid #dddd;width:50%;text-align:left;">CUSTOMER TIP</td>
-            <td class="tip" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td contenteditable='true' class="tip" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
             <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
         </tr>
         <tr>
             <td style="border:1px solid #dddd;width:50%;text-align:left;">BIKE ALLOWANCE</td>
-            <td class="bike_allowns" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td contenteditable='true' class="bike_allowns" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
             <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
         </tr>
         <tr>
             <td style="border:1px solid #dddd;width:50%;text-align:left;">BONES</td>
-            <td class="bones" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td contenteditable='true' class="bones" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
             <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
         </tr>
         <tr>
             <td style="border:1px solid #dddd;width:50%;text-align:left;">ADVANCE</td>
             <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td class="advance" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td contenteditable='true' class="advance" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
         </tr>
         <tr>
             <td style="border:1px solid #dddd;width:50%;text-align:left;">SALIK PLANTI</td>
             <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td class="salik" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td contenteditable='true' class="salik" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
         </tr>
         <tr>
             <td style="border:1px solid #dddd;width:50%;text-align:left;">SIM PLANTI</td>
             <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td class="sim" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td contenteditable='true' class="sim" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
         </tr>
         <tr>
             <td style="border:1px solid #dddd;width:50%;text-align:left;">ZOMATO PLANTI</td>
             <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td class="zomato" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td contenteditable='true' class="zomato" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
         </tr>
         <tr>
             <td style="border:1px solid #dddd;width:50%;text-align:left;">DC DEDUCTION</td>
             <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td class="dc" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td contenteditable='true' class="dc" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
         </tr>
         <tr>
             <td style="border:1px solid #dddd;width:50%;text-align:left;">MCDONALD DEDUCTION</td>
             <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td class="macdonald" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td contenteditable='true' class="macdonald" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
         </tr>
         <tr>
             <td style="border:1px solid #dddd;width:50%;text-align:left;">RTA FINE</td>
             <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td class="rta" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td contenteditable='true' class="rta" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
         </tr>
         <tr>
             <td style="border:1px solid #dddd;width:50%;text-align:left;">MOBILE EMI</td>
             <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td class="mobile" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td contenteditable='true' class="mobile" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
         </tr>
         <tr>
             <td style="border:1px solid #dddd;width:50%;text-align:left;">DISPLAN FINE</td>
             <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td class="discipline" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td contenteditable='true' class="discipline" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
         </tr>
         <tr>
             <td style="border:1px solid #dddd;width:50%;text-align:left;">MICS CHARGES</td>
             <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td class="mics" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td contenteditable='true' class="mics" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
         </tr>
         <tr>
             <td style="border:1px solid #dddd;width:50%;text-align:left;">TOTAL</td>
@@ -705,6 +713,8 @@
     </div>
 </div>
 </div>
+    <
+</div>
 {{-- end salary slip --}}
 @endsection
 @section('foot')
@@ -724,6 +734,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script>
+        $('.print_slip_editable').hide();
+        $("#for_print").on("click",function(){
+            $('.print_slip_editable').hide();
+        });
+        $("#for_edit").on("click",function(){
+            $('.print_slip_editable').show();
+        });
         $('form#cash_paid').on('submit', function(e){
             e.preventDefault();
             var _form = $(this);
@@ -1281,6 +1298,54 @@ $('form#bonus').on('submit', function(e){
         }
     });
 }
+ function change_edit_prints_inputs(){
+     
+        var salary=$('.salary').text();
+        var ncw=$('.ncw').text();
+        var bike_allowns=$('.bike_allowns').text();
+        var tip=$('.tip').text();
+        var bones=$('.bones').text();
 
+        var advance=$('.advance').text();
+        var salik=$('.salik').text();
+        var sim=$('.sim').text();
+        var macdonald=$('.macdonald').text();
+        var dc=$('.dc').text();
+        var rta=$('.rta').text();
+        var dicipline=$('.discipline').text();
+        var mobile=$('.mobile').text();
+        var zomato=$('.zomato').text();
+        var mics=$('.mics').text();
+        var denial_penalty='0';
+
+        salary=salary==""?0:salary;
+        ncw=ncw==""?0:ncw;
+        bike_allowns=bike_allowns==""?0:bike_allowns;
+        tip=tip==""?0:tip;
+        bones=bones==""?0:bones;
+
+        advance=advance==""?0:advance;
+        salik=salik==""?0:salik;
+        sim=sim==""?0:sim;
+        macdonald=macdonald==""?0:macdonald;
+        dc=dc==""?0:dc;
+        rta=rta==""?0:rta;
+        mobile=mobile==""?0:mobile;
+        zomato=zomato==""?0:zomato;
+        mics=mics==""?0:mics;
+        denial_penalty=denial_penalty==""?0:denial_penalty;
+        dicipline=dicipline==""?0:dicipline;
+
+        var total_cr=parseFloat(salary)+parseFloat(ncw)+parseFloat(bike_allowns)+parseFloat(tip)+parseFloat(bones);
+        var total_dr=parseFloat(mics)+parseFloat(denial_penalty)+parseFloat(dicipline)+parseFloat(mobile)+parseFloat(rta)+parseFloat(advance)+parseFloat(salik)+parseFloat(sim)+parseFloat(dc)+parseFloat(macdonald);
+        var net_pay=total_cr-total_dr;
+        $('.total_cr').html(total_cr);
+        $('.total_dr').html(total_dr);
+        $('.net_pay').html(net_pay);
+        $('#total_net_pay').html(net_pay);
+ }
+ $('#print_slip_for_rider [contenteditable]').on('change input', function(){
+	change_edit_prints_inputs();
+})
 </script>
 @endsection
