@@ -323,7 +323,7 @@ class AjaxNewController extends Controller
         ->where('source','salary')
         ->where('payment_status','pending')
         ->sum('amount');
-        
+
         $ncw=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
@@ -526,7 +526,7 @@ class AjaxNewController extends Controller
             'bones'=>$bones,
             'advance'=>$advance,
             'salik'=>$salik,
-            'sim'=>$sim,
+            'sim'=>round($sim,2),
             'dc'=>$dc,
             'macdonald'=>$macdonald,
             'rta'=>$rta,
