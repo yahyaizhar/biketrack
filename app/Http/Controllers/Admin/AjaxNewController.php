@@ -320,9 +320,10 @@ class AjaxNewController extends Controller
         $salary=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
-        ->where('source','salary_paid')
-        ->where('payment_status','paid')
+        ->where('source','salary')
+        ->where('payment_status','pending')
         ->sum('amount');
+        
         $ncw=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
@@ -356,7 +357,7 @@ class AjaxNewController extends Controller
         $sim=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
-        ->where('source','Sim Transaction')
+        ->where('source','Sim extra usage')
         ->sum('amount');
         $dc=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
