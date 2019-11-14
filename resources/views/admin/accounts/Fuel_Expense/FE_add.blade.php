@@ -134,7 +134,7 @@
 
                 // $('#salik [name="amount"]').val(data.salik_amount).trigger('change');
                 if(data.bike_histories!==null){
-                    $('#fuel_expense [name="rider"]').val(data.bike_histories.rider_id).trigger('change');
+                    $('#fuel_expense [name="rider_id"]').val(data.bike_histories.rider_id).trigger('change');
                 }
                 else{
                     $('#fuel_expense [name="bike_id"]')[0].selectedIndex = -1;
