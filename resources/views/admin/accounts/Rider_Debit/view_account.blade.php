@@ -186,7 +186,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Select Rider:</label>
-                        <select class="form-control bk-select2 kt-select2" name="rider_id" class="rider_selector" >
+                        <select class="form-control bk-select2" name="rider_id" class="rider_selector" >
                             @foreach ($riders as $rider)
                                 <option value="{{ $rider->id }}">
                                     {{ $rider->name }}
