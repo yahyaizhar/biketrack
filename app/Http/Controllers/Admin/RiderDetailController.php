@@ -108,7 +108,7 @@ class RiderDetailController extends Controller
         $month='10';
         $time=[];
         $total_hours=Income_zomato::whereNotNull('rider_id')->whereMonth('date',$month)->sum('log_in_hours_payable');
-        $total_trips=Income_zomato::whereNotNull('rider_id')->whereMonth('date',$month)->sum('trips_payable');
+        $total_trips=Income_zomato::whereMonth('date',$month)->sum('trips_payable');
         $ncw=Income_zomato::whereNotNull('rider_id')->whereMonth('date',$month)->sum('ncw_incentives');
         $tips=Income_zomato::whereNotNull('rider_id')->whereMonth('date',$month)->sum('tips_payouts');
         $denials_penalty=Income_zomato::whereNotNull('rider_id')->whereMonth('date',$month)->sum('denials_penalty');
