@@ -342,7 +342,7 @@ class AjaxNewController extends Controller
         $bones=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
-        ->where('source','Bonus')
+        ->where('source','400 Trips Acheivement Bonus')
         ->sum('amount');
         $advance=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)

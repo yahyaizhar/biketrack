@@ -188,7 +188,7 @@ class RiderDetailController extends Controller
         $ca->amount=$request->amount;
         $ca->month=Carbon::parse($request->get('month'))->format('Y-m-d');
         $ca->rider_id = $request->rider_id;
-        $ca->source='Bonus';
+        $ca->source='400 Trips Acheivement Bonus';
         $ca->save();
 
         $ra = new \App\Model\Accounts\Rider_Account;
@@ -196,7 +196,7 @@ class RiderDetailController extends Controller
         $ra->amount=$request->amount;
         $ra->month=Carbon::parse($request->get('month'))->format('Y-m-d');
         $ra->rider_id = $request->rider_id;
-        $ra->source='Bonus';
+        $ra->source='400 Trips Acheivement Bonus';
         $ra->save();
         
     }
