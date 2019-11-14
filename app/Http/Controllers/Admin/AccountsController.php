@@ -858,7 +858,7 @@ class AccountsController extends Controller
         }
         
        $is_paid= \App\Model\Accounts\Company_Account::where("source","salary")
-       where("payment_status","paid")
+       ->where("payment_status","paid")
        ->where("rider_id",$rider_id)
        ->whereMonth("month",$onlyMonth)
        ->get()
