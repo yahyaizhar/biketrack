@@ -210,7 +210,7 @@ console.log(riders_data);
             "NCW":item.ncw,
             "Tip":item.tips,
             "Bonus":"",
-            "Bike allowns":"",
+            "Bike allowns":item.bike_allowns,
             "Net Salary ":item.net_salary,
             "Gross Salary":item.gross_salary,
             "Cash Paid":"",
