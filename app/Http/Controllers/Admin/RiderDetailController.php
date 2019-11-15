@@ -166,7 +166,7 @@ class RiderDetailController extends Controller
          $fuel+=$fuel_amount;
 
          $_rent=Company_Account::where("source",'Bike Rent')
-        ->where('rider_id',$riders->rider_id)
+        ->where('rider_id','6')
         ->whereMonth('month',$month)
         ->sum('amount');
          $bike_rent+=$_rent;
