@@ -119,7 +119,7 @@ class RiderDetailController extends Controller
         $DC_deduction=Income_zomato::whereMonth('date',$month)->sum('dc_deductions');
         $salik=Trip_Detail::whereMonth('trip_date',$month)->sum('amount_aed'); 
         $bike_rent=Company_Account::where("source",'Bike Rent')
-        ->where('rider_id',6)
+        ->whereNotNull('rider_id')
         ->whereMonth('month',$month)
         ->sum('amount');
         // $payout_total=0;
