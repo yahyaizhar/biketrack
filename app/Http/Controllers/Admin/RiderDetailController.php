@@ -118,6 +118,10 @@ class RiderDetailController extends Controller
 
         $DC_deduction=Income_zomato::whereMonth('date',$month)->sum('dc_deductions');
         $salik=Trip_Detail::whereMonth('trip_date',$month)->sum('amount_aed'); 
+        $bike_rent=Company_Account::where("source",'Bike Rent')
+        ->where('rider_id','6')
+        ->whereMonth('month',$month)
+        ->sum('amount');
         // $payout_total=0;
         // foreach ($payout as $hours) {
         // $obj=[];
@@ -165,11 +169,11 @@ class RiderDetailController extends Controller
         ->sum('amount');
          $fuel+=$fuel_amount;
 
-         $_rent=Company_Account::where("source",'Bike Rent')
-        ->where('rider_id','6')
-        ->whereMonth('month',$month)
-        ->sum('amount');
-         $bike_rent+=$_rent;
+        //  $_rent=Company_Account::where("source",'Bike Rent')
+        // ->where('rider_id','6')
+        // ->whereMonth('month',$month)
+        // ->sum('amount');
+        //  $bike_rent+=$_rent;
 
          $sim_amount=Company_Account::where("source","Sim Transaction")
          ->where('rider_id',$riders->rider_id)
