@@ -694,11 +694,15 @@
     <table style="">
         <tr>
             <td class="payment_date" style="border:1px solid #dddd;width:50%;text-align:left;"></td>
-            <td style="border:1px solid #dddd;width:50%;text-align:center;background-color:#73acac69;">NET PAY</td>
+            <td style="border:1px solid #dddd;width:25%;text-align:center;background-color:#73acac69;">NET PAY</td>
         </tr>
         <tr>
-            <td style="border:1px solid #dddd;width:50%;text-align:left;"></td>
-            <td class="net_pay" style="border:1px solid #dddd;width:50%;text-align:center;background-color:#73acac69;"></td>
+            <td style="border:1px solid #dddd;width:50%;text-align:center;"></td>
+            <td class="net_pay" style="border:1px solid #dddd;width:25%;text-align:center;background-color:#73acac69;"></td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #dddd;width:50%;text-align:left;">Cash Paid</td>
+            <td contenteditable='true' class="cash_pay" style="border:1px solid #dddd;width:25%;text-align:center;background-color:#73acac69;">0</td>
         </tr>
         <tr>
             <td style="border:1px solid #dddd;width:50%;text-align:left;">Remaining Pay</td>
@@ -1356,8 +1360,9 @@ $('form#bonus').on('submit', function(e){
         $('.total_dr').html(total_dr);
         $('.net_pay').html(net_pay);
         $('#total_net_pay').html(net_pay);
-        var remaining_pay=$(".remaining_pay").text();
-        var total_remain=net_pay-(parseFloat(remaining_pay));
+        var cash_paid=$('.cash_pay').text();
+        cash_paid=cash_paid==""?0:parseFloat(cash_paid);
+        var total_remain=net_pay-cash_paid;
         $(".remaining_pay").html(total_remain);
 
  }
