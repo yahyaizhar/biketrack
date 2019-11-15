@@ -136,7 +136,7 @@ class RiderDetailController extends Controller
             $assign_bike=Assign_bike::where('rider_id',$riders->rider_id)->where('status','active')->get()->first();
             if(isset($assign_bike)){
             $bike=bike::find($assign_bike->bike_id);
-            $salik_amount=Trip_Detail::whereMonth('trip_date',$month) 
+            $salik_amount=Trip_Detail::whereMonth('trip_date',"10") 
             ->where('plate',$bike->bike_number)
             ->sum('amount_aed'); 
             $salik+=$salik_amount; 
