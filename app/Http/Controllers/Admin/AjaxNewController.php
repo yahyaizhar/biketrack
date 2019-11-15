@@ -1610,7 +1610,7 @@ class AjaxNewController extends Controller
                 return $bike_allowns;
         }) 
         ->addColumn('bonus', function($rider) use ($month) {
-            $bonus=Rider_Account::where('source',"Bonus")
+            $bonus=Rider_Account::where('source',"400 Trips Acheivement Bonus")
             ->where('rider_id',$rider->rider_id)
             ->whereMonth('month',$month)
             ->get()
@@ -1835,7 +1835,7 @@ class AjaxNewController extends Controller
             
             $total_salary =$number_of_hours_sum + $aed_total;
 
-            $bonus=Rider_Account::where('source',"Bonus")
+            $bonus=Rider_Account::where('source',"400 Trips Acheivement Bonus")
             ->where('rider_id',$rider->rider_id)
             ->whereMonth('month',$month)
             ->get()
