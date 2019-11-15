@@ -50,6 +50,7 @@
                         <div class="row">
                         <div class="salary col-md-3"></div>
                         <div class="profit col-md-3"></div>
+                        <div class="bike_rent col-md-3"></div>
                         </div>
                     </div>
                 </form>
@@ -102,7 +103,8 @@
                         $aed_trip=$trip * 6.75;
                         $dc_cod= $cod+$dc_charges;
                         $payout=data.payout;
-                        $profit=$payout-($fuel+$salik+$sim+$salary);
+                        $bike_rent=data.bike_rent;
+                        $profit=$payout-($fuel+$salik+$sim+$salary+$bike_rent);
                         
                         $('.hour').html('Total Hours: <strong>'+$hour+'</strong>');
                         $('.trip').html('Total Trips: <strong>'+$trip+'</strong>');
@@ -117,6 +119,7 @@
                         $('.fuel').html('Fuel: <strong>'+$fuel+'</strong>');
                         $('.sim').html('Sim: <strong>'+$sim+'</strong>');
                         $('.salary').html('Salary: <strong>'+$salary+'</strong>' );
+                        $('.bike_rent').html('Salary: <strong>'+$bike_rent+'</strong>' );
                         $('.profit').html('Profit: <strong>'+$profit.toFixed(2)+'</strong>' );
                         swal.fire({
                             position: 'center',

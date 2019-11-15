@@ -165,6 +165,12 @@ class RiderDetailController extends Controller
         ->sum('amount');
          $fuel+=$fuel_amount;
 
+         $_rent=Company_Account::where("source",'Bike Rent')
+        ->where('rider_id',$riders->rider_id)
+        ->whereMonth('month',$month)
+        ->sum('amount');
+         $bike_rent+=$_rent;
+
          $sim_amount=Company_Account::where("source","Sim Transaction")
          ->where('rider_id',$riders->rider_id)
          ->whereMonth('month',$month)
@@ -192,6 +198,7 @@ class RiderDetailController extends Controller
         'salik'=>round($salik,2),
         'sim'=>round($sim,2),
         'salary'=>round($salary,2),
+        'bike_rent'=>round($bike_rent,2),
         ]);
     }
     public function profit_zomato(){
