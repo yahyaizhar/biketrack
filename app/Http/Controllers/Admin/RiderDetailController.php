@@ -153,7 +153,7 @@ class RiderDetailController extends Controller
             if(isset($history_found)){
                 $bike=bike::find($assign_bike->bike_id);  
                 $salik_amount=Trip_Detail::whereMonth('trip_date',$month)
-                ->where("plate",$bike->id)
+                ->where("plate",$bike->bike_number)
                 ->sum('amount_aed'); 
                 $salik+=$salik_amount; 
             }
