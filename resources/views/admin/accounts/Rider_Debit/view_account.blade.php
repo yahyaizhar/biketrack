@@ -694,20 +694,20 @@
     <table style="">
         <tr>
             <td class="payment_date" style="border:1px solid #dddd;width:50%;text-align:left;"></td>
-            <td style="border:1px solid #dddd;width:25%;text-align:center;background-color:#73acac69;">NET PAY</td>
+            <td style="border:1px solid #dddd;width:50%;text-align:center;background-color:#73acac69;">NET PAY</td>
         </tr>
         <tr>
             <td style="border:1px solid #dddd;width:50%;text-align:center;"></td>
-            <td class="net_pay" style="border:1px solid #dddd;width:25%;text-align:center;background-color:#73acac69;"></td>
+            <td class="net_pay" style="border:1px solid #dddd;width:50%;text-align:center;background-color:#73acac69;"></td>
         </tr>
-        <tr>
+        {{-- <tr>
             <td style="border:1px solid #dddd;width:50%;text-align:left;">Cash Paid</td>
             <td contenteditable='true' class="cash_pay" style="border:1px solid #dddd;width:25%;text-align:center;background-color:#73acac69;">0</td>
         </tr>
         <tr>
             <td style="border:1px solid #dddd;width:50%;text-align:left;">Remaining Pay</td>
             <td class="remaining_pay" style="border:1px solid #dddd;width:50%;text-align:center;background-color:#73acac69;">0</td>
-        </tr>
+        </tr> --}}
     </table>
     <div style=" margin-top: 5px;"> 
         <p style="font-size:14px;"><strong>Note: </strong>MR <span id="rider_id_1"></span> received <span id="total_net_pay"></span> from King Riders Delivery Services LLC, and MR <span id="rider_id_2"></span> no is not valid for any kind of Gratuity, yearly tickets or any other expenses other than the salary.
@@ -1363,7 +1363,13 @@ $('form#bonus').on('submit', function(e){
         var cash_paid=$('.cash_pay').text();
         cash_paid=cash_paid==""?0:parseFloat(cash_paid);
         var total_remain=net_pay-cash_paid;
-        $(".remaining_pay").html(total_remain);
+        if (cash_paid=="") {
+            $(".remaining_pay").html($('#closing_balance').text(_ClosingBalance));
+        }
+        else{
+            $(".remaining_pay").html(total_remain);
+        }
+        
 
  }
  $('#print_slip_for_rider [contenteditable]').on('change input', function(){
