@@ -1163,9 +1163,9 @@ $('form#bonus').on('submit', function(e){
                     $('.mics').html(response.mics);
 
                     var total_cr=parseFloat(response.salary)+parseFloat(response.ncw)+parseFloat(response.bike_allowns)+parseFloat(response.tip)+parseFloat(response.bones);
-                    var total_dr=parseFloat(response.mics)+parseFloat(response.denial_penalty)+parseFloat(response.dicipline)+parseFloat(response.mobile)+parseFloat(response.rta)+parseFloat(response.advance)+parseFloat(response.salik)+parseFloat(response.sim)+parseFloat(response.dc)+parseFloat(response.macdonald);
+                    var total_dr=parseFloat(response.bike_fine)+parseFloat(response.mics)+parseFloat(response.denial_penalty)+parseFloat(response.dicipline)+parseFloat(response.mobile)+parseFloat(response.rta)+parseFloat(response.advance)+parseFloat(response.salik)+parseFloat(response.sim)+parseFloat(response.dc)+parseFloat(response.macdonald);
                     var net_pay=total_cr-total_dr;
-                    var remaining_pay=$('.remaining_pay').text(_ClosingBalance);
+                    $('.remaining_pay').text(_ClosingBalance);
                     $('.total_cr').html(total_cr);
                     $('.total_dr').html(total_dr);
                     $('.net_pay').html(net_pay);
@@ -1356,6 +1356,9 @@ $('form#bonus').on('submit', function(e){
         $('.total_dr').html(total_dr);
         $('.net_pay').html(net_pay);
         $('#total_net_pay').html(net_pay);
+        var remaining_pay=$(".remaining_pay").text();
+        var total_remain=net_pay-(parseFloat(remaining_pay));
+        $(".remaining_pay").html(total_remain);
 
  }
  $('#print_slip_for_rider [contenteditable]').on('change input', function(){
