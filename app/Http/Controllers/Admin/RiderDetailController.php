@@ -133,14 +133,30 @@ class RiderDetailController extends Controller
         $clients=Client::where("name",'Zomato Food Delivery')->get()->first();
         $client_riders=Client_Rider::where("client_id",$clients->id)->get();
         foreach ($client_riders as $riders) {
-            $assign_bike=Assign_bike::where('rider_id',$riders->rider_id)->where('status','active')->get()->first();
-            if(isset($assign_bike)){
-            $bike=bike::find($assign_bike->bike_id);
-            $salik_amount=Trip_Detail::whereMonth('trip_date',$month)
-            ->sum('amount_aed'); 
-            $salik+=$salik_amount; 
-            
-        }
+            $bike_history = Assign_bike::all();
+            $rider_id = $riders->id;
+            $history_found = Arr::first($bike_history, function ($item, $key) use ($rider_id, $date) {
+                $created_at =Carbon::parse($item->created_at)->format('Y-m-d');
+                $created_at =Carbon::parse($created_at);
+    
+                $updated_at =Carbon::parse($item->updated_at)->format('Y-m-d');
+                $updated_at =Carbon::parse($updated_at);
+                $req_date =Carbon::parse($date);
+                if($item->status=="active"){ 
+                    // mean its still active, we need to match only created at
+                    return $item->rider_id == $rider_id && $req_date->greaterThanOrEqualTo($created_at);
+                }
+                
+                return $item->rider_id == $rider_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
+            });
+            if(isset($history_found)){
+                $bike=bike::find($assign_bike->bike_id);  
+                $salik_amount=Trip_Detail::whereMonth('trip_date',$month)
+                ->where("plate",$bike->id)
+                ->sum('amount_aed'); 
+                $salik+=$salik_amount; 
+            }
+        
         $fuel_amount=Company_Account::whereNotNull('fuel_expense_id')
         ->where('rider_id',$riders->rider_id)
         ->whereMonth('month',$month)
