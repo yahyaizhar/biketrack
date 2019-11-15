@@ -135,7 +135,7 @@ class RiderDetailController extends Controller
         //  $salik=0;
          $fuel=0;
          $sim=0;
-         $bike_rent=0;
+        //  $bike_rent=0;
         $clients=Client::where("name",'Zomato Food Delivery')->get()->first();
         $client_riders=Client_Rider::where("client_id",$clients->id)->get();
         foreach ($client_riders as $riders) {
