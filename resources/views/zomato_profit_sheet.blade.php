@@ -105,6 +105,7 @@ margin-left: 10px;
                         <th class="d-none"></th>
                         <th class="d-none"></th>
                         <th class="d-none"></th>
+                        <th class="d-none"></th>
                     </tr>
                 </thead>
             </table>
@@ -380,6 +381,7 @@ $(function() {
             { "data": 'dc', "name": 'dc' },
             { "data": 'cod', "name": 'cod' },
             { "data": 'penalty', "name": 'penalty' },
+            { "data": 'bike_rent', "name": 'bike_rent' },
             
             
            
@@ -388,7 +390,7 @@ $(function() {
         ];
         _settings.columnDefs=[
             {
-                "targets": [8,9,10,11,12,13,14,15,16,17],
+                "targets": [8,9,10,11,12,13,14,15,16,17,18],
                 "visible": false,
                 searchable: true, 
             },
@@ -421,6 +423,7 @@ $(function() {
             { "data": 'dc', "name": 'dc' },
             { "data": 'cod', "name": 'cod' },
             { "data": 'penalty', "name": 'penalty' },
+            { "data": 'bike_rent', "name": 'bike_rent' },
             
         ];
      
@@ -501,6 +504,8 @@ $(function() {
             '<td colspan="2";>'+data.tips+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >COD:</td>'+
             '<td colspan="2";>'+data.cod+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Bike Rent:</td>'+
+            '<td colspan="2";>'+data.bike_rent+'</td>'+
             '</tr>'+
             '<tr>'+
             '<td colspan="1"; style="font-weight:900;" >Denials Penalty:</td>'+
