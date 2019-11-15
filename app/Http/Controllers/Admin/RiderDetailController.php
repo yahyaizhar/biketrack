@@ -106,7 +106,7 @@ class RiderDetailController extends Controller
 
         // return; 
         $month='10';
-        $month_date='2019-10-01';
+        $month_date='2019-10-31';
         $time=[];
         $total_hours=Income_zomato::whereMonth('date',$month)->sum('log_in_hours_payable');
         $total_trips=Income_zomato::whereMonth('date',$month)->sum('trips_payable');
@@ -117,6 +117,7 @@ class RiderDetailController extends Controller
         $cod=Income_zomato::whereMonth('date',$month)->sum('mcdonalds_deductions');
 
         $DC_deduction=Income_zomato::whereMonth('date',$month)->sum('dc_deductions');
+        $salik=Trip_Detail::whereMonth('trip_date',$month)->sum('amount_aed'); 
         // $payout_total=0;
         // foreach ($payout as $hours) {
         // $obj=[];
@@ -127,7 +128,7 @@ class RiderDetailController extends Controller
         // $payout_total+=$obj['total_payout'];
 
         // }
-         $salik=0;
+        //  $salik=0;
          $fuel=0;
          $sim=0;
          $bike_rent=0;
@@ -152,10 +153,10 @@ class RiderDetailController extends Controller
             });
             if(isset($history_found)){
                 $bike=bike::find($history_found->bike_id);  
-                $salik_amount=Trip_Detail::whereMonth('trip_date',$month)
-                ->where("plate",$bike->bike_number)
-                ->sum('amount_aed'); 
-                $salik+=$salik_amount; 
+                // $salik_amount=Trip_Detail::whereMonth('trip_date',$month)
+                // ->where("plate",$bike->bike_number)
+                // ->sum('amount_aed'); 
+                // $salik+=$salik_amount; 
             }
         
         $fuel_amount=Company_Account::whereNotNull('fuel_expense_id')
