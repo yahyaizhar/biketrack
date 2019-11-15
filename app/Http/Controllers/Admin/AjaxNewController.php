@@ -339,6 +339,11 @@ class AjaxNewController extends Controller
         ->whereDate('month', '<=',$to)
         ->where('source','Bike Allowns')
         ->sum('amount');
+        $bike_fine=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','Bike Fine Paid')
+        ->sum('amount');
         $bones=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
@@ -521,6 +526,7 @@ class AjaxNewController extends Controller
             'payment_date'=>Carbon::now()->format('M d, Y'),
             'salary'=>$salary,
             'bike_allowns'=>$bike_allowns,
+            'bike_fine'=>$bike_fine,
             'ncw'=>$ncw,
             'tip'=>$tip,
             'bones'=>$bones,

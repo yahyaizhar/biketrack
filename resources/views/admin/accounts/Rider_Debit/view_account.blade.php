@@ -630,6 +630,11 @@
             <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
         </tr>
         <tr>
+            <td style="border:1px solid #dddd;width:50%;text-align:left;">Bike Fine</td>
+            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            <td contenteditable='true' class="bike_fine" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+        </tr>
+        <tr>
             <td style="border:1px solid #dddd;width:50%;text-align:left;">ADVANCE</td>
             <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
             <td contenteditable='true' class="advance" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
@@ -694,6 +699,10 @@
         <tr>
             <td style="border:1px solid #dddd;width:50%;text-align:left;"></td>
             <td class="net_pay" style="border:1px solid #dddd;width:50%;text-align:center;background-color:#73acac69;"></td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #dddd;width:50%;text-align:left;">Remaining Pay</td>
+            <td class="remaining_pay" style="border:1px solid #dddd;width:50%;text-align:center;background-color:#73acac69;">0</td>
         </tr>
     </table>
     <div style=" margin-top: 5px;"> 
@@ -1141,6 +1150,7 @@ $('form#bonus').on('submit', function(e){
                     $('.tip').html(response.tip);
                     $('.bones').html(response.bones);
 
+                    $('.bike_fine').html(response.bike_fine);
                     $('.advance').html(response.advance);
                     $('.salik').html(response.salik);
                     $('.sim').html(response.sim);
@@ -1155,6 +1165,7 @@ $('form#bonus').on('submit', function(e){
                     var total_cr=parseFloat(response.salary)+parseFloat(response.ncw)+parseFloat(response.bike_allowns)+parseFloat(response.tip)+parseFloat(response.bones);
                     var total_dr=parseFloat(response.mics)+parseFloat(response.denial_penalty)+parseFloat(response.dicipline)+parseFloat(response.mobile)+parseFloat(response.rta)+parseFloat(response.advance)+parseFloat(response.salik)+parseFloat(response.sim)+parseFloat(response.dc)+parseFloat(response.macdonald);
                     var net_pay=total_cr-total_dr;
+                    var remaining_pay=$('.remaining_pay').text(_ClosingBalance);
                     $('.total_cr').html(total_cr);
                     $('.total_dr').html(total_dr);
                     $('.net_pay').html(net_pay);
@@ -1306,6 +1317,7 @@ $('form#bonus').on('submit', function(e){
         var tip=$('.tip').text();
         var bones=$('.bones').text();
 
+        var bike_fine=$('.bike_fine').text();
         var advance=$('.advance').text();
         var salik=$('.salik').text();
         var sim=$('.sim').text();
@@ -1324,6 +1336,7 @@ $('form#bonus').on('submit', function(e){
         tip=tip==""?0:tip;
         bones=bones==""?0:bones;
 
+        bike_fine=bike_fine==""?0:bike_fine;
         advance=advance==""?0:advance;
         salik=salik==""?0:salik;
         sim=sim==""?0:sim;
@@ -1337,12 +1350,13 @@ $('form#bonus').on('submit', function(e){
         dicipline=dicipline==""?0:dicipline;
 
         var total_cr=parseFloat(salary)+parseFloat(ncw)+parseFloat(bike_allowns)+parseFloat(tip)+parseFloat(bones);
-        var total_dr=parseFloat(mics)+parseFloat(denial_penalty)+parseFloat(dicipline)+parseFloat(mobile)+parseFloat(rta)+parseFloat(advance)+parseFloat(salik)+parseFloat(sim)+parseFloat(dc)+parseFloat(macdonald);
+        var total_dr=parseFloat(bike_fine)+parseFloat(mics)+parseFloat(denial_penalty)+parseFloat(dicipline)+parseFloat(mobile)+parseFloat(rta)+parseFloat(advance)+parseFloat(salik)+parseFloat(sim)+parseFloat(dc)+parseFloat(macdonald);
         var net_pay=total_cr-total_dr;
         $('.total_cr').html(total_cr);
         $('.total_dr').html(total_dr);
         $('.net_pay').html(net_pay);
         $('#total_net_pay').html(net_pay);
+
  }
  $('#print_slip_for_rider [contenteditable]').on('change input', function(){
 	change_edit_prints_inputs();
