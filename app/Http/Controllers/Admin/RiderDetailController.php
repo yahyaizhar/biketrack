@@ -106,6 +106,7 @@ class RiderDetailController extends Controller
 
         // return; 
         $month='10';
+        $month_date='2019-10-01';
         $time=[];
         $total_hours=Income_zomato::whereMonth('date',$month)->sum('log_in_hours_payable');
         $total_trips=Income_zomato::whereMonth('date',$month)->sum('trips_payable');
@@ -135,13 +136,13 @@ class RiderDetailController extends Controller
         foreach ($client_riders as $riders) {
             $bike_history = Assign_bike::all();
             $rider_id = $riders->id;
-            $history_found = Arr::first($bike_history, function ($item, $key) use ($rider_id, $date) {
+            $history_found = Arr::first($bike_history, function ($item, $key) use ($rider_id, $month_date) {
                 $created_at =Carbon::parse($item->created_at)->format('Y-m-d');
                 $created_at =Carbon::parse($created_at);
     
                 $updated_at =Carbon::parse($item->updated_at)->format('Y-m-d');
                 $updated_at =Carbon::parse($updated_at);
-                $req_date =Carbon::parse($date);
+                $req_date =Carbon::parse($month_date);
                 if($item->status=="active"){ 
                     // mean its still active, we need to match only created at
                     return $item->rider_id == $rider_id && $req_date->greaterThanOrEqualTo($created_at);
