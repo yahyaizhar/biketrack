@@ -2123,7 +2123,7 @@ class AjaxNewController extends Controller
                 }
             }
             $bike_rent_amount=Company_Account::where('source','Bike Rent')
-            ->whereNotNull('rider_id')
+            ->where('rider_id',$rider->rider_id)
             ->whereMonth('month',$month)
             ->sum('amount');
 
