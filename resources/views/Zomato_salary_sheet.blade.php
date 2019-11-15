@@ -119,7 +119,7 @@
                         $('.fuel').html('Fuel: <strong>'+$fuel+'</strong>');
                         $('.sim').html('Sim: <strong>'+$sim+'</strong>');
                         $('.salary').html('Salary: <strong>'+$salary+'</strong>' );
-                        $('.bike_rent').html('Salary: <strong>'+$bike_rent+'</strong>' );
+                        $('.bike_rent').html('Bike Rent: <strong>'+$bike_rent+'</strong>' );
                         $('.profit').html('Profit: <strong>'+$profit.toFixed(2)+'</strong>' );
                         swal.fire({
                             position: 'center',
