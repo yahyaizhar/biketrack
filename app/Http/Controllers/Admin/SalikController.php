@@ -419,9 +419,9 @@ class SalikController extends Controller
         ]);
     }
     public function get_active_sims_ajax_salik($rider_id, $date){
-        $bike_history = Sim_history::all();
-        $bike_histories = null;
-        $history_found = Arr::first($bike_history, function ($item, $key) use ($rider_id, $date) {
+        $sim_history = Sim_history::all();
+        $sim_histories = null;
+        $history_found = Arr::first($sim_history, function ($item, $key) use ($rider_id, $date) {
             $created_at =Carbon::parse($item->created_at)->format('Y-m-d');
             $created_at =Carbon::parse($created_at);
 
@@ -441,8 +441,8 @@ class SalikController extends Controller
         }else {
             $sim_history = Sim_history::where('rider_id', $rider_id)
             ->where('status', 'active')->get()->first();
-            if(isset($assign_bikeBK)){
-               $sim_histories = $assign_bikeBK;
+            if(isset($sim_history)){
+               $sim_histories = $sim_history;
             }
         }
 
