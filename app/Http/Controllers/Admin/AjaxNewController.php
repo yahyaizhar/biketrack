@@ -2115,13 +2115,13 @@ class AjaxNewController extends Controller
             ->where('rider_id',$rider->rider_id)
             ->whereMonth('month',$month)
             ->sum('amount');
-            $sim_charges=Company_Account::where("source","Sim Transaction")
+            $sim_charges=Company_Account::where("source","Sim extra usage")
             ->where('rider_id',$rider->rider_id)
             ->whereMonth('month',$month)
             ->where('type','dr')
             ->whereNotNull('sim_transaction_id')
             ->sum('amount');
-             $salik_amount=0;
+            //  $salik_amount=0;
             // $assign_bike=Assign_bike::where('rider_id',$rider->rider_id)->where('status','active')->get()->first();
             // if (isset($assign_bike)) {
             //     $bike=bike::find($assign_bike->bike_id);
