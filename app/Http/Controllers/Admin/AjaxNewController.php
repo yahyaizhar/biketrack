@@ -2032,7 +2032,7 @@ class AjaxNewController extends Controller
             //     if (isset($bike)) {
             //         
             //     } 
-            // }
+            // } 
             $salik_amount=Company_Account::whereMonth('month',$month) 
                     ->where("source","Salik")
                     ->where('rider_id',$rider->rider_id)
