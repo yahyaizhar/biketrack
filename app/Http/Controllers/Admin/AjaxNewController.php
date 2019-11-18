@@ -2031,7 +2031,7 @@ class AjaxNewController extends Controller
             //     $bike=bike::find($assign_bike->bike_id);
             //     if (isset($bike)) {
             //         
-            //     }
+            //     } 
             // }
             $salik_amount=Company_Account::whereMonth('month',$month) 
                     ->where("source","Salik")
