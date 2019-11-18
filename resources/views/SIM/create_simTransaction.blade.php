@@ -106,18 +106,18 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }, 
-                    url:"{{url('admin/sim/ajax/get_active_riders/')}}"+"/"+gb_rider_id+"/"+_month,
+                    url:"{{url('admin/sim/ajax/get_active_sims/')}}"+"/"+gb_rider_id+"/"+_month,
                     method: "GET"
                 })
                 .done(function(data) {  
                     console.log(data); 
-                    if(data.sim_histories!==null){
-                        $('#sims [name="sim_id"]').val(data.sim_histories.sim_id).trigger('change');
-                    }
-                    else{
-                        $('#sims [name="sim_id"]')[0].selectedIndex = -1;
-                        $('#sims [name="sim_id"]').trigger('change');
-                    }
+                    // if(data.sim_histories!==null){
+                    //     $('#sims [name="sim_id"]').val(data.sim_histories.sim_id).trigger('change');
+                    // }
+                    // else{
+                    //     $('#sims [name="sim_id"]')[0].selectedIndex = -1;
+                    //     $('#sims [name="sim_id"]').trigger('change');
+                    // }
                     // $('#sims [name="usage_limit"], #sims [name="bill_amount"]').val(data.usage_limit).trigger('change');
                 });
             }
