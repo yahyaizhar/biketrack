@@ -111,9 +111,9 @@
                 })
                 .done(function(data) {  
                     console.log(data); 
-                    // if(data.sim_histories!==null){
-                    //     $('#sims [name="sim_id"]').val(data.sim_histories.sim_id).trigger('change');
-                    // }
+                    if(data.sim_histories!==null){
+                        $('#sims [name="rider_id"]').val(data.sim_histories.rider_id).trigger('change');
+                    }
                     // else{
                     //     $('#sims [name="sim_id"]')[0].selectedIndex = -1;
                     //     $('#sims [name="sim_id"]').trigger('change');
