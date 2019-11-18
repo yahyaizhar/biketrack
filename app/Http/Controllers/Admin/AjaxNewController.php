@@ -2122,15 +2122,19 @@ class AjaxNewController extends Controller
             ->whereNotNull('sim_transaction_id')
             ->sum('amount');
              $salik_amount=0;
-            $assign_bike=Assign_bike::where('rider_id',$rider->rider_id)->where('status','active')->get()->first();
-            if (isset($assign_bike)) {
-                $bike=bike::find($assign_bike->bike_id);
-                if (isset($bike)) {
-                    $salik_amount=Trip_Detail::whereMonth('trip_date',$month) 
-                    ->where('plate',$bike->bike_number)
-                    ->sum('amount_aed');
-                }
-            }
+            // $assign_bike=Assign_bike::where('rider_id',$rider->rider_id)->where('status','active')->get()->first();
+            // if (isset($assign_bike)) {
+            //     $bike=bike::find($assign_bike->bike_id);
+            //     if (isset($bike)) {
+            //         $salik_amount=Trip_Detail::whereMonth('trip_date',$month) 
+            //         ->where('plate',$bike->bike_number)
+            //         ->sum('amount_aed');
+            //     }
+            // }
+            $salik_amount=Company_Account::whereMonth('month',$month) 
+            ->where("source","Salik")
+            ->where('rider_id',$rider->rider_id)
+            ->sum('amount');
             $bike_rent_amount=Company_Account::where('source','Bike Rent')
             ->where('rider_id',$rider->rider_id)
             ->whereMonth('month',$month)
