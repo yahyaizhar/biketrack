@@ -2115,12 +2115,13 @@ class AjaxNewController extends Controller
             ->where('rider_id',$rider->rider_id)
             ->whereMonth('month',$month)
             ->sum('amount');
-            $sim_charges=Company_Account::where("source","Sim extra usage")
+            $sim_charges=Company_Account::where("source","Sim Transaction")
             ->where('rider_id',$rider->rider_id)
             ->whereMonth('month',$month)
-            ->where('type','cr')
+            ->where('type','dr')
+            ->whereNotNull('sim_transaction_id')
             ->sum('amount');
-            //  $salik_amount=0;
+             $salik_amount=0;
             // $assign_bike=Assign_bike::where('rider_id',$rider->rider_id)->where('status','active')->get()->first();
             // if (isset($assign_bike)) {
             //     $bike=bike::find($assign_bike->bike_id);
@@ -2130,10 +2131,10 @@ class AjaxNewController extends Controller
             //         ->sum('amount_aed');
             //     }
             // }
-            $salik_amount=Company_Account::whereMonth('month',$month) 
-            ->where("source","Salik")
-            ->where('rider_id',$rider->rider_id)
-            ->sum('amount');
+               $salik_amount=Company_Account::whereMonth('month',$month) 
+                    ->where("source","Salik")
+                    ->where('rider_id',$rider->rider_id)
+                    ->sum('amount');
             $bike_rent_amount=Company_Account::where('source','Bike Rent')
             ->where('rider_id',$rider->rider_id)
             ->whereMonth('month',$month)
@@ -2142,8 +2143,8 @@ class AjaxNewController extends Controller
             ->where('rider_id',$rider->rider_id)
             ->whereMonth('month',$month)
             ->sum('amount');
- 
-            $profit=($payout_sum+$dc_sum+$cod_sum+$penalty_sum+$sim_charges)-($bonus_amount+$salary+$ncw_sum+$tips_sum+$fuel_amount+$salik_amount);
+
+            $profit=($payout_sum+$dc_sum+$cod_sum+$penalty_sum)-($bonus_amount+$salary+$ncw_sum+$tips_sum+$fuel_amount+$sim_charges+$salik_amount);
             $total_profit=$profit-$bike_rent_amount;
             return round($total_profit,2);
         })
