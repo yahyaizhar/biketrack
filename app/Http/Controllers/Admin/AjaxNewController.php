@@ -354,7 +354,7 @@ class AjaxNewController extends Controller
         ->whereDate('month', '<=',$to)
         ->where('source','advance')
         ->sum('amount');
-        $cash_paid=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        $cash_paid_in_advance=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
         ->where('type','dr')
@@ -519,7 +519,7 @@ class AjaxNewController extends Controller
                 return $rider_statement->amount;
             }
             // if($rider_statement->type=='skip') return '<strong >'.round($cash_paid,2).'</strong>';
-            // return  0;
+            return  0;
         })
         ->with([
             'closing_balance' => round($closing_balance,2),
@@ -546,7 +546,7 @@ class AjaxNewController extends Controller
             'dicipline'=>0,
             'denial_penalty'=>$denial_penalty,
             'mics'=>0,
-            'cash_paid'=>$cash_paid,
+            'cash_paid'=>$cash_paid_in_advance,
         ])
     
         ->rawColumns(['closing_balance','cash_paid','desc','date','cr','dr','balance'])
