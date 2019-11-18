@@ -513,7 +513,7 @@ class AjaxNewController extends Controller
                 return $rider_statement->amount;
             }
             // if($rider_statement->type=='skip') return '<strong >'.round($cash_paid,2).'</strong>';
-            return  0;
+            // return  0;
         })
         ->with([
             'closing_balance' => round($closing_balance,2),
