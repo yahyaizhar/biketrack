@@ -51,6 +51,7 @@
                         <div class="salary col-md-3"></div>
                         <div class="profit col-md-3"></div>
                         <div class="bike_rent col-md-3"></div>
+                        <div class="bonus col-md-3"></div>
                         </div>
                     </div>
                 </form>
@@ -104,6 +105,7 @@
                         $dc_cod= $cod+$dc_charges;
                         $payout=data.payout;
                         $bike_rent=data.bike_rent;
+                        $bonus=data.bonus;
                         $profit=$payout-($fuel+$salik+$sim+$salary+$bike_rent);
                         
                         $('.hour').html('Total Hours: <strong>'+$hour+'</strong>');
@@ -121,6 +123,7 @@
                         $('.salary').html('Salary: <strong>'+$salary+'</strong>' );
                         $('.bike_rent').html('Bike Rent: <strong>'+$bike_rent+'</strong>' );
                         $('.profit').html('Profit: <strong>'+$profit.toFixed(2)+'</strong>' );
+                        $('.bonus').html('Bonus: <strong>'+$bonus.toFixed(2)+'</strong>' );
                         swal.fire({
                             position: 'center',
                             type: 'success',

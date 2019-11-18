@@ -115,6 +115,7 @@ class RiderDetailController extends Controller
         $denials_penalty=Income_zomato::whereMonth('date',$month)->sum('denials_penalty');
         $payout=Income_zomato::whereMonth('date',$month)->sum('total_to_be_paid_out');
         $cod=Income_zomato::whereMonth('date',$month)->sum('mcdonalds_deductions');
+        
 
         $DC_deduction=Income_zomato::whereMonth('date',$month)->sum('dc_deductions');
         $salik=Trip_Detail::whereMonth('trip_date',$month)->sum('amount_aed'); 
@@ -135,6 +136,7 @@ class RiderDetailController extends Controller
         //  $salik=0;
          $fuel=0;
          $sim=0;
+         $bonus=0;
         //  $bike_rent=0;
         $clients=Client::where("name",'Zomato Food Delivery')->get()->first();
         $client_riders=Client_Rider::where("client_id",$clients->id)->get();
@@ -168,6 +170,11 @@ class RiderDetailController extends Controller
         ->whereMonth('month',$month)
         ->sum('amount');
          $fuel+=$fuel_amount;
+         $bones==Company_Account::where('source',"400 Trips Acheivement Bonus")
+         ->where('rider_id',$riders->rider_id)
+         ->whereMonth('month',$month)
+         ->sum('amount');
+          $bonus+=$bones;
 
         //  $_rent=Company_Account::where("source",'Bike Rent')
         // ->where('rider_id','6')
@@ -203,6 +210,8 @@ class RiderDetailController extends Controller
         'sim'=>round($sim,2),
         'salary'=>round($salary,2),
         'bike_rent'=>round($bike_rent,2),
+        'bonus'=>round($bonus,2),
+
         ]);
     }
     public function profit_zomato(){
