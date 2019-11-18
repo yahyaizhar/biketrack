@@ -354,6 +354,12 @@ class AjaxNewController extends Controller
         ->whereDate('month', '<=',$to)
         ->where('source','advance')
         ->sum('amount');
+        $cash_paid=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('type','dr')
+        ->where("payment_status","paid")
+        ->sum('amount');
         $salik=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
@@ -540,6 +546,7 @@ class AjaxNewController extends Controller
             'dicipline'=>0,
             'denial_penalty'=>$denial_penalty,
             'mics'=>0,
+            'cash_paid'=>$cash_paid,
         ])
     
         ->rawColumns(['closing_balance','cash_paid','desc','date','cr','dr','balance'])
