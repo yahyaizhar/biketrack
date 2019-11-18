@@ -113,27 +113,28 @@
                     console.log(data); 
                     if(data.sim_histories!==null){
                         $('#sims [name="rider_id"]').val(data.sim_histories.rider_id).trigger('change');
+                        $('#sims [name="usage_limit"], #sims [name="bill_amount"]').val(data.sim_histories.allowed_balance).trigger('change');                
                     }
                     // else{
                     //     $('#sims [name="sim_id"]')[0].selectedIndex = -1;
                     //     $('#sims [name="sim_id"]').trigger('change');
                     // }
-                    // $('#sims [name="usage_limit"], #sims [name="bill_amount"]').val(data.usage_limit).trigger('change');
+                    $('#sims [name="usage_limit"], #sims [name="bill_amount"]').val(data.usage_limit).trigger('change');
                 });
             }
         })
         $('#sims [name="month_year"]').trigger('change');
         $('#sims [name="rider_id"]').trigger('change');
-    //         $(' #sims [name="sim_id"]').on('change', function(){
-    //         var _simId = $('#sims [name="sim_id"]').val();
-    //         var _month = $('#sims [name="month_year"]').val();
-    //         var _rider_id=$('#sims [name="rider_id"]').val();
-    //         if(_simId== null) {
-    //             $('#sims [name="usage_limit"]').val('');
-    //             $('#sims [name="original_bill_amount"]').val('');
-    //             $('#sims [name="extra_usage_amount"]').val('');
-    //             return;
-    //         }
+            $(' #sims [name="sim_id"]').on('change', function(){
+            var _simId = $('#sims [name="sim_id"]').val();
+            var _month = $('#sims [name="month_year"]').val();
+            var _rider_id=$('#sims [name="rider_id"]').val();
+            if(_simId== null) {
+                $('#sims [name="usage_limit"]').val('');
+                $('#sims [name="original_bill_amount"]').val('');
+                $('#sims [name="extra_usage_amount"]').val('');
+                return;
+            }
     //         _month = new Date(_month).format('yyyy-mm-dd');
 
     //         $.ajax({
