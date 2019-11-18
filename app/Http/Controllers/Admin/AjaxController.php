@@ -200,7 +200,7 @@ class AjaxController extends Controller
                 $req_date =Carbon::parse($month);
                 if($item->status=="active"){ 
                     // mean its still active, we need to match only created at
-                    return $item->sim_id == $sim_id;
+                    return $item->sim_id == $sim_id && $req_date->greaterThanOrEqualTo($created_at);
                 }
                 
                 return $item->sim_id == $sim_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
