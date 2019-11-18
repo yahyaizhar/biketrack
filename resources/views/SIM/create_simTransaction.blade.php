@@ -98,7 +98,7 @@
 
     $(document).ready(function(){
         $('#sims [name="month_year"],#sims [name="sim_id"]').on('change', function(){
-            var _month = new Date($(this).val()).format('yyyy-mm-dd');
+            var _month = new Date($('#sims [name="month_year"]').val()).format('yyyy-mm-dd');
             //select current rider
             var gb_rider_id = $('#gb_rider_id').val();
             if(typeof gb_rider_id !== "undefined"){
