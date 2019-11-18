@@ -2144,7 +2144,7 @@ class AjaxNewController extends Controller
             ->whereMonth('month',$month)
             ->sum('amount');
 
-            $profit=($payout_sum+$dc_sum+$cod_sum+$penalty_sum)-($bonus_amount+$salary+$ncw_sum+$tips_sum+$fuel_amount+$sim_charges+$salik_amount);
+            $profit=($payout_sum+$dc_sum+$cod_sum+$penalty_sum+$sim_charges)-($bonus_amount+$salary+$ncw_sum+$tips_sum+$fuel_amount+$salik_amount);
             $total_profit=$profit-$bike_rent_amount;
             return round($total_profit,2);
         })
