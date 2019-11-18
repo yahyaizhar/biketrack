@@ -803,12 +803,13 @@ class AccountsController extends Controller
 
         $ra_payable=Rider_Account::where("rider_id",$rider_id)
         ->whereMonth("month",$onlyMonth)
-        ->where("payment_status","pending")
         ->where(function($q) {
             $q->where('type', "cr_payable")
             ->orWhere('type', 'dr');
         })
         ->sum('amount'); 
+
+
         $ra_cr=Rider_Account::where("rider_id",$rider_id)
         ->whereMonth("month",$onlyMonth)
         ->where("payment_status","pending")

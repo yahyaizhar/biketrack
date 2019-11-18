@@ -512,7 +512,7 @@ class AjaxNewController extends Controller
                 //}
                 return $rider_statement->amount;
             }
-            if($rider_statement->type=='skip') return '<strong >'.round($cash_paid,2).'</strong>';
+            // if($rider_statement->type=='skip') return '<strong >'.round($cash_paid,2).'</strong>';
             return  0;
         })
         ->with([
