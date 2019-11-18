@@ -125,16 +125,16 @@
         })
         $('#sims [name="month_year"]').trigger('change');
         $('#sims [name="rider_id"]').trigger('change');
-            $(' #sims [name="sim_id"]').on('change', function(){
-            var _simId = $('#sims [name="sim_id"]').val();
-            var _month = $('#sims [name="month_year"]').val();
-            var _rider_id=$('#sims [name="rider_id"]').val();
-            if(_simId== null) {
-                $('#sims [name="usage_limit"]').val('');
-                $('#sims [name="original_bill_amount"]').val('');
-                $('#sims [name="extra_usage_amount"]').val('');
-                return;
-            }
+        //     $(' #sims [name="sim_id"]').on('change', function(){
+        //     var _simId = $('#sims [name="sim_id"]').val();
+        //     var _month = $('#sims [name="month_year"]').val();
+        //     var _rider_id=$('#sims [name="rider_id"]').val();
+        //     if(_simId== null) {
+        //         $('#sims [name="usage_limit"]').val('');
+        //         $('#sims [name="original_bill_amount"]').val('');
+        //         $('#sims [name="extra_usage_amount"]').val('');
+        //         return;
+        //     }
     //         _month = new Date(_month).format('yyyy-mm-dd');
 
     //         $.ajax({
