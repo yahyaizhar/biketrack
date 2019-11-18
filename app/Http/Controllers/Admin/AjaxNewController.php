@@ -2026,16 +2026,17 @@ class AjaxNewController extends Controller
                 return round($dc_sum,2); 
         }) 
         ->addColumn('salik', function($rider) use ($month) {
-            $assign_bike=Assign_bike::where('rider_id',$rider->rider_id)->where('status','active')->get()->first();
-            if (isset($assign_bike)) {
-                $bike=bike::find($assign_bike->bike_id);
-                if (isset($bike)) {
-                    $salik_amount=Trip_Detail::whereMonth('trip_date',$month) 
-                    ->where('plate',$bike->bike_number)
-                    ->sum('amount_aed');
+            // $assign_bike=Assign_bike::where('rider_id',$rider->rider_id)->where('status','active')->get()->first();
+            // if (isset($assign_bike)) {
+            //     $bike=bike::find($assign_bike->bike_id);
+            //     if (isset($bike)) {
+            //         
+            //     }
+            // }
+            $salik_amount=Company_Account::whereMonth('month',$month) 
+                    ->where('rider_id',$rider->id)
+                    ->sum('amount');
                     return round($salik_amount,2);
-                }
-            }
             
         }) 
         ->addColumn('sim_charges', function($rider) use ($month) {
