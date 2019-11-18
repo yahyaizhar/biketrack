@@ -27,6 +27,18 @@
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <div class="kt-portlet">
             <div class="row row-no-padding">
+                    <div class="col-md-1">
+                        <div class="my-2 mx-1">
+                            <label>Rider ID:</label>
+                            <select class="form-control kt-select2" name="rider_id_num" class="rider_selector" >
+                                @foreach ($riders as $rider)
+                                <option value="{{ $rider->id }}">
+                                    {{ $rider->id }}
+                                </option>     
+                                @endforeach 
+                            </select>
+                        </div>
+                    </div>
                 <div class="col-md-4">
                     <div class="my-2 mx-4">
                         <label>Select Rider:</label>
@@ -41,7 +53,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-6 offset-md-2">
+                <div class="col-md-6 offset-md-1">
                     <div class="mt-2 mx-4">
                         <label>Show result of:</label>
                         <div class="kt-radio-inline">
@@ -1026,7 +1038,7 @@ $('form#bonus').on('submit', function(e){
                 }
             });
         });
-        $('[name="rider_id"]').on('change', function(){
+        $('[name="rider_id"] , [name="rider_id_num"]').on('change', function(){
             var _riderId = $(this).val();
             $('[name="cash_rider_id"]').val(_riderId);
             var _SE = $('[name="sort_by"]:checked');
@@ -1130,6 +1142,8 @@ $('form#bonus').on('submit', function(e){
 
 
         var getData = function(url){
+            var rider_id=biketrack.getUrlParameter('rider_id');
+            $('[name="rider_id"], [name="rider_id_num"]').val(rider_id).trigger("change.select2");
             console.warn(url)
             table = $('#data-table').DataTable({
                 lengthMenu: [[-1], ["All"]],
@@ -1216,7 +1230,7 @@ $('form#bonus').on('submit', function(e){
                     dpCallback(picker);
                 });
             }
-            $('[name="rider_id"]').val(rider_id).trigger('change');
+            $('[name="rider_id"],[name="rider_id_num"]').val(rider_id).trigger('change');
         }
         $('[name="sort_by"]:checked').trigger('change')
     })
