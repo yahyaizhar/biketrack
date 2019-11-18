@@ -2146,7 +2146,7 @@ class AjaxNewController extends Controller
             $bonus_amount=Company_Account::where('source','400 Trips Acheivement Bonus')
             ->where('rider_id',$rider->rider_id)
             ->whereMonth('month',$month)
-            ->sum('amount');
+            ->sum('amount'); 
 
             $profit=($payout_sum+$dc_sum+$cod_sum+$penalty_sum+$sim_charges_EXTRA)-($bonus_amount+$salary+$ncw_sum+$tips_sum+$fuel_amount+$sim_charges+$salik_amount);
             $total_profit=$profit-$bike_rent_amount;
