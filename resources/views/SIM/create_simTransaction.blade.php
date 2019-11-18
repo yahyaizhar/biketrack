@@ -119,7 +119,7 @@
                     //     $('#sims [name="sim_id"]')[0].selectedIndex = -1;
                     //     $('#sims [name="sim_id"]').trigger('change');
                     // }
-                    $('#sims [name="usage_limit"], #sims [name="bill_amount"]').val(data.usage_limit).trigger('change');
+                    // $('#sims [name="usage_limit"], #sims [name="bill_amount"]').val(data.usage_limit).trigger('change');
                 });
             }
         })
