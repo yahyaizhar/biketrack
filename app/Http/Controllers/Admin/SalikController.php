@@ -17,6 +17,7 @@ use App\Model\Accounts\Company_Account;
 use App\Model\Accounts\Rider_Account;
 use App\Model\Rider\Rider;
 use App\Model\Rider\Rider_detail;
+use App\Model\Sim\Sim_History;
 use Carbon\Carbon;
 
 class SalikController extends Controller
