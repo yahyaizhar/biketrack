@@ -191,7 +191,7 @@ class AjaxController extends Controller
         ->addColumn('rider_id', function($sims) use ($month){
             $sim_history = Sim_history::all();
             $sim_id=$sims->id;
-            $history_found = Arr::first($sim_history, function ($item, $key) use ($sim_id, $month) {
+            $history = Arr::first($sim_history, function ($item, $key) use ($sim_id, $month) {
                 $created_at =Carbon::parse($item->created_at)->format('Y-m-d');
                 $created_at =Carbon::parse($created_at);
     
@@ -205,7 +205,6 @@ class AjaxController extends Controller
                 
                 return $item->sim_id == $sim_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
             });
-           $history=$sims->Sim_History()->get()->first();
            if(isset($history)){
                $rider=Rider::find($history->rider_id);
                if (isset($rider)) {
