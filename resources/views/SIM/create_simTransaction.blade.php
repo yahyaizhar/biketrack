@@ -97,7 +97,7 @@
  <script data-ajax>
 
     $(document).ready(function(){
-        $('#sims [name="month_year"]').on('change', function(){
+        $('#sims [name="month_year"],#sims [name="sim_id"]').on('change', function(){
             var _month = new Date($(this).val()).format('yyyy-mm-dd');
             //select current rider
             var gb_rider_id = $('#gb_rider_id').val();
@@ -124,30 +124,35 @@
         })
         $('#sims [name="month_year"]').trigger('change');
         $('#sims [name="rider_id"]').trigger('change');
-            $(' #sims [name="sim_id"]').on('change', function(){
-            var _simId = $('#sims [name="sim_id"]').val();
-            var _month = $('#sims [name="month_year"]').val();
-            var _rider_id=$('#sims [name="rider_id"]').val();
-            if(_simId== null) {
-                $('#sims [name="usage_limit"]').val('');
-                $('#sims [name="original_bill_amount"]').val('');
-                $('#sims [name="extra_usage_amount"]').val('');
-                return;
-            }
-            _month = new Date(_month).format('yyyy-mm-dd');
+    //         $(' #sims [name="sim_id"]').on('change', function(){
+    //         var _simId = $('#sims [name="sim_id"]').val();
+    //         var _month = $('#sims [name="month_year"]').val();
+    //         var _rider_id=$('#sims [name="rider_id"]').val();
+    //         if(_simId== null) {
+    //             $('#sims [name="usage_limit"]').val('');
+    //             $('#sims [name="original_bill_amount"]').val('');
+    //             $('#sims [name="extra_usage_amount"]').val('');
+    //             return;
+    //         }
+    //         _month = new Date(_month).format('yyyy-mm-dd');
 
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }, 
-                url:"{{url('admin/sim/ajax/data/')}}"+"/"+_simId+"/"+_month +"/"+_rider_id,
-                method: "GET"
-            })
-            .done(function(data) { 
-                $('#sims [name="usage_limit"], #sims [name="bill_amount"]').val(data.sim_history.allowed_balance).trigger('change');
-
-            });
-    });
+    //         $.ajax({
+    //             headers: {
+    //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //             }, 
+    //             url:"{{url('admin/sim/ajax/data/')}}"+"/"+_simId+"/"+_month +"/"+_rider_id,
+    //             method: "GET"
+    //         })
+    //         .done(function(data) { 
+    //             if(data.sim_history!==null){
+    //                     $('#sims [name="usage_limit"], #sims [name="bill_amount"]').val(data.sim_history.allowed_balance).trigger('change');
+    //                 }
+    //                 else{
+    //                     $('#sims [name="usage_limit"], #sims [name="bill_amount"]').val(0);
+    //                 }
+               
+    //         });
+    // });
         
         $('#sims [name="bill_amount"]').on('change input', function(){
             var _usage_limit = $('#sims [name="usage_limit"]').val();
