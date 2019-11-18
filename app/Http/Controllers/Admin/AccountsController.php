@@ -811,6 +811,7 @@ class AccountsController extends Controller
         ->sum('amount'); 
         $ra_cr=Rider_Account::where("rider_id",$rider_id)
         ->whereMonth("month",$onlyMonth)
+        ->where("payment_status","pending")
         ->where("type","cr")
         ->where("source",'!=',"salary")
         ->sum('amount');  
