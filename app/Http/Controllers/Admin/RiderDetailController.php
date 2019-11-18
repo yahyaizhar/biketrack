@@ -167,14 +167,14 @@ class RiderDetailController extends Controller
         
         $fuel_amount=Company_Account::whereNotNull('fuel_expense_id')
         ->where('rider_id',$riders->rider_id)
-        ->whereMonth('month',$month)
+        ->whereMonth('month',$month) 
         ->sum('amount');
          $fuel+=$fuel_amount;
-         $bones==Company_Account::where('source',"400 Trips Acheivement Bonus")
+         $bon=Company_Account::where('source',"400 Trips Acheivement Bonus")
          ->where('rider_id',$riders->rider_id)
          ->whereMonth('month',$month)
          ->sum('amount');
-          $bonus+=$bones;
+          $bonus+=$bon;
 
         //  $_rent=Company_Account::where("source",'Bike Rent')
         // ->where('rider_id','6')
