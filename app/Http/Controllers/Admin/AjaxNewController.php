@@ -2054,6 +2054,13 @@ class AjaxNewController extends Controller
             ->sum('amount');
             return round($fuel_amount,2);
         }) 
+        ->addColumn('bonus', function($rider) use ($month) {
+            $bonus_amount=Company_Account::where('source','400 Trips Acheivement Bonus')
+            ->where('rider_id',$rider->rider_id)
+            ->whereMonth('month',$month)
+            ->sum('amount');
+            return round($bonus_amount,2);
+        }) 
         ->addColumn('bike_rent', function($rider) use ($month) {
             $bike_rent_amount=Company_Account::where('source','Bike Rent')
             ->where('rider_id',$rider->rider_id)
@@ -2126,13 +2133,17 @@ class AjaxNewController extends Controller
             ->where('rider_id',$rider->rider_id)
             ->whereMonth('month',$month)
             ->sum('amount');
+            $bonus_amount=Company_Account::where('source','400 Trips Acheivement Bonus')
+            ->where('rider_id',$rider->rider_id)
+            ->whereMonth('month',$month)
+            ->sum('amount');
 
-            $profit=($payout_sum+$dc_sum+$cod_sum+$penalty_sum)-($salary+$ncw_sum+$tips_sum+$fuel_amount+$sim_charges+$salik_amount);
+            $profit=($payout_sum+$dc_sum+$cod_sum+$penalty_sum)-($bonus_amount+$salary+$ncw_sum+$tips_sum+$fuel_amount+$sim_charges+$salik_amount);
             $total_profit=$profit-$bike_rent_amount;
             return round($total_profit,2);
         })
 
-        ->rawColumns(['profit','bike_rent','fuel','payout','penalty','aed_extra_trips','net_salary','rider_name','bike_number', 'salik', 'sim_charges', 'dc', 'cod', 'aed_hours','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
+        ->rawColumns(['bonus','profit','bike_rent','fuel','payout','penalty','aed_extra_trips','net_salary','rider_name','bike_number', 'salik', 'sim_charges', 'dc', 'cod', 'aed_hours','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
         ->make(true);
     }
     public function getBikeAccounts($ranges)
