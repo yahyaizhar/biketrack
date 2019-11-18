@@ -291,10 +291,11 @@ class AjaxController extends Controller
                 return $item->sim_id == $sim_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
             });
 
+            $startMonth = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
             if (isset($history_found)) {
                 $rider_id=$history_found->rider_id;
                 $CA=Company_Account::where("source","Sim Transaction")
-                ->where("month",$month)
+                ->where("month",$startMonth)
                 ->where("payment_status","paid")
                 ->where("rider_id",$rider_id)
                 ->get()
