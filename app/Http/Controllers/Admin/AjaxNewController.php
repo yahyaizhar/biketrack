@@ -2118,8 +2118,7 @@ class AjaxNewController extends Controller
             $sim_charges=Company_Account::where("source","Sim extra usage")
             ->where('rider_id',$rider->rider_id)
             ->whereMonth('month',$month)
-            ->where('type','dr')
-            ->whereNotNull('sim_transaction_id')
+            ->where('type','cr')
             ->sum('amount');
             //  $salik_amount=0;
             // $assign_bike=Assign_bike::where('rider_id',$rider->rider_id)->where('status','active')->get()->first();
