@@ -191,7 +191,7 @@ class AjaxController extends Controller
         ->addColumn('rider_id', function($sims) use ($month){
             $sim_history = Sim_history::all();
             $sim_id=$sims->id;
-            $history = Arr::first($sim_history, function ($item, $key) use ($sim_id, $month) {
+            $history_found = Arr::first($sim_history, function ($item, $key) use ($sim_id, $month) {
                 $created_at =Carbon::parse($item->created_at)->format('Y-m-d');
                 $created_at =Carbon::parse($created_at);
     
@@ -200,7 +200,7 @@ class AjaxController extends Controller
                 $req_date =Carbon::parse($month);
                 if($item->status=="active"){ 
                     // mean its still active, we need to match only created at
-                    return $item->sim_id == $sim_id && $req_date->greaterThanOrEqualTo($created_at);
+                    return $item->sim_id == $sim_id ;
                 }
                 
                 return $item->sim_id == $sim_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
