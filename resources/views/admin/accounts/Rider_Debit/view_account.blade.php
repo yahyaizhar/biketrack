@@ -1340,6 +1340,7 @@ $('form#bonus').on('submit', function(e){
         var zomato=$('.zomato').text();
         var mics=$('.mics').text();
         var denial_penalty='0';
+        var cash_paid=$('.cash_paid').text();
 
         salary=salary==""?0:salary;
         ncw=ncw==""?0:ncw;
@@ -1359,23 +1360,24 @@ $('form#bonus').on('submit', function(e){
         mics=mics==""?0:mics;
         denial_penalty=denial_penalty==""?0:denial_penalty;
         dicipline=dicipline==""?0:dicipline;
+        cash_paid=cash_paid==""?0:cash_paid;
 
         var total_cr=parseFloat(salary)+parseFloat(ncw)+parseFloat(bike_allowns)+parseFloat(tip)+parseFloat(bones);
-        var total_dr=parseFloat(bike_fine)+parseFloat(mics)+parseFloat(denial_penalty)+parseFloat(dicipline)+parseFloat(mobile)+parseFloat(rta)+parseFloat(advance)+parseFloat(salik)+parseFloat(sim)+parseFloat(dc)+parseFloat(macdonald);
+        var total_dr=parseFloat(bike_fine)+parseFloat(cash_paid)+parseFloat(mics)+parseFloat(denial_penalty)+parseFloat(dicipline)+parseFloat(mobile)+parseFloat(rta)+parseFloat(advance)+parseFloat(salik)+parseFloat(sim)+parseFloat(dc)+parseFloat(macdonald);
         var net_pay=total_cr-total_dr;
         $('.total_cr').html(total_cr);
         $('.total_dr').html(total_dr);
         $('.net_pay').html(net_pay);
         $('#total_net_pay').html(net_pay);
-        var cash_paid=$('.cash_pay').text();
-        cash_paid=cash_paid==""?0:parseFloat(cash_paid);
-        var total_remain=net_pay-cash_paid;
-        if (cash_paid=="") {
-            $(".remaining_pay").html($('#closing_balance').text(_ClosingBalance));
-        }
-        else{
-            $(".remaining_pay").html(total_remain);
-        }
+        // var cash_paid=$('.cash_pay').text();
+        // cash_paid=cash_paid==""?0:parseFloat(cash_paid);
+        // var total_remain=net_pay-cash_paid;
+        // if (cash_paid=="") {
+        //     $(".remaining_pay").html($('#closing_balance').text(_ClosingBalance));
+        // }
+        // else{
+        //     $(".remaining_pay").html(total_remain);
+        // }
         
 
  }
