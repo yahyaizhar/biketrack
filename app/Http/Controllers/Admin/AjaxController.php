@@ -268,11 +268,42 @@ class AjaxController extends Controller
             return $sim_tran->extra_usage_payment_status;
         })
         ->addColumn('bill_status', function($sims) use ($month){
-            $sim_tran = $sims->Sim_Transaction()->whereMonth('month_year', Carbon::parse($month)->format('m'))->get()->first();
-            if(!isset($sim_tran)){
-                return 'Pending';
+            // $sim_tran = $sims->Sim_Transaction()->whereMonth('month_year', Carbon::parse($month)->format('m'))->get()->first();
+            // if(!isset($sim_tran)){
+            //     return 'Pending';
+            // }
+            // return $sim_tran->bill_status;
+           
+            $sim_history = Sim_history::all();
+            $sim_id=$sims->id;
+            $history_found = Arr::first($sim_history, function ($item, $key) use ($sim_id, $month) {
+                $created_at =Carbon::parse($item->created_at)->format('Y-m-d');
+                $created_at =Carbon::parse($created_at);
+    
+                $updated_at =Carbon::parse($item->updated_at)->format('Y-m-d');
+                $updated_at =Carbon::parse($updated_at);
+                $req_date =Carbon::parse($month);
+                if($item->status=="active"){ 
+                    // mean its still active, we need to match only created at
+                    return $item->sim_id == $sim_id && $req_date->greaterThanOrEqualTo($created_at);
+                }
+                
+                return $item->sim_id == $sim_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
+            });
+
+            if (isset($history_found)) {
+                $rider_id=$history_found->rider_id;
+                $CA=Company_Account::where("source","Sim Transaction")
+                ->where("month",$month)
+                ->where("payment_status","paid")
+                ->where("rider_id",$rider_id)
+                ->get()
+                ->first();
+                if (isset($CA)) {
+                    return "Paid";
+                }
             }
-            return $sim_tran->bill_status;
+            return "Pending";
         })
         
         // ->addColumn('actions', function($simTransaction){
