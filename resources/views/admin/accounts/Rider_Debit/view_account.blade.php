@@ -1368,7 +1368,7 @@ $('form#bonus').on('submit', function(e){
         $('.total_cr').html(total_cr);
         $('.total_dr').html(total_dr);
         $('.net_pay').html(net_pay);
-        $('#total_net_pay').html(net_pay);
+        $('#total_net_pay').html(net_pay.toFixed(2));
         // var cash_paid=$('.cash_pay').text();
         // cash_paid=cash_paid==""?0:parseFloat(cash_paid);
         // var total_remain=net_pay-cash_paid;
