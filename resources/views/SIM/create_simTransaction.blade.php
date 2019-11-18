@@ -144,7 +144,7 @@
                 method: "GET"
             })
             .done(function(data) { 
-                $('#sims [name="usage_limit"], #sims [name="bill_amount"]').val(data.sim_history.allowed_balance).trigger('change');
+                $('#sims [name="usage_limit"], #sims [name="bill_amount"]').val(data.sim_histories.allowed_balance).trigger('change');
 
             });
     });
