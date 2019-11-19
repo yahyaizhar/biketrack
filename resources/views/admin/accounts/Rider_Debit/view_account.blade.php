@@ -617,7 +617,7 @@
             <th style="border:1px solid #dddd;width:25%;text-align:center;">DEDUCTIONS:</th>
         </tr>
         <tr>
-            <td style="border:1px solid #dddd;width:50%;text-align:left;">BASIC SALARY (<strong>Trips:</strong><span class="total_trips"></span>) (<strong>Hours:</strong><span class="total_hours"></span>)</td>
+            <td style="border:1px solid #dddd;width:50%;text-align:left;">BASIC SALARY (<strong>Trips:</strong><span class="total_trips"></span>) (<strong>Hours:</strong><span class="total_hours"></span>) (<strong>Extra Trips:</strong><span class="extra_trips"></span>)</td>
             <td contenteditable='true' class="salary" style="border:1px solid #dddd;width:25%;text-align:end;"></td> 
             <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
         </tr>
@@ -1170,6 +1170,7 @@ $('form#bonus').on('submit', function(e){
                     $('.salary').html(response.salary);
                     $('.total_trips').html(response.trips);
                     $('.total_hours').html(response.hours);
+                    $('.extra_trips').html(response.extra_trips);
                     $('.ncw').html(response.ncw);
                     $('.bike_allowns').html(response.bike_allowns);
                     $('.tip').html(response.tip);
