@@ -617,7 +617,7 @@
             <th style="border:1px solid #dddd;width:25%;text-align:center;">DEDUCTIONS:</th>
         </tr>
         <tr>
-            <td style="border:1px solid #dddd;width:50%;text-align:left;">BASIC SALARY</td>
+            <td style="border:1px solid #dddd;width:50%;text-align:left;">BASIC SALARY (<strong>Trips:</strong><span class="total_trips"></span>) (<strong>Hours:</strong><span class="total_hours"></span>)</td>
             <td contenteditable='true' class="salary" style="border:1px solid #dddd;width:25%;text-align:end;"></td> 
             <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
         </tr>
@@ -1168,10 +1168,13 @@ $('form#bonus').on('submit', function(e){
                     $('.employee_id').html('KRD-'+response.employee_id);
                     $('.payment_date').html('PAYMENT DATE: '+response.payment_date);
                     $('.salary').html(response.salary);
+                    $('.total_trips').html(response.trips);
+                    $('.total_hours').html(response.hours);
                     $('.ncw').html(response.ncw);
                     $('.bike_allowns').html(response.bike_allowns);
                     $('.tip').html(response.tip);
                     $('.bones').html(response.bones);
+
 
                     $('.bike_fine').html(response.bike_fine);
                     $('.advance').html(response.advance);
