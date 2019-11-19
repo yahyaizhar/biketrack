@@ -190,6 +190,7 @@ console.log(riders_data);
             "FEID":item.client_rider_id, 
             "Name":item.rider_name,
             "Bike No": item.bike_number,
+            "Fuel Expense": item.fuel,
             "Advance":item.advance,
             "Salik":item.salik,
             "Sim Charges":item.sim_charges,
