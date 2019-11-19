@@ -323,16 +323,16 @@ class AjaxNewController extends Controller
         ->where('source','salary')
         ->where('payment_status','pending')
         ->sum('amount');
-        $trips=Income_zomato::where("rider_id",$ranges['rider_id'])
-        ->whereDate('date', '>=',$from)
-        ->whereDate('date', '<=',$to)
-        ->sum('log_in_hours_payable');
-        if($trips > 286) $trips = 286;
         $hours=Income_zomato::where("rider_id",$ranges['rider_id'])
         ->whereDate('date', '>=',$from)
         ->whereDate('date', '<=',$to)
+        ->sum('log_in_hours_payable');
+        if($hours > 286) $hours = 286;
+        $trips=Income_zomato::where("rider_id",$ranges['rider_id'])
+        ->whereDate('date', '>=',$from)
+        ->whereDate('date', '<=',$to)
         ->sum('trips_payable');
-        if ( $hours > 400) $hours=400; 
+        if ( $trips > 400) $trips=400; 
 
         $ncw=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
