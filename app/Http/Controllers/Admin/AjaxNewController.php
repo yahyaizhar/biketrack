@@ -467,7 +467,7 @@ class AjaxNewController extends Controller
         return DataTables::of($rider_statements)
         ->addColumn('date', function($rider_statement){
             if($rider_statement->type=='skip') return '';
-            return Carbon::parse($rider_statement->month)->format('M d, Y');
+            return Carbon::parse($rider_statement->created_at)->format('M d, Y');
         })
         ->addColumn('desc', function($rider_statement) use ($rider_statements){
             if($rider_statement->type=='skip') return '<strong >'.$rider_statement->source.'</strong>';
@@ -701,7 +701,7 @@ class AjaxNewController extends Controller
         return DataTables::of($company_statements)
         ->addColumn('date', function($company_statements){
             if($company_statements->type=='skip') return '';
-            return Carbon::parse($company_statements->month)->format('M d, Y');
+            return Carbon::parse($company_statements->created_at)->format('M d, Y');
         })
         ->addColumn('desc', function($company_statement)  use ($company_statements){
             if($company_statement->type=='skip') return '<strong >'.$company_statement->source.'</strong>';
@@ -2300,7 +2300,7 @@ class AjaxNewController extends Controller
         return DataTables::of($bike_statements)
         ->addColumn('date', function($bike_statements){
             if($bike_statements->type=='skip') return '';
-            return Carbon::parse($bike_statements->month)->format('M d, Y');
+            return Carbon::parse($bike_statements->created_at)->format('M d, Y');
         })
         ->addColumn('desc', function($bike_statements){
             if($bike_statements->type=='skip') return '<strong >'.$bike_statements->source.'</strong>';
