@@ -589,7 +589,7 @@
         <tr><th style="border:1px solid #dddd;background-color:#73acac69;text-align:center;">SALARY SLIP</th></tr>
         <tr><th class="month_year" style="border:1px solid #dddd;text-align:center;"></th></tr>
     </table>
-    <table style=" margin-top: 2px;">
+    <table style=" margin-top: 1px;">
         <tr>
             <th style="border:1px solid #dddd;width:25%;text-align:left;">NAME</th>
             <td class="rider_name" style="border:1px solid #dddd;width:25%;text-align:left;"></td>
@@ -610,7 +610,7 @@
         </tr>
     </table>
 
-    <table style=" margin-top: 2px;">
+    <table style=" margin-top: 1px;">
         <tr>
             <th style="border:1px solid #dddd;width:50%;text-align:center;">DESCRIPTION</th>
             <th style="border:1px solid #dddd;width:25%;text-align:center;">EARNINGS</th>
@@ -736,7 +736,7 @@
     <div style=" margin-top: 1px;"> 
         <p><strong>Thumb:</strong>__________________________</p>
     </div>
-    <div style=" margin-top: 1px;text-align:end;"> 
+    <div style="text-align:end;"> 
         <p><strong>KING RIDERS DELIVERY SERVICES LLC</strong></p>
         <p><Strong>ACCOUNTANT</Strong></p>
         <p><strong>DANISH MUNIR</strong></p>
