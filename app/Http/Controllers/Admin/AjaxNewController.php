@@ -250,7 +250,7 @@ class AjaxNewController extends Controller
         return DataTables::of($bills)
         ->addColumn('date', function($bill){
             if (isset($bill->created_at)) {
-                return Carbon::parse($bill->created_at)->format('M, Y');
+                return Carbon::parse($bill->created_at)->format('M d, Y');
             }
         })
         ->addColumn('bill', function($bill){
@@ -2392,7 +2392,7 @@ class AjaxNewController extends Controller
         return DataTables::of($bills)
         ->addColumn('date', function($bill){
             if (isset($bill->created_at)) {
-                return Carbon::parse($bill->created_at)->format('M, Y');
+                return Carbon::parse($bill->created_at)->format('M d, Y');
             }
         })
         ->addColumn('bill', function($bill){
