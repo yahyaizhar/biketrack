@@ -2391,7 +2391,7 @@ class AjaxNewController extends Controller
 
         return DataTables::of($bills)
         ->addColumn('date', function($bill){
-            if (isset($bill->month)) {
+            if (isset($bill->created_at)) {
                 return Carbon::parse($bill->created_at)->format('M, Y');
             }
         })
