@@ -16,6 +16,9 @@
     .kt-grid__item.kt-grid__item--fluid.kt-grid.kt-grid--hor.mt-minus-60 {
     margin-top: -140px;
     }   
+    td .print_class{
+        font-size:12px;
+    }
 </style>
 @endsection
 @section('main-content') 
@@ -589,7 +592,7 @@
         <tr><th style="border:1px solid #dddd;background-color:#73acac69;text-align:center;">SALARY SLIP</th></tr>
         <tr><th class="month_year" style="border:1px solid #dddd;text-align:center;"></th></tr>
     </table>
-    <table style=" margin-top: 1px;">
+    <table class="print_class" style=" margin-top: 1px;">
         <tr>
             <th style="border:1px solid #dddd;width:25%;text-align:left;">NAME</th>
             <td class="rider_name" style="border:1px solid #dddd;width:25%;text-align:left;"></td>
@@ -727,7 +730,7 @@
         </tr> --}}
     </table>
     <div style=""> 
-        <p style="font-size:14px;"><strong>Note: </strong>MR <span id="rider_id_1"></span> received <span id="total_net_pay"></span> from King Riders Delivery Services LLC, and MR <span id="rider_id_2"></span> no is not valid for any kind of Gratuity, yearly tickets or any other expenses other than the salary.
+        <p style="font-size:12px;line-height: 14px;"><strong>Note: </strong>MR <span id="rider_id_1"></span> received <span id="total_net_pay"></span> from King Riders Delivery Services LLC, and MR <span id="rider_id_2"></span> no is not valid for any kind of Gratuity, yearly tickets or any other expenses other than the salary.
         </p>
     </div>
     <div style=" margin-top: 1px;">  
@@ -737,9 +740,9 @@
         <p><strong>Thumb:</strong>__________________________</p>
     </div>
     <div style="text-align:end;"> 
-        <p><strong>KING RIDERS DELIVERY SERVICES LLC</strong></p>
-        <p><Strong>ACCOUNTANT</Strong></p>
-        <p><strong>DANISH MUNIR</strong></p>
+        <p style="margin-bottom: 3px;"><strong>KING RIDERS DELIVERY SERVICES LLC</strong></p>
+        <p style="margin-bottom: 3px;"><Strong>ACCOUNTANT</Strong></p>
+        <p style="margin-bottom: 3px;"><strong>DANISH MUNIR</strong></p>
     </div>
 </div>
 </div>
