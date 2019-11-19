@@ -30,18 +30,18 @@
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <div class="kt-portlet">
             <div class="row row-no-padding">
-                    <div class="col-md-1">
-                        <div class="my-2 mx-1">
-                            <label>Rider ID:</label>
-                            <select class="form-control kt-select2" name="rider_id_num" class="rider_selector" >
-                                @foreach ($riders as $rider)
-                                <option value="{{ $rider->id }}">
-                                    {{ $rider->id }}
-                                </option>     
-                                @endforeach 
-                            </select>
-                        </div>
+                <div class="col-md-1">
+                    <div class="my-2 mx-1">
+                        <label>Rider ID:</label>
+                        <select class="form-control kt-select2" name="rider_id_num" class="rider_selector" >
+                            @foreach ($riders as $rider)
+                            <option value="{{ $rider->id }}">
+                                {{ $rider->id }}
+                            </option>     
+                            @endforeach 
+                        </select>
                     </div>
+                </div>
                 <div class="col-md-4">
                     <div class="my-2 mx-4">
                         <label>Select Rider:</label>
@@ -68,10 +68,14 @@
                                 <input type="radio" data-start="{{Carbon\Carbon::now()->startOfMonth()->format('Y-m-d')}}" data-end="{{Carbon\Carbon::now()->endOfMonth()->format('Y-m-d')}}" name="sort_by" value="month" checked> Current Month
                                 <span></span>
                             </label>  
-                            <label class="kt-radio">
+                            {{-- <label class="kt-radio">
                                 <input type="radio" data-start="{{Carbon\Carbon::now()->startOfYear()->format('Y-m-d')}}" data-end="{{Carbon\Carbon::now()->endOfYear()->format('Y-m-d')}}" name="sort_by" value="year"> This Year
                                 <span></span>
-                            </label>
+                            </label> --}}
+                            <label class="kt-radio">
+                                <input type="radio" name="select_month" id="select_month" value="select_month"> Select Month
+                                <span></span>
+                            </label>  
                             <label class="kt-radio">
                                 <input type="radio" name="sort_by" value="custom"> Custom
                                 <span></span>
@@ -83,6 +87,28 @@
                             <div class="kt-portlet__head-actions" id="custom_range" style="display:none">
                                 <label for="dr1">Select range</label>
                                 <input type="text" id="d1" name="dr1" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="mt-2">
+                            <div class="kt-portlet__head-actions" id="select_month_custom" style="display:none">
+                                <label for="dr1">Select month</label>
+                                <select class="form-control bk-select2" name="custom_select_month" value="select month">
+                                    <option >Select Month</option>
+                                    <option value="{{Carbon\Carbon::now()->format('Y')}}-01-01">January</option>   
+                                    <option value="{{Carbon\Carbon::now()->format('Y')}}-02-01">Febuary</option>   
+                                    <option value="{{Carbon\Carbon::now()->format('Y')}}-03-01">March</option>   
+                                    <option value="{{Carbon\Carbon::now()->format('Y')}}-04-01">April</option>   
+                                    <option value="{{Carbon\Carbon::now()->format('Y')}}-05-01">May</option>   
+                                    <option value="{{Carbon\Carbon::now()->format('Y')}}-06-01">June</option>   
+                                    <option value="{{Carbon\Carbon::now()->format('Y')}}-07-01">July</option>   
+                                    <option value="{{Carbon\Carbon::now()->format('Y')}}-08-01">August</option>   
+                                    <option value="{{Carbon\Carbon::now()->format('Y')}}-09-01">September</option>   
+                                    <option value="{{Carbon\Carbon::now()->format('Y')}}-10-01">October</option>   
+                                    <option value="{{Carbon\Carbon::now()->format('Y')}}-11-01">November</option>   
+                                    <option value="{{Carbon\Carbon::now()->format('Y')}}-12-01">December</option>    
+                                </select> 
                             </div>
                         </div>
                     </div>
@@ -1075,6 +1101,8 @@ $('form#bonus').on('submit', function(e){
         });
 
         $('[name="sort_by"]').on('change', function(){
+            $('[name="select_month"]').prop("checked",false);
+            $('#select_month_custom').fadeOut('fast');
             var _SortBy = $(this).val();
             var start = $(this).attr('data-start'),
                 end = $(this).attr('data-end');
@@ -1103,7 +1131,42 @@ $('form#bonus').on('submit', function(e){
             getData(url);
             // var _Url = "{{url('/company/debits/get_salary_deduction/')}}"+"/"+_riderId+''
         });
-
+        $('[name="select_month"]').on("change",function(){
+            $('[name="sort_by"]').prop("checked",false);
+            $('#custom_range').fadeOut('fast');
+        var selected_month=$(this).val();
+                $('#select_month_custom').fadeOut('fast');
+            if(selected_month=='select_month'){
+                $('#select_month_custom').fadeIn('fast');
+                $('[name="custom_select_month"]').on("change",function(){
+                    var custom_month=$(this).val();
+                    var year=new Date(custom_month).format("yyyy");
+                    var month=new Date(custom_month).format("mm");
+                    var start=new Date(year,month-1,1).format("yyyy-mm-dd");
+                    var end=new Date(year,month,0).format("yyyy-mm-dd");
+                    var _data = {
+                        range: {
+                            start_date: start,
+                            end_date: end
+                        },
+                        rider_id: $('[name="rider_id"]').val()
+                    };
+                    var data = {
+                        r1d1:_data.range.start_date, 
+                        r1d2:_data.range.end_date,
+                        rider_id: $('[name="rider_id"]').val(),
+                        sort_by: $('[name="select_month"]:checked').val()
+                    }
+                    
+                    console.log(data);
+                    biketrack.updateURL(data);
+                    var url = "{{ url('admin/accounts/rider/account/') }}"+"/"+JSON.stringify(_data) ;
+                    getData(url);
+                });
+                return;
+            }
+            
+        });
         $('input[name="dr1"]').daterangepicker({
             opens: 'left', 
             locale: {
@@ -1136,8 +1199,9 @@ $('form#bonus').on('submit', function(e){
             
             console.log(data);
             biketrack.updateURL(data);
-            var url = "{{ url('admin/accounts/rider/account/') }}"+"/"+JSON.stringify(_data) ;
+            var url = JSON.stringify(_data) 
             getData(url);
+            console.log(url);
         }
 
 
