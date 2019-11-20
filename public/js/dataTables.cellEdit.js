@@ -110,12 +110,21 @@ jQuery.fn.dataTable.Api.register('MakeCellsEditable()', function (settings) {
                 editableCellsRow = row;
 
                 var cell = table.cell(this).node();
-                var oldValue = table.cell(this).data();
+                var oldValue = table.cell(this).data(); 
                 // Sanitize value
                 oldValue = sanitizeCellValue(oldValue);
+                var isRestrictable = false;
+                if(settings.dont_apply_if_null){
+                    var to_be_restricted = settings.dont_apply_if_null;
+                    var _data = row.data();
+                    isRestrictable = true;
+                    if(_data[to_be_restricted] && _data[to_be_restricted]!=null){
+                        isRestrictable = false;
+                    }
+                }
 
                 // Show input
-                if (!$(cell).find('input').length && !$(cell).find('select').length && !$(cell).find('textarea').length) {
+                if (!$(cell).find('input').length && !$(cell).find('select').length && !$(cell).find('textarea').length && !isRestrictable) {
                     // Input CSS
                     var input = getInputHtml(currentColumnIndex, settings, oldValue);
                     $(cell).html(input.html);

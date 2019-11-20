@@ -61,7 +61,7 @@ margin-left: 10px;
                 <thead>
                     <tr>
                     
-                        <th>KR-ID</th>
+                        <th class="th_krId">KR-ID</th>
                         <th>Name</th>
                         <th>Assigned To</th>
                         <th>Sim Number</th>
@@ -205,6 +205,12 @@ $(function() {
     }
     var mark_table=function(){};
     riders_table = $('#riders-table').DataTable(_settings);
+    var _queryRiderId = biketrack.getUrlParameter('rider_id');
+    if(_queryRiderId!=""){
+        riders_table.columns( 1 ) 
+        .search( _queryRiderId )
+        .draw();
+    }
     mark_table = function(){
         var _val = '';
         try {

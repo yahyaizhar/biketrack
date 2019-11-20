@@ -98,6 +98,7 @@ Route::group([
     ]);
     Route::get('/rider/{rider}/location', 'RiderController@showRiderLocation')->name('admin.rider.location');
     Route::get('/rider/{rider}/profile', 'RiderController@showRiderProfile')->name('admin.rider.profile');
+    // Route::get('/rider/{rider}/viewaccount', 'RiderController@showRiderAccount')->name('admin.rider.account');
     Route::get('/active_riders','RiderController@getRider_active')->name('admin.riders.active');
     Route::get('/rider/{rider}/ridesReport', 'RiderController@showRidesReport')->name('admin.rider.ridesReport');
     Route::delete('/ridesReportRecord/{record}', 'RiderController@deleteRidesReportRecord')->name('admin.rider.ridesReport.delete');

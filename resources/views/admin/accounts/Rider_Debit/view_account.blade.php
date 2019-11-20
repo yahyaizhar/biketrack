@@ -73,7 +73,7 @@
                                 <span></span>
                             </label> --}}
                             <label class="kt-radio">
-                                <input type="radio" name="select_month" id="select_month" value="select_month"> Select Month
+                                <input type="radio" name="sort_by" id="select_month" value="select_month"> Select Month
                                 <span></span>
                             </label>  
                             <label class="kt-radio">
@@ -792,6 +792,7 @@
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<script src="{{ asset('js/dataTables.cellEdit.js') }}" type="text/javascript"></script>
 <script>
         $('.print_slip_editable').hide();
         $("#for_print").on("click",function(){
@@ -920,7 +921,7 @@
                 }
             });
         });
-$('form#bonus').on('submit', function(e){
+        $('form#bonus').on('submit', function(e){   
             e.preventDefault();
             var _form = $(this);
             var _modal = _form.parents('.modal');
@@ -1074,11 +1075,19 @@ $('form#bonus').on('submit', function(e){
             var _SortBy = _SE.val();
             var start = _SE.attr('data-start'),
                 end = _SE.attr('data-end');
-            $('#custom_range').fadeOut('fast');
+            $('#custom_range,#select_month_custom').fadeOut('fast');
             if(_SortBy=='custom'){
                 $('#custom_range').fadeIn('fast');
                 start = $('[name="dr1"]').data('daterangepicker').startDate.format('YYYY-MM-DD');
                 end = $('[name="dr1"]').data('daterangepicker').endDate.format('YYYY-MM-DD');
+            }
+            if(_SortBy=='select_month'){
+                $('#select_month_custom').fadeIn('fast');
+                var custom_month=$('[name="custom_select_month"]').val();
+                var year=new Date(custom_month).format("yyyy");
+                var month=new Date(custom_month).format("mm");
+                start=new Date(year,month-1,1).format("yyyy-mm-dd");
+                end=new Date(year,month,0).format("yyyy-mm-dd");
             }
             var _data = {
                 range: {
@@ -1101,14 +1110,16 @@ $('form#bonus').on('submit', function(e){
         });
 
         $('[name="sort_by"]').on('change', function(){
-            $('[name="select_month"]').prop("checked",false);
-            $('#select_month_custom').fadeOut('fast');
             var _SortBy = $(this).val();
             var start = $(this).attr('data-start'),
                 end = $(this).attr('data-end');
-            $('#custom_range').fadeOut('fast');
+            $('#custom_range,#select_month_custom').fadeOut('fast');
             if(_SortBy=='custom'){
                 $('#custom_range').fadeIn('fast');
+                return;
+            }
+            if(_SortBy=='select_month'){
+                $('#select_month_custom').fadeIn('fast');
                 return;
             }
             var _data = {
@@ -1131,42 +1142,33 @@ $('form#bonus').on('submit', function(e){
             getData(url);
             // var _Url = "{{url('/company/debits/get_salary_deduction/')}}"+"/"+_riderId+''
         });
-        $('[name="select_month"]').on("change",function(){
-            $('[name="sort_by"]').prop("checked",false);
-            $('#custom_range').fadeOut('fast');
-        var selected_month=$(this).val();
-                $('#select_month_custom').fadeOut('fast');
-            if(selected_month=='select_month'){
-                $('#select_month_custom').fadeIn('fast');
-                $('[name="custom_select_month"]').on("change",function(){
-                    var custom_month=$(this).val();
-                    var year=new Date(custom_month).format("yyyy");
-                    var month=new Date(custom_month).format("mm");
-                    var start=new Date(year,month-1,1).format("yyyy-mm-dd");
-                    var end=new Date(year,month,0).format("yyyy-mm-dd");
-                    var _data = {
-                        range: {
-                            start_date: start,
-                            end_date: end
-                        },
-                        rider_id: $('[name="rider_id"]').val()
-                    };
-                    var data = {
-                        r1d1:_data.range.start_date, 
-                        r1d2:_data.range.end_date,
-                        rider_id: $('[name="rider_id"]').val(),
-                        sort_by: $('[name="select_month"]:checked').val()
-                    }
-                    
-                    console.log(data);
-                    biketrack.updateURL(data);
-                    var url = "{{ url('admin/accounts/rider/account/') }}"+"/"+JSON.stringify(_data) ;
-                    getData(url);
-                });
-                return;
+        
+        $('[name="custom_select_month"]').on("change",function(){
+            var custom_month=$(this).val();
+            var year=new Date(custom_month).format("yyyy");
+            var month=new Date(custom_month).format("mm");
+            var start=new Date(year,month-1,1).format("yyyy-mm-dd");
+            var end=new Date(year,month,0).format("yyyy-mm-dd");
+            var _data = {
+                range: {
+                    start_date: start,
+                    end_date: end
+                },
+                rider_id: $('[name="rider_id"]').val()
+            };
+            var data = {
+                r1d1:_data.range.start_date, 
+                r1d2:_data.range.end_date,
+                rider_id: $('[name="rider_id"]').val(),
+                sort_by: $('[name="sort_by"]:checked').val()
             }
             
+            console.log(data);
+            biketrack.updateURL(data);
+            var url = "{{ url('admin/accounts/rider/account/') }}"+"/"+JSON.stringify(_data) ;
+            getData(url);
         });
+                
         $('input[name="dr1"]').daterangepicker({
             opens: 'left', 
             locale: {
@@ -1282,28 +1284,95 @@ $('form#bonus').on('submit', function(e){
                 ],
                 responsive:true,
             });
+
+            table.MakeCellsEditable("destroy"); 
+            table.MakeCellsEditable({
+                "onUpdate": InlineEdit_CallBack,
+                "onValidate": function(updatedCell, updatedRow, newValue){
+                    var __data = updatedRow.data();
+                    console.warn('__data', __data);
+                    return true;
+                },
+                "allowNulls": {
+                    "errorClass": 'error'
+                },
+                "columns": [1,2,3,4],
+                "inputCss":'form-control',
+                "dont_apply_if_null": "action", // check the field, if null, then will not make the cell editable (custom work - on public\js\dataTables.cellEdit.js)
+                "inputTypes": [
+                    {
+                        "column":2, 
+                        "type":"number-confirm", 
+                        "options":null 
+                    }
+                ]
+            });
         }
 
-        var r1d1=biketrack.getUrlParameter('r1d1');
-        var r1d2=biketrack.getUrlParameter('r1d2');
-        var rider_id=biketrack.getUrlParameter('rider_id');
-        var sort_by=biketrack.getUrlParameter('sort_by');
-        console.log(r1d1, r1d2, rider_id, sort_by);
-        
-        if(r1d1!="" && r1d2!="" && rider_id!="" && sort_by!=""){
-            $('[name="sort_by"][value="'+sort_by+'"]').prop('checked', true);
-            $('#custom_range').hide();
-            if(sort_by=="custom"){
-                $('#custom_range').fadeIn('fast');
-                $('[name="dr1"]')
-                .daterangepicker({ startDate: new Date(r1d1).format('mm/dd/yyyy'), endDate: new Date(r1d2).format('mm/dd/yyyy') })
-                .on('apply.daterangepicker', function(ev, picker) {
-                    dpCallback(picker);
-                });
+        function InlineEdit_CallBack (updatedCell, updatedRow, oldValue) {
+            console.log(updatedRow.data());
+            return;
+            var __data = updatedRow.data();
+            var _filterMonth = new Date(Date.now()).format("mmmm yyyy");
+            if($('#month_picker').val()!==""){
+                _filterMonth =$('#month_picker').val();
             }
-            $('[name="rider_id"],[name="rider_id_num"]').val(rider_id).trigger('change');
+                // if(__data.month && __data.month !== ""){
+                //     _filterMonth = __data.month;
+                // }
+            __data.filterMonth=new Date(_filterMonth).format('yyyy-mm-dd');
+            __data.status=$(__data.status).text().toLowerCase();
+            var _data = {
+                action: "edit",
+                data: __data
+            };
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{route('SimTransaction.edit_sim_inline')}}",
+                data: _data,
+                method: "POST"
+            }).done(function(data){
+                console.log(data);
+            }).fail(function(xhr, status, error){
+                console.log(xhr);
+                console.log(error);
+                console.log(status);
+            });
         }
-        $('[name="sort_by"]:checked').trigger('change')
+
+        var init_table=function(){
+            var r1d1=biketrack.getUrlParameter('r1d1');
+            var r1d2=biketrack.getUrlParameter('r1d2');
+            var rider_id=biketrack.getUrlParameter('rider_id');
+            var sort_by=biketrack.getUrlParameter('sort_by');
+            console.log(r1d1, r1d2, rider_id, sort_by);
+            
+            if(r1d1!="" && r1d2!="" && rider_id!="" && sort_by!=""){
+                $('[name="sort_by"][value="'+sort_by+'"]').prop('checked', true);
+                $('#custom_range').hide();
+                if(sort_by=="custom"){
+                    $('#custom_range').fadeIn('fast');
+                    $('[name="dr1"]')
+                    .daterangepicker({ startDate: new Date(r1d1).format('mm/dd/yyyy'), endDate: new Date(r1d2).format('mm/dd/yyyy') })
+                    .on('apply.daterangepicker', function(ev, picker) {
+                        dpCallback(picker);
+                    });
+                }
+                if(sort_by=="select_month"){
+                    $('#select_month_custom').fadeIn('fast');
+                    $('[name="custom_select_month"]').val(r1d1).trigger('change.select2');
+                }
+                $('[name="rider_id"],[name="rider_id_num"]').val(rider_id);
+                $('[name="rider_id_num"]').trigger('change');
+                return;
+            }
+            $('[name="sort_by"]:checked').trigger('change')
+        }
+        init_table();
     })
     function remaining_pay($rider_id, account_id){
         var r1d1=biketrack.getUrlParameter('r1d1');

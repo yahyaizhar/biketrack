@@ -621,6 +621,10 @@ class RiderController extends Controller
         $sim_history_change = $rider->Sim_history()->where('status', 'active')->get()->first();
         return view('admin.rider.profile', compact('rider','sim_history_change','rider_details','bike','sim','sim_history','bike_html','assign_bike'));
     }
+    public function showRiderAccount(Rider $rider)
+    {
+
+    }
     
     public function sendSMS(Rider $rider, Request $request)
     {
