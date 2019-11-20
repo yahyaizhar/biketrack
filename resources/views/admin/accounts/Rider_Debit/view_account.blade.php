@@ -590,7 +590,7 @@
                         <th>Recieveable from Rider</th>
                         <th>Cash Paid</th> 
                         <th>Running Balance</th>
-                        <th>Action</th>
+                        {{-- <th>Action</th> --}}
                     </tr>
                 </thead>
             </table>
@@ -1281,7 +1281,7 @@
                     { data: 'dr', name: 'dr' },
                     { data: 'cash_paid', name: 'cash_paid' },
                     { data: 'balance', name: 'balance' },
-                    { data: 'action', name: 'action' },
+                    // { data: 'action', name: 'action' },
                     
                 ],
                 responsive:true,
@@ -1540,5 +1540,65 @@
  $('#print_slip_for_rider [contenteditable]').on('change input', function(){
 	change_edit_prints_inputs();
 })
+function deleteCompanyRows(id,model_class,model_id,rider_id,string,month){
+    var url = "{{ url('admin/delete/accounts/rows') }}";
+    console.log(url);
+    swal.fire({
+        title: 'Are you sure?',
+        text: "You want to delete!",
+        type: 'warning', 
+        showCancelButton: true,
+        confirmButtonText: 'Yes!'
+    }).then(function(result) {
+        if (result.value) {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            var data={
+                "id":id,
+                "model_class":model_class,
+                "model_id":model_id,
+                "rider_id":rider_id,
+                "string":string,
+                "month":month,
+            };
+            $.ajax({
+                url  :  url,
+                type : 'GET',
+                data : data,
+                beforeSend: function() {            
+                    $('.loading').show();
+                },
+                complete: function(){
+                    $('.loading').hide();
+                },
+                success: function(data){
+                    swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Record Deleted successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    // table.ajax.reload(null, false);
+                    // table_bills.ajax.reload(null, false);
+                },
+                error: function(error){
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Unable to Delete.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+        }
+    });
+    
+}
 </script>
 @endsection

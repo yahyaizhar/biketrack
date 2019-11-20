@@ -2216,15 +2216,20 @@ public function client_income_update(Request $request,$id){
         $bikes =bike::all();
         return view('admin.accounts.Bike-Debit.bike_accounts',compact('bikes'));
     }
-    public function delete_company_account_rows(Request $r){
+    public function delete_account_rows(Request $r){
         $id=$r->id;
         $model_class=$r->model_class;
         $model_id=$r->model_id;
-        $CA=Company_Account::find($id);
-        $CA->delete(); 
+        $rider_id=$r->rider_id;
+        $string=$r->string;
+        $month=$r->month;
+        $CA=Company_Account::where("rider_id",$rider_id)->where("month",$month)->where($string,$model_id)->get();
+        // $CA->delete(); 
+        $RA=Rider_Account::where("rider_id",$rider_id)->where("month",$month)->where($string,$model_id)->get();
         if (isset($model_class)) {
             $alter=$model_class::find($model_id);
-            $alter->delete();
+            // $alter->delete();
         }
+        return $CA ." //////  ". $RA;
     }
 }
