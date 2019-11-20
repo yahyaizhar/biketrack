@@ -214,7 +214,7 @@
                         <th>Debit</th>
                         <th>Company Profit</th>
                         <th>Running Balance</th>
-                        <th>Action</th>
+                        {{-- <th>Action</th> --}}
                         
                     </tr>
                 </thead>
@@ -632,7 +632,7 @@
                     { data: 'bill', name: 'bill' },
                     { data: 'amount', name: 'amount' },
                     { data: 'payment_status', name: 'payment_status' },
-                    { data: 'action', name: 'action' },
+                    // { data: 'action', name: 'action' },
                    
                 ],
                 responsive:true,
@@ -760,8 +760,8 @@ function FineBike(rider_id,bike_fine_id,amount,month){
         }
     });
 }
-function deleteCompanyRows(id,model_class,model_id){
-    var url = "{{ url('admin/delete/accounts/company/rows') }}";
+function deleteCompanyRows(id,model_class,model_id,rider_id,string,month){
+    var url = "{{ url('admin/delete/accounts/rows') }}";
     console.log(url);
     swal.fire({
         title: 'Are you sure?',
@@ -780,6 +780,9 @@ function deleteCompanyRows(id,model_class,model_id){
                 "id":id,
                 "model_class":model_class,
                 "model_id":model_id,
+                "rider_id":rider_id,
+                "string":string,
+                "month":month,
             };
             $.ajax({
                 url  :  url,

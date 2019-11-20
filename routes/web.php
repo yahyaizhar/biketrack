@@ -229,8 +229,7 @@ Route::group([
 
     Route::get("/Salary/accounts/rider/account","AccountsController@rider_account")->name("admin.accounts.rider_account");
     Route::get("/Salary/accounts/company/account","AccountsController@company_account")->name("admin.accounts.company_account");
-    Route::get("/delete/accounts/company/rows","AccountsController@delete_company_account_rows")->name("admin.delete_company_account_rows");
-    Route::get("/delete/accounts/rider/rows","AccountsController@delete_rider_account_rows")->name("admin.delete_rider_account_rows");
+    Route::get("/delete/accounts/rows","AccountsController@delete_account_rows")->name("admin.delete_company_account_rows");
     Route::get("/Salary/accounts/bike/account","AccountsController@bike_account")->name("admin.accounts.bike_account");
     Route::get('/rider/accounts/{id}/updateStatus','AccountsController@updatePaymentStatus')->name('Rider.updatePaymentStatus');
 
