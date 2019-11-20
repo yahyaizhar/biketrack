@@ -214,6 +214,7 @@
                         <th>Debit</th>
                         <th>Company Profit</th>
                         <th>Running Balance</th>
+                        <th>Action</th>
                         
                     </tr>
                 </thead>
@@ -591,6 +592,7 @@
                     { data: 'dr', name: 'dr' },
                     { data: 'company_profit', name: 'company_profit' },
                     { data: 'balance', name: 'balance' },
+                    { data: 'action', name: 'action' },
                    
                 ],
                 responsive:true,
@@ -645,6 +647,10 @@
         var already_triggered = false;
         if(r1d1!="" && r1d2!="" && rider_id!="" && sort_by!=""){
             $('[name="sort_by"][value="'+sort_by+'"]').prop('checked', true);
+            if (sort_by=='select_month') {
+                $('[name="select_month"][value="'+sort_by+'"]').prop('checked', true);
+                $('[name="sort_by"][value="'+sort_by+'"]').prop('checked', false);
+            }
             $('#custom_range').hide();
             if(sort_by=="custom"){
                 $('#custom_range').fadeIn('fast');
@@ -753,6 +759,63 @@ function FineBike(rider_id,bike_fine_id,amount,month){
             });
         }
     });
+}
+function deleteCompanyRows(id,model_class,model_id){
+    var url = "{{ url('admin/delete/accounts/company/rows') }}";
+    console.log(url);
+    swal.fire({
+        title: 'Are you sure?',
+        text: "You want to delete!",
+        type: 'warning', 
+        showCancelButton: true,
+        confirmButtonText: 'Yes!'
+    }).then(function(result) {
+        if (result.value) {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            var data={
+                "id":id,
+                "model_class":model_class,
+                "model_id":model_id,
+            };
+            $.ajax({
+                url  :  url,
+                type : 'GET',
+                data : data,
+                beforeSend: function() {            
+                    $('.loading').show();
+                },
+                complete: function(){
+                    $('.loading').hide();
+                },
+                success: function(data){
+                    swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Record Deleted successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    // table.ajax.reload(null, false);
+                    // table_bills.ajax.reload(null, false);
+                },
+                error: function(error){
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Unable to Delete.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+        }
+    });
+    
 }
 </script> 
 @endsection
