@@ -761,7 +761,7 @@ function FineBike(rider_id,bike_fine_id,amount,month){
     });
 }
 function deleteCompanyRows(id,model_class,model_id){
-    var url = "{{ url('admin/delete/accounts/company/rows') }}" + "/" + id+ "/" + model_class+ "/" + model_id;
+    var url = "{{ url('admin/delete/accounts/company/rows') }}";
     console.log(url);
     swal.fire({
         title: 'Are you sure?',
@@ -776,9 +776,15 @@ function deleteCompanyRows(id,model_class,model_id){
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+            var data={
+                "id":id,
+                "model_class":model_class,
+                "model_id":model_id,
+            };
             $.ajax({
-                url : url,
-                type : 'POST',
+                url  :  url,
+                type : 'GET',
+                data : data,
                 beforeSend: function() {            
                     $('.loading').show();
                 },

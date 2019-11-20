@@ -774,14 +774,41 @@ class AjaxNewController extends Controller
                 $model_id=$company_statements->sim_transaction_id;
                 $sim_transaction=new Sim_Transaction();
                 $model=get_class($sim_transaction);
-                $baseClass = class_basename($model);
+                
+            }
+            if($company_statements->fuel_expense_id!=null){
+                $model_id=$company_statements->fuel_expense_id;
+                $fuel=new Fuel_Expense();
+                $model=get_class($fuel);
+            }	
+            if($company_statements->advance_return_id!=null){
+                $model_id=$company_statements->advance_return_id;
+                $advance=new AdvanceReturn();
+                $model=get_class($advance);
+            }
+            if($company_statements->id_charge_id!=null){
+                $model_id=$company_statements->	id_charge_id;
+                $id_charges=new Id_charge();
+                $model=get_class($id_charges);
+            }
+            if($company_statements->mobile_installment_id!=null){
+                $model_id=$company_statements->mobile_installment_id;
+                $mobile_installment=new Mobile_installment();
+                $model=get_class($mobile_installment);
             }
             // if($company_statements->fuel_expense_id!=null){
             //     $model_id=$company_statements->fuel_expense_id;
-            //     $model=get_class("App\Model\Accounts\Fuel_Expense");
+            //     $fuel=new Fuel_Expense();
+            //     $model=get_class($fuel);
+            // }
+            // if($company_statements->fuel_expense_id!=null){
+            //     $model_id=$company_statements->fuel_expense_id;
+            //     $fuel=new Fuel_Expense();
+            //     $model=get_class($fuel);
             // }
             if ($model_id!=null) {
-                return '<i class="fa fa-trash-alt"  onclick="deleteCompanyRows('.$company_statements->id.',\''.$baseClass.'\','.$model_id.')"></i>';
+                $model = addslashes($model);
+                return '<i class="fa fa-trash-alt"  onclick="deleteCompanyRows('.$company_statements->id.',\''.$model.'\','.$model_id.')"></i>';
             }
             
          
