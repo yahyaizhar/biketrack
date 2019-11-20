@@ -2216,4 +2216,12 @@ public function client_income_update(Request $request,$id){
         $bikes =bike::all();
         return view('admin.accounts.Bike-Debit.bike_accounts',compact('bikes'));
     }
+    public function delete_company_account_rows($id,$model_class,$model_id){
+        $CA=Company_Account::find($id);
+    //    $CA->delete();
+        $alter=$model_class::find($model_id);
+        // $alter->save();
+
+       return $alter;
+    }
 }

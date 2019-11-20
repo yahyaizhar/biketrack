@@ -767,13 +767,33 @@ class AjaxNewController extends Controller
             if($company_statements->type=='skip') return '<strong id="'.$_id.'"> '.round($running_balance,2).'</strong>';
             return round($running_balance,2);
         })
+        ->addColumn('action', function($company_statements) use (&$running_balance){
+            $model="";
+            $model_id="";
+            if($company_statements->sim_transaction_id!=null){
+                $model_id=$company_statements->sim_transaction_id;
+                $sim_transaction=new Sim_Transaction();
+                $model=get_class($sim_transaction);
+                $baseClass = class_basename($model);
+            }
+            // if($company_statements->fuel_expense_id!=null){
+            //     $model_id=$company_statements->fuel_expense_id;
+            //     $model=get_class("App\Model\Accounts\Fuel_Expense");
+            // }
+            if ($model_id!=null) {
+                return '<i class="fa fa-trash-alt"  onclick="deleteCompanyRows('.$company_statements->id.',\''.$baseClass.'\','.$model_id.')"></i>';
+            }
+            
+         
+            
+        })
         
         ->with([
             'closing_balance' => round($closing_balance,2),
             'last_month' => $first_month,
             'running_static_balance' => $running_static_balance
         ])
-        ->rawColumns(['desc','date','cr','dr','balance', 'company_profit'])
+        ->rawColumns(['desc','date','cr','dr','balance', 'company_profit','action'])
         ->make(true);
     }
     

@@ -1448,7 +1448,7 @@ $('form#bonus').on('submit', function(e){
         cash_paid=cash_paid==""?0:cash_paid;
 
         var total_cr=parseFloat(salary)+parseFloat(ncw)+parseFloat(bike_allowns)+parseFloat(tip)+parseFloat(bones);
-        var total_dr=parseFloat(bike_fine)+parseFloat(cash_paid)+parseFloat(mics)+parseFloat(denial_penalty)+parseFloat(dicipline)+parseFloat(mobile)+parseFloat(rta)+parseFloat(advance)+parseFloat(salik)+parseFloat(sim)+parseFloat(dc)+parseFloat(macdonald);
+        var total_dr=parseFloat(zomato)+parseFloat(bike_fine)+parseFloat(cash_paid)+parseFloat(mics)+parseFloat(denial_penalty)+parseFloat(dicipline)+parseFloat(mobile)+parseFloat(rta)+parseFloat(advance)+parseFloat(salik)+parseFloat(sim)+parseFloat(dc)+parseFloat(macdonald);
         var net_pay=parseFloat(total_cr-total_dr).toFixed(2);
         $('.total_cr').html(total_cr);
         $('.total_dr').html(total_dr);
