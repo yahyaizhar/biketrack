@@ -61,11 +61,11 @@
                         <label>Show result of:</label>
                         <div class="kt-radio-inline">
                             <label class="kt-radio">
-                                    <input type="radio" data-start="{{Carbon\Carbon::now()->subMonths(1)->startOfMonth()->format('Y-m-d')}}" data-end="{{Carbon\Carbon::now()->subMonths(1)->endOfMonth()->format('Y-m-d')}}" name="sort_by" value="week" > Last Month
+                                    <input type="radio" id="" data-start="{{Carbon\Carbon::now()->subMonths(1)->startOfMonth()->format('Y-m-d')}}" data-end="{{Carbon\Carbon::now()->subMonths(1)->endOfMonth()->format('Y-m-d')}}" name="sort_by" value="last_month" >{{carbon\carbon::now()->subMonths(1)->format('F')}}
                                 <span></span>
                             </label>
                             <label class="kt-radio">
-                                <input type="radio" data-start="{{Carbon\Carbon::now()->startOfMonth()->format('Y-m-d')}}" data-end="{{Carbon\Carbon::now()->endOfMonth()->format('Y-m-d')}}" name="sort_by" value="month" checked> Current Month
+                                <input type="radio" id="" data-start="{{Carbon\Carbon::now()->startOfMonth()->format('Y-m-d')}}" data-end="{{Carbon\Carbon::now()->endOfMonth()->format('Y-m-d')}}" name="sort_by" value="month" checked> {{carbon\carbon::now()->format('F')}}
                                 <span></span>
                             </label>  
                             {{-- <label class="kt-radio">
