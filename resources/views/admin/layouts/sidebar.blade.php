@@ -124,7 +124,7 @@ if (Auth::user()->type=="su") {
                     <li class="kt-menu__item" aria-haspopup="true">
                         <div class="form-group px-3">
                             <div class="input-group">
-                                <input type="text" id="nav__rider_search_input" class="form-control" placeholder="Enter Rider id..">
+                                <input type="text" id="nav__rider_search_input" onkeyup="if(event.keyCode==13) {nav__search_rider_by_id()}" class="form-control" placeholder="Enter Rider id..">
                                 <div class="input-group-append">
                                     <button class="btn btn-warning" onclick="nav__search_rider_by_id()" type="button">Find!</button>
                                 </div>
