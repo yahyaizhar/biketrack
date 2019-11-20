@@ -616,7 +616,7 @@ class AjaxNewController extends Controller
             'cash_paid'=>$cash_paid_in_advance,
         ])
     
-        ->rawColumns(['closing_balance','cash_paid','desc','date','cr','dr','balance'])
+        ->rawColumns(['action','closing_balance','cash_paid','desc','date','cr','dr','balance'])
         ->make(true);
     }
     public function getCompanyAccounts($ranges)
