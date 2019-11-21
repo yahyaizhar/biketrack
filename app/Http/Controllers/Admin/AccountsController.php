@@ -1458,15 +1458,15 @@ public function income_zomato_import(Request $r){
     $unique_id=uniqid().'-'.time();
 
 
-    $a = Income_zomato::where('import_id', '5dd698a58ce69-1574344869')->get();
-    foreach ($a as $b) {
-       $c = $b->p_id;
-       Company_Account::where('income_zomato_id',$c)->delete();
-       Rider_Account::where('income_zomato_id',$c)->delete();
-    }
-    return response()->json([
-        'data'=>'ok'
-    ]);
+    // $a = Income_zomato::where('import_id', '5dd698a58ce69-1574344869')->get();
+    // foreach ($a as $b) {
+    //    $c = $b->p_id;
+    //    Company_Account::where('income_zomato_id',$c)->delete();
+    //    Rider_Account::where('income_zomato_id',$c)->delete();
+    // }
+    // return response()->json([
+    //     'data'=>'ok'
+    // ]);
     
 
     /*======================Finding top 3 riders===================*/
