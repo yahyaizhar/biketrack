@@ -1441,6 +1441,7 @@ elseif($fuel_expense->type=="cash"){
 public function income_zomato_index(){
     return view('admin.accounts.Income.zomato');
 }
+
 public function income_zomato_import(Request $r){
     
     $data = $r->data;
@@ -1455,8 +1456,49 @@ public function income_zomato_import(Request $r){
     $update_data = [];
     $i=0;
     $unique_id=uniqid().'-'.time();
+
+
+    $a = Income_zomato::where('import_id', '5dd698a58ce69-1574344869')->get();
+    foreach ($a as $b) {
+       $c = $b->p_id;
+       Company_Account::where('income_zomato_id',$c)->delete();
+       Rider_Account::where('income_zomato_id',$c)->delete();
+    }
+    return response()->json([
+        'data'=>'ok'
+    ]);
+    
+
+    /*======================Finding top 3 riders===================*/
+    $top_riders = $data;
+    
+    
+    usort($top_riders, function($a, $b){
+        $tripsA = isset($a['trips_payable'])?$a['trips_payable']:0;
+        $hoursA = isset($a['log_in_hours_payable'])?$a['log_in_hours_payable']:0;
+    
+        $tripsB = isset($b['trips_payable'])?$b['trips_payable']:0;
+        $hoursB = isset($b['log_in_hours_payable'])?$b['log_in_hours_payable']:0;
+    
+    
+        if($tripsA < $tripsB){
+            return 1;
+        }else if($tripsA == $tripsB){
+            if($hoursA > $hoursB){
+                return 1;
+            }
+            return 0;
+        }
+        return -1;
+    }); 
+    //top 3 riders FEIDs
+    $top_rider_1_FEID = $top_riders[0]['feid'];
+    $top_rider_2_FEID = $top_riders[1]['feid'];
+    $top_rider_3_FEID = $top_riders[2]['feid'];
+    /*======================/Finding top 3 riders===================*/
     foreach ($data as $item) {
         $i++;
+
         $zi_found = Arr::first($zi, function ($item_zi, $key) use ($item) {
             return $item_zi->feid == $item['feid'] && $item_zi->date == Carbon::createFromFormat('d/m/Y',$item['onboarding_date'])->format('Y-m-d');
         });
@@ -1469,6 +1511,7 @@ public function income_zomato_import(Request $r){
         }
         $p_id=uniqid().time().rand();
         if(!isset($zi_found)){
+            $client_name=isset($item['jdid'])?"Jeebly":"Zomato";
             $obj = [];
             $obj['p_id']=$p_id;
             $obj['import_id']=$unique_id;
@@ -1489,13 +1532,27 @@ public function income_zomato_import(Request $r){
             $obj['date']=isset($item['onboarding_date'])?Carbon::createFromFormat('d/m/Y',$item['onboarding_date'])->format('Y-m-d'):null;
             $obj['created_at']=Carbon::now();
             $obj['updated_at']=Carbon::now();
+
+            $top_rider_pos = "";
+            if( $obj['feid'] == $top_rider_1_FEID) $top_rider_pos=1;
+            if( $obj['feid'] == $top_rider_2_FEID) $top_rider_pos=2;
+            if( $obj['feid'] == $top_rider_3_FEID) $top_rider_pos=3;
+            $obj['setting']="";
+            if($top_rider_pos != ""){
+                $settings=[];
+                $settings['top_position']=$top_rider_pos;
+                $obj['setting']=json_encode($settings);
+            }
+
             array_push($zomato_obj, $obj);
+
+           
 
             $ca_amt1 = ($obj['amount_for_login_hours']+$obj['settlements']+$obj['amount_to_be_paid_against_orders_completed']+$obj['ncw_incentives']+$obj['tips_payouts'])
             - ($obj['dc_deductions'] + $obj['mcdonalds_deductions'] + $obj['denials_penalty']);
             $ca_obj = [];
             $ca_obj['income_zomato_id']=$p_id;
-            $ca_obj['source']='Zomato Payout';
+            $ca_obj['source']=$client_name.' Payout';
             $ca_obj['rider_id']=$rider_id;
             $ca_obj['amount']=$ca_amt1;
             $ca_obj['month']=$obj['date'];
@@ -1578,12 +1635,50 @@ public function income_zomato_import(Request $r){
             }
 
             $ra_amt2 = $obj['ncw_incentives'];
-                if($ra_amt2 > 0){
+            if($ra_amt2 > 0){
                 $ra_obj = [];
                 $ra_obj['income_zomato_id']=$p_id;
                 $ra_obj['source']='NCW Incentives';
                 $ra_obj['rider_id']=$rider_id;
                 $ra_obj['amount']=$ra_amt2;
+                $ra_obj['month']=$obj['date'];
+                $ra_obj['type']='cr';
+                $ra_obj['created_at']=Carbon::now();
+                $ra_obj['updated_at']=Carbon::now();
+                array_push($ra_objects, $ra_obj);
+            }
+
+            //bonus after 400 trips
+            
+            $total_trips = $obj['trips_payable'];
+            if($total_trips > 400){
+                $bonus_amount = 50;  // bonus amount
+                $extra_msg = "";
+                if( $obj['feid'] == $top_rider_1_FEID){
+                    $bonus_amount = 100;
+                    $extra_msg = " + 1st Position Bonus";
+                } 
+                if( $obj['feid'] == $top_rider_2_FEID){
+                    $bonus_amount = 75;
+                    $extra_msg = " + 2nd Position Bonus";
+                } 
+
+                $ca_obj = [];
+                $ca_obj['income_zomato_id']=$p_id;
+                $ca_obj['source']='400 Trips Acheivement Bonus'.$extra_msg;
+                $ca_obj['rider_id']=$rider_id;
+                $ca_obj['amount']=$bonus_amount;
+                $ca_obj['month']=$obj['date'];
+                $ca_obj['type']='dr';
+                $ca_obj['created_at']=Carbon::now();
+                $ca_obj['updated_at']=Carbon::now();
+                array_push($ca_objects, $ca_obj);
+
+                $ra_obj = [];
+                $ra_obj['income_zomato_id']=$p_id;
+                $ra_obj['source']='400 Trips Acheivement Bonus';
+                $ra_obj['rider_id']=$rider_id;
+                $ra_obj['amount']=$bonus_amount;
                 $ra_obj['month']=$obj['date'];
                 $ra_obj['type']='cr';
                 $ra_obj['created_at']=Carbon::now();
