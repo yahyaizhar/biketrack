@@ -529,66 +529,56 @@ class AjaxNewController extends Controller
             return round($running_balance,2);
         })
         ->addColumn('action', function($rider_statement) use (&$running_balance){
-            // $model="";
-            // $model_id="";
-            // $rider_id="";
-            // $month="";
-            // $string="";
-            // if($rider_statement->sim_transaction_id!=null){
-            //     $model_id=$rider_statement->sim_transaction_id;
-            //     $rider_id=$company_statements->rider_id;
-            //     $string="sim_transaction_id";
-            //     $month=Carbon::parse($company_statements->month)->format('m');
-            //     $sim_transaction=new Sim_Transaction();
-            //     $model=get_class($sim_transaction);
+            $model="";
+            $model_id="";
+            $rider_id="";
+            $month="";
+            $string="";
+            if($rider_statement->sim_transaction_id!=null){
+                $model_id=$rider_statement->sim_transaction_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="sim_transaction_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $sim_transaction=new Sim_Transaction();
+                $model=get_class($sim_transaction);
                 
-            // }
-            // if($rider_statement->fuel_expense_id!=null){
-            //     $model_id=$rider_statement->fuel_expense_id;
-            //     $rider_id=$company_statements->rider_id;
-            //     $string="fuel_expense_id";
-            //     $month=Carbon::parse($company_statements->month)->format('m');
-            //     $fuel=new Fuel_Expense();
-            //     $model=get_class($fuel);
-            // }	
-            // if($rider_statement->advance_return_id!=null){
-            //     $model_id=$rider_statement->advance_return_id;
-            //     $rider_id=$company_statements->rider_id;
-            //     $string="advance_return_id";
-            //     $month=Carbon::parse($company_statements->month)->format('m');
-            //     $advance=new AdvanceReturn();
-            //     $model=get_class($advance);
-            // }
-            // if($rider_statement->id_charge_id!=null){
-            //     $model_id=$rider_statement->id_charge_id;
-            //     $rider_id=$company_statements->rider_id;
-            //     $string="id_charge_id";
-            //     $month=Carbon::parse($company_statements->month)->format('m');
-            //     $id_charges=new Id_charge();
-            //     $model=get_class($id_charges);
-            // }
-            // if($rider_statement->mobile_installment_id!=null){
-            //     $model_id=$rider_statement->mobile_installment_id;
-            //     $rider_id=$company_statements->rider_id;
-            //     $string="mobile_installment_id";
-            //     $month=Carbon::parse($company_statements->month)->format('m');
-            //     $mobile_installment=new Mobile_installment();
-            //     $model=get_class($mobile_installment);
-            // }
-            // // if($rider_statement->fuel_expense_id!=null){
-            // //     $model_id=$rider_statement->fuel_expense_id;
-            // //     $fuel=new Fuel_Expense();
-            // //     $model=get_class($fuel);
-            // // }
-            // // if($rider_statement->fuel_expense_id!=null){
-            // //     $model_id=$rider_statement->fuel_expense_id;
-            // //     $fuel=new Fuel_Expense();
-            // //     $model=get_class($fuel);
-            // // }
-            // if ($model_id!=null) {
-            //     $model = addslashes($model);
-            //     return '<i class="fa fa-trash-alt"  onclick="deleteCompanyRows('.$rider_statement->id.',\''.$model.'\','.$model_id.','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
-            // }
+            }
+            if($rider_statement->fuel_expense_id!=null){
+                $model_id=$rider_statement->fuel_expense_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="fuel_expense_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $fuel=new Fuel_Expense();
+                $model=get_class($fuel);
+            }	
+            if($rider_statement->advance_return_id!=null){
+                $model_id=$rider_statement->advance_return_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="advance_return_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $advance=new AdvanceReturn();
+                $model=get_class($advance);
+            }
+            if($rider_statement->id_charge_id!=null){
+                $model_id=$rider_statement->id_charge_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="id_charge_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $id_charges=new Id_charge();
+                $model=get_class($id_charges);
+            }
+            if($rider_statement->mobile_installment_id!=null){
+                $model_id=$rider_statement->mobile_installment_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="mobile_installment_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $mobile_installment=new Mobile_installment();
+                $model=get_class($mobile_installment);
+            }
+            if ($model_id!=null) {
+                $model = addslashes($model);
+                return '<i class="fa fa-trash-alt"  onclick="deleteCompanyRows('.$rider_statement->id.',\''.$model.'\','.$model_id.','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
+            }
         })
         ->addColumn('cash_paid', function($rider_statement) use (&$cash_paid){
             if($rider_statement->payment_status=='paid'){
@@ -879,10 +869,7 @@ class AjaxNewController extends Controller
             if ($model_id!=null) {
                 $model = addslashes($model);
                 return '<i class="fa fa-trash-alt"  onclick="deleteCompanyRows('.$company_statements->id.',\''.$model.'\','.$model_id.','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
-            }
-            
-         
-            
+            } 
         })
         
         ->with([

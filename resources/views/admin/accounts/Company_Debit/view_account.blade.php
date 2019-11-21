@@ -214,7 +214,7 @@
                         <th>Debit</th>
                         <th>Company Profit</th>
                         <th>Running Balance</th>
-                        {{-- <th>Action</th> --}}
+                        <th>Action</th>
                         
                     </tr>
                 </thead>
@@ -231,7 +231,7 @@
                                 <th>Bill</th>
                                 <th>Amount</th>
                                 <th>Payment Status</th>
-                                <th>Action</th>
+                                <th>Action</th> 
                                 
                             </tr>
                         </thead>
@@ -592,7 +592,7 @@
                     { data: 'dr', name: 'dr' },
                     { data: 'company_profit', name: 'company_profit' },
                     { data: 'balance', name: 'balance' },
-                    // { data: 'action', name: 'action' },
+                    { data: 'action', name: 'action' },
                    
                 ],
                 responsive:true,
@@ -632,7 +632,7 @@
                     { data: 'bill', name: 'bill' },
                     { data: 'amount', name: 'amount' },
                     { data: 'payment_status', name: 'payment_status' },
-                    // { data: 'action', name: 'action' },
+                    { data: 'action', name: 'action' },
                    
                 ],
                 responsive:true,
@@ -760,6 +760,8 @@ function FineBike(rider_id,bike_fine_id,amount,month){
         }
     });
 }
+
+
 function deleteCompanyRows(id,model_class,model_id,rider_id,string,month){
     var url = "{{ url('admin/delete/accounts/rows') }}";
     console.log(url);
@@ -802,8 +804,8 @@ function deleteCompanyRows(id,model_class,model_id,rider_id,string,month){
                         showConfirmButton: false,
                         timer: 1500
                     });
-                    // table.ajax.reload(null, false);
-                    // table_bills.ajax.reload(null, false);
+                    table.ajax.reload(null, false);
+                    table_bills.ajax.reload(null, false);
                 },
                 error: function(error){
                     swal.fire({

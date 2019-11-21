@@ -2223,13 +2223,26 @@ public function client_income_update(Request $request,$id){
         $rider_id=$r->rider_id;
         $string=$r->string;
         $month=$r->month;
-        $CA=Company_Account::where("rider_id",$rider_id)->where("month",$month)->where($string,$model_id)->get();
-        // $CA->delete(); 
-        $RA=Rider_Account::where("rider_id",$rider_id)->where("month",$month)->where($string,$model_id)->get();
         if (isset($model_class)) {
             $alter=$model_class::find($model_id);
-            // $alter->delete();
+            if (isset($alter)) {
+                $alter->delete();
+            }
+           
         }
-        return $CA ." //////  ". $RA;
+        $CA=Company_Account::where("rider_id",$rider_id)
+        ->whereMonth("month",$month)
+        ->where($string,$model_id)
+        ->get();
+        foreach ($CA as $ca) {
+            $ca->delete();
+        }
+        $RA=Rider_Account::where("rider_id",$rider_id)
+        ->whereMonth("month",$month)
+        ->where($string,$model_id)
+        ->get();
+        foreach ($RA as $ra) {
+            $ra->delete();
+        }
     }
 }

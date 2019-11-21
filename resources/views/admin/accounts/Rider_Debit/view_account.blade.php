@@ -590,7 +590,7 @@
                         <th>Recieveable from Rider</th>
                         <th>Cash Paid</th> 
                         <th>Running Balance</th>
-                        {{-- <th>Action</th> --}}
+                        <th>Action</th>
                     </tr>
                 </thead>
             </table>
@@ -1281,7 +1281,7 @@
                     { data: 'dr', name: 'dr' },
                     { data: 'cash_paid', name: 'cash_paid' },
                     { data: 'balance', name: 'balance' },
-                    // { data: 'action', name: 'action' },
+                    { data: 'action', name: 'action' },
                     
                 ],
                 responsive:true,
@@ -1582,7 +1582,7 @@ function deleteCompanyRows(id,model_class,model_id,rider_id,string,month){
                         showConfirmButton: false,
                         timer: 1500
                     });
-                    // table.ajax.reload(null, false);
+                    table.ajax.reload(null, false);
                     // table_bills.ajax.reload(null, false);
                 },
                 error: function(error){
