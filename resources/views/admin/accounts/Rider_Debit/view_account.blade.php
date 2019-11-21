@@ -1263,7 +1263,7 @@
 
                     var total_cr=parseFloat(response.salary)+parseFloat(response.ncw)+parseFloat(response.bike_allowns)+parseFloat(response.tip)+parseFloat(response.bones);
                     var total_dr=parseFloat(response.cash_paid)+parseFloat(response.bike_fine)+parseFloat(response.mics)+parseFloat(response.denial_penalty)+parseFloat(response.dicipline)+parseFloat(response.mobile)+parseFloat(response.rta)+parseFloat(response.advance)+parseFloat(response.salik)+parseFloat(response.sim)+parseFloat(response.dc)+parseFloat(response.macdonald);
-                    var net_pay=total_cr-total_dr;
+                    var net_pay=(total_cr-total_dr).toFixed(2);
                     $('.remaining_pay').text(_ClosingBalance);
                     $('.total_cr').html(total_cr);
                     $('.total_dr').html(total_dr);
