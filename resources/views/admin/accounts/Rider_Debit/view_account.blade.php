@@ -1235,7 +1235,7 @@
                     $('.rider_name').html(response.rider);
                     $('.month_year').html(response.month_year);
                     $('.today_date').html(response.today_date);
-                    $('.employee_id').html('KRD-'+response.employee_id);
+                    $('.employee_id').html('KR-'+response.employee_id);
                     $('.payment_date').html('PAYMENT DATE: '+response.payment_date);
                     $('.salary').html(response.salary);
                     $('.total_trips').html(response.trips);
