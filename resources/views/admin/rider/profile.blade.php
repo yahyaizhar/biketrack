@@ -510,7 +510,7 @@
                                 $status_text = $rider->status == 1 ? 'Inactive' : 'Active';
                             @endphp
                             <button class="btn btn-primary btn-sm btn-upper"  onclick="updateRiderStatus({{$rider->id}},{{$rider->status}})"><i class="fa fa-toggle-on"></i>{{$status_text}}</button>
-                            <a style="float:right;" href="{{ route('admin.riders.edit', $rider->id) }}" class="btn btn-primary btn-sm btn-upper">Edit{{$rider->id}}</a>&nbsp;
+                            <a style="float:right;" href="{{ route('admin.riders.edit', $rider->id) }}" class="btn btn-primary btn-sm btn-upper">Edit</a>&nbsp;
                         </div>
                     </div>
                     <div class="kt-portlet__foot">
