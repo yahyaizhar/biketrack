@@ -1491,10 +1491,10 @@ public function income_zomato_import(Request $r){
         }
         return -1;
     }); 
-    //top 3 riders FEIDs
+    //top 3 riders FEIDs isset($item['feid'])?$item['feid']:null;
     $top_rider_1_FEID = $top_riders[0]['feid'];
-    $top_rider_2_FEID = $top_riders[1]['feid'];
-    $top_rider_3_FEID = $top_riders[2]['feid'];
+    $top_rider_2_FEID = isset($top_riders[1]['feid'])?$top_riders[1]['feid']:null;
+    $top_rider_3_FEID = isset($top_riders[2]['feid'])?$top_riders[2]['feid']:null;
     /*======================/Finding top 3 riders===================*/
     foreach ($data as $item) {
         $i++;
