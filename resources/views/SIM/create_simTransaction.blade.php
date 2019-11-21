@@ -100,30 +100,56 @@
         $('#sims [name="month_year"],#sims [name="sim_id"]').on('change', function(){
             var _month = new Date($('#sims [name="month_year"]').val()).format('yyyy-mm-dd');
             //select current rider
-            var gb_rider_id = $('#gb_rider_id').val();
-            if(typeof gb_rider_id !== "undefined"){
+            var sim_id = $('#sims [name="sim_id"]').val();
+            if(typeof sim_id !== "undefined"){
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }, 
-                    url:"{{url('admin/sim/ajax/get_active_sims/')}}"+"/"+gb_rider_id+"/"+_month,
+                    url:"{{url('admin/sim/ajax/get_active_sims/')}}"+"/"+sim_id+"/"+_month+"/sim",
                     method: "GET"
                 })
                 .done(function(data) {  
                     console.log(data); 
                     if(data.sim_histories!==null){
-                        $('#sims [name="rider_id"]').val(data.sim_histories.rider_id).trigger('change');
+                        $('#sims [name="rider_id"]').val(data.sim_histories.rider_id).trigger('change.select2');
                         $('#sims [name="usage_limit"], #sims [name="bill_amount"]').val(data.sim_histories.allowed_balance).trigger('change');                
                     }
-                    // else{
-                    //     $('#sims [name="sim_id"]')[0].selectedIndex = -1;
-                    //     $('#sims [name="sim_id"]').trigger('change');
-                    // }
+                    else{
+                        $('#sims [name="rider_id"]')[0].selectedIndex = -1;
+                        $('#sims [name="rider_id"]').trigger('change.select2');
+                    }
                     // $('#sims [name="usage_limit"], #sims [name="bill_amount"]').val(data.usage_limit).trigger('change');
                 });
             }
         })
-        $('#sims [name="month_year"]').trigger('change');
+        $('#sims [name="rider_id"]').on('change', function(){
+            var _month = new Date($('#sims [name="month_year"]').val()).format('yyyy-mm-dd');
+            //select current rider
+            var rider_id = $('#sims [name="rider_id"]').val();
+            if(typeof rider_id !== "undefined"){
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }, 
+                    url:"{{url('admin/sim/ajax/get_active_sims/')}}"+"/"+rider_id+"/"+_month+"/rider",
+                    method: "GET"
+                })
+                .done(function(data) {  
+                    console.log(data); 
+                    if(data.sim_histories!==null){
+                        $('#sims [name="sim_id"]').val(data.sim_histories.sim_id).trigger('change.select2');
+                        $('#sims [name="usage_limit"], #sims [name="bill_amount"]').val(data.sim_histories.allowed_balance).trigger('change');                
+                    }
+                    else{
+                        $('#sims [name="sim_id"]')[0].selectedIndex = -1;
+                        $('#sims [name="sim_id"]').trigger('change.select2');
+                    }
+                    // $('#sims [name="usage_limit"], #sims [name="bill_amount"]').val(data.usage_limit).trigger('change');
+                });
+            }
+        })
+        //$('#sims [name="month_year"]').trigger('change');
         $('#sims [name="rider_id"]').trigger('change');
         //     $(' #sims [name="sim_id"]').on('change', function(){
         //     var _simId = $('#sims [name="sim_id"]').val();
