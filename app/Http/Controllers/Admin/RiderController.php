@@ -606,6 +606,7 @@ class RiderController extends Controller
     }
     public function showRiderProfile(Rider $rider)
     {
+        $rider_pasport=Rider::where("active_status","A")->get();
         $rider_details=$rider->Rider_detail()->get()->first();
         $assign_bike=$rider->Assign_bike()->where('status','active')->get()->first();
         $bike=[];
@@ -619,7 +620,7 @@ class RiderController extends Controller
         }
         $bike_html=$rider->Assign_bike()->get()->first();
         $sim_history_change = $rider->Sim_history()->where('status', 'active')->get()->first();
-        return view('admin.rider.profile', compact('rider','sim_history_change','rider_details','bike','sim','sim_history','bike_html','assign_bike'));
+        return view('admin.rider.profile', compact('rider','rider_pasport','sim_history_change','rider_details','bike','sim','sim_history','bike_html','assign_bike'));
     }
     public function showRiderAccount(Rider $rider)
     {

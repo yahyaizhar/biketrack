@@ -102,10 +102,10 @@
                                     @if ($rider_details->is_guarantee=="employee")
                                     <div class="form-group">
                                         @php
-                                            $rider=App\Model\Rider\Rider::find($rider_details->empoloyee_reference);
+                                            $rider_pasport=App\Model\Rider\Rider::find($rider_details->empoloyee_reference);
                                         @endphp
                                             <label>Employee Reference:</label>
-                                            <input type="text" class="form-control @if($errors->has('empoloyee_reference')) invalid-field @endif" name="empoloyee_reference"  value="{{ $rider->name }}" disabled>
+                                            <input type="text" class="form-control @if($errors->has('empoloyee_reference')) invalid-field @endif" name="empoloyee_reference"  value="{{ $rider_pasport->name }}" disabled>
                                             @if ($errors->has('empoloyee_reference'))
                                                 <span class="invalid-response" role="alert">
                                                     <strong>
