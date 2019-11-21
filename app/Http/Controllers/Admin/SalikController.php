@@ -418,10 +418,10 @@ class SalikController extends Controller
             'bike_histories' => $bike_histories,
         ]);
     }
-    public function get_active_sims_ajax_salik($rider_id, $date){
+    public function get_active_sims_ajax_salik($_id, $date,$according_to){
         $sim_history = Sim_history::all();
         $sim_histories = null;
-        $history_found = Arr::first($sim_history, function ($item, $key) use ($rider_id, $date) {
+        $history_found = Arr::first($sim_history, function ($item, $key) use ($_id, $date,$according_to) {
             $created_at =Carbon::parse($item->created_at)->format('Y-m-d');
             $created_at =Carbon::parse($created_at);
 
@@ -430,16 +430,17 @@ class SalikController extends Controller
             $req_date =Carbon::parse($date);
             if($item->status=="active"){ 
                 // mean its still active, we need to match only created at
-                return $item->rider_id == $rider_id && $req_date->greaterThanOrEqualTo($created_at);
+                return $according_to=='sim'?$item->sim_id == $_id && $req_date->greaterThanOrEqualTo($created_at):$item->rider_id == $_id && $req_date->greaterThanOrEqualTo($created_at);
             }
             
-            return $item->rider_id == $rider_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
+            return $according_to=='sim'?$item->sim_id == $_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at):$item->rider_id == $_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
         });
 
         if(isset($history_found)){
             $sim_histories = $history_found;
         }else {
-            $sim_history = Sim_history::where('rider_id', $rider_id)
+            $to_find = $according_to=='sim'?'sim_id':'rider_id';
+            $sim_history = Sim_history::where($to_find, $_id)
             ->where('status', 'active')->get()->first();
             if(isset($sim_history)){
                $sim_histories = $sim_history;
