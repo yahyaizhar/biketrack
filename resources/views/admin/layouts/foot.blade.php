@@ -296,7 +296,7 @@ biketrack.refresh_global = function(){
     function nav__search_rider_by_id(){
         var input = document.getElementById('nav__rider_search_input');
         if(input.value != ""){
-            window.location.href="admin/riders?rider_id="+input.value;
+            window.location.href="/admin/riders?rider_id="+input.value;
             return false;
         }
     }
