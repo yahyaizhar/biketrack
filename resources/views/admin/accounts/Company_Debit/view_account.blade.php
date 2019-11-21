@@ -592,7 +592,7 @@
                     { data: 'dr', name: 'dr' },
                     { data: 'company_profit', name: 'company_profit' },
                     { data: 'balance', name: 'balance' },
-                    { data: 'action', name: 'action' },
+                    // { data: 'action', name: 'action' },
                    
                 ],
                 responsive:true,
