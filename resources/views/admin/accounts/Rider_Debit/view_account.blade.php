@@ -1251,8 +1251,8 @@
                     $('.advance').html(response.advance);
                     $('.salik').html(response.salik);
                     $('.sim').html(response.sim);
-                    $('.macdonald').html(response.dc);
-                    $('.dc').html(response.macdonald);
+                    $('.macdonald').html(response.macdonald);
+                    $('.dc').html(response.dc);
                     $('.rta').html(response.rta);
                     $('.discipline').html(response.mobile);
                     $('.mobile').html(response.dicipline);
