@@ -89,10 +89,10 @@ margin-left: 10px;
                 <thead>
                     <tr>
                         <th>Rider Name</th>
-                        <th>Bike Number</th>
-                        <th>Expense & Bills</th>
+                        {{-- <th>Bike Number</th> --}}
                         <th>Payout</th>
                         <th>Salary</th>
+                        <th>Expense & Bills</th>
                         <th>Profit</th>
                         <th class="d-none"></th>
                         <th class="d-none"></th>
@@ -369,10 +369,10 @@ $(function() {
             "defaultContent": ''
             },
             { "data": 'rider_name', "name": 'rider_name' },
-            { "data": 'bike_number', "name": 'bike_number' },
-            { "data": 'expenses_bills', "name": 'expenses_bills' },
+            // { "data": 'bike_number', "name": 'bike_number' },
             { "data": 'payout', "name": 'payout' },
             { "data": 'net_salary', "name": 'net_salary' },
+            { "data": 'expenses_bills', "name": 'expenses_bills' },
             { "data": 'profit', "name": 'profit' },
 
             { "data": 'number_of_trips', "name": 'number_of_trips' },
@@ -397,7 +397,7 @@ $(function() {
         ];
         _settings.columnDefs=[
             {
-                "targets": [7,8,9,10,11,12,13,14,15,16,17,18,19,20],
+                "targets": [6,7,8,9,10,11,12,13,14,15,16,17,18,19],
                 "visible": false,
                 searchable: true, 
             },
@@ -413,10 +413,10 @@ $(function() {
         // $('#zomato_salary_sheet thead tr th').eq(8).before('<th>Transaction Post Date:</th>');
         _settings.columns=[
             { "data": 'rider_name', "name": 'rider_name' },
-            { "data": 'bike_number', "name": 'bike_number' },
-            { "data": 'expenses_bills', "name": 'expenses_bills' },
+            // { "data": 'bike_number', "name": 'bike_number' },
             { "data": 'payout', "name": 'payout' },
             { "data": 'net_salary', "name": 'net_salary' },
+            { "data": 'expenses_bills', "name": 'expenses_bills' },
             { "data": 'profit', "name": 'profit' },
 
             { "data": 'number_of_trips', "name": 'number_of_trips' },
