@@ -2321,7 +2321,7 @@ class AjaxNewController extends Controller
            ->whereNotNull("fuel_expense_id")
            ->sum('amount');
            $total_expense=$bike_rent+$salik+$sim+$fuel;
-            return $total_expense; 
+            return round($total_expense,2); 
         }) 
         ->rawColumns(['expenses_bills','bonus','profit','bike_rent','fuel','payout','penalty','aed_extra_trips','net_salary','rider_name','bike_number', 'salik', 'sim_charges', 'dc', 'cod', 'aed_hours','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
         ->make(true);
