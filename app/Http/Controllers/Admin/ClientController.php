@@ -431,5 +431,9 @@ public function change_dates_history(Request $request,$rider_id,$assign_bike_id)
         'b'=>$assign_bike->bike_unassign_date,
     ]);
 }
+public function profit_client($id){
+    $client=Client::find($id);
+    return view('client_profit_sheet',compact('client'));
+}
 
 }

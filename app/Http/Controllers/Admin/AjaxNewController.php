@@ -2069,11 +2069,11 @@ class AjaxNewController extends Controller
         ->make(true);
     }
 
-    public function zomato_profit_export($month)
+    public function zomato_profit_export($month,$client_id)
     {
-        $zomato=Client::where("name","Zomato Food Delivery")->get()->first();
+        $client=Client::where("id",$client_id)->get()->first();
         // $client_riders=$zomato->riders();
-        $client_riders=Client_Rider::where('client_id', $zomato->id)->get();
+        $client_riders=Client_Rider::where('client_id', $client->id)->get();
         return DataTables::of($client_riders)
         ->addColumn('rider_name', function($rider) {
             $riderFound = Rider::find($rider->rider_id);
@@ -2290,8 +2290,40 @@ class AjaxNewController extends Controller
             $total_profit=$profit-$bike_rent_amount;
             return round($total_profit,2);
         })
+        ->addColumn('expenses_bills', function($rider) use ($month) {
+           $bike_rent=Company_Account::where("rider_id",$rider->rider_id)
+           ->whereMonth('month',$month)
+           ->where("source","Bike Rent")
+           ->sum('amount');
 
-        ->rawColumns(['bonus','profit','bike_rent','fuel','payout','penalty','aed_extra_trips','net_salary','rider_name','bike_number', 'salik', 'sim_charges', 'dc', 'cod', 'aed_hours','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
+           $total_salik=Company_Account::where("rider_id",$rider->rider_id)
+           ->whereMonth('month',$month)
+           ->where("source","Salik")
+           ->sum('amount');
+           $salik_extra=Company_Account::where("rider_id",$rider->rider_id)
+           ->whereMonth('month',$month)
+           ->where("source","Salik Extra")
+           ->sum('amount');
+           $salik=$total_salik-$salik_extra;
+
+           $total_sim_bill=Company_Account::where("rider_id",$rider->rider_id)
+           ->whereMonth('month',$month)
+           ->where("source","Sim Transaction")
+           ->sum('amount');
+           $sim_extra_useage=Company_Account::where("rider_id",$rider->rider_id)
+           ->whereMonth('month',$month)
+           ->where("source","Sim extra usage")
+           ->sum('amount');
+           $sim=$total_sim_bill-$sim_extra_useage;
+
+           $fuel=Company_Account::where("rider_id",$rider->rider_id)
+           ->whereMonth('month',$month)
+           ->whereNotNull("fuel_expense_id")
+           ->sum('amount');
+           $total_expense=$bike_rent+$salik+$sim+$fuel;
+            return $total_expense; 
+        }) 
+        ->rawColumns(['expenses_bills','bonus','profit','bike_rent','fuel','payout','penalty','aed_extra_trips','net_salary','rider_name','bike_number', 'salik', 'sim_charges', 'dc', 'cod', 'aed_hours','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
         ->make(true);
     }
     public function getBikeAccounts($ranges)

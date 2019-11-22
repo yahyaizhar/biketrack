@@ -65,7 +65,7 @@ Route::group([
     Route::get('/cash/paid/to/rider/{rider_id}','HomeController@cash_paid_to_rider')->name('admin.cash_paid_to_rider');
     Route::get("/accounts/kr_investment/view/data","AjaxNewController@getCompanyInvestment")->name("admin.getCompanyInvestment");
     Route::get("/zomato/salary/sheet/export/ajax/{month_name}","AjaxNewController@zomato_salary_export")->name("admin.zomato_salary_export");
-    Route::get("/zomato/profit/sheet/export/ajax/{month_name}","AjaxNewController@zomato_profit_export")->name("admin.zomato_profit_export");
+    Route::get("/zomato/profit/sheet/export/ajax/{month_name}/{client_id}","AjaxNewController@zomato_profit_export")->name("admin.zomato_profit_export");
 });
 // End Ajax Routes
 
@@ -150,6 +150,7 @@ Route::group([
     Route::delete('/delete/last/import','RiderController@delete_lastImport')->name('delete.import_data');
     Route::get("/zomato/salary/sheet/export","AccountsController@zomato_salary_sheet_export")->name("admin.zomato_salary_sheet_export");
 //ends import Zomato
+    Route::get('/client/profit/sheet/{client_id}','ClientController@profit_client')->name('client.profit_sheet_view');
 });
 // clients
 // Bike
@@ -209,7 +210,6 @@ Route::group([
     'namespace' => 'Admin',
     'middleware' => ['roles:accounts']
 ], function(){
-    Route::get('/zomato/profit/sheet','RiderDetailController@profit_zomato')->name('account.profit_sheet_view');
     Route::get('/Add/Salary','AccountsController@add_new_salary_create')->name('account.new_salary');
     Route::post('/Salary/Added','AccountsController@new_salary_added')->name('account.added_salary');
     

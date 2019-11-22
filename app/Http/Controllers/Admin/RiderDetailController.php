@@ -214,9 +214,7 @@ class RiderDetailController extends Controller
 
         ]);
     }
-    public function profit_zomato(){
-        return view('zomato_profit_sheet');
-    }
+  
     public function rider_expense_bonus(Request $request)
     {
         $ca = new \App\Model\Accounts\Company_Account;

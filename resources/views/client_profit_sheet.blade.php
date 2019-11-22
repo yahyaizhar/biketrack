@@ -29,7 +29,7 @@ margin-left: 10px;
                 <div class="kt-portlet__head">
                     <div class="kt-portlet__head-label">
                         <h3 class="kt-portlet__head-title">
-                        Zomato Profit Sheet(Month) 
+                        {{$client->name}} Profit Sheet(Month) 
                         
                         </h3>
                     </div>
@@ -66,7 +66,7 @@ margin-left: 10px;
                     <i class="kt-font-brand fa fa-hotel"></i>
                 </span>
                 <h3 class="kt-portlet__head-title">
-                   Zomato Profit Sheet
+                    {{$client->name}} Profit Sheet
                 </h3>
             </div>
             <div class="kt-portlet__head-toolbar">
@@ -90,11 +90,12 @@ margin-left: 10px;
                     <tr>
                         <th>Rider Name</th>
                         <th>Bike Number</th>
-                        <th>AED Trips</th>
-                        <th>AED Hours</th>
+                        <th>Expense & Bills</th>
                         <th>Payout</th>
                         <th>Salary</th>
                         <th>Profit</th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
                         <th class="d-none"></th>
                         <th class="d-none"></th>
                         <th class="d-none"></th>
@@ -139,6 +140,7 @@ margin-left: 10px;
             </div>
           </div>
        </div>
+       <input type="hidden" name="client_id" value="{{$client->id}}" >
 @endsection
 @section('foot')
 <link href="https://transloadit.edgly.net/releases/uppy/v1.3.0/uppy.min.css" rel="stylesheet">
@@ -323,6 +325,8 @@ $("#kt_select2_3_5").change(function(){
     $('th#remove_head').remove();
     $('#kt_content-b').show(); 
    var month=$(this).val();
+   var client_id=$('[name="client_id"]').val();
+   console.log(client_id);
 $(function() {
     // salary_sheet = $('').DataTable({
         var _settings={   processing: true,
@@ -347,7 +351,7 @@ $(function() {
              
         },
         // ajax: '{!! route('admin.accounts.income_zomato_ajax') !!}',
-        ajax: "{{url('admin/zomato/profit/sheet/export/ajax/')}}"+"/"+month,
+        ajax: "{{url('admin/zomato/profit/sheet/export/ajax/')}}"+"/"+month+"/"+client_id,
         columns:null,
         responsive:true,
         
@@ -366,8 +370,7 @@ $(function() {
             },
             { "data": 'rider_name', "name": 'rider_name' },
             { "data": 'bike_number', "name": 'bike_number' },
-            { "data": 'aed_trips', "name": 'aed_trips' },
-            { "data": 'aed_hours', "name": 'aed_hours' },
+            { "data": 'expenses_bills', "name": 'expenses_bills' },
             { "data": 'payout', "name": 'payout' },
             { "data": 'net_salary', "name": 'net_salary' },
             { "data": 'profit', "name": 'profit' },
@@ -384,6 +387,8 @@ $(function() {
             { "data": 'penalty', "name": 'penalty' },
             { "data": 'bike_rent', "name": 'bike_rent' },
             { "data": 'bonus', "name": 'bonus' },
+            { "data": 'aed_trips', "name": 'aed_trips' },
+            { "data": 'aed_hours', "name": 'aed_hours' },
             
             
            
@@ -392,7 +397,7 @@ $(function() {
         ];
         _settings.columnDefs=[
             {
-                "targets": [8,9,10,11,12,13,14,15,16,17,18,19],
+                "targets": [7,8,9,10,11,12,13,14,15,16,17,18,19,20],
                 "visible": false,
                 searchable: true, 
             },
@@ -409,8 +414,7 @@ $(function() {
         _settings.columns=[
             { "data": 'rider_name', "name": 'rider_name' },
             { "data": 'bike_number', "name": 'bike_number' },
-            { "data": 'aed_trips', "name": 'aed_trips' },
-            { "data": 'aed_hours', "name": 'aed_hours' },
+            { "data": 'expenses_bills', "name": 'expenses_bills' },
             { "data": 'payout', "name": 'payout' },
             { "data": 'net_salary', "name": 'net_salary' },
             { "data": 'profit', "name": 'profit' },
@@ -427,6 +431,8 @@ $(function() {
             { "data": 'penalty', "name": 'penalty' },
             { "data": 'bike_rent', "name": 'bike_rent' },
             { "data": 'bonus', "name": 'bonus' },
+            { "data": 'aed_trips', "name": 'aed_trips' },
+            { "data": 'aed_hours', "name": 'aed_hours' },
             
         ];
      
@@ -523,6 +529,10 @@ $(function() {
             '<td colspan="2";>'+data.salik+'</td>'+
             '<td colspan="1"; style="font-weight:900;">Sim:</td>'+
             '<td colspan="2";>'+data.sim_charges+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >AED Hours:</td>'+
+            '<td colspan="2";>'+data.aed_hours+'</td>'+
+            '<td colspan="1"; style="font-weight:900;">AED Trips:</td>'+
+            '<td colspan="2";>'+data.aed_trips+'</td>'+
             '</tr>'+
         '</table>';
 }
