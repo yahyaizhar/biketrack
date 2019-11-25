@@ -2092,12 +2092,12 @@ class AjaxNewController extends Controller
             ->whereMonth('date',$month)
             ->get()
             ->sum('trips_payable');
-            if ( $number_of_trips_sum > 400){
-                $extra_trips=$number_of_trips_sum-400;
+            if ( $aed_trips_sum > 400){
+                $extra_trips=$aed_trips_sum-400;
                 $trips=400;
                 return round(($extra_trips*4)+($trips*2),2);
             } 
-              return round($number_of_trips_sum*2,2); 
+              return round($aed_trips_sum*2,2); 
         }) 
         ->addColumn('aed_hours', function($rider) use ($month) {
             $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
