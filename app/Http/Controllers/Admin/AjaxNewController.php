@@ -1834,6 +1834,15 @@ class AjaxNewController extends Controller
             ->sum('amount');
             return $sim_charges;
         }) 
+        ->addColumn('sim_extra_charges', function($rider) use ($month) {
+            $sim_charges=Rider_Account::where('rider_id',$rider->rider_id)
+            ->whereNotNull('sim_transaction_id')
+            ->whereMonth('month', $month)
+            ->get()
+            ->sum('amount');
+            $sim_extra_charges=$sim_charges-105;
+            return $sim_extra_charges;
+        }) 
         ->addColumn('cod', function($rider) use ($month) {
             $cod=Rider_Account::where('rider_id',$rider->rider_id)
             ->whereNotNull('income_zomato_id')
