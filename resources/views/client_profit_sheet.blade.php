@@ -504,6 +504,10 @@ $(function() {
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
             '<tr>'+
                 '<td colspan="1"; style="font-weight:900;">Total Payout:</td>'+
+                '<td colspan="1"; style="font-weight:900;" >AED Hours:</td>'+
+                '<td colspan="1";>'+data.aed_hours_zomato+'</td>'+
+                '<td colspan="1"; style="font-weight:900;">AED Trips:</td>'+
+                '<td colspan="1";>'+data.aed_trips_zomato+'</td>'+
                 '<td colspan="1"; style="font-weight:900;">Payout:</td>'+
                 '<td colspan="1";>'+data.payout_less+'</td>'+
                 '<td colspan="1"; style="font-weight:900;">DC:</td>'+

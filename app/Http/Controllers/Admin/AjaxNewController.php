@@ -2092,9 +2092,29 @@ class AjaxNewController extends Controller
             ->whereMonth('date',$month)
             ->get()
             ->sum('trips_payable');
-                return round($aed_trips_sum*6.75,2); 
+            if ( $number_of_trips_sum > 400){
+                $extra_trips=$number_of_trips_sum-400;
+                $trips=400;
+                return round(($extra_trips*4)+($trips*2),2);
+            } 
+              return round($number_of_trips_sum*2,2); 
         }) 
         ->addColumn('aed_hours', function($rider) use ($month) {
+            $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('log_in_hours_payable');
+             if($number_of_hours_sum > 286) $number_of_hours_sum = 286;
+            return round($number_of_hours_sum *7.87,2);
+        })
+        ->addColumn('aed_trips_zomato', function($rider) use ($month) {
+            $aed_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('trips_payable');
+                return round($aed_trips_sum*6.75,2); 
+        }) 
+        ->addColumn('aed_hours_zomato', function($rider) use ($month) {
             $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
             ->whereMonth('date',$month)
             ->get()
@@ -2114,8 +2134,8 @@ class AjaxNewController extends Controller
             ->whereMonth('date',$month)
             ->get()
             ->sum('trips_payable');
-            // if ( $number_of_trips_sum > 400) $number_of_trips_sum=400; 
-                return round($number_of_trips_sum,2); 
+           
+              return round($number_of_trips_sum,2); 
         }) 
         ->addColumn('ncw', function($rider) use ($month) {
             $ncw_sum=Income_zomato::where('rider_id',$rider->rider_id)
@@ -2353,7 +2373,7 @@ class AjaxNewController extends Controller
            $total_expense=$bike_rent+$salik+$sim+$fuel;
             return round($total_expense,2); 
         }) 
-        ->rawColumns(['payout_less','expenses_bills','bonus','profit','bike_rent','fuel','payout','penalty','aed_extra_trips','net_salary','rider_name','bike_number', 'salik', 'sim_charges', 'dc', 'cod', 'aed_hours','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
+        ->rawColumns(['aed_trips_zomato','aed_hours_zomato','payout_less','expenses_bills','bonus','profit','bike_rent','fuel','payout','penalty','aed_extra_trips','net_salary','rider_name','bike_number', 'salik', 'sim_charges', 'dc', 'cod', 'aed_hours','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
         ->make(true);
     }
     public function getBikeAccounts($ranges)
