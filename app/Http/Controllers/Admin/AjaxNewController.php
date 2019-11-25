@@ -2238,6 +2238,9 @@ class AjaxNewController extends Controller
             ->whereNotNull('sim_transaction_id')
             ->sum('amount');
             $sim_extra_charges=$sim_charges-105;
+            if ($sim_charges<=105) {
+                $sim_extra_charges=0;
+            }
             $allowed_balance=105;
             return round($allowed_balance,2).'('.round($sim_extra_charges,2).')';
         }) 
