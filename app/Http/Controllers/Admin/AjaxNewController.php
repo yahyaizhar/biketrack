@@ -1832,8 +1832,7 @@ class AjaxNewController extends Controller
             ->whereMonth('month', $month)
             ->get()
             ->sum('amount');
-            $sim_extra_charges=$sim_charges-105;
-            return '105('.$sim_extra_charges.')';
+            return $sim_charges;
         }) 
         ->addColumn('sim_extra_charges', function($rider) use ($month) {
             $sim_charges=Rider_Account::where('rider_id',$rider->rider_id)
@@ -2238,7 +2237,9 @@ class AjaxNewController extends Controller
             ->where('type','dr')
             ->whereNotNull('sim_transaction_id')
             ->sum('amount');
-            return round($sim_charges,2);
+            $sim_extra_charges=$sim_charges-105;
+            $allowed_balance=105;
+            return round($allowed_balance,2).'('.round($sim_extra_charges,2).')';
         }) 
         ->addColumn('fuel', function($rider) use ($month) {
             $fuel_amount=Company_Account::whereNotNull('fuel_expense_id')
