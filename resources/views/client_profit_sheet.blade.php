@@ -504,47 +504,47 @@ $(function() {
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
             '<tr>'+
                 '<td colspan="1"; style="font-weight:900;">Total Payout:</td>'+
-                '<td colspan="1"; style="font-weight:500;" >AED Hours:</td>'+
+                '<td colspan="1"; style="font-weight:500;font-size: 11px;" >AED Hours:</td>'+
                 '<td colspan="1";>'+data.aed_hours_zomato+'</td>'+
-                '<td colspan="1"; style="font-weight:500;">AED Trips:</td>'+
+                '<td colspan="1"; style="font-weight:500;font-size: 11px;">AED Trips:</td>'+
                 '<td colspan="1";>'+data.aed_trips_zomato+'</td>'+
-                '<td colspan="1"; style="font-weight:500;">Payout:</td>'+
+                '<td colspan="1"; style="font-weight:500;font-size: 11px;">Payout:</td>'+
                 '<td colspan="1";>'+data.payout_less+'</td>'+
-                '<td colspan="1"; style="font-weight:500;">DC:</td>'+
+                '<td colspan="1"; style="font-weight:500;font-size: 11px;">DC:</td>'+
                 '<td colspan="1";>'+data.dc+'</td>'+
-                '<td colspan="1"; style="font-weight:500;" >Denials Penalty:</td>'+
+                '<td colspan="1"; style="font-weight:500;font-size: 11px;" >Denials Penalty:</td>'+
                 '<td colspan="1";>'+data.penalty+'</td>'+
-                '<td colspan="1"; style="font-weight:500;">Tips:</td>'+
+                '<td colspan="1"; style="font-weight:500;font-size: 11px;">Tips:</td>'+
                 '<td colspan="1";>'+data.tips+'</td>'+
-                '<td colspan="1"; style="font-weight:500;" >NCW:</td>'+
+                '<td colspan="1"; style="font-weight:500;font-size: 11px;" >NCW:</td>'+
                 '<td colspan="1";>'+data.ncw+'</td>'+
                 '<td colspan="1"; style="font-weight:900;">Total:</td>'+
                 '<td colspan="1";>'+data.payout+'</td>'+
             '</tr>'+
             '<tr>'+
                 '<td colspan="1"; style="font-weight:900;">Salary + Bonus:</td>'+
-                '<td colspan="1"; style="font-weight:500;">No of Trips :</td>'+
+                '<td colspan="1"; style="font-weight:500;font-size: 11px;">No of Trips :</td>'+
                 '<td colspan="1";>'+data.number_of_trips+'</td>'+
-                '<td colspan="1"; style="font-weight:500;" >No of Hours:</td>'+
+                '<td colspan="1"; style="font-weight:500;font-size: 11px;" >No of Hours:</td>'+
                 '<td colspan="1";>'+data.number_of_hours+'</td>'+
-                '<td colspan="1"; style="font-weight:500;" >AED Hours:</td>'+
+                '<td colspan="1"; style="font-weight:500;font-size: 11px;" >AED Hours:</td>'+
                 '<td colspan="1";>'+data.aed_hours+'</td>'+
-                '<td colspan="1"; style="font-weight:500;">AED Trips:</td>'+
+                '<td colspan="1"; style="font-weight:500;font-size: 11px;">AED Trips:</td>'+
                 '<td colspan="1";>'+data.aed_trips+'</td>'+
-                '<td colspan="1"; style="font-weight:500;" >Bonus:</td>'+
+                '<td colspan="1"; style="font-weight:500;font-size: 11px;" >Bonus:</td>'+
                 '<td colspan="1";>'+data.bonus+'</td>'+
                 '<td colspan="1"; style="font-weight:900;" >Total:</td>'+
                 '<td colspan="1";>'+data.net_salary+'</td>'+
             '</tr>'+
             '<tr>'+
                 '<td colspan="1"; style="font-weight:900;">Expense & Bills:</td>'+
-                '<td colspan="1"; style="font-weight:500;" >Bike Rent:</td>'+
+                '<td colspan="1"; style="font-weight:500;font-size: 11px;" >Bike Rent:</td>'+
                 '<td colspan="1";>'+data.bike_rent+'</td>'+
-                '<td colspan="1"; style="font-weight:500;" >Fuel:</td>'+
+                '<td colspan="1"; style="font-weight:500;font-size: 11px;" >Fuel:</td>'+
                 '<td colspan="1";>'+data.fuel+'</td>'+
-                '<td colspan="1"; style="font-weight:500;" >Salik:</td>'+
+                '<td colspan="1"; style="font-weight:500;font-size: 11px;" >Salik:</td>'+
                 '<td colspan="1";>'+data.salik+'</td>'+
-                '<td colspan="1"; style="font-weight:500;">Sim:</td>'+
+                '<td colspan="1"; style="font-weight:500;font-size: 11px;">Sim:</td>'+
                 '<td colspan="1";>'+data.sim_charges+'</td>'+
                 '<td colspan="1"; style="font-weight:900;">Total:</td>'+
                 '<td colspan="1";>'+data.expenses_bills+'</td>'+
