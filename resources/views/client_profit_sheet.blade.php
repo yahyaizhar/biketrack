@@ -537,7 +537,7 @@ $(function() {
                 '<td colspan="1";>'+data.net_salary+'</td>'+
                 '<td colspan="1"; style="font-weight:900;" ></td>'+
                 '<td colspan="1";></td>'+
-                '<td colspan="1"; style="font-weight:900;" >Total:</td>'+
+                '<td colspan="1"; style="font-weight:900;" ></td>'+
                 '<td colspan="1";></td>'+
             '</tr>'+
             '<tr>'+
@@ -554,7 +554,7 @@ $(function() {
                 '<td colspan="1";>'+data.expenses_bills+'</td>'+
                 '<td colspan="1"; style="font-weight:900;" ></td>'+
                 '<td colspan="1";></td>'+
-                '<td colspan="1"; style="font-weight:900;" >Total:</td>'+
+                '<td colspan="1"; style="font-weight:900;" ></td>'+
                 '<td colspan="1";></td>'+
                 '<td colspan="1"; style="font-weight:900;" ></td>'+
                 '<td colspan="1";></td>'+
