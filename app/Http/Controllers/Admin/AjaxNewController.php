@@ -2147,11 +2147,19 @@ class AjaxNewController extends Controller
             ->whereMonth('date',$month)
             ->get()
             ->sum('dc_deductions');
+            $penalty_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('denials_penalty');
             $tips_sum=Income_zomato::where('rider_id',$rider->rider_id)
             ->whereMonth('date',$month)
             ->get()
             ->sum('tips_payouts');
-            $total_payout=($payout_sum+$dc_sum)-$tips_sum;
+            $ncw_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('ncw_incentives');
+            $total_payout=($payout_sum+$dc_sum+$penalty_sum)-($tips_sum+$ncw_sum);
                 return round($total_payout,2); 
         }) 
         ->addColumn('payout_less', function($rider) use ($month) {
