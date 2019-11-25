@@ -1325,6 +1325,9 @@ class AjaxNewController extends Controller
         ->addColumn('amount', function($ar){
             return $ar->amount;
         })
+        ->addColumn('month', function($ar){
+            return Carbon::parse($ar->month)->format('d M, Y');
+        })
         ->addColumn('type', function($ar){
             return $ar->type;
         })
@@ -1354,7 +1357,7 @@ class AjaxNewController extends Controller
             </span>
         </span>';
         })
-        ->rawColumns(['status','type','rider_id','payment_status','amount','actions', 'status'])
+        ->rawColumns(['status','month','type','rider_id','payment_status','amount','actions', 'status'])
         ->make(true);
     }
 

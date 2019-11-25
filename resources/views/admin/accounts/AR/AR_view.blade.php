@@ -56,6 +56,7 @@
                         <th>Rider_id</th>
                         <th>type</th>
                         <th>Amount</th>
+                        <th>Month</th>
                         <th>Payment Status</th>
                         <th>Status</th>
                         <th>Actions</th>                        
@@ -102,6 +103,7 @@ $(function() {
             { data: 'rider_id', name: 'rider_id' },
             { data: 'type', name: 'type' },            
             { data: 'amount', name: 'amount' },
+            { data: 'month', name: 'month' },
             { data: 'payment_status', name: 'payment_status' },
             { data: 'status', name: 'status' },
             { data: 'actions', name: 'actions' },
