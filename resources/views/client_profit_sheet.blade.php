@@ -324,9 +324,14 @@ $('#kt_content-b').hide();
 $("#kt_select2_3_5").change(function(){
     $('th#remove_head').remove();
     $('#kt_content-b').show(); 
-   var month=$(this).val();
+    var month=$(this).val();
+    var month_url=new Date(month).format("mm");
    var client_id=$('[name="client_id"]').val();
    console.log(client_id);
+   var data = {
+                month:month_url, 
+            }
+    biketrack.updateURL(data);
 $(function() {
     // salary_sheet = $('').DataTable({
         var _settings={   processing: true,
@@ -585,7 +590,10 @@ $(function() {
     }
 });
 });
-
+var mon=biketrack.getUrlParameter('month');
+if (mon!="") {
+    $('#kt_select2_3_5').val(biketrack.getUrlParameter('month')).trigger('change');
+}
 // table accordian end
 function delete_lastImport()
 {
