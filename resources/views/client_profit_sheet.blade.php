@@ -535,7 +535,7 @@ $(function() {
                 '<td colspan="1"; style="font-weight:500;font-size: 11px;" >Salik:</td>'+
                 '<td colspan="1";>'+data.salik+'</td>'+
                 '<td colspan="1"; style="font-weight:500;font-size: 11px;">Sim:</td>'+
-                '<td colspan="1";>'+data.sim_charges+'('+data.sim_extra_charges+')</td>'+
+                '<td colspan="1";>'+data.sim_charges+'</td>'+
                 '<td colspan="1"; style="font-weight:900;">Total:</td>'+
                 '<td colspan="1";>'+data.expenses_bills+'</td>'+
             '</tr>'+
