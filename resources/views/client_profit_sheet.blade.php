@@ -509,23 +509,34 @@ $(function() {
             '<tr>'+
                 '<td colspan="1"; style="font-weight:900;">Salary + Bonus:</td>'+
                 '<td colspan="1"; style="font-weight:900;">No of Trips :</td>'+
-                '<td colspan="2";>'+data.number_of_trips+'</td>'+
+                '<td colspan="1";>'+data.number_of_trips+'</td>'+
                 '<td colspan="1"; style="font-weight:900;" >No of Hours:</td>'+
-                '<td colspan="2";>'+data.number_of_hours+'</td>'+
+                '<td colspan="1";>'+data.number_of_hours+'</td>'+
                 '<td colspan="1"; style="font-weight:900;" >AED Hours:</td>'+
-                '<td colspan="2";>'+data.aed_hours+'</td>'+
+                '<td colspan="1";>'+data.aed_hours+'</td>'+
                 '<td colspan="1"; style="font-weight:900;">AED Trips:</td>'+
-                '<td colspan="2";>'+data.aed_trips+'</td>'+
+                '<td colspan="1";>'+data.aed_trips+'</td>'+
                 '<td colspan="1"; style="font-weight:900;" >Bonus:</td>'+
-                '<td colspan="2";>'+data.bonus+'</td>'+
+                '<td colspan="1";>'+data.bonus+'</td>'+
                 '<td colspan="1"; style="font-weight:900;" >Sum/Total:</td>'+
-                '<td colspan="2";>'+(data.bonus+data.net_salary)+'</td>'+
+                '<td colspan="1";>'+data.net_salary+'</td>'+
             '</tr>'+
             '<tr>'+
                 '<td colspan="1"; style="font-weight:900;">Expense & Bills:</td>'+
+                '<td colspan="1"; style="font-weight:900;" >Bike Rent:</td>'+
+                '<td colspan="1";>'+data.bike_rent+'</td>'+
+                '<td colspan="1"; style="font-weight:900;" >Fuel:</td>'+
+                '<td colspan="1";>'+data.fuel+'</td>'+
+                '<td colspan="1"; style="font-weight:900;" >Salik:</td>'+
+                '<td colspan="1";>'+data.salik+'</td>'+
+                '<td colspan="1"; style="font-weight:900;">Sim:</td>'+
+                '<td colspan="1";>'+data.sim_charges+'</td>'+
+                '<td colspan="1"; style="font-weight:900;">Sum/Total:</td>'+
+                '<td colspan="1";>'+data.expenses_bills+'</td>'+
             '</tr>'+
             '<tr>'+
                 '<td colspan="1"; style="font-weight:900;">Profit:</td>'+
+                '<td colspan="2";>'+data.profit+'</td>'+
             '</tr>'+
         '</table>';
 }
