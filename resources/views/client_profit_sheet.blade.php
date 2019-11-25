@@ -508,16 +508,6 @@ $(function() {
                 '<td colspan="1";>'+data.aed_hours_zomato+'</td>'+
                 '<td colspan="1"; style="font-weight:500;font-size: 11px;">AED Trips:</td>'+
                 '<td colspan="1";>'+data.aed_trips_zomato+'</td>'+
-                '<td colspan="1"; style="font-weight:500;font-size: 11px;">Payout:</td>'+
-                '<td colspan="1";>'+data.payout_less+'</td>'+
-                '<td colspan="1"; style="font-weight:500;font-size: 11px;">DC:</td>'+
-                '<td colspan="1";>'+data.dc+'</td>'+
-                '<td colspan="1"; style="font-weight:500;font-size: 11px;" >Denials Penalty:</td>'+
-                '<td colspan="1";>'+data.penalty+'</td>'+
-                '<td colspan="1"; style="font-weight:500;font-size: 11px;">Tips:</td>'+
-                '<td colspan="1";>'+data.tips+'</td>'+
-                '<td colspan="1"; style="font-weight:500;font-size: 11px;" >NCW:</td>'+
-                '<td colspan="1";>'+data.ncw+'</td>'+
                 '<td colspan="1"; style="font-weight:900;">Total:</td>'+
                 '<td colspan="1";>'+data.payout+'</td>'+
             '</tr>'+
@@ -535,10 +525,6 @@ $(function() {
                 '<td colspan="1";>'+data.bonus+'</td>'+
                 '<td colspan="1"; style="font-weight:900;" >Total:</td>'+
                 '<td colspan="1";>'+data.net_salary+'</td>'+
-                '<td colspan="1"; style="font-weight:900;" ></td>'+
-                '<td colspan="1";></td>'+
-                '<td colspan="1"; style="font-weight:900;" ></td>'+
-                '<td colspan="1";></td>'+
             '</tr>'+
             '<tr>'+
                 '<td colspan="1"; style="font-weight:900;">Expense & Bills:</td>'+
@@ -552,12 +538,6 @@ $(function() {
                 '<td colspan="1";>'+data.sim_charges+'</td>'+
                 '<td colspan="1"; style="font-weight:900;">Total:</td>'+
                 '<td colspan="1";>'+data.expenses_bills+'</td>'+
-                '<td colspan="1"; style="font-weight:900;" ></td>'+
-                '<td colspan="1";></td>'+
-                '<td colspan="1"; style="font-weight:900;" ></td>'+
-                '<td colspan="1";></td>'+
-                '<td colspan="1"; style="font-weight:900;" ></td>'+
-                '<td colspan="1";></td>'+
             '</tr>'+
             '<tr>'+
                 '<td colspan="1"; style="font-weight:900;">Profit:</td>'+
