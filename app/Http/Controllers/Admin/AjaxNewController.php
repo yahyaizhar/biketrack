@@ -1320,7 +1320,7 @@ class AjaxNewController extends Controller
             }
         })
         ->addColumn('id', function($ar){
-            return '1000'.$ar->id;
+            return $ar->id;
         })
         ->addColumn('amount', function($ar){
             return $ar->amount;
