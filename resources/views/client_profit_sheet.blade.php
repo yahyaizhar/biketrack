@@ -535,6 +535,10 @@ $(function() {
                 '<td colspan="1";>'+data.bonus+'</td>'+
                 '<td colspan="1"; style="font-weight:900;" >Total:</td>'+
                 '<td colspan="1";>'+data.net_salary+'</td>'+
+                '<td colspan="1"; style="font-weight:900;" ></td>'+
+                '<td colspan="1";>'++'</td>'+
+                '<td colspan="1"; style="font-weight:900;" >Total:</td>'+
+                '<td colspan="1";>'++'</td>'+
             '</tr>'+
             '<tr>'+
                 '<td colspan="1"; style="font-weight:900;">Expense & Bills:</td>'+
@@ -548,6 +552,12 @@ $(function() {
                 '<td colspan="1";>'+data.sim_charges+'</td>'+
                 '<td colspan="1"; style="font-weight:900;">Total:</td>'+
                 '<td colspan="1";>'+data.expenses_bills+'</td>'+
+                '<td colspan="1"; style="font-weight:900;" ></td>'+
+                '<td colspan="1";>'++'</td>'+
+                '<td colspan="1"; style="font-weight:900;" >Total:</td>'+
+                '<td colspan="1";>'++'</td>'+
+                '<td colspan="1"; style="font-weight:900;" ></td>'+
+                '<td colspan="1";>'++'</td>'+
             '</tr>'+
             '<tr>'+
                 '<td colspan="1"; style="font-weight:900;">Profit:</td>'+
