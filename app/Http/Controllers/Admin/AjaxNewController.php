@@ -2154,6 +2154,14 @@ class AjaxNewController extends Controller
             $total_payout=($payout_sum+$dc_sum)-$tips_sum;
                 return round($total_payout,2); 
         }) 
+        ->addColumn('payout_less', function($rider) use ($month) {
+            $payout_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('total_to_be_paid_out');
+          
+                return round($payout_sum,2); 
+        }) 
         ->addColumn('cod', function($rider) use ($month) {
             $cod_sum=Income_zomato::where('rider_id',$rider->rider_id)
             ->whereMonth('date',$month)
@@ -2337,7 +2345,7 @@ class AjaxNewController extends Controller
            $total_expense=$bike_rent+$salik+$sim+$fuel;
             return round($total_expense,2); 
         }) 
-        ->rawColumns(['expenses_bills','bonus','profit','bike_rent','fuel','payout','penalty','aed_extra_trips','net_salary','rider_name','bike_number', 'salik', 'sim_charges', 'dc', 'cod', 'aed_hours','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
+        ->rawColumns(['payout_less','expenses_bills','bonus','profit','bike_rent','fuel','payout','penalty','aed_extra_trips','net_salary','rider_name','bike_number', 'salik', 'sim_charges', 'dc', 'cod', 'aed_hours','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
         ->make(true);
     }
     public function getBikeAccounts($ranges)
