@@ -505,15 +505,15 @@ $(function() {
             '<tr>'+
                 '<td colspan="1"; style="font-weight:900;">Total Payout:</td>'+
                 '<td colspan="1"; style="font-weight:900;">Payout:</td>'+
-                '<td colspan="2";>'+data.payout_less+'</td>'+
+                '<td colspan="1";>'+data.payout_less+'</td>'+
                 '<td colspan="1"; style="font-weight:900;">DC:</td>'+
-                '<td colspan="2";>'+data.dc+'</td>'+
+                '<td colspan="1";>'+data.dc+'</td>'+
                 '<td colspan="1"; style="font-weight:900;" >Denials Penalty:</td>'+
-                '<td colspan="2";>'+data.penalty+'</td>'+
+                '<td colspan="1";>'+data.penalty+'</td>'+
                 '<td colspan="1"; style="font-weight:900;">Tips:</td>'+
-                '<td colspan="2";>'+data.tips+'</td>'+
+                '<td colspan="1";>'+data.tips+'</td>'+
                 '<td colspan="1"; style="font-weight:900;" >NCW:</td>'+
-                '<td colspan="2";>'+data.ncw+'</td>'+
+                '<td colspan="1";>'+data.ncw+'</td>'+
                 '<td colspan="1"; style="font-weight:900;" >Sum/Total:</td>'+
                 '<td colspan="1";>'+data.payout+'</td>'+
             '</tr>'+
