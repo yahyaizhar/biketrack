@@ -502,37 +502,30 @@ $(function() {
     // `d` is the original data object for the row
 
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
-            '<tr>'+
-            '<td colspan="1"; style="font-weight:900;">No of Trips :</td>'+
-            '<td colspan="2";>'+data.number_of_trips+'</td>'+
-            '<td colspan="1"; style="font-weight:900;" >No of Hours:</td>'+
-            '<td colspan="2";>'+data.number_of_hours+'</td>'+
-            '<td colspan="1"; style="font-weight:900;" >NCW:</td>'+
-            '<td colspan="2";>'+data.ncw+'</td>'+
-            '<td colspan="1"; style="font-weight:900;">Tips:</td>'+
-            '<td colspan="2";>'+data.tips+'</td>'+
-            '<td colspan="1"; style="font-weight:900;" >COD:</td>'+
-            '<td colspan="2";>'+data.cod+'</td>'+
-            '<td colspan="1"; style="font-weight:900;" >Bike Rent:</td>'+
-            '<td colspan="2";>'+data.bike_rent+'</td>'+
-            '<td colspan="1"; style="font-weight:900;" >Bonus:</td>'+
-            '<td colspan="2";>'+data.bonus+'</td>'+
+        '<tr>'+
+            '<td colspan="1"; style="font-weight:900;">Total Payout:</td>'+
+            
             '</tr>'+
             '<tr>'+
-            '<td colspan="1"; style="font-weight:900;" >Denials Penalty:</td>'+
-            '<td colspan="2";>'+data.penalty+'</td>'+
-            '<td colspan="1"; style="font-weight:900;">DC:</td>'+
-            '<td colspan="2";>'+data.dc+'</td>'+
-            '<td colspan="1"; style="font-weight:900;" >Fuel:</td>'+
-            '<td colspan="2";>'+data.fuel+'</td>'+
-            '<td colspan="1"; style="font-weight:900;" >Salik:</td>'+
-            '<td colspan="2";>'+data.salik+'</td>'+
-            '<td colspan="1"; style="font-weight:900;">Sim:</td>'+
-            '<td colspan="2";>'+data.sim_charges+'</td>'+
-            '<td colspan="1"; style="font-weight:900;" >AED Hours:</td>'+
-            '<td colspan="2";>'+data.aed_hours+'</td>'+
-            '<td colspan="1"; style="font-weight:900;">AED Trips:</td>'+
-            '<td colspan="2";>'+data.aed_trips+'</td>'+
+                '<td colspan="1"; style="font-weight:900;">Salary + Bonus:</td>'+
+                '<td colspan="1"; style="font-weight:900;">No of Trips :</td>'+
+                '<td colspan="2";>'+data.number_of_trips+'</td>'+
+                '<td colspan="1"; style="font-weight:900;" >No of Hours:</td>'+
+                '<td colspan="2";>'+data.number_of_hours+'</td>'+
+                '<td colspan="1"; style="font-weight:900;" >AED Hours:</td>'+
+                '<td colspan="2";>'+data.aed_hours+'</td>'+
+                '<td colspan="1"; style="font-weight:900;">AED Trips:</td>'+
+                '<td colspan="2";>'+data.aed_trips+'</td>'+
+                '<td colspan="1"; style="font-weight:900;" >Bonus:</td>'+
+                '<td colspan="2";>'+data.bonus+'</td>'+
+                '<td colspan="1"; style="font-weight:900;" >Sum/Total:</td>'+
+                '<td colspan="2";>'+(data.bonus+data.net_salary)+'</td>'+
+            '</tr>'+
+            '<tr>'+
+                '<td colspan="1"; style="font-weight:900;">Expense & Bills:</td>'+
+            '</tr>'+
+            '<tr>'+
+                '<td colspan="1"; style="font-weight:900;">Profit:</td>'+
             '</tr>'+
         '</table>';
 }
