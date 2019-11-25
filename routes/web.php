@@ -150,7 +150,6 @@ Route::group([
     Route::delete('/delete/last/import','RiderController@delete_lastImport')->name('delete.import_data');
     Route::get("/zomato/salary/sheet/export","AccountsController@zomato_salary_sheet_export")->name("admin.zomato_salary_sheet_export");
 //ends import Zomato
-    Route::get('/client/profit/sheet/{client_id}','ClientController@profit_client')->name('client.profit_sheet_view');
 });
 // clients
 // Bike
@@ -530,6 +529,9 @@ Route::group([
     Route::get('/client_income/edit/{id}','AccountsController@client_income_edit')->name('admin.client_income_edit');
     Route::get('/client_income/edit/view/{id}','AccountsController@client_income_edit_view')->name('admin.client_income_edit_view');
 // end Client_income 
+
+// company profit
+Route::get('/client/profit/sheet/{client_id}','ClientController@profit_client')->name('client.profit_sheet_view');
 });
 // end for Admin
 // for Admin global
