@@ -90,8 +90,8 @@ margin-left: 10px;
                     <tr>
                         <th>Rider Name</th>
                         {{-- <th>Bike Number</th> --}}
-                        <th>Payout</th>
-                        <th>Salary</th>
+                        <th>Total Payout</th>
+                        <th>Salary + Bonus</th>
                         <th>Expense & Bills</th>
                         <th>Profit</th>
                         <th class="d-none"></th>

@@ -2143,7 +2143,16 @@ class AjaxNewController extends Controller
             ->whereMonth('date',$month)
             ->get()
             ->sum('total_to_be_paid_out');
-                return round($payout_sum,2); 
+            $dc_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('dc_deductions');
+            $tips_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->sum('tips_payouts');
+            $total_payout=($payout_sum+$dc_sum)-$tips_sum;
+                return round($total_payout,2); 
         }) 
         ->addColumn('cod', function($rider) use ($month) {
             $cod_sum=Income_zomato::where('rider_id',$rider->rider_id)
@@ -2210,7 +2219,12 @@ class AjaxNewController extends Controller
             ->where('source','salary')
             ->where('type','dr')
             ->sum('amount');
-            return round($salary,2);
+            $bonus_amount=Company_Account::where('source','400 Trips Acheivement Bonus')
+            ->where('rider_id',$rider->rider_id)
+            ->whereMonth('month',$month)
+            ->sum('amount');
+            $total_salary=$salary+$bonus_amount;
+            return round($total_salary,2);
         })
         ->addColumn('profit', function($rider) use ($month) {
             $payout_sum=Income_zomato::where('rider_id',$rider->rider_id)
