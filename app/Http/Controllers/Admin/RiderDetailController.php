@@ -201,22 +201,22 @@ class RiderDetailController extends Controller
         return response()->json([
             'aed_hours_client'=>$hours_client,
             'aed_trips_client'=>$trips_client,
-            'sum_1'=>$hours_client+$trips_client,
+            'sum_1'=>round($hours_client+$trips_client,2),
 
             'trips'=>$trips,
             'hours'=>$hours,
             'aed_trips'=>$aed_trips,
             'aed_hours'=>$aed_hours,
             'bonus'=>$bonus,
-            'sum_2'=>$aed_trips+$aed_hours+$bonus,
+            'sum_2'=>round($aed_trips+$aed_hours+$bonus,2),
            
             'bike_rent'=>$bike_rent,
             'fuel'=>$fuel,
-            'salik'=>$salik-$salik_extra,
-            'salik_extra'=>$salik_extra,
-            'sim'=>$sim-$sim_extra,
-            'sim_extra'=>$sim_extra,
-            'sum_3'=>$bike_rent+$fuel+$total_salik+$total_sim,
+            'salik'=>$salik,
+            'salik_extra'=>$salik-$salik_extra,
+            'sim'=>$sim,
+            'sim_extra'=>$sim-$sim_extra,
+            'sum_3'=>round($bike_rent+$fuel+$total_salik+$total_sim,2),
             
         ]);
     }

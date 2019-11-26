@@ -119,20 +119,20 @@
                 },
                 success: function(data){
                     console.log(data);
-                    $hour_client=data.aed_hours_client;
-                    $trip_client=data.aed_trips_client;
-                    $sum_1=data.sum_1;
+                    $hour_client=(data.aed_hours_client).toFixed(2);
+                    $trip_client=(data.aed_trips_client).toFixed(2);
+                    $sum_1=(data.sum_1).toFixed(2);
                     $('.total_payout').html('<strong>Total Payout:</strong>');
                     $('.aed_hour_client').html('AED Hours: <strong>'+$hour_client+'</strong>');
                     $('.aed_trips_client').html('AED Trips: <strong>'+$trip_client+'</strong>');
                     $('.sum_1').html('Sum/Total: <strong>'+$sum_1+'</strong>');
 
-                    $trips=data.trips;
-                    $hours=data.hours;
-                    $aed_trips=data.aed_trips;
-                    $aed_hours=data.aed_hours;
-                    $bonus=data.bonus;
-                    $sum_2=data.sum_2;
+                    $trips=(data.trips).toFixed(2);
+                    $hours=(data.hours).toFixed(2);
+                    $aed_trips=(data.aed_trips).toFixed(2);
+                    $aed_hours=(data.aed_hours).toFixed(2);
+                    $bonus=(data.bonus).toFixed(2);
+                    $sum_2=(data.sum_2).toFixed(2);
                     $('.salary_bonus').html('<strong>Salary + Bonus:</strong>');
                     $('.hours').html('Hours: <strong>'+$hours+'</strong>');
                     $('.trips').html('Trips: <strong>'+$trips+'</strong>');
@@ -141,11 +141,11 @@
                     $('.bonus').html('Bonus: <strong>'+$bonus+'</strong>');
                     $('.sum_2').html('Sum/Total: <strong>'+$sum_2+'</strong>');
 
-                    $bike_rent=data.bike_rent;
-                    $fuel=data.fuel;
-                    $salik=data.salik;
-                    $sim=data.sim;
-                    $sum_3=data.sum_3;
+                    $bike_rent=(data.bike_rent).toFixed(2);
+                    $fuel=(data.fuel).toFixed(2);
+                    $salik=(data.salik).toFixed(2);
+                    $sim=(data.sim).toFixed(2);
+                    $sum_3=(data.sum_3).toFixed(2);
                     $('.expense_bills').html('<strong>Expense & Bills:</strong>');
                     $('.bike_rent').html('Bike-Rent: <strong>'+$bike_rent+'</strong>');
                     $('.fuel').html('Fuel: <strong>'+$fuel+'</strong>');
