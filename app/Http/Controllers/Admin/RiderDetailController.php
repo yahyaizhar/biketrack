@@ -199,6 +199,8 @@ class RiderDetailController extends Controller
 
         }
         return response()->json([
+            'client'=>$client_riders,
+
             'aed_hours_client'=>$hours_client,
             'aed_trips_client'=>$trips_client,
             'sum_1'=>$hours_client+$trips_client,
