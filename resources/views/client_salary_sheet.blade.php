@@ -63,12 +63,13 @@
                     </div>
                     <div class="row">
                         <div class="salary_bonus col-md-2"></div>
-                        <div class="trips col-md-1"></div>
+                        <div class="trips col-md-2"></div>
                         <div class="hours col-md-2"></div>
                         <div class="aed_trips col-md-2"></div>
                         <div class="aed_hours col-md-2"></div>
-                        <div class="bonus col-md-1"></div>
-                        <div class="sum_2 col-md-2"></div>
+                        <div class="bonus col-md-2"></div>
+                        <div class="col-md-2"></div>
+                        <div class="sum_2 col-md-2" style="padding: 10px 0px 11px 9px;"></div>
                     </div>
                     <div class="row">
                         <div class="expense_bills col-md-2"></div>
