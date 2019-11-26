@@ -93,125 +93,131 @@ class RiderDetailController extends Controller
             'sim_Extra_useage'=>$sim_Extra_useage,
         ]);
     }
-    public function Zomato_salary_sheet_view(){
-        return view('Zomato_salary_sheet');
+    public function client_total_expense($id){
+        $client=Client::find($id);
+        return view('client_salary_sheet',compact('client'));
     }
-    public function zomato_faisla(){
-        // $a = Trip_Detail::all();
-        // foreach ($a as $b) {
-        //     $c = Carbon::parse($b->trip_date)->format('Y-m-d');
-        //     $b->trip_date=$c;
-        //     $b->save();
-        // }
-
-        // return; 
-        $month='10';
-        $month_date='2019-10-31';
-        $time=[];
-        $total_hours=Income_zomato::whereMonth('date',$month)->sum('log_in_hours_payable');
-        $total_trips=Income_zomato::whereMonth('date',$month)->sum('trips_payable');
-        $ncw=Income_zomato::whereMonth('date',$month)->sum('ncw_incentives');
-        $tips=Income_zomato::whereMonth('date',$month)->sum('tips_payouts');
-        $denials_penalty=Income_zomato::whereMonth('date',$month)->sum('denials_penalty');
-        $payout=Income_zomato::whereMonth('date',$month)->sum('total_to_be_paid_out');
-        $cod=Income_zomato::whereMonth('date',$month)->sum('mcdonalds_deductions');
+    public function summary_month($month,$client_id){
+        $client=Client::where("id",$client_id)->get()->first();
+        $client_riders=Client_Rider::where('client_id', $client->id)->get();
+        $total_hours_client=0;
+        $total_trips_client=0;
+        $trips=0;
+        $hours=0;
+        $aed_trips=0;
+        $aed_hours=0;
+        $bonus=0;
+        $bike_rent=0;
+        $fuel=0;
+        $salik=0;
+        $salik_extra=0;
+        $sim=0;
+        $sim_extra=0;
+        $total_salik=0;
+        $total_sim=0;
         
 
-        $DC_deduction=Income_zomato::whereMonth('date',$month)->sum('dc_deductions');
-        $salik=Trip_Detail::whereMonth('trip_date',$month)->sum('amount_aed'); 
-        $bike_rent=Company_Account::where("source",'Bike Rent')
-        ->whereNotNull('rider_id')
-        ->whereMonth('month',$month)
-        ->sum('amount');
-        // $payout_total=0;
-        // foreach ($payout as $hours) {
-        // $obj=[];
-        // $obj['log_in_hours_payable'] = $hours['log_in_hours_payable']>286?$obj['log_in_hours_payable']=286 : $hours['log_in_hours_payable'];
-        // $obj['trips'] = $hours['trips_payable']>400?$obj['trips']=400 : $hours['trips_payable'];
-        // $obj['trips_extra'] = $hours['trips_payable']>400?$obj['trips_extra']=$hours['trips_payable']-400 :$obj['trips_extra']=0;
-        // $obj['total_payout']=$obj['log_in_hours_payable']*7.87 +  $obj['trips']*2 + $obj['trips_extra']*4;
-        // $payout_total+=$obj['total_payout'];
-
-        // }
-        //  $salik=0;
-         $fuel=0;
-         $sim=0;
-         $bonus=0;
-        //  $bike_rent=0;
-        $clients=Client::where("name",'Zomato Food Delivery')->get()->first();
-        $client_riders=Client_Rider::where("client_id",$clients->id)->get();
         foreach ($client_riders as $riders) {
-            $bike_history = Assign_bike::all();
-            $rider_id = $riders->id;
-            $history_found = Arr::first($bike_history, function ($item, $key) use ($rider_id, $month_date) {
-                $created_at =Carbon::parse($item->created_at)->format('Y-m-d');
-                $created_at =Carbon::parse($created_at);
-    
-                $updated_at =Carbon::parse($item->updated_at)->format('Y-m-d');
-                $updated_at =Carbon::parse($updated_at);
-                $req_date =Carbon::parse($month_date);
-                if($item->status=="active"){ 
-                    // mean its still active, we need to match only created at
-                    return $item->rider_id == $rider_id && $req_date->greaterThanOrEqualTo($created_at);
-                }
-                
-                return $item->rider_id == $rider_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
-            });
-            if(isset($history_found)){
-                $bike=bike::find($history_found->bike_id);  
-                // $salik_amount=Trip_Detail::whereMonth('trip_date',$month)
-                // ->where("plate",$bike->bike_number)
-                // ->sum('amount_aed'); 
-                // $salik+=$salik_amount; 
+            $total_hours_client+=Income_zomato::whereMonth('date',$month)
+            ->where("rider_id",$riders->rider_id)
+            ->sum('log_in_hours_payable');
+            $hours_client=$total_hours_client*6;
+
+            $total_trips_client+=Income_zomato::whereMonth('date',$month)
+            ->where("rider_id",$riders->rider_id)
+            ->sum('trips_payable');
+            $trips_client=$total_trips_client*6.75;
+
+            $trips+=Income_zomato::whereMonth('date',$month)
+            ->where("rider_id",$riders->rider_id)
+            ->sum('trips_payable');
+            $hours+=Income_zomato::whereMonth('date',$month)
+            ->where("rider_id",$riders->rider_id)
+            ->sum('log_in_hours_payable');
+            $_trips=Income_zomato::whereMonth('date',$month)
+            ->where("rider_id",$riders->rider_id)
+            ->sum('trips_payable');
+            if ($_trips>400) {
+                $extra_trips=($_trips-400)*4;
+                $remain_trips=400*2;
+                $aed_trips+=$extra_trips+$remain_trips;
             }
-        
-        $fuel_amount=Company_Account::whereNotNull('fuel_expense_id')
-        ->where('rider_id',$riders->rider_id)
-        ->whereMonth('month',$month) 
-        ->sum('amount');
-         $fuel+=$fuel_amount;
-         $bon=Company_Account::where('source',"400 Trips Acheivement Bonus")
-         ->where('rider_id',$riders->rider_id)
-         ->whereMonth('month',$month)
-         ->sum('amount');
-          $bonus+=$bon;
+            else{
+                $remain_trips=$_trips*2;
+                $aed_trips+=$remain_trips;
+            }
+            $_hours=Income_zomato::whereMonth('date',$month)
+            ->where("rider_id",$riders->rider_id)
+            ->sum('log_in_hours_payable');
+            if ($_hours>286) {
+                $_hours=286;
+            }
+            $aed_hours+=$_hours*7.87;
+            $bon=Company_Account::where('source',"400 Trips Acheivement Bonus")
+            ->where('rider_id',$riders->rider_id)
+            ->whereMonth('month',$month)
+            ->sum('amount');
+            $bonus+=$bon;
 
-        //  $_rent=Company_Account::where("source",'Bike Rent')
-        // ->where('rider_id','6')
-        // ->whereMonth('month',$month)
-        // ->sum('amount');
-        //  $bike_rent+=$_rent;
+            $bike_rent+=Company_Account::where("source",'Bike Rent')
+            ->where("rider_id",$riders->rider_id)
+            ->whereMonth('month',$month)
+            ->sum('amount');
 
-         $sim_amount=Company_Account::where("source","Sim Transaction")
-         ->where('rider_id',$riders->rider_id)
-         ->whereMonth('month',$month)
-         ->where('type','dr')
-         ->whereNotNull('sim_transaction_id')
-         ->sum('amount');
-         $sim+=$sim_amount;
+            $fuel+=Company_Account::whereNotNull('fuel_expense_id')
+            ->where('rider_id',$riders->rider_id)
+            ->whereMonth('month',$month) 
+            ->sum('amount');
+            $sim_amount=Company_Account::where("source","Sim Transaction")
+            ->where('rider_id',$riders->rider_id)
+            ->whereMonth('month',$month)
+            ->where('type','dr')
+            ->whereNotNull('sim_transaction_id')
+            ->sum('amount');
+            $sim+=$sim_amount;
+            $sim_extra_amount=Company_Account::where("source","Sim extra usage")
+            ->where('rider_id',$riders->rider_id)
+            ->whereMonth('month',$month)
+            ->whereNotNull('sim_transaction_id')
+            ->sum('amount');
+            $sim_extra+=$sim_extra_amount;
+           
+            $salik_amount=Company_Account::where("source","Salik")
+            ->where('rider_id',$riders->rider_id)
+            ->whereMonth('month',$month)
+            ->whereNotNull('salik_id')
+            ->sum('amount');
+            $salik+=$salik_amount;
+            $salik_extra_amount=Company_Account::where("source","Salik Extra")
+            ->where('rider_id',$riders->rider_id)
+            ->whereMonth('month',$month)
+            ->whereNotNull('salik_id')
+            ->sum('amount');
+            $salik_extra+=$salik_extra_amount;
+            $total_salik=$salik-$salik_extra;
+            $total_sim=$sim-$sim_extra;
 
-         $salary=Company_Account::whereNotNull('rider_id')
-         ->whereMonth('month',$month)
-         ->where('source','salary')
-         ->where('type','dr')
-         ->sum('amount');
-    }
+        }
         return response()->json([
-        'total_trips'=>round($total_trips,2),
-        'total_hours'=>round($total_hours,2), 
-        'ncw'=>round($ncw,2), 
-        'tips'=>round($tips,2),  
-        'cod'=>round($cod,2),  
-        'denials_penalty'=>round($denials_penalty,2),   
-        'DC_deduction'=>round($DC_deduction,2),   
-        'payout'=>round($payout,2),
-        'bike_fuel'=>round($fuel,2),
-        'salik'=>round($salik,2),
-        'sim'=>round($sim,2),
-        'salary'=>round($salary,2),
-        'bike_rent'=>round($bike_rent,2),
-        'bonus'=>round($bonus,2),
+            'aed_hours_client'=>$hours_client,
+            'aed_trips_client'=>$trips_client,
+            'sum_1'=>$hours_client+$trips_client,
 
+            'trips'=>$trips,
+            'hours'=>$hours,
+            'aed_trips'=>$aed_trips,
+            'aed_hours'=>$aed_hours,
+            'bonus'=>$bonus,
+            'sum_2'=>$aed_trips+$aed_hours+$bonus,
+           
+            'bike_rent'=>$bike_rent,
+            'fuel'=>$fuel,
+            'salik'=>$salik-$salik_extra,
+            'salik_extra'=>$salik_extra,
+            'sim'=>$sim-$sim_extra,
+            'sim_extra'=>$sim_extra,
+            'sum_3'=>$bike_rent+$fuel+$total_salik+$total_sim,
+            
         ]);
     }
   

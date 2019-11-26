@@ -87,7 +87,8 @@ class AjaxController extends Controller
                     <a class="dropdown-item" href="'.route('admin.clients.riders', $clients).'"><i class="fa fa-eye"></i> View Riders</a>
                     <a class="dropdown-item" href="'.route('admin.clients.assignRiders', $clients).'"><i class="fa fa-edit"></i> Assign Riders</a>
                     <button class="dropdown-item" onclick="deleteClient('.$clients->id.');"><i class="fa fa-trash"></i> Delete</button>
-                    <a class="dropdown-item" href="'.route('client.profit_sheet_view', $clients).'"><i class="fa fa-edit"></i>View Detail Summary</a>
+                    <a class="dropdown-item" href="'.route('client.profit_sheet_view', $clients).'"><i class="fa fa-edit"></i>View Record Sheet</a>
+                    <a class="dropdown-item" href="'.route('client.client_total_expense', $clients).'"><i class="fa fa-edit"></i>View Record Summary</a>
                 </div>
             </span>
         </span>';
