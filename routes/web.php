@@ -532,6 +532,8 @@ Route::group([
 
 // company profit
 Route::get('/client/profit/sheet/{client_id}','ClientController@profit_client')->name('client.profit_sheet_view');
+Route::get('/client/total/expense/sheet/{client_id}','RiderDetailController@client_total_expense')->name('client.client_total_expense');
+Route::get('/client/month/record/{month}/{client}','RiderDetailController@summary_month');
 });
 // end for Admin
 // for Admin global
@@ -579,8 +581,7 @@ Route::group([
    Route::get('/add/invoice/tax','InvoiceController@add_invoice')->name('tax.add_invoice');
    Route::get('/invoice/tax/ajax/get_clients_details/{client_id}','InvoiceController@get_ajax_client_details')->name('tax.get_ajax_client_details');
    Route::get('/invoice/view','InvoiceController@view_invoices')->name('tax.view_invoices');
-   Route::get('/zomato/salary/sheet/view','RiderDetailController@Zomato_salary_sheet_view');
-   Route::get('/zomato/september','RiderDetailController@zomato_faisla');
+  
 
 });    
 
