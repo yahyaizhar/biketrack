@@ -65,11 +65,9 @@ margin-left: 10px;
                         <th>Assigned To</th>
                         <th>Sim Number</th>
                         <th>Bike Number</th>
-                        <th>Passport Collected</th>
                         <th>Missing Fields</th>
-                        <th>Status</th>
+                        <th>Date Of Joining</th>
                         <th>Actions</th>
-                        <th class="d-none"></th>
                         <th class="d-none"></th>
                         <th class="d-none"></th>
                         <th class="d-none"></th>
@@ -210,11 +208,9 @@ $(function() {
             { "data": 'client_name', "name": 'client_name' },
             { "data": 'sim_number', "name": 'sim_number' },
             { "data": 'bike_number', "name": 'bike_number' },
-            { "data": 'passport_collected', "name": 'passport_collected' },
             { "data": 'missing_fields', "name": 'missing_fields' },
-            { "data": 'status', "name": 'status' },
-            { "data": 'actions', "name": 'actions' },
             { "data": 'date_of_joining', "name": 'date_of_joining' },
+            { "data": 'actions', "name": 'actions' },
             { "data": 'bike_number', "name": 'bike_number' },
             { "data": 'phone', "name": 'phone' },
             { "data": 'emirate_id', "name": 'emirate_id' },
@@ -223,37 +219,36 @@ $(function() {
             { "data": 'visa_expiry', "name": 'visa_expiry' },
             { "data": 'licence_expiry', "name": 'licence_expiry' },
             { "data": 'mulkiya_expiry', "name": 'mulkiya_expiry' },
+            { "data": 'passport_collected', "name": 'passport_collected' },
         ];
         _settings.responsive=false;
         _settings.columnDefs=[
             {
-                "targets": [ 10,11,12,13,14,15,16,17,18 ],
+                "targets": [ 9,10,11,12,13,14,15,16,17 ],
                 "visible": false,
                 searchable: true,
             },
         ];
     }
     else{
-        $('#riders-table thead tr th').eq(7).before('<th>Date Of Joining</th>');
-        $('#riders-table thead tr th').eq(8).before('<th>Passport Expiry</th>');
-        $('#riders-table thead tr th').eq(9).before('<th>Visa Expiry</th>');
-        $('#riders-table thead tr th').eq(10).before('<th>Licence Expiry</th>');
-        $('#riders-table thead tr th').eq(11).before('<th>Mulkiya Expiry</th>');
+        $('#riders-table thead tr th').eq(7).before('<th>Passport Expiry</th>');
+        $('#riders-table thead tr th').eq(8).before('<th>Visa Expiry</th>');
+        $('#riders-table thead tr th').eq(9).before('<th>Licence Expiry</th>');
+        $('#riders-table thead tr th').eq(10).before('<th>Mulkiya Expiry</th>');
         _settings.columns=[
         { "data": 'new_id', "name": 'new_id' },
             { "data": 'new_name', "name": 'name' },
             { "data": 'new_email', "name": 'email' },
             { "data": 'sim_number', "name": 'sim_number' },
             { "data": 'bike_number', "name": 'bike_number' },
-            { "data": 'passport_collected', "name": 'passport_collected' },
             { "data": 'address', "name": 'address' },
-            { "data": 'status', "name": 'status' },
             { "data": 'date_of_joining', "name": 'date_of_joining' },
             { "data": 'passport_expiry', "name": 'passport_expiry' },
             { "data": 'visa_expiry', "name": 'visa_expiry' },
             { "data": 'licence_expiry', "name": 'licence_expiry' },
             { "data": 'mulkiya_expiry', "name": 'mulkiya_expiry' },
-            { "data": 'actions', "name": 'actions' }
+            { "data": 'actions', "name": 'actions' },
+            { "data": 'passport_collected', "name": 'passport_collected' },
         ];
      
     }
@@ -327,8 +322,8 @@ function format ( data ) {
     // `d` is the original data object for the row
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
             '<tr>'+
-            '<td colspan="1"; style="font-weight:900;">Date Of Joining:</td>'+
-            '<td colspan="2";>'+data.date_of_joining+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Passport Collected:</td>'+
+            '<td colspan="2";>'+data.passport_collected+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >Assign Bike Number:</td>'+
             '<td colspan="2";>'+data.bike_number+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >Personal Phone Number:</td>'+
