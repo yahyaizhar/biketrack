@@ -153,7 +153,7 @@
                     $('.sim').html('Sim: <strong>'+$sim+'('+data.sim_extra+')</strong>');
                     $('.sum_3').html('Sum/Total: <strong>'+$sum_3+'</strong>');
 
-                    $profit=($sum_1-($sum_2+$sum_3)).toFixed(2);
+                    $profit=$sum_1-($sum_2+$sum_3);
                     $('.profit').html('<strong>Profit:</strong>');
                     $('.profit_val').html('Profit:<strong>'+$profit+'</strong>');
 
