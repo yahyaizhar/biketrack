@@ -37,60 +37,260 @@ class RiderDetailController extends Controller
     }
     public function view_detail(){
         $riders=Rider::where("active_status","A")->get();
-        return view('admin.rider.rider_details',compact('riders'));
+        $sims=Sim::where("active_status","A")->get();
+        $bikes=bike::where("active_status","A")->get();
+        return view('admin.rider.rider_details',compact('riders', 'sims', 'bikes'));
     }
-    public function get_data_ajax_detail($rider_id,$month){
-        //  bike
-        $assign_bike_date='';
-        $brand='';
-        $model='';
-        $bike_number='';
-      $assign_bike=Assign_bike::where("rider_id",$rider_id)->whereMonth('created_at',$month)->get()->last();
-      if (isset( $assign_bike)) {
-        $assign_bike_date=Carbon::parse($assign_bike->created_at)->format('d M, Y');
-        $bike=bike::where('id',$assign_bike->bike_id)->get()->first();
-        if (isset($bike)) {
-            $brand=$bike->brand;
-            $model=$bike->model;
-            $bike_number=$bike->bike_number;
-        }
-      }
-      $salik=Company_Account::where("rider_id",$rider_id)->where("source","Salik")->whereMonth("month",$month)->sum('amount');
-      $fuel_expense=Company_Account::where("rider_id",$rider_id)->whereNotNull("fuel_expense_id")->whereMonth("month",$month)->sum('amount');
-        // end bike
-        // sim
-        $allowed_balance='';
-        $assign_sim_date='';
-        $sim='';
-        $sim_company='';
-        $sim_number ='';
-        $assign_sim=Sim_History::where("rider_id",$rider_id)->whereMonth('created_at',$month)->get()->last();
-        if (isset($assign_sim)) {
-            $allowed_balance=$assign_sim->allowed_balance;
-            $assign_sim_date=Carbon::parse($assign_sim->created_at)->format('d M, Y');
-            $sim=Sim::where("id",$assign_sim->sim_id)->get()->first();
-            if (isset($sim)) {
-                $sim_company=$sim->sim_company;
-                $sim_number=$sim->sim_number;
+    public function get_data_ajax_detail($_id,$month, $according_to){
+
+
+       
+        //bike details
+        function get_bike_data($_id,$month, $according_to){
+            $only_month = Carbon::parse($month)->format('m');
+            $rider_id = null;
+            $assign_bike_date__start=null;
+            $assign_bike_date__end=null;
+            $brand='';
+            $model='';
+            $bike=NULL;
+            $bike_number='';
+            $salik=0;
+            $fuel_expense=0;
+            
+
+            $is_bike_found = null;
+            $bike_histories = null;
+            $bike_history = Assign_bike::all();
+            
+
+            $to_match_bike = $according_to=='rider'?'rider_id':($according_to=='bike'?'bike_id':'');
+            if($to_match_bike != ''){
+                $bike_history_found = Arr::first($bike_history, function ($item, $key) use ($_id, $month,$to_match_bike) {
+                    $created_at =Carbon::parse($item->created_at)->format('Y-m-d');
+                    $created_at =Carbon::parse($created_at);
+        
+                    $updated_at =Carbon::parse($item->updated_at)->format('Y-m-d');
+                    $updated_at =Carbon::parse($updated_at);
+                    $req_date =Carbon::parse($month);
+                    if($item->status=="active"){ 
+                        // mean its still active, we need to match only created at
+                        if($to_match_bike=='bike_id'){
+                            return $item->bike_id == $_id && $req_date->greaterThanOrEqualTo($created_at);
+                        }
+                        return $item->rider_id == $_id && $req_date->greaterThanOrEqualTo($created_at);
+                        
+                    }
+                    if($to_match_bike=='bike_id'){
+                        return $item->bike_id == $_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
+                    }
+                    return $item->rider_id == $_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
+                });
+
+                if(isset($bike_history_found)){
+                    $is_bike_found = true;
+                    $bike_histories = $bike_history_found;
+                }else {
+                    $is_bike_found = false;
+                    $to_find = $to_match_bike=='bike_id'?'bike_id':'rider_id';
+                    $assign_bikeBK = Assign_bike::where($to_find , $_id)
+                    ->where('status', 'active')->get()->first();
+                    if(isset($assign_bikeBK)){
+                    $bike_histories = $assign_bikeBK;
+                    }
+                }
+                
+                //fetching data
+                if (isset( $bike_histories )) {
+                    $rider_id = $bike_histories->rider_id;
+                    $bike=bike::find($bike_histories->bike_id);
+                    $assign_bike_date__start=Carbon::parse($bike_histories->created_at)->format('Y-m-d');
+                    $assign_bike_date__end=Carbon::parse($bike_histories->updated_at)->format('Y-m-d');
+                    $salik=Company_Account::where("rider_id",$bike_histories->rider_id)->whereNotNull("salik_id")->whereMonth("month",$only_month)->sum('amount');
+                    $fuel_expense=Company_Account::where("rider_id",$bike_histories->rider_id)->whereNotNull("fuel_expense_id")->whereMonth("month",$only_month)->sum('amount');
+                    if (isset($bike)) {
+                        $brand=$bike->brand;
+                        $model=$bike->model;
+                        $bike_number=$bike->bike_number;
+                    }
+                }
+                //fetching data
             }
+
+            return array(
+                'rider_id'=>$rider_id,
+                'bike'=>$bike,
+                'bike_histories'=>$bike_histories,
+                'assign_bike_date__start'=>$assign_bike_date__start,
+                'assign_bike_date__end'=>$assign_bike_date__end,
+                'is_bike_found'=>$is_bike_found,
+                'brand'=>$brand,
+                'model'=>$model,
+                'bike_number'=>$bike_number,
+                'salik'=>$salik,
+                'fuel_expense'=>$fuel_expense,
+            );  
         }
-        $sim_useage=Company_Account::where("rider_id",$rider_id)->where("source","Sim Transaction")->whereMonth("month",$month)->sum('amount');
-        $sim_Extra_useage=Company_Account::where("rider_id",$rider_id)->where("source","Sim extra usage")->whereMonth("month",$month)->sum('amount');
-        // end sim
+        //bike_details end
+
+        // sim details
+        function get_sim_data($_id,$month, $according_to){
+            $only_month = Carbon::parse($month)->format('m');
+            $rider_id = null;
+            $assign_sim_date__start=null;
+            $assign_sim_date__end=null;
+            $allowed_balance='';
+            $assign_sim_date='';
+            $sim=null;
+            $sim_company='';
+            $sim_number ='';
+
+            $is_sim_found = null;
+            $sim_history = Sim_history::all();
+            $sim_histories = null;
+            $sim_useage=0;
+            $sim_Extra_useage=0;
+
+            //function get_sim_data(){}
+            $to_match_sim = $according_to=='rider'?'rider_id':($according_to=='sim'?'sim_id':'');
+            if($to_match_sim != ''){
+                
+                $sim_history_found = Arr::first($sim_history, function ($item, $key) use ($_id, $month,$to_match_sim) {
+                    $created_at =Carbon::parse($item->created_at)->format('Y-m-d');
+                    $created_at =Carbon::parse($created_at);
+
+                    $updated_at =Carbon::parse($item->updated_at)->format('Y-m-d');
+                    $updated_at =Carbon::parse($updated_at);
+                    $req_date =Carbon::parse($month);
+                    if($item->status=="active"){ 
+                        // mean its still active, we need to match only created at
+                        return $to_match_sim=='sim_id'?$item->sim_id == $_id && $req_date->greaterThanOrEqualTo($created_at):$item->rider_id == $_id && $req_date->greaterThanOrEqualTo($created_at);
+                    }
+                    
+                    return $to_match_sim=='sim_id'?$item->sim_id == $_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at):$item->rider_id == $_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
+                });
+
+                if(isset($history_found)){
+                    $sim_histories = $history_found;
+                    $is_sim_found = true;
+                }else {
+                    $is_sim_found = false;
+                    $to_find = $to_match_sim=='sim_id'?'sim_id':'rider_id';
+                    $sim_history = Sim_history::where($to_find, $_id)
+                    ->where('status', 'active')->get()->first();
+                    if(isset($sim_history)){
+                        $sim_histories = $sim_history;
+                    }
+                }
+                
+                //fetching data
+                if (isset( $sim_histories )) {
+                    $rider_id = $sim_histories->rider_id;
+                    $allowed_balance=$sim_histories->allowed_balance;
+                    $assign_sim_date__start=Carbon::parse($sim_histories->created_at)->format('Y-m-d');
+                    $assign_sim_date__end=Carbon::parse($sim_histories->updated_at)->format('Y-m-d');
+                    $sim_useage=Company_Account::where("rider_id",$sim_histories->rider_id)->where("source","Sim Transaction")->whereMonth("month",$only_month)->sum('amount');
+                    $sim_Extra_useage=Company_Account::where("rider_id",$sim_histories->rider_id)->where("source","Sim extra usage")->whereMonth("month",$only_month)->sum('amount');
+                    $sim=Sim::find($sim_histories->sim_id);
+                    if (isset($sim)) {
+                        $sim_company=$sim->sim_company;
+                        $sim_number=$sim->sim_number;
+                    }
+                }
+            }
+
+            return array(
+                'rider_id'=>$rider_id,
+                'sim_histories'=>$sim_histories,
+                'assign_sim_date__start'=>$assign_sim_date__start,
+                'assign_sim_date__end'=>$assign_sim_date__end,
+                'is_sim_found'=>$is_sim_found,
+                'allowed_balance'=>$allowed_balance,
+                'sim_company'=>$sim_company,
+                'sim_number'=>$sim_number,
+                'sim_useage'=>$sim_useage,
+                'sim_Extra_useage'=>$sim_Extra_useage,
+                'sim'=>$sim
+            );  
+        }
+        // end sim details
+
+        $rider_id=null;
+        if($according_to=='rider'){
+            $rider_id = $_id;
+        }
+        else if($according_to=='sim'){
+            $sim_id = $_id;
+            $sim_data = get_sim_data($sim_id,$month, 'sim');
+            $rider_id = $sim_data['rider_id'];
+        }
+        else if($according_to=='bike'){
+            $bike_id = $_id;
+            $bike_data = get_bike_data($bike_id,$month, 'bike');
+            $rider_id = $bike_data['rider_id'];
+        }
+        else {
+            return response()->json([
+                'status'=>0,
+                'message'=>'Parameter "$according_to" is wrong.'
+            ]);
+        }
+        $bike_data = get_bike_data($rider_id,$month, 'rider');
+        $assign_bike_date__start=$bike_data['assign_bike_date__start'];
+        $assign_bike_date__end=$bike_data['assign_bike_date__end'];
+        $brand=$bike_data['brand'];
+        $model=$bike_data['model'];
+        $bike = $bike_data['bike'];
+        $bike_number=$bike_data['bike_number'];
+        $salik=$bike_data['salik'];;
+        $fuel_expense=$bike_data['fuel_expense'];
+        $is_bike_found = $bike_data['is_bike_found'];
+        $bike_histories = $bike_data['bike_histories'];
+
+
+        $sim_data = get_sim_data($rider_id,$month, 'rider');
+        $allowed_balance=$sim_data['allowed_balance'];
+        $assign_sim_date__start=$sim_data['assign_sim_date__start'];
+        $assign_sim_date__end=$sim_data['assign_sim_date__end'];
+        $sim_company=$sim_data['sim_company'];
+        $sim = $sim_data['sim'];
+        $sim_number =$sim_data['sim_number'];
+        $sim_useage=$sim_data['sim_useage'];
+        $sim_Extra_useage=$sim_data['sim_Extra_useage'];
+        $is_sim_found = $sim_data['is_sim_found'];
+        $sim_histories = $sim_data['sim_histories'];
+        
+        if($according_to=='rider'){
+            $rider= Rider::find($_id);
+        }
+        else if($according_to=='sim'){
+            $sim = Sim::find($_id);
+        }
+        else if($according_to=='bike'){
+            $bike = bike::find($_id);
+        }
+        
+        $rider= Rider::find($rider_id);
         return response()->json([
-            'assign_bike_date'=>$assign_bike_date,
+            'status'=>1,
+            'rider'=>$rider,
+            'assign_bike_date__start'=>$assign_bike_date__start,
+            'assign_bike_date__end'=>$assign_bike_date__end,
             'brand'=>$brand,
             'model'=>$model,
             'bike_number'=>$bike_number,
             'salik'=>$salik,
             'fuel_expense'=>$fuel_expense,
+            'bike'=>$bike,
 
             'allowed_balance'=>$allowed_balance,
-            'assign_sim_date'=>$assign_sim_date,
+            'assign_sim_date__start'=>$assign_sim_date__start,
+            'assign_sim_date__end'=>$assign_sim_date__end,
+            'sim'=>$sim,
             'sim_company'=>$sim_company,
             'sim_number'=>$sim_number,
-            'sim_useage'=>$sim_useage,
-            'sim_Extra_useage'=>$sim_Extra_useage,
+            'sim_usage'=>$sim_useage,
+            'sim_Extra_usage'=>$sim_Extra_useage,
         ]);
     }
     public function Zomato_salary_sheet_view(){

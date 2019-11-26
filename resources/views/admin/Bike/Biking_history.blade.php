@@ -64,22 +64,12 @@
                                         <a><i class="flaticon2-calendar-3"></i>{{ $bike->availability }} </a>
                                         <a><i class="fa fa-motorcycle"></i>{{ $bike->bike_number }}</a>
                                         @php
-                                        $mytimestamp = strtotime($assign_bike->bike_assign_date);
-                                        $timestampupdated=strtotime($assign_bike->bike_unassign_date);
-                                        if ($assign_bike->bike_assign_date!=null) {
-                                            $created=Carbon\Carbon::now()->format('F d, Y');
-                                        }
-                                        else{
-                                            $created=Carbon\Carbon::now()->format('F d, Y');
-                                        }
-                                        if ($assign_bike->bike_unassign_date!=null) {
-                                            $updated=Carbon\Carbon::now()->format('F d, Y');
-                                        }
-                                        else{
-                                            $updated=Carbon\Carbon::now()->format('F d, Y');
-                                        }
+                                        $mytimestamp = strtotime($assign_bike->created_at);
+                                        $timestampupdated=strtotime($assign_bike->updated_at);
+                                        $created=Carbon\Carbon::parse($assign_bike->created_at)->format('F d, Y');
+                                        $updated=Carbon\Carbon::parse($assign_bike->updated_at)->format('F d, Y');
                                         
-                                    @endphp
+                                    @endphp 
                                         @if($assign_bike->status=='active')
                                     <h6  class="rise-modal" onclick="updateDates({{$rider->id}},{{$assign_bike->id}},'{{$created}}','{{$updated}}')" style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}}</h6>
                                     @else
@@ -109,11 +99,11 @@
                                         <input type="hidden" id="bike_id" >
                                         <div class="form-group">
                                             <label>Started Month:</label>
-                                            <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::parse($assign_bike->bike_assign_date)->format('M d, Y')}}" required readonly class="month_picker form-control" name="bike_assign_date" placeholder="Enter Month" value="">
+                                            <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::parse($assign_bike->created_at)->format('M d, Y')}}" required readonly class="month_picker form-control" name="bike_assign_date" placeholder="Enter Month" value="">
                                         </div>
                                         <div class="form-group">
                                             <label>Ended Month:</label>
-                                            <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::parse($assign_bike->bike_unassign_date)->format('M d, Y')}}" required readonly class="month_picker form-control" name="bike_unassign_date" placeholder="Enter Month" value="">
+                                            <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::parse($assign_bike->updated_at)->format('M d, Y')}}" required readonly class="month_picker form-control" name="bike_unassign_date" placeholder="Enter Month" value="">
                                         </div>
                                         <div class="modal-footer border-top-0 d-flex justify-content-center">
                                             <button class="upload-button btn btn-success">Submit</button>
@@ -204,31 +194,31 @@
         }
         function updateDates(rider_id, assign_bike_id, created ,updated) {
             $("#bike_id").val(assign_bike_id);
-            $('input[name="created_at"]').val(created);
-            $('input[name="updated_at"]').val(updated);
-        $(".rise-modal").on("click",function(){
+            $("#bike_status").find('[name="bike_assign_date"]').attr('data-month', created);
+            $("#bike_status").find('[name="bike_unassign_date"]').attr('data-month', updated);
+            biketrack.refresh_global();
             $("#bike_status").modal("show");
-            $("form#active_bike_status").on("submit",function(e){
-                
-                e.preventDefault();
-                var _form = $(this);
-                var rider_id=$("#rider_id").val();
-                var assign_bike_id=$("#bike_id").val();
-                var _modal = _form.parents('.modal');
-                var url = "{{ url('admin/change') }}" + "/" + rider_id + "/history" + "/" + assign_bike_id;
-                swal.fire({
-                    title: 'Are you sure?',
-                    text: "You want update status!",
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Yes!'
-                }).then(function(result) {
-                    if (result.value) {
-                        $.ajaxSetup({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            }
-                        });
+        }
+        $("form#active_bike_status").on("submit",function(e){
+            e.preventDefault();
+            var _form = $(this);
+            var rider_id=$("#rider_id").val();
+            var assign_bike_id=$("#bike_id").val();
+            var _modal = _form.parents('.modal');
+            var url = "{{ url('admin/change') }}" + "/" + rider_id + "/history" + "/" + assign_bike_id;
+            swal.fire({
+                title: 'Are you sure?',
+                text: "You want update status!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes!'
+            }).then(function(result) {
+                if (result.value) {
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
                     $.ajax({
                         url : url,
                         type : 'GET',
@@ -264,9 +254,7 @@
                     });
                 }
             });
-        }); 
-    });
-}
+        });
 
 function deleteBike(rider_id, bike_id,url, enablePageReload = false, reloadLocation = null, ajaxReloadId)
 {
