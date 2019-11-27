@@ -163,8 +163,9 @@ class AjaxNewController extends Controller
                 $model->amount+=$mod->amount;
             }
         }
-        $bills->push($model);
-        
+        if ($model!="") {
+            $bills->push($model);
+        }
         //Salik
         $modelArr = \App\Model\Accounts\Company_Account::
         whereMonth('month', $month)
@@ -179,7 +180,9 @@ class AjaxNewController extends Controller
             
         }
         }
-        $bills->push($model);
+        if ($model!="") {
+            $bills->push($model);
+        }
         
         // bike_fine
         $modelArr = \App\Model\Accounts\Company_Account::
@@ -194,8 +197,9 @@ class AjaxNewController extends Controller
             $model->amount+=$mod->amount;
             
         }
+        }if ($model!="") {
+            $bills->push($model);
         }
-        $bills->push($model);
         //fuel_expense
         $modelArr = \App\Model\Accounts\Company_Account::
         whereMonth('month', $month)
@@ -209,7 +213,10 @@ class AjaxNewController extends Controller
                 $model->amount+=$mod->amount;
             }
         }
-        $bills->push($model);
+        if ($model!="") {
+            $bills->push($model);
+        }
+        
         $modelArr = \App\Model\Accounts\Company_Account::
         whereMonth('month', $month)
         ->where("rider_id",$rider_id)
@@ -221,8 +228,9 @@ class AjaxNewController extends Controller
         if(isset($mod) && $mod->id != $model->id){
                 $model->amount+=$mod->amount;
             }
+        }if ($model!="") {
+            $bills->push($model);
         }
-        $bills->push($model);
         //maintenance
         $model = \App\Model\Accounts\Company_Account::
         whereMonth('month', $month)
@@ -232,7 +240,9 @@ class AjaxNewController extends Controller
         ->first();
         if(isset($model)){
             $model->source = "Bike Maintenance";
-            $bills->push($model);
+            if ($model!="") {
+                $bills->push($model);
+            }
         }
         //bike_rent
         $model = \App\Model\Accounts\Company_Account::
@@ -243,7 +253,9 @@ class AjaxNewController extends Controller
         ->first();
         if(isset($model)){
             $model->source = "Bike Rent";
-            $bills->push($model);
+            if ($model!="") {
+                $bills->push($model);
+            }
         }
 
 
