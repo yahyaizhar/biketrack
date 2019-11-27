@@ -384,10 +384,12 @@ class SalikController extends Controller
             'salik_amount' => $rider->Rider_Detail->salik_amount
         ]);
     }
-    public function get_active_bikes_ajax_salik($bike_id, $date){
+
+    /* ===Get bike according to rider and rider according to bike=== */
+    public function get_active_bikes_ajax_salik($_id, $date,$according_to){
         $bike_history = Assign_bike::all();
         $bike_histories = null;
-        $history_found = Arr::first($bike_history, function ($item, $key) use ($bike_id, $date) {
+        $history_found = Arr::first($bike_history, function ($item, $key) use ($_id, $date,$according_to) {
             $created_at =Carbon::parse($item->created_at)->format('Y-m-d');
             $created_at =Carbon::parse($created_at);
 
@@ -396,28 +398,34 @@ class SalikController extends Controller
             $req_date =Carbon::parse($date);
             if($item->status=="active"){ 
                 // mean its still active, we need to match only created at
-                return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at);
+                if($according_to=='bike'){
+                    return $item->bike_id == $_id && $req_date->greaterThanOrEqualTo($created_at);
+                }
+                return $item->rider_id == $_id && $req_date->greaterThanOrEqualTo($created_at);
+                
             }
-            
-            return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
+            if($according_to=='bike'){
+                return $item->bike_id == $_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
+            }
+            return $item->rider_id == $_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
         });
 
         if(isset($history_found)){
             $bike_histories = $history_found;
         }else {
-            $assign_bikeBK = Assign_bike::where('bike_id', $bike_id)
+            $to_find = $according_to=='bike'?'bike_id':'rider_id';
+            $assign_bikeBK = Assign_bike::where($to_find , $_id)
             ->where('status', 'active')->get()->first();
             if(isset($assign_bikeBK)){
                $bike_histories = $assign_bikeBK;
             }
         }
-
-        
-    
         return response()->json([
             'bike_histories' => $bike_histories,
         ]);
     }
+
+    /* ===Get sim according to rider and rider according to sim=== */
     public function get_active_sims_ajax_salik($_id, $date,$according_to){
         $sim_history = Sim_history::all();
         $sim_histories = null;
@@ -446,9 +454,6 @@ class SalikController extends Controller
                $sim_histories = $sim_history;
             }
         }
-
-        
-    
         return response()->json([
             'sim_histories' => $sim_histories,
         ]);

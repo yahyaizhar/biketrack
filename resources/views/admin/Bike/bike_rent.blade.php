@@ -105,19 +105,19 @@
     //   $('#datepicker').datepicker({dateFormat: 'yy-mm-dd'}); 
       $('#datepicker').fdatepicker({format: 'dd-mm-yyyy'}); 
 
-      $('#bike_rent [name="month"]').on('change', function(){
+      $('#bike_rent [name="month"],#bike_rent [name="bike_id"]').on('change', function(){
         var _month = $('#bike_rent [name="month"]').val();
         
         if(_month=='')return;
         _month = new Date(_month).format('yyyy-mm-dd');
 
-        var gb_rider_id = $('#gb_rider_id').val();
-        if(typeof gb_rider_id !== "undefined"){
+        var _bike_id = $('#bike_rent [name="bike_id"]').val();
+        if(typeof _bike_id !== "undefined"){
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }, 
-                url:"{{url('admin/salik/ajax/get_active_riders/')}}"+'/'+gb_rider_id+"/"+_month,
+                url:"{{url('admin/salik/ajax/get_active_bikes/')}}"+'/'+_bike_id+"/"+_month+"/bike",
                 method: "GET"
             })
             .done(function(data) {  
@@ -125,34 +125,50 @@
 
                 // $('#salik [name="amount"]').val(data.salik_amount).trigger('change');
                 if(data.bike_histories!==null){
-                    $('#bike_rent [name="bike_id"]').val(data.bike_histories.bike_id).trigger('change');
+                    $('#bike_rent [name="rider_id"]').val(data.bike_histories.rider_id).trigger('change.select2');
                 }
                 else{
-                    $('#bike_rent [name="bike_id"]')[0].selectedIndex = -1;
-                    $('#bike_rent [name="bike_id"]').trigger('change');
+                    $('#bike_rent [name="rider_id"]')[0].selectedIndex = -1;
+                    $('#bike_rent [name="rider_id"]').trigger('change.select2');
                     $('#bike_rent [name="amount"]').val('');
                 }
                 
             });
         }
     });
-    $('#bike_rent [name="month"]').trigger('change');
     $('#bike_rent [name="rider_id"]').on('change', function(){
+        var _month = $('#bike_rent [name="month"]').val();
+        
+        if(_month=='')return;
+        _month = new Date(_month).format('yyyy-mm-dd');
         var rider_id=$(this).val();
-        var bike_id=$('#bike_rent [name="bike_id"]').val();
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }, 
-            url:"{{url('admin/accounts/fuel/expense/select/riders/bike')}}"+'/'+rider_id+"/"+bike_id,
+            url:"{{url('admin/salik/ajax/get_active_bikes/')}}"+'/'+rider_id+"/"+_month+"/rider",
             method: "GET"
         })
         .done(function(data) {  
             console.log(data);
-            $('#bike_rent [name="bike_id"]').val(data.assign_bike.bike_id).trigger('change');
+
+            // $('#salik [name="amount"]').val(data.salik_amount).trigger('change');
+            if(data.bike_histories!==null){
+                $('#bike_rent [name="bike_id"]').val(data.bike_histories.bike_id).trigger('change.select2');
+            }
+            else{
+                $('#bike_rent [name="bike_id"]')[0].selectedIndex = -1;
+                $('#bike_rent [name="bike_id"]').trigger('change');
+                $('#bike_rent [name="amount"]').val('');
+            }
+            
         });
     });
-    $('#bike_rent [name="rider_id"]').trigger('change');
+    //set default rider
+    var _gb_rider_id = $('#gb_rider_id').val();
+    if(typeof _gb_rider_id !== "undefined"){
+        $('#bike_rent [name="rider_id"]').val(_gb_rider_id).trigger('change');
+    }
   });
   
 

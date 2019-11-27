@@ -408,14 +408,10 @@ public function Bike_assigned_to_riders_history(Request $request,$id){
   $assign_bike_count=$assign_bikes->count();
   return view('admin.Bike.Biking_history', compact( 'rider','assign_bikes','assign_bike_count'));
 }
-public function rider_history(Request $request,$id){
-$bike_id=bike::find($id);
- $riders=Rider::where("active_status","A")->get()->toArray();
- $rider_id=Rider::find($id);
- $assign_rider=$bike_id->Assign_bike()->get();
- $assign_rider_id_count=$assign_rider->count();
- $hasRider=Rider::find($assign_rider->pluck('rider_id'));
-  return view('admin.Bike.rider_history',compact('bike_id','riders','assign_rider','assign_rider_id_count','hasRider','rider_id'));
+public function rider_history($bike_id){
+    $bike=bike::find($bike_id);
+    $bike_histories=$bike->Assign_bike()->get();
+  return view('admin.Bike.rider_history',compact('bike_histories', 'bike'));
   // return $hasRider;
 }
 public function bike_profile($bike_id,$rider_id){
@@ -442,16 +438,13 @@ $assign_bike=Assign_bike::where('rider_id',$rider_id)->where('bike_id',$bike_id)
 }
 // end bikeController
 public function change_dates_history(Request $request,$rider_id,$assign_bike_id){
-    $rider=Rider::find($rider_id);
-    $assign_bike=Assign_bike::where("rider_id",$rider->id)->where("id",$assign_bike_id)->get()->first();
+    $assign_bike=Assign_bike::find($assign_bike_id);
     if (isset($assign_bike)) {
-            $assign_bike->bike_assign_date=Carbon::parse($request->bike_assign_date)->format("Y-m-d");
-
-            $assign_bike->bike_unassign_date=Carbon::parse($request->bike_unassign_date)->format("Y-m-d"); 
-      
-         
+        $assign_bike->created_at=Carbon::parse($request->bike_assign_date)->format("Y-m-d");
+        $assign_bike->updated_at=Carbon::parse($request->bike_unassign_date)->format("Y-m-d"); 
+        $assign_bike->update();
     }
-    $assign_bike->update();
+    
     return response()->json([
         'status' =>  $assign_bike,
         'a'=>$assign_bike->bike_assign_date,

@@ -266,7 +266,6 @@ biketrack.getUrlParameter = function(name) {
 };
 biketrack.refresh_global = function(){
     
-    
     $('.bk-select2').each(function(){
         if(!$(this).hasClass("select2-hidden-accessible")){
             $(this).select2({
@@ -287,9 +286,12 @@ biketrack.refresh_global = function(){
             });
             $(this).removeClass('ft-init').addClass('ft-init');
             $(this).fdatepicker('update', new Date(_initDate));
+        }else{
+            $(this).fdatepicker('update', new Date(_initDate));
         }
     });
 }
+
 /*=====================SEARCH INPUT===================*/
     var _navRiderId = biketrack.getUrlParameter('rider_id');
     if(_navRiderId!="") document.getElementById('nav__rider_search_input').value=_navRiderId;

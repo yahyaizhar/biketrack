@@ -552,9 +552,13 @@ public function view_assigned_sim($id){
     
     return view('SIM.view_assigned_sim',compact('rider','sim','sim_history','sim_count')); 
 }
-public function removeSim($sim_id,$rider_id){
+public function removeSim($rider_id,$sim_id){
 
-    $delete_active_sim =Sim_History::where('sim_id', $sim_id)->where('rider_id', $rider_id)->orderBy('created_at', 'desc')->first();
+    $delete_active_sim =Sim_History::where('sim_id', $sim_id)
+    ->where('rider_id', $rider_id)
+    ->where('status', 'active')
+    ->get()
+    ->first();
     $delete_active_sim->status='deactive';
     $delete_active_sim->save();
     return response()->json([

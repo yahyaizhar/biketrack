@@ -119,7 +119,7 @@ Route::group([
     Route::delete('/delete/Rider/{rider_id}','RiderController@destroy');
     Route::delete('/rider/{rider_id}/removeBike/{bike_id}','ClientController@deletebikeprofile');
     Route::get('/rider/complete/detail/view','RiderDetailController@view_detail')->name('rider.view_detail');
-    Route::get('/rider/detail/ajax/{rider_id}/{month}','RiderDetailController@get_data_ajax_detail')->name('ajax.get_data_ajax_detail');
+    Route::get('/rider/detail/ajax/{id}/{month}/{according_to}','RiderDetailController@get_data_ajax_detail')->name('ajax.get_data_ajax_detail');
 });
 // end Riders
 // clients
@@ -196,7 +196,7 @@ Route::group([
     Route::post('/insert/salik','SalikController@insert_salik')->name('Saik.insert_salik');
 
     Route::get('/salik/ajax/get_active_riders/{rider_id}/{month}','SalikController@get_active_riders_ajax_salik')->name('Saik.get_active_riders_ajax_salik');
-    Route::get('/salik/ajax/get_active_bikes/{rider_id}/{month}','SalikController@get_active_bikes_ajax_salik')->name('Saik.get_active_bikes_ajax_salik');
+    Route::get('/salik/ajax/get_active_bikes/{rider_id}/{month}/{according_to}','SalikController@get_active_bikes_ajax_salik')->name('Saik.get_active_bikes_ajax_salik');
     Route::get('/sim/ajax/get_active_sims/{id}/{month}/{according_to}','SalikController@get_active_sims_ajax_salik')->name('Saik.get_active_sims_ajax_salik');
 // end salik   
 
