@@ -850,11 +850,13 @@ class AjaxNewController extends Controller
                 }
                 $AED_hours=$hours*6;
                 $AED_trips=$trips*6.75;
+                $total_zomato_payout=$AED_hours+$AED_trips;
                 $zomato_payout=$company_statement->source.
                 "(<br><strong>Trips: </strong>".$trips. 
                 "<br><strong>Hours: </strong>".$hours. 
                 "<br><strong>AED-Trips: </strong>".$AED_trips.
                 "<br><strong>AED-Hours: </strong>".$AED_hours.
+                "<br><strong>Final Payout: </strong>".$total_zomato_payout.
                 "<br><strong>Tips: </strong>".$tips_amount.
                 "<br><strong>DC Deduction: </strong>".$dc_amount.
                 "<br><strong>Denial Penalty: </strong>".$penalty_amount.
