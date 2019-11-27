@@ -852,7 +852,7 @@ class AjaxNewController extends Controller
                 $AED_trips=$trips*6.75;
                 $total_zomato_payout=$AED_hours+$AED_trips;
                 $zomato_payout=$company_statement->source.
-                "(<br><strong>Trips: </strong>".$trips. 
+                "<br>(<strong>Trips: </strong>".$trips. 
                 "<br><strong>Hours: </strong>".$hours. 
                 "<br><strong>AED-Trips: </strong>".$AED_trips.
                 "<br><strong>AED-Hours: </strong>".$AED_hours.
