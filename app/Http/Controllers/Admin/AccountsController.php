@@ -2360,5 +2360,8 @@ public function client_income_update(Request $request,$id){
             $value->rider_id=$rider_id;
             $value->update();
         }
+        $income=Income_Zomato::where("p_id",$p_id)->get()->first();
+        $income->rider_id=$rider_id;
+        $income->update();
     }
 }
