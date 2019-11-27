@@ -56,7 +56,7 @@ class AjaxController extends Controller
             }
         })
         ->addColumn('new_id', function($clients){
-            return '1000'.$clients->id;
+            return 'KR-C-0'.$clients->id;
         })
         ->addColumn('checkbox', function($clients){
             // return '<input type="checkbox" name="client_checkbox[]" class="client_checkbox" value="'.$clients->id.'">';
@@ -74,8 +74,47 @@ class AjaxController extends Controller
         ->addColumn('new_phone', function($clients){
             return '<a href="'.route('admin.clients.riders', $clients).'">'.$clients->phone.'</a>';
         })
+        ->addColumn('payout_method', function($clients){
+            if($clients->setting!=null){
+                $settings = json_decode($clients->setting, true);
+                $pm = $settings['payout_method'];
+                $to_return ='';
+                switch ($pm) {
+                    case 'trip_based':
+                        $to_return .='<p><strong>Payout Method:</strong> Based on Trips and Hours</p>';
+                        $to_return .='<p><strong>Per trip amount:</strong> '.$settings['tb__trip_amount'].'</p>';
+                        $to_return .='<p><strong>Per hour amount:</strong> '.$settings['tb__hour_amount'].'</p>';
+                        break;
+                    case 'fixed_based':
+                        $to_return .='<p><strong>Payout Method:</strong> Based on Fixed Amount</p>';
+                        $to_return .='<p><strong>Amount:</strong> '.$settings['fb__amount'].'</p>';
+                        $to_return .='<p><strong>Workable Hours:</strong> '.$settings['fb__workable_hours'].'</p>';
+                        break;
+                    case 'commission_based':
+                        $to_return .='<p><strong>Payout Method:</strong> Based on Commission</p>';
+                        $to_return .='<p><strong>Amount:</strong> '.$settings['cb__amount'];
+                        if($settings['cb__type']=='percent'){
+                            $to_return .='%</p>' ;
+                        }
+                        else {
+                            $to_return .=' AED</p>' ;
+                        }
+                        break;
+                    
+                    default:
+                        
+                        break;
+                }
+                return $to_return;
+            }
+            return 'No Payout Method is set.';
+        })
         ->addColumn('actions', function($clients){
             $status_text = $clients->status == 1 ? 'Inactive' : 'Active';
+            $payout_method_HTML_suffix = '<i class="fa fa-plus"></i>Set Payout Method';
+            if($clients->setting!=null){
+                $payout_method_HTML_suffix = '<i class="fa fa-edit"></i>Update Payout Method';
+            }
             return '<span class="dtr-data">
             <span class="dropdown">
                 <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
@@ -89,11 +128,12 @@ class AjaxController extends Controller
                     <button class="dropdown-item" onclick="deleteClient('.$clients->id.');"><i class="fa fa-trash"></i> Delete</button>
                     <a class="dropdown-item" href="'.route('client.profit_sheet_view', $clients).'"><i class="fa fa-edit"></i>View Record Sheet</a>
                     <a class="dropdown-item" href="'.route('client.client_total_expense', $clients).'"><i class="fa fa-edit"></i>View Record Summary</a>
+                    <a class="dropdown-item" href="" onclick=\'show_payout_modal('.json_encode($clients->setting).', '.$clients->id.');return false;\'>'.$payout_method_HTML_suffix.'</a> 
                 </div>
             </span>
         </span>';
         })
-        ->rawColumns(['new_name', 'new_email', 'new_phone', 'actions', 'status'])
+        ->rawColumns(['new_name', 'new_email', 'new_phone', 'actions', 'status', 'payout_method'])
         ->make(true);
     }
     public function getSims()

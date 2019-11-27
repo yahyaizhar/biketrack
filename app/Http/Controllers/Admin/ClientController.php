@@ -8,6 +8,7 @@ use App\Model\Client\Client;
 use Illuminate\Support\Facades\Hash;
 use App\Model\Rider\Rider;
 use App\Model\Client\Client_Rider;
+use App\Model\Client\Client_History;
 use Illuminate\Support\Facades\Storage;
 use App\Model\Rider\Rider_Message;
 use Illuminate\Support\Facades\Auth;
@@ -35,7 +36,17 @@ class ClientController extends Controller
      */
     public function index()
     {
-        //
+        // $crs = Client_Rider::all();
+        // foreach ($crs as $cr) {
+        //     $cleint_history = new Client_History;
+        //     $cleint_history->client_id = $cr->client_id;
+        //     $cleint_history->rider_id = $cr->rider_id;
+        //     $cleint_history->assign_date = '2019-07-01';
+        //     $cleint_history->client_rider_id = $cr->client_rider_id;
+        //     $cleint_history->status = 'active';
+        //     $cleint_history->save();
+        // }
+        // return 123;
         $clients_count=Client::where("active_status","A")->get()->count();
         return view('admin.client.clients',compact('clients_count'));
     }
@@ -428,5 +439,42 @@ public function profit_client($id){
     $client=Client::find($id);
     return view('client_profit_sheet',compact('client'));
 }
+
+public function add_payout_method(Request $r){
+
+    $method = $r->payout_method;
+    $client = Client::find($r->client_id);
+    $settings=[];
+    $settings['payout_method']=$method;
+    switch ($method) {
+        case 'trip_based':
+            $settings['tb__trip_amount']=$r->tb__trip_amount;
+            $settings['tb__hour_amount']=$r->tb__hour_amount;
+            break;
+        case 'fixed_based':
+            $settings['fb__amount']=$r->fb__amount;
+            $settings['fb__workable_hours']=$r->fb__workable_hours;
+            break;
+        case 'commission_based':
+            $settings['cb__amount']=$r->cb__amount;
+            $settings['cb__type']=$r->cb__type;
+            break;
+        
+        default:
+            return response()->json([
+                'status'=>0,
+                'message'=>'No Payout Method is selected.'
+            ]);
+            break;
+    }
+    $client->setting=json_encode($settings);
+    $client->save();
+    return response()->json([
+        'status'=>1,
+        'client'=>$client 
+    ]);
+}
+
+
 
 }

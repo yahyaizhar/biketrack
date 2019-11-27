@@ -54,10 +54,8 @@
                         </th> --}}
                         <th>ID</th>
                         <th>Name</th>
-                        <th>Email</th>
                         <th>Phone</th>
-                        <th>City</th>
-                        <th>Status</th>
+                        <th>Payout Method</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -67,6 +65,76 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="payout_method_pop" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title" id="exampleModalLabel">Select Payout Method</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="kt-form" id="payout_methodForm" enctype="multipart/form-data">
+                <input type="hidden" name="client_id">
+                <div class="container">
+                    <div class="form-group">
+                        <label>Payout Method:</label>
+                        <select class="form-control kt-select2 bk-select2" id="payout_method" name="payout_method" >
+                            <option value="">Select Payout Method</option>
+                            <option value="trip_based">Based on Trips and Hours</option>   
+                            <option value="fixed_based">Based on Fixed Amount</option> 
+                            <option value="commission_based">Based on Commission</option> 
+                        </select>
+                    </div>
+
+                    <div class="d-none" data-payout-types data-show="trip_based">
+                        <div class="form-group">
+                            <label>Amount per Trip:</label>
+                            <input type="text" autocomplete="off" class="form-control" name="tb__trip_amount" placeholder="Enter per trip amount" />
+                        </div>
+                        <div class="form-group">
+                            <label>Amount per Hour:</label>
+                            <input type="text" autocomplete="off" class="form-control" name="tb__hour_amount" placeholder="Enter per hour amount" />
+                        </div>
+                    </div>
+
+                    <div class="d-none" data-payout-types data-show="fixed_based">
+                        <div class="form-group">
+                            <label>Amount:</label>
+                            <input type="text" autocomplete="off" class="form-control" name="fb__amount" placeholder="Enter fixed amount" />
+                        </div>
+                        <div class="form-group">
+                            <label>Workable Hours:</label>
+                            <input type="text" autocomplete="off" class="form-control" name="fb__workable_hours" placeholder="Enter workable hours" />
+                        </div>
+                    </div>
+
+                    <div class="d-none" data-payout-types data-show="commission_based">
+                        <div class="form-group">
+                            <label>Amount:</label>
+                            <div class="input-group">
+                                <input type="text" autocomplete="off" class="form-control" name="cb__amount" placeholder="Enter commission amount" />
+                                <div class="input-group-append"><span class="input-group-text" id="cb__amount_postfix"></span></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Type:</label>
+                            <select class="form-control kt-select2 bk-select2" id="cb__type" name="cb__type" >
+                                <option value="percentage" selected>Percentage</option>   
+                                <option value="fixed">Fixed</option> 
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer border-top-0 d-flex justify-content-center">
+                        <button class="upload-button btn btn-success">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> 
 
 <!-- end:: Content -->
 @endsection
@@ -82,6 +150,80 @@
 <!--end::Page Scripts -->
 <script>
 var clients_table;
+
+function show_payout_modal(client_setting, client_id){
+    client_setting = JSON.parse(client_setting)
+    console.log(client_setting);
+    $('#payout_method_pop').find('[name="payout_method"]').val('').trigger('change');
+    $('#payout_method_pop').find('input').val('').trigger('change');
+    if(client_setting!= null){
+        Object.keys(client_setting).forEach(function(obj_val, i){
+            $('#payout_method_pop').find('[name="'+obj_val+'"]').val(client_setting[obj_val]).trigger('change');
+        });
+    }
+    $('#payout_method_pop').find('[name="client_id"]').val(client_id);
+    $('#payout_method_pop').modal('show');
+}
+$('#payout_method').on('change', function(){
+	var _val = $(this).val().trim();
+    console.log(_val)
+    $('[data-payout-types]').removeClass('d-none').addClass('d-none');
+    if(_val == "") return;
+    var _elem = $('[data-payout-types][data-show="'+_val+'"]');
+    _elem.length && (_elem.removeClass('d-none'));
+});
+$('#cb__type').on('change', function(){
+	var _type = $(this).val().trim();
+    var _sign = _type=="percentage"?'%':'AED';
+    $('#cb__amount_postfix').text(_sign);
+}).trigger('change');
+
+$('#payout_methodForm').on('submit', function(e){
+    e.preventDefault();
+    var url = "{{route('admin.add_payout_method')}}";
+    var _form = $(this);
+    $('#payout_method_pop').modal('hide');
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        url : url,
+        type : 'POST',
+        data: _form.serializeArray(),
+        beforeSend: function() {            
+            $('.bk_loading').show();
+        },
+        complete: function(){
+            $('.bk_loading').hide();
+        },
+        success: function(data){
+            console.warn(data);
+            swal.fire({
+                position: 'center',
+                type: 'success',
+                title: 'Record updated successfully.',
+                showConfirmButton: false,
+                timer: 1500
+            });
+            clients_table.ajax.reload(null, false);
+        },
+        error: function(error){
+            console.warn(error);
+            swal.fire({
+                position: 'center',
+                type: 'error',
+                title: 'Oops...',
+                text: 'Unable to update.',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+    });
+
+})
+
 $(function() {
     clients_table = $('#clients-table').DataTable({
         lengthMenu: [[-1], ["All"]],
@@ -100,10 +242,8 @@ $(function() {
             // { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
             { data: 'new_id', name: 'new_id' },
             { data: 'new_name', name: 'name' },
-            { data: 'new_email', name: 'email' },
             { data: 'new_phone', name: 'phone' },
-            { data: 'address', name: 'address' },
-            { data: 'status', name: 'status' },
+            { data: 'payout_method', name: 'payout_method' },
             { data: 'actions', name: 'actions', orderable: false, searchable: false }
         ],
         responsive:true,

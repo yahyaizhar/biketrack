@@ -66,6 +66,8 @@ Route::group([
     Route::get("/accounts/kr_investment/view/data","AjaxNewController@getCompanyInvestment")->name("admin.getCompanyInvestment");
     Route::get("/zomato/salary/sheet/export/ajax/{month_name}","AjaxNewController@zomato_salary_export")->name("admin.zomato_salary_export");
     Route::get("/zomato/profit/sheet/export/ajax/{month_name}/{client_id}","AjaxNewController@zomato_profit_export")->name("admin.zomato_profit_export");
+
+    
 });
 // End Ajax Routes
 
@@ -150,6 +152,10 @@ Route::group([
     Route::delete('/delete/last/import','RiderController@delete_lastImport')->name('delete.import_data');
     Route::get("/zomato/salary/sheet/export","AccountsController@zomato_salary_sheet_export")->name("admin.zomato_salary_sheet_export");
 //ends import Zomato
+
+//payout method
+Route::POST("/client/add_payout_method","ClientController@add_payout_method")->name("admin.add_payout_method");
+//payout method
 });
 // clients
 // Bike

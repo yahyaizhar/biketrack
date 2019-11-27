@@ -1,3 +1,6 @@
+<div class="bk_loading" style="display:none;">
+    <div class="loader"></div>
+</div>
 <script>
         var KTAppOptions = {
             "colors": {
@@ -303,6 +306,47 @@ biketrack.refresh_global = function(){
         }
     }
 /*=====================SEARCH INPUT===================*/
+
+biketrack.send_ajax=function(type,url,data, table, fire_swal=true){
+    if(type=="") return;
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        url : url,
+        type : type,
+        data:data,
+        beforeSend: function() {            
+            $('.loading').show();
+        },
+        complete: function(){
+            $('.loading').hide();
+        },
+        success: function(data){
+            fire_swal && (swal.fire({
+                position: 'center',
+                type: 'success',
+                title: 'Record updated successfully.',
+                showConfirmButton: false,
+                timer: 1500
+            }))
+
+            table && (table.ajax.reload(null, false));
+        },
+        error: function(error){
+            fire_swal && (swal.fire({
+                position: 'center',
+                type: 'error',
+                title: 'Oops...',
+                text: 'Unable to update.',
+                showConfirmButton: false,
+                timer: 1500
+            }));
+        }
+    });
+}
 
 jQuery(function($) {
     biketrack.refresh_global();

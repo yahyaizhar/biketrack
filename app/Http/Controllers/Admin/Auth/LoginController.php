@@ -16,6 +16,10 @@ class LoginController extends Controller
     }
     public function showLoginForm()
     {
+        if(!session()->has('url.intended'))
+        {
+            session(['url.intended' => url()->previous()]);
+        }
         return view('admin.auth.login');
     }
     public function login(Request $request)
