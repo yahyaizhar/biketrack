@@ -9,7 +9,6 @@ use App\Model\Client\Client_History;
 use Illuminate\Support\Facades\Hash;
 use App\Model\Rider\Rider;
 use App\Model\Client\Client_Rider;
-use App\Model\Client\Client_History;
 use Illuminate\Support\Facades\Storage;
 use App\Model\Rider\Rider_Message;
 use Illuminate\Support\Facades\Auth;

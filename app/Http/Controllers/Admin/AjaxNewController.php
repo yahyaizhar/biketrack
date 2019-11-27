@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Client\Client;
 use App\Model\Client\Client_Rider;
+use App\Model\Client\Client_History;
 use Yajra\DataTables\DataTables;
 use App\Model\Rider\Rider;
 use App\Http\Resources\RiderLocationResourceCollection;
@@ -2181,7 +2182,7 @@ class AjaxNewController extends Controller
     {
         $client=Client::where("id",$client_id)->get()->first();
         // $client_riders=$zomato->riders();
-        $client_riders=Client_Rider::where('client_id', $client->id)->get();
+        $client_riders=Client_History::where('client_id', $client->id)->get();
         return DataTables::of($client_riders)
         ->addColumn('rider_name', function($rider) {
             $riderFound = Rider::find($rider->rider_id);

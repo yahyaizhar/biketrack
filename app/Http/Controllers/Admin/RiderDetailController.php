@@ -19,6 +19,7 @@ use App\Model\Sim\Sim;
 use App\Model\Sim\Sim_Transaction;
 use App\Model\Sim\Sim_History;
 use App\Model\Client\Client_Rider;
+use App\Model\Client\Client_History;
 use App\Model\Client\Client;
 use Illuminate\Support\Arr;
 use Batch;
@@ -299,7 +300,7 @@ class RiderDetailController extends Controller
     }
     public function summary_month($month,$client_id){
         $client=Client::where("id",$client_id)->get()->first();
-        $client_riders=Client_Rider::where('client_id', $client->id)->get();
+        $client_riders=Client_History::where('client_id', $client->id)->get();
         $total_hours_client=0;
         $total_trips_client=0;
         $trips=0;
