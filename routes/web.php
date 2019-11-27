@@ -520,6 +520,7 @@ Route::group([
     Route::put('/profile', 'HomeController@updateProfile')->name('admin.profile.update');
 //end login , dashboard   
 //zomato income
+    Route::get("/assign/client/rider_id/{p_id}/{feid}/{rider_id}","AccountsController@assign_client_rider_id")->name("income.assign_client_rider_id");
     Route::get("/Salary/accounts/income/zomato/index","AccountsController@income_zomato_index")->name("admin.accounts.income_zomato_index");
     Route::post('/accounts/income/zomato/import','AccountsController@income_zomato_import')->name('admin.accounts.income_zomato_import');
     Route::delete('/accounts/income/zomato/delete','AccountsController@income_zomato_delete')->name('admin.accounts.income_zomato_delete');

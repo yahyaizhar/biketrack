@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Rider\Rider;
+use App\Model\Client\Client_History;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\RiderLocationResourceCollection;
@@ -60,9 +61,13 @@ class RiderController extends Controller
 
     public function update_ClientRiders($rider_id,Request $req){
         $client_rider=Client_Rider::where('client_id',$req->client_id)->where('rider_id',$rider_id)->get()->first();
-        $client_rider->client_rider_id=$req->client_rider_id;
-        $client_rider->update();
-        return $client_rider;
+        if (isset($client_rider)) {
+            $client_rider->client_rider_id=$req->client_rider_id;
+            $client_rider->update();
+        }
+        $client_rider_history=Client_History::where('client_id',$req->client_id)->where('rider_id',$rider_id)->get()->first();
+        $client_rider_history->client_rider_id=$req->client_rider_id;
+        $client_rider_history->update();
     }
 
     /**
@@ -569,12 +574,24 @@ class RiderController extends Controller
     public function destroy($rider_id)
     {
         $rider=Rider::find($rider_id);
+        $client_id=$rider->clients()->get()->first();
+        $client_history=Client_History::where('rider_id', $rider_id)
+        ->where('client_id', $client_id->id)
+        ->where("status","active")
+        ->get()
+        ->first();
+        $client_history->status="deactive";
+        $client_history->deassign_date=Carbon::now()->format("Y-m-d");
+        
+        $client_history->save();
+        $rider=Rider::find($rider_id);
         $rider->delete();
 
         $rider_detail=$rider->Rider_detail;
         $rider_detail->delete();
         
         $clients = $rider->clients()->detach();
+       
 
         $assign_bike=$rider->Assign_bike()->where('status','active')->get()->first();
         if(isset($assign_bike)){
@@ -662,6 +679,21 @@ class RiderController extends Controller
                 $sim_history->status="deactive";
                 $sim_history->update();
             }
+            
+            $client=$rider->clients()->get()->first();
+            if (isset($client)) {
+                $client_id=$client->id;
+                $client_history=Client_History::where('rider_id', $rider->id)
+                ->where('client_id', $client_id)
+                ->where("status","active")
+                ->get()
+                ->first();
+                $client_history->status="deactive";
+                $client_history->deassign_date=Carbon::parse($req->inactive_month)->format("Y-m-d");
+                $client_history->save();
+            }
+          
+            
             $client=$rider->clients()->detach();
 
             $rider->status = 0;

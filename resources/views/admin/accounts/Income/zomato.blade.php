@@ -321,6 +321,14 @@ var export_details=[];
                     success: function(data){
                         $('#report_data').modal('hide');
                         // console.log(data);
+                        var _warns='';
+                         if(data.cr_warning.length){
+                            data.cr_warning.forEach(function(warning,i){
+                                _warns+=warning.warning+'<br/>'; 
+                            })
+                            alert(_warns);
+                         }
+                        console.warn('Warnings: ',data.cr_warning);
                         swal.fire({
                             position: 'center',
                             type: 'success',
@@ -605,6 +613,45 @@ function delete_lastImport()
             });
         }
     });
+}
+function feid_rider(p_id,feid,rider_id){
+    var url = "{{ url('admin/assign/client/rider_id') }}" + "/" + p_id + "/"+ feid + "/" +rider_id;
+    $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url : url,
+                type : 'GET',
+                beforeSend: function() {            
+                    $('.loading').show();
+                },
+                complete: function(){
+                    $('.loading').hide();
+                },
+                success: function(data){
+                    swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Record updated successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    performance_table.ajax.reload(null, false);
+                },
+                error: function(error){
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Unable to update.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+
 }
 function updateStatus(sim_id)
 {
