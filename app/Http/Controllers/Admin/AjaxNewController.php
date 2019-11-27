@@ -770,6 +770,7 @@ class AjaxNewController extends Controller
         ->addColumn('desc', function($company_statement)  use ($company_statements){
             if($company_statement->type=='skip') return '<strong >'.$company_statement->source.'</strong>';
             $ras = $company_statements->toArray();
+            $income_zomato =Income_zomato::all()->toArray();
             if($company_statement->source == 'Bike Fine'){
                 $ca_found = Arr::first($ras, function ($item, $key) use ($company_statement) { 
                     if($item['type']=='skip') return false;
@@ -789,6 +790,77 @@ class AjaxNewController extends Controller
             }
             if($company_statement->source == 'Bike Fine Paid'){
                 return "Bike Fine Paid";
+            }
+            if($company_statement->source == 'Zomato Payout'){
+                $tips_found = Arr::first($ras, function ($item, $key) use ($company_statement) { 
+                    if($item['type']=='skip') return false;
+                    return $item['income_zomato_id'] == $company_statement->income_zomato_id
+                    && $item['source'] == "Tips Payouts";
+                });
+                $DC_found = Arr::first($ras, function ($item, $key) use ($company_statement) { 
+                    if($item['type']=='skip') return false;
+                    return $item['income_zomato_id'] == $company_statement->income_zomato_id
+                    && $item['source'] == "DC Deductions";
+                });
+                $penalty_found = Arr::first($ras, function ($item, $key) use ($company_statement) { 
+                    if($item['type']=='skip') return false;
+                    return $item['income_zomato_id'] == $company_statement->income_zomato_id
+                    && $item['source'] == "Denials Penalty";
+                });
+                $ncw_found = Arr::first($ras, function ($item, $key) use ($company_statement) { 
+                    if($item['type']=='skip') return false;
+                    return $item['income_zomato_id'] == $company_statement->income_zomato_id
+                    && $item['source'] == "NCW Incentives";
+                });
+                $tips_amount=0;
+               if (isset($tips_found)) {
+                    $tips_amount=$tips_found['amount'];
+               }
+               $dc_amount=0;
+               if (isset($DC_found)) {
+                    $dc_amount=$DC_found['amount'];
+               }
+               $penalty_amount=0;
+               if (isset($penalty_found)) {
+                    $penalty_amount=$penalty_found['amount'];
+               }
+               $ncw_amount=0;
+               if (isset($ncw_found)) {
+                    $ncw_amount=$ncw_found['amount'];
+               }
+               $trips_found = Arr::first($income_zomato, function ($item, $key) use ($company_statement) { 
+                if($item['p_id']!=$company_statement->income_zomato_id) return false;
+                return $item['rider_id'] == $company_statement->rider_id
+                && $item['date'] == $company_statement->month
+                && $item['p_id'] == $company_statement->income_zomato_id;
+                });
+                $hours_found = Arr::first($income_zomato, function ($item, $key) use ($company_statement) { 
+                if($item['p_id']!=$company_statement->income_zomato_id) return false;
+                return $item['rider_id'] == $company_statement->rider_id
+                && $item['date'] == $company_statement->month
+                && $item['p_id'] == $company_statement->income_zomato_id;
+                });
+                $trips=0;
+                if (isset($trips_found)) {
+                        $trips=$trips_found['trips_payable'];
+                }
+                $hours=0;
+                if (isset($hours_found)) {
+                        $hours=$hours_found['log_in_hours_payable'];
+                }
+                $AED_hours=$hours*6;
+                $AED_trips=$trips*6.75;
+                $zomato_payout=$company_statement->source.
+                "(<br><strong>Trips: </strong>".$trips. 
+                "<br><strong>Hours: </strong>".$hours. 
+                "<br><strong>AED-Trips: </strong>".$AED_trips.
+                "<br><strong>AED-Hours: </strong>".$AED_hours.
+                "<br><strong>Tips: </strong>".$tips_amount.
+                "<br><strong>DC Deduction: </strong>".$dc_amount.
+                "<br><strong>Denial Penalty: </strong>".$penalty_amount.
+                "<br><strong>NCW Incentives: </strong>".$ncw_amount.")";
+                return $zomato_payout; 
+
             }
             return $company_statement->source;
         })
