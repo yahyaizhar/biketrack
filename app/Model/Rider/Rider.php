@@ -83,6 +83,10 @@ class Rider extends Authenticatable
     {
         return $this->belongsToMany(Client::class, 'client_riders', 'rider_id', 'client_id')->withPivot('client_id', 'rider_id', 'created_at', 'updated_at', 'client_rider_id');
     }
+    public function client_history()
+    {
+        return $this->belongsToMany(Client_History::class,  'rider_id', 'client_id')->withPivot('client_id', 'rider_id', 'created_at', 'updated_at', 'client_rider_id');
+    }
     public function messages()
     {
         return $this->hasMany(Rider_Message::class, 'rider_id');

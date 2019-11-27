@@ -226,13 +226,11 @@
                     <table class="table table-striped- table-hover table-checkable table-condensed" id="table-bills">
                         <thead>
                             <tr>
-
                                 <th>Date</th>
                                 <th>Bill</th>
                                 <th>Amount</th>
                                 <th>Payment Status</th>
                                 <th>Action</th> 
-                                
                             </tr>
                         </thead>
                     </table>

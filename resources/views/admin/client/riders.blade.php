@@ -13,6 +13,10 @@
             Assign Riders
         </a>
 
+        <a class="btn btn-label-success btn-bold btn-sm btn-icon-h kt-margin-l-10" id="deactive_Riders">
+           <span class="change_riders">Deactive Riders</span> 
+        </a>
+
         <div class="kt-input-icon kt-input-icon--right kt-subheader__search kt-hidden">
             <input type="text" class="form-control" placeholder="Search order..." id="generalSearch">
             <span class="kt-input-icon__icon kt-input-icon__icon--right">
@@ -74,8 +78,9 @@
     </div>
 @endif
     @if(count($riders) > 0)
+    <div id="active_riders">
         @foreach ($riders as $rider)
-        <div class="row">
+        <div class="row" >
             <div class="col-xl-12">
             <!--begin:: Widgets/Applications/User/Profile3-->
             <div class="kt-portlet kt-portlet--height-fluid">
@@ -153,6 +158,70 @@
             <!--end:: Widgets/Applications/User/Profile3-->    
         </div>
         @endforeach
+    </div>
+    <div id="deactive_riders">
+        @foreach ($client_history as $client_H)
+        @php
+            $rider=App\Model\Rider\Rider::find($client_H->rider_id);
+        @endphp
+        <div class="row" >
+                <div class="col-xl-12">
+                <!--begin:: Widgets/Applications/User/Profile3-->
+                <div class="kt-portlet kt-portlet--height-fluid">
+                        <div class="kt-portlet__body">
+                            <div class="kt-widget kt-widget--user-profile-3">
+                                <div class="kt-widget__top">
+                                    <div class="kt-widget__media kt-hidden-">
+                                        @if($rider->profile_picture)
+                                            <img src="{{ asset(Storage::url($rider->profile_picture)) }}" alt="image">
+                                        @else
+                                            <img src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                                        @endif
+                                    </div>
+                                    <div class="kt-widget__content">
+                                        <div class="kt-widget__head">
+                                            <a class="kt-widget__username" href="{{route('admin.rider.profile',$rider->id)}}">
+                                                {{ $rider->name }}
+                                            </a>
+                                            <div class="kt-widget__action">
+                                            </div>
+                                        </div>
+                    
+                                        <div class="kt-widget__subhead">
+                                            @php
+                                            $client_rider = App\Model\Client\Client_Rider::where('client_id',$client->id)->where('rider_id',$rider->id)->get()->first();
+                                            $assign_bike=$rider->Assign_bike()->where('status','active')->get()->first();
+                                            $bike_number='No bike assigned';
+                                            if(isset($assign_bike)){
+                                                $bike=App\Model\Bikes\bike::find($assign_bike->bike_id);
+                                                $bike_number=$bike->bike_number;
+                                            } 
+                                            @endphp
+                                            @if (isset($client_H->client_rider_id))
+                                            <a>FEID: {{$client_H->client_rider_id}}</a>; 
+                                            @else
+                                            <a onclick="updatefied({{$rider->id}})" ><i class="fa fa-user-plus"></i>No FEID</a> 
+                                            @endif
+                                            <a href="mailto:{{ $rider->email }}"><i class="flaticon2-new-email"></i>{{ $rider->email }}</a>
+                                            <a><i class="flaticon2-calendar-3"></i>{{ $rider->phone }} </a>
+                                            <a><i class="fa fa-motorcycle"></i>{{ $bike_number }}</a>
+                                        </div>
+                                        <div class="kt-widget__info">
+                                            <i class="flaticon-location"></i>&nbsp;
+                                            <div class="kt-widget__desc">
+                                                {{ $rider->address }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>   
+            </div>
+            
+        @endforeach                                                                                                                                                                                                                           
+    </div>
     @else
     <div class="kt-section__content">
         <div class="alert alert-danger fade show" role="alert">
@@ -199,6 +268,21 @@
 @endsection
 @section('foot')
     <script>
+ $("#deactive_riders").hide();       
+$("#deactive_Riders").on("click",function(){
+    var rider_val=$(".change_riders").text();
+    if (rider_val=="Active Riders") {
+        $(".change_riders").text("Deactive Riders");
+        $("#active_riders").show();
+        $("#deactive_riders").hide(); 
+    }
+    if (rider_val=="Deactive Riders") {
+        $(".change_riders").text("Active Riders");
+        $("#active_riders").hide();
+        $("#deactive_riders").show(); 
+    }
+    
+});
  var current_open_target=null;
  function updatefied(rider_id){
     $("#client_rider_model").modal("show");
@@ -234,12 +318,6 @@
         
     });
  }
-    
-   
-
-
-
-
         function sendSMS(id)
         {
             var rider_id = id;
@@ -269,5 +347,6 @@
             console.log(url);
             sendDeleteRequest(url, true);
         }
+       
     </script>
 @endsection

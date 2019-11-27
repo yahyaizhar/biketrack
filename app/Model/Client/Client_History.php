@@ -48,4 +48,8 @@ class Client_History extends Model
     // ends logging
     
     protected $table = 'client__histories';
+    public function rider()
+    {
+        return $this->belongsToMany(Rider::class, 'client__histories', 'client_id', 'rider_id')->withPivot('client_id', 'rider_id', 'created_at', 'updated_at', 'client_rider_id');
+    }
 }

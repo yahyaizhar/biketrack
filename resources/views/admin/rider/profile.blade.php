@@ -579,7 +579,7 @@
 <script>
     function deleteRiderprofile(id){ 
     var url = "{{ url('admin/delete/Rider') }}"+ "/" + id;
-    sendDeleteRequest(url, true, "{{url('admin/riders')}}", null);
+    sendDeleteRequest(url, false, "{{url('admin/riders')}}", null);
 }
 $(document).ready(function(){
   var image_url = $('#passport_image_front').attr('data-featherlight');
@@ -655,7 +655,7 @@ $(document).ready(function(){
                         },
                         complete: function(){
                             $('.loading').hide();
-                            window.location.reload();
+                            // window.location.reload();
                         },
                         success: function(data){
                             console.log(data);
@@ -708,7 +708,7 @@ $(document).ready(function(){
                 },
                 complete: function(){
                     $('.loading').hide();
-                    window.location.reload();
+                    // window.location.reload();
                 },
                 success: function(data){
                     swal.fire({

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Client\Client;
+use App\Model\Client\Client_History;
 use Illuminate\Support\Facades\Hash;
 use App\Model\Rider\Rider;
 use App\Model\Client\Client_Rider;
@@ -192,13 +193,23 @@ class ClientController extends Controller
         $client_rider=Client_Rider::where("client_id",$client->id)->where("status",1)->get();
         foreach ($client_rider as  $delete_rider) {
             $delete_rider->delete();
+            $client_history=Client_History::where('rider_id',  $delete_rider->rider_id)
+            ->where('client_id',  $delete_rider->client_id)
+            ->where("status","active")
+            ->get()
+            ->first();
+            $client_history->status="deactive";
+            $client_history->deassign_date=Carbon::now()->format("Y-m-d");
+            
+            $client_history->save();
         }
       }
 
     public function showRiders(Client $client)
     {
         $riders = $client->riders;
-        return view('admin.client.riders', compact('client', 'riders'));
+        $client_history=Client_History::where("client_id",$client->id)->where("status","deactive")->get();
+        return view('admin.client.riders', compact('client', 'riders','client_history'));
     }
 
     public function assignRiders(Client $client)
@@ -230,7 +241,14 @@ class ClientController extends Controller
             $new_record->client_id = $client->id;
             $new_record->rider_id = $rider;
             $new_record->status = 1;
-            $new_record->save();
+            $new_record->save(); 
+
+            $client_history= new Client_History;
+            $client_history->client_id = $client->id;
+            $client_history->rider_id = $rider;
+            $client_history->status = "active";
+            $client_history->assign_date =Carbon::parse($request->assign_date)->format('Y-m-d');
+            $client_history->save();
         }
         return redirect(route('admin.clients.riders', $client));
     }
@@ -241,6 +259,15 @@ class ClientController extends Controller
         // return $record;
         // $record->status = 0;
         // $record->update();
+        $client_history=Client_History::where('rider_id', $rider)
+        ->where('client_id', $client)
+        ->orderBy('created_at', 'desc')
+        ->where("status","active")
+        ->get()
+        ->first();
+        $client_history->status="deactive";
+        $client_history->deassign_date=Carbon::now()->format("Y-m-d");
+        $client_history->save();
         return response()->json([
             'status' => true
         ]);
