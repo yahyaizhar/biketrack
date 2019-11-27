@@ -103,10 +103,21 @@ class AjaxNewController extends Controller
             $rider=Rider::find($client_rider['rider_id']);
             
             if(isset($rider)){
-                return $rider['name'];
+                $p_id=$income_zomato->p_id;
+                $feid=$income_zomato->feid;
+                $date=$income_zomato->date;
+                $ca=Company_Account::where("income_zomato_id",$p_id)->where("month",$date)->get();
+                foreach ($ca as $value) {
+                    if ($value->rider_id=="") {
+                        return '<a onclick="feid_rider(\''.$p_id.'\',\''.$feid.'\','.$client_rider['rider_id'].')">'.$rider['name'].'*</a>';
+                    }
+                    return $rider['name'];
+                }
             }
             else{
-                return 'No Client Rider Id is Assigned';
+                $p_id=$income_zomato->p_id;
+                $feid=$income_zomato->feid;
+                return '<a href="'.url('/admin/clients').'" data-income-zomato-id="'.$p_id.'" data-feid="'.$feid.'">'.$feid.' is not Assigned.</a>'; 
             }
         })
         ->addColumn('total_to_be_paid_out', function($income_zomato){

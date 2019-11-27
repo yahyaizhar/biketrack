@@ -1456,8 +1456,7 @@ public function income_zomato_import(Request $r){
     $update_data = [];
     $i=0;
     $unique_id=uniqid().'-'.time();
-
-
+   
     // $a = Income_zomato::where('import_id', '5dd698a58ce69-1574344869')->get();
     // foreach ($a as $b) {
     //    $c = $b->p_id;
@@ -1496,9 +1495,13 @@ public function income_zomato_import(Request $r){
     $top_rider_2_FEID = isset($top_riders[1]['feid'])?$top_riders[1]['feid']:null;
     $top_rider_3_FEID = isset($top_riders[2]['feid'])?$top_riders[2]['feid']:null;
     /*======================/Finding top 3 riders===================*/
+    $cr_warnings=[];
     foreach ($data as $item) {
         $i++;
-
+        
+        $cr_found = Arr::first($client_riders, function ($item_cr, $key) use ($item) {
+            return $item_cr->client_rider_id == $item['feid'];
+        });
         $zi_found = Arr::first($zi, function ($item_zi, $key) use ($item) {
             return $item_zi->feid == $item['feid'] && $item_zi->date == Carbon::createFromFormat('d/m/Y',$item['onboarding_date'])->format('Y-m-d');
         });
@@ -1510,6 +1513,11 @@ public function income_zomato_import(Request $r){
             $rider_id = $rider_found->rider_id;
         }
         $p_id=uniqid().time().rand();
+        if (!isset($cr_found)) {
+            $rider_not_fournd=[];
+            $rider_not_fournd['warning']=$item['feid'].' is not assigned to anyone.';
+            array_push($cr_warnings, $rider_not_fournd);
+        }
         if(!isset($zi_found)){
             $client_name=isset($item['jdid'])?"Jeebly":"Zomato";
             $obj = [];
@@ -2021,6 +2029,7 @@ public function income_zomato_import(Request $r){
     $tax->save();
 
     return response()->json([
+        'cr_warning'=>$cr_warnings,
         'data'=>$zomato_obj,
         'data_ca'=>$ca_objects,
         'data_ca_update'=>$ca_objects_updates,
@@ -2338,6 +2347,18 @@ public function client_income_update(Request $request,$id){
         ->get();
         foreach ($RA as $ra) {
             $ra->delete();
+        }
+    }
+    public function assign_client_rider_id($p_id,$feid,$rider_id){
+        $ca=Company_Account::where("income_zomato_id",$p_id)->get();
+        foreach ($ca as $value) {
+            $value->rider_id=$rider_id;
+            $value->update();
+        }
+        $ra=Rider_Account::where("income_zomato_id",$p_id)->get();
+        foreach ($ra as $value) {
+            $value->rider_id=$rider_id;
+            $value->update();
         }
     }
 }
