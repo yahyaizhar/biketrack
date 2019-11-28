@@ -3013,7 +3013,7 @@ class AjaxNewController extends Controller
             ->first();
           if (isset($salary)) {
               if (isset($salary_paid)) {
-                if ($salary_paid->payment_status=="paid") {
+                if ($salary_paid->payment_status=="paid") { 
                     $salary=$salary_paid->amount;
                     return "<div  style='color:green;'>".$salary." <span class='flaticon2-correct'></span></div>";
                 }
