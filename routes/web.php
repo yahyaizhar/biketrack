@@ -142,7 +142,8 @@ Route::group([
     Route::delete('/client/{client}/removeRider/{rider}', 'ClientController@removeRiders')->name('admin.clients.removeRiders');
     Route::post('/client/{client}/updateStatus', 'ClientController@updateStatus')->name('admin.client.updateStatus');
     Route::post('/client/mutlipleDelete', 'ClientController@mutlipleDelete')->name('admin.client.mutlipleDelete');
-    Route::resource('emails', 'ClientEmailController', [
+    Route::get('/change/clients/{rider_id}/{client_history_id}/history/dates','ClientController@client_history_dates')->name('admin.client_history_dates');
+    Route::resource('emails', 'ClientEmailController', [ 
         'as' => 'admin'
     ]);
     Route::get('update/extra/fields/adt/performance/{feid}/{start_date}/{end_date}','RiderController@update_extra_adt')->name('admin.update_extra_adt');

@@ -9,7 +9,6 @@ use App\Model\Client\Client_History;
 use Illuminate\Support\Facades\Hash;
 use App\Model\Rider\Rider;
 use App\Model\Client\Client_Rider;
-use App\Model\Client\Client_History;
 use Illuminate\Support\Facades\Storage;
 use App\Model\Rider\Rider_Message;
 use Illuminate\Support\Facades\Auth;
@@ -216,11 +215,12 @@ class ClientController extends Controller
         }
       }
 
-    public function showRiders(Client $client)
+    public function showRiders(Client $client) 
     {
         $riders = $client->riders;
         $client_history=Client_History::where("client_id",$client->id)->where("status","deactive")->get();
-        return view('admin.client.riders', compact('client', 'riders','client_history'));
+        $client_history_active=Client_History::where("client_id",$client->id)->where("status","active")->get();
+        return view('admin.client.riders', compact('client', 'riders','client_history','client_history_active'));
     }
 
     public function assignRiders(Client $client)
@@ -501,7 +501,19 @@ public function add_payout_method(Request $r){
         'client'=>$client 
     ]);
 }
-
+public function client_history_dates(Request $request,$rider_id,$client_history_id){
+    $CH=Client_History::where("rider_id",$rider_id)->where("id",$client_history_id)->get()->first();
+    if (isset($CH)) {
+        $CH->assign_date=Carbon::parse($request->assign_date)->format("Y-m-d");
+        $CH->deassign_date=Carbon::parse($request->deassign_date)->format("Y-m-d");
+        $CH->save();
+    }
+    return response()->json([
+        'ch'=>$CH,
+        'a'=>$rider_id,
+        'b'=>$client_history_id,
+    ]);
+}
 
 
 }

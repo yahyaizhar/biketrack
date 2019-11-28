@@ -1,5 +1,70 @@
 @extends('admin.layouts.app')
 @section('main-content')
+<script>
+function updateClientHistoryDates(rider_id,client_history_id,assign_date,deassign_date){  
+            $("#client_update_dates").modal("show");
+            $('input[name="rider_id"]').val(rider_id);
+            $('input[name="client_history_id"]').val(client_history_id);
+            $('input[name="assign_date"]').val(assign_date);
+            $('input[name="deassign_date"]').val(deassign_date);
+            $("form#client_dates").on("submit",function(e){
+                e.preventDefault();
+                var _form = $(this);
+                var rider_id=$("#rider_id").val();
+                var client_history_id=$("#client_history_id").val();
+                var _modal = _form.parents('.modal');
+                var url = "{{ url('admin/change/clients') }}" + "/" + rider_id +"/"+client_history_id+ "/history/dates";
+                swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want update status!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes!'
+                }).then(function(result) {
+                    if (result.value) {
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                    $.ajax({
+                        url : url,
+                        type : 'GET',
+                        data: _form.serializeArray(),
+                        beforeSend: function() {            
+                            $('.loading').show();
+                        },
+                        complete: function(){
+                            $('.loading').hide();
+                        },
+                        success: function(data){
+                            console.log(data);
+                            _modal.modal('hide');
+                            swal.fire({
+                                position: 'center',
+                                type: 'success',
+                                title: 'Record updated successfully.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        },
+                        error: function(error){
+                            _modal.modal('hide');
+                            swal.fire({
+                                position: 'center',
+                                type: 'error',
+                                title: 'Oops...',
+                                text: 'Unable to update.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        }
+                    });
+                }
+            });
+        }); 
+        }
+</script>
 <div class="kt-subheader   kt-grid__item" id="kt_subheader">
     <div class="kt-subheader__main">
         
@@ -79,7 +144,10 @@
 @endif
     @if(count($riders) > 0)
     <div id="active_riders">
-        @foreach ($riders as $rider)
+        @foreach ($client_history_active as $client_H_A)
+        @php
+            $rider=App\Model\Rider\Rider::find($client_H_A->rider_id);
+        @endphp
         <div class="row" >
             <div class="col-xl-12">
             <!--begin:: Widgets/Applications/User/Profile3-->
@@ -109,7 +177,7 @@
                 
                                         <div class="kt-widget__action">
                                             <a href="{{ route('admin.rider.location', $rider->id) }}" class="btn btn-label-danger btn-sm btn-upper">View Location</a>&nbsp;
-                                            <button onclick="deleteRider({{$client->id}}, {{$rider->pivot->rider_id}})" class="btn btn-label-info btn-sm btn-upper">Remove</button>&nbsp;
+                                            <button onclick="deleteRider({{$client->id}}, {{$rider->id}})" class="btn btn-label-info btn-sm btn-upper">Remove</button>&nbsp;
                                         </div>
                                     </div>
                 
@@ -138,6 +206,14 @@
                                         <i class="flaticon-location"></i>&nbsp;
                                         <div class="kt-widget__desc">
                                             {{ $rider->address }}
+                                            @php
+                                                $mytimestamp = strtotime($client_H_A['assign_date']);
+                                                $timestampupdated=strtotime($client_H_A['deassign_date']);
+                                                $created=Carbon\Carbon::parse($client_H_A['assign_date'])->format('F d, Y');
+                                                $updated=Carbon\Carbon::parse($client_H_A['deassign_date'])->format('F d, Y');
+                                            @endphp 
+                                           <h6 style="float:right;color:green;" onclick="updateClientHistoryDates({{$rider->id}},{{$client_H_A['id']}},'{{$created}}','{{$updated}}')">{{gmdate("d-m-Y", $mytimestamp)}}</h6>
+                                       
                                         </div>
                                     </div>
                                 </div>
@@ -151,7 +227,7 @@
                                     <button onclick="sendSMS({{$rider->id}})" class="btn btn-label-success btn-sm btn-upper">Send SMS</button>&nbsp;
                                 </div>
                             </div>
-                        </div>
+                        </div> 
                     </div>
                 </div>
             </div>
@@ -210,6 +286,13 @@
                                             <i class="flaticon-location"></i>&nbsp;
                                             <div class="kt-widget__desc">
                                                 {{ $rider->address }}
+                                            @php
+                                                $mytimestamp = strtotime($client_H['assign_date']);
+                                                $timestampupdated=strtotime($client_H['deassign_date']);
+                                                $created=Carbon\Carbon::parse($client_H['assign_date'])->format('F d, Y');
+                                                $updated=Carbon\Carbon::parse($client_H['deassign_date'])->format('F d, Y');
+                                            @endphp
+                                                <h6 style="float:right;color:green;" onclick="updateClientHistoryDates({{$rider->id}},{{$client_H['id']}},'{{$created}}','{{$updated}}')">{{gmdate("d-m-Y", $mytimestamp)}} {{'to'}} {{gmdate("d-m-Y", $timestampupdated)}}</h6>
                                             </div>
                                         </div>
                                     </div>
@@ -264,9 +347,47 @@
         </div>
         </div>
     </div>
+    <div>
+        <div class="modal fade" id="client_update_dates" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header border-bottom-0">
+                        <h5 class="modal-title" id="exampleModalLabel">Change Assign Or Deassign Dates</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form class="kt-form" id="client_dates"  enctype="multipart/form-data">
+                        <div class="container">
+                            <input type="hidden" name="rider_id" id="rider_id" >
+                            <input type="hidden" name="client_history_id" id="client_history_id">
+                            <div class="form-group">
+                                <label>Assigned Month:</label>
+                                <input  type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control" name="assign_date" placeholder="Enter Month" value="">
+                            </div>
+                            <div class="form-group">
+                                <label>Deassigned Month:</label>
+                                <input  type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control" name="deassign_date" placeholder="Enter Month" value="">
+                            </div>
+                            <div class="modal-footer border-top-0 d-flex justify-content-center">
+                                <button class="upload-button btn btn-success">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 <!-- end:: Content -->
 @endsection
 @section('foot')
+<script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/bootstrap-switch.js') }}" type="text/javascript"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/select2.js') }}" type="text/javascript"></script>
+<link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
+ 
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
  $("#deactive_riders").hide();       
 $("#deactive_Riders").on("click",function(){
