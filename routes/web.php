@@ -66,7 +66,7 @@ Route::group([
     Route::get("/accounts/kr_investment/view/data","AjaxNewController@getCompanyInvestment")->name("admin.getCompanyInvestment");
     Route::get("/zomato/salary/sheet/export/ajax/{month_name}","AjaxNewController@zomato_salary_export")->name("admin.zomato_salary_export");
     Route::get("/zomato/profit/sheet/export/ajax/{month_name}/{client_id}","AjaxNewController@zomato_profit_export")->name("admin.zomato_profit_export");
-
+    Route::get('/ajax/generated/rider/bill/status/{month}','AjaxNewController@getGeneratedBillStatus')->name('ajax.getGeneratedBillStatus');
     
 });
 // End Ajax Routes
@@ -539,9 +539,11 @@ Route::group([
 // end Client_income 
 
 // company profit
-Route::get('/client/profit/sheet/{client_id}','ClientController@profit_client')->name('client.profit_sheet_view');
-Route::get('/client/total/expense/sheet/{client_id}','RiderDetailController@client_total_expense')->name('client.client_total_expense');
-Route::get('/client/month/record/{month}/{client}','RiderDetailController@summary_month');
+    Route::get('/client/profit/sheet/{client_id}','ClientController@profit_client')->name('client.profit_sheet_view');
+    Route::get('/client/total/expense/sheet/{client_id}','RiderDetailController@client_total_expense')->name('client.client_total_expense');
+    Route::get('/client/month/record/{month}/{client}','RiderDetailController@summary_month');
+     
+    Route::get('/generated/month/bills','BillsController@rider_generated_bills')->name('bills.rider_generated_bills'); 
 });
 // end for Admin
 // for Admin global
