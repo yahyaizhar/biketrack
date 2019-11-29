@@ -60,6 +60,7 @@ class Company_Account extends Authenticatable
     protected $fillable = [
         'type', 
         'month',
+        'given_date',
         'amount',
         'rider_id',
         'payment_status',

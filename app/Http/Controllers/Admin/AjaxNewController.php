@@ -170,13 +170,24 @@ class AjaxNewController extends Controller
         ->whereNotNull('sim_transaction_id')
         ->get();
         $model = $modelArr->first();
+        if(isset($model)){ 
+        $sim_pend=0;
+        $sim_paid=0;
         foreach ($modelArr as $mod) {
-            if(isset($mod) && $mod->id !=$model->id){
-                $model->amount+=$mod->amount;
+                if ($mod->payment_status=="pending") {
+                    $sim_pend+=$mod->amount;
+                }
+                $sim_paid+=$mod->amount;
             }
+            $model->amount=$sim_paid;
+        $model->payment_status="paid";
+        if ($sim_pend>0) {
+            $model->payment_status="pending";
+            $model->amount=$sim_pend.' is remaining out of '.$sim_paid;  
         }
         if ($model!="") {
             $bills->push($model);
+        }
         }
         //Salik
         $modelArr = \App\Model\Accounts\Company_Account::
@@ -186,31 +197,53 @@ class AjaxNewController extends Controller
         ->whereNotNull('salik_id')
         ->get();
         $model = $modelArr->first();
+        if(isset($model)){ 
+        $salik_pend=0;
+        $salik_paid=0;
         foreach ($modelArr as $mod) {
-        if(isset($mod) && $mod->id !=$model->id){
-            $model->amount+=$mod->amount;
-            
+            if ($mod->payment_status=="pending") {
+                $salik_pend+=$mod->amount;
+            }
+            $salik_paid+=$mod->amount;
         }
+        if (isset($salik_paid)) {
+            $model->amount=$salik_paid; 
+            $model->payment_status="paid"; 
+        }
+        if ($salik_pend>0) {
+            $model->payment_status="pending";
+            $model->amount=$salik_pend.' is remaining out of '.$salik_paid;  
         }
         if ($model!="") {
             $bills->push($model);
         }
-        
+        }   
         // bike_fine
         $modelArr = \App\Model\Accounts\Company_Account::
         whereMonth('month', $month)
         ->where("rider_id",$rider_id)
         ->where("type","dr")
-        ->whereNotNull('bike_fine')
+        ->where("source",'Bike Fine')
         ->get();
         $model = $modelArr->first();
-        foreach ($modelArr as $mod) {
-        if(isset($mod) && $mod->id !=$model->id){
-            $model->amount+=$mod->amount;
-            
-        }
-        }if ($model!="") {
-            $bills->push($model);
+        if(isset($model)){ 
+            $bike_fine_pend=0;
+            $bike_fine_paid=0;
+            $model->payment_status="paid";
+            foreach ($modelArr as $mod) {
+                if ($mod->payment_status=="pending") {
+                    $bike_fine_pend+=$mod->amount;
+                }
+                $bike_fine_paid+=$mod->amount;
+            } 
+            $model->amount=$bike_fine_paid;
+            if ($bike_fine_pend>0) {
+                $model->amount=$bike_fine_pend.' is remaining out of '.$bike_fine_paid;
+                $model->payment_status="pending";
+            }
+            if ($model!="") {
+                $bills->push($model);
+            }
         }
         //fuel_expense
         $modelArr = \App\Model\Accounts\Company_Account::
@@ -220,15 +253,28 @@ class AjaxNewController extends Controller
         ->where('source','fuel_expense_vip')
         ->get();
         $model = $modelArr->first();
+        if(isset($model)){ 
+        $fuel_pend=0;
+        $fuel_paid=0;
         foreach ($modelArr as $mod) {
-        if(isset($mod) && $mod->id != $model->id){
-                $model->amount+=$mod->amount;
+            if ($mod->payment_status=="pending") {
+                $fuel_pend+=$mod->amount;
             }
+            $fuel_paid+=$mod->amount;
+            }
+            if (isset($fuel_paid)) {
+                $model->amount=$fuel_paid; 
+                $model->payment_status="paid";  
+            }
+      
+        if ($fuel_pend>0) {
+            $model->payment_status="pending";
+            $model->amount=$fuel_pend.' is remaining out of '.$fuel_paid;  
         }
         if ($model!="") {
             $bills->push($model);
         }
-        
+        }
         $modelArr = \App\Model\Accounts\Company_Account::
         whereMonth('month', $month)
         ->where("rider_id",$rider_id)
@@ -236,12 +282,27 @@ class AjaxNewController extends Controller
         ->where('source','fuel_expense_cash')
         ->get();
         $model = $modelArr->first();
+        if(isset($model)){ 
+        $fuel_cash_pend=0;
+        $fuel_cash_paid=0;
         foreach ($modelArr as $mod) {
-        if(isset($mod) && $mod->id != $model->id){
-                $model->amount+=$mod->amount;
+            if ($mod->payment_status=="pending") {
+                $fuel_cash_pend+=$mod->amount;
             }
-        }if ($model!="") {
+            $fuel_cash_paid+=$mod->amount;
+            }   
+            if (isset($fuel_cash_paid)) {
+                $model->amount=$fuel_cash_paid; 
+                $model->payment_status="paid";  
+            } 
+        
+        if ($fuel_cash_pend>0) {
+            $model->payment_status="pending";
+            $model->amount=$fuel_cash_pend.' is remaining out of '.$fuel_cash_paid;  
+        }
+        if ($model!="") {
             $bills->push($model);
+        }
         }
         //maintenance
         $model = \App\Model\Accounts\Company_Account::
@@ -273,8 +334,8 @@ class AjaxNewController extends Controller
 
         return DataTables::of($bills)
         ->addColumn('date', function($bill){
-            if (isset($bill->created_at)) {
-                return Carbon::parse($bill->created_at)->format('M d, Y');
+            if (isset($bill->given_date)) {
+                return Carbon::parse($bill->given_date)->format('M d, Y');
             }
         })
         ->addColumn('bill', function($bill){
@@ -296,7 +357,8 @@ class AjaxNewController extends Controller
                     $month=$bill->month;
                     $rider_id=$bill->rider_id;
                     $type=$bill->source;
-                    return '<div>Pending <button type="button" onclick="updateStatus('.$rider_id.',\''.$month.'\',\''.$type.'\')" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
+                    $month_given=$bill->given_date;
+                    return '<div>Pending <button type="button" onclick="updateStatus('.$rider_id.',\''.$month.'\',\''.$type.'\',\''.$month_given.'\')" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
                 }
                 
                 return ucfirst($bill->payment_status).' <i class="flaticon2-correct text-success h5"></i>';
@@ -491,7 +553,7 @@ class AjaxNewController extends Controller
         return DataTables::of($rider_statements)
         ->addColumn('date', function($rider_statement){
             if($rider_statement->type=='skip') return '';
-            return Carbon::parse($rider_statement->created_at)->format('M d, Y');
+            return Carbon::parse($rider_statement->given_date)->format('M d, Y');
         })
         ->addColumn('desc', function($rider_statement) use ($rider_statements){
             if($rider_statement->type=='skip') return '<strong >'.$rider_statement->source.'</strong>';
@@ -777,7 +839,7 @@ class AjaxNewController extends Controller
         return DataTables::of($company_statements)
         ->addColumn('date', function($company_statements){
             if($company_statements->type=='skip') return '';
-            return Carbon::parse($company_statements->created_at)->format('M d, Y');
+            return Carbon::parse($company_statements->given_date)->format('M d, Y');
         })
         ->addColumn('desc', function($company_statement)  use ($company_statements){
             if($company_statement->type=='skip') return '<strong >'.$company_statement->source.'</strong>';
@@ -2768,6 +2830,193 @@ class AjaxNewController extends Controller
         </span>';
         })
         ->rawColumns(['status','bike_id','desc','amount','actions', 'rider_id'])
+        ->make(true);
+    }
+    public function getGeneratedBillStatus($month) 
+    {
+        $bills =Rider::orderByDesc('created_at')->where('active_status', 'A')->get();
+        return DataTables::of($bills)
+      
+        ->addColumn('rider_id', function($bills){
+            return $bills->name;
+        })
+        ->addColumn('sim_bill', function($bills) use ($month){
+            $rider_id=$bills->id;
+            $sim_balance_allowed=Company_Account::where("rider_id",$rider_id)
+            ->whereMonth("month",$month)
+            ->where("source","Sim Transaction")
+            ->get();
+            $sim=0;
+            $sim_extra=0;
+            $status="";
+            foreach ($sim_balance_allowed as $value) {
+                $sim+=$value->amount;
+                $status=$value->payment_status;
+            }
+            
+            $sim_extra_usage=Company_Account::where("rider_id",$rider_id)
+            ->whereMonth("month",$month)
+            ->where("source","Sim extra usage")
+            ->get();
+            foreach ($sim_extra_usage as $value) {
+                $sim_extra+=$value->amount;
+            }
+            
+
+            if (isset($sim)) {
+                if ($status=="pending") {
+                    $sim=$sim-$sim_extra;
+                    $sim_rider_paid=$sim_extra;
+                    return "<div style='color:red;'>".$sim."(". $sim_rider_paid.") <span class='flaticon2-delete'></span></div>";
+                }
+                if ($status=="paid") {
+                    $sim=$sim-$sim_extra;
+                    $sim_rider_paid=$sim_extra;
+                    return "<div  style='color:green;'>".$sim."(". $sim_rider_paid.") <span class='flaticon2-correct'></span></div>";
+                }
+            }
+            return "0";
+        })
+        ->addColumn('bike_rent', function($bills) use ($month){
+            $rider_id=$bills->id;
+            $bike_rent=Company_Account::where("rider_id",$rider_id)
+            ->whereMonth("month",$month)
+            ->where("source","Bike Rent")
+            ->get()
+            ->first();
+            if (isset($bike_rent)) {
+                if ($bike_rent->payment_status=="pending") {
+                    $rent=($bike_rent->amount);
+                    return "<div style='color:red;'>".$rent." <span class='flaticon2-delete'></span></div>";
+                }
+                if ($bike_rent->payment_status=="paid") {
+                    $rent=($bike_rent->amount);
+                    return "<div  style='color:green;'>".$rent." <span class='flaticon2-correct'></span></div>";
+                }
+            }
+            return "0";
+        })
+        // ->addColumn('bike_bill', function($bills) use ($month){
+        //     $rider_id=$bills->id;
+        //     return 123;
+        // })
+        ->addColumn('bike_fine', function($bills) use ($month){
+            $rider_id=$bills->id;
+            $_bike_fine=Company_Account::where("rider_id",$rider_id)
+            ->whereMonth("month",$month)
+            ->where("source","Bike Fine")
+            ->get();
+            $_bike_fine_paid=Company_Account::where("rider_id",$rider_id)
+            ->whereMonth("month",$month)
+            ->where("source","Bike Fine Paid")
+            ->get();
+            $bike_fine=0;
+            $bike_fine_paid=0;
+            $status="";
+            foreach ($_bike_fine as $value) {
+                $bike_fine+=$value->amount;
+                $status=$value->payment_status;
+            }
+            foreach ($_bike_fine_paid as $value) {
+                $bike_fine_paid+=$value->amount;
+                $status=$value->payment_status;
+            }
+            if (isset($bike_fine)) {
+                if (isset($bike_fine_paid)) {
+                    if ($status=="paid") {
+                        $fine=($bike_fine_paid);
+                        return "<div  style='color:green;'>".$fine." <span class='flaticon2-correct'></span></div>";
+                    }
+                }
+                if ($status=="pending") {
+                    $fine=($bike_fine);
+                    return "<div style='color:red;'>".$fine." <span class='flaticon2-delete'></span></div>";
+                }
+            }
+            return "0";
+        })
+        ->addColumn('fuel', function($bills) use ($month){
+            $rider_id=$bills->id;
+            $fuel_expense_val=Company_Account::where("rider_id",$rider_id)
+            ->whereMonth("month",$month)
+            ->whereNotNull("fuel_expense_id")
+            ->get();
+            $fuel=0;
+            $status='';
+            foreach ($fuel_expense_val as $fuel_expense) {
+                if (isset($fuel_expense)) {
+                    if ($fuel_expense->payment_status=="pending") {
+                        $fuel+=$fuel_expense->amount;
+                        $status="pending";
+                        
+                    }
+                    if ($fuel_expense->payment_status=="paid") {
+                        $fuel+=$fuel_expense->amount;
+                        $status="paid";
+                      }
+                }
+            }
+            if ($status=="pending") {
+                return "<div style='color:red;'>".$fuel." <span class='flaticon2-delete'></span></div>";
+            }
+            if ( $status=="paid") {
+                return "<div  style='color:green;'>".$fuel." <span class='flaticon2-correct'></span></div>";
+                    
+            }
+            return $fuel;
+        })
+        ->addColumn('salik', function($bills) use ($month){
+            $rider_id=$bills->id;
+            $_salik=Company_Account::where("rider_id",$rider_id)
+            ->whereMonth("month",$month)
+            ->where("source","Salik")
+            ->get();
+            $salik=0;
+            $salik_extra=0;
+            $status="";
+            foreach ($_salik as $value) {
+                $salik+=$value->amount;
+                $status=$value->payment_status;
+            }
+            $_salik_extra=Company_Account::where("rider_id",$rider_id)
+            ->whereMonth("month",$month)
+            ->where("source","Salik Extra")
+            ->get();
+            foreach ($_salik_extra as $value) {
+                $salik_extra+=$value->amount;
+            }
+            if (isset($salik)) {
+                if ($status=="pending") {
+                    $_salik=$salik-$salik_extra;
+                    $salik_rider_paid=$salik_extra;
+                    return "<div style='color:red;'>".$_salik."(". $salik_rider_paid.") <span class='flaticon2-delete'></span></div>";
+                }
+                if ($status=="paid") {
+                    $_salik=$salik-$salik_extra;
+                    $salik_rider_paid=$salik_extra;
+                    return "<div  style='color:green;'>".$_salik."(". $salik_rider_paid.") <span class='flaticon2-correct'></span></div>";
+                }
+            }
+            return "0";
+        })
+        ->addColumn('salary', function($bills) use ($month){
+            $rider_id=$bills->id;
+            $salary=Rider_Account::where("rider_id",$rider_id)
+            ->whereMonth("month",$month)
+            ->where("source","salary")
+            ->get()
+            ->first();
+          if (isset($salary)) {
+                if ($salary->payment_status=="pending") { 
+                    $salary=$salary->amount;
+                    return "<div  style='color:green;'>".$salary." <span class='flaticon2-correct'></span></div>";
+               
+              }
+              
+          }
+            return "0";
+        })
+        ->rawColumns(['rider_id','sim_bill','bike_rent','bike_bill','bike_fine','fuel','salik','salary',])
         ->make(true);
     }
 }

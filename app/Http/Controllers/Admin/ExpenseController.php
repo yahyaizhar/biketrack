@@ -365,6 +365,17 @@ public function AR_index(){
 return view('admin.accounts.AR.AR_add',compact("riders"));
 }
 public function AR_view(){
+    // $ca=Company_Account::get();
+    // foreach ($ca as $c) {
+    //     $c->given_date=Carbon::parse($c->created_at)->format('Y-m-d');
+    //     $c->save();
+    // }
+    // $ra=Rider_Account::get();
+    // foreach ($ra as $r) {
+    //     $r->given_date=Carbon::parse($r->created_at)->format('Y-m-d');
+    //     $r->save();
+    // }
+    // return 'updated';
 return view('admin.accounts.AR.AR_view');
 }
 public function AR_updatestatus($id){
@@ -405,23 +416,24 @@ public function AR_store(Request $r){
         'payment_status'=>$r->payment_status,
         'type'=>$r->type,
         'rider_id'=>$r->rider_id,
-        'month' => Carbon::parse($r->get('month'))->format('Y-m-d'),
+        'month' => Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d'),
+        'given_date' => Carbon::parse($r->get('given_date'))->format('Y-m-d'),
         'amount'=>$r->amount,
         'status'=>$r->status=='on'?1:0,
     ]); 
 
     if($ar->payment_status=="pending"){
-        $ca =Company_Account::firstOrCreate([
-            'advance_return_id'=>$ar->id
-        ]);
-        $ca->type='dr_receivable';
-        $ca->amount=$r->amount;
-        if($ar->type=="advance"){$ca->source='advance';}
-        else if($ar->type=="return"){$ca->source='loan';}    
-        $ca->advance_return_id=$ar->id;
-        $ca->rider_id=$ar->rider_id;
-        $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
-        $ca->save();
+    //     $ca =Company_Account::firstOrCreate([
+    //         'advance_return_id'=>$ar->id
+    //     ]);
+    //     $ca->type='dr_receivable';
+    //     $ca->amount=$r->amount;
+    //     if($ar->type=="advance"){$ca->source='advance';}
+    //     else if($ar->type=="return"){$ca->source='loan';}    
+    //     $ca->advance_return_id=$ar->id;
+    //     $ca->rider_id=$ar->rider_id;
+    //     $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
+    //     $ca->save();
 
         $ra =Rider_Account::firstOrCreate([
             'advance_return_id'=>$ar->id
@@ -429,7 +441,8 @@ public function AR_store(Request $r){
         $ra->type='cr_payable';
         $ra->rider_id=$ar->rider_id;
         $ra->amount=$r->amount;
-        $ra->month = Carbon::parse($r->get('month'))->format('Y-m-d');
+        $ra->month = Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+        $ra->given_date = Carbon::parse($r->get('given_date'))->format('Y-m-d');
         if($ar->type=="advance"){$ra->source='advance';}
         else if($ar->type=="return"){$ra->source='loan';}
         $ra->advance_return_id=$ar->id;

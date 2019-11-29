@@ -48,7 +48,7 @@ class AdvanceReturn extends Authenticatable
     // ends logging
 
     protected $fillable = [
-        'type','rider_id', 'month', 'amount', 'status','payment_status','active_status','setting'
+        'type','rider_id','given_date', 'month', 'amount', 'status','payment_status','active_status','setting'
     ];
 
     

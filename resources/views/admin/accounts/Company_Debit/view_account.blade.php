@@ -326,9 +326,6 @@
         });
     }
     $(function(){
-
-
-        
         $('[data-ajax]').on('click', function(e){
             e.preventDefault();
             var _ajaxUrl = $(this).attr('data-ajax');
@@ -336,6 +333,8 @@
             var _self = $(this);
             var loading_html = '<div class="d-flex justify-content-center modal_loading"><i class="la la-spinner fa-spin display-3"></i></div>';
             var _quickViewModal = $('#quick_view');
+            var selected_month=new Date(biketrack.getUrlParameter("r1d1")).format('mm');
+            console.log(selected_month);
             _quickViewModal.find('.modal-body').html(loading_html);
             _quickViewModal.modal('show');
             $.ajax({
@@ -349,10 +348,12 @@
                     
                     
                     _quickViewModal.find('.modal-title').text(_self.text().trim());
+                   
                     _quickViewModal.find('.modal-body').html(_targetForm);
+                    _quickViewModal.find('[name="month"]').attr('data-month',selected_month);
                     $('script[data-ajax]').remove();
                     $('body').append('<script data-ajax>'+$(data).find('[data-ajax]').html()+'<\/script>');
-                    
+                        biketrack.refresh_global();
                     //add event handler to submit form in modal
                     _quickViewModal.find('form').off('submit').on('submit', function(e){
                         e.preventDefault();
