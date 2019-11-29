@@ -185,7 +185,6 @@ class AjaxNewController extends Controller
             $model->payment_status="pending";
             $model->amount=$sim_pend.' is remaining out of '.$sim_paid;  
         }
-        
         if ($model!="") {
             $bills->push($model);
         }
@@ -297,7 +296,7 @@ class AjaxNewController extends Controller
                 $model->payment_status="paid";  
             } 
         
-        if ($fuel_pend>0) {
+        if ($fuel_cash_pend>0) {
             $model->payment_status="pending";
             $model->amount=$fuel_cash_pend.' is remaining out of '.$fuel_cash_paid;  
         }
