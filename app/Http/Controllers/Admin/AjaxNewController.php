@@ -335,7 +335,7 @@ class AjaxNewController extends Controller
 
         return DataTables::of($bills)
         ->addColumn('date', function($bill){
-            if (isset($bill->created_at)) {
+            if (isset($bill->given_date)) {
                 return Carbon::parse($bill->given_date)->format('M d, Y');
             }
         })
@@ -358,7 +358,8 @@ class AjaxNewController extends Controller
                     $month=$bill->month;
                     $rider_id=$bill->rider_id;
                     $type=$bill->source;
-                    return '<div>Pending <button type="button" onclick="updateStatus('.$rider_id.',\''.$month.'\',\''.$type.'\')" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
+                    $month_given=$bill->given_date;
+                    return '<div>Pending <button type="button" onclick="updateStatus('.$rider_id.',\''.$month.'\',\''.$type.'\',\''.$month_given.'\')" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
                 }
                 
                 return ucfirst($bill->payment_status).' <i class="flaticon2-correct text-success h5"></i>';

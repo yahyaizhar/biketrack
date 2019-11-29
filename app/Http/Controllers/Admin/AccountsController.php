@@ -1286,6 +1286,7 @@ public function fuel_expense_insert(Request $r){
         $ca->type='dr';
         $ca->amount=$r->amount;
         $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+        $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
         $ca->rider_id = $rider_id;
         $ca->source='fuel_expense_vip';
         $ca->fuel_expense_id=$fuel_expense->id;
@@ -1296,6 +1297,7 @@ public function fuel_expense_insert(Request $r){
         $ca->type='dr';
         $ca->amount=$r->amount;
         $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+        $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
         $ca->rider_id = $rider_id;
         $ca->source='fuel_expense_cash';
         $ca->fuel_expense_id=$fuel_expense->id;
@@ -2296,7 +2298,7 @@ public function client_income_update(Request $request,$id){
   }
 
   public function updateBillPaymentStatus($rider_id,$month,$type){
-      $month_a=Carbon::parse($month)->format('m');
+      $month_a=Carbon::parse($month)->startOfMonth()->format('m');
     $ca=Company_Account::where("rider_id",$rider_id)->whereMonth("month",$month_a)->where("source",$type)->get();
     foreach ($ca as $ca_all) {
       $ca_all->payment_status="paid";
