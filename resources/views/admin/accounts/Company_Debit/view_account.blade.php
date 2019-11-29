@@ -351,6 +351,7 @@
                    
                     _quickViewModal.find('.modal-body').html(_targetForm);
                     _quickViewModal.find('[name="month"]').attr('data-month',selected_month);
+                    _quickViewModal.find('[name="month_year"]').attr('data-month',selected_month);
                     $('script[data-ajax]').remove();
                     $('body').append('<script data-ajax>'+$(data).find('[data-ajax]').html()+'<\/script>');
                         biketrack.refresh_global();

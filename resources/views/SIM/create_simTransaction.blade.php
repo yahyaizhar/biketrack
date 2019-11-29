@@ -20,7 +20,7 @@
                 <form id="sims" class="kt-form" action="{{ route('SimTransaction.store_simTransaction') }}" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="kt-portlet__body">
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label>Date:</label>
                                 <input type="text" data-month="{{carbon\carbon::now()->format('M, Y')}}" class=" month_picker form-control @if($errors->has('month_year')) invalid-field @endif" name="month_year" placeholder="Enter Month_Year" value="{{ old('month_year') }}">
                                 @if ($errors->has('month_year'))
@@ -29,6 +29,32 @@
                                             {{$errors->first('month_year')}}
                                         </strong>
                                     </span> 
+                                @endif
+                            </div> --}}
+                            <div class="form-group">
+                                <label>Sim Bill Month:</label>
+                                <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month_year')) invalid-field @endif" name="month_year" placeholder="Enter Month" value="">
+                                @if ($errors->has('month_year'))
+                                    <span class="invalid-response" role="alert">
+                                        <strong>
+                                            {{ $errors->first('month_year') }}
+                                        </strong>
+                                    </span>
+                                @else
+                                    <span class="form-text text-muted">Please enter Month</span>
+                                @endif
+                            </div>
+                            <div class="form-group">
+                                <label>Given Date:</label>
+                                <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="">
+                                @if ($errors->has('given_date'))
+                                    <span class="invalid-response" role="alert">
+                                        <strong>
+                                            {{ $errors->first('given_date') }}
+                                        </strong>
+                                    </span>
+                                @else
+                                    <span class="form-text text-muted">Please enter Given Date</span>
                                 @endif
                             </div>
                             <div class="form-group">
@@ -99,6 +125,7 @@
     $(document).ready(function(){
         $('#sims [name="month_year"],#sims [name="sim_id"]').on('change', function(){
             var _month = new Date($('#sims [name="month_year"]').val()).format('yyyy-mm-dd');
+            console.log(_month)
             //select current rider
             var sim_id = $('#sims [name="sim_id"]').val();
             if(typeof sim_id !== "undefined"){

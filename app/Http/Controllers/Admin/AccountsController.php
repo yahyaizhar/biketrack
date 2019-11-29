@@ -1286,7 +1286,7 @@ public function fuel_expense_insert(Request $r){
         $ca->type='dr';
         $ca->amount=$r->amount;
         $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
-        $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+        $ca->given_date=Carbon::parse($r->get('given_date'))->startOfMonth()->format('Y-m-d');
         $ca->rider_id = $rider_id;
         $ca->source='fuel_expense_vip';
         $ca->fuel_expense_id=$fuel_expense->id;
@@ -1297,7 +1297,7 @@ public function fuel_expense_insert(Request $r){
         $ca->type='dr';
         $ca->amount=$r->amount;
         $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
-        $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+        $ca->given_date=Carbon::parse($r->get('given_date'))->startOfMonth()->format('Y-m-d');
         $ca->rider_id = $rider_id;
         $ca->source='fuel_expense_cash';
         $ca->fuel_expense_id=$fuel_expense->id;
