@@ -333,7 +333,7 @@
             var _self = $(this);
             var loading_html = '<div class="d-flex justify-content-center modal_loading"><i class="la la-spinner fa-spin display-3"></i></div>';
             var _quickViewModal = $('#quick_view');
-            var selected_month=new Date(biketrack.getUrlParameter("r1d1")).format('mm');
+            var selected_month=new Date(biketrack.getUrlParameter("r1d1")).format('mmmm yyyy');
             console.log(selected_month);
             _quickViewModal.find('.modal-body').html(loading_html);
             _quickViewModal.modal('show');
