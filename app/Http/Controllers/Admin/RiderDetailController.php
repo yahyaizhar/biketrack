@@ -74,18 +74,18 @@ class RiderDetailController extends Controller
                     $updated_at =Carbon::parse($item->updated_at)->format('Y-m-d');
                     $updated_at =Carbon::parse($updated_at);
                     $req_date =Carbon::parse($month);
-                    if($item->status=="active"){ 
-                        // mean its still active, we need to match only created at
-                        if($to_match_bike=='bike_id'){
-                            return $item->bike_id == $_id && $req_date->greaterThanOrEqualTo($created_at);
-                        }
-                        return $item->rider_id == $_id && $req_date->greaterThanOrEqualTo($created_at);
+                    // if($item->status=="active"){ 
+                    //     // mean its still active, we need to match only created at
+                    //     if($to_match_bike=='bike_id'){
+                    //         return $item->bike_id == $_id && $req_date->greaterThanOrEqualTo($created_at);
+                    //     }
+                    //     return $item->rider_id == $_id && $req_date->greaterThanOrEqualTo($created_at);
                         
-                    }
+                    // }
                     if($to_match_bike=='bike_id'){
-                        return $item->bike_id == $_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
+                        return $item->bike_id == $_id && ($req_date->isSameMonth($created_at) || $req_date->isSameMonth($updated_at));
                     }
-                    return $item->rider_id == $_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
+                    return $item->rider_id == $_id && ($req_date->isSameMonth($created_at) || $req_date->isSameMonth($updated_at));
                 });
 
                 if(isset($bike_history_found)){
@@ -163,12 +163,12 @@ class RiderDetailController extends Controller
                     $updated_at =Carbon::parse($item->updated_at)->format('Y-m-d');
                     $updated_at =Carbon::parse($updated_at);
                     $req_date =Carbon::parse($month);
-                    if($item->status=="active"){ 
-                        // mean its still active, we need to match only created at
-                        return $to_match_sim=='sim_id'?$item->sim_id == $_id && $req_date->greaterThanOrEqualTo($created_at):$item->rider_id == $_id && $req_date->greaterThanOrEqualTo($created_at);
-                    }
+                    // if($item->status=="active"){ 
+                    //     // mean its still active, we need to match only created at
+                    //     return $to_match_sim=='sim_id'?$item->sim_id == $_id && $req_date->greaterThanOrEqualTo($created_at):$item->rider_id == $_id && $req_date->greaterThanOrEqualTo($created_at);
+                    // }
                     
-                    return $to_match_sim=='sim_id'?$item->sim_id == $_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at):$item->rider_id == $_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
+                    return $to_match_sim=='sim_id'?$item->sim_id == $_id && ($req_date->isSameMonth($created_at) || $req_date->isSameMonth($updated_at)):$item->rider_id == $_id && ($req_date->isSameMonth($updated_at) || $req_date->isSameMonth($updated_at));
                 });
 
                 if(isset($history_found)){
@@ -260,7 +260,27 @@ class RiderDetailController extends Controller
         $sim_Extra_useage=$sim_data['sim_Extra_useage'];
         $is_sim_found = $sim_data['is_sim_found'];
         $sim_histories = $sim_data['sim_histories'];
-        
+
+        $client_history = Client_History::all();
+        $client_history_found = Arr::first($client_history, function ($item, $key) use ($rider_id, $month) {
+            $created_at =Carbon::parse($item->assign_date)->format('Y-m-d');
+            $created_at =Carbon::parse($created_at);
+
+            $updated_at =Carbon::parse($item->deassign_date)->format('Y-m-d');
+            $updated_at =Carbon::parse($updated_at);
+            $req_date =Carbon::parse($month);
+
+            // if($item->status=="active"){ 
+            //     // mean its still active, we need to match only created at
+            //     return $item->rider_id == $rider_id && $req_date->greaterThanOrEqualTo($created_at);
+            // }
+            
+            return $item->rider_id == $rider_id && ($req_date->isSameMonth($created_at) || $req_date->isSameMonth($updated_at)) ;
+        });
+        $client=NULL;
+        if(isset($client_history_found)){
+            $client=Client::find($client_history_found->client_id);
+        }
         if($according_to=='rider'){
             $rider= Rider::find($_id);
         }
@@ -292,6 +312,9 @@ class RiderDetailController extends Controller
             'sim_number'=>$sim_number,
             'sim_usage'=>$sim_useage,
             'sim_Extra_usage'=>$sim_Extra_useage,
+
+            'client'=>$client,
+            'client_history_found'=>$client_history_found
         ]);
     }
     public function client_total_expense($id){

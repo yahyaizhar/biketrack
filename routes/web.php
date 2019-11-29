@@ -589,7 +589,9 @@ Route::group([
     'middleware' => ['roles:admin']
 ], function(){
    Route::get('/add/invoice/tax','InvoiceController@add_invoice')->name('tax.add_invoice');
-   Route::get('/invoice/tax/ajax/get_clients_details/{client_id}','InvoiceController@get_ajax_client_details')->name('tax.get_ajax_client_details');
+   Route::POST('/add/invoice','InvoiceController@add_invoice_post')->name('tax.add_invoice_post');
+
+   Route::get('/invoice/tax/ajax/get_clients_details/{client_id}/{month}','InvoiceController@get_ajax_client_details')->name('tax.get_ajax_client_details');
    Route::get('/invoice/view','InvoiceController@view_invoices')->name('tax.view_invoices');
   
 

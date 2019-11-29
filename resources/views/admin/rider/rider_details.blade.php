@@ -201,6 +201,41 @@
                         </div>
                     </div>
                     {{-- end sim --}}
+
+                    {{-- for Client  --}}
+                    <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="client_detail">
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <div class="kt-portlet kt-portlet--height-fluid">
+                                    <div class="kt-portlet__body">
+                                        <div class="kt-widget kt-widget--user-profile-3">
+                                            <div class="kt-widget__top">
+                                                <div style="color:#ccc;" class="kt-widget__media kt-hidden-">
+                                                    <h2>Client Detail</h2>
+                                                </div>
+                                                <div class="kt-widget__content">
+                                                    <div class="kt-widget__head">
+                                                        <a class="kt-widget__username client_name_wrapper">
+                                                            <h2><span class="client_name"></span>
+                                                                <i class="flaticon2-correct active_mark" style="display:none"></i>  
+                                                            </h2>
+                                                        </a>
+                                                        <div class="kt-widget__action">
+                                                            <h6>Active Dates: <strong><span class="client_assign_date"></span></strong></h6>
+                                                        </div>
+                                                    </div>
+                                                    <div class="kt-widget__subhead">
+                                                        <a>KR-C ID: <strong><span class="kr_c_id"></span></strong></a> 
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>          
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- end Client --}}
                 </div> 
             </div>
         </div>
@@ -270,6 +305,17 @@ $(document).ready(function(){
                 $('.rider_name_wrapper').attr('href', "{{url('admin/rider')}}/"+data.rider.id+"/profile")
                 .find('.rider_name').html(data.rider.name);
                 $('.kr_id').html('KR'+data.rider.id);
+            }
+            if(data.client == null){
+                $('#client_detail').hide();
+            }
+            else{
+                $('#client_detail').show();
+                $('.client_name_wrapper').attr('href', "{{url('admin/client')}}/"+data.client.id+"/riders")
+                .find('.client_name').html(data.client.name);
+                $('.kr_c_id').html('KR-C-'+data.rider.id);
+                if(data.client_history_found.active_status=='active') $('.client_name_wrapper').find('.active_mark').show();
+                else $('.client_name_wrapper').find('.active_mark').hide();
             }
             
             $(".bike_name").html(data.brand + " " + data.model);
