@@ -365,17 +365,17 @@ public function AR_index(){
 return view('admin.accounts.AR.AR_add',compact("riders"));
 }
 public function AR_view(){
-    $ca=Company_Account::get();
-    foreach ($ca as $c) {
-        $c->given_date=Carbon::parse($c->created_at)->format('Y-m-d');
-        $c->save();
-    }
-    $ra=Rider_Account::get();
-    foreach ($ra as $r) {
-        $r->given_date=Carbon::parse($r->created_at)->format('Y-m-d');
-        $r->save();
-    }
-    return 'updated';
+    // $ca=Company_Account::get();
+    // foreach ($ca as $c) {
+    //     $c->given_date=Carbon::parse($c->created_at)->format('Y-m-d');
+    //     $c->save();
+    // }
+    // $ra=Rider_Account::get();
+    // foreach ($ra as $r) {
+    //     $r->given_date=Carbon::parse($r->created_at)->format('Y-m-d');
+    //     $r->save();
+    // }
+    // return 'updated';
 return view('admin.accounts.AR.AR_view');
 }
 public function AR_updatestatus($id){
