@@ -18,6 +18,7 @@ class CreateRiderAccountsTable extends Migration
             $table->string('type')->nullable();
             $table->string('amount')->nullable();
             $table->string('month')->nullable();
+            $table->string('given_date')->nullable();
             $table->string('source')->nullable();
             $table->integer('bike_fine')->nullable();
             $table->integer('bike_rent_id')->nullable();

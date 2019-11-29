@@ -336,7 +336,7 @@ class AjaxNewController extends Controller
         return DataTables::of($bills)
         ->addColumn('date', function($bill){
             if (isset($bill->created_at)) {
-                return Carbon::parse($bill->created_at)->format('M d, Y');
+                return Carbon::parse($bill->given_date)->format('M d, Y');
             }
         })
         ->addColumn('bill', function($bill){
@@ -553,7 +553,7 @@ class AjaxNewController extends Controller
         return DataTables::of($rider_statements)
         ->addColumn('date', function($rider_statement){
             if($rider_statement->type=='skip') return '';
-            return Carbon::parse($rider_statement->created_at)->format('M d, Y');
+            return Carbon::parse($rider_statement->given_date)->format('M d, Y');
         })
         ->addColumn('desc', function($rider_statement) use ($rider_statements){
             if($rider_statement->type=='skip') return '<strong >'.$rider_statement->source.'</strong>';
@@ -839,7 +839,7 @@ class AjaxNewController extends Controller
         return DataTables::of($company_statements)
         ->addColumn('date', function($company_statements){
             if($company_statements->type=='skip') return '';
-            return Carbon::parse($company_statements->created_at)->format('M d, Y');
+            return Carbon::parse($company_statements->given_date)->format('M d, Y');
         })
         ->addColumn('desc', function($company_statement)  use ($company_statements){
             if($company_statement->type=='skip') return '<strong >'.$company_statement->source.'</strong>';
@@ -3006,22 +3006,13 @@ class AjaxNewController extends Controller
             ->where("source","salary")
             ->get()
             ->first();
-            $salary_paid=Rider_Account::where("rider_id",$rider_id)
-            ->whereMonth("month",$month)
-            ->where("source","salary_paid")
-            ->get()
-            ->first();
           if (isset($salary)) {
-              if (isset($salary_paid)) {
-                if ($salary_paid->payment_status=="paid") { 
-                    $salary=$salary_paid->amount;
+                if ($salary->payment_status=="pending") { 
+                    $salary=$salary->amount;
                     return "<div  style='color:green;'>".$salary." <span class='flaticon2-correct'></span></div>";
-                }
+               
               }
-               if($salary->payment_status=="pending"){
-                $salary=$salary->amount;
-                return "<div  style='color:red;'>".$salary." <span class='flaticon2-delete'></span></div>";
-              }
+              
           }
             return "0";
         })

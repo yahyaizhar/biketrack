@@ -28,6 +28,16 @@
                     </div>
                 </div>
             <div class="kt-portlet__body">
+            {{-- <div class="form-group">
+                <label>Clients:</label>
+                <select class="form-control bk-select2 kt-select2-general" name="client_id" >
+                    @foreach ($clients as $client)
+                    <option value="{{ $client->id }}">
+                        {{ $client->name }}
+                    </option>     
+                    @endforeach 
+                </select>
+            </div> --}}
             <div>
                 <select class="form-control bk-select2" id="kt_select2_3_5" name="month_id" >
                     <option >Select Month</option>
@@ -96,6 +106,10 @@
 <script>
 $("#bills_hidden").hide();
 var charges_table; 
+// $("[name='client_id']").on("change",function(){
+//     var client_id=$(this).val();
+//     console.log(client_id);
+// });
 $("#kt_select2_3_5").on("change",function(){
     $("#bills_hidden").show();
     var month=$(this).val();

@@ -29,6 +29,7 @@ class BillsController extends Controller
         $this->middleware('auth:admin');
     }
     public function rider_generated_bills(){
-        return view('admin.Bills.generated_bills');
+        $clients=Client::all();
+        return view('admin.Bills.generated_bills',compact('clients'));
     }
 }

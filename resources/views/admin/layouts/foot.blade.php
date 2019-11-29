@@ -293,6 +293,22 @@ biketrack.refresh_global = function(){
             $(this).fdatepicker('update', new Date(_initDate));
         }
     });
+    $('.month_picker_only').each(function(){
+        var _initDate = $(this).attr('data-month');
+        if(!$(this).hasClass("ft-init")){
+            $(this).fdatepicker({ 
+                format: 'MM', 
+                // initialDate: 'July 2019',
+                startView:3,
+                minView:3,
+                maxView:4
+            });
+            $(this).removeClass('ft-init').addClass('ft-init');
+            $(this).fdatepicker('update', new Date(_initDate));
+        }else{
+            $(this).fdatepicker('update', new Date(_initDate));
+        }
+    });
 }
 
 /*=====================SEARCH INPUT===================*/
