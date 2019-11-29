@@ -297,7 +297,7 @@ biketrack.refresh_global = function(){
         var _initDate = $(this).attr('data-month');
         if(!$(this).hasClass("ft-init")){
             $(this).fdatepicker({ 
-                format: 'MM', 
+                format: 'MM yyyy', 
                 // initialDate: 'July 2019',
                 startView:3,
                 minView:3,

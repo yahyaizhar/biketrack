@@ -28,27 +28,44 @@ class InvoiceController extends Controller
         return view('admin.Invoices.add_invoice',compact('clients'));
     }
     public function add_invoice_post(Request $r){
-        $due_date = Carbon::createFromFormat('F d, Y', $r->due_date)->format('Y-m-d');
-        $r->invoice_date = Carbon::createFromFormat('F d, Y', $r->invoice_date)->format('Y-m-d');
 
-        // $invoice = new Invoice;
-        // $invoice->client_id=$r->client_id;
-        // $invoice->invoice_amount=$r->invoice_total;
-        // $invoice->month=$r->month;
-        // $invoice->client_id=$r->client_id;
-        // $invoice->client_id=$r->client_id;
-        // $invoice->client_id=$r->client_id;
-        // $invoice->client_id=$r->client_id;
-        // $invoice->client_id=$r->client_id;
-        // $invoice->client_id=$r->client_id;
-        // $invoice->client_id=$r->client_id;
-        // $invoice->client_id=$r->client_id;
-        // $invoice->client_id=$r->client_id;
-        // $invoice->client_id=$r->client_id;
-        // $invoice->client_id=$r->client_id;
-        // $invoice->client_id=$r->client_id;
+        $invoice = new Invoice;
+        $invoice->client_id=$r->client_id;
+        $invoice->invoice_total=$r->invoice_total;
+        $invoice->invoice_subtotal=$r->invoice_subtotal;
 
-        return $r->all();
+        $invoice->taxable_subtotal=$r->taxable_subtotal;
+        $invoice->tax_method_id="0";
+        $invoice->taxable_amount=$r->tax_value;
+
+        $invoice->month=Carbon::createFromFormat('d F Y', '01 '.$r->month)->format('Y-m-d');
+        $invoice->invoice_date=Carbon::createFromFormat('F d, Y', $r->invoice_date)->format('Y-m-d');
+        $invoice->invoice_due=Carbon::createFromFormat('F d, Y', $r->due_date)->format('Y-m-d');
+
+        $invoice->payment_status="pending";
+        $invoice->generated_by=Auth::user()->id;
+        
+        $invoice->bank_id="0";
+        $invoice->amount_paid=0;
+        $invoice->due_balance=$r->client_id;
+
+        // $invoice->received_date=$r->client_id;
+        $invoice->invoice_status="generated";
+        if (isset($r->discount) && $r->discount!=null && isset($r->discount_values) && $r->discount_values!=null) {
+            $invoice->discount_type=$r->discount;
+            $invoice->discount_value=$r->discount_values;
+            $invoice->discount_amount=$r->discount_amount;
+        }
+        $invoice->message_on_invoice=$r->message_on_invoice;
+        $invoice->billing_address=$r->billing_address;
+        $invoice->status="open";
+
+        // foreach ($invoice->invoice_items as $invoice_itemObj) {
+        //     $invoice_item = new Invoice_item;
+        //     $invoice_item->billing_address=$r->billing_address;
+        // }
+
+        return $invoice;
     }
     public function get_ajax_client_details($client_id, $formatted_month){
         $client=Client::find($client_id);
