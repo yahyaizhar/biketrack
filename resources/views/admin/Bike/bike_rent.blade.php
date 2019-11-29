@@ -42,7 +42,7 @@
                                 @endforeach 
                             </select> 
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label>Month:</label>
                         <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
                             @if ($errors->has('month'))
@@ -53,6 +53,32 @@
                                 </span>
                             @else
                                 <span class="form-text text-muted">Please enter Month</span>
+                            @endif
+                        </div> --}}
+                        <div class="form-group">
+                            <label>Bike Rent Month:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                            @if ($errors->has('month'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('month') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Month</span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Given Date:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="">
+                            @if ($errors->has('given_date'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('given_date') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Given Date</span>
                             @endif
                         </div>
                         <div class="form-group">

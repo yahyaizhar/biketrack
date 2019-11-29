@@ -984,7 +984,8 @@ class AccountsController extends Controller
         $ca->salary_id =$salary->id;
         $ca->type='dr';
         $ca->rider_id=$rider_id;
-        $ca->month = Carbon::parse($request->get('month'))->format('Y-m-d');
+        $ca->month = Carbon::parse($request->get('month'))->startOfMonth()->format('Y-m-d');
+        $ca->given_date = Carbon::parse($request->get('given_date'))->format('Y-m-d');
         $ca->source="salary";
         $ca->payment_status="pending";
         $ca->amount=$request->total_salary;
@@ -996,7 +997,8 @@ class AccountsController extends Controller
         $ca->salary_id =$salary->id;
         $ca->type='cr';
         $ca->rider_id=$rider_id;
-        $ca->month = Carbon::parse($request->get('month'))->format('Y-m-d');
+        $ca->month = Carbon::parse($request->get('month'))->startOfMonth()->format('Y-m-d');
+        $ca->given_date = Carbon::parse($request->get('given_date'))->format('Y-m-d');
         $ca->source="salary"; 
         $ca->payment_status="pending";
         $ca->amount=$request->total_salary;

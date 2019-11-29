@@ -205,7 +205,8 @@ class bikeController extends Controller
       $ca=new Company_Account();
       $ca->type='dr';
       $ca->amount=$r->amount;
-      $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+      $ca->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+      $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
       $ca->bike_rent_id =$r->bike_id;
       $ca->rider_id=$rider_id;
       $ca->source='Bike Rent';
@@ -215,7 +216,8 @@ class bikeController extends Controller
         $ba=new Bike_Accounts();
         $ba->type='cr';
         $ba->amount=$r->amount;
-        $ba->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+        $ba->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+        $ba->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
         $ba->bike_id =$r->bike_id;
         $ba->rider_id=$rider_id;
         $ba->source='Bike Rent';
@@ -225,7 +227,8 @@ class bikeController extends Controller
         $ba=new Bike_Accounts();
         $ba->type='cr';
         $ba->amount=$r->amount;
-        $ba->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+        $ba->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+        $ba->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
         $ba->bike_id =$r->bike_id;
         $ba->rider_id=$rider_id;
         $ba->source='Bike Rent';
@@ -234,7 +237,8 @@ class bikeController extends Controller
         $ba=new Bike_Accounts();
         $ba->type='dr';
         $ba->amount=$r->amount;
-        $ba->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+        $ba->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+        $ba->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
         $ba->bike_id =$r->bike_id;
         $ba->rider_id=$rider_id;
         $ba->source='Bike Rent paid to rental comapny';
@@ -245,7 +249,8 @@ class bikeController extends Controller
         $ra=new Rider_Account();
         $ra->type='cr';
         $ra->amount=$r->amount;
-        $ra->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+        $ra->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+        $ra->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
         $ra->bike_rent_id =$r->bike_id;
         $ra->rider_id=$rider_id;
         $ra->source='Bike Allowns';
