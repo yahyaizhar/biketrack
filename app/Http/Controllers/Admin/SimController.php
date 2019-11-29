@@ -280,8 +280,8 @@ public function store_simTransaction(Request $request){
     $ca->sim_transaction_id =$sim_trans->id;
     $ca->type='dr';
     $ca->rider_id=$rider_id;
-    $ca->month = Carbon::parse($sim_trans->month_year)->format('Y-m-d');
-    $ca->given_date = Carbon::parse($sim_trans->given_date)->startOfMonth()->format('Y-m-d');
+    $ca->month = Carbon::parse($sim_trans->month_year)->startOfMonth()->format('Y-m-d');
+    $ca->given_date = Carbon::parse($sim_trans->given_date)->format('Y-m-d');
     $ca->source="Sim Transaction"; 
     $ca->amount=$request->bill_amount;
     $ca->save();
@@ -293,8 +293,8 @@ public function store_simTransaction(Request $request){
         $ra->sim_transaction_id =$sim_trans->id;
         $ra->type='cr_payable';
         $ra->rider_id=$rider_id;
-        $ra->month = Carbon::parse($sim_trans->month_year)->format('Y-m-d');
-        $ra->given_date = Carbon::parse($sim_trans->given_date)->startOfMonth()->format('Y-m-d');
+        $ra->month = Carbon::parse($sim_trans->month_year)->startOfMonth()->format('Y-m-d');
+        $ra->given_date = Carbon::parse($sim_trans->given_date)->format('Y-m-d');
         $ra->source="Sim extra usage"; 
         $ra->amount=$extra;
         $ra->save();
@@ -306,8 +306,8 @@ public function store_simTransaction(Request $request){
         $ca->sim_transaction_id =$sim_trans->id;
         $ca->type='cr';
         $ca->rider_id=$rider_id;
-        $ca->month = Carbon::parse($sim_trans->month_year)->format('Y-m-d');
-        $ca->given_date = Carbon::parse($sim_trans->given_date)->startOfMonth()->format('Y-m-d');
+        $ca->month = Carbon::parse($sim_trans->month_year)->startOfMonth()->format('Y-m-d');
+        $ca->given_date = Carbon::parse($sim_trans->given_date)->format('Y-m-d');
         $ca->source="Sim extra usage";
         $ca->amount=$extra;
         $ca->save();
