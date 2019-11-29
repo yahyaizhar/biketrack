@@ -37,7 +37,7 @@
                                 @if ($errors->has('month_year'))
                                     <span class="invalid-response" role="alert">
                                         <strong>
-                                            {{ $errors->first('month_year') }}
+                                            {{ $errors->first('month_year') }} 
                                         </strong>
                                     </span>
                                 @else
