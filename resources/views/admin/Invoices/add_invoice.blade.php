@@ -9,6 +9,48 @@
     .custom-file-label{
         overflow: hidden;
         }
+
+        #invoice-table th.invoice__table-cell-sr{
+            width: 6%;
+        }
+        #invoice-table th.invoice__table-cell-meta{
+            width: 40%;
+        }
+        #invoice-table th.invoice__table-cell-rate{
+            width: 13%;
+        }
+        #invoice-table th.invoice__table-cell-qty{
+            width: 7%;
+        }
+        #invoice-table th.invoice__table-cell-total{
+            padding-bottom:0;
+            width: 16%;
+        }
+        #invoice-table th.invoice__table-cell-total .cell__text{
+            display: block;
+            text-align: center;         
+        }
+        #invoice-table th.invoice__table-cell-total .cell__sub-text{
+            font-size: 10px;
+            color: red;
+            text-align: right;
+            display: block;      
+        }
+        #invoice-table th.invoice__table-cell-tax{
+            width: 5%;
+        }
+        #invoice-table th.invoice__table-cell-tax_amount{
+            width: 13%;
+        }
+        #invoice-table .invoice__table-row_cell-sr{
+            display: inline-flex;
+            width: 100%;
+            text-align: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            padding-top: 17px;
+        }
 </style>
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <div class="row">
@@ -27,8 +69,22 @@
                     <div class="kt-portlet__body">
                         <div class="row">
                             <div class="form-group col-md-3">
+                                <label>Month:</label>
+                                <input type="text" data-month="{{Carbon\Carbon::now()->format('m')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Select Month" value="">
+                                @if ($errors->has('month'))
+                                    <span class="invalid-response" role="alert">
+                                        <strong>
+                                            {{ $errors->first('month') }}
+                                        </strong>
+                                    </span>
+                                @else
+                                    <span class="form-text text-muted">Please select Month</span>
+                                @endif
+                            </div>
+
+                            <div class="form-group col-md-3">
                                 <label>Customer:</label>
-                                <select class="form-control bk-select2 kt-select2" id="kt_select2_3" name="client_id" >
+                                <select class="form-control bk-select2 kt-select2" id="kt_select2_3" data-name="client_id" name="client_id" >
                                 @foreach ($clients as $client)
                                     <option value="{{ $client->id }}">
                                         {{ $client->name }}
@@ -40,27 +96,33 @@
                         <div class="row">
                             <div class="form-group col-md-4">
                                 <label>Billing Adress:</label>
-                                <textarea type="text" cols="20" rows="5" class="form-control" name="billing_address" placeholder="Enter Your Adress"></textarea>
+                                <textarea type="text" cols="20" rows="5" class="form-control" data-name="billing_address" name="billing_address" placeholder="Enter Your Adress"></textarea>
                             </div>
                             <div class="form-group col-md-4">
                                 <label>Invoice Date:</label>
-                                <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}"  readonly class="month_picker form-control @if($errors->has('invoice_date')) invalid-field @endif" name="invoice_date" placeholder="Enter Month" >
+                                <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}"  readonly class="month_picker form-control @if($errors->has('invoice_date')) invalid-field @endif" data-name="invoice_date" name="invoice_date" placeholder="Enter Month" >
                             </div>
                             <div class="form-group col-md-4">
                                 <label>Due Date:</label>
-                                <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}"  readonly class="month_picker form-control @if($errors->has('due_date')) invalid-field @endif" name="due_date" placeholder="Enter Month" >
+                                <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}"  readonly class="month_picker form-control @if($errors->has('due_date')) invalid-field @endif" data-name="due_date" name="due_date" placeholder="Enter Month" >
                             </div>
                         </div>
                         <table class="table table-striped- table-hover table-checkable table-condensed" id="invoice-table">
                             <thead>
                                 <tr>
-                                    <th>Description</th>
-                                    <th></th>
-                                    <th>Amount</th>
-                                    <th>TAX</th>
-                                    <th>Action</th>                  
+                                    <th class="text-center invoice__table-cell-sr">SR #</th>
+                                    <th class="text-center invoice__table-cell-meta">Description</th>
+                                    <th class="text-right invoice__table-cell-rate">Item Rate</th>
+                                    <th class="text-right invoice__table-cell-qty">Qty</th>
+                                    <th class="text-right invoice__table-cell-total">
+                                        <span class="cell__text">Item Total</span>
+                                        <span class="cell__sub-text">Is Deductable</span>
+                                    </th>
+                                    <th class="text-right invoice__table-cell-tax">TAX</th>
+                                    <th class="text-right invoice__table-cell-tax_amount">Tax Amount</th>                 
                                 </tr>
-                                    <tbody></tbody>
+                                    <tbody>
+                                    </tbody>
                             </thead>
                         </table>
                     </div>
@@ -76,6 +138,7 @@
                                                 </div>
                                                 <div class="col-md-5">
                                                     <h4 class="subtotal_value">AED 0.00</h4>
+                                                    <input type="hidden" data-name="invoice_subtotal" name="invoice_subtotal">
                                                 </div>
                                             </div>
                                         </div>
@@ -90,6 +153,7 @@
                                                         </div>
                                                         <div class="col-md-5">
                                                             <h6 class="taxable_subtotal">AED 0.00</h6>
+                                                            <input type="hidden" data-name="taxable_subtotal" name="taxable_subtotal">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -101,51 +165,53 @@
                                     </div> 
                                 
                                 <div class="row mt-3">
-                                    <div class="col-md-5 text-right offset-md-7">
+                                    <div class="col-md-4 text-right offset-md-8">
                                         <div class="row">
                                             <div class="col-md-7">
-                                                <select class="form-control" aria-placeholder="Select a Tax rate" name="tax_rate" >
+                                                <select class="form-control" aria-placeholder="Select a Tax rate" data-name="tax_rate" name="tax_rate" >
                                                     <option value=""> Select a Tax Rate</option> 
                                                     <option value="5">VAT(5%)</option>  
                                                 </select>
                                             </div>
                                             <div class="col-md-5">
-                                                <input type="text" class="form-control" name="tax_value">
+                                                <input type="text" class="form-control" data-name="tax_value" name="tax_value" readonly>
                                             </div>
                                         </div>
                                     </div>
                                 </div> 
                                 <div class="row mt-3">
-                                    <div class="col-md-5 text-right offset-md-7">
+                                    <div class="col-md-6 text-right offset-md-6">
                                         <div class="row">
                                             <div class="col-md-7">
                                                 <div class="row">
-                                                    <div class="col-md-7">
-                                                        <select class="form-control" aria-placeholder="Select a Tax rate" name="discount" >
-                                                            <option value="">Select a discount rate.</option>
+                                                    <div class="col-md-9">
+                                                        <select class="form-control" data-name="discount" name="discount" >
+                                                            <option value="">Select a discount type</option>
                                                             <option value="percent">Discount Percent</option>
                                                             <option value="value">Discount Value</option>  
                                                         </select>
                                                     </div>
-                                                    <div class="col-md-5">
-                                                        <input type="text" class="form-control" name="discount_values">
+                                                    <div class="col-md-3">
+                                                        <input type="text" class="form-control text-center" data-name="discount_values" name="discount_values">
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-5">
                                                 <h4 class="discount_amount" style="padding:10px 0px">AED 0.00</h4>
+                                                <input type="hidden" data-name="discount_amount" name="discount_amount">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row mt-3">
+                                <div class="row mt-5">
                                     <div class="col-md-5 text-right offset-md-7">
                                         <div class="row">
                                             <div class="col-md-7">
-                                               <h4>Total</h4>
+                                            <h4>Total</h4>
                                             </div>
                                             <div class="col-md-5">
                                                 <h4 class="all_total_amount">AED 0.00</h4>
+                                                <input type="hidden" data-name="invoice_total" name="invoice_total">
                                             </div>
                                         </div>
                                     </div>
@@ -163,7 +229,7 @@
                                     </div>
                                 </div> 
                             </div>
-                          
+                        
                     </div>
                     <div class="kt-portlet__foot">
                         <div class="kt-form__actions kt-form__actions--right">
@@ -175,6 +241,7 @@
         </div>
     </div>
 </div>
+
 @endsection
 @section('foot')
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/bootstrap-switch.js') }}" type="text/javascript"></script>
@@ -184,101 +251,334 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
-$(document).ready(function(){
+$(document).ready(function () {
     append_row();
-    $('[name="tax_value"]').prop("disabled", true);
-  $('#invoices [name="client_id"]').on("change input",function(){
-      var client_id=$('#invoices [name="client_id"]').val();
-      $.ajax({
+    $('#invoices [data-name="client_id"],#invoices [data-name="month"]').on("change input", function () {
+        var client_id = $('#invoices [data-name="client_id"]').val();
+        console.log('client_id', client_id);
+        var _month = new Date($('#invoices [data-name="month"]').val()).format('yyyy-mm-dd');
+        $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }, 
-                url:"{{url('admin/invoice/tax/ajax/get_clients_details/')}}"+'/'+client_id,
+                },
+                url: "{{url('admin/invoice/tax/ajax/get_clients_details/')}}" + '/' + client_id + "/" + _month,
                 method: "GET"
             })
-            .done(function(data) {  
-                console.log(data);
-                $('#invoices [name="billing_address"]').val(data.billing_address);
+            .done(function (resp) {
+                console.log(resp);
+                if (resp.status == 1) {
+                    $("#invoice-table tbody").html('');
+                    $('#invoices [data-name="billing_address"]').val(resp.billing_address);
+                    if (resp.payment_method == "trip_based") {
+                        var row_data = [{
+                                desc: 'Total Login Hours Payable Amount',
+                                amount: resp.total_hours_payable,
+                                rate: resp.per_hour_amount,
+                                qty: resp.total_hours,
+                                is_taxable: true,
+                                is_payable: true,
+                                is_deductable: false
+                            },
+                            {
+                                desc: 'Total Orders Completed Payable Amount',
+                                amount: resp.total_trips_payable,
+                                rate: resp.per_trip_amount,
+                                qty: resp.total_trips,
+                                is_taxable: true,
+                                is_payable: true,
+                                is_deductable: false
+                            },
+                            {
+                                desc: 'Incentives/Adhoc',
+                                amount: resp.adhoc,
+                                rate: resp.adhoc,
+                                qty: 1,
+                                is_taxable: false,
+                                is_payable: true,
+                                is_deductable: false
+                            },
+                            {
+                                desc: 'Tips Earned',
+                                amount: resp.tips,
+                                rate: resp.tips,
+                                qty: 1,
+                                is_taxable: false,
+                                is_payable: true,
+                                is_deductable: false
+                            },
+                            {
+                                desc: 'NCW',
+                                amount: resp.ncw,
+                                rate: resp.ncw,
+                                qty: 1,
+                                is_taxable: false,
+                                is_payable: true,
+                                is_deductable: false
+                            },
+                            {
+                                desc: 'Penalties',
+                                amount: resp.panalties,
+                                rate: resp.panalties,
+                                qty: 1,
+                                is_taxable: false,
+                                is_payable: true,
+                                is_deductable: true
+                            },
+                            {
+                                desc: 'Deductions for Cash on Delivary orders',
+                                amount: resp.dc_deduction,
+                                rate: resp.dc_deduction,
+                                qty: 1,
+                                is_taxable: false,
+                                is_payable: true,
+                                is_deductable: true
+                            },
+                            {
+                                desc: 'Deductions for McDonald\'s orders',
+                                amount: resp.mcdonald_deduction,
+                                rate: resp.mcdonald_deduction,
+                                qty: 1,
+                                is_taxable: false,
+                                is_payable: true,
+                                is_deductable: true
+                            }
+                        ];
+                        append_row(row_data)
+                    } else if (resp.payment_method == "fixed_based") {
+                        var row_data = [{
+                            desc: 'Fixed Amount',
+                            amount: resp.total_payable,
+                            rate: resp.fixed_amount,
+                            qty: resp.riders_count,
+                            is_taxable: true,
+                            is_payable: true,
+                            is_deductable: false
+                        }];
+                        append_row(row_data)
+                    } else if (resp.payment_method == "commission_based") {}
+
+                } else {
+                    alert("Error: " + resp.message);
+                }
+
             });
-  });
-
-$(document).on("change input",'[name="amount"]',function(){ 
-    subtotal();
-});
-$(document).on("change",'[name="tax"]',function(){
-    subtotal();
-});
-$(document).on("change input",'[name="tax_rate"]',function(){
-subtotal();
-});   
-$(document).on("change",'[name="discount"]',function(){
-    subtotal();
-});  
-$('[name="discount_values"]').on("change input",function(){
-subtotal();
-});   
-});
-
-var total_amount=0;
-var taxable_amount=0;
-function subtotal(){
-     total_amount=0;
-     taxable_amount=0;
-     var non_tax_amount=0;
-     var res_of_tax;
-    $("#invoice-table tbody tr").each(function(item,index){
-        var amt=$(this).find('[name="amount"]').val();
-        var amount=parseFloat(amt);
-        total_amount+=amount;
-        non_tax_amount+=amount; 
-        if ($(this).find('[name="tax"]').is(":checked")) { 
-            taxable_amount+=amount; 
-        }
     });
-    var vat=$('[name="tax_rate"]').val();
-    if (taxable_amount) {
-        
-    }
-    $('[name="tax_value"]').val("");
-     if(vat!==""){
-         var vat_val=parseFloat(vat);
-         if ($("#invoice-table tbody tr").find('[name="tax"]').is(":checked")) {
-            res_of_tax=(taxable_amount*vat_val)/100;
-            $('[name="tax_value"]').val(res_of_tax);
-            total_amount+=res_of_tax;
-        }}
-       var discount=$('[name="discount"]').val();
-       if(discount=='percent'){
-          var discount_value_percent=$('[name="discount_values"]').val();
-          res_of_discount=(discount_value_percent*non_tax_amount)/100;
-          $('.discount_amount').text('AED -'+res_of_discount);
-          total_amount-=res_of_discount;
-       }
-       if(discount=='value'){
-        var discount_value_value=$('[name="discount_values"]').val();
-        var res_of_discount=discount_value_value;
-        $('.discount_amount').text('AED -'+res_of_discount);
-        total_amount-=res_of_discount;
-       }
 
-    $(".subtotal_value").text("AED "+non_tax_amount);
-    $(".taxable_subtotal").text("AED "+taxable_amount);
-    $('.all_total_amount').text("AED "+total_amount);
-    $('.balance_due').text("AED "+total_amount);
+    $(document).on("change input", '[data-name="rate"], [data-name="amount"], [data-name="tax_rate"], [data-name="discount_values"], [data-name="tax"], [data-name="discount"], [data-name="qty"]', function () {
+        subtotal();
+    });
+
+    $(document).on("keydown", 'textarea.auto-expandable', autosize);
+
+    $('#invoices').on('submit', function (e) {
+        e.preventDefault();
+        var _form = $(this);
+        $.ajax({
+            url: "{{route('tax.add_invoice_post')}}",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            type: 'POST',
+            data: _form.serializeArray(),
+            beforeSend: function () {
+                $('.bk_loading').show();
+            },
+            complete: function () {
+                $('.bk_loading').hide();
+            },
+            success: function (data) {
+                console.warn(data);
+                // swal.fire({
+                //     position: 'center',
+                //     type: 'success',
+                //     title: 'Record updated successfully.',
+                //     showConfirmButton: false,
+                //     timer: 1500
+                // });
+                // clients_table.ajax.reload(null, false);
+            },
+            error: function (error) {
+                console.warn(error);
+                swal.fire({
+                    position: 'center',
+                    type: 'error',
+                    title: 'Oops...',
+                    text: 'Unable to update.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        });
+    });
+
+
+});
+
+var total_amount = 0;
+var taxable_amount = 0;
+
+function subtotal() {
+    total_amount = 0;
+    taxable_amount = 0;
+    var non_tax_amount = 0;
+    var res_of_tax;
+    var vat = parseFloat($('[data-name="tax_rate"]').val()) || 0;
+    console.log('yes');
+
+    $('[data-name="tax_value"]').val("");
+    $('[data-name="tax_amount"]').val(0);
+
+    $("#invoice-table tbody tr").each(function (item, index) {
+        // var is_payable = $(this).find('[data-name="payable"]').is(":checked");
+        // var is_deductable = $(this).find('[data-name="deductable"]').is(":checked");
+
+        var rate = parseFloat($(this).find('[data-name="rate"]').val()) || 0;
+        var qty = parseFloat($(this).find('[data-name="qty"]').val()) || 0;
+
+        var amount = rate * qty;
+
+        total_amount += amount;
+        non_tax_amount += amount;
+        if ($(this).find('[data-name="tax"]').is(":checked")) {
+            taxable_amount += amount;
+            if (vat > 0) {
+                var tax_amount = (amount * vat) / 100;
+                amount += tax_amount;
+                $(this).find('[data-name="tax_amount"]').val((tax_amount).toFixed(2));
+            }
+        }
+
+        $(this).find('[data-name="amount"]').val((amount).toFixed(2));
+    });
+
+
+
+    if (vat > 0) {
+        var vat_val = parseFloat(vat);
+        if (taxable_amount > 0) {
+            res_of_tax = (taxable_amount * vat_val) / 100;
+            $('[data-name="tax_value"]').val((res_of_tax).toFixed(2));
+            total_amount += res_of_tax;
+        }
+    }
+    var discount = $('[data-name="discount"]').val();
+    if (discount == 'percent') {
+        var discount_value_percent = parseFloat($('[data-name="discount_values"]').val()) || 0;
+        res_of_discount = (discount_value_percent * non_tax_amount) / 100;
+        $('.discount_amount').text('AED -' + (res_of_discount).toFixed(2));
+        $('[data-name="discount_amount"]').val((res_of_discount).toFixed(2));
+        total_amount -= res_of_discount;
+    }
+    if (discount == 'value') {
+        var discount_value_value = parseFloat($('[data-name="discount_values"]').val()) || 0;
+        var res_of_discount = discount_value_value;
+        $('.discount_amount').text('AED -' + (res_of_discount).toFixed(2));
+        total_amount -= res_of_discount;
+    }
+
+    $(".subtotal_value").text("AED " + (non_tax_amount).toFixed(2));
+    
+    $(".taxable_subtotal").text("AED " + (taxable_amount).toFixed(2));
+    $('.all_total_amount').text("AED " + (total_amount).toFixed(2));
+    $('.balance_due').text("AED " + (total_amount).toFixed(2));
+
+    $("[data-name='invoice_subtotal']").val((non_tax_amount).toFixed(2));
+    $("[data-name='taxable_subtotal']").val((taxable_amount).toFixed(2));
+    $("[data-name='invoice_total']").val((total_amount).toFixed(2));
     // 
 }
-function append_row(){
-    var products ='<input type="text" name="products">';
-    var description ='<input class="form-control" type="text" name="description">';
-    var amount ='<input class="form-control" type="number" name="amount" min="0" value="0" id="amount">';
-    var tax='<div class="kt-checkbox-list"><label class="kt-checkbox"> <input name="tax" type="checkbox"><span></span> </label></div>';
-    var action='<button type="button" onclick="delete_row(this);" class="delete-row btn btn-danger"><i class="fa fa-trash-alt"></i></button>';
-    var markup = "<tr><td colspan='2'>"+ description + "</td><td>" + amount + "</td><td>" + tax + "</td><td>" + action + "</td></tr>";
-    $("table tbody").append(markup);
-        }
-function delete_row(ctl){
-   $(ctl).parents("tr").remove();
-   subtotal(); 
+
+
+
+function append_row($row_data = null) {
+    var markup = '';
+    var total_rows = parseFloat($("#invoice-table tbody tr").length);
+    if ($row_data != null) {
+        console.log($row_data);
+        $row_data.forEach(function (item, i) {
+            var _isTaxable = item.is_taxable ? 'checked' : '';
+            // var _isPaybale = item.is_payable?'checked':'';
+            var _isDeductable = item.is_deductable ? 'checked' : '';
+            var tax = '';
+            if (!_isDeductable) {
+                tax = '<div class="kt-checkbox-list"><label class="kt-checkbox"> <input data-name="tax" name="invoice_items['+i+'][tax]" type="checkbox" ' + _isTaxable + '><span></span> </label></div>';
+            }
+            var action = '<button type="button" onclick="delete_row(this);" class="delete-row btn btn-danger"><i class="fa fa-trash-alt"></i></button>';
+            markup += '' +
+                '   <tr>  ' +
+                '       <td class="invoice__table-row_cell-sr"> ' + (total_rows + 1) + ' </td>  ' +
+                '       <td> <textarea type="text" class="form-control auto-expandable" data-name="description" name="invoice_items['+i+'][description]" rows="1">' + item.desc + '</textarea> </td>  ' +
+                '       <td> <input type="number" step="0.01" class="form-control" data-name="rate" name="invoice_items['+i+'][rate]" min="0" value="' + item.rate + '"> </td>  ' +
+                '       <td> <input type="number" step="0.01" class="form-control" data-name="qty" name="invoice_items['+i+'][qty]" min="1" value="' + item.qty + '"> </td>  ' +
+                '       <td> ' +
+                '           <div class="input-group">   ' +
+                '               <input type="text" class="form-control" placeholder="Amount" data-name="amount" name="invoice_items['+i+'][amount]" readonly aria-describedby="basic-addon2">   ' +
+                '               <div class="input-group-append">  ' +
+                '                   <span class="input-group-text" id="basic-addon2">' +
+                '                       <label class="kt-checkbox kt-checkbox--single kt-checkbox--primary"> <input type="checkbox" data-name="deductable" name="invoice_items['+i+'][deductable]" ' + _isDeductable + '> <span></span> </label>' +
+                '                   </span>  ' +
+                '               </div>   ' +
+                '           </div>  ' +
+                '       </td>  ' +
+                '       <td>   ' +
+                tax +
+                '       </td>  ' +
+                '       <td> <input type="number" step="0.01" class="form-control" data-name="tax_amount" name="invoice_items['+i+'][tax_amount]" min="0" value="0"> ' +
+                '           '
+            '       </td>  ' +
+            '  </tr>  ';
+        });
+        $("#invoice-table tbody").append(markup);
+        subtotal();
+        return;
+    }
+
+    markup = '' +
+        '   <tr>  ' +
+        '       <td class="invoice__table-row_cell-sr"> ' + (total_rows + 1) + ' </td>  ' +
+        '       <td> <textarea type="text" class="form-control auto-expandable" data-name="tax_amount" name="invoice_items['+total_rows+'][description]" rows="1"></textarea> </td>  ' +
+        '       <td> <input type="number" step="0.01" class="form-control" data-name="rate" name="invoice_items['+total_rows+'][rate]" min="0" value="0"> </td>  ' +
+        '       <td> <input type="number" step="0.01" class="form-control" data-name="qty" name="invoice_items['+total_rows+'][qty]" min="1" value="1"> </td>  ' +
+        '       <td> ' +
+        '           <div class="input-group">   ' +
+        '               <input type="text" class="form-control" placeholder="Amount" data-name="amount" name="invoice_items['+total_rows+'][amount]" readonly aria-describedby="basic-addon2">   ' +
+        '               <div class="input-group-append">  ' +
+        '                   <span class="input-group-text" id="basic-addon2">' +
+        '                       <label class="kt-checkbox kt-checkbox--single kt-checkbox--primary"> <input type="checkbox" data-name="deductable" name="invoice_items['+total_rows+'][deductable]"> <span></span> </label>' +
+        '                   </span>  ' +
+        '               </div>   ' +
+        '           </div>  ' +
+        '       </td>  ' +
+        '       <td>   ' +
+        '           <div class="kt-checkbox-list">  ' +
+        '               <label class="kt-checkbox">   ' +
+        '                   <input data-name="tax" name="invoice_items['+total_rows+'][tax]" type="checkbox">  ' +
+        '                   <span></span>   ' +
+        '               </label>  ' +
+        '           </div>  ' +
+        '       </td>  ' +
+        '       <td> <input type="number" step="0.01" class="form-control" data-name="tax_amount" name="invoice_items['+total_rows+'][tax_amount]" min="0" value="0"> ' +
+        '           '
+    '       </td>  ' +
+    '  </tr>  ';
+    $("#invoice-table tbody").append(markup);
+}
+
+function delete_row(ctl) {
+    $(ctl).parents("tr").remove();
+    subtotal();
+}
+
+
+function autosize() {
+    var el = this;
+    console.log(el)
+    setTimeout(function () {
+        el.style.cssText = 'height:auto; padding:0';
+        // for box-sizing other than "content-box" use:
+        // el.style.cssText = '-moz-box-sizing:content-box';
+        el.style.cssText = 'height:' + (el.scrollHeight + 23) + 'px';
+    }, 0);
 }
 </script>
 @endsection

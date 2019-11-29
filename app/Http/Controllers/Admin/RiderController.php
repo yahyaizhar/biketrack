@@ -798,7 +798,7 @@ public function destroyer(Rider $rider,$id){
    }
    public function client_history($id){
        $rider=Rider::find($id);
-       $clients=$rider->clients;
+       $clients=Client_History::where('rider_id', $id)->orderByDesc('id')->get();
        return view('admin.rider.client_history',compact('rider','clients'));
    }
    public function Spell_time($id){

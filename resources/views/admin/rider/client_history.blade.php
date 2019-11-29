@@ -19,7 +19,10 @@
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content" style="margin-top:60px;">
 
     @if(count($clients) > 0)
-        @foreach ($clients as $client)
+        @foreach ($clients as $client_history)
+        @php
+            $client = App\Model\Client\Client::find($client_history->client_id);
+        @endphp
         <div class="row">
             <div class="col-xl-12">
             <div class="kt-portlet kt-portlet--height-fluid">
@@ -30,7 +33,7 @@
                                     <div class="kt-widget__head">
                                         <a class="kt-widget__username">
                                             {{ $client->name }}
-                                            @if ($client->active_status=="A")
+                                            @if ($client_history->status=="active")
                                                 <i class="flaticon2-correct"></i>                                            
                                             @endif
                                         </a>
@@ -42,6 +45,18 @@
                                     <div class="kt-widget__subhead">
                                         <a href="mailto:{{ $client->email }}"><i class="flaticon2-new-email"></i>{{ $client->email }}</a>
                                         <a><i class="flaticon2-calendar-3"></i>{{ $client->phone }} </a>
+                                        @php
+                                            $mytimestamp = strtotime($client_history->assign_date);
+                                            $timestampupdated=strtotime($client_history->deassign_date);
+                                            $created=Carbon\Carbon::parse($client_history->assign_date)->format('F d, Y');
+                                            $updated=Carbon\Carbon::parse($client_history->deassign_date)->format('F d, Y');
+                                        
+                                        @endphp 
+                                        @if($client_history->status=='active')
+                                            <h6  class="rise-modal" onclick="updateDates({{$rider->id}},{{$client_history->id}},'{{$created}}','{{$updated}}')" style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}}</h6>
+                                        @else
+                                            <h6 class="rise-modal" onclick="updateDates({{$rider->id}},{{$client_history->id}},'{{$created}}','{{$updated}}')"  style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}} {{'to'}} {{gmdate("d-m-Y", $timestampupdated)}}</h6>
+                                        @endif  
                                     </div>
                 
                                     <div class="kt-widget__info">
