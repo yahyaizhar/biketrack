@@ -16,7 +16,8 @@ class CreateInvoicesTable extends Migration
         Schema::create('invoices', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('client_id')->nullable();
-            $table->string('invoice_amount')->nullable();
+            $table->string('invoice_total')->nullable();
+            $table->string('invoice_subtotal')->nullable();
             $table->string('month')->nullable();
             $table->string('invoice_date')->nullable();
             $table->string('invoice_due')->nullable();
@@ -24,12 +25,14 @@ class CreateInvoicesTable extends Migration
             $table->string('generated_by')->nullable();
             $table->string('tax_method_id')->nullable();
             $table->string('taxable_amount')->nullable();
+            $table->string('taxable_subtotal')->nullable();
             $table->string('bank_id')->nullable();
             $table->string('amount_paid')->nullable();
             $table->string('due_balance')->nullable();
             $table->string('received_date')->nullable();
             $table->string('invoice_status')->nullable();
             $table->string('discount_type')->nullable();
+            $table->string('discount_value')->nullable();
             $table->string('discount_amount')->nullable();
             $table->string('attachment')->nullable();
             $table->string('message_on_invoice')->nullable();

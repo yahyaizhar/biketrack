@@ -70,7 +70,7 @@
                         <div class="row">
                             <div class="form-group col-md-3">
                                 <label>Month:</label>
-                                <input type="text" data-month="{{Carbon\Carbon::now()->format('m')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Select Month" value="">
+                                <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Select Month" value="">
                                 @if ($errors->has('month'))
                                     <span class="invalid-response" role="alert">
                                         <strong>
@@ -165,7 +165,11 @@
                                     </div> 
                                 
                                 <div class="row mt-3">
-                                    <div class="col-md-4 text-right offset-md-8">
+                                    <div class="col-md-6">
+                                        <label for="message_on_invoice" class="d-block text-left">Message on invoice</label>
+                                        <textarea class="form-control auto-expandable" data-name="message_on_invoice" name="message_on_invoice" rows="1" placeholder="This will show up on the invoice.">Thank you for your business and have a great day!</textarea>
+                                    </div>
+                                    <div class="col-md-4 text-right offset-md-2">
                                         <div class="row">
                                             <div class="col-md-7">
                                                 <select class="form-control" aria-placeholder="Select a Tax rate" data-name="tax_rate" name="tax_rate" >
@@ -253,10 +257,10 @@
 <script>
 $(document).ready(function () {
     append_row();
-    $('#invoices [data-name="client_id"],#invoices [data-name="month"]').on("change input", function () {
+    $('#invoices [data-name="client_id"],#invoices [name="month"]').on("change input", function () {
         var client_id = $('#invoices [data-name="client_id"]').val();
         console.log('client_id', client_id);
-        var _month = new Date($('#invoices [data-name="month"]').val()).format('yyyy-mm-dd');
+        var _month = new Date("01-"+$('#invoices [name="month"]').val()+"-"+new Date(Date.now()).format('yyyy')).format('yyyy-mm-dd');
         $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
