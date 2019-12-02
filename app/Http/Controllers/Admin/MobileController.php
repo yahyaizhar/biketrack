@@ -117,7 +117,8 @@ class MobileController extends Controller
         $ca->mobile_installment_id =$mobile_installment->id;
         $ca->type='dr';
         $ca->rider_id=$r->rider_id;
-        $ca->month = $mobile_installment->installment_month;
+        $ca->month = Carbon::parse($mobile_installment->installment_month)->startOfMonth()->format('Y-m-d');
+        $ca->given_date = Carbon::parse($mobile_installment->given_date)->format('Y-m-d');
         $ca->source="Mobile Purchase";
         $ca->amount=$r->purchase_price;
         $ca->save();
@@ -130,7 +131,8 @@ class MobileController extends Controller
             $ca->mobile_installment_id =$mobile_installment->id;
             $ca->type='cr';
             $ca->rider_id=$r->rider_id;
-            $ca->month = $mobile_installment->installment_month;
+            $ca->month = Carbon::parse($mobile_installment->installment_month)->startOfMonth()->format('Y-m-d');
+            $ca->given_date = Carbon::parse($mobile_installment->given_date)->format('Y-m-d');
             $ca->source="Mobile Installment";
             $ca->amount=$recevied_amt;
             $ca->save();
@@ -141,7 +143,8 @@ class MobileController extends Controller
             $ra->mobile_installment_id =$mobile_installment->id;
             $ra->type='cr_payable';
             $ra->rider_id=$r->rider_id;
-            $ra->month = $mobile_installment->installment_month;
+            $ra->month = Carbon::parse($mobile_installment->installment_month)->startOfMonth()->format('Y-m-d');
+            $ra->given_date = Carbon::parse($mobile_installment->given_date)->format('Y-m-d');
             $ra->source="Mobile Installment";
             $ra->amount=$recevied_amt;
             $ra->save();
