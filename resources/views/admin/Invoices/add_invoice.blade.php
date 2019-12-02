@@ -199,7 +199,9 @@
                                             </div>
                                         </div>
                                     </div> 
-                                
+                                @php
+                                    $tax_methods = \App\Tax_method::where('active_status', 'A')->get();
+                                @endphp
                                 <div class="row mt-3">
                                     <div class="col-md-6">
                                         <label for="message_on_invoice" class="d-block text-left">Message on invoice</label>
@@ -208,9 +210,12 @@
                                     <div class="col-md-4 text-right offset-md-2">
                                         <div class="row">
                                             <div class="col-md-7">
-                                                <select class="form-control" aria-placeholder="Select a Tax rate" data-name="tax_rate" name="tax_rate" >
-                                                    <option value=""> Select a Tax Rate</option> 
-                                                    <option value="5">VAT(5%)</option>  
+                                                <select class="form-control" aria-placeholder="Select a Tax rate" data-name="tax_rate" name="tax_method_id" >
+                                                    <option value=""> Select a Tax Method</option> 
+                                                    @foreach ($tax_methods as $tax_method)
+                                                <option value="{{$tax_method->id}}" data-type="{{$tax_method->type}}" data-value="{{$tax_method->value}}">{{$tax_method->name}} ({{$tax_method->type=='fixed'?'AED':''}} {{$tax_method->value}}{{$tax_method->type=='percentage'?'%':''}})</option> 
+                                                    @endforeach
+                                                     
                                                 </select>
                                             </div>
                                             <div class="col-md-5">
@@ -361,7 +366,7 @@ $(document).ready(function () {
                 if (resp.status == 1) {
                     $("#invoice-table tbody").html('');
                     $('#invoices [data-name="billing_address"]').val(resp.billing_address);
-                    $('[data-name="tax_rate"]').val(5);
+                    // $('[data-name="tax_rate"]').val(5);
                     if (resp.payment_method == "trip_based") {
                         var row_data = [{
                                 desc: 'Total Login Hours Payable Amount',
