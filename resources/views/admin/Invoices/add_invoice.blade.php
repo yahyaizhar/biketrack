@@ -50,9 +50,33 @@
             font-size: 14px;
             font-weight: bold;
             padding-top: 17px;
+            position: relative;
         }
         .kt-checkbox > input:disabled ~ span {
             opacity: 0.3;
+        }
+        [data-name="qty"]{
+            padding: 5px;
+        }
+        #invoice-table .invoice__remove{
+            color: #ff8181;
+            position: absolute;
+            left: 2px;
+            cursor: pointer;
+        }
+        #invoice-table .invoice__remove:hover{
+            color: #f12626;
+        }   
+        .balance_due--wrapper h3{
+            font-size: 14px;
+            margin: 0;
+            font-weight: 400;
+        }
+        .balance_due--wrapper .balance_due{
+            font-size: 30px;
+            color: #08976d;
+            font-weight: 500;
+            letter-spacing: 1px;
         }
 </style>
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
@@ -94,6 +118,11 @@
                                     </option>     
                                 @endforeach 
                                 </select> 
+                            </div>
+
+                            <div class="col-md-6 balance_due--wrapper text-right">
+                                <h3>BALANCE DUE</h3>    
+                                <span class="balance_due">AED 0.00</span>
                             </div>
                         </div>
                         <div class="row">
@@ -223,18 +252,7 @@
                                         </div>
                                     </div>
                                 </div> 
-                                <div class="row mt-3">
-                                    <div class="col-md-5 text-right offset-md-7">
-                                        <div class="row">
-                                            <div class="col-md-7">
-                                                <h4>Balance Due</h4>
-                                            </div>
-                                            <div class="col-md-5">
-                                                <h4 class="balance_due">AED 0.00</h4>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> 
+                                 
                             </div>
                         
                     </div>
@@ -281,6 +299,7 @@ $(document).ready(function () {
                 if (resp.status == 1) {
                     $("#invoice-table tbody").html('');
                     $('#invoices [data-name="billing_address"]').val(resp.billing_address);
+                    $('[data-name="tax_rate"]').val(5);
                     if (resp.payment_method == "trip_based") {
                         var row_data = [{
                                 desc: 'Total Login Hours Payable Amount',
@@ -368,7 +387,25 @@ $(document).ready(function () {
                         }];
                         append_row(row_data)
                     } else if (resp.payment_method == "commission_based") {}
-
+                    $('[data-input-type]').each(function(i,elem){
+                        var _type = $(this).attr('data-input-type');
+                        switch (_type) {
+                            case "float":
+                                biketrack.setInputFilter(this, function(value) {
+                                    return /^-?\d*[.,]?\d*$/.test(value); 
+                                });
+                                break;
+                            case "int":
+                                biketrack.setInputFilter(this, function(value) {
+                                    return /^-?\d*$/.test(value); 
+                                });
+                                break;
+                        
+                            default:
+                                break;
+                        }
+                    });
+                    
                 } else {
                     alert("Error: " + resp.message);
                 }
@@ -538,10 +575,10 @@ function append_row($row_data = null) {
             var action = '<button type="button" onclick="delete_row(this);" class="delete-row btn btn-danger"><i class="fa fa-trash-alt"></i></button>';
             markup += '' +
                 '   <tr>  ' +
-                '       <td class="invoice__table-row_cell-sr"> ' + (total_rows + 1) + ' </td>  ' +
+                '       <td class="invoice__table-row_cell-sr"> <span class="flaticon2-trash invoice__remove" onclick="delete_row(this);"></span>' + (i + 1) + ' </td>  ' +
                 '       <td> <textarea type="text" class="form-control auto-expandable" data-name="description" name="invoice_items['+i+'][description]" rows="1">' + item.desc + '</textarea> </td>  ' +
-                '       <td> <input type="number" step="0.01" class="form-control" data-name="rate" name="invoice_items['+i+'][rate]" min="0" value="' + item.rate + '"> </td>  ' +
-                '       <td> <input type="number" step="0.01" class="form-control" data-name="qty" name="invoice_items['+i+'][qty]" min="1" value="' + item.qty + '"> </td>  ' +
+                '       <td> <input data-input-type="float" class="form-control" data-name="rate" name="invoice_items['+i+'][rate]" min="0" value="' + item.rate + '"> </td>  ' +
+                '       <td> <input data-input-type="float" class="form-control" data-name="qty" name="invoice_items['+i+'][qty]" min="1" value="' + item.qty + '"> </td>  ' +
                 '       <td> ' +
                 '           <div class="input-group">   ' +
                 '               <input type="text" class="form-control" placeholder="Amount" data-name="amount" name="invoice_items['+i+'][amount]" readonly aria-describedby="basic-addon2">   ' +
@@ -555,7 +592,7 @@ function append_row($row_data = null) {
                 '       <td>   ' +
                 tax +
                 '       </td>  ' +
-                '       <td> <input type="number" step="0.01" class="form-control" data-name="tax_amount" name="invoice_items['+i+'][tax_amount]" min="0" value="0"> ' +
+                '       <td> <input data-input-type="float" class="form-control" data-name="tax_amount" name="invoice_items['+i+'][tax_amount]" min="0" value="0"> ' +
                 '           '
             '       </td>  ' +
             '  </tr>  ';
@@ -567,10 +604,10 @@ function append_row($row_data = null) {
 
     markup = '' +
         '   <tr>  ' +
-        '       <td class="invoice__table-row_cell-sr"> ' + (total_rows + 1) + ' </td>  ' +
+        '       <td class="invoice__table-row_cell-sr"> <span class="flaticon2-trash invoice__remove" onclick="delete_row(this);"></span>' + (total_rows + 1) + ' </td>  ' +
         '       <td> <textarea type="text" class="form-control auto-expandable" data-name="tax_amount" name="invoice_items['+total_rows+'][description]" rows="1"></textarea> </td>  ' +
-        '       <td> <input type="number" step="0.01" class="form-control" data-name="rate" name="invoice_items['+total_rows+'][rate]" min="0" value="0"> </td>  ' +
-        '       <td> <input type="number" step="0.01" class="form-control" data-name="qty" name="invoice_items['+total_rows+'][qty]" min="1" value="1"> </td>  ' +
+        '       <td> <input data-input-type="float" class="form-control" data-name="rate" name="invoice_items['+total_rows+'][rate]" min="0" value="0"> </td>  ' +
+        '       <td> <input data-input-type="float" class="form-control" data-name="qty" name="invoice_items['+total_rows+'][qty]" min="1" value="1"> </td>  ' +
         '       <td> ' +
         '           <div class="input-group">   ' +
         '               <input type="text" class="form-control" placeholder="Amount" data-name="amount" name="invoice_items['+total_rows+'][amount]" readonly aria-describedby="basic-addon2">   ' +
@@ -589,7 +626,7 @@ function append_row($row_data = null) {
         '               </label>  ' +
         '           </div>  ' +
         '       </td>  ' +
-        '       <td> <input type="number" step="0.01" class="form-control" data-name="tax_amount" name="invoice_items['+total_rows+'][tax_amount]" min="0" value="0"> ' +
+        '       <td> <input data-input-type="float" class="form-control" data-name="tax_amount" name="invoice_items['+total_rows+'][tax_amount]" min="0" value="0"> ' +
         '           '
     '       </td>  ' +
     '  </tr>  ';
