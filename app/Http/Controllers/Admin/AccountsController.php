@@ -984,7 +984,8 @@ class AccountsController extends Controller
         $ca->salary_id =$salary->id;
         $ca->type='dr';
         $ca->rider_id=$rider_id;
-        $ca->month = Carbon::parse($request->get('month'))->format('Y-m-d');
+        $ca->month = Carbon::parse($request->get('month'))->startOfMonth()->format('Y-m-d');
+        $ca->given_date = Carbon::parse($request->get('given_date'))->format('Y-m-d');
         $ca->source="salary";
         $ca->payment_status="pending";
         $ca->amount=$request->total_salary;
@@ -996,7 +997,8 @@ class AccountsController extends Controller
         $ca->salary_id =$salary->id;
         $ca->type='cr';
         $ca->rider_id=$rider_id;
-        $ca->month = Carbon::parse($request->get('month'))->format('Y-m-d');
+        $ca->month = Carbon::parse($request->get('month'))->startOfMonth()->format('Y-m-d');
+        $ca->given_date = Carbon::parse($request->get('given_date'))->format('Y-m-d');
         $ca->source="salary"; 
         $ca->payment_status="pending";
         $ca->amount=$request->total_salary;
@@ -1252,7 +1254,7 @@ public function fuel_expense_insert(Request $r){
     $fuel_expense=new Fuel_Expense();
     $fuel_expense->amount=$r->amount;
     $fuel_expense->type=$r->type;
-    $fuel_expense->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+    $fuel_expense->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
     $fuel_expense->bike_id=$bike->id;
     $fuel_expense->rider_id=$r->rider_id;
     if($r->status)
@@ -1285,8 +1287,8 @@ public function fuel_expense_insert(Request $r){
         $ca = new \App\Model\Accounts\Company_Account;
         $ca->type='dr';
         $ca->amount=$r->amount;
-        $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
-        $ca->given_date=Carbon::parse($r->get('given_date'))->startOfMonth()->format('Y-m-d');
+        $ca->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+        $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
         $ca->rider_id = $rider_id;
         $ca->source='fuel_expense_vip';
         $ca->fuel_expense_id=$fuel_expense->id;
@@ -1297,7 +1299,7 @@ public function fuel_expense_insert(Request $r){
         $ca->type='dr';
         $ca->amount=$r->amount;
         $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
-        $ca->given_date=Carbon::parse($r->get('given_date'))->startOfMonth()->format('Y-m-d');
+        $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
         $ca->rider_id = $rider_id;
         $ca->source='fuel_expense_cash';
         $ca->fuel_expense_id=$fuel_expense->id;
@@ -2226,7 +2228,8 @@ public function client_income_update(Request $request,$id){
         $new_ra->payment_status="paid";
         $new_ra->rider_id=$ra->rider_id;
         $new_ra->salary_id=$ra->salary_id;
-        $new_ra->month=Carbon::parse($r->month_paid_rider)->format('Y-m-d'); 
+        $new_ra->month=Carbon::parse($r->month)->startOfMonth()->format('Y-m-d'); 
+        $new_ra->given_date=Carbon::parse($r->given_date)->format('Y-m-d'); 
         $new_ra->save();
 
         //updating salary

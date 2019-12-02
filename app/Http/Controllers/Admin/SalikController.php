@@ -501,7 +501,8 @@ class SalikController extends Controller
             $_greater_ca->salik_id="0";
             $_greater_ca->amount=$used_salik;
             $_greater_ca->rider_id=$rider_id;
-            $_greater_ca->month=Carbon::parse($request->month)->format("Y-m-d");
+            $_greater_ca->month=Carbon::parse($request->month)->startOfMonth()->format("Y-m-d");
+            $_greater_ca->given_date=Carbon::parse($request->given_date)->format("Y-m-d");
             $_greater_ca->type="dr";
             $_greater_ca->save();
 
@@ -510,7 +511,8 @@ class SalikController extends Controller
             $_greater_ra->salik_id="0";
             $_greater_ra->amount=$used_salik-$allow_salik;
             $_greater_ra->rider_id=$rider_id;
-            $_greater_ra->month=Carbon::parse($request->month)->format("Y-m-d");
+            $_greater_ra->month=Carbon::parse($request->month)->startOfMonth()->format("Y-m-d");
+            $_greater_ra->given_date=Carbon::parse($request->given_date)->format("Y-m-d");
             $_greater_ra->type="cr_payable";
             $_greater_ra->save();
 
@@ -519,7 +521,8 @@ class SalikController extends Controller
             $_greater_ca->salik_id="0";
             $_greater_ca->amount=$used_salik-$allow_salik;
             $_greater_ca->rider_id=$rider_id;
-            $_greater_ca->month=Carbon::parse($request->month)->format("Y-m-d");
+            $_greater_ca->month=Carbon::parse($request->month)->startOfMonth()->format("Y-m-d");
+            $_greater_ca->given_date=Carbon::parse($request->given_date)->format("Y-m-d");
             $_greater_ca->type="cr";
             $_greater_ca->save();
         }
@@ -529,7 +532,8 @@ class SalikController extends Controller
             $ca->amount=$used_salik;
             $ca->salik_id="0";
             $ca->rider_id=$rider_id;
-            $ca->month=Carbon::parse($request->month)->format("Y-m-d");
+            $ca->month=Carbon::parse($request->month)->startOfMonth()->format("Y-m-d");
+            $ca->given_date=Carbon::parse($request->given_date)->format("Y-m-d");
             $ca->type="dr";
             $ca->save();
             // $ca= new Company_Account;

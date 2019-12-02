@@ -235,7 +235,7 @@
                             @endforeach 
                         </select>
                     </div>
-                    <div class="form-group">
+                    {{-- <div class="form-group">
                         <label>Date:</label>
                         <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
                         @if ($errors->has('month'))
@@ -246,6 +246,32 @@
                             </span>
                         @else
                             <span class="form-text text-muted">Please enter Month</span>
+                        @endif
+                    </div> --}}
+                    <div class="form-group">
+                        <label>Bonus Month:</label>
+                        <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                        @if ($errors->has('month'))
+                            <span class="invalid-response" role="alert">
+                                <strong>
+                                    {{ $errors->first('month') }}
+                                </strong>
+                            </span>
+                        @else
+                            <span class="form-text text-muted">Please enter Month</span>
+                        @endif
+                    </div>
+                    <div class="form-group">
+                        <label>Given Date:</label>
+                        <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="">
+                        @if ($errors->has('given_date'))
+                            <span class="invalid-response" role="alert">
+                                <strong>
+                                    {{ $errors->first('given_date') }}
+                                </strong>
+                            </span>
+                        @else
+                            <span class="form-text text-muted">Please enter Given Date</span>
                         @endif
                     </div>
                     <div class="form-group">
@@ -288,7 +314,7 @@
                                 @endforeach 
                             </select>
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label>Date:</label>
                             <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
                             @if ($errors->has('month'))
@@ -299,6 +325,32 @@
                                 </span>
                             @else
                                 <span class="form-text text-muted">Please enter Month</span>
+                            @endif
+                        </div> --}}
+                        <div class="form-group">
+                            <label>Kingriders Fine Month:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                            @if ($errors->has('month'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('month') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Month</span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Given Date:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="">
+                            @if ($errors->has('given_date'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('given_date') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Given Date</span>
                             @endif
                         </div>
                         <div class="form-group">
@@ -334,7 +386,7 @@
                     <form class="kt-form" enctype="multipart/form-data" id="cash_paid">
                         <div class="modal-body">
                             <input type="hidden" name="cash_rider_id">
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label>Rider Cash Paid Date:</label>
                                 <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
                                 @if ($errors->has('month'))
@@ -345,6 +397,32 @@
                                     </span>
                                 @else
                                     <span class="form-text text-muted">Please enter Month</span>
+                                @endif
+                            </div> --}}
+                            <div class="form-group">
+                                <label>Cash Paid Month:</label>
+                                <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                                @if ($errors->has('month'))
+                                    <span class="invalid-response" role="alert">
+                                        <strong>
+                                            {{ $errors->first('month') }}
+                                        </strong>
+                                    </span>
+                                @else
+                                    <span class="form-text text-muted">Please enter Month</span>
+                                @endif
+                            </div>
+                            <div class="form-group">
+                                <label>Given Date:</label>
+                                <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="">
+                                @if ($errors->has('given_date'))
+                                    <span class="invalid-response" role="alert">
+                                        <strong>
+                                            {{ $errors->first('given_date') }}
+                                        </strong>
+                                    </span>
+                                @else
+                                    <span class="form-text text-muted">Please enter Given Date</span>
                                 @endif
                             </div>
                             <div class="form-group">
@@ -389,7 +467,7 @@
                         <form class="kt-form" enctype="multipart/form-data" id="cash_pay_dr">
                             <div class="modal-body">
                                 <input type="hidden" name="cash_rider_id">
-                                <div class="form-group">
+                                {{-- <div class="form-group">
                                     <label>Month:</label>
                                     <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
                                     @if ($errors->has('month'))
@@ -400,6 +478,32 @@
                                         </span>
                                     @else
                                         <span class="form-text text-muted">Please enter Month</span>
+                                    @endif
+                                </div> --}}
+                                <div class="form-group">
+                                    <label>Receive Loan Month:</label>
+                                    <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                                    @if ($errors->has('month'))
+                                        <span class="invalid-response" role="alert">
+                                            <strong>
+                                                {{ $errors->first('month') }}
+                                            </strong>
+                                        </span>
+                                    @else
+                                        <span class="form-text text-muted">Please enter Month</span>
+                                    @endif
+                                </div>
+                                <div class="form-group">
+                                    <label>Given Date:</label>
+                                    <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="">
+                                    @if ($errors->has('given_date'))
+                                        <span class="invalid-response" role="alert">
+                                            <strong>
+                                                {{ $errors->first('given_date') }}
+                                            </strong>
+                                        </span>
+                                    @else
+                                        <span class="form-text text-muted">Please enter Given Date</span>
                                     @endif
                                 </div>
                                 <div class="form-group">
@@ -444,7 +548,7 @@
                             <form class="kt-form" enctype="multipart/form-data" id="cash_pay_cr">
                                 <div class="modal-body">
                                     <input type="hidden" name="cash_rider_id">
-                                    <div class="form-group">
+                                    {{-- <div class="form-group">
                                         <label>Rider Cash Paid Date:</label>
                                         <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
                                         @if ($errors->has('month'))
@@ -455,6 +559,32 @@
                                             </span>
                                         @else
                                             <span class="form-text text-muted">Please enter Month</span>
+                                        @endif
+                                    </div> --}}
+                                    <div class="form-group">
+                                        <label>Loan Month:</label>
+                                        <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                                        @if ($errors->has('month'))
+                                            <span class="invalid-response" role="alert">
+                                                <strong>
+                                                    {{ $errors->first('month') }}
+                                                </strong>
+                                            </span>
+                                        @else 
+                                            <span class="form-text text-muted">Please enter Month</span>
+                                        @endif
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Given Date:</label>
+                                        <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="">
+                                        @if ($errors->has('given_date'))
+                                            <span class="invalid-response" role="alert">
+                                                <strong>
+                                                    {{ $errors->first('given_date') }}
+                                                </strong>
+                                            </span>
+                                        @else
+                                            <span class="form-text text-muted">Please enter Given Date</span>
                                         @endif
                                     </div>
                                     <div class="form-group">
@@ -501,7 +631,7 @@
                 <form class="kt-form" enctype="multipart/form-data" id="remaining_salary">
                     <div class="modal-body">
                         <input type="hidden" name="account_id" value="">
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label>Rider Date Paid:</label>
                             <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month_paid_rider')) invalid-field @endif" name="month_paid_rider" placeholder="Enter Month" value="">
                             @if ($errors->has('month'))
@@ -512,6 +642,32 @@
                                 </span>
                             @else
                                 <span class="form-text text-muted">Please enter Month</span>
+                            @endif
+                        </div> --}}
+                        <div class="form-group">
+                            <label>Salary Month:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                            @if ($errors->has('month'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('month') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Month</span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Given Date:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="">
+                            @if ($errors->has('given_date'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('given_date') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Given Date</span>
                             @endif
                         </div>
                             <div class="form-group">
@@ -795,6 +951,58 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script src="{{ asset('js/dataTables.cellEdit.js') }}" type="text/javascript"></script>
 <script>
+     
+    $("#rider_expense_bonus").on('shown.bs.modal', function(){
+    var month=biketrack.getUrlParameter('r1d1');
+    var _month=new Date(month).format("mmmm yyyy");
+    if (month!="") { 
+        $("#rider_expense_bonus [name='month']").attr("data-month", _month)
+        biketrack.refresh_global()
+    }
+    });
+    $("#rider_expense_discipline").on('shown.bs.modal', function(){
+    var month=biketrack.getUrlParameter('r1d1');
+    var _month=new Date(month).format("mmmm yyyy");
+    if (month!="") { 
+        $("#rider_expense_discipline [name='month']").attr("data-month", _month)
+        biketrack.refresh_global()
+    }
+    });
+    $("#cash_paid").on('shown.bs.modal', function(){
+    var month=biketrack.getUrlParameter('r1d1');
+    var _month=new Date(month).format("mmmm yyyy");
+    if (month!="") { 
+        $("#cash_paid [name='month']").attr("data-month", _month)
+        biketrack.refresh_global()
+    }
+    });
+    $("#cash_pay_debit").on('shown.bs.modal', function(){
+    var month=biketrack.getUrlParameter('r1d1');
+    var _month=new Date(month).format("mmmm yyyy");
+    if (month!="") { 
+        $("#cash_pay_debit [name='month']").attr("data-month", _month)
+        biketrack.refresh_global()
+    }
+    });
+    $("#cash_pay_credit").on('shown.bs.modal', function(){
+    var month=biketrack.getUrlParameter('r1d1');
+    var _month=new Date(month).format("mmmm yyyy");
+    if (month!="") { 
+        $("#cash_pay_credit [name='month']").attr("data-month", _month)
+        biketrack.refresh_global()
+    }
+    });
+    $("#remaining_pay_modal").on('shown.bs.modal', function(){
+    var month=biketrack.getUrlParameter('r1d1');
+    var _month=new Date(month).format("mmmm yyyy");
+    if (month!="") { 
+        $("#remaining_pay_modal [name='month']").attr("data-month", _month)
+        biketrack.refresh_global()
+    }
+    });
+    
+   
+  
         $('.print_slip_editable').hide();
         $("#for_print").on("click",function(){
             $('.print_slip_editable').hide();
