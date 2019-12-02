@@ -57,7 +57,7 @@
                                 <span></span>
                             </label>
                             <label class="kt-radio">
-                                <input type="radio" name="select_month" id="select_month" value="select_month"> Select Month
+                                <input type="radio" name="sort_by" id="select_month" value="select_month"> Select Month
                                 <span></span>
                             </label>  
                             <label class="kt-radio">
@@ -422,6 +422,14 @@
                 start = $('[name="dr1"]').data('daterangepicker').startDate.format('YYYY-MM-DD');
                 end = $('[name="dr1"]').data('daterangepicker').endDate.format('YYYY-MM-DD');
             }
+            if(_SortBy=='select_month'){
+                $('#select_month_custom').fadeIn('fast');
+                var custom_month=$('[name="custom_select_month"]').val();
+                var year=new Date(custom_month).format("yyyy");
+                var month=new Date(custom_month).format("mm");
+                start=new Date(year,month-1,1).format("yyyy-mm-dd");
+                end=new Date(year,month,0).format("yyyy-mm-dd");
+            }
             var _data = {
                 range: {
                     start_date: start,
@@ -443,14 +451,16 @@
         });
 
         $('[name="sort_by"]').on('change', function(){
-            $('[name="select_month"]').prop("checked",false);
-            $('#select_month_custom').fadeOut('fast');
             var _SortBy = $(this).val();
             var start = $(this).attr('data-start'),
                 end = $(this).attr('data-end');
-            $('#custom_range').fadeOut('fast');
+            $('#custom_range,#select_month_custom').fadeOut('fast');
             if(_SortBy=='custom'){
                 $('#custom_range').fadeIn('fast');
+                return;
+            }
+            if(_SortBy=='select_month'){
+                $('#select_month_custom').fadeIn('fast');
                 return;
             }
             var _data = {
@@ -474,42 +484,7 @@
             // var _Url = "{{url('/company/debits/get_salary_deduction/')}}"+"/"+_riderId+''
         });
         
-        $('[name="select_month"]').on("change",function(){
-            $('[name="sort_by"]').prop("checked",false);
-            $('#custom_range').fadeOut('fast');
-        var selected_month=$(this).val();
-                $('#select_month_custom').fadeOut('fast');
-            if(selected_month=='select_month'){
-                $('#select_month_custom').fadeIn('fast');
-                $('[name="custom_select_month"]').on("change",function(){
-                    var custom_month=$(this).val();
-                    var year=new Date(custom_month).format("yyyy");
-                    var month=new Date(custom_month).format("mm");
-                    var start=new Date(year,month-1,1).format("yyyy-mm-dd");
-                    var end=new Date(year,month,0).format("yyyy-mm-dd");
-                    var _data = {
-                        range: {
-                            start_date: start,
-                            end_date: end
-                        },
-                        rider_id: $('[name="rider_id"]').val()
-                    };
-                    var data = {
-                        r1d1:_data.range.start_date, 
-                        r1d2:_data.range.end_date,
-                        rider_id: $('[name="rider_id"]').val(),
-                        sort_by: $('[name="select_month"]:checked').val()
-                    }
-                    
-                    console.log(data);
-                    biketrack.updateURL(data);
-                    var url = JSON.stringify(_data) ;
-                    getData(url);
-                });
-                return;
-            }
-            
-        });
+        
        
         $('input[name="dr1"]').daterangepicker({
             opens: 'left', 
@@ -648,7 +623,7 @@
         if(r1d1!="" && r1d2!="" && rider_id!="" && sort_by!=""){
             $('[name="sort_by"][value="'+sort_by+'"]').prop('checked', true);
             if (sort_by=='select_month') {
-                $('[name="select_month"][value="'+sort_by+'"]').prop('checked', true);
+                $('[name="sort_by"][value="'+sort_by+'"]').prop('checked', true);
                 $('[name="sort_by"][value="'+sort_by+'"]').prop('checked', false);
             }
             $('#custom_range').hide();

@@ -28,7 +28,7 @@
                     </div>
                 </div>
             <div class="kt-portlet__body">
-            {{-- <div class="form-group">
+            <div class="form-group">
                 <label>Clients:</label>
                 <select class="form-control bk-select2 kt-select2-general" name="client_id" >
                     @foreach ($clients as $client)
@@ -37,10 +37,10 @@
                     </option>     
                     @endforeach 
                 </select>
-            </div> --}}
+            </div>
             <div>
                 <select class="form-control bk-select2" id="kt_select2_3_5" name="month_id" >
-                    <option >Select Month</option>
+                    {{-- <option >Select Month</option> --}}
                     <option value="01">January</option>   
                     <option value="02">Febuary</option>   
                     <option value="03">March</option>   
@@ -105,20 +105,18 @@
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/datatables/basic/basic.js') }}" type="text/javascript"></script>
 <script>
 $("#bills_hidden").hide();
-var charges_table; 
-// $("[name='client_id']").on("change",function(){
-//     var client_id=$(this).val();
-//     console.log(client_id);
-// });
-$("#kt_select2_3_5").on("change",function(){
+var charges_table;  
+$("[name='client_id'] , #kt_select2_3_5").on("change",function(){
+    var client_id=$("[name='client_id']").val();
+    var month=$("#kt_select2_3_5").val();
     $("#bills_hidden").show();
-    var month=$(this).val();
-$(function() {
-    var url="{!! url('/admin/ajax/generated/rider/bill/status/"+month+"') !!}";
+    $(function() {
+    var url="{!! url('/admin/ajax/generated/rider/bill/status/"+month+"/"+client_id+"') !!}";
     charges_table = $('#charges-table').DataTable({
         lengthMenu: [[-1], ["All"]],
         processing: true,
         serverSide: true,
+        destroy:true,
         'language': { 
             'loadingRecords': '&nbsp;',
             'processing': $('.loading').show()
@@ -142,8 +140,9 @@ $(function() {
         order:[0,'desc'],
     });
 });
-
 });
+$("[name='client_id'] , #kt_select2_3_5").trigger("change");
+
 
 </script>
 @endsection

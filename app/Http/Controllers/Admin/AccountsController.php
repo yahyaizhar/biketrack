@@ -354,8 +354,9 @@ class AccountsController extends Controller
             $ca->maintenance_id =$maintenance->id;
             $ca->type='dr_receivable';
             $ca->rider_id=$rider_id;
-            $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
-            $ca->source="maintenance"; 
+            $ca->month = Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+            $ca->given_date = Carbon::parse($r->get('given_date'))->format('Y-m-d');
+            $ca->source="Bike Maintenance"; 
             $ca->amount=$r->amount;
             $ca->save();
 
@@ -364,9 +365,10 @@ class AccountsController extends Controller
             ]);
             $ra->maintenance_id =$maintenance->id;
             $ra->type='cr_payable';
-            $ra->month = Carbon::parse($r->get('month'))->format('Y-m-d');
+            $ra->month = Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+            $ra->given_date = Carbon::parse($r->get('given_date'))->format('Y-m-d');
             $ra->rider_id=$rider_id;
-            $ra->source="maintenance"; 
+            $ra->source="Bike Maintenance"; 
             $ra->amount=$r->amount;
             $ra->save();
         }
@@ -376,9 +378,10 @@ class AccountsController extends Controller
                 $ca_dr = new \App\Model\Accounts\Company_Account;
                 $ca_dr->maintenance_id =$maintenance->id;
                 $ca_dr->type='dr_receivable';
-                $ca_dr->month = Carbon::parse($r->get('month'))->format('Y-m-d');
+                $ca_dr->month = Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+                $ca_dr->given_date = Carbon::parse($r->get('given_date'))->format('Y-m-d');
                 $ca_dr->rider_id=$rider_id;
-                $ca_dr->source="maintenance"; 
+                $ca_dr->source="Bike Maintenance"; 
                 $ca_dr->amount=$r->amount;
                 $ca_dr->save();
             }
@@ -388,9 +391,10 @@ class AccountsController extends Controller
             ]);
             $ca->maintenance_id =$maintenance->id;
             $ca->type='cr';
-            $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
+            $ca->month = Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+            $ca->given_date = Carbon::parse($r->get('given_date'))->format('Y-m-d');
             $ca->rider_id=$rider_id;
-            $ca->source="maintenance"; 
+            $ca->source="Bike Maintenance"; 
             $ca->amount=$r->amount;
             $ca->save();
 
@@ -399,9 +403,10 @@ class AccountsController extends Controller
                 $ra_dr = new \App\Model\Accounts\Rider_Account;
                 $ra_dr->maintenance_id =$maintenance->id;
                 $ra_dr->type='cr_payable';
-                $ra_dr->month = Carbon::parse($r->get('month'))->format('Y-m-d');
+                $ra_dr->month = Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+                $ra_dr->given_date = Carbon::parse($r->get('given_date'))->format('Y-m-d');
                 $ra_dr->rider_id=$rider_id;
-                $ra_dr->source="maintenance"; 
+                $ra_dr->source="Bike Maintenance"; 
                 $ra_dr->amount=$r->amount;
                 $ra_dr->save();
             }
@@ -413,8 +418,9 @@ class AccountsController extends Controller
             $ra->maintenance_id =$maintenance->id;
             $ra->type='dr_payable';
             $ra->rider_id=$rider_id;
-            $ra->month = Carbon::parse($r->get('month'))->format('Y-m-d');
-            $ra->source="maintenance";
+            $ra->month = Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+            $ra->given_date = Carbon::parse($r->get('given_date'))->format('Y-m-d');
+            $ra->source="Bike Maintenance";
             $ra->amount=$r->amount;
             $ra->save();
         }
@@ -427,8 +433,9 @@ class AccountsController extends Controller
             $ca->maintenance_id =$maintenance->id;
             $ca->type='dr';
             $ca->rider_id=$rider_id;
-            $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
-            $ca->source="maintenance"; 
+            $ca->month = Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+            $ca->given_date = Carbon::parse($r->get('given_date'))->format('Y-m-d');
+            $ca->source="Bike Maintenance"; 
             $ca->amount=$r->amount;
             $ca->save();
         }
