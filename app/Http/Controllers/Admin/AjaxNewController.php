@@ -614,58 +614,58 @@ class AjaxNewController extends Controller
             if($rider_statement->type=='skip') return '<strong >'.round($running_balance,2).'</strong>';
             return round($running_balance,2);
         })
-        ->addColumn('action', function($rider_statement) use (&$running_balance){
-            $model="";
-            $model_id="";
-            $rider_id="";
-            $month="";
-            $string="";
-            if($rider_statement->sim_transaction_id!=null){
-                $model_id=$rider_statement->sim_transaction_id;
-                $rider_id=$rider_statement->rider_id;
-                $string="sim_transaction_id";
-                $month=Carbon::parse($rider_statement->month)->format('m');
-                $sim_transaction=new Sim_Transaction();
-                $model=get_class($sim_transaction);
+        // ->addColumn('action', function($rider_statement) use (&$running_balance){
+        //     $model="";
+        //     $model_id="";
+        //     $rider_id="";
+        //     $month="";
+        //     $string="";
+        //     if($rider_statement->sim_transaction_id!=null){
+        //         $model_id=$rider_statement->sim_transaction_id;
+        //         $rider_id=$rider_statement->rider_id;
+        //         $string="sim_transaction_id";
+        //         $month=Carbon::parse($rider_statement->month)->format('m');
+        //         $sim_transaction=new Sim_Transaction();
+        //         $model=get_class($sim_transaction);
                 
-            }
-            if($rider_statement->fuel_expense_id!=null){
-                $model_id=$rider_statement->fuel_expense_id;
-                $rider_id=$rider_statement->rider_id;
-                $string="fuel_expense_id";
-                $month=Carbon::parse($rider_statement->month)->format('m');
-                $fuel=new Fuel_Expense();
-                $model=get_class($fuel);
-            }	
-            if($rider_statement->advance_return_id!=null){
-                $model_id=$rider_statement->advance_return_id;
-                $rider_id=$rider_statement->rider_id;
-                $string="advance_return_id";
-                $month=Carbon::parse($rider_statement->month)->format('m');
-                $advance=new AdvanceReturn();
-                $model=get_class($advance);
-            }
-            if($rider_statement->id_charge_id!=null){
-                $model_id=$rider_statement->id_charge_id;
-                $rider_id=$rider_statement->rider_id;
-                $string="id_charge_id";
-                $month=Carbon::parse($rider_statement->month)->format('m');
-                $id_charges=new Id_charge();
-                $model=get_class($id_charges);
-            }
-            if($rider_statement->mobile_installment_id!=null){
-                $model_id=$rider_statement->mobile_installment_id;
-                $rider_id=$rider_statement->rider_id;
-                $string="mobile_installment_id";
-                $month=Carbon::parse($rider_statement->month)->format('m');
-                $mobile_installment=new Mobile_installment();
-                $model=get_class($mobile_installment);
-            }
-            if ($model_id!=null) {
-                $model = addslashes($model);
-                return '<i class="fa fa-trash-alt"  onclick="deleteCompanyRows('.$rider_statement->id.',\''.$model.'\','.$model_id.','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
-            }
-        })
+        //     }
+        //     if($rider_statement->fuel_expense_id!=null){
+        //         $model_id=$rider_statement->fuel_expense_id;
+        //         $rider_id=$rider_statement->rider_id;
+        //         $string="fuel_expense_id";
+        //         $month=Carbon::parse($rider_statement->month)->format('m');
+        //         $fuel=new Fuel_Expense();
+        //         $model=get_class($fuel);
+        //     }	
+        //     if($rider_statement->advance_return_id!=null){
+        //         $model_id=$rider_statement->advance_return_id;
+        //         $rider_id=$rider_statement->rider_id;
+        //         $string="advance_return_id";
+        //         $month=Carbon::parse($rider_statement->month)->format('m');
+        //         $advance=new AdvanceReturn();
+        //         $model=get_class($advance);
+        //     }
+        //     if($rider_statement->id_charge_id!=null){
+        //         $model_id=$rider_statement->id_charge_id;
+        //         $rider_id=$rider_statement->rider_id;
+        //         $string="id_charge_id";
+        //         $month=Carbon::parse($rider_statement->month)->format('m');
+        //         $id_charges=new Id_charge();
+        //         $model=get_class($id_charges);
+        //     }
+        //     if($rider_statement->mobile_installment_id!=null){
+        //         $model_id=$rider_statement->mobile_installment_id;
+        //         $rider_id=$rider_statement->rider_id;
+        //         $string="mobile_installment_id";
+        //         $month=Carbon::parse($rider_statement->month)->format('m');
+        //         $mobile_installment=new Mobile_installment();
+        //         $model=get_class($mobile_installment);
+        //     }
+        //     if ($model_id!=null) {
+        //         $model = addslashes($model);
+        //         return '<i class="fa fa-trash-alt"  onclick="deleteCompanyRows('.$rider_statement->id.',\''.$model.'\','.$model_id.','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
+        //     }
+        // })
         ->addColumn('cash_paid', function($rider_statement) use (&$cash_paid){
             if($rider_statement->payment_status=='paid'){
                 // if($rider_statement->type=='dr' || $rider_statement->type=='dr_payable' || $rider_statement->type=='cr_payable'){
@@ -2834,19 +2834,22 @@ class AjaxNewController extends Controller
     }
     public function getGeneratedBillStatus($month,$client_id) 
     {
-        $client_history=Client_History::where("client_id",$client_id)->get();
-        foreach ($client_history as $value) {
-            return $value;
-        }
-        
-        $bills =Rider::orderByDesc('created_at')->where('active_status', 'A')->get();
+        $bills=Client_History::where("client_id",$client_id)->get();
         return DataTables::of($bills)
       
         ->addColumn('rider_id', function($bills){
-            return $bills->name;
+            $rider_id=$bills->rider_id;
+            $rider_found=Rider::where("id", $rider_id)->get();
+            if (isset($rider_found)) {
+                foreach ($rider_found as $rider) {
+                    return "KR".$rider->id ." - ". $rider->name;
+                }
+                
+            }
+            
         })
         ->addColumn('sim_bill', function($bills) use ($month){
-            $rider_id=$bills->id;
+            $rider_id=$bills->rider_id;
             $sim_balance_allowed=Company_Account::where("rider_id",$rider_id)
             ->whereMonth("month",$month)
             ->where("source","Sim Transaction")
@@ -2883,7 +2886,7 @@ class AjaxNewController extends Controller
             return "0";
         })
         ->addColumn('bike_rent', function($bills) use ($month){
-            $rider_id=$bills->id;
+            $rider_id=$bills->rider_id;
             $bike_rent=Company_Account::where("rider_id",$rider_id)
             ->whereMonth("month",$month)
             ->where("source","Bike Rent")
@@ -2906,7 +2909,7 @@ class AjaxNewController extends Controller
         //     return 123;
         // })
         ->addColumn('bike_fine', function($bills) use ($month){
-            $rider_id=$bills->id;
+            $rider_id=$bills->rider_id;
             $_bike_fine=Company_Account::where("rider_id",$rider_id)
             ->whereMonth("month",$month)
             ->where("source","Bike Fine")
@@ -2941,7 +2944,7 @@ class AjaxNewController extends Controller
             return "0";
         })
         ->addColumn('fuel', function($bills) use ($month){
-            $rider_id=$bills->id;
+            $rider_id=$bills->rider_id;
             $fuel_expense_val=Company_Account::where("rider_id",$rider_id)
             ->whereMonth("month",$month)
             ->whereNotNull("fuel_expense_id")
@@ -2971,7 +2974,7 @@ class AjaxNewController extends Controller
             return $fuel;
         })
         ->addColumn('salik', function($bills) use ($month){
-            $rider_id=$bills->id;
+            $rider_id=$bills->rider_id;
             $_salik=Company_Account::where("rider_id",$rider_id)
             ->whereMonth("month",$month)
             ->where("source","Salik")
@@ -3005,7 +3008,7 @@ class AjaxNewController extends Controller
             return "0";
         })
         ->addColumn('salary', function($bills) use ($month){
-            $rider_id=$bills->id;
+            $rider_id=$bills->rider_id;
             $salary=Rider_Account::where("rider_id",$rider_id)
             ->whereMonth("month",$month)
             ->where("source","salary")

@@ -153,6 +153,7 @@
                                 </a>
                                 
                                 &nbsp;
+                                
                                 <a href="" data-ajax="{{ route('admin.fuel_expense_create') }}" class=" btn btn-danger btn-elevate btn-icon-sm">
                                     <i class="fa fa-gas-pump"></i>
                                     Fuel
@@ -182,6 +183,18 @@
                                     <i class="la la-plus"></i>
                                     Generate Salary
                                 </a> 
+                            </div>
+                            <div class="kt-portlet__head-actions" style="margin-top:10px;">
+                                <a href=""  class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#rider_expense_bonus" >
+                                    <i class="la la-money"></i>
+                                        Bonus
+                                </a>
+                                &nbsp; 
+                                <a href="" class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#rider_expense_discipline" >
+                                    <i class="la la-money"></i>
+                                        KingRiders Fine
+                                </a>
+                                &nbsp;      
                             </div>
                         </div>
                     </div>  
@@ -265,6 +278,164 @@
     </div>
     </div>
 </div>
+<div class="modal fade" id="rider_expense_bonus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">  
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title" id="title_rider_expense">Add Bonus</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="kt-form" enctype="multipart/form-data" id="bonus">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Select Rider:</label>
+                        <select class="form-control bk-select2" name="rider_id" class="rider_selector" >
+                            @foreach ($riders as $rider)
+                                <option value="{{ $rider->id }}">
+                                    {{ $rider->name }}
+                                </option>      
+                            @endforeach 
+                        </select>
+                    </div>
+                    {{-- <div class="form-group">
+                        <label>Date:</label>
+                        <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                        @if ($errors->has('month'))
+                            <span class="invalid-response" role="alert">
+                                <strong>
+                                    {{ $errors->first('month') }}
+                                </strong>
+                            </span>
+                        @else
+                            <span class="form-text text-muted">Please enter Month</span>
+                        @endif
+                    </div> --}}
+                    <div class="form-group">
+                        <label>Bonus Month:</label>
+                        <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                        @if ($errors->has('month'))
+                            <span class="invalid-response" role="alert">
+                                <strong>
+                                    {{ $errors->first('month') }}
+                                </strong>
+                            </span>
+                        @else
+                            <span class="form-text text-muted">Please enter Month</span>
+                        @endif
+                    </div>
+                    <div class="form-group">
+                        <label>Given Date:</label>
+                        <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="">
+                        @if ($errors->has('given_date'))
+                            <span class="invalid-response" role="alert">
+                                <strong>
+                                    {{ $errors->first('given_date') }}
+                                </strong>
+                            </span>
+                        @else
+                            <span class="form-text text-muted">Please enter Given Date</span>
+                        @endif
+                    </div>
+                    <div class="form-group">
+                        <label>Amount:</label>
+                        <input required type="number" step="0.01" class="form-control @if($errors->has('amount')) invalid-field @endif" name="amount" placeholder="Enter Amount" value="">
+                        @if ($errors->has('amount'))
+                            <span class="invalid-response" role="alert">
+                                <strong>
+                                    {{$errors->first('amount')}}
+                                </strong>
+                            </span>
+                        @endif
+                    </div>
+                    <div class="kt-form__actions kt-form__actions--right">
+                        <button type="submit" class="btn btn-success">Add Bonus</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="rider_expense_discipline" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">  
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title" id="title_rider_expense">Add Discipline Fine</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="kt-form" enctype="multipart/form-data" id="discipline">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Select Rider:</label>
+                        <select class="form-control bk-select2 kt-select2" name="rider_id" class="rider_selector" >
+                            @foreach ($riders as $rider)
+                                <option value="{{ $rider->id }}">
+                                    {{ $rider->name }}
+                                </option>      
+                            @endforeach 
+                        </select>
+                    </div>
+                    {{-- <div class="form-group">
+                        <label>Date:</label>
+                        <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                        @if ($errors->has('month'))
+                            <span class="invalid-response" role="alert">
+                                <strong>
+                                    {{ $errors->first('month') }}
+                                </strong>
+                            </span>
+                        @else
+                            <span class="form-text text-muted">Please enter Month</span>
+                        @endif
+                    </div> --}}
+                    <div class="form-group">
+                        <label>Kingriders Fine Month:</label>
+                        <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                        @if ($errors->has('month'))
+                            <span class="invalid-response" role="alert">
+                                <strong>
+                                    {{ $errors->first('month') }}
+                                </strong>
+                            </span>
+                        @else
+                            <span class="form-text text-muted">Please enter Month</span>
+                        @endif
+                    </div>
+                    <div class="form-group">
+                        <label>Given Date:</label>
+                        <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="">
+                        @if ($errors->has('given_date'))
+                            <span class="invalid-response" role="alert">
+                                <strong>
+                                    {{ $errors->first('given_date') }}
+                                </strong>
+                            </span>
+                        @else
+                            <span class="form-text text-muted">Please enter Given Date</span>
+                        @endif
+                    </div>
+                    <div class="form-group">
+                        <label>Amount:</label>
+                        <input required type="number" step="0.01" class="form-control @if($errors->has('amount')) invalid-field @endif" name="amount" placeholder="Enter Amount" value="">
+                        @if ($errors->has('amount'))
+                            <span class="invalid-response" role="alert">
+                                <strong>
+                                    {{$errors->first('amount')}}
+                                </strong>
+                            </span>
+                        @endif
+                    </div>
+                    <div class="kt-form__actions kt-form__actions--right">
+                        <button type="submit" class="btn btn-danger">Add Fine</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 @section('foot')
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
@@ -277,7 +448,104 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script>
-   
+         
+         $("#rider_expense_bonus").on('shown.bs.modal', function(){
+    var month=biketrack.getUrlParameter('r1d1');
+    var _month=new Date(month).format("mmmm yyyy");
+    if (month!="") { 
+        $("#rider_expense_bonus [name='month']").attr("data-month", _month)
+        biketrack.refresh_global()
+    }
+    });
+    $("#rider_expense_discipline").on('shown.bs.modal', function(){
+    var month=biketrack.getUrlParameter('r1d1');
+    var _month=new Date(month).format("mmmm yyyy");
+    if (month!="") { 
+        $("#rider_expense_discipline [name='month']").attr("data-month", _month)
+        biketrack.refresh_global()
+    }
+    });
+    $('form#bonus').on('submit', function(e){   
+            e.preventDefault();
+            var _form = $(this);
+            var _modal = _form.parents('.modal');
+            var url ="{{ url('admin/rider/expense/bonus/') }}";
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url : url,
+                type : 'GET',
+                data: _form.serializeArray(),
+                success: function(data){
+                    _modal.modal('hide');
+                    swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Record updated successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    
+                    table.ajax.reload(null, false);
+                },
+                error: function(error){
+                    // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
+                    _modal.modal('hide');
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Unable to update.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+        });
+
+        $('form#discipline').on('submit', function(e){
+            e.preventDefault();
+            var _form = $(this);
+            var _modal = _form.parents('.modal');
+            var url ="{{ url('admin/rider/expense/discipline/') }}";
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url : url,
+                type : 'GET',
+                data: _form.serializeArray(),
+                success: function(data){
+                    _modal.modal('hide');
+                    swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Record updated successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    
+                    table.ajax.reload(null, false);
+                },
+                error: function(error){
+                    // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
+                    _modal.modal('hide');
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Unable to update.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+        });
     var table;
     var table_bills;
     var send_profit = function(){
@@ -484,7 +752,31 @@
             // var _Url = "{{url('/company/debits/get_salary_deduction/')}}"+"/"+_riderId+''
         });
         
-        
+        $('[name="custom_select_month"]').on("change",function(){
+            var custom_month=$(this).val();
+            var year=new Date(custom_month).format("yyyy");
+            var month=new Date(custom_month).format("mm");
+            var start=new Date(year,month-1,1).format("yyyy-mm-dd");
+            var end=new Date(year,month,0).format("yyyy-mm-dd");
+            var _data = {
+                range: {
+                    start_date: start,
+                    end_date: end
+                },
+                rider_id: $('[name="rider_id"]').val()
+            };
+            var data = {
+                r1d1:_data.range.start_date, 
+                r1d2:_data.range.end_date,
+                rider_id: $('[name="rider_id"]').val(),
+                sort_by: $('[name="sort_by"]:checked').val()
+            }
+            
+            console.log(data);
+            biketrack.updateURL(data);
+            var url = JSON.stringify(_data) ;
+            getData(url);
+        });
        
         $('input[name="dr1"]').daterangepicker({
             opens: 'left', 
@@ -614,31 +906,35 @@
             });
         }
 
-        var r1d1=biketrack.getUrlParameter('r1d1');
-        var r1d2=biketrack.getUrlParameter('r1d2');
-        var rider_id=biketrack.getUrlParameter('rider_id');
-        var sort_by=biketrack.getUrlParameter('sort_by');
-        console.log(r1d1, r1d2, rider_id, sort_by);
-        var already_triggered = false;
-        if(r1d1!="" && r1d2!="" && rider_id!="" && sort_by!=""){
-            $('[name="sort_by"][value="'+sort_by+'"]').prop('checked', true);
-            if (sort_by=='select_month') {
+        var init_table=function(){
+            var r1d1=biketrack.getUrlParameter('r1d1');
+            var r1d2=biketrack.getUrlParameter('r1d2');
+            var rider_id=biketrack.getUrlParameter('rider_id');
+            var sort_by=biketrack.getUrlParameter('sort_by');
+            console.log(r1d1, r1d2, rider_id, sort_by);
+            
+            if(r1d1!="" && r1d2!="" && rider_id!="" && sort_by!=""){
                 $('[name="sort_by"][value="'+sort_by+'"]').prop('checked', true);
-                $('[name="sort_by"][value="'+sort_by+'"]').prop('checked', false);
+                $('#custom_range').hide();
+                if(sort_by=="custom"){
+                    $('#custom_range').fadeIn('fast');
+                    $('[name="dr1"]')
+                    .daterangepicker({ startDate: new Date(r1d1).format('mm/dd/yyyy'), endDate: new Date(r1d2).format('mm/dd/yyyy') })
+                    .on('apply.daterangepicker', function(ev, picker) {
+                        dpCallback(picker);
+                    });
+                }
+                if(sort_by=="select_month"){
+                    $('#select_month_custom').fadeIn('fast');
+                    $('[name="custom_select_month"]').val(r1d1).trigger('change.select2');
+                }
+                $('[name="rider_id"],[name="rider_id_num"]').val(rider_id);
+                $('[name="rider_id_num"]').trigger('change');
+                return;
             }
-            $('#custom_range').hide();
-            if(sort_by=="custom"){
-                $('#custom_range').fadeIn('fast');
-                $('[name="dr1"]')
-                .daterangepicker({ startDate: new Date(r1d1).format('mm/dd/yyyy'), endDate: new Date(r1d2).format('mm/dd/yyyy') })
-                .on('apply.daterangepicker', function(ev, picker) {
-                    dpCallback(picker);
-                });
-            }
-            already_triggered = true;
-            $('[name="rider_id"],[name="rider_id_num"]').val(rider_id).trigger('change');
+            $('[name="sort_by"]:checked').trigger('change')
         }
-        if(!already_triggered) $('[name="sort_by"]:checked').trigger('change');
+        init_table();
         
 
     })
