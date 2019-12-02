@@ -51,6 +51,9 @@
             font-weight: bold;
             padding-top: 17px;
         }
+        .kt-checkbox > input:disabled ~ span {
+            opacity: 0.3;
+        }
 </style>
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <div class="row">
@@ -236,8 +239,13 @@
                         
                     </div>
                     <div class="kt-portlet__foot">
-                        <div class="kt-form__actions kt-form__actions--right">
-                            <button type="submit" class="btn btn-primary">Save & Send</button>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button type="button" class="btn btn-outline-hover-success">Print & Preview</button>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <button type="submit" class="btn btn-primary">Save & Send</button>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -368,7 +376,16 @@ $(document).ready(function () {
             });
     });
 
-    $(document).on("change input", '[data-name="rate"], [data-name="amount"], [data-name="tax_rate"], [data-name="discount_values"], [data-name="tax"], [data-name="discount"], [data-name="qty"]', function () {
+    $(document).on("change input", '[data-name="rate"], [data-name="amount"], [data-name="tax_rate"], [data-name="discount_values"], [data-name="tax"], [data-name="discount"], [data-name="qty"], [data-name="deductable"]', function () {
+        if($(this).attr('data-name')=="deductable"){
+            var _taxBox = $(this).parents('tr').find('[data-name="tax"]');
+            
+            _taxBox.prop('disabled', false)
+            if($(this).is(':checked')){
+                _taxBox.prop('disabled', true);
+            }
+            
+        }
         subtotal();
     });
 
@@ -434,16 +451,26 @@ function subtotal() {
 
     $("#invoice-table tbody tr").each(function (item, index) {
         // var is_payable = $(this).find('[data-name="payable"]').is(":checked");
-        // var is_deductable = $(this).find('[data-name="deductable"]').is(":checked");
+        var is_deductable = $(this).find('[data-name="deductable"]').is(":checked");
 
         var rate = parseFloat($(this).find('[data-name="rate"]').val()) || 0;
+        if(is_deductable){
+            rate = rate*-1;
+        }
         var qty = parseFloat($(this).find('[data-name="qty"]').val()) || 0;
 
         var amount = rate * qty;
 
-        total_amount += amount;
-        non_tax_amount += amount;
-        if ($(this).find('[data-name="tax"]').is(":checked")) {
+        // if(is_deductable){
+        //     total_amount -= amount;
+        //     non_tax_amount -= amount;
+        // }
+        // else{
+            total_amount += amount;
+            non_tax_amount += amount;
+        //}
+        
+        if ($(this).find('[data-name="tax"]').is(":checked") && !is_deductable) {
             taxable_amount += amount;
             if (vat > 0) {
                 var tax_amount = (amount * vat) / 100;
@@ -503,10 +530,11 @@ function append_row($row_data = null) {
             var _isTaxable = item.is_taxable ? 'checked' : '';
             // var _isPaybale = item.is_payable?'checked':'';
             var _isDeductable = item.is_deductable ? 'checked' : '';
+            var _isTaxDisabled = item.is_deductable ? 'disabled' : '';
             var tax = '';
-            if (!_isDeductable) {
-                tax = '<div class="kt-checkbox-list"><label class="kt-checkbox"> <input data-name="tax" name="invoice_items['+i+'][tax]" type="checkbox" ' + _isTaxable + '><span></span> </label></div>';
-            }
+            //if (!_isDeductable) {
+                tax = '<div class="kt-checkbox-list"><label class="kt-checkbox"> <input data-name="tax" name="invoice_items['+i+'][tax]" type="checkbox" ' + _isTaxable +_isTaxDisabled+ '><span></span> </label></div>';
+           // }
             var action = '<button type="button" onclick="delete_row(this);" class="delete-row btn btn-danger"><i class="fa fa-trash-alt"></i></button>';
             markup += '' +
                 '   <tr>  ' +

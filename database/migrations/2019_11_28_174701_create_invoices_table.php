@@ -35,8 +35,8 @@ class CreateInvoicesTable extends Migration
             $table->string('discount_value')->nullable();
             $table->string('discount_amount')->nullable();
             $table->string('attachment')->nullable();
-            $table->string('message_on_invoice')->nullable();
-            $table->string('billing_address')->nullable();
+            $table->text('message_on_invoice')->nullable();
+            $table->text('billing_address')->nullable();
 
             $table->string('status')->nullable();
             $table->string('active_status')->default("A");

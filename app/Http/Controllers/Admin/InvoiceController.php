@@ -60,12 +60,31 @@ class InvoiceController extends Controller
         $invoice->billing_address=$r->billing_address;
         $invoice->status="open";
 
-        // foreach ($invoice->invoice_items as $invoice_itemObj) {
-        //     $invoice_item = new Invoice_item;
-        //     $invoice_item->billing_address=$r->billing_address;
-        // }
+       $invoice->save();
+        foreach ($r->invoice_items as $invoice_itemObj) {
+            $invoice_item = new Invoice_item;
+            $invoice_item->invoice_id=$invoice->id;
+            $invoice_item->item_desc=$invoice_itemObj['description'];
+            $invoice_item->item_qty=$invoice_itemObj['qty'];
+            $invoice_item->item_rate=$invoice_itemObj['rate'];
+            $invoice_item->deductable=0;
+            if(isset($invoice_itemObj['deductable'])){
+                $invoice_item->deductable=1;
+            }
+            
+            $invoice_item->item_amount= round($invoice_itemObj['qty'] * $invoice_itemObj['rate'],2) ;
+            if(isset($invoice_itemObj['tax'])){
+                $invoice_item->tax_method_id="0";
+                $invoice_item->taxable_amount=$invoice_itemObj['tax_amount'];
+            }
+            $invoice_item->subtotal=$invoice_itemObj['amount'];
+            $invoice_item->save();
+        }
 
-        return $invoice;
+        return response()->json([
+            'status'=>1,
+            'invoice'=>$invoice
+        ]);
     }
     public function get_ajax_client_details($client_id, $formatted_month){
         $client=Client::find($client_id);

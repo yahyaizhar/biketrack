@@ -16,10 +16,11 @@ class CreateInvoiceItemsTable extends Migration
         Schema::create('invoice_items', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('invoice_id')->nullable();
-            $table->string('item_desc')->nullable();
+            $table->text('item_desc')->nullable();
             $table->string('item_rate')->nullable();
             $table->string('item_qty')->nullable();
             $table->string('item_amount')->nullable();
+            $table->string('deductable')->nullable();
             $table->string('tax_method_id')->nullable();
             $table->string('taxable_amount')->nullable();
             $table->string('subtotal')->nullable();
