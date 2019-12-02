@@ -951,10 +951,57 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script src="{{ asset('js/dataTables.cellEdit.js') }}" type="text/javascript"></script>
 <script>
-    if($('#rider_expense_bonus').modal("show")!=""){
-        $month=biketrack.getUrlParameter('r1d1');
-        $('[name="month"]').val($month);
+     
+    $("#rider_expense_bonus").on('shown.bs.modal', function(){
+    var month=biketrack.getUrlParameter('r1d1');
+    var _month=new Date(month).format("mmmm yyyy");
+    if (month!="") { 
+        $("#rider_expense_bonus [name='month']").attr("data-month", _month)
+        biketrack.refresh_global()
     }
+    });
+    $("#rider_expense_discipline").on('shown.bs.modal', function(){
+    var month=biketrack.getUrlParameter('r1d1');
+    var _month=new Date(month).format("mmmm yyyy");
+    if (month!="") { 
+        $("#rider_expense_discipline [name='month']").attr("data-month", _month)
+        biketrack.refresh_global()
+    }
+    });
+    $("#cash_paid").on('shown.bs.modal', function(){
+    var month=biketrack.getUrlParameter('r1d1');
+    var _month=new Date(month).format("mmmm yyyy");
+    if (month!="") { 
+        $("#cash_paid [name='month']").attr("data-month", _month)
+        biketrack.refresh_global()
+    }
+    });
+    $("#cash_pay_debit").on('shown.bs.modal', function(){
+    var month=biketrack.getUrlParameter('r1d1');
+    var _month=new Date(month).format("mmmm yyyy");
+    if (month!="") { 
+        $("#cash_pay_debit [name='month']").attr("data-month", _month)
+        biketrack.refresh_global()
+    }
+    });
+    $("#cash_pay_credit").on('shown.bs.modal', function(){
+    var month=biketrack.getUrlParameter('r1d1');
+    var _month=new Date(month).format("mmmm yyyy");
+    if (month!="") { 
+        $("#cash_pay_credit [name='month']").attr("data-month", _month)
+        biketrack.refresh_global()
+    }
+    });
+    $("#remaining_pay_modal").on('shown.bs.modal', function(){
+    var month=biketrack.getUrlParameter('r1d1');
+    var _month=new Date(month).format("mmmm yyyy");
+    if (month!="") { 
+        $("#remaining_pay_modal [name='month']").attr("data-month", _month)
+        biketrack.refresh_global()
+    }
+    });
+    
+   
   
         $('.print_slip_editable').hide();
         $("#for_print").on("click",function(){
