@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Storage;
 use App\Model\Client\Client;
 use App\Model\Client\Client_History;
 use App\Model\Client\Invoice;
+use App\Tax_method;
+use App\Bank_account;
 use App\Model\Client\Invoice_item;
 use App\Model\Accounts\Company_Account;
 use App\Model\Accounts\Rider_Account;
@@ -245,5 +247,26 @@ class InvoiceController extends Controller
     }
     public function view_invoices(){ 
         return view('admin.Invoices.view_invoice'); 
+    }
+    public function add_tax_method(){
+        return view('admin.Invoices.tax_method');
+    }
+    public function store_tax_method(Request $request){
+        $tax_method = new Tax_method();
+        $tax_method->name=$request->name;
+        $tax_method->type=$request->type;
+        $tax_method->value=$request->value;
+        $tax_method->save();
+        return redirect(url('admin/invoice/tax_method/add'))->with('message', 'Record Created Successfully.');
+    }
+    public function add_bank_account(){
+        return view('admin.Invoices.bank_accounts');
+    }
+    public function store_bank_account(Request $request){
+        $BA = new Bank_account();
+        $BA->name=$request->name;
+        $BA->account_number=$request->account_number;
+        $BA->save();
+        return redirect(url('admin/invoice/bank_account/add'))->with('message', 'Record Created Successfully.');
     }
 }

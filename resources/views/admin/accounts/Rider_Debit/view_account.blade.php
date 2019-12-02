@@ -179,26 +179,16 @@
                              Bike Allowns
                         </a>  
                         &nbsp; --}}
-                        <a href=""  class="btn btn-success btn-elevate btn-icon-sm" data-toggle="modal" data-target="#rider_expense_bonus" >
-                            <i class="la la-money"></i>
-                             Bonus
-                        </a>
-                        &nbsp;
-                        <a href="" class="btn btn-info btn-elevate btn-icon-sm" data-toggle="modal" data-target="#rider_expense_discipline" >
-                            <i class="la la-money"></i>
-                             KingRiders Fine
-                        </a>
-                        &nbsp;
                          {{-- &nbsp; --}}
                         <a style="" href="" class="btn btn-info btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_paid" >
                             <i class="la la-money"></i>
                                  Pay Cash To Rider
                         </a>
-                         &nbsp;
+                         {{-- &nbsp;
                          <a style="" href="" class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_debit" >
                             <i class="la la-money"></i>
                                 Receive Loan Amount
-                        </a>
+                        </a> --}}
                         {{-- &nbsp; --}}
                         <a style="" href="" class="btn btn-success btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_credit" >
                             <i class="la la-money"></i>
@@ -213,166 +203,6 @@
                 </div>
             </div> 
         </div>
-        {{-- rider expense mania --}}
-<div class="modal fade" id="rider_expense_bonus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">  
-            <div class="modal-header border-bottom-0">
-                <h5 class="modal-title" id="title_rider_expense">Add Bonus</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form class="kt-form" enctype="multipart/form-data" id="bonus">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Select Rider:</label>
-                        <select class="form-control bk-select2" name="rider_id" class="rider_selector" >
-                            @foreach ($riders as $rider)
-                                <option value="{{ $rider->id }}">
-                                    {{ $rider->name }}
-                                </option>      
-                            @endforeach 
-                        </select>
-                    </div>
-                    {{-- <div class="form-group">
-                        <label>Date:</label>
-                        <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
-                        @if ($errors->has('month'))
-                            <span class="invalid-response" role="alert">
-                                <strong>
-                                    {{ $errors->first('month') }}
-                                </strong>
-                            </span>
-                        @else
-                            <span class="form-text text-muted">Please enter Month</span>
-                        @endif
-                    </div> --}}
-                    <div class="form-group">
-                        <label>Bonus Month:</label>
-                        <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
-                        @if ($errors->has('month'))
-                            <span class="invalid-response" role="alert">
-                                <strong>
-                                    {{ $errors->first('month') }}
-                                </strong>
-                            </span>
-                        @else
-                            <span class="form-text text-muted">Please enter Month</span>
-                        @endif
-                    </div>
-                    <div class="form-group">
-                        <label>Given Date:</label>
-                        <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="">
-                        @if ($errors->has('given_date'))
-                            <span class="invalid-response" role="alert">
-                                <strong>
-                                    {{ $errors->first('given_date') }}
-                                </strong>
-                            </span>
-                        @else
-                            <span class="form-text text-muted">Please enter Given Date</span>
-                        @endif
-                    </div>
-                    <div class="form-group">
-                        <label>Amount:</label>
-                        <input required type="number" step="0.01" class="form-control @if($errors->has('amount')) invalid-field @endif" name="amount" placeholder="Enter Amount" value="">
-                        @if ($errors->has('amount'))
-                            <span class="invalid-response" role="alert">
-                                <strong>
-                                    {{$errors->first('amount')}}
-                                </strong>
-                            </span>
-                        @endif
-                    </div>
-                    <div class="kt-form__actions kt-form__actions--right">
-                        <button type="submit" class="btn btn-success">Add Bonus</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="rider_expense_discipline" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">  
-                <div class="modal-header border-bottom-0">
-                    <h5 class="modal-title" id="title_rider_expense">Add Discipline Fine</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form class="kt-form" enctype="multipart/form-data" id="discipline">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label>Select Rider:</label>
-                            <select class="form-control bk-select2 kt-select2" name="rider_id" class="rider_selector" >
-                                @foreach ($riders as $rider)
-                                    <option value="{{ $rider->id }}">
-                                        {{ $rider->name }}
-                                    </option>      
-                                @endforeach 
-                            </select>
-                        </div>
-                        {{-- <div class="form-group">
-                            <label>Date:</label>
-                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
-                            @if ($errors->has('month'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{ $errors->first('month') }}
-                                    </strong>
-                                </span>
-                            @else
-                                <span class="form-text text-muted">Please enter Month</span>
-                            @endif
-                        </div> --}}
-                        <div class="form-group">
-                            <label>Kingriders Fine Month:</label>
-                            <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
-                            @if ($errors->has('month'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{ $errors->first('month') }}
-                                    </strong>
-                                </span>
-                            @else
-                                <span class="form-text text-muted">Please enter Month</span>
-                            @endif
-                        </div>
-                        <div class="form-group">
-                            <label>Given Date:</label>
-                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="">
-                            @if ($errors->has('given_date'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{ $errors->first('given_date') }}
-                                    </strong>
-                                </span>
-                            @else
-                                <span class="form-text text-muted">Please enter Given Date</span>
-                            @endif
-                        </div>
-                        <div class="form-group">
-                            <label>Amount:</label>
-                            <input required type="number" step="0.01" class="form-control @if($errors->has('amount')) invalid-field @endif" name="amount" placeholder="Enter Amount" value="">
-                            @if ($errors->has('amount'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{$errors->first('amount')}}
-                                    </strong>
-                                </span>
-                            @endif
-                        </div>
-                        <div class="kt-form__actions kt-form__actions--right">
-                            <button type="submit" class="btn btn-danger">Add Fine</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-        {{-- end rider expense mania --}}
         {{-- pay cash --}}
         <div class="modal fade" id="cash_paid" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
@@ -623,7 +453,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header border-bottom-0">
-                    <h5 class="modal-title">How much you paid to rider</h5>
+                    <h5 class="modal-title">Pay Salary</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -670,7 +500,7 @@
                                 <span class="form-text text-muted">Please enter Given Date</span>
                             @endif
                         </div>
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                     <label>Total Salary:</label>
                                     <input readonly type="text" class="form-control @if($errors->has('net_salary')) invalid-field @endif" name="net_salary" value="">
                                     @if ($errors->has('net_salary'))
@@ -682,23 +512,23 @@
                                     @else
                                         <span class="form-text text-muted">Net salary</span>
                                     @endif 
-                                </div>
+                                </div> --}}
+                            <div class="form-group">
+                                <label>Available Balance:</label>
+                            <input readonly type="text" class="form-control @if($errors->has('gross_salary')) invalid-field @endif" name="gross_salary" value="">
+                                @if ($errors->has('gross_salary'))
+                                    <span class="invalid-response" role="alert">
+                                        <strong>
+                                            {{ $errors->first('gross_salary') }}
+                                        </strong>
+                                    </span>
+                                @else
+                                    <span class="form-text text-muted">Gross salary</span>
+                                @endif
+                                    
+                            </div>
                                 <div class="form-group">
-                                    <label>Gross Salary:</label>
-                                <input readonly type="text" class="form-control @if($errors->has('gross_salary')) invalid-field @endif" name="gross_salary" value="">
-                                    @if ($errors->has('gross_salary'))
-                                        <span class="invalid-response" role="alert">
-                                            <strong>
-                                                {{ $errors->first('gross_salary') }}
-                                            </strong>
-                                        </span>
-                                    @else
-                                        <span class="form-text text-muted">Gross salary</span>
-                                    @endif
-                                        
-                                </div>
-                                <div class="form-group">
-                                    <label>Salary Paid to Rider:</label>
+                                    <label>Amount To Pay:</label>
                                     <input type="text" class="form-control @if($errors->has('recieved_salary')) invalid-field @endif" name="recieved_salary" value="">
                                     @if ($errors->has('recieved_salary'))
                                         <span class="invalid-response" role="alert">
@@ -725,7 +555,7 @@
                                 </div>
                                 
                         <div class="kt-form__actions kt-form__actions--right">
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-primary">Pay Salary</button>
                         </div>
                     </div>
                 </form>
@@ -742,11 +572,11 @@
                         </th> --}}
                         <th>Date</th>
                         <th>Description</th>
-                        <th>Payable to Rider</th>
-                        <th>Recieveable from Rider</th>
+                        <th>Credit</th>
+                        <th>Debit To Company Account</th>
                         <th>Cash Paid</th> 
                         <th>Running Balance</th>
-                        <th>Action</th>
+                        {{-- <th>Action</th> --}}
                     </tr>
                 </thead>
             </table>
@@ -951,23 +781,7 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script src="{{ asset('js/dataTables.cellEdit.js') }}" type="text/javascript"></script>
 <script>
-     
-    $("#rider_expense_bonus").on('shown.bs.modal', function(){
-    var month=biketrack.getUrlParameter('r1d1');
-    var _month=new Date(month).format("mmmm yyyy");
-    if (month!="") { 
-        $("#rider_expense_bonus [name='month']").attr("data-month", _month)
-        biketrack.refresh_global()
-    }
-    });
-    $("#rider_expense_discipline").on('shown.bs.modal', function(){
-    var month=biketrack.getUrlParameter('r1d1');
-    var _month=new Date(month).format("mmmm yyyy");
-    if (month!="") { 
-        $("#rider_expense_discipline [name='month']").attr("data-month", _month)
-        biketrack.refresh_global()
-    }
-    });
+
     $("#cash_paid").on('shown.bs.modal', function(){
     var month=biketrack.getUrlParameter('r1d1');
     var _month=new Date(month).format("mmmm yyyy");
@@ -1130,87 +944,7 @@
                 }
             });
         });
-        $('form#bonus').on('submit', function(e){   
-            e.preventDefault();
-            var _form = $(this);
-            var _modal = _form.parents('.modal');
-            var url ="{{ url('admin/rider/expense/bonus/') }}";
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                url : url,
-                type : 'GET',
-                data: _form.serializeArray(),
-                success: function(data){
-                    _modal.modal('hide');
-                    swal.fire({
-                        position: 'center',
-                        type: 'success',
-                        title: 'Record updated successfully.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                    
-                    table.ajax.reload(null, false);
-                },
-                error: function(error){
-                    // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
-                    _modal.modal('hide');
-                    swal.fire({
-                        position: 'center',
-                        type: 'error',
-                        title: 'Oops...',
-                        text: 'Unable to update.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                }
-            });
-        });
-
-        $('form#discipline').on('submit', function(e){
-            e.preventDefault();
-            var _form = $(this);
-            var _modal = _form.parents('.modal');
-            var url ="{{ url('admin/rider/expense/discipline/') }}";
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                url : url,
-                type : 'GET',
-                data: _form.serializeArray(),
-                success: function(data){
-                    _modal.modal('hide');
-                    swal.fire({
-                        position: 'center',
-                        type: 'success',
-                        title: 'Record updated successfully.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                    
-                    table.ajax.reload(null, false);
-                },
-                error: function(error){
-                    // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
-                    _modal.modal('hide');
-                    swal.fire({
-                        position: 'center',
-                        type: 'error',
-                        title: 'Oops...',
-                        text: 'Unable to update.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                }
-            });
-        });
+        
 
      $('#month_picker').each(function(){
         var _initDate = "{{Carbon\Carbon::now()->format('M Y')}}";
@@ -1489,7 +1223,7 @@
                     { data: 'dr', name: 'dr' },
                     { data: 'cash_paid', name: 'cash_paid' },
                     { data: 'balance', name: 'balance' },
-                    { data: 'action', name: 'action' },
+                    // { data: 'action', name: 'action' },
                     
                 ],
                 responsive:true,

@@ -593,8 +593,11 @@ Route::group([
 
    Route::get('/invoice/tax/ajax/get_clients_details/{client_id}/{month}','InvoiceController@get_ajax_client_details')->name('tax.get_ajax_client_details');
    Route::get('/invoice/view','InvoiceController@view_invoices')->name('tax.view_invoices');
+   Route::get('/invoice/tax_method/add','InvoiceController@add_tax_method')->name('invoice.add_tax_method');
+   Route::post('/invoice/tax_method/store','InvoiceController@store_tax_method')->name('invoice.store_tax_method');
+   Route::get('/invoice/bank_account/add','InvoiceController@add_bank_account')->name('invoice.add_bank_account');
+   Route::post('/invoice/bank_account/store','InvoiceController@store_bank_account')->name('invoice.store_bank_account');
   
-
 });    
 
 
