@@ -2842,7 +2842,7 @@ class AjaxNewController extends Controller
             $rider_found=Rider::where("id", $rider_id)->get();
             if (isset($rider_found)) {
                 foreach ($rider_found as $rider) {
-                    return  $rider->name;
+                    return "KR".$rider->id ." - ". $rider->name;
                 }
                 
             }
