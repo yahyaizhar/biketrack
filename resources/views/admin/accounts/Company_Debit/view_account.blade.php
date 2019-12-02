@@ -484,7 +484,31 @@
             // var _Url = "{{url('/company/debits/get_salary_deduction/')}}"+"/"+_riderId+''
         });
         
-        
+        $('[name="custom_select_month"]').on("change",function(){
+            var custom_month=$(this).val();
+            var year=new Date(custom_month).format("yyyy");
+            var month=new Date(custom_month).format("mm");
+            var start=new Date(year,month-1,1).format("yyyy-mm-dd");
+            var end=new Date(year,month,0).format("yyyy-mm-dd");
+            var _data = {
+                range: {
+                    start_date: start,
+                    end_date: end
+                },
+                rider_id: $('[name="rider_id"]').val()
+            };
+            var data = {
+                r1d1:_data.range.start_date, 
+                r1d2:_data.range.end_date,
+                rider_id: $('[name="rider_id"]').val(),
+                sort_by: $('[name="sort_by"]:checked').val()
+            }
+            
+            console.log(data);
+            biketrack.updateURL(data);
+            var url = JSON.stringify(_data) ;
+            getData(url);
+        });
        
         $('input[name="dr1"]').daterangepicker({
             opens: 'left', 
@@ -614,31 +638,35 @@
             });
         }
 
-        var r1d1=biketrack.getUrlParameter('r1d1');
-        var r1d2=biketrack.getUrlParameter('r1d2');
-        var rider_id=biketrack.getUrlParameter('rider_id');
-        var sort_by=biketrack.getUrlParameter('sort_by');
-        console.log(r1d1, r1d2, rider_id, sort_by);
-        var already_triggered = false;
-        if(r1d1!="" && r1d2!="" && rider_id!="" && sort_by!=""){
-            $('[name="sort_by"][value="'+sort_by+'"]').prop('checked', true);
-            if (sort_by=='select_month') {
+        var init_table=function(){
+            var r1d1=biketrack.getUrlParameter('r1d1');
+            var r1d2=biketrack.getUrlParameter('r1d2');
+            var rider_id=biketrack.getUrlParameter('rider_id');
+            var sort_by=biketrack.getUrlParameter('sort_by');
+            console.log(r1d1, r1d2, rider_id, sort_by);
+            
+            if(r1d1!="" && r1d2!="" && rider_id!="" && sort_by!=""){
                 $('[name="sort_by"][value="'+sort_by+'"]').prop('checked', true);
-                $('[name="sort_by"][value="'+sort_by+'"]').prop('checked', false);
+                $('#custom_range').hide();
+                if(sort_by=="custom"){
+                    $('#custom_range').fadeIn('fast');
+                    $('[name="dr1"]')
+                    .daterangepicker({ startDate: new Date(r1d1).format('mm/dd/yyyy'), endDate: new Date(r1d2).format('mm/dd/yyyy') })
+                    .on('apply.daterangepicker', function(ev, picker) {
+                        dpCallback(picker);
+                    });
+                }
+                if(sort_by=="select_month"){
+                    $('#select_month_custom').fadeIn('fast');
+                    $('[name="custom_select_month"]').val(r1d1).trigger('change.select2');
+                }
+                $('[name="rider_id"],[name="rider_id_num"]').val(rider_id);
+                $('[name="rider_id_num"]').trigger('change');
+                return;
             }
-            $('#custom_range').hide();
-            if(sort_by=="custom"){
-                $('#custom_range').fadeIn('fast');
-                $('[name="dr1"]')
-                .daterangepicker({ startDate: new Date(r1d1).format('mm/dd/yyyy'), endDate: new Date(r1d2).format('mm/dd/yyyy') })
-                .on('apply.daterangepicker', function(ev, picker) {
-                    dpCallback(picker);
-                });
-            }
-            already_triggered = true;
-            $('[name="rider_id"],[name="rider_id_num"]').val(rider_id).trigger('change');
+            $('[name="sort_by"]:checked').trigger('change')
         }
-        if(!already_triggered) $('[name="sort_by"]:checked').trigger('change');
+        init_table();
         
 
     })

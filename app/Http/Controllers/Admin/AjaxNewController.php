@@ -2836,10 +2836,8 @@ class AjaxNewController extends Controller
     {
         $client_history=Client_History::where("client_id",$client_id)->get();
         foreach ($client_history as $value) {
-            return $value;
+            $bills=Rider::orderByDesc('created_at')->where("id",$value->rider_id)->where('active_status', 'A')->get();
         }
-        
-        $bills =Rider::orderByDesc('created_at')->where('active_status', 'A')->get();
         return DataTables::of($bills)
       
         ->addColumn('rider_id', function($bills){
