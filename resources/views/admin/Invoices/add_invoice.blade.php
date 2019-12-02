@@ -78,6 +78,10 @@
             font-weight: 500;
             letter-spacing: 1px;
         }
+        #invoice_number{
+            font-weight: 600;
+            font-size: 20px;
+        }
 </style>
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <div class="row">
@@ -86,7 +90,7 @@
                 <div class="kt-portlet__head">
                     <div class="kt-portlet__head-label">
                         <h3 class="kt-portlet__head-title">
-                            Create Invoices 
+                            Invoice <span id="invoice_number"></span>
                         </h3>
                     </div>
                 </div>
@@ -259,7 +263,7 @@
                     <div class="kt-portlet__foot">
                         <div class="row">
                             <div class="col-md-6">
-                                <button type="button" class="btn btn-outline-hover-success">Print & Preview</button>
+                                <button type="button" class="btn btn-outline-hover-success invoice__print-btn">Print & Preview</button>
                             </div>
                             <div class="col-md-6 text-right">
                                 <button type="submit" class="btn btn-primary">Save & Send</button>
@@ -272,6 +276,61 @@
     </div>
 </div>
 
+
+{{-- Print & Preview --}}
+<div class="invoice_slip__wrapper" style="display:none">
+    <div style="display:grid;padding: 15px 50px 0px 50px;" id="invoice_slip">
+        <div style="height:50px"></div>
+        <table style="">
+            <tr><th style="border:1px solid #dddd;background-color:#73acac69;text-align:center;" class="invoice_slip__number">Invoice #</th></tr>
+            <tr><th class="invoice_slip__date" style="border:1px solid #dddd;text-align:center;"></th></tr>
+        </table>
+        <table>
+            <tr>
+                <td>
+                    <div style="display: inline-block;width: 49%;">
+                        <span class="invoice_slip__client_name" style="display: block;font-size: 14px;color: #4747ff;">Zomato</span>
+                        <span class="invoice_slip__client_address" style="font-size: 12px;font-weight: 500;">asdasdasdasd</span>
+                    </div>
+                    <div style="display: inline-block;width: 50%;text-align: right;">
+                        <span style="display: block;font-size: 14px;color: #4747ff;text-align: right;">Total Amount</span>
+                        <span class="invoice_slip__total_amount" style="font-size: 20px;font-weight: 500;color: #579857;text-align: right;">AED 4200</span>
+                    </div>
+                    
+                </td>
+            </tr>
+        </table>
+        <table class="print_class" style=" margin-top: 1px;">
+            <tr>
+                <th style="border:1px solid #dddd;width:75%;text-align:left;">Item Description</th>
+                <th style="border:1px solid #dddd;width:25%;text-align:left;">Total</th>
+            </tr>
+        </table>
+        <table class="invoice_slip__invoice_items" style=" margin-top: 1px;">
+            <tr>
+                <th style="border:1px solid #dddd;width:75%;text-align:left;">Item Description</th>
+                <td style="border:1px solid #dddd;width:25%;text-align:left;">2000</td>
+            </tr>
+        </table>
+        <table class="invoice_slip__invoice_total" style=" margin-top: 1px;">
+            <tr>
+                <th style="border:1px solid #dddd;width:75%;text-align:right;">Total payable</th>
+                <td style="border:1px solid #dddd;width:25%;text-align:left;" class="invoice_slip__total_amount">Total</td>
+            </tr>
+        </table>
+
+        <div style=""> 
+            <p style="font-size:12px;line-height: 14px;" class="invoice_slip__message"></p>
+        </div>
+
+        <div style="text-align:end;"> 
+            <p style="margin-bottom: 3px;"><strong>KING RIDERS DELIVERY SERVICES LLC</strong></p>
+            <p style="margin-bottom: 3px;"><Strong>ACCOUNTANT</Strong></p>
+            <p style="margin-bottom: 3px;"><strong>DANISH MUNIR</strong></p>
+        </div>
+    </div>
+    </div>
+
 @endsection
 @section('foot')
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/bootstrap-switch.js') }}" type="text/javascript"></script>
@@ -280,7 +339,10 @@
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src=" https://printjs-4de6.kxcdn.com/print.min.js" type="text/javascript"></script>
+<link href=" https://printjs-4de6.kxcdn.com/print.min.css" rel="stylesheet">
 <script>
+var invoiceObj=null;
 $(document).ready(function () {
     append_row();
     $('#invoices [data-name="client_id"],#invoices [name="month"]').on("change input", function () {
@@ -431,6 +493,10 @@ $(document).ready(function () {
     $('#invoices').on('submit', function (e) {
         e.preventDefault();
         var _form = $(this);
+        save_invoice(_form);
+    });
+
+    var save_invoice =function(_form){
         $.ajax({
             url: "{{route('tax.add_invoice_post')}}",
             headers: {
@@ -446,6 +512,10 @@ $(document).ready(function () {
             },
             success: function (data) {
                 console.warn(data);
+                if(data && data.invoice){
+                    invoiceObj=data.invoice;
+                    $('#invoice_number').attr('data-invoice',data.invoice.id).text('#'+(1000+data.invoice.id));
+                } 
                 // swal.fire({
                 //     position: 'center',
                 //     type: 'success',
@@ -467,8 +537,34 @@ $(document).ready(function () {
                 });
             }
         });
-    });
+    }
 
+    var print_invoice=function(invoice){
+        var invoice = invoice||invoiceObj;
+        console.log(invoice);
+        if(invoice){
+            $('.invoice_slip__number').text('Invoice #'+(1000+invoice.id));
+            $('.invoice_slip__client_address').text(invoice.client.address);
+            $('.invoice_slip__client_name').text(invoice.client.name);
+            $('.invoice_slip__total_amount').text('AED '+invoice.invoice_total);
+
+            $('.invoice_slip__invoice_items').html('');
+            invoice.invoice_items.forEach(function(item, i){
+                var item_row = '    <tr>'+
+                               '     <th style="border:1px solid #dddd;width:75%;text-align:left;">'+item.item_desc+'</th>'+
+                               '     <td style="border:1px solid #dddd;width:25%;text-align:left;">'+item.subtotal+'</td>'+
+                               '    </tr>';
+                $('.invoice_slip__invoice_items').append(item_row);
+            });
+
+            printJS('invoice_slip', 'html')
+            
+        }
+    }
+
+    $('.invoice__print-btn').on('click', function(){
+        print_invoice();
+    })
 
 });
 

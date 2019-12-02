@@ -28,9 +28,19 @@ class InvoiceController extends Controller
         return view('admin.Invoices.add_invoice',compact('clients'));
     }
     public function add_invoice_post(Request $r){
+        $client_id = $r->client_id;
+        $client=Client::find($client_id);
+        $month = Carbon::createFromFormat('d F Y', '01 '.$r->month)->format('Y-m-d');
 
+        $invoice_found = Invoice::where(['client_id'=>$client_id, 'month'=>$month])->get()->first();
         $invoice = new Invoice;
-        $invoice->client_id=$r->client_id;
+        if(isset($invoice_found)){
+            $invoice = $invoice_found;
+        }
+        
+        $invoice->client_id=$client_id;
+        $invoice->month=$month;
+
         $invoice->invoice_total=$r->invoice_total;
         $invoice->invoice_subtotal=$r->invoice_subtotal;
 
@@ -38,7 +48,7 @@ class InvoiceController extends Controller
         $invoice->tax_method_id="0";
         $invoice->taxable_amount=$r->tax_value;
 
-        $invoice->month=Carbon::createFromFormat('d F Y', '01 '.$r->month)->format('Y-m-d');
+        
         $invoice->invoice_date=Carbon::createFromFormat('F d, Y', $r->invoice_date)->format('Y-m-d');
         $invoice->invoice_due=Carbon::createFromFormat('F d, Y', $r->due_date)->format('Y-m-d');
 
@@ -61,8 +71,25 @@ class InvoiceController extends Controller
         $invoice->status="open";
 
        $invoice->save();
+       $invoice_modal = [];
+       $invoice_modal['invoice']=$invoice->toArray();
+       $invoice_modal['invoice']['invoice_items']=[];
+       $invoice_modal['invoice']['client']=$client;
         foreach ($r->invoice_items as $invoice_itemObj) {
+            $invoice_item_found = Invoice_item::where([
+                'invoice_id'=>$invoice->id, 
+                'item_desc'=>$invoice_itemObj['description'],
+                'item_qty'=>$invoice_itemObj['qty'],
+                'item_rate'=>$invoice_itemObj['rate'],
+                'subtotal'=>$invoice_itemObj['amount']
+            ])
+            ->get()
+            ->first();
             $invoice_item = new Invoice_item;
+            if(isset($invoice_item_found)){
+                $invoice_item = $invoice_item_found;
+            }
+            
             $invoice_item->invoice_id=$invoice->id;
             $invoice_item->item_desc=$invoice_itemObj['description'];
             $invoice_item->item_qty=$invoice_itemObj['qty'];
@@ -79,11 +106,13 @@ class InvoiceController extends Controller
             }
             $invoice_item->subtotal=$invoice_itemObj['amount'];
             $invoice_item->save();
+            array_push($invoice_modal['invoice']['invoice_items'], $invoice_item->toArray());
         }
 
+        
         return response()->json([
             'status'=>1,
-            'invoice'=>$invoice
+            'invoice'=>$invoice_modal['invoice']
         ]);
     }
     public function get_ajax_client_details($client_id, $formatted_month){
