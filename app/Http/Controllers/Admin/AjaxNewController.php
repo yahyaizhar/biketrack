@@ -2834,17 +2834,22 @@ class AjaxNewController extends Controller
     }
     public function getGeneratedBillStatus($month,$client_id) 
     {
-        $client_history=Client_History::where("client_id",$client_id)->get();
-        foreach ($client_history as $value) {
-            $bills=Rider::orderByDesc('created_at')->where("id",$value->rider_id)->where('active_status', 'A')->get();
-        }
+        $bills=Client_History::where("client_id",$client_id)->get();
         return DataTables::of($bills)
       
         ->addColumn('rider_id', function($bills){
-            return $bills->name;
+            $rider_id=$bills->rider_id;
+            $rider_found=Rider::where("id", $rider_id)->get();
+            if (isset($rider_found)) {
+                foreach ($rider_found as $rider) {
+                    return  $rider->name;
+                }
+                
+            }
+            
         })
         ->addColumn('sim_bill', function($bills) use ($month){
-            $rider_id=$bills->id;
+            $rider_id=$bills->rider_id;
             $sim_balance_allowed=Company_Account::where("rider_id",$rider_id)
             ->whereMonth("month",$month)
             ->where("source","Sim Transaction")
@@ -2881,7 +2886,7 @@ class AjaxNewController extends Controller
             return "0";
         })
         ->addColumn('bike_rent', function($bills) use ($month){
-            $rider_id=$bills->id;
+            $rider_id=$bills->rider_id;
             $bike_rent=Company_Account::where("rider_id",$rider_id)
             ->whereMonth("month",$month)
             ->where("source","Bike Rent")
@@ -2904,7 +2909,7 @@ class AjaxNewController extends Controller
         //     return 123;
         // })
         ->addColumn('bike_fine', function($bills) use ($month){
-            $rider_id=$bills->id;
+            $rider_id=$bills->rider_id;
             $_bike_fine=Company_Account::where("rider_id",$rider_id)
             ->whereMonth("month",$month)
             ->where("source","Bike Fine")
@@ -2939,7 +2944,7 @@ class AjaxNewController extends Controller
             return "0";
         })
         ->addColumn('fuel', function($bills) use ($month){
-            $rider_id=$bills->id;
+            $rider_id=$bills->rider_id;
             $fuel_expense_val=Company_Account::where("rider_id",$rider_id)
             ->whereMonth("month",$month)
             ->whereNotNull("fuel_expense_id")
@@ -2969,7 +2974,7 @@ class AjaxNewController extends Controller
             return $fuel;
         })
         ->addColumn('salik', function($bills) use ($month){
-            $rider_id=$bills->id;
+            $rider_id=$bills->rider_id;
             $_salik=Company_Account::where("rider_id",$rider_id)
             ->whereMonth("month",$month)
             ->where("source","Salik")
@@ -3003,7 +3008,7 @@ class AjaxNewController extends Controller
             return "0";
         })
         ->addColumn('salary', function($bills) use ($month){
-            $rider_id=$bills->id;
+            $rider_id=$bills->rider_id;
             $salary=Rider_Account::where("rider_id",$rider_id)
             ->whereMonth("month",$month)
             ->where("source","salary")
