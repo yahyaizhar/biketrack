@@ -2832,8 +2832,13 @@ class AjaxNewController extends Controller
         ->rawColumns(['status','bike_id','desc','amount','actions', 'rider_id'])
         ->make(true);
     }
-    public function getGeneratedBillStatus($month) 
+    public function getGeneratedBillStatus($month,$client_id) 
     {
+        $client_history=Client_History::where("client_id",$client_id)->get();
+        foreach ($client_history as $value) {
+            return $value;
+        }
+        
         $bills =Rider::orderByDesc('created_at')->where('active_status', 'A')->get();
         return DataTables::of($bills)
       
