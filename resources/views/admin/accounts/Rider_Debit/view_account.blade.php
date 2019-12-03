@@ -189,11 +189,11 @@
                             <i class="la la-money"></i>
                                 Advance
                         </a>
-                         {{-- &nbsp;
+                         &nbsp;
                          <a style="" href="" class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_debit" >
                             <i class="la la-money"></i>
-                                Receive Loan Amount
-                        </a> --}}
+                                Receive Amount From Rider
+                        </a>
                         {{-- &nbsp; --}}
                         {{-- <a style="" href="" class="btn btn-success btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_credit" >
                             <i class="la la-money"></i>
@@ -1325,8 +1325,8 @@
                     $('.macdonald').html(response.macdonald);
                     $('.dc').html(response.dc);
                     $('.rta').html(response.rta);
-                    $('.discipline').html(response.mobile);
-                    $('.mobile').html(response.dicipline);
+                    $('.discipline').html(response.dicipline);
+                    $('.mobile').html(response.mobile);
                     $('.zomato').html(response.denial_penalty);
                     $('.mics').html(response.mics);
                     $('.cash_paid').html(response.cash_paid);
