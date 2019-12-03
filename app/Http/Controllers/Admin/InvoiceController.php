@@ -62,7 +62,7 @@ class InvoiceController extends Controller
         $invoice->due_balance=$r->client_id;
 
         // $invoice->received_date=$r->client_id;
-        $invoice->invoice_status="generated";
+        $invoice->invoice_status=$r->invoice_status;
         if (isset($r->discount) && $r->discount!=null && isset($r->discount_values) && $r->discount_values!=null) {
             $invoice->discount_type=$r->discount;
             $invoice->discount_value=$r->discount_values;
