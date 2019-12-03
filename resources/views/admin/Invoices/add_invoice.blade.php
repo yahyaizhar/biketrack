@@ -543,7 +543,7 @@ $(document).ready(function () {
                 console.warn(data);
                 if(data && data.invoice){
                     invoiceObj=data.invoice;
-                    $('#invoice_number').attr('data-invoice',data.invoice.id).text('#'+(1000+data.invoice.id));
+                    $('#invoice_number').attr('data-invoice',data.invoice.id).text('#'+(data.invoice.id));
                 } 
                 if(callback && typeof callback=="function"){
                     callback(data.invoice);
@@ -575,7 +575,7 @@ $(document).ready(function () {
         var invoice = invoice||invoiceObj;
         console.log(invoice);
         if(invoice){
-            $('.invoice_slip__number').text('Invoice #'+(1000+invoice.id));
+            $('.invoice_slip__number').text('Invoice #'+(invoice.id));
             $('.invoice_slip__client_address').text(invoice.client.address);
             $('.invoice_slip__client_name').text(invoice.client.name);
             $('.invoice_slip__total_amount').text('AED '+invoice.invoice_total);
@@ -595,7 +595,7 @@ $(document).ready(function () {
             var _form = $('#invoices');
             if(validate_invoice(_form)){
                 save_invoice(_form, "drafted", function(invoice){
-                    $('.invoice_slip__number').text('Invoice #'+(1000+invoice.id));
+                    $('.invoice_slip__number').text('Invoice #'+(invoice.id));
                     $('.invoice_slip__client_address').text(invoice.client.address);
                     $('.invoice_slip__client_name').text(invoice.client.name);
                     $('.invoice_slip__total_amount').text('AED '+invoice.invoice_total);

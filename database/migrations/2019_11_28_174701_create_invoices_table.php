@@ -14,7 +14,7 @@ class CreateInvoicesTable extends Migration
     public function up()
     {
         Schema::create('invoices', function (Blueprint $table) {
-            $table->increments('id');
+            $table->increments('id')->unsigned();
             $table->integer('client_id')->nullable();
             $table->string('invoice_total')->nullable();
             $table->string('invoice_subtotal')->nullable();
@@ -42,6 +42,9 @@ class CreateInvoicesTable extends Migration
             $table->string('active_status')->default("A");
             $table->timestamps();
         });
+        //then set autoincrement to 1000
+        //after creating the table
+        DB::update("ALTER TABLE invoices AUTO_INCREMENT = 1000;");
     }
 
     /**
