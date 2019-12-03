@@ -229,13 +229,14 @@ class AjaxNewController extends Controller
         if(isset($model)){ 
             $bike_fine_pend=0;
             $bike_fine_paid=0;
-            $model->payment_status="paid";
+            
             foreach ($modelArr as $mod) {
                 if ($mod->payment_status=="pending") {
                     $bike_fine_pend+=$mod->amount;
                 }
                 $bike_fine_paid+=$mod->amount;
             } 
+            $model->payment_status="paid";
             $model->amount=$bike_fine_paid;
             if ($bike_fine_pend>0) {
                 $model->amount=$bike_fine_pend.' is remaining out of '.$bike_fine_paid;
