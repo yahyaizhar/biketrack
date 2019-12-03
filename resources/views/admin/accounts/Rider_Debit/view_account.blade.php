@@ -179,10 +179,15 @@
                              Bike Allowns
                         </a>  
                         &nbsp; --}}
-                         {{-- &nbsp; --}}
+                         &nbsp;
                         <a style="" href="" class="btn btn-info btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_paid" >
                             <i class="la la-money"></i>
                                  Pay Cash To Rider
+                        </a>
+                        &nbsp;
+                        <a style="" href="" class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#advance" >
+                            <i class="la la-money"></i>
+                                Advance
                         </a>
                          {{-- &nbsp;
                          <a style="" href="" class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_debit" >
@@ -190,11 +195,11 @@
                                 Receive Loan Amount
                         </a> --}}
                         {{-- &nbsp; --}}
-                        <a style="" href="" class="btn btn-success btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_credit" >
+                        {{-- <a style="" href="" class="btn btn-success btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_credit" >
                             <i class="la la-money"></i>
                                 Loan
                         </a>
-                        &nbsp;
+                        &nbsp; --}}
                         {{-- <a href="{{ route('admin.accounts.rider_expense_get') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
                             New Record
@@ -205,250 +210,249 @@
         </div>
         {{-- pay cash --}}
         <div class="modal fade" id="cash_paid" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header border-bottom-0">
-                        <h5 class="modal-title">Cash Paid to Rider</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form class="kt-form" enctype="multipart/form-data" id="cash_paid">
-                        <div class="modal-body">
-                            <input type="hidden" name="cash_rider_id">
-                            {{-- <div class="form-group">
-                                <label>Rider Cash Paid Date:</label>
-                                <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
-                                @if ($errors->has('month'))
-                                    <span class="invalid-response" role="alert">
-                                        <strong>
-                                            {{ $errors->first('month') }}
-                                        </strong>
-                                    </span>
-                                @else
-                                    <span class="form-text text-muted">Please enter Month</span>
-                                @endif
-                            </div> --}}
-                            <div class="form-group">
-                                <label>Cash Paid Month:</label>
-                                <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
-                                @if ($errors->has('month'))
-                                    <span class="invalid-response" role="alert">
-                                        <strong>
-                                            {{ $errors->first('month') }}
-                                        </strong>
-                                    </span>
-                                @else
-                                    <span class="form-text text-muted">Please enter Month</span>
-                                @endif
-                            </div>
-                            <div class="form-group">
-                                <label>Given Date:</label>
-                                <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="">
-                                @if ($errors->has('given_date'))
-                                    <span class="invalid-response" role="alert">
-                                        <strong>
-                                            {{ $errors->first('given_date') }}
-                                        </strong>
-                                    </span>
-                                @else
-                                    <span class="form-text text-muted">Please enter Given Date</span>
-                                @endif
-                            </div>
-                            <div class="form-group">
-                                <label>Amount:</label>
-                                <input required type="number" step="0.01" class="form-control @if($errors->has('amount')) invalid-field @endif" name="amount" placeholder="Enter Amount" value="">
-                                @if ($errors->has('amount'))
-                                    <span class="invalid-response" role="alert">
-                                        <strong>
-                                            {{$errors->first('amount')}}
-                                        </strong>
-                                    </span>
-                                @endif
-                            </div>
-                            <div class="form-group">
-                                <label>Description:</label>
-                                <textarea required class="form-control @if($errors->has('desc')) invalid-field @endif" name="desc" cols="3" rows="5"></textarea>
-                                @if ($errors->has('desc'))
-                                    <span class="invalid-response" role="alert">
-                                        <strong>
-                                            {{$errors->first('desc')}}
-                                        </strong>
-                                    </span>
-                                @endif
-                            </div>
-                            <div class="kt-form__actions kt-form__actions--right">
-                                <button type="submit" class="btn btn-primary">Pay Cash To Rider</button>
-                            </div>
+            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title">Cash Paid to Rider</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form class="kt-form" enctype="multipart/form-data" id="cash_paid">
+                    <div class="modal-body">
+                        <input type="hidden" name="cash_rider_id">
+                        {{-- <div class="form-group">
+                            <label>Rider Cash Paid Date:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                            @if ($errors->has('month'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('month') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Month</span>
+                            @endif
+                        </div> --}}
+                        <div class="form-group">
+                            <label>Cash Paid Month:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                            @if ($errors->has('month'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('month') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Month</span>
+                            @endif
                         </div>
-                    </form>
-                </div>
-                </div>
+                        <div class="form-group">
+                            <label>Given Date:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="">
+                            @if ($errors->has('given_date'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('given_date') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Given Date</span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Amount:</label>
+                            <input required type="number" step="0.01" class="form-control @if($errors->has('amount')) invalid-field @endif" name="amount" placeholder="Enter Amount" value="">
+                            @if ($errors->has('amount'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{$errors->first('amount')}}
+                                    </strong>
+                                </span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Description:</label>
+                            <textarea required class="form-control @if($errors->has('desc')) invalid-field @endif" name="desc" cols="3" rows="5"></textarea>
+                            @if ($errors->has('desc'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{$errors->first('desc')}}
+                                    </strong>
+                                </span>
+                            @endif
+                        </div>
+                        <div class="kt-form__actions kt-form__actions--right">
+                            <button type="submit" class="btn btn-primary">Pay Cash To Rider</button>
+                        </div>
+                    </div>
+                </form>
             </div>
-            <div class="modal fade" id="cash_pay_debit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header border-bottom-0">
-                            <h5 class="modal-title">Receiveable From Rider</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <form class="kt-form" enctype="multipart/form-data" id="cash_pay_dr">
-                            <div class="modal-body">
-                                <input type="hidden" name="cash_rider_id">
-                                {{-- <div class="form-group">
-                                    <label>Month:</label>
-                                    <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
-                                    @if ($errors->has('month'))
-                                        <span class="invalid-response" role="alert">
-                                            <strong>
-                                                {{ $errors->first('month') }}
-                                            </strong>
-                                        </span>
-                                    @else
-                                        <span class="form-text text-muted">Please enter Month</span>
-                                    @endif
-                                </div> --}}
-                                <div class="form-group">
-                                    <label>Receive Loan Month:</label>
-                                    <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
-                                    @if ($errors->has('month'))
-                                        <span class="invalid-response" role="alert">
-                                            <strong>
-                                                {{ $errors->first('month') }}
-                                            </strong>
-                                        </span>
-                                    @else
-                                        <span class="form-text text-muted">Please enter Month</span>
-                                    @endif
-                                </div>
-                                <div class="form-group">
-                                    <label>Given Date:</label>
-                                    <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="">
-                                    @if ($errors->has('given_date'))
-                                        <span class="invalid-response" role="alert">
-                                            <strong>
-                                                {{ $errors->first('given_date') }}
-                                            </strong>
-                                        </span>
-                                    @else
-                                        <span class="form-text text-muted">Please enter Given Date</span>
-                                    @endif
-                                </div>
-                                <div class="form-group">
-                                    <label>Amount:</label>
-                                    <input required type="number" step="0.01" class="form-control @if($errors->has('amount')) invalid-field @endif" name="amount" placeholder="Enter Amount" value="">
-                                    @if ($errors->has('amount'))
-                                        <span class="invalid-response" role="alert">
-                                            <strong>
-                                                {{$errors->first('amount')}}
-                                            </strong>
-                                        </span>
-                                    @endif
-                                </div>
-                                <div class="form-group">
-                                    <label>Description:</label>
-                                    <textarea required class="form-control @if($errors->has('desc')) invalid-field @endif" name="desc" cols="3" rows="5"></textarea>
-                                    @if ($errors->has('desc'))
-                                        <span class="invalid-response" role="alert">
-                                            <strong>
-                                                {{$errors->first('desc')}}
-                                            </strong>
-                                        </span>
-                                    @endif
-                                </div>
-                                <div class="kt-form__actions kt-form__actions--right">
-                                    <button type="submit" class="btn btn-danger">Receive Loan</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    </div>
+            </div>
+        </div>
+        <div class="modal fade" id="cash_pay_debit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title">Receiveable From Rider</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-                <div class="modal fade" id="cash_pay_credit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header border-bottom-0">
-                                <h5 class="modal-title">Payable To Rider</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <form class="kt-form" enctype="multipart/form-data" id="cash_pay_cr">
-                                <div class="modal-body">
-                                    <input type="hidden" name="cash_rider_id">
-                                    {{-- <div class="form-group">
-                                        <label>Rider Cash Paid Date:</label>
-                                        <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
-                                        @if ($errors->has('month'))
-                                            <span class="invalid-response" role="alert">
-                                                <strong>
-                                                    {{ $errors->first('month') }}
-                                                </strong>
-                                            </span>
-                                        @else
-                                            <span class="form-text text-muted">Please enter Month</span>
-                                        @endif
-                                    </div> --}}
-                                    <div class="form-group">
-                                        <label>Loan Month:</label>
-                                        <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
-                                        @if ($errors->has('month'))
-                                            <span class="invalid-response" role="alert">
-                                                <strong>
-                                                    {{ $errors->first('month') }}
-                                                </strong>
-                                            </span>
-                                        @else 
-                                            <span class="form-text text-muted">Please enter Month</span>
-                                        @endif
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Given Date:</label>
-                                        <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="">
-                                        @if ($errors->has('given_date'))
-                                            <span class="invalid-response" role="alert">
-                                                <strong>
-                                                    {{ $errors->first('given_date') }}
-                                                </strong>
-                                            </span>
-                                        @else
-                                            <span class="form-text text-muted">Please enter Given Date</span>
-                                        @endif
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Amount:</label>
-                                        <input required type="number" step="0.01" class="form-control @if($errors->has('amount')) invalid-field @endif" name="amount" placeholder="Enter Amount" value="">
-                                        @if ($errors->has('amount'))
-                                            <span class="invalid-response" role="alert">
-                                                <strong>
-                                                    {{$errors->first('amount')}}
-                                                </strong>
-                                            </span>
-                                        @endif
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Description:</label>
-                                        <textarea required class="form-control @if($errors->has('desc')) invalid-field @endif" name="desc" cols="3" rows="5"></textarea>
-                                        @if ($errors->has('desc'))
-                                            <span class="invalid-response" role="alert">
-                                                <strong>
-                                                    {{$errors->first('desc')}}
-                                                </strong>
-                                            </span>
-                                        @endif
-                                    </div>
-                                    <div class="kt-form__actions kt-form__actions--right">
-                                        <button type="submit" class="btn btn-warning">Loan</button>
-                                    </div>
-                                </div>
-                            </form>
+                <form class="kt-form" enctype="multipart/form-data" id="cash_pay_dr">
+                    <div class="modal-body">
+                        <input type="hidden" name="cash_rider_id">
+                        {{-- <div class="form-group">
+                            <label>Month:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                            @if ($errors->has('month'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('month') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Month</span>
+                            @endif
+                        </div> --}}
+                        <div class="form-group">
+                            <label>Receive Loan Month:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                            @if ($errors->has('month'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('month') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Month</span>
+                            @endif
                         </div>
+                        <div class="form-group">
+                            <label>Given Date:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="">
+                            @if ($errors->has('given_date'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('given_date') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Given Date</span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Amount:</label>
+                            <input required type="number" step="0.01" class="form-control @if($errors->has('amount')) invalid-field @endif" name="amount" placeholder="Enter Amount" value="">
+                            @if ($errors->has('amount'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{$errors->first('amount')}}
+                                    </strong>
+                                </span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Description:</label>
+                            <textarea required class="form-control @if($errors->has('desc')) invalid-field @endif" name="desc" cols="3" rows="5"></textarea>
+                            @if ($errors->has('desc'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{$errors->first('desc')}}
+                                    </strong>
+                                </span>
+                            @endif
+                        </div>
+                        <div class="kt-form__actions kt-form__actions--right">
+                            <button type="submit" class="btn btn-danger">Receive Loan</button>
                         </div>
                     </div>
+                </form>
+            </div>
+            </div>
+        </div>
+        <div class="modal fade" id="cash_pay_credit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title">Payable To Rider</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form class="kt-form" enctype="multipart/form-data" id="cash_pay_cr">
+                    <div class="modal-body">
+                        <input type="hidden" name="cash_rider_id">
+                        {{-- <div class="form-group">
+                            <label>Rider Cash Paid Date:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                            @if ($errors->has('month'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('month') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Month</span>
+                            @endif
+                        </div> --}}
+                        <div class="form-group">
+                            <label>Loan Month:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                            @if ($errors->has('month'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('month') }}
+                                    </strong>
+                                </span>
+                            @else 
+                                <span class="form-text text-muted">Please enter Month</span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Given Date:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="">
+                            @if ($errors->has('given_date'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('given_date') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Given Date</span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Amount:</label>
+                            <input required type="number" step="0.01" class="form-control @if($errors->has('amount')) invalid-field @endif" name="amount" placeholder="Enter Amount" value="">
+                            @if ($errors->has('amount'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{$errors->first('amount')}}
+                                    </strong>
+                                </span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Description:</label>
+                            <textarea required class="form-control @if($errors->has('desc')) invalid-field @endif" name="desc" cols="3" rows="5"></textarea>
+                            @if ($errors->has('desc'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{$errors->first('desc')}}
+                                    </strong>
+                                </span>
+                            @endif
+                        </div>
+                        <div class="kt-form__actions kt-form__actions--right">
+                            <button type="submit" class="btn btn-warning">Loan</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            </div>
+        </div>
         {{-- end pay cash --}}
-        
         <div class="modal fade" id="remaining_pay_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -562,6 +566,80 @@
             </div>
             </div>
         </div>
+        <div class="modal fade" id="advance" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title">Advance Give to Rider</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form class="kt-form" enctype="multipart/form-data" id="advance_paid">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input type="hidden" name="payment_status" value="pending">
+                            <label>Advance & Return  Type:</label>
+                            <select required  class="form-control @if($errors->has('type')) invalid-field @endif kt-select2-general" name="type">
+                                <option value="advance">Advance</option>
+                                <option value="return">Return</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Rider:</label>
+                            <select required class="form-control kt-select2-general" name="rider_id" >
+                                @foreach ($riders as $rider)
+                                <option value="{{ $rider->id }}">
+                                    {{ $rider->name }}
+                                </option>     
+                                @endforeach 
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Taken Advance Month:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                            @if ($errors->has('month'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('month') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Month</span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Given Advance Date:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="">
+                            @if ($errors->has('given_date'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('given_date') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Given Advance Date</span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Amount:</label>
+                            <input required type="number" class="form-control @if($errors->has('amount')) invalid-field @endif" name="amount" placeholder="Enter Amount" value="">
+                            @if ($errors->has('amount'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{$errors->first('amount')}}
+                                    </strong>
+                                </span>
+                            @endif
+                        </div>
+                        <div class="kt-form__actions kt-form__actions--right">
+                            <button type="submit" class="btn btn-primary">Pay Advance To Rider</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            </div>
+        </div>
         <div class="kt-portlet__body">
                 <!--begin: Datatable -->
             <table class="table table-striped- table-hover table-checkable table-condensed" id="data-table">
@@ -583,13 +661,18 @@
             <!--end: Datatable -->
             <div>
                 <div>
-                    <button style="float:right;" class="btn btn-warning btn-elevate btn-icon-sm" id="for_print" type="button" onclick="printJS('print_slip_for_rider', 'html')">
+                    <button style="float:right;margin-right: 10px;" class="btn btn-warning btn-elevate btn-icon-sm" id="for_print" type="button" onclick="printJS('print_slip_for_rider', 'html')">
                         Print Salary Slip
                     </button>
                 </div>
                 <div>
-                    <button style="float:right;" class="btn btn-info btn-elevate btn-icon-sm" id="for_edit" type="button">
+                    <button style="float:right;margin-right: 10px;" class="btn btn-info btn-elevate btn-icon-sm" id="for_edit" type="button">
                         Edit Salary Slip
+                    </button>
+                </div>
+                <div>
+                    <button style="float:right;margin-right: 10px;" data-toggle="modal" class="btn btn-success btn-elevate btn-icon-sm" id="to_pay" type="button">
+                        <i class="fa fa-dollar-sign"></i> Pay Salary
                     </button>
                 </div>
             </div>
@@ -781,7 +864,14 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script src="{{ asset('js/dataTables.cellEdit.js') }}" type="text/javascript"></script>
 <script>
-
+    $("#advance").on('shown.bs.modal', function(){
+        var month=biketrack.getUrlParameter('r1d1');
+        var _month=new Date(month).format("mmmm yyyy");
+        if (month!="") { 
+            $("#advance [name='month']").attr("data-month", _month)
+            biketrack.refresh_global()
+        }
+    });
     $("#cash_paid").on('shown.bs.modal', function(){
     var month=biketrack.getUrlParameter('r1d1');
     var _month=new Date(month).format("mmmm yyyy");
@@ -823,6 +913,44 @@
         });
         $("#for_edit").on("click",function(){
             $('.print_slip_editable').show();
+        });
+        $('form#advance_paid').on('submit', function(e){
+            e.preventDefault();
+            var _form = $(this);
+            var url = '{{route('admin.AR_store')}}';
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url : url,
+                type : 'POST',
+                data: _form.serializeArray(),
+                success: function(data){
+                    $('#advance').modal('hide');
+                    // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
+                    swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Record updated successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    table.ajax.reload(null, false);
+                },
+                error: function(error){
+                    // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Unable to update.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
         });
         $('form#cash_paid').on('submit', function(e){
             e.preventDefault();
@@ -970,6 +1098,7 @@
         
         $('form#remaining_salary').on('submit', function(e){
             e.preventDefault();
+            $("to_pay").hide();
             var _form = $(this);
             var _modal = _form.parents('.modal');
             var _cta = _form.find('[type="submit"]');
@@ -1213,7 +1342,17 @@
                     $('#total_net_pay').html(net_pay);
                     $('#rider_id_1').html(response.rider);
                     $('#rider_id_2').html(response.rider);
-                   
+                   var onclick_event_of_pay=$("#getting_val").attr('onclick')||"";
+                    if (onclick_event_of_pay!=="") {
+                        $("#to_pay").show();
+                        $("#to_pay").attr("onclick",$("#getting_val").attr('onclick'));
+                        $("#to_pay").attr("data-target",$("#getting_val").attr('data-target'));
+                    }
+                    else{
+                        $("#to_pay").hide();
+                    }
+                    
+                    
                 },
                 ajax: url,
                 columns: [
