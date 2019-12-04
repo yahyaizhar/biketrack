@@ -70,7 +70,7 @@
 
 <script>
 var bike_table;
-alert('d')
+alert('d') 
 $(function() {
     bike_table = $('#bike-table').DataTable({
         lengthMenu: [[-1], ["All"]],
