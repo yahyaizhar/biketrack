@@ -15,6 +15,12 @@ class CreateBankTransactionsTable extends Migration
     {
         Schema::create('bank_transactions', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('bank_id')->nullable();
+            $table->string('type')->nullable();
+            $table->string('amount')->nullable();
+            $table->string('source')->nullable();
+            $table->integer('source_id')->nullable();
+            $table->string('created_by')->nullable();
             $table->timestamps();
         });
     }

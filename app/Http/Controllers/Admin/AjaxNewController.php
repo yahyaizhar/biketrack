@@ -53,7 +53,7 @@ use App\Model\Client\Invoice;
 use App\Tax_method;
 use App\Bank_account;
 use App\Model\Client\Invoice_item;
-
+use App\Model\Invoice\Invoice_Payment;
 use App\Model\Accounts\EmployeeAccounts;
 
 class AjaxNewController extends Controller
@@ -3365,5 +3365,37 @@ class AjaxNewController extends Controller
         //     'data'=>$bills
         // ]);
 
+    }
+    public function getInvoicePayments()
+    {
+        $invoice_payments =Invoice_Payment::orderByDesc('created_at')->get();
+        return DataTables::of($invoice_payments)
+      
+        ->addColumn('id', function($invoice_payments){
+            return $invoice_payments->id;
+        })
+        
+        ->addColumn('payment_date', function($invoice_payments){
+            return $invoice_payments->payment_date;
+        })
+        ->addColumn('original_amount', function($invoice_payments){
+            return $invoice_payments->original_amount;
+        })
+        ->addColumn('payment', function($invoice_payments){
+            return $invoice_payments->payment;
+        })
+        ->addColumn('due_balance', function($invoice_payments){
+            return $invoice_payments->due_balance;
+        })
+        ->addColumn('payment_method', function($invoice_payments){
+            return $invoice_payments->payment_method;
+        })
+        ->addColumn('payment_received_by', function($invoice_payments){
+            return $invoice_payments->payment_received_by;
+        })
+       
+       
+        ->rawColumns([ 'id','payment_date', 'original_amount', 'payment', 'due_balance','payment_method','payment_received_by'])
+        ->make(true);
     }
 }
