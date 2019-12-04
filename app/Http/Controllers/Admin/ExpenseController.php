@@ -438,7 +438,7 @@ public function AR_store(Request $r){
         $ra =Rider_Account::firstOrCreate([
             'advance_return_id'=>$ar->id
         ]);
-        $ra->type='dr';
+        $ra->type='cr_payable';
         $ra->rider_id=$ar->rider_id;
         $ra->amount=$r->amount;
         $ra->month = Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
