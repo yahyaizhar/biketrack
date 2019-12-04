@@ -67,7 +67,8 @@ Route::group([
     Route::get("/zomato/salary/sheet/export/ajax/{month_name}","AjaxNewController@zomato_salary_export")->name("admin.zomato_salary_export");
     Route::get("/zomato/profit/sheet/export/ajax/{month_name}/{client_id}","AjaxNewController@zomato_profit_export")->name("admin.zomato_profit_export");
     Route::get('/ajax/generated/rider/bill/status/{month}/{client_id}','AjaxNewController@getGeneratedBillStatus')->name('ajax.getGeneratedBillStatus');
-    
+    Route::get("/accounts/employee/account/{range}","AjaxNewController@getEmployeeAccounts")->name("admin.accounts.getEmployeeAccounts");
+    Route::get("/accounts/employee/bills/{range}","AjaxNewController@getEmployeeAccountsBills")->name("admin.accounts.getEmployeeAccountsBills");
 });
 // End Ajax Routes
 
@@ -275,6 +276,16 @@ Route::group([
     'middleware' => ['roles:kr_bikes']
 ], function(){
     Route::get("/kr-account","KRController@account_view")->name("admin.KR_Bikes.account_view");
+});
+
+Route::group([
+    'prefix' => 'admin', 
+    'namespace' => 'Admin',
+    'middleware' => ['roles:employee']
+], function(){
+    Route::get("/employee/salary_generate","EmployeeController@salary_generated")->name("employee.salary_generated");
+    Route::get("/employee/bonus","EmployeeController@employee_bonus");
+    Route::get("/employee/fine","EmployeeController@employee_fine");
 });
 
 // Expense
