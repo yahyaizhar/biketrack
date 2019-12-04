@@ -105,3 +105,14 @@
 	outline: 1px dotted #000;
 	outline: -webkit-focus-ring-color auto 5px;
 }
+
+/* ================ LG Custom Modal ================ */
+.bk-modal-lg {
+    padding: 0 !important;
+}
+.bk-modal-lg .modal-dialog {
+    min-width: 100%;
+}
+.bk-modal-lg .modal-dialog .modal-content {
+    border-radius: 0;
+}

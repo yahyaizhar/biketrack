@@ -64,4 +64,8 @@ class Invoice_item extends Authenticatable
         'taxable_amount',
         'subtotal'
     ];
+
+    public function Invoice(){
+        return $this->belongsTo('App\Model\Client\Invoice');
+    }
 }

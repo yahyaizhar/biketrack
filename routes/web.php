@@ -68,6 +68,7 @@ Route::group([
     Route::get("/zomato/profit/sheet/export/ajax/{month_name}/{client_id}","AjaxNewController@zomato_profit_export")->name("admin.zomato_profit_export");
     Route::get('/ajax/generated/rider/bill/status/{month}/{client_id}','AjaxNewController@getGeneratedBillStatus')->name('ajax.getGeneratedBillStatus');
     
+    Route::GET('/get/invoices','AjaxNewController@getInvoices')->name('invoice.get_invoices');
 });
 // End Ajax Routes
 
@@ -590,6 +591,7 @@ Route::group([
 ], function(){
    Route::get('/add/invoice/tax','InvoiceController@add_invoice')->name('tax.add_invoice');
    Route::POST('/add/invoice','InvoiceController@add_invoice_post')->name('tax.add_invoice_post');
+   
 
    Route::get('/invoice/tax/ajax/get_clients_details/{client_id}/{month}','InvoiceController@get_ajax_client_details')->name('tax.get_ajax_client_details');
    Route::get('/invoice/view','InvoiceController@view_invoices')->name('tax.view_invoices');

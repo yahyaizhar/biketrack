@@ -47,7 +47,7 @@ class InvoiceController extends Controller
         $invoice->invoice_subtotal=$r->invoice_subtotal;
 
         $invoice->taxable_subtotal=$r->taxable_subtotal;
-        $invoice->tax_method_id="0";
+        $invoice->tax_method_id=$r->tax_method_id;
         $invoice->taxable_amount=$r->tax_value;
 
         
@@ -59,7 +59,7 @@ class InvoiceController extends Controller
         
         $invoice->bank_id="0";
         $invoice->amount_paid=0;
-        $invoice->due_balance=$r->client_id;
+        $invoice->due_balance=$r->invoice_total;
 
         // $invoice->received_date=$r->client_id;
         $invoice->invoice_status=$r->invoice_status;
@@ -77,20 +77,10 @@ class InvoiceController extends Controller
        $invoice_modal['invoice']=$invoice->toArray();
        $invoice_modal['invoice']['invoice_items']=[];
        $invoice_modal['invoice']['client']=$client;
+       Invoice_item::where('invoice_id', $invoice->id)->delete();
         foreach ($r->invoice_items as $invoice_itemObj) {
-            $invoice_item_found = Invoice_item::where([
-                'invoice_id'=>$invoice->id, 
-                'item_desc'=>$invoice_itemObj['description'],
-                'item_qty'=>$invoice_itemObj['qty'],
-                'item_rate'=>$invoice_itemObj['rate'],
-                'subtotal'=>$invoice_itemObj['amount']
-            ])
-            ->get()
-            ->first();
+            
             $invoice_item = new Invoice_item;
-            if(isset($invoice_item_found)){
-                $invoice_item = $invoice_item_found;
-            }
             
             $invoice_item->invoice_id=$invoice->id;
             $invoice_item->item_desc=$invoice_itemObj['description'];
@@ -103,7 +93,7 @@ class InvoiceController extends Controller
             
             $invoice_item->item_amount= round($invoice_itemObj['qty'] * $invoice_itemObj['rate'],2) ;
             if(isset($invoice_itemObj['tax'])){
-                $invoice_item->tax_method_id="0";
+                $invoice_item->tax_method_id=$r->tax_method_id;
                 $invoice_item->taxable_amount=$invoice_itemObj['tax_amount'];
             }
             $invoice_item->subtotal=$invoice_itemObj['amount'];

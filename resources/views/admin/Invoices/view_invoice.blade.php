@@ -52,13 +52,12 @@
                         {{-- <th>
                             <input type="checkbox" id="select_all" >
                         </th> --}}
-                        <th>ID</th>
-                        <th>Owner</th>
-                        <th>Brand</th>
-                        <th>Model</th>
-                        <th>Bike Number</th>
-                        <th>Chassis Number</th>
-                        <th>Assigned To</th>
+                        <th>Invoice</th>
+                        <th>Client</th>
+                        <th>Date</th>
+                        <th>Due Date</th>
+                        <th>Balance</th>
+                        <th>Total</th>
                         <th>Status</th>
                         <th>Actions</th>                        
                     </tr>
@@ -67,6 +66,29 @@
 
             <!--end: Datatable -->
         </div>
+    </div>
+</div>
+
+{{-- pay cash --}}
+<div class="modal fade bk-modal-lg" id="receive_payment" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header border-bottom-0">
+            <h5 class="modal-title">Cash Paid to Rider</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <form class="kt-form" enctype="multipart/form-data" id="cash_paid">
+            <div class="modal-body">
+                <div class="kt-scroll" data-ktmenu-scroll="1" data-scroll="true"></div>
+                <h2>asdasdasd</h2>
+                <div class="kt-form__actions kt-form__actions--right">
+                    <button type="submit" class="btn btn-primary">Pay Cash To Rider</button>
+                </div>
+            </div>
+        </form>
+    </div>
     </div>
 </div>
 
@@ -86,29 +108,28 @@
 var bike_table;
 $(function() {
     bike_table = $('#bike-table').DataTable({
-        lengthMenu: [[-1], ["All"]],
+        lengthMenu: [[50,-1], [50,"All"]],
         processing: true,
-        serverSide: true,
+        serverSide: false,
         'language': { 
-            'loadingRecords': '&nbsp;',
+            // 'loadingRecords': '&nbsp;',
             'processing': $('.loading').show()
         },
         drawCallback:function(data){
-$('.total_entries').remove();
-        $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
-    },
-        ajax: "{!! route('bike.bike_show') !!}",
+            $('.total_entries').remove();
+            $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
+        },
+        ajax: "{!! route('invoice.get_invoices') !!}",
         columns: [
             //  { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
-            { data: 'id', name: 'id' },
-            { data: 'owner', name: 'owner' }, 
-            { data: 'brand', name: 'brand' },            
-            { data: 'model', name: 'model' },
-            { data: 'bike_number', name: 'bike_number' },
-            { data: 'chassis_number', name: 'chassis_number' },
-            { data: 'assigned_to', name: 'assigned_to' },
+            { data: 'invoice', name: 'invoice' },
+            { data: 'client_name', name: 'client_name' }, 
+            { data: 'date', name: 'date' },            
+            { data: 'due_date', name: 'due_date' },
+            { data: 'balance', name: 'balance' },
+            { data: 'total', name: 'total' },
             { data: 'status', name: 'status' },
-            { data: 'availability', name: 'availability' },
+            { data: 'actions', name: 'actions' },
         ],
         responsive:true,
         // 'columnDefs': [
@@ -181,6 +202,86 @@ function updateStatus(bike_id)
         }
     });
 }
-
+function receive_payment_popup($this) {
+    var invoice = JSON.parse($this.nextElementSibling.innerHTML);  
+    console.log(invoice);
+    return false;
+        
+}
 </script>
+
+<style>
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+  color: #929292;
+  height: 4rem;
+}
+.steps > .step {
+  position: relative;
+  display: table-cell;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #6D6875;
+}
+.steps > .step:before {
+  content: attr(data-step);
+  display: block;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 2px solid #e6e6e6;
+  color: #e6e6e6;
+  width: 2rem;
+  height: 2rem;
+  text-align: center;
+  margin-bottom: -4.2rem;
+  line-height: 1.9rem;
+  border-radius: 100%;
+  position: relative;
+  z-index: 1;
+  font-weight: 700;
+  font-size: 1rem;
+}
+.steps > .step:after {
+  content: '';
+  position: absolute;
+  display: block;
+  background: #e6e6e6;
+  width: 100%;
+  height: 0.125rem;
+  top: 1rem;
+  left: 50%;
+}
+.steps > .step:last-child:after {
+  display: none;
+}
+.steps > .step.is-complete {
+  color: #6D6875;
+}
+.steps > .step.is-complete:before {
+  content: '\2713';
+  color: #f68e20;
+  background: #fef0e2;
+  border: 2px solid #f68e20;
+}
+.steps > .step.is-complete:after {
+  background: #f68e20;
+}
+.steps > .step.is-active {
+  font-size: 1.3rem;
+}
+.steps > .step.is-active:before {
+  color: #FFF;
+  border: 2px solid #f68e20;
+  background: #f68e20;
+  margin-bottom: -4.9rem;
+}
+.step__wrapper{
+    margin: 40px 0 0 0;
+}
+</style>
 @endsection

@@ -46,6 +46,7 @@ class Invoice extends Authenticatable
             $activity_model->save();
         });
     }
+
     // ends logging
     use Notifiable;
     
@@ -77,4 +78,9 @@ class Invoice extends Authenticatable
         'status'
 
     ];
+
+    public function Invoice_item()
+    {
+        return $this->hasMany('App\Model\Client\Invoice_item', 'invoice_id');
+    }
 }

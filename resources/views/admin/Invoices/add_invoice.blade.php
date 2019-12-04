@@ -813,6 +813,8 @@ function autosize() {
         el.style.cssText = 'height:' + (el.scrollHeight + 23) + 'px';
     }, 0);
 }
+
+
 </script>
 @endsection
 

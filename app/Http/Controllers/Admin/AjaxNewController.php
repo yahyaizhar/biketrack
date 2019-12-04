@@ -49,6 +49,10 @@ use App\Log_activity;
 use Auth;
 use App\Model\Admin\Admin;
 use App\Company_investment;
+use App\Model\Client\Invoice;
+use App\Tax_method;
+use App\Bank_account;
+use App\Model\Client\Invoice_item;
 
 
 class AjaxNewController extends Controller
@@ -3028,6 +3032,81 @@ class AjaxNewController extends Controller
             return "0";
         })
         ->rawColumns(['rider_id','sim_bill','bike_rent','bike_bill','bike_fine','fuel','salik','salary',])
+        ->make(true);
+    }
+
+    public function getInvoices()
+    {
+        $invoices = Invoice::with('Invoice_item')->orderByDesc('created_at')->get();
+        return DataTables::of($invoices)
+        ->addColumn('invoice', function($invoice){
+            return $invoice->id;
+        })
+        ->addColumn('client_name', function($invoice){
+            $client=Client::find($invoice->client_id);
+            return $client->name;
+        })
+        ->addColumn('date', function($invoice){
+            return Carbon::parse($invoice->invoice_date)->format('F d, Y');
+        })
+        ->addColumn('due_date', function($invoice){
+            return Carbon::parse($invoice->invoice_due)->format('F d, Y');
+        })
+        ->addColumn('balance', function($invoice){
+            return "AED ".$invoice->due_balance;
+        })
+        ->addColumn('total', function($invoice){
+            return "AED ".$invoice->invoice_total;
+        })
+        ->addColumn('status', function($invoice){
+            $step1='';
+            $step2='';
+            $step3='';
+            $step4='';
+
+            switch ($invoice->invoice_status) {
+                case 'drafted':
+                    $step1='is-active';
+                    break;
+                case 'generated':
+                    $step1='is-complete';
+                    $step2='is-active';
+                    break;
+                case 'partially_paid':
+                    $step1='is-complete';
+                    $step2='is-complete';
+                    $step3='is-active';
+                    break;
+                case 'paid':
+                    $step1='is-complete';
+                    $step2='is-complete';
+                    $step3='is-complete';
+                    $step4='is-active';
+                    break;
+            }
+
+
+            $status='<div class="step__wrapper"> <ol class="steps">
+                        <li class="step '.$step1.'" data-step="1">
+                            Drafted
+                        </li>
+                        <li class="step '.$step2.'" data-step="2">
+                            Generated
+                        </li>
+                        <li class="step '.$step3.'" data-step="3">
+                            Partially Paid
+                        </li>
+                        <li class="step '.$step4.'" data-step="4">
+                            Paid
+                        </li>
+                    </ol> </div>';
+            return $status;
+        })
+        ->addColumn('actions', function($invoice){
+            return '<a href="" class="reveive_payment" onclick=\'receive_payment_popup(this);return false;\'>Receive Payment</a>
+            <noscript>'.$invoice->toJson().'</noscript>';
+        })
+        ->rawColumns(['invoice','client_name','date','due_date','balance','total','status','actions'])
         ->make(true);
     }
 }
