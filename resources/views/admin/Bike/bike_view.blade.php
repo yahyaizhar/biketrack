@@ -69,7 +69,7 @@
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/datatables/basic/basic.js') }}" type="text/javascript"></script>
 
 <script>
-var bike_table;
+var bike_table;   
 $(function() {
     bike_table = $('#bike-table').DataTable({
         lengthMenu: [[-1], ["All"]],

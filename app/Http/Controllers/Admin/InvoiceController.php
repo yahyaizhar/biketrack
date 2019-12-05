@@ -317,4 +317,7 @@ class InvoiceController extends Controller
         $BA->save();
         return redirect(url('admin/invoice/bank_account/add'))->with('message', 'Record Created Successfully.');
     }
+    public function invoive_payments(){
+        return view('admin.Invoices.invoice_payments');
+    }
 }
