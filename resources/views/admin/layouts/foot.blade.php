@@ -451,7 +451,13 @@ jQuery(function($) {
             swipeEasing: true,
             wheelPropagation:false
         });
-    });  
+    }); 
+    
+    $(".bk-modal-lg").on('show.bs.modal', function(){
+    $('body').removeClass('bk-modal-open').addClass('bk-modal-open')
+    }).on('hidden.bs.modal', function(){
+        $('body').removeClass('bk-modal-open')
+    });
     
 });
 

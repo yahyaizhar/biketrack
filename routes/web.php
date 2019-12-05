@@ -611,6 +611,9 @@ Route::group([
    Route::post('/invoice/tax_method/store','InvoiceController@store_tax_method')->name('invoice.store_tax_method');
    Route::get('/invoice/bank_account/add','InvoiceController@add_bank_account')->name('invoice.add_bank_account');
    Route::post('/invoice/bank_account/store','InvoiceController@store_bank_account')->name('invoice.store_bank_account');
+
+   Route::get('/invoice/get/open/{client_id}','InvoiceController@getOpenIvoices')->name('invoice.getOpenIvoices');
+   Route::post('/invoice/payment/save','InvoiceController@save_payment')->name('invoice.save_payment');
   
 });    
 

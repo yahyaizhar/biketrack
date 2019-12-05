@@ -17,6 +17,7 @@ class CreateBankAccountsTable extends Migration
             $table->increments('id');
             $table->string('name')->nullable();
             $table->string('account_number');
+            $table->string('active_status')->default("A");
             $table->timestamps();
         });
     }
