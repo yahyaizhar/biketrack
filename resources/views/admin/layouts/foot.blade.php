@@ -2,8 +2,9 @@
     <div class="loader"></div>
 </div>
 <script>
-        var KTAppOptions = {
-            "colors": {
+// alert('rr')
+        var KTAppOptions = { 
+            "colors": { 
                 "state": {
                     "brand": "#5d78ff",
                     "dark": "#282a3c",
