@@ -2393,59 +2393,54 @@ public function client_income_update(Request $request,$id){
         $is_exception=false;
         $exception_msg='';
         $j=0;
-        foreach ($data as $item) {
+        foreach ($data as $item_row) {
             $i++;
             
-            $rows=$item['rows'];
+            $date=$item_row['date'];
+            $start_of_month = Carbon::parse($date)->startOfMonth()->format('Y-m-d');
+            $feid=isset($item_row['feid'])?$item_row['feid']:null;
+            $grand_total=isset($item_row['grand_total'])?$item_row['grand_total']:null;
+            $login_hours=isset($item_row['login_hours'])?$item_row['login_hours']:null;
+            $trips=isset($item_row['orders'])?$item_row['orders']:null;
+            $payout_for_login_hours=isset($item_row['payout_for_login_hrs'])?$item_row['payout_for_login_hrs']:null;
+            $payout_for_trips=isset($item_row['payout_for_orders'])?$item_row['payout_for_orders']:null;
+            $rider_id=isset($item_row['rider_id'])?$item_row['rider_id']:null;
 
-            foreach ($rows as $item_row) {
-                $j++;
-                $date=$item['date'];
-                $start_of_month = Carbon::parse($date)->startOfMonth()->format('Y-m-d');
-                $feid=isset($item_row['feid'])?$item_row['feid']:null;
-                $grand_total=isset($item_row['grand_total'])?$item_row['grand_total']:null;
-                $login_hours=isset($item_row['login_hours'])?$item_row['login_hours']:null;
-                $trips=isset($item_row['orders'])?$item_row['orders']:null;
-                $payout_for_login_hours=isset($item_row['payout_for_login_hrs'])?$item_row['payout_for_login_hrs']:null;
-                $payout_for_trips=isset($item_row['payout_for_orders'])?$item_row['payout_for_orders']:null;
-                $rider_id=isset($item_row['rider_id'])?$item_row['rider_id']:null;
-
-                if($feid==null){
-                    //throw exception. No feid found
-                    $is_exception=true;
-                    $exception_msg='No FEID found against date '.$date.'. Please recheck the data';
-                    break;
-                }
-                $zi_found = Arr::first($zi, function ($item_zi, $key) use ($start_of_month, $item_row) {
-                    return $item_zi->date == $start_of_month && $item_zi->feid==$item_row['feid'];
-                });
-                if(isset($zi_found)){
-                    //found the row in Income Zomato table
-                    $income_zomato_id=$zi_found->id;
-                    
-                    $obj = [];
-                    $obj['date']=$date;
-                    $obj['feid']=$feid;
-                    $obj['zomato_income_id']=$income_zomato_id;
-                    $obj['rider_id']=$rider_id;
-                    $obj['login_hours']=$login_hours;
-                    $obj['trips']=$trips;
-                    $obj['payout_for_login_hours']=$payout_for_login_hours;
-                    $obj['payout_for_trips']=$payout_for_trips;
-                    $obj['grand_total']=$grand_total;
-                    $obj['created_at']=Carbon::now();
-                    // $obj['updated_at']=Carbon::now();
-                    array_push($zomato_objects, $obj);
-                }
-                else {
-                    //throw exception. No rows found
-                    $is_exception=true;
-                    $exception_msg='No data found in income_zomatos table against FEID '.$feid.' and month of '.$date;
-                    break;
-                }
+            if($feid==null){
+                //throw exception. No feid found
+                $is_exception=true;
+                $exception_msg='No FEID found against date '.$date.'. Please recheck the data';
+                break;
             }
+            $zi_found = Arr::first($zi, function ($item_zi, $key) use ($start_of_month, $item_row) {
+                return $item_zi->date == $start_of_month && $item_zi->feid==$item_row['feid'];
+            });
+            if(isset($zi_found)){
+                //found the row in Income Zomato table
+                $income_zomato_id=$zi_found->id;
+                
+                $obj = [];
+                $obj['date']=$date;
+                $obj['feid']=$feid;
+                $obj['zomato_income_id']=$income_zomato_id;
+                $obj['rider_id']=$rider_id;
+                $obj['login_hours']=$login_hours;
+                $obj['trips']=$trips;
+                $obj['payout_for_login_hours']=$payout_for_login_hours;
+                $obj['payout_for_trips']=$payout_for_trips;
+                $obj['grand_total']=$grand_total;
+                $obj['created_at']=Carbon::now();
+                // $obj['updated_at']=Carbon::now();
+                array_push($zomato_objects, $obj);
+            }
+            else {
+                //throw exception. No rows found
+                $is_exception=true;
+                $exception_msg='No data found in income_zomatos table against FEID '.$feid.' and month of '.$date;
+                break;
+            }
+            
 
-            if($is_exception) break;
         }
         if($is_exception){
             return response()->json([
