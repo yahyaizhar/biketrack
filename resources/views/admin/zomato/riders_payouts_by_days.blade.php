@@ -225,15 +225,14 @@ uppy.use(Uppy.DragDrop, {
                         var second_chunk = first_chunk[second_chunk_key];
                         var _date = (second_chunk_key.split('@')[0]).replace(/[_]/g, '-');
                         var _date_index=parseInt(second_chunk_key.split('@')[1]);
-                        var _firstObj=_ImportData.find(function(x){return x.date==_date});
-                        if(typeof _firstObj == "undefined") _ImportData.push({date:_date,rows:[]}),_firstObj=_ImportData.find(function(x){return x.date==_date});
+                        // var _firstObj=_ImportData.find(function(x){return x.date==_date});
+                        // if(typeof _firstObj == "undefined") _ImportData.push({date:_date,rows:[]}),_firstObj=_ImportData.find(function(x){return x.date==_date});
                         if(i==0){
-                            _ImportHeading.includes(second_chunk) || _ImportHeading.push(second_chunk);
-                            
+                            _ImportHeading.includes(second_chunk) || _ImportHeading.push(second_chunk);   
                         }
                         else{
-                            var _secondObj=_firstObj.rows.find(function(x){return x.feid==_feid});
-                            if(typeof _secondObj == "undefined") _firstObj.rows.push({feid:_feid}),_secondObj=_firstObj.rows.find(function(x){return x.feid==_feid});
+                            var _secondObj=_ImportData.find(function(x){return x.feid==_feid && x.date==_date});
+			                if(typeof _secondObj == "undefined") _ImportData.push({feid:_feid, date:_date}),_secondObj=_ImportData.find(function(x){return x.feid==_feid&& x.date==_date});
                             _secondObj[_ImportHeading[_date_index]]=second_chunk;
                         }
                     })
