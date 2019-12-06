@@ -14,6 +14,9 @@
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/phpinfo', function () {
+    return phpinfo();
+});
 
 // Ajax Routes
 Route::group([
@@ -620,7 +623,9 @@ Route::group([
    Route::post('/invoice/payment/save','InvoiceController@save_payment')->name('invoice.save_payment');
   
    Route::get('/invoice/payments/view','InvoiceController@invoive_payments')->name('invoice.invoive_payments');
-});    
+});   
+
+
 
 
 
