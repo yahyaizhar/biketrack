@@ -2396,7 +2396,13 @@ public function client_income_update(Request $request,$id){
         foreach ($data as $item_row) {
             $i++;
             
-            $date=$item_row['date'];
+            $date=isset($item_row['date'])?$item_row['date']:null;
+            if($date==null){
+                //throw exception. No feid found
+                $is_exception=true;
+                $exception_msg='No Date found against feid '.$item_row['feid'].' and row '.$i.'. Please recheck the data';
+                break;
+            }
             $start_of_month = Carbon::parse($date)->startOfMonth()->format('Y-m-d');
             $feid=isset($item_row['feid'])?$item_row['feid']:null;
             $grand_total=isset($item_row['grand_total'])?$item_row['grand_total']:null;
