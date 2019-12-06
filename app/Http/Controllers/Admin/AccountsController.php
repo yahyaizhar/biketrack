@@ -2392,12 +2392,14 @@ public function client_income_update(Request $request,$id){
 
         $is_exception=false;
         $exception_msg='';
+        $j=0;
         foreach ($data as $item) {
             $i++;
             
             $rows=$item['rows'];
 
             foreach ($rows as $item_row) {
+                $j++;
                 $date=$item['date'];
                 $start_of_month = Carbon::parse($date)->startOfMonth()->format('Y-m-d');
                 $feid=isset($item_row['feid'])?$item_row['feid']:null;
@@ -2456,7 +2458,8 @@ public function client_income_update(Request $request,$id){
         return response()->json([
             'status'=>1,
             'data'=>$zomato_objects,
-            'count'=>$i
+            'count1'=>$i,
+            'count2'=>$j
         ]);
     }
 }
