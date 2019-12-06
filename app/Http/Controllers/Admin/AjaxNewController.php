@@ -2821,6 +2821,9 @@ class AjaxNewController extends Controller
         ->addColumn('amount', function($bike_f){
             return $bike_f->amount;
         })
+        ->addColumn('date', function($bike_f){
+            return Carbon::parse($bike_f->month)->format("F");
+        })
         ->addColumn('bike_id', function($bike_f){
             $bike = bike::find($bike_f->bike_id);
             if (isset($bike)) {
@@ -2835,6 +2838,13 @@ class AjaxNewController extends Controller
             }
             return 'No Rider Assigned';
         })
+        ->addColumn('rider_id_id', function($bike_f){
+            $rider = Rider::find($bike_f->rider_id);
+            if (isset($rider)) {
+                return "KR".$rider->id;
+            }
+            return 'No Rider ID Assigned';
+        })
         ->addColumn('actions', function($bike_f){
             return '<span class="dtr-data">
             <span class="dropdown">
@@ -2848,7 +2858,7 @@ class AjaxNewController extends Controller
             </span>
         </span>';
         })
-        ->rawColumns(['status','bike_id','desc','amount','actions', 'rider_id'])
+        ->rawColumns(['rider_id_id','date','status','bike_id','desc','amount','actions', 'rider_id'])
         ->make(true);
     }
     public function getGeneratedBillStatus($month,$client_id) 
