@@ -129,6 +129,12 @@
                                 <h3>BALANCE DUE</h3>    
                                 <span class="balance_due">AED 0.00</span>
                             </div>
+                            <div class="col-md-12">
+                                <div class="messages">
+    
+                                </div>
+                                
+                            </div>
                         </div>
                         <div class="row">
                             <div class="form-group col-md-4">
@@ -351,6 +357,15 @@
 <link href=" https://printjs-4de6.kxcdn.com/print.min.css" rel="stylesheet">
 <script>
 var invoiceObj=null;
+var basic_alert= '   <div><div class="alert alert-outline-danger fade show" role="alert">  '  + 
+ '                                   <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div>  '  + 
+ '                                       <div class="alert-text">A simple danger alert—check it out!</div>  '  + 
+ '                                       <div class="alert-close">  '  + 
+ '                                       <button type="button" class="close" data-dismiss="alert" aria-label="Close">  '  + 
+ '                                           <span aria-hidden="true"><i class="la la-close"></i></span>  '  + 
+ '                                       </button>  '  + 
+ '                                   </div>  '  + 
+ '                              </div> </div>  ' ; 
 $(document).ready(function () {
     // append_row();
     $('#invoices [data-name="client_id"],#invoices [name="month"]').on("change input", function () {
@@ -368,6 +383,7 @@ $(document).ready(function () {
                 console.log(resp);
                 if (resp.status == 1) {
                     $("#invoice-table tbody").html('');
+                    _invoices.remove_msg();
                     invoiceObj=null;
                     $('#invoices [data-name="billing_address"]').val(resp.billing_address);
                     // $('[data-name="tax_rate"]').val(5);
@@ -479,7 +495,7 @@ $(document).ready(function () {
                     subtotal();
                     
                 } else {
-                    alert("Error: " + resp.message);
+                    _invoices.show_msg(resp.message);
                 }
 
             });
@@ -513,7 +529,8 @@ $(document).ready(function () {
     var validate_invoice=function(_form){
         var _subtotal = parseFloat($('[data-name="invoice_subtotal"]').val())||0;
         if(_subtotal==0){
-            alert('Invoice subtotal cannot be Zero');
+            _invoices.remove_msg();
+            _invoices.show_msg('Invoice subtotal cannot be Zero');
             return false;
         }
         return true;
@@ -624,6 +641,18 @@ $(document).ready(function () {
 var total_amount = 0;
 var taxable_amount = 0;
 
+var _invoices={
+    show_msg:function(msg=""){
+        if(msg=="")return;
+        var _msg = $(basic_alert);
+        _msg.find('.alert-text').html(msg);
+        $('.messages').html(_msg.html());
+        $(document).scrollTop(0)
+    },
+    remove_msg:function(){
+        $('.messages').html('');
+    }
+};
 function subtotal() {
     total_amount = 0;
     taxable_amount = 0;

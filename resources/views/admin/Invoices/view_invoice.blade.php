@@ -44,6 +44,10 @@
         #receive_payment_inner{
             padding-right: 10px;
         }
+        .statusText__container{
+            width: 340px;
+            display: block; 
+        }
         </style>
     <!--end::Page Vendors Styles -->
 @endsection
@@ -77,7 +81,7 @@
         <div class="kt-portlet__body">
 
             <!--begin: Datatable -->
-            <table class="table table-striped- table-hover table-checkable table-condensed" id="bike-table">
+            <table class="table table-striped- table-hover table-checkable table-condensed" id="invoice-table">
                 <thead>
                     <tr>
                         {{-- <th>
@@ -200,7 +204,7 @@
                 </div>
                 
                 <div class="kt-form__actions kt-form__actions--right">
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="submit" class="btn btn-info btn-wide mr-4"><i class="fa fa-dollar-sign"></i> Save Payments</button>
                 </div>
             </div>
         </form>
@@ -223,7 +227,7 @@
 
 <!--end::Page Scripts -->
 <script>
-var bike_table;
+var invoice_table;
 var basic_alert= '   <div><div class="alert alert-outline-danger fade show" role="alert">  '  + 
  '                                   <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div>  '  + 
  '                                       <div class="alert-text">A simple danger alert—check it out!</div>  '  + 
@@ -234,44 +238,7 @@ var basic_alert= '   <div><div class="alert alert-outline-danger fade show" role
  '                                   </div>  '  + 
  '                              </div> </div>  ' ; 
 $(function() {
-    bike_table = $('#bike-table').DataTable({
-        lengthMenu: [[50,-1], [50,"All"]],
-        processing: true,
-        serverSide: false,
-        'language': { 
-            // 'loadingRecords': '&nbsp;',
-            'processing': $('.loading').show()
-        },
-        drawCallback:function(data){
-            $('.total_entries').remove();
-            $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
-        },
-        ajax: "{!! route('invoice.get_invoices') !!}",
-        columns: [
-            //  { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
-            { data: 'invoice', name: 'invoice' },
-            { data: 'client_name', name: 'client_name' }, 
-            { data: 'date', name: 'date' },            
-            { data: 'due_date', name: 'due_date' },
-            { data: 'balance', name: 'balance' },
-            { data: 'total', name: 'total' },
-            { data: 'status', name: 'status' },
-            { data: 'actions', name: 'actions' },
-        ],
-        responsive:true,
-        // 'columnDefs': [
-        //     {
-        //         'targets': 0,
-        //         'checkboxes': {
-        //         'selectRow': true
-        //         }
-        //     }
-        // ],
-        // 'select': {
-        //     'style': 'multi'
-        // },
-        order:[0,'desc'],
-    });
+    
 
 
     $('#receive_payment [data-name="client_id"]').on('change', function(){
@@ -286,9 +253,13 @@ $(function() {
         }
     });
     $('#receive_payment [data-name="payment_method"]').on('change', function(){
-        var _val = $(this).val().trim();
-        $('#receive_payment .bank_id-wrapper').show().find('[data-name="bank_id"]').prop('required', true);
+        var _val = $(this).val();
+        $('#receive_payment .bank_id-wrapper').show().find('[data-name="bank_id"]').prop('required', true).val('').trigger('change.select2');
         if(_val=="cash")$('#receive_payment .bank_id-wrapper').hide().find('[data-name="bank_id"]').prop('required', false); 
+    });
+
+    $(".bk-modal-lg").on('hidden.bs.modal', function(){
+        getInvoices();
     });
 });
 
@@ -379,7 +350,8 @@ function getOpenInvoice() {
                     receive_payment.show_msg('No open invoices found against this customer.');
                     return;
                 }
-                
+                $('#receive_payment [data-name="payment_method"]')[0].selectedIndex = -1;
+                $('#receive_payment [data-name="payment_method"]').trigger('change');
                 var  markup='';
                 invoices.forEach(function(invoice, i){
                     var total_rows = parseFloat($("#open_invoice_table tbody tr").length);
@@ -392,14 +364,20 @@ function getOpenInvoice() {
                             '       <td> AED '+invoice.due_balance+' </td>   ' +
                             '       <td>' +
                             '           <input type="hidden" name="payments['+i+'][invoice_id]" value="'+invoice.id+'">'+
-                            '           <input data-input-type="float" type="text" class="form-control" data-name="payment" oninput="receive_payment.updateReceivedAmount()" name="payments['+i+'][amount]" min="0" value="'+invoice.due_balance+'">'+
+                            '           <input data-input-type="float_limited" data-max="'+invoice.due_balance+'"  type="text" class="form-control" data-name="payment" oninput="receive_payment.updateReceivedAmount()" name="payments['+i+'][amount]" min="0" value="'+invoice.due_balance+'">'+
                             '       </td>'+
                             '  </tr>  ';
                 });
                 $("#open_invoice_table tbody").html(markup);
                 $('[data-input-type]').each(function(i,elem){
                     var _type = $(this).attr('data-input-type');
+                    var _max = parseFloat($(this).attr('data-max'))||0;
                     switch (_type) {
+                        case "float_limited":
+                            biketrack.setInputFilter(this, function(value) {
+                                return /^-?\d*[.,]?\d*$/.test(value) && (value === "" || parseFloat(value) <= _max);
+                            });
+                            break;
                         case "float":
                             biketrack.setInputFilter(this, function(value) {
                                 return /^-?\d*[.,]?\d*$/.test(value); 
@@ -461,63 +439,7 @@ function setScrollBkModal() {
         }
     });
 }
-setScrollBkModal();
-function deleteBike(bike_id)
-{
-    var url = "{{ url('admin/bike') }}"+ "/" + bike_id ;
-    console.log(url,true);
-    sendDeleteRequest(url, false, null, bike_table);
-}
-function updateStatus(bike_id)
-{
-    var url = "{{ url('admin/bike') }}" + "/" + bike_id + "/updateStatus";
-    console.log(url,true);
-    swal.fire({
-        title: 'Are you sure?',
-        text: "You want update status!",
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes!'
-    }).then(function(result) {
-        if (result.value) {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                url : url,
-                type : 'POST',
-                beforeSend: function() {            
-                    $('.loading').show();
-                },
-                complete: function(){
-                    $('.loading').hide();
-                },
-                success: function(data){
-                    swal.fire({
-                        position: 'center',
-                        type: 'success',
-                        title: 'Record updated successfully.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                    bike_table.ajax.reload(null, false);
-                },
-                error: function(error){
-                    swal.fire({
-                        position: 'center',
-                        type: 'error',
-                        title: 'Oops...',
-                        text: 'Unable to update.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                }
-            });
-        }
-    });
-}
+
 function receive_payment_popup($this) {
     var invoice = JSON.parse($this.nextElementSibling.innerHTML);  
     console.log(invoice);
@@ -526,6 +448,56 @@ function receive_payment_popup($this) {
     return false;
         
 }
+
+function getInvoices() {
+    invoice_table = $('#invoice-table').DataTable({
+        lengthMenu: [[50,-1], [50,"All"]],
+        processing: true,
+        destroy: true,
+        serverSide: false,
+        'language': { 
+            // 'loadingRecords': '&nbsp;',
+            'processing': $('.loading').show()
+        },
+        drawCallback:function(data){
+            $('.total_entries').remove();
+            $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
+        },
+        ajax: "{!! route('invoice.get_invoices') !!}",
+        columns: [
+            //  { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
+            { data: 'invoice', name: 'invoice' },
+            { data: 'client_name', name: 'client_name' }, 
+            { data: 'date', name: 'date' },            
+            { data: 'due_date', name: 'due_date' },
+            { data: 'balance', name: 'balance' },
+            { data: 'total', name: 'total' },
+            { data: 'status', name: 'status' },
+            { data: 'actions', name: 'actions' },
+        ],
+        responsive:true,
+        // 'columnDefs': [
+        //     {
+        //         'targets': 0,
+        //         'checkboxes': {
+        //         'selectRow': true
+        //         }
+        //     }
+        // ],
+        // 'select': {
+        //     'style': 'multi'
+        // },
+        order:[0,'desc'],
+    });
+    
+}
+function handle_status($this) {
+    console.log($this);
+    $($this).find('.statusText__wrapper').toggle();
+    $($this).find('.step__wrapper').toggle()
+}
+getInvoices();
+setScrollBkModal();
 </script>
 
 <style>
@@ -601,7 +573,7 @@ function receive_payment_popup($this) {
   background: #f68e20;
 }
 .steps > .step.is-active {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
 }
 .steps > .step.is-active:before {
   color: #FFF;

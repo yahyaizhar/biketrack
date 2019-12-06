@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Model\Client;
+namespace App\Model\Invoice;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -81,6 +81,10 @@ class Invoice extends Authenticatable
 
     public function Invoice_item()
     {
-        return $this->hasMany('App\Model\Client\Invoice_item', 'invoice_id');
+        return $this->hasMany('App\Model\Invoice\Invoice_item', 'invoice_id');
+    }
+    public function Invoice_Payment()
+    {
+        return $this->hasMany('App\Model\Invoice\Invoice_Payment', 'invoice_id');
     }
 }

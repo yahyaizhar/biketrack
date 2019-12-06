@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Model\Client;
+namespace App\Model\Invoice;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -66,6 +66,6 @@ class Invoice_item extends Authenticatable
     ];
 
     public function Invoice(){
-        return $this->belongsTo('App\Model\Client\Invoice');
+        return $this->belongsTo('App\Model\Invoice\Invoice');
     }
 }

@@ -49,12 +49,13 @@ use App\Log_activity;
 use Auth;
 use App\Model\Admin\Admin;
 use App\Company_investment;
-use App\Model\Client\Invoice;
+use App\Model\Invoice\Invoice;
 use App\Tax_method;
 use App\Bank_account;
-use App\Model\Client\Invoice_item;
+use App\Model\Invoice\Invoice_item;
 use App\Model\Invoice\Invoice_Payment;
 use App\Model\Accounts\EmployeeAccounts;
+use Str;
 
 class AjaxNewController extends Controller
 {
@@ -3064,43 +3065,81 @@ class AjaxNewController extends Controller
             $step3='';
             $step4='';
 
+            $invoice_status='';
+
             switch ($invoice->invoice_status) {
                 case 'drafted':
                     $step1='is-active';
+                    $invoice_status='Drafted';
                     break;
                 case 'generated':
                     $step1='is-complete';
                     $step2='is-active';
+                    $invoice_status='Generated';
                     break;
                 case 'partially_paid':
                     $step1='is-complete';
                     $step2='is-complete';
                     $step3='is-active';
+                    $invoice_status='Partially paid';
                     break;
                 case 'paid':
                     $step1='is-complete';
                     $step2='is-complete';
                     $step3='is-complete';
                     $step4='is-active';
+                    $invoice_status='Paid';
                     break;
             }
 
 
-            $status='<div class="step__wrapper"> <ol class="steps">
-                        <li class="step '.$step1.'" data-step="1">
-                            Drafted
-                        </li>
-                        <li class="step '.$step2.'" data-step="2">
-                            Generated
-                        </li>
-                        <li class="step '.$step3.'" data-step="3">
-                            Partially Paid
-                        </li>
-                        <li class="step '.$step4.'" data-step="4">
-                            Paid
-                        </li>
-                    </ol> </div>';
-            return $status;
+            $statusBar='<div class="step__wrapper" style="display:none"> 
+                            <ol class="steps">
+                                <li class="step '.$step1.'" data-step="1">
+                                    Drafted
+                                </li>
+                                <li class="step '.$step2.'" data-step="2">
+                                    Generated
+                                </li>
+                                <li class="step '.$step3.'" data-step="3">
+                                    Partially Paid
+                                </li>
+                                <li class="step '.$step4.'" data-step="4">
+                                    Paid
+                                </li>
+                            </ol> 
+                        </div>';
+            $tz="Asia/Dubai";
+            $current_date = Carbon::createFromFormat('Y-m-d', Carbon::now()->format('Y-m-d'), $tz);
+
+            $remaining_days = $current_date->diffInDays(Carbon::parse($invoice->invoice_due), false);
+            $abs_remainingDays = abs($remaining_days);
+            $statusText='';
+            if ($remaining_days < 0) {
+                //overdue
+                
+                $daysText = $abs_remainingDays.' '.Str::plural('day', $abs_remainingDays);
+                
+                $statusText='<span class="kt-font-danger">Overdue '.$daysText.' ('.$invoice_status.')</span>';
+            }
+            else {
+                //not due yet
+                $daysText = 'in '.$abs_remainingDays.' '.Str::plural('day', $abs_remainingDays);
+                if($abs_remainingDays==0) $daysText='today';
+                if($abs_remainingDays==1) $daysText='tomorrow';
+                $statusText='Due '.$daysText.' ('.$invoice_status.')';
+            }
+            if($invoice->payment_status=="paid"){
+                //paid
+                
+                $statusText='<span class="kt-font-success"><i class="fa fa-check-circle" style="font-size: 130%;"></i> Paid</span>';
+            }
+
+            $html = '<a href="" class="statusText__container" onclick="handle_status(this);return false;">
+                    <div class="statusText__wrapper">'.$statusText.' <i class="la la-angle-down"></i></div>
+                    '.$statusBar.'
+                    </a>';
+            return $html;
         })
         ->addColumn('actions', function($invoice){
             return '<a href="" class="reveive_payment" onclick=\'receive_payment_popup(this);return false;\'>Receive Payment</a>

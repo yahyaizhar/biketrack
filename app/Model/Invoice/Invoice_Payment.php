@@ -68,4 +68,8 @@ class Invoice_Payment extends Authenticatable
         'attachment',
         'invoice_status',
     ];
+
+    public function Invoice(){
+        return $this->belongsTo('App\Model\Invoice\Invoice');
+    }
 }

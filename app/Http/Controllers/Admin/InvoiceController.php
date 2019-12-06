@@ -9,11 +9,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Model\Client\Client;
 use App\Model\Client\Client_History;
-use App\Model\Client\Invoice;
+use App\Model\Invoice\Invoice;
+use App\Model\Invoice\Invoice_Payment;
 use App\Tax_method;
 use App\Model\Bank\Bank_account;
 use App\Model\Bank\Bank_transaction;
-use App\Model\Client\Invoice_item;
+use App\Model\Invoice\Invoice_item;
 use App\Model\Accounts\Company_Account;
 use App\Model\Accounts\Rider_Account;
 use App\Model\Accounts\Income_zomato;
@@ -110,14 +111,59 @@ class InvoiceController extends Controller
     }
 
     public function save_payment(Request $r){
-        // $payments = $r->payments;
-        // foreach ($payments as $payment) {
-        //     $invoice = Invoice::find($payment->invoice_id);
+        $payments = $r->payments;
+        foreach ($payments as $payment) {
+            $payment_method=$r->payment_method;
+            $invoice = Invoice::find($payment['invoice_id']);
+            $invoice_payment = new Invoice_Payment;
+            $invoice_payment->invoice_id=$invoice->id;
 
-        // }
+            $payment_amount=$payment['amount'];
+            if($payment_amount <=0) continue;
+            $total_paid =round($invoice->amount_paid + $payment_amount,2);
+            $due = round($invoice->due_balance - $payment_amount,2);
+
+            //updating the invoice
+            $inv_paymentStatus="pending";
+            $inv_invoiceStatus="partially_paid";
+            $inv_receivedDate=null;
+            $inv_status="open";
+            if($due<=0){
+                //invoice paid
+                $inv_paymentStatus="paid";
+                $inv_invoiceStatus="paid";
+                $inv_receivedDate=Carbon::now()->format('Y-m-d');
+                $inv_status="closed";
+            }
+            $invoice->amount_paid=$total_paid;
+            $invoice->due_balance=$due;
+            $invoice->payment_status=$inv_paymentStatus;
+            $invoice->invoice_status=$inv_invoiceStatus;
+            $invoice->received_date =$inv_receivedDate;
+            $invoice->status=$inv_status;
+
+
+
+            //saving payment
+            $invoice_payment->payment_method=$payment_method;
+            if($payment_method=="bank"){
+                $invoice_payment->bank_id=$r->bank_id; 
+            }
+
+            $invoice_payment->original_amount= $invoice->invoice_total; 
+            $invoice_payment->payment_date=Carbon::parse($r->payment_date)->format('Y-m-d'); 
+            $invoice_payment->payment=$payment_amount; 
+            $invoice_payment->due_balance=$due; 
+
+            $invoice_payment->payment_received_by=Auth::user()->id; 
+            $invoice_payment->status=$inv_status; 
+
+            $invoice->save();
+            $invoice_payment->save();
+        }
         return response()->json([
             'status'=>1,
-            'data'=>$r->all()
+            'data'=>Invoice_Payment::all()
         ]);
     }
     public function getOpenIvoices($client_id)
@@ -139,6 +185,24 @@ class InvoiceController extends Controller
         $client_riders=Client_Rider::where('client_id', $client->id)->get();
         $billing_address=$client->address;
         $month = Carbon::parse($formatted_month)->format('m');
+
+        $open_invoice = Invoice::where([
+            'client_id'=>$client_id,
+            'month'=>$formatted_month,
+            'active_status'=>'A'
+        ])
+        ->where(function($q) {
+            $q->where('invoice_status', "partially_paid")
+              ->orWhere('invoice_status', 'paid');
+        })
+        ->get()
+        ->first();
+        if(isset($open_invoice)){ // an invoice is found and some payment received
+            return response()->json([
+                'status'=>0,
+                'message'=>'Cannot edit invoice #'.$open_invoice->id.' because some payments received against this'
+            ]);
+        }
 
         $client_settings = json_decode( $client->setting,true );
         $payment_method = $client_settings['payout_method'];
@@ -271,10 +335,8 @@ class InvoiceController extends Controller
                 break;
             case 'commission_based':
                 return response()->json([
-                    'status'=>1,
-                    'billing_address' => $billing_address,
-
-                    'payment_method'=>$payment_method,
+                    'status'=>0,
+                    'message'=>'Cannot generate invoices against commission based customers.'
                 ]);
                 break;
             
