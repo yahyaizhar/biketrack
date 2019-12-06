@@ -1305,7 +1305,7 @@ class AjaxNewController extends Controller
             return $expense->id;
         })
         ->addColumn('date', function($expense){
-            return Carbon::parse($expense->month)->format("d M, Y");
+            return Carbon::parse($expense->month)->format("F");
         })
         ->addColumn('bike_id', function($expense){
             $bike = bike::find($expense->bike_id);
