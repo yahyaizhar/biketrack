@@ -239,14 +239,13 @@ uppy.use(Uppy.DragDrop, {
                 })
                 import_data=_ImportData;
                 import_data.forEach(function(data0, i){
-                    data0.rows.forEach(function(data1, j){
-                        var client_rider=client_riders.find(function(x){return x.client_rider_id===data1.feid});
-                        var _riderID = null;
-                        if(typeof client_rider !== "undefined"){
-                            _riderID=client_rider.rider_id;
-                        }
-                        import_data[i].rows[j]['rider_id']=_riderID;
-                    });
+                    var client_rider=client_riders.find(function(x){return x.client_rider_id===data0.feid});
+                    var _riderID = null;
+                    if(typeof client_rider !== "undefined"){
+                        _riderID=client_rider.rider_id;
+                    }
+                    import_data[i]['rider_id']=_riderID;
+                    
                 });
                 console.log('import_data',import_data);
             //    return;
