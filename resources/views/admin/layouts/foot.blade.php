@@ -2,8 +2,9 @@
     <div class="loader"></div>
 </div>
 <script>
-        var KTAppOptions = {
-            "colors": {
+// alert('rr')
+        var KTAppOptions = { 
+            "colors": { 
                 "state": {
                     "brand": "#5d78ff",
                     "dark": "#282a3c",
@@ -451,7 +452,13 @@ jQuery(function($) {
             swipeEasing: true,
             wheelPropagation:false
         });
-    });  
+    }); 
+    
+    $(".bk-modal-lg").on('show.bs.modal', function(){
+    $('body').removeClass('bk-modal-open').addClass('bk-modal-open')
+    }).on('hidden.bs.modal', function(){
+        $('body').removeClass('bk-modal-open')
+    });
     
 });
 

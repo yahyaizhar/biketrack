@@ -11,7 +11,8 @@ use App\Model\Client\Client;
 use App\Model\Client\Client_History;
 use App\Model\Client\Invoice;
 use App\Tax_method;
-use App\Bank_account;
+use App\Model\Bank\Bank_account;
+use App\Model\Bank\Bank_transaction;
 use App\Model\Client\Invoice_item;
 use App\Model\Accounts\Company_Account;
 use App\Model\Accounts\Rider_Account;
@@ -106,6 +107,32 @@ class InvoiceController extends Controller
             'status'=>1,
             'invoice'=>$invoice_modal['invoice']
         ]);
+    }
+
+    public function save_payment(Request $r){
+        // $payments = $r->payments;
+        // foreach ($payments as $payment) {
+        //     $invoice = Invoice::find($payment->invoice_id);
+
+        // }
+        return response()->json([
+            'status'=>1,
+            'data'=>$r->all()
+        ]);
+    }
+    public function getOpenIvoices($client_id)
+    {
+
+        $open_invoices = Invoice::where([
+            'client_id'=>$client_id,
+            'status'=>'open',
+            'active_status'=>'A'
+        ])
+        ->get();
+        return response()->json([
+            'open_invoices'=>$open_invoices
+        ]);
+
     }
     public function get_ajax_client_details($client_id, $formatted_month){
         $client=Client::find($client_id);
@@ -265,7 +292,9 @@ class InvoiceController extends Controller
         ]);
     }
     public function view_invoices(){ 
-        return view('admin.Invoices.view_invoice'); 
+        $clients=Client::where("active_status","A")->get();
+        $banks=Bank_account::where("active_status","A")->get();
+        return view('admin.Invoices.view_invoice',compact('clients', 'banks'));
     }
     public function add_tax_method(){
         return view('admin.Invoices.tax_method');

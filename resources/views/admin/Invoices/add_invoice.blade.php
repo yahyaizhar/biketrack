@@ -457,7 +457,7 @@ $(document).ready(function () {
                             is_deductable: false
                         }];
                         append_row(row_data)
-                    } else if (resp.payment_method == "commission_based") {}
+                    }
                     $('[data-input-type]').each(function(i,elem){
                         var _type = $(this).attr('data-input-type');
                         switch (_type) {
