@@ -1302,7 +1302,10 @@ class AjaxNewController extends Controller
         // return $clients;
         return DataTables::of($expense)
         ->addColumn('id', function($expense){
-            return '1000'.$expense->id;
+            return $expense->id;
+        })
+        ->addColumn('date', function($expense){
+            return Carbon::parse($expense->month)->format("d M, Y");
         })
         ->addColumn('bike_id', function($expense){
             $bike = bike::find($expense->bike_id);
@@ -1318,6 +1321,13 @@ class AjaxNewController extends Controller
             }
             return 'No Rider Assigned';
         })
+        ->addColumn('rider_id_id', function($expense){
+            $rider = Rider::find($expense->rider_id);
+            if (isset($rider)) {
+                return "KR".$rider->id;
+            }
+            return 'No Rider Id Assigned';
+        })
         ->addColumn('actions', function($expense){
             $status_text = $expense->status == 1 ? 'Inactive' : 'Active';
             return '<span class="dtr-data">
@@ -1332,7 +1342,7 @@ class AjaxNewController extends Controller
             </span>
         </span>';
         })
-        ->rawColumns(['status','bike_id','type','amount','actions', 'rider_id'])
+        ->rawColumns(['date','rider_id_id','status','bike_id','type','amount','actions', 'rider_id'])
         ->make(true);
     }
 
