@@ -2384,49 +2384,76 @@ public function client_income_update(Request $request,$id){
     {
         $data = $r->data;
         $zomato_objects=[];
-        $zp =Riders_Payouts_By_Days::all(); // r1
+        $zts =Riders_Payouts_By_Days::all(); // r1
+        $zi =Income_zomato::all(); // r1
         $update_data = [];
         $i=0;
         $unique_id=uniqid().'-'.time();
+
+        $is_exception=false;
+        $exception_msg='';
         foreach ($data as $item) {
             $i++;
-            $zp_found = Arr::first($zp, function ($item_zp, $key) use ($item) {
-                return $item_zp->date == $item['date'] && $item_zp->feid==$item['feid'];
-           
-            });
-            if(isset($item['date'])){
-            $date=Carbon::parse($item['date'])->format('Y-m-d');
-             }
-            if(!isset($zp_found)){
-                $obj = [];
-                $obj['import_id']=$unique_id;
-                $obj['date']=isset($item['date'])?$date:null;
-                $obj['feid']=isset($item['feid'])?$item['feid']:null;
-                $obj['login_hours']=isset($item['login_hours'])?$item['login_hours']:null;
-                $obj['trips']=isset($item['trips'])?$item['trips']:null;
-                $obj['payout_for_login_hours']=isset($item['payout_for_login_hours'])?$item['payout_for_login_hours']:null;
-                $obj['payout_for_trips']=isset($item['payout_for_trips'])?$item['payout_for_trips']:null;
-                $obj['grand_total']=isset($item['grand_total'])?$item['grand_total']:null;
-                array_push($zomato_objects, $obj);
-            }
-            else{
-                $objUpdate = [];
-                $objUpdate['id']=$zp_found->id;
-                $objUpdate['import_id']=$unique_id;
-                $objUpdate['date']=isset($item['date'])?$date:null;
-                $objUpdate['feid']=isset($item['feid'])?$item['feid']:null;
-                $objUpdate['login_hours']=isset($item['login_hours'])?$item['login_hours']:null;
-                $objUpdate['trips']=isset($item['trips'])?$item['trips']:null;
-                $objUpdate['payout_for_login_hours']=isset($item['payout_for_login_hours'])?$item['payout_for_login_hours']:null;
-                $objUpdate['payout_for_trips']=isset($item['payout_for_trips'])?$item['payout_for_trips']:null;
-                $objUpdate['grand_total']=isset($item['grand_total'])?$item['grand_total']:null;
+            
+            $rows=$item['rows'];
 
-                array_push($update_data, $objUpdate);
+            foreach ($rows as $item_row) {
+                $date=$item['date'];
+                $feid=isset($item_row['feid'])?$item_row['feid']:null;
+                $grand_total=isset($item_row['grand_total'])?$item_row['grand_total']:null;
+                $login_hours=isset($item_row['login_hours'])?$item_row['login_hours']:null;
+                $trips=isset($item_row['orders'])?$item_row['orders']:null;
+                $payout_for_login_hours=isset($item_row['payout_for_login_hrs'])?$item_row['payout_for_login_hrs']:null;
+                $payout_for_trips=isset($item_row['payout_for_orders'])?$item_row['payout_for_orders']:null;
+                $rider_id=isset($item_row['rider_id'])?$item_row['rider_id']:null;
+
+                if($feid==null){
+                    //throw exception. No feid found
+                    $is_exception=true;
+                    $exception_msg='No FEID found against date '.$date.'. Please recheck the data';
+                    break;
+                }
+                $zi_found = Arr::first($zi, function ($item_zi, $key) use ($item, $item_row) {
+                    return $item_zi->date == $item['date'] && $item_zi->feid==$item_row['feid'];
+                });
+                if(isset($zi_found)){
+                    //found the row in Income Zomato table
+                    $income_zomato_id=$zi_found->id;
+                    
+                    $obj = [];
+                    $obj['date']=$date;
+                    $obj['feid']=$feid;
+                    $obj['zomato_income_id']=$income_zomato_id;
+                    $obj['rider_id']=$rider_id;
+                    $obj['login_hours']=$login_hours;
+                    $obj['trips']=$trips;
+                    $obj['payout_for_login_hours']=$payout_for_login_hours;
+                    $obj['payout_for_trips']=$payout_for_trips;
+                    $obj['grand_total']=$grand_total;
+                    $obj['created_at']=Carbon::now();
+                    // $obj['updated_at']=Carbon::now();
+                    array_push($zomato_objects, $obj);
+                }
+                else {
+                    //throw exception. No rows found
+                    $is_exception=true;
+                    $exception_msg='No data found in income_zomatos table against FEID '.$feid.' and month of '.$date;
+                    break;
+                }
             }
+
+            if($is_exception) break;
         }
-        DB::table('riders__payouts__by__days')->insert($zomato_objects); //r2
-        $data=Batch::update(new Riders_Payouts_By_Days, $update_data, 'id'); //r3
+        if($is_exception){
+            return response()->json([
+                'status'=>0,
+                'message'=>$exception_msg
+            ]);
+        }
+        //DB::table('riders__payouts__by__days')->insert($zomato_objects); //r2
+        // $data=Batch::update(new Riders_Payouts_By_Days, $update_data, 'id'); //r3
         return response()->json([
+            'status'=>1,
             'data'=>$zomato_objects,
             'count'=>$i
         ]);
