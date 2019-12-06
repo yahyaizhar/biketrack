@@ -53,7 +53,9 @@
                             <input type="checkbox" id="select_all" >
                         </th> --}}
                         <th>ID</th>
+                        <th>KR ID</th>
                         <th>Rider</th>
+                        <th>Month</th>
                         <th>Bike_id</th>
                         <th>Type</th>
                         <th>Amount</th>
@@ -98,7 +100,9 @@ $(function() {
         columns: [
             //  { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
             { data: 'id', name: 'id' },
+            { data: 'rider_id_id', name: 'rider_id_id' },
             { data: 'rider_id', name: 'rider_id' },
+            { data: 'date', name: 'date' },
             { data: 'bike_id', name: 'bike_id' },            
             { data: 'type', name: 'type' },
             { data: 'amount', name: 'amount' },
