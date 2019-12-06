@@ -40,8 +40,8 @@
                             </label>
                         </div>
                         &nbsp;
-                        <a style="padding:8.45px 13px;" href="" data-toggle="modal" data-target="#import_data"  class="btn btn-label-success btn-sm btn-upper">Import Zomato Data</a>&nbsp;
-                        <input class="btn btn-primary" type="button" onclick="export_data()" value="Export Zomato Data">
+                        <a style="padding:8.45px 13px;" href="" data-toggle="modal" data-target="#import_data"  class="btn btn-label-success btn-sm btn-upper">Import Zomato Time Sheet</a>&nbsp;
+                        <input class="btn btn-primary" type="button" onclick="export_data()" value="Export Zomato Time Sheet">
                     </div>
                 </div>
             </div>
@@ -159,7 +159,7 @@ uppy.use(Uppy.DragDrop, {
         var _fileName = file.name;
         $('.uppy_result').html('<span>'+_fileName+'</span>');
     });
-  
+    var _ImportHeading=[],_ImportData=[];
     $('.upload-button').on('click', function (e) {
         e.preventDefault();
         $('#import_data').modal('hide');
@@ -173,33 +173,84 @@ uppy.use(Uppy.DragDrop, {
             dynamicTyping: true,
             beforeFirstChunk: function( chunk ) {
                 var rows = chunk.split( /\r\n|\r|\n/ );
+                console.log('rows',rows);
+                
                 var headings = rows[0].split( ',' );console.warn(headings);
+                var _lastDate='';
+                var _temp=0;
+                headings.forEach(function(_d, _i){
+                    var _hh = _d.trim();
+                    
+                    if(_hh==""){
+                        //same date
+                        
+                        headings[_i]= new Date(_lastDate).format('yyyy_mm_dd')+"@"+_temp;
+                    }
+                    else{
+                        //new date came
+                        _temp=0;
+                        _temp = _i==0?-1:_temp;
+                        headings[_i]= new Date(_d.trim()).format('yyyy_mm_dd')+"@"+_temp;
+                        _lastDate=_d.trim();
+                    }
+                    
+                     _temp++;
+                });
+                rows[0] = headings.join();
+
+                headings = rows[1].split( ',' );console.warn(headings);
                 headings.forEach(function(_d, _i){
                 headings[_i]=_d.trim().replace(/ /g, '_').replace(/[0-9]/g, '').toLowerCase();
                 });
-                rows[0] = headings.join();
+                rows[1] = headings.join();
                 return rows.join( '\n' );
             },
+            // chunk: function(chunk, e, d) {
+            //     console.log("Row data:", chunk, e, d);
+            // },
             error: function(err, file, inputElem, reason){ console.log(err); },
             complete: function(results, file){ 
                 // console.log( results);
                 // ajax to import data
                var import_data = results.data;
-               import_data.forEach(function(data, i){
-                    var client_rider=client_riders.find(function(x){return x.client_rider_id===data.feid});
-                    // delete import_data[i].pl;
-                    // delete import_data[i].area;
-                    // delete import_data[i].driver_id;
-                    // delete import_data[i].driver_name;
-                    // delete import_data[i].status;
-                    var _riderID = null;
-                    if(typeof client_rider !== "undefined"){
-                        _riderID=client_rider.rider_id;
-                    }
-                    import_data[i].rider_id=_riderID;
+               console.log(import_data);
+               _ImportHeading=[],_ImportData=[];
+               import_data.forEach(function(first_chunk, i){
+                    var _feid='';   
+                    var _firstKey = Object.keys(first_chunk)[0];
+                    _feid=first_chunk[_firstKey];
                     
+                    Object.keys(first_chunk).forEach(function(second_chunk_key, j){
+                        if(j==0) return true;
+                        var second_chunk = first_chunk[second_chunk_key];
+                        var _date = (second_chunk_key.split('@')[0]).replace(/[_]/g, '-');
+                        var _date_index=parseInt(second_chunk_key.split('@')[1]);
+                        var _firstObj=_ImportData.find(function(x){return x.date==_date});
+                        if(typeof _firstObj == "undefined") _ImportData.push({date:_date,rows:[]}),_firstObj=_ImportData.find(function(x){return x.date==_date});
+                        if(i==0){
+                            _ImportHeading.includes(second_chunk) || _ImportHeading.push(second_chunk);
+                            
+                        }
+                        else{
+                            var _secondObj=_firstObj.rows.find(function(x){return x.feid==_feid});
+                            if(typeof _secondObj == "undefined") _firstObj.rows.push({feid:_feid}),_secondObj=_firstObj.rows.find(function(x){return x.feid==_feid});
+                            _secondObj[_ImportHeading[_date_index]]=second_chunk;
+                        }
+                    })
+                })
+                import_data=_ImportData;
+                import_data.forEach(function(data0, i){
+                    data0.rows.forEach(function(data1, j){
+                        var client_rider=client_riders.find(function(x){return x.client_rider_id===data1.feid});
+                        var _riderID = null;
+                        if(typeof client_rider !== "undefined"){
+                            _riderID=client_rider.rider_id;
+                        }
+                        import_data[i].rows[j]['rider_id']=_riderID;
+                    });
                 });
-                console.log(import_data);
+                console.log('import_data',import_data);
+            //    return;
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -208,12 +259,24 @@ uppy.use(Uppy.DragDrop, {
                     type : 'POST',
                     data: {data: import_data},
                     beforeSend: function() {            
-                        $('.loading').show();
+                        $('.bk_loading').show();
                     },
                     complete: function(){
-                        $('.loading').hide();
+                        $('.bk_loading').hide();
                     },
                     success: function(data){
+                        console.warn(data);
+                        if(data.status==0){
+                            swal.fire({
+                                position: 'center',
+                                type: 'error',
+                                title: 'Oops...',
+                                text: data.message,
+                                showConfirmButton: true  
+                            });
+                            return;
+                        }
+                        
                         swal.fire({
                             position: 'center',
                             type: 'success',
