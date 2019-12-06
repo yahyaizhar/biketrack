@@ -248,7 +248,9 @@ uppy.use(Uppy.DragDrop, {
                     
                 });
                 console.log('import_data',import_data);
-            //    return;
+                var __data=chunk(import_data,1000);
+                moveAlong(__data);
+               return;
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -299,6 +301,74 @@ uppy.use(Uppy.DragDrop, {
         });
         // uppy.upload()
     });
+function chunk(array, size) {
+    const chunked_arr = [];
+    for (let i = 0; i < array.length; i++) {
+      const last = chunked_arr[chunked_arr.length - 1];
+      if (!last || last.length === size) {
+        chunked_arr.push([array[i]]);
+      } else {
+        last.push(array[i]);
+      }
+    }
+    return chunked_arr;
+}
+var moveAlong=function(queue){
+	if(queue.length>0){
+		var _chunk = queue.pop();
+		$.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url : "{{route('import.import_rider_daysPayouts')}}",
+            type : 'POST',
+            data: {data: _chunk},
+            beforeSend: function() {            
+                $('.bk_loading').show();
+            },
+            complete: function(){
+                $('.bk_loading').hide();
+            },
+            success: function(data){
+                console.warn(data);
+                if(data.status==0){
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: data.message,
+                        showConfirmButton: true  
+                    });
+                    return;
+                }
+				moveAlong(queue);
+                
+            },
+            error: function(error){
+                swal.fire({
+                    position: 'center',
+                    type: 'error',
+                    title: 'Oops...',
+                    text: 'Unable to update.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        });
+	}
+	else{
+		//all data is sended
+		swal.fire({
+            position: 'center',
+            type: 'success',
+            title: 'Record imported successfully.',
+            showConfirmButton: false,
+            timer: 1500
+        });
+        performance_table.ajax.reload(null, false);
+	}
+}
+
 var performance_table;
 var riders_data = JSON.parse(JSON.stringify(_perData));
 $(function() {
