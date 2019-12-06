@@ -2399,6 +2399,7 @@ public function client_income_update(Request $request,$id){
 
             foreach ($rows as $item_row) {
                 $date=$item['date'];
+                $start_of_month = Carbon::parse($date)->startOfMonth()->format('Y-m-d');
                 $feid=isset($item_row['feid'])?$item_row['feid']:null;
                 $grand_total=isset($item_row['grand_total'])?$item_row['grand_total']:null;
                 $login_hours=isset($item_row['login_hours'])?$item_row['login_hours']:null;
@@ -2413,8 +2414,8 @@ public function client_income_update(Request $request,$id){
                     $exception_msg='No FEID found against date '.$date.'. Please recheck the data';
                     break;
                 }
-                $zi_found = Arr::first($zi, function ($item_zi, $key) use ($item, $item_row) {
-                    return $item_zi->date == $item['date'] && $item_zi->feid==$item_row['feid'];
+                $zi_found = Arr::first($zi, function ($item_zi, $key) use ($start_of_month, $item_row) {
+                    return $item_zi->date == $start_of_month && $item_zi->feid==$item_row['feid'];
                 });
                 if(isset($zi_found)){
                     //found the row in Income Zomato table
