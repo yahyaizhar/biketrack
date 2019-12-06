@@ -26,6 +26,7 @@ Route::group([
     Route::get('/riders/details/data', 'AjaxController@getRidersDetails')->name('admin.riders_detail.data');
     Route::get('/clients/data', 'AjaxController@getClients')->name('admin.clients.data');
     Route::get('get/ajax/rider/performance','AjaxController@getRiderPerformance')->name('admin.ajax_performance');
+    Route::get('get/ajax/rider/payouts/days','AjaxController@getRiderPayoutsByDays')->name('admin.getRiderPayoutsByDays');
     Route::get('/range/ajax/adt/{data}','AjaxController@getRiderRangesADT')->name('ajax.adt'); 
     Route::get('/bike_getData','AjaxController@getBikes')->name('bike.bike_show');
     Route::get('/get/salik/bike/ajax/{id}','AjaxController@getSalik_Bike')->name('bike.ajax_salik_bike');
@@ -156,6 +157,8 @@ Route::group([
     Route::post('/import/zomato','RiderController@import_zomato')->name('import.zomato');
     Route::delete('/delete/last/import','RiderController@delete_lastImport')->name('delete.import_data');
     Route::get("/zomato/salary/sheet/export","AccountsController@zomato_salary_sheet_export")->name("admin.zomato_salary_sheet_export");
+    Route::get('/zomato/riders/payout/by/days','AccountsController@view_riders_payouts_days')->name('zomato.view_riders_payouts_days');
+    Route::post('/import/riders/payouts/days','AccountsController@import_rider_daysPayouts')->name('import.import_rider_daysPayouts');
 //ends import Zomato
 
 //payout method

@@ -30,6 +30,7 @@ use App\Model\Accounts\Company_Account;
 use App\Assign_bike;
 use App\Company_investment;
 use App\Company_Tax;
+use App\Model\Zomato\Riders_Payouts_By_Days;
 
 
 class AccountsController extends Controller
@@ -2375,5 +2376,59 @@ public function client_income_update(Request $request,$id){
         $income=Income_Zomato::where("p_id",$p_id)->get()->first();
         $income->rider_id=$rider_id;
         $income->update();
+    }
+    public function view_riders_payouts_days(){
+        return view('admin.zomato.riders_payouts_by_days');
+    }
+    public function import_rider_daysPayouts(Request $r)
+    {
+        $data = $r->data;
+        $zomato_objects=[];
+        $zp =Riders_Payouts_By_Days::all(); // r1
+        $update_data = [];
+        $i=0;
+        $unique_id=uniqid().'-'.time();
+        foreach ($data as $item) {
+            $i++;
+            $zp_found = Arr::first($zp, function ($item_zp, $key) use ($item) {
+                return $item_zp->date == $item['date'] && $item_zp->feid==$item['feid'];
+           
+            });
+            if(isset($item['date'])){
+            $date=Carbon::parse($item['date'])->format('Y-m-d');
+             }
+            if(!isset($zp_found)){
+                $obj = [];
+                $obj['import_id']=$unique_id;
+                $obj['date']=isset($item['date'])?$date:null;
+                $obj['feid']=isset($item['feid'])?$item['feid']:null;
+                $obj['login_hours']=isset($item['login_hours'])?$item['login_hours']:null;
+                $obj['trips']=isset($item['trips'])?$item['trips']:null;
+                $obj['payout_for_login_hours']=isset($item['payout_for_login_hours'])?$item['payout_for_login_hours']:null;
+                $obj['payout_for_trips']=isset($item['payout_for_trips'])?$item['payout_for_trips']:null;
+                $obj['grand_total']=isset($item['grand_total'])?$item['grand_total']:null;
+                array_push($zomato_objects, $obj);
+            }
+            else{
+                $objUpdate = [];
+                $objUpdate['id']=$zp_found->id;
+                $objUpdate['import_id']=$unique_id;
+                $objUpdate['date']=isset($item['date'])?$date:null;
+                $objUpdate['feid']=isset($item['feid'])?$item['feid']:null;
+                $objUpdate['login_hours']=isset($item['login_hours'])?$item['login_hours']:null;
+                $objUpdate['trips']=isset($item['trips'])?$item['trips']:null;
+                $objUpdate['payout_for_login_hours']=isset($item['payout_for_login_hours'])?$item['payout_for_login_hours']:null;
+                $objUpdate['payout_for_trips']=isset($item['payout_for_trips'])?$item['payout_for_trips']:null;
+                $objUpdate['grand_total']=isset($item['grand_total'])?$item['grand_total']:null;
+
+                array_push($update_data, $objUpdate);
+            }
+        }
+        DB::table('riders__payouts__by__days')->insert($zomato_objects); //r2
+        $data=Batch::update(new Riders_Payouts_By_Days, $update_data, 'id'); //r3
+        return response()->json([
+            'data'=>$zomato_objects,
+            'count'=>$i
+        ]);
     }
 }
