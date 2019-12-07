@@ -3067,11 +3067,14 @@ class AjaxNewController extends Controller
             $client=Client::find($invoice->client_id);
             return $client->name;
         })
+        ->addColumn('month', function($invoice){
+            return Carbon::parse($invoice->month)->format('F Y');
+        })
         ->addColumn('date', function($invoice){
-            return Carbon::parse($invoice->invoice_date)->format('F d, Y');
+            return Carbon::parse($invoice->invoice_date)->format('d-M-Y');
         })
         ->addColumn('due_date', function($invoice){
-            return Carbon::parse($invoice->invoice_due)->format('F d, Y');
+            return Carbon::parse($invoice->invoice_due)->format('d-M-Y');
         })
         ->addColumn('balance', function($invoice){
             return "AED ".$invoice->due_balance;
@@ -3162,10 +3165,64 @@ class AjaxNewController extends Controller
             return $html;
         })
         ->addColumn('actions', function($invoice){
-            return '<a href="" class="reveive_payment" onclick=\'receive_payment_popup(this);return false;\'>Receive Payment</a>
+            $text='<a href="" class="reveive_payment" onclick=\'receive_payment_popup(this);return false;\'>Receive Payment</a>';
+            if ($invoice->payment_status=="paid") {
+                $text='<a href="" class="receive_payment" onclick=\';return false;\'>Print</a>';
+            }
+            return $text.'
             <noscript>'.$invoice->toJson().'</noscript>';
         })
-        ->rawColumns(['invoice','client_name','date','due_date','balance','total','status','actions'])
+        ->addColumn('details', function($invoice){
+            $classes='bg-success text-white';
+
+
+            
+
+            $tz="Asia/Dubai";
+            $current_date = Carbon::createFromFormat('Y-m-d', Carbon::now()->format('Y-m-d'), $tz);
+
+            $remaining_days = $current_date->diffInDays(Carbon::parse($invoice->invoice_due), false);
+            $abs_remainingDays = abs($remaining_days);
+            $statusText='';
+            if ($remaining_days < 0) {
+                //overdue
+                $classes='bg-warning text-white text-center';
+                
+                $daysText = $abs_remainingDays.' '.Str::plural('day', $abs_remainingDays);
+                
+                $statusText='Overdue '.$daysText.'
+                            <a href="" class="invoice__details-print"><span>Print Invoice</span> <i class="flaticon2-next text-white"></i></a>';
+            }
+            else {
+                //not due yet
+                $classes='bg-success text-white text-center';
+                $daysText = 'in '.$abs_remainingDays.' '.Str::plural('day', $abs_remainingDays);
+                if($abs_remainingDays==0) $daysText='today';
+                if($abs_remainingDays==1) $daysText='tomorrow';
+                $statusText='Due '.$daysText.' <a href="" class="invoice__details-print"><span>Print Invoice</span> <i class="flaticon2-next text-white"></i></a>';
+            }
+
+            switch ($invoice->invoice_status) {
+                case 'partially_paid':
+                case 'paid':
+                    $classes='bg-success text-white';
+                    $payments = $invoice->Invoice_Payment;
+                    $payments_lis='';
+                    foreach ($payments as $payment) {
+                        $payments_lis.='<li>
+                                Payment on '.Carbon::parse($payment->payment_date)->format('d/m/Y').'. Payment: <strong>AED '.round($payment->payment, 2).'</strong>
+                        </li>';
+                    }
+                    $statusText='<ul class="invoice__details-payments">'.$payments_lis.'</ul>';
+                    break;
+            }
+            
+            $html='<div class="invoice__details-wrapper">
+                        <div class="'.$classes.' invoice__details-inner">'.$statusText.'</div>
+                    </div>';
+            return $html;
+        })
+        ->rawColumns(['invoice','client_name','month','date','due_date','balance','total','status','actions', 'details'])
         ->make(true);
     }
     public function getEmployeeAccounts($ranges)
