@@ -2386,7 +2386,7 @@ public function client_income_update(Request $request,$id){
         $zomato_objects=[];
         $zts =Riders_Payouts_By_Days::all(); // r1
         $zi =Income_zomato::all(); // r1
-        $update_data = [];
+        $delete_data = [];
         $i=0;
         $unique_id=uniqid().'-'.time();
 
@@ -2424,6 +2424,18 @@ public function client_income_update(Request $request,$id){
             if(isset($zi_found)){
                 //found the row in Income Zomato table
                 $income_zomato_id=$zi_found->id;
+
+                //finding if row exist in this table
+                $zts_found = Arr::first($zts, function ($item_zts, $key) use ($date, $item_row) {
+                    return $item_zts->date == $date && $item_zts->feid==$item_row['feid'];
+                });
+
+                if(isset($zts_found)){
+                    $objDelete = [];
+                    $objDelete['id']=$zts_found->id; 
+                    array_push($delete_data, $objDelete);
+                }
+
                 
                 $obj = [];
                 $obj['date']=$date;
@@ -2454,11 +2466,16 @@ public function client_income_update(Request $request,$id){
                 'message'=>$exception_msg
             ]);
         }
-        DB::table('riders__payouts__by__days')->insert($zomato_objects); //r2
+        // DB::table('riders__payouts__by__days')->insert($zomato_objects);
+        $deletes = DB::table('riders__payouts__by__days')
+                    ->whereIn('id', $delete_data)
+                    ->delete();
+        DB::table('riders__payouts__by__days')->insert($zomato_objects); //r2 
         // $data=Batch::update(new Riders_Payouts_By_Days, $update_data, 'id'); //r3
         return response()->json([
             'status'=>1,
             'data'=>$zomato_objects,
+            'deletedata_count'=>$deletes,
             'count'=>$i
         ]);
     }

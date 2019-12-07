@@ -338,6 +338,7 @@ var moveAlong=function(queue){
                 
             },
             error: function(error){
+                $('.bk_loading').hide();
                 swal.fire({
                     position: 'center',
                     type: 'error',

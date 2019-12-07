@@ -331,7 +331,7 @@ biketrack.refresh_global = function(){
     });
 }
 
-biketrack.chunk_array=function(array, size) {
+biketrack.chunk_array=function(array, size) { 
     const chunked_arr = [];
     for (let i = 0; i < array.length; i++) {
       const last = chunked_arr[chunked_arr.length - 1];
