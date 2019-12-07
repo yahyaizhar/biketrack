@@ -2436,7 +2436,7 @@ public function client_income_update(Request $request,$id){
                 $obj['payout_for_trips']=$payout_for_trips;
                 $obj['grand_total']=$grand_total;
                 $obj['created_at']=Carbon::now();
-                // $obj['updated_at']=Carbon::now();
+                $obj['updated_at']=Carbon::now();
                 array_push($zomato_objects, $obj);
             }
             else {
@@ -2454,13 +2454,12 @@ public function client_income_update(Request $request,$id){
                 'message'=>$exception_msg
             ]);
         }
-        //DB::table('riders__payouts__by__days')->insert($zomato_objects); //r2
+        DB::table('riders__payouts__by__days')->insert($zomato_objects); //r2
         // $data=Batch::update(new Riders_Payouts_By_Days, $update_data, 'id'); //r3
         return response()->json([
             'status'=>1,
             'data'=>$zomato_objects,
-            'count1'=>$i,
-            'count2'=>$j
+            'count'=>$i
         ]);
     }
 }
