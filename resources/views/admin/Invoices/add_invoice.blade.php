@@ -434,6 +434,12 @@ $(document).ready(function () {
         var client_id = $('#invoices [data-name="client_id"]').val();
         console.log('client_id', client_id);
         var _month = new Date("01-"+$('#invoices [name="month"]').val()+"-"+new Date(Date.now()).format('yyyy')).format('yyyy-mm-dd');
+        var url_data = {
+            edit:0,
+            client_id: client_id,
+            month:_month
+        }
+        biketrack.updateURL(url_data);
         $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -445,97 +451,17 @@ $(document).ready(function () {
                 console.log(resp);
                 if (resp.status == 1) {
                     $("#invoice-table tbody").html('');
+                    $('#invoice_number').removeAttr('data-invoice').html('');
                     _invoices.remove_msg();
                     invoiceObj=null;
                     $('#invoices [data-name="billing_address"]').val(resp.billing_address);
                     // $('[data-name="tax_rate"]').val(5);
-                    if (resp.payment_method == "trip_based") {
-                        var row_data = [{
-                                desc: 'No of Hours for riders',
-                                amount: resp.total_hours_payable,
-                                rate: resp.per_hour_amount,
-                                qty: resp.total_hours,
-                                is_taxable: true,
-                                is_payable: true,
-                                is_deductable: false
-                            },
-                            {
-                                desc: 'No of Trips for riders',
-                                amount: resp.total_trips_payable,
-                                rate: resp.per_trip_amount,
-                                qty: resp.total_trips,
-                                is_taxable: true,
-                                is_payable: true,
-                                is_deductable: false
-                            },
-                            {
-                                desc: 'Incentives',
-                                amount: resp.ncw,
-                                rate: resp.ncw,
-                                qty: 1,
-                                is_taxable: false,
-                                is_payable: true,
-                                is_deductable: false
-                            },
-                            {
-                                desc: 'Settlements',
-                                amount: resp.adhoc,
-                                rate: resp.adhoc,
-                                qty: 1,
-                                is_taxable: false,
-                                is_payable: true,
-                                is_deductable: false
-                            },
-                            {
-                                desc: 'Tips',
-                                amount: resp.tips,
-                                rate: resp.tips,
-                                qty: 1,
-                                is_taxable: false,
-                                is_payable: true,
-                                is_deductable: false
-                            },
-                            
-                            {
-                                desc: 'Deduction against Penalties',
-                                amount: resp.panalties,
-                                rate: resp.panalties,
-                                qty: 1,
-                                is_taxable: false,
-                                is_payable: true,
-                                is_deductable: true
-                            },
-                            {
-                                desc: 'Deductions agains COD + DC charges',
-                                amount: resp.dc_deduction+resp.mcdonald_deduction,
-                                rate: resp.dc_deduction+resp.mcdonald_deduction,
-                                qty: 1,
-                                is_taxable: false,
-                                is_payable: true,
-                                is_deductable: true
-                            }
-                            // {
-                            //     desc: 'Deductions for McDonald\'s orders',
-                            //     amount: resp.mcdonald_deduction,
-                            //     rate: resp.mcdonald_deduction,
-                            //     qty: 1,
-                            //     is_taxable: false,
-                            //     is_payable: true,
-                            //     is_deductable: true
-                            // }
-                        ];
-                        append_row(row_data)
-                    } else if (resp.payment_method == "fixed_based") {
-                        var row_data = [{
-                            desc: 'Fixed Amount',
-                            amount: resp.total_payable,
-                            rate: resp.fixed_amount,
-                            qty: resp.riders_count,
-                            is_taxable: true,
-                            is_payable: true,
-                            is_deductable: false
-                        }];
-                        append_row(row_data)
+                    var row_data = resp.items;
+                    append_row(row_data);
+                    
+                    if(resp.is_edit){
+                        _invoices.invoice=resp.invoice;
+                        _invoices.reload_page(resp);
                     }
                     $('[data-input-type]').each(function(i,elem){
                         var _type = $(this).attr('data-input-type');
@@ -564,7 +490,7 @@ $(document).ready(function () {
             });
     });
 
-    $('#invoices [name="month"]').trigger('change');
+    
 
     $(document).on("change input", '[data-name="rate"], [data-name="amount"], [data-name="tax_rate"], [data-name="discount_values"], [data-name="tax"], [data-name="discount"], [data-name="qty"], [data-name="deductable"]', function () {
         if($(this).attr('data-name')=="deductable"){
@@ -837,13 +763,16 @@ $(document).ready(function () {
     $('.invoice__print-btn').on('click', function(){
         print_invoice();
     })
-
+    _invoices.fetch_url_data();
 });
+
+
 
 var total_amount = 0;
 var taxable_amount = 0;
 
 var _invoices={
+    invoice:null,
     show_msg:function(msg=""){
         if(msg=="")return;
         var _msg = $(basic_alert);
@@ -853,6 +782,39 @@ var _invoices={
     },
     remove_msg:function(){
         $('.messages').html('');
+    },
+    reload_page:function(response){
+        var invoice=_invoices.invoice;
+        if(invoice==null){
+            _invoices.remove_msg();
+            _invoices.show_msg("Cannot find invoice.");
+            return;
+        }
+        //updating url
+        var url_data = {
+            invoice_id:invoice.id,
+            edit:1,
+            client_id: invoice.client_id,
+            month: invoice.month
+        }
+        biketrack.updateURL(url_data);
+        //changing invoice id
+        $('#invoice_number').attr('data-invoice',invoice.id).text('#'+(invoice.id));
+        $('#invoices [data-name="invoice_date"]').attr('data-month', new Date(invoice.invoice_date).format('mmm dd, yyyy'));
+        $('#invoices [data-name="due_date"]').attr('data-month', new Date(invoice.invoice_due).format('mmm dd, yyyy'));
+        $('#invoices [name="month"]').attr('data-month', new Date(invoice.month).format('mmmm yyyy'));
+
+        biketrack.refresh_global();
+    },
+    fetch_url_data:function(){
+        var _clientId=biketrack.getUrlParameter('client_id');
+        var _month=biketrack.getUrlParameter('month');
+        if(_clientId!="" && _month!=""){
+            $('#invoices [name="month"]').attr('data-month', new Date(_month).format('mmm dd, yyyy'));
+            biketrack.refresh_global();
+            $('#invoices [name="client_id"]').val(_clientId).trigger('change');
+
+        }
     }
 };
 function subtotal() {

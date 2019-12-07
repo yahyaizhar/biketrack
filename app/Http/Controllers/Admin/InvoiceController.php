@@ -197,26 +197,45 @@ class InvoiceController extends Controller
         $billing_address=$client->address;
         $month = Carbon::parse($formatted_month)->format('m');
 
-        $open_invoice = Invoice::where([
+        $open_invoice = Invoice::with('Invoice_item')->where([
             'client_id'=>$client_id,
             'month'=>$formatted_month,
             'active_status'=>'A'
         ])
-        ->where(function($q) {
-            $q->where('invoice_status', "partially_paid")
-              ->orWhere('invoice_status', 'paid');
-        })
+        // ->where(function($q) {
+        //     $q->where('invoice_status', "partially_paid")
+        //       ->orWhere('invoice_status', 'paid');
+        // })
         ->get()
         ->first();
-        if(isset($open_invoice)){ // an invoice is found and some payment received
-            return response()->json([
-                'status'=>0,
-                'message'=>'Cannot edit invoice #'.$open_invoice->id.' because some payments received against this'
-            ]);
-        }
+        
 
         $client_settings = json_decode( $client->setting,true );
         $payment_method = $client_settings['payout_method'];
+
+        if(isset($open_invoice)){ // an invoice is found 
+            $invoice_items = $open_invoice->Invoice_item;
+            $invoice_items_data=[];
+            foreach ($invoice_items as $invoice_item) {
+                $obj=[
+                    'desc'=>$invoice_item->item_desc,
+                    'amount'=> $invoice_item->item_amount,
+                    'rate'=> $invoice_item->item_rate,
+                    'qty'=> $invoice_item->item_qty,
+                    'is_taxable'=> $invoice_item->tax_method_id!=null?true:false,
+                    'is_deductable'=> $invoice_item->deductable==0?false:true
+                ];
+                array_push($invoice_items_data,$obj);
+            }
+            return response()->json([
+                'status'=>1,
+                'billing_address' => $billing_address,
+                'payment_method'=>$payment_method,
+                'items'=>$invoice_items_data,
+                'invoice'=>$open_invoice,
+                'is_edit'=>true,
+            ]);
+        }
         
         switch ($payment_method) {
             case 'trip_based':
@@ -303,45 +322,94 @@ class InvoiceController extends Controller
                 $total_hours_payable=$total_hours*$per_hour_amount;
                 $total_trips_payable=$total_trips*$per_trip_amount;
                 // end rider summary
+                $invoice_items_data=[
+                    [
+                       'desc'=>'No of Hours for riders',
+                       'amount'=> round($total_hours_payable,2),
+                       'rate'=> $per_hour_amount,
+                       'qty'=> round($total_hours,2),
+                       'is_taxable'=> true,
+                       'is_deductable'=> false
+                    ],
+                    [
+                        'desc'=>'No of Trips for riders',
+                        'amount'=> round($total_trips_payable,2),
+                        'rate'=> $per_trip_amount,
+                        'qty'=> round($total_trips,2),
+                        'is_taxable'=> true,
+                        'is_deductable'=> false
+                    ],
+                    [
+                        'desc'=>'Incentives',
+                        'amount'=> round($ncw,2),
+                        'rate'=> round($ncw,2),
+                        'qty'=> 1,
+                        'is_taxable'=> false,
+                        'is_deductable'=> false
+                    ],
+                    [
+                        'desc'=>'Settlements',
+                        'amount'=> round($adhoc,2),
+                        'rate'=> round($adhoc,2),
+                        'qty'=> 1,
+                        'is_taxable'=> false,
+                        'is_deductable'=> false
+                    ],
+                    [
+                        'desc'=>'Tips',
+                        'amount'=> round($tips,2),
+                        'rate'=> round($tips,2),
+                        'qty'=> 1,
+                        'is_taxable'=> false,
+                        'is_deductable'=> false
+                    ],
+                    [
+                        'desc'=>'Deduction against Penalties',
+                        'amount'=> round($panalties,2),
+                        'rate'=> round($panalties,2),
+                        'qty'=> 1,
+                        'is_taxable'=> false,
+                        'is_deductable'=> true
+                    ],
+                    [
+                        'desc'=>'Deductions agains COD + DC charges',
+                        'amount'=> round($dc_deduction,2)+round($mcdonald_deduction,2),
+                        'rate'=> round($dc_deduction,2)+round($mcdonald_deduction,2),
+                        'qty'=> 1,
+                        'is_taxable'=> false,
+                        'is_deductable'=> true
+                    ]
+                ];
                 return response()->json([
                     'status'=>1,
                     'billing_address' => $billing_address,
-
                     'payment_method'=>$payment_method,
-                    'per_hour_amount'=>$per_hour_amount,
-                    'per_trip_amount'=>$per_trip_amount,
-
-                    'total_hours'=>round($total_hours,2),
-                    'total_trips'=>round($total_trips,2),
-
+                    'items'=>$invoice_items_data,
+                    'is_edit'=>false,
                     'aed_trips'=>round($aed_trips,2),
                     'aed_hours'=>round($aed_hours,2),
-                    'total_hours_payable'=>round($total_hours_payable,2),
-                    'total_trips_payable'=>round($total_trips_payable,2),
-
-                    'ncw'=>round($ncw,2),
-                    'tips'=>round($tips,2),
-                    'adhoc'=>round($adhoc,2),
-
-                    'panalties'=>round($panalties,2),
-                    'dc_deduction'=>round($dc_deduction,2),
-                    'mcdonald_deduction'=>round($mcdonald_deduction,2),
-
                 ]);
                 break;
             case 'fixed_based':
                 $riders_count = count($client_riders);
                 $fixed_amount = $client_settings['fb__amount'];
                 $total_payable = $fixed_amount * $riders_count;
+                $invoice_items_data=[
+                    [
+                       'desc'=>'Fixed Amount',
+                       'amount'=> $total_payable,
+                       'rate'=>  round($fixed_amount,2),
+                       'qty'=> $riders_count,
+                       'is_taxable'=> true,
+                       'is_deductable'=> false
+                    ]
+                ];
                 return response()->json([
                     'status'=>1,
                     'billing_address' => $billing_address,
-
                     'payment_method'=>$payment_method,
-
-                    'total_payable'=>$total_payable,
-                    'fixed_amount'=>$fixed_amount,
-                    'riders_count'=>$riders_count
+                    'items'=>$invoice_items_data,
+                    'is_edit'=>false,
                 ]);
                 break;
             case 'commission_based':

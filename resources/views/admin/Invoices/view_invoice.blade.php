@@ -107,8 +107,9 @@
                         {{-- <th>
                             <input type="checkbox" id="select_all" >
                         </th> --}}
-                        <th>Invoice</th>
+                        <th>Inv</th>
                         <th>Client</th>
+                        <th>Month</th>
                         <th>Date</th>
                         <th>Due Date</th>
                         <th>Balance</th>
@@ -489,6 +490,7 @@ function getInvoices() {
             //  { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
             { data: 'invoice', name: 'invoice' },
             { data: 'client_name', name: 'client_name' }, 
+            { data: 'month', name: 'month' }, 
             { data: 'date', name: 'date' },            
             { data: 'due_date', name: 'due_date' },
             { data: 'balance', name: 'balance' },
@@ -500,7 +502,7 @@ function getInvoices() {
         responsive:true,
         columnDefs: [
             {
-                targets: [ 8 ],
+                targets: [ 9 ],
                 visible: false,
                 searchable: true,
             }

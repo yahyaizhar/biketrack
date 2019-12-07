@@ -3067,11 +3067,14 @@ class AjaxNewController extends Controller
             $client=Client::find($invoice->client_id);
             return $client->name;
         })
+        ->addColumn('month', function($invoice){
+            return Carbon::parse($invoice->month)->format('F Y');
+        })
         ->addColumn('date', function($invoice){
-            return Carbon::parse($invoice->invoice_date)->format('F d, Y');
+            return Carbon::parse($invoice->invoice_date)->format('d-M-Y');
         })
         ->addColumn('due_date', function($invoice){
-            return Carbon::parse($invoice->invoice_due)->format('F d, Y');
+            return Carbon::parse($invoice->invoice_due)->format('d-M-Y');
         })
         ->addColumn('balance', function($invoice){
             return "AED ".$invoice->due_balance;
@@ -3219,7 +3222,7 @@ class AjaxNewController extends Controller
                     </div>';
             return $html;
         })
-        ->rawColumns(['invoice','client_name','date','due_date','balance','total','status','actions', 'details'])
+        ->rawColumns(['invoice','client_name','month','date','due_date','balance','total','status','actions', 'details'])
         ->make(true);
     }
     public function getEmployeeAccounts($ranges)
