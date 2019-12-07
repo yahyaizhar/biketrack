@@ -300,11 +300,11 @@
                 <div class="maintax" style="font-size:0;">
                     <div class="childa" style="display:inline-block;width:50%;font-size:12px;float:left;">
                     <ul style="padding-left:0px;margin-bottom: 0px;">
-                        <li class="company_name" style="display:block;font-weight: bold; font-size: 14px;color: black; letter-spacing: 1px; font-family: monospace;" >King Rider Delivery Service LLC</li>
-                        <li style="display:block;color: #6f6e6e;">103-15 First floor, Emitac building Garhoud, Dubai, U.A.E</li>
-                        <li style="display:block;color: #6f6e6e;font-size: 12px; letter-spacing: 0.5px;">info@kindrider.net</li>
-                        <li style="display: block; color: #6f6e6e; font-weight: 400;">050-000000</li>
-                        <li style="display: block; color: #6f6e6e; font-weight: 400;">TRN : 000000000000</li>
+                        <li class="company_name" style="display:block;font-weight: bold; font-size: 14px;color: black; letter-spacing: 1px; font-family: monospace;" >{{$company_info->company_name}}</li>
+                        <li style="display:block;color: #6f6e6e;">{{$company_info->company_address}}</li>
+                        <li style="display:block;color: #6f6e6e;font-size: 12px; letter-spacing: 0.5px;">{{$company_info->company_email}}</li>
+                        <li style="display: block; color: #6f6e6e; font-weight: 400;">{{$company_info->company_phone_no}}</li>
+                        <li style="display: block; color: #6f6e6e; font-weight: 400;">TRN : {{$company_info->company_tax_return_no}}</li>
                     </ul>
                     {{-- <ul style="padding-left:0px">
                         
@@ -334,6 +334,7 @@
                     <td  style="font-weight: 500; text-align: right; color: gray; text-transform: uppercase; font-size: 12px;">
                     <ul>
                     <li style="display:block">Invoice # : <span class="invoice_id"></span></li>
+                    <li style="display:block">Invoice Month : <span class="invoice_month"></span></li>
                     <li style="display:block">Invoice date : <span class="invoice_date"></span></li>
                     <li style="display:block">Due date : <span class="invoice_due"></span> </li>
                     </ul>
@@ -398,9 +399,9 @@
    </div>
    <ul style="padding-left: 0px;position: absolute; top: 680px;">
    <li style="display: block;text-align: left; margin-top: 55px; color: #504e4e; font-weight: 800; text-transform: capitalize; font-size: 14px; font-family: sans-serif;">Make All Payment Through Cheque</li>
-   <li style="display: block;font-weight: 500; text-align: left; color: #504e4e; font-size: 13px;    font-family: sans-serif;">Account Title: <span class="account_title"> King Rider Delivery Service LLC</span></li>
-   <li style="display: block;font-weight: 500; text-align: left; color: #504e4e; font-size: 13px;    font-family: sans-serif;">Account No: <span class="account_no"> AE 41 0340 0037 0833  7520 001</span></li>
-   <li style="display: block;font-weight: 500; text-align: left; color: #504e4e; font-size: 13px;    font-family: sans-serif;">Bank Name: <span class="bank_name"> Emirates Islamic Bank</span></li>
+   <li style="display: block;font-weight: 500; text-align: left; color: #504e4e; font-size: 13px;    font-family: sans-serif;">Account Title: <span class="account_title"> {{$company_info->company_name}}</span></li>
+   <li style="display: block;font-weight: 500; text-align: left; color: #504e4e; font-size: 13px;    font-family: sans-serif;">Account No: <span class="account_no">{{$company_info->company_account_no}}</span></li>
+   <li style="display: block;font-weight: 500; text-align: left; color: #504e4e; font-size: 13px;    font-family: sans-serif;">Bank Name: <span class="bank_name"> {{$company_info->company_bank_name}}</span></li>
    </ul>
    <p style="font-weight: 600; text-align: right; color: #504e4e; font-size: 12px; padding-top: 3px; display: inline-block; border-top: 1px solid #dddd; margin-top: 70px;position: absolute; top: 800px;right:5px ">COMPANY STAMP & SIGN</p>
         </div>
@@ -659,9 +660,10 @@ $(document).ready(function () {
             $('.invoice_slip__client_email').text(invoice.client.email);
             $('.invoice_slip__client_no').text(invoice.client.phone);
             $('.invoice_slip__client_name').text(invoice.client.name);
-            $('.invoice_slip__total_amount').text('AED '+invoice.invoice_total);
+            $('.invoice_slip__total_amount').text('AED '+Math.round(invoice.invoice_total));
             $('.invoice_date').text(invoice.invoice_date)
             $('.invc_no').text(invoice.id)
+            $('.invoice_month').text(new Date(invoice.month).format('mmmm yyyy'));
             $('.invoice_slip__invoice_items').html('');
             $('.custm_subtotal').text('AED '+invoice.invoice_total)
             if(invoice.taxable_amount == null){
@@ -675,7 +677,7 @@ $(document).ready(function () {
             }        
             $('.custm_tax').text('AED '+invoice.taxable_amount);
             $('.custm_totl').text('AED '+invoice.invoice_subtotal);
-            $('.custm_total_price').text('AED '+invoice.invoice_total);
+            $('.custm_total_price').text('AED '+ Math.round(invoice.invoice_total));
             $('.custm_message_on_invoice').text()
             $('.custm_message_on_invoice').html(invoice.message_on_invoice);
             $('.invoice_id').text(invoice.id)
@@ -750,9 +752,10 @@ $(document).ready(function () {
                     $('.invoice_slip__client_email').text(invoice.client.email);
                     $('.invoice_slip__client_no').text(invoice.client.phone);
                     $('.invoice_slip__client_name').text(invoice.client.name);
-                    $('.invoice_slip__total_amount').text('AED '+invoice.invoice_total);
+                    $('.invoice_slip__total_amount').text('AED '+Math.round(invoice.invoice_total));
                     $('.invoice_date').text(invoice.invoice_date)
                     $('.invc_no').text(invoice.id)
+                    $('.invoice_month').text(new Date(invoice.month).format('mmmm yyyy'));
                     $('.custm_subtotal').text('AED '+invoice.invoice_total)
                     if(invoice.taxable_amount == null){
                         invoice.taxable_amount = '0.00'
@@ -765,7 +768,7 @@ $(document).ready(function () {
                     }
                     $('.custm_tax').text('AED '+invoice.taxable_amount);
                     $('.custm_totl').text('AED '+invoice.invoice_subtotal);
-                    $('.custm_total_price').text('AED '+invoice.invoice_total);
+                    $('.custm_total_price').text('AED '+Math.round(invoice.invoice_total));
                     $('.custm_message_on_invoice').text(invoice.message_on_invoice);
                     $('.invoice_id').text(invoice.id)
                     $('.invoice_date').text(invoice.invoice_date)

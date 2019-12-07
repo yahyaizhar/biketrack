@@ -19,6 +19,7 @@ use App\Model\Accounts\Company_Account;
 use App\Model\Accounts\Rider_Account;
 use App\Model\Accounts\Income_zomato;
 use App\Model\Client\Client_Rider;
+use App\Model\Admin\Company_info;
 use Arr;
 
 class InvoiceController extends Controller
@@ -28,8 +29,9 @@ class InvoiceController extends Controller
         $this->middleware('auth:admin');
     } 
     public function add_invoice(){
+        $company_info = Company_info::all()->first();
         $clients=Client::where("active_status","A")->get();
-        return view('admin.Invoices.add_invoice',compact('clients'));
+        return view('admin.Invoices.add_invoice',compact('clients','company_info'));
     }
     public function add_invoice_post(Request $r){
         $client_id = $r->client_id;
@@ -381,5 +383,25 @@ class InvoiceController extends Controller
     }
     public function invoive_payments(){
         return view('admin.Invoices.invoice_payments');
+    }
+    public function company_info(){
+        $company_info = Company_info::all()->first();
+        return view('admin.Invoices.add_company_info',compact('company_info'));
+    }
+    public function company_info_store(Request $request){
+        $BA = new Company_info();
+        $BA_first = Company_info::all()->first();
+        if(isset($BA_first)){
+            $BA=$BA_first;
+        }
+        $BA->company_name=$request->company_name;
+        $BA->company_address=$request->company_address;
+        $BA->company_phone_no=$request->company_phone_no;
+        $BA->company_email=$request->company_email;
+        $BA->company_tax_return_no=$request->company_trn;
+        $BA->company_account_no=$request->company_account_no;
+        $BA->company_bank_name=$request->company_bank_name;
+        $BA->save();
+        return redirect(url('admin/companyinfo'))->with('message', 'Record Created Successfully.');
     }
 }
