@@ -148,6 +148,15 @@ class InvoiceController extends Controller
             $invoice_payment->payment_method=$payment_method;
             if($payment_method=="bank"){
                 $invoice_payment->bank_id=$r->bank_id; 
+                //saving transaction
+                $bank_transaction=new Bank_transaction;
+                $bank_transaction->bank_id=$r->bank_id;
+                $bank_transaction->type='cr';
+                $bank_transaction->amount=$payment_amount;
+                $bank_transaction->source=get_class($invoice);
+                $bank_transaction->source_id=$invoice->id;
+                $bank_transaction->created_by=Auth::user()->id;
+                $bank_transaction->save();
             }
 
             $invoice_payment->original_amount= $invoice->invoice_total; 
@@ -157,6 +166,8 @@ class InvoiceController extends Controller
 
             $invoice_payment->payment_received_by=Auth::user()->id; 
             $invoice_payment->status=$inv_status; 
+
+            
 
             $invoice->save();
             $invoice_payment->save();
