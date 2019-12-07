@@ -248,8 +248,7 @@ uppy.use(Uppy.DragDrop, {
                     
                 });
                 console.log('import_data',import_data);
-                var __data=chunk(import_data,1000);
-                moveAlong(__data);
+                save_data(import_data,1000); //******************//
                return;
                 $.ajax({
                     headers: {
@@ -301,17 +300,11 @@ uppy.use(Uppy.DragDrop, {
         });
         // uppy.upload()
     });
-function chunk(array, size) {
-    const chunked_arr = [];
-    for (let i = 0; i < array.length; i++) {
-      const last = chunked_arr[chunked_arr.length - 1];
-      if (!last || last.length === size) {
-        chunked_arr.push([array[i]]);
-      } else {
-        last.push(array[i]);
-      }
-    }
-    return chunked_arr;
+
+var save_data=function(arr, chunks_size){
+    $('.bk_loading').show();
+    var chunked_arr=biketrack.chunk_array(arr, chunks_size); 
+    moveAlong(chunked_arr);
 }
 var moveAlong=function(queue){
 	if(queue.length>0){
@@ -324,10 +317,10 @@ var moveAlong=function(queue){
             type : 'POST',
             data: {data: _chunk},
             beforeSend: function() {            
-                $('.bk_loading').show();
+                // $('.bk_loading').show();
             },
             complete: function(){
-                $('.bk_loading').hide();
+                // $('.bk_loading').hide();
             },
             success: function(data){
                 console.warn(data);
@@ -358,6 +351,7 @@ var moveAlong=function(queue){
 	}
 	else{
 		//all data is sended
+        $('.bk_loading').hide();
 		swal.fire({
             position: 'center',
             type: 'success',

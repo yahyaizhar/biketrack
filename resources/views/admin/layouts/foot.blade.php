@@ -331,6 +331,18 @@ biketrack.refresh_global = function(){
     });
 }
 
+biketrack.chunk_array=function(array, size) {
+    const chunked_arr = [];
+    for (let i = 0; i < array.length; i++) {
+      const last = chunked_arr[chunked_arr.length - 1];
+      if (!last || last.length === size) {
+        chunked_arr.push([array[i]]);
+      } else {
+        last.push(array[i]);
+      }
+    }
+    return chunked_arr;
+}
 /*=====================SEARCH INPUT===================*/
     var _navRiderId = biketrack.getUrlParameter('rider_id');
     if(_navRiderId!="") document.getElementById('nav__rider_search_input').value=_navRiderId;
