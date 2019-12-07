@@ -34,6 +34,7 @@ use App\Model\Accounts\Company_Account;
 use App\Model\Accounts\Rider_Account;
 use App\Model\Admin\Admin;
 use Arr;
+use App\Model\Zomato\Riders_Payouts_By_Days;
 
 
 
@@ -2125,6 +2126,36 @@ class AjaxController extends Controller
            ->rawColumns(['action','comments','status','feid','area','rider_id','adt1','adt2','improvements','called_over'])
            ->make(true);
        }
-       
+       public function getRiderPayoutsByDays()
+       {
+           $days_payouts =Riders_Payouts_By_Days::orderByDesc('created_at')->get();
+           return DataTables::of($days_payouts)
+            ->addColumn('feid', function($days_payouts){
+                return 123;
+            })
+            ->addColumn('rider_name', function($days_payouts){
+            return 123;
+            })
+            ->addColumn('date', function($days_payouts){
+                return 123;
+            })
+            ->addColumn('login_hours', function($days_payouts){
+                return 123;
+            })
+            ->addColumn('trips', function($days_payouts){
+                return 123;
+            })
+            ->addColumn('payout_for_login_hours', function($days_payouts){
+                return 123;
+            })
+            ->addColumn('payout_for_trips', function($days_payouts){
+                return 123;
+            })
+            ->addColumn('grand_total', function($days_payouts){
+                return 123;
+            })
+           ->rawColumns([ 'rider_name','login_hours','feid','grand_total','payout_for_trips','payout_for_login_hours','date','trips',])
+           ->make(true);
+       }
 
 }

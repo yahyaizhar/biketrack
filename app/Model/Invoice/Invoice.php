@@ -7,7 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Model\Rider\Rider;
 use Auth;
-class Invoice_Payment extends Authenticatable
+class Invoice extends Authenticatable
 {
     /**
      * Start logging.
@@ -56,20 +56,35 @@ class Invoice_Payment extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'invoice_id',
-        'original_amount',
-        'payment_date',
-        'payment',
-        'due_balance',
-        'payment_received_by',
-        'payment_method',
+        'client_id',
+        'invoice_amount',
+        'month',
+        'invoice_date',
+        'invoice_due',
+        'payment_status',
+        'generated_by',
+        'tax_method_id',
+        'taxable_amount',
         'bank_id',
-        'notes',
-        'attachment',
+        'amount_paid',
+        'due_balance',
+        'received_date',
         'invoice_status',
+        'discount_type',
+        'discount_amount',
+        'attachment',
+        'message_on_invoice',
+        'billing_address',
+        'status'
+
     ];
 
-    public function Invoice(){
-        return $this->belongsTo('App\Model\Invoice\Invoice');
+    public function Invoice_item()
+    {
+        return $this->hasMany('App\Model\Invoice\Invoice_item', 'invoice_id');
+    }
+    public function Invoice_Payment()
+    {
+        return $this->hasMany('App\Model\Invoice\Invoice_Payment', 'invoice_id');
     }
 }

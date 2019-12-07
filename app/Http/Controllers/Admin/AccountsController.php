@@ -30,6 +30,7 @@ use App\Model\Accounts\Company_Account;
 use App\Assign_bike;
 use App\Company_investment;
 use App\Company_Tax;
+use App\Model\Zomato\Riders_Payouts_By_Days;
 
 
 class AccountsController extends Controller
@@ -2375,5 +2376,107 @@ public function client_income_update(Request $request,$id){
         $income=Income_Zomato::where("p_id",$p_id)->get()->first();
         $income->rider_id=$rider_id;
         $income->update();
+    }
+    public function view_riders_payouts_days(){
+        return view('admin.zomato.riders_payouts_by_days');
+    }
+    public function import_rider_daysPayouts(Request $r)
+    {
+        $data = $r->data;
+        $zomato_objects=[];
+        $zts =Riders_Payouts_By_Days::all(); // r1
+        $zi =Income_zomato::all(); // r1
+        $delete_data = [];
+        $i=0;
+        $unique_id=uniqid().'-'.time();
+
+        $is_exception=false;
+        $exception_msg='';
+        $j=0;
+        foreach ($data as $item_row) {
+            $i++;
+            
+            $date=isset($item_row['date'])?$item_row['date']:null;
+            if($date==null){
+                //throw exception. No feid found
+                $is_exception=true;
+                $exception_msg='No Date found against feid '.$item_row['feid'].' and row '.$i.'. Please recheck the data';
+                break;
+            }
+            $start_of_month = Carbon::parse($date)->startOfMonth()->format('Y-m-d');
+            $feid=isset($item_row['feid'])?$item_row['feid']:null;
+            $grand_total=isset($item_row['grand_total'])?$item_row['grand_total']:null;
+            $login_hours=isset($item_row['login_hours'])?$item_row['login_hours']:null;
+            $trips=isset($item_row['orders'])?$item_row['orders']:null;
+            $payout_for_login_hours=isset($item_row['payout_for_login_hrs'])?$item_row['payout_for_login_hrs']:null;
+            $payout_for_trips=isset($item_row['payout_for_orders'])?$item_row['payout_for_orders']:null;
+            $rider_id=isset($item_row['rider_id'])?$item_row['rider_id']:null;
+
+            if($feid==null){
+                //throw exception. No feid found
+                $is_exception=true;
+                $exception_msg='No FEID found against date '.$date.'. Please recheck the data';
+                break;
+            }
+            $zi_found = Arr::first($zi, function ($item_zi, $key) use ($start_of_month, $item_row) {
+                return $item_zi->date == $start_of_month && $item_zi->feid==$item_row['feid'];
+            });
+            if(isset($zi_found)){
+                //found the row in Income Zomato table
+                $income_zomato_id=$zi_found->id;
+
+                //finding if row exist in this table
+                $zts_found = Arr::first($zts, function ($item_zts, $key) use ($date, $item_row) {
+                    return $item_zts->date == $date && $item_zts->feid==$item_row['feid'];
+                });
+
+                if(isset($zts_found)){
+                    $objDelete = [];
+                    $objDelete['id']=$zts_found->id; 
+                    array_push($delete_data, $objDelete);
+                }
+
+                
+                $obj = [];
+                $obj['date']=$date;
+                $obj['feid']=$feid;
+                $obj['zomato_income_id']=$income_zomato_id;
+                $obj['rider_id']=$rider_id;
+                $obj['login_hours']=$login_hours;
+                $obj['trips']=$trips;
+                $obj['payout_for_login_hours']=$payout_for_login_hours;
+                $obj['payout_for_trips']=$payout_for_trips;
+                $obj['grand_total']=$grand_total;
+                $obj['created_at']=Carbon::now();
+                $obj['updated_at']=Carbon::now();
+                array_push($zomato_objects, $obj);
+            }
+            else {
+                //throw exception. No rows found
+                $is_exception=true;
+                $exception_msg='No data found in income_zomatos table against FEID '.$feid.' and month of '.$date;
+                break;
+            }
+            
+
+        }
+        if($is_exception){
+            return response()->json([
+                'status'=>0,
+                'message'=>$exception_msg
+            ]);
+        }
+        // DB::table('riders__payouts__by__days')->insert($zomato_objects);
+        $deletes = DB::table('riders__payouts__by__days')
+                    ->whereIn('id', $delete_data)
+                    ->delete();
+        DB::table('riders__payouts__by__days')->insert($zomato_objects); //r2 
+        // $data=Batch::update(new Riders_Payouts_By_Days, $update_data, 'id'); //r3
+        return response()->json([
+            'status'=>1,
+            'data'=>$zomato_objects,
+            'deletedata_count'=>$deletes,
+            'count'=>$i
+        ]);
     }
 }

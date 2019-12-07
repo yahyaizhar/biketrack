@@ -842,7 +842,7 @@
     </div>
 </div>
 </div>
-    <
+    
 </div>
 {{-- end salary slip --}}
 @endsection

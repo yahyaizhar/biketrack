@@ -1,15 +1,18 @@
 <?php
 
-namespace App\Model\Client;
+namespace App\Model\Zomato;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Model\Rider\Rider;
+use App\Model\Bikes\bike;
+use App\Assign_bike;
 use Auth;
-class Invoice extends Authenticatable
+
+class Riders_Payouts_By_Days extends Authenticatable
 {
-    /**
+   /**
      * Start logging.
      *
      * @return void
@@ -46,41 +49,17 @@ class Invoice extends Authenticatable
             $activity_model->save();
         });
     }
-
     // ends logging
-    use Notifiable;
-    
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
-        'client_id',
-        'invoice_amount',
-        'month',
-        'invoice_date',
-        'invoice_due',
-        'payment_status',
-        'generated_by',
-        'tax_method_id',
-        'taxable_amount',
-        'bank_id',
-        'amount_paid',
-        'due_balance',
-        'received_date',
-        'invoice_status',
-        'discount_type',
-        'discount_amount',
-        'attachment',
-        'message_on_invoice',
-        'billing_address',
-        'status'
+        'rider_id',
+        'feid',
+        'zomato_income_id',
+        'date',
+        'login_hours',
+        'trips',
+        'payout_for_login_hours',
+        'payout_for_trips',
+        'grand_total',
+       ];
 
-    ];
-
-    public function Invoice_item()
-    {
-        return $this->hasMany('App\Model\Client\Invoice_item', 'invoice_id');
-    }
 }

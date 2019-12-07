@@ -26,7 +26,7 @@ class CreateInvoicePaymentsTable extends Migration
             $table->text('notes')->nullable();
             $table->text('attachment')->nullable();
             $table->string('status')->nullable();
-            $table->string('active_status')->nullable();
+            $table->string('active_status')->default("A");
             $table->timestamps();
         });
     }
