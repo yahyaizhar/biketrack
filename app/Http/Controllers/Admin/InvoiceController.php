@@ -199,7 +199,7 @@ class InvoiceController extends Controller
         $billing_address=$client->address;
         $month = Carbon::parse($formatted_month)->format('m');
 
-        $open_invoice = Invoice::with('Invoice_item')->where([
+        $open_invoice = Invoice::with('Invoice_item')->with('Invoice_payment')->where([
             'client_id'=>$client_id,
             'month'=>$formatted_month,
             'active_status'=>'A'
