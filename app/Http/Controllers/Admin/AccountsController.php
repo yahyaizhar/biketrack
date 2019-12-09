@@ -2479,4 +2479,78 @@ public function client_income_update(Request $request,$id){
             'count'=>$i
         ]);
     }
+    public function hours_trips_details($month,$rider_id){
+        $_only_month=Carbon::parse($month)->format("m");
+        $data=Income_Zomato::where('rider_id',$rider_id)
+        ->whereMonth("date",$_only_month)
+        ->get()
+        ->first();
+        if (isset($data)) {
+        $rider_payout=Riders_Payouts_By_Days::where("zomato_income_id", $data->id)->get();
+        }
+        else{
+            return 0;
+        }
+        return response()->json([
+            'month'=>$_only_month,
+            'rider_id'=>$rider_id,
+            'data'=>$rider_payout,
+        ]);
+    }
+    public function weekly_days_off($month,$rider_id,$days){
+        $_days =[];
+        if ($days=="Monday") {
+            $da=Carbon::MONDAY;
+        }
+        if ($days=="Tuesday") {
+            $da=Carbon::TUESDAY;
+        }
+        if ($days=="Wednesday") {
+            $da=Carbon::WEDNESDAY;
+        }
+        if ($days=="Thursday") {
+            $da=Carbon::THURSDAY;
+        }
+        if ($days=="Friday") {
+            $da=Carbon::FRIDAY;
+        }
+        if ($days=="Saturday") {
+            $da=Carbon::SATURDAY;
+        }
+        if ($days=="Sunday") {
+            $da=Carbon::SUNDAY;
+        }
+        $startOfMonth=Carbon::parse($month)->startOfMonth()->format("Y-m-00");
+        $endOfMonth=Carbon::parse($month)->endOfMonth()->format("Y-m-d");
+        $startDate = Carbon::parse($startOfMonth)->next($da); 
+        $endDate = Carbon::parse($endOfMonth);
+        
+        for ($date = $startDate; $date->lte($endDate); $date->addWeek()) {
+            $_days[]= $date->format('Y-m-d');
+        }
+        return response()->json([
+            'a'=>$_days,
+            'days'=>$days,
+        ]);
+    }
+    public function weekly_days_sync_data($month,$rider_id,$weekly_off_day,$absent_days,$weekly_off,$extra_day){
+        $_only_month=Carbon::parse($month)->format("m");
+        $_total_days_in_month=Carbon::parse($month)->daysInMonth;
+        $data=Income_Zomato::where('rider_id',$rider_id)
+        ->whereMonth("date",$_only_month)
+        ->get()
+        ->first();
+        if (isset($data)) {
+            $data->off_day=$weekly_off_day;
+            $data->absents_count=$absent_days-$weekly_off;
+            $data->weekly_off=$weekly_off+$extra_day;
+            $data->extra_day=$extra_day;
+            $data->working_days=$_total_days_in_month-$absent_days;
+            $data->save();
+        }
+        
+        return response()->json([
+            'data'=>$data,
+        ]);
+    }
 }
