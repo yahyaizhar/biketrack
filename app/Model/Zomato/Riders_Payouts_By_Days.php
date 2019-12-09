@@ -61,5 +61,8 @@ class Riders_Payouts_By_Days extends Authenticatable
         'payout_for_trips',
         'grand_total',
        ];
-
+       public function income_zomato(){
+        return $this->belongTo('App\Model\Accounts\Income_zomato','id');
+  
+      }
 }

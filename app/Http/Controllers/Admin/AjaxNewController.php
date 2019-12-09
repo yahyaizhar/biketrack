@@ -689,6 +689,7 @@ class AjaxNewController extends Controller
             return  0;
         })
         ->with([
+            'closing_balance_prev'=>round($closing_balance_prev,2),
             'closing_balance' => round($closing_balance,2),
             'rider_debits_cr_prev_payable'=>$rider_debits_cr_prev_payable,
             'rider_debits_dr_prev_payable'=>$rider_debits_dr_prev_payable,
