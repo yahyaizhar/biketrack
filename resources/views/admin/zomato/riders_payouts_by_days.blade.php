@@ -225,32 +225,31 @@ uppy.use(Uppy.DragDrop, {
                         var second_chunk = first_chunk[second_chunk_key];
                         var _date = (second_chunk_key.split('@')[0]).replace(/[_]/g, '-');
                         var _date_index=parseInt(second_chunk_key.split('@')[1]);
-                        var _firstObj=_ImportData.find(function(x){return x.date==_date});
-                        if(typeof _firstObj == "undefined") _ImportData.push({date:_date,rows:[]}),_firstObj=_ImportData.find(function(x){return x.date==_date});
+                        // var _firstObj=_ImportData.find(function(x){return x.date==_date});
+                        // if(typeof _firstObj == "undefined") _ImportData.push({date:_date,rows:[]}),_firstObj=_ImportData.find(function(x){return x.date==_date});
                         if(i==0){
-                            _ImportHeading.includes(second_chunk) || _ImportHeading.push(second_chunk);
-                            
+                            _ImportHeading.includes(second_chunk) || _ImportHeading.push(second_chunk);   
                         }
                         else{
-                            var _secondObj=_firstObj.rows.find(function(x){return x.feid==_feid});
-                            if(typeof _secondObj == "undefined") _firstObj.rows.push({feid:_feid}),_secondObj=_firstObj.rows.find(function(x){return x.feid==_feid});
+                            var _secondObj=_ImportData.find(function(x){return x.feid==_feid && x.date==_date});
+			                if(typeof _secondObj == "undefined") _ImportData.push({feid:_feid, date:_date}),_secondObj=_ImportData.find(function(x){return x.feid==_feid&& x.date==_date});
                             _secondObj[_ImportHeading[_date_index]]=second_chunk;
                         }
                     })
                 })
                 import_data=_ImportData;
                 import_data.forEach(function(data0, i){
-                    data0.rows.forEach(function(data1, j){
-                        var client_rider=client_riders.find(function(x){return x.client_rider_id===data1.feid});
-                        var _riderID = null;
-                        if(typeof client_rider !== "undefined"){
-                            _riderID=client_rider.rider_id;
-                        }
-                        import_data[i].rows[j]['rider_id']=_riderID;
-                    });
+                    var client_rider=client_riders.find(function(x){return x.client_rider_id===data0.feid});
+                    var _riderID = null;
+                    if(typeof client_rider !== "undefined"){
+                        _riderID=client_rider.rider_id;
+                    }
+                    import_data[i]['rider_id']=_riderID;
+                    
                 });
                 console.log('import_data',import_data);
-            //    return;
+                save_data(import_data,1000); //******************//
+               return;
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -301,6 +300,70 @@ uppy.use(Uppy.DragDrop, {
         });
         // uppy.upload()
     });
+
+var save_data=function(arr, chunks_size){
+    $('.bk_loading').show();
+    var chunked_arr=biketrack.chunk_array(arr, chunks_size); 
+    moveAlong(chunked_arr);
+}
+var moveAlong=function(queue){
+	if(queue.length>0){
+		var _chunk = queue.pop();
+		$.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url : "{{route('import.import_rider_daysPayouts')}}",
+            type : 'POST',
+            data: {data: _chunk},
+            beforeSend: function() {            
+                // $('.bk_loading').show();
+            },
+            complete: function(){
+                // $('.bk_loading').hide();
+            },
+            success: function(data){
+                console.warn(data);
+                if(data.status==0){
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: data.message,
+                        showConfirmButton: true  
+                    });
+                    return;
+                }
+				moveAlong(queue);
+                
+            },
+            error: function(error){
+                $('.bk_loading').hide();
+                swal.fire({
+                    position: 'center',
+                    type: 'error',
+                    title: 'Oops...',
+                    text: 'Unable to update.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        });
+	}
+	else{
+		//all data is sended
+        $('.bk_loading').hide();
+		swal.fire({
+            position: 'center',
+            type: 'success',
+            title: 'Record imported successfully.',
+            showConfirmButton: false,
+            timer: 1500
+        });
+        performance_table.ajax.reload(null, false);
+	}
+}
+
 var performance_table;
 var riders_data = JSON.parse(JSON.stringify(_perData));
 $(function() {

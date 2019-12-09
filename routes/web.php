@@ -76,6 +76,7 @@ Route::group([
     Route::get("/accounts/employee/account/{range}","AjaxNewController@getEmployeeAccounts")->name("admin.accounts.getEmployeeAccounts");
     Route::get("/accounts/employee/bills/{range}","AjaxNewController@getEmployeeAccountsBills")->name("admin.accounts.getEmployeeAccountsBills");
     Route::get("/invoice/ajax/payments/view","AjaxNewController@getInvoicePayments")->name("admin.getInvoicePayments");
+
 });
 // End Ajax Routes
 
@@ -626,6 +627,9 @@ Route::group([
    Route::post('/invoice/payment/save','InvoiceController@save_payment')->name('invoice.save_payment');
   
    Route::get('/invoice/payments/view','InvoiceController@invoive_payments')->name('invoice.invoive_payments');
+
+   Route::get('/companyinfo','InvoiceController@company_info')->name('invoice.company_info');
+   Route::post('/companyinfo/store','InvoiceController@company_info_store')->name('invoice.company_info_store');
 });   
 
 

@@ -48,6 +48,26 @@
             width: 340px;
             display: block; 
         }
+        .invoice__details-container > td{
+            padding: 0;
+        }
+        .invoice__details-inner{
+            padding: 10px 0px;
+            font-size: 14px;
+            font-weight: 400;
+        }
+        .invoice__details-print{
+            color: #fff;
+            margin: 0 10px;
+            font-weight: 600;
+        }
+        .invoice__details-print span{
+            border-bottom: 1px solid #fff;
+        }
+        .invoice__details-payments{
+            margin: 0;
+            padding-left: 33px;
+        }
         </style>
     <!--end::Page Vendors Styles -->
 @endsection
@@ -87,14 +107,16 @@
                         {{-- <th>
                             <input type="checkbox" id="select_all" >
                         </th> --}}
-                        <th>Invoice</th>
+                        <th>Inv</th>
                         <th>Client</th>
+                        <th>Month</th>
                         <th>Date</th>
                         <th>Due Date</th>
                         <th>Balance</th>
                         <th>Total</th>
                         <th>Status</th>
-                        <th>Actions</th>                        
+                        <th>Actions</th>    
+                        <th class="d-none"></th>                    
                     </tr>
                 </thead>
             </table>
@@ -364,7 +386,7 @@ function getOpenInvoice() {
                             '       <td> AED '+invoice.due_balance+' </td>   ' +
                             '       <td>' +
                             '           <input type="hidden" name="payments['+i+'][invoice_id]" value="'+invoice.id+'">'+
-                            '           <input data-input-type="float_limited" data-max="'+invoice.due_balance+'"  type="text" class="form-control" data-name="payment" oninput="receive_payment.updateReceivedAmount()" name="payments['+i+'][amount]" min="0" value="'+invoice.due_balance+'">'+
+                            '           <input data-input-type="float_limited" data-max="'+invoice.due_balance+'"  type="text" class="form-control" data-name="payment" onchange="receive_payment.updateReceivedAmount()" name="payments['+i+'][amount]" min="0" value="'+invoice.due_balance+'">'+
                             '       </td>'+
                             '  </tr>  ';
                 });
@@ -468,22 +490,23 @@ function getInvoices() {
             //  { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
             { data: 'invoice', name: 'invoice' },
             { data: 'client_name', name: 'client_name' }, 
+            { data: 'month', name: 'month' }, 
             { data: 'date', name: 'date' },            
             { data: 'due_date', name: 'due_date' },
             { data: 'balance', name: 'balance' },
             { data: 'total', name: 'total' },
             { data: 'status', name: 'status' },
             { data: 'actions', name: 'actions' },
+            { data: 'details', name: 'details' },
         ],
         responsive:true,
-        // 'columnDefs': [
-        //     {
-        //         'targets': 0,
-        //         'checkboxes': {
-        //         'selectRow': true
-        //         }
-        //     }
-        // ],
+        columnDefs: [
+            {
+                targets: [ 9 ],
+                visible: false,
+                searchable: true,
+            }
+        ],
         // 'select': {
         //     'style': 'multi'
         // },
@@ -491,10 +514,32 @@ function getInvoices() {
     });
     
 }
+function set_table_accordion ( data ) {
+    // `d` is the original data object for the row
+    console.log(data);
+    // return '';
+    return data.details;
+}
 function handle_status($this) {
     console.log($this);
     $($this).find('.statusText__wrapper').toggle();
-    $($this).find('.step__wrapper').toggle()
+    $($this).find('.step__wrapper').toggle();
+
+    //showing details row
+    var tr = $($this).closest('tr');
+    var row = invoice_table.row( tr );
+    if ( row.child.isShown() ) {
+        // This row is already open - close it
+        row.child.hide();
+        tr.removeClass('shown');
+    }
+    else {
+        // Open this row
+        var _arow = row.child( set_table_accordion(row.data()) );
+        _arow.show();
+        row.child().addClass('invoice__details-container');
+        tr.addClass('shown');
+    }
 }
 getInvoices();
 setScrollBkModal();
