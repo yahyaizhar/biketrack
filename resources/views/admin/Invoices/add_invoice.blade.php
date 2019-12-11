@@ -508,7 +508,6 @@
 
 
 
-
 @endsection
 @section('foot')
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/bootstrap-switch.js') }}" type="text/javascript"></script>
@@ -952,7 +951,7 @@ $(document).ready(function () {
                         }
                     }
 
-                        var item_row = '    <tr>'+
+                     var item_row = '    <tr>'+
                                 '     <td style="border:1px solid #dddd;width:50%;text-align:left;">'+item.item_desc+'</td>'+
                                 '     <td style="border:1px solid #dddd;width:10%;text-align:left;">'+_itemRate+'</td>'+
                                 '     <td style="border:1px solid #dddd;width:10%;text-align:left;">'+_itemQty+'</td>'+

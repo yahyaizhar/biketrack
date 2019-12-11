@@ -15,6 +15,7 @@ use App\Model\Rider\Rider_Message;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\New_comer;
+use App\GuestNewComer;
 
 class NewComerController extends Controller
 {
@@ -34,6 +35,10 @@ class NewComerController extends Controller
     public function new_comer_view(){
         $newComer_count=New_comer::all()->count();
         return view('New_Comer.newcomer_view',compact('newComer_count'));
+    }
+    public function new_comer_approval_view(){
+        $newComer_approval_count=GuestNewComer::all()->count();
+        return view('New_Comer.newcomer_approval_view',compact('newComer_approval_count'));
     }
     public function delete_new_comer(Request $request){
         $newComer_id=$request->newComer_id;

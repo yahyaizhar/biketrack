@@ -32678,17 +32678,19 @@ body {
     .kt-aside--minimize .kt-aside .kt-aside__footer .btn:last-child {
       display: inline-block;
       opacity: 0; }
-
 @media (min-width: 1025px) {
   .kt-aside--fixed .kt-aside {
-    position: fixed;
+    position: initial; 
     top: 0;
     bottom: 0;
-    left: 0;
+    left: 0; 
     z-index: 98; }
   .kt-aside--static .kt-aside {
     position: relative;
     z-index: 1; }
+    div#kt_wrapper {
+      padding-left: 0px;
+  }
   .kt-aside--minimize .kt-aside {
     width: 70px;
     -webkit-transition: all 0.3s ease;
@@ -33123,6 +33125,10 @@ body {
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
     -webkit-transform-style: preserve-3d; }
+    .kt-menu__item .kt-menu__subnav .kt-menu__subnav .kt-menu__link-text{
+    color:#9da09e !important;
+
+    }
   .kt-aside--minimize .kt-aside-menu .kt-menu__nav .kt-menu__item:not([data-ktmenu-submenu-mode=accordion]).kt-menu__item--hover,
   .kt-aside-menu.kt-aside-menu--dropdown .kt-menu__nav .kt-menu__item:not([data-ktmenu-submenu-mode=accordion]).kt-menu__item--hover {
     position: relative; }
@@ -33135,7 +33141,7 @@ body {
       display: -ms-flexbox !important;
       display: flex !important;
       width: 245px;
-      margin-left: 245px;
+      margin-left: 221px;
       border-radius: 4px;
       -webkit-animation: kt-aside-menu-submenu-fade-in 0.3s ease 1, kt-aside-menu-submenu-move-up 0.3s ease-out 1;
       animation: kt-aside-menu-submenu-fade-in 0.3s ease 1, kt-aside-menu-submenu-move-up 0.3s ease-out 1; }

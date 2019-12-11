@@ -78,9 +78,9 @@ class SalikController extends Controller
                 $obj['tag_number']=isset($item['tag_number'])?$item['tag_number']:null;
                 $obj['plate']=isset($item['plate'])?$item['plate']:null; 
                 $obj['amount_aed']=isset($item['amount_aed'])?$item['amount_aed']:null;
-                $obj['trip_date']=isset($item['trip_date'])?$item['trip_date']:null;
+                $obj['trip_date']=isset($item['trip_date'])?Carbon::parse($item['trip_date'])->format('Y-m-d'):null;
                 $obj['trip_time']=isset($item['trip_time'])?$item['trip_time']:null;
-                $obj['transaction_post_date']=isset($item['transaction_post_date'])?$item['transaction_post_date']:null;
+                $obj['transaction_post_date']=isset($item['transaction_post_date'])?Carbon::parse($item['transaction_post_date'])->format('Y-m-d'):null;
                 array_push($trip_objects, $obj);
             }
             else{

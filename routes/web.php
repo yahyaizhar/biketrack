@@ -76,6 +76,8 @@ Route::group([
     Route::get("/accounts/employee/account/{range}","AjaxNewController@getEmployeeAccounts")->name("admin.accounts.getEmployeeAccounts");
     Route::get("/accounts/employee/bills/{range}","AjaxNewController@getEmployeeAccountsBills")->name("admin.accounts.getEmployeeAccountsBills");
     Route::get("/invoice/ajax/payments/view","AjaxNewController@getInvoicePayments")->name("admin.getInvoicePayments");
+    Route::get('/newApprovalComer/view/ajax', 'AjaxController@getApprovalComer')->name('NewComer.view_approval_ajax');
+
 
 });
 // End Ajax Routes
@@ -419,6 +421,7 @@ Route::group([
     Route::get('/newComer/add','NewComerController@new_comer_form')->name('NewComer.form');
     Route::post('/newComer/insert','NewComerController@insert_newcomer')->name('NewComer.insert');
     Route::get('/newComer/view','NewComerController@new_comer_view')->name('NewComer.view');
+    Route::get('/newComer/approval','NewComerController@new_comer_approval_view')->name('NewComer.approval');
     Route::delete('/newComer/delete/{newComer_id}','NewComerController@delete_new_comer')->name('NewCome.delete');
     Route::get('/newComer/Edit/{id}','NewComerController@newComer_edit')->name('NewComer.edit');
     Route::get('/newComer/Edit/view/{id}','NewComerController@newComer_edit_view')->name('NewComer.edit_view');
@@ -592,12 +595,13 @@ Route::group([
     Route::get('/NewComer/add','GuestController@newComer_view')->name('guest.newComer_view');
 });
 // end for Admin global
-
+ 
 Route::group([
     'prefix' => 'guest',
 ], function(){
 // Guest routes
     Route::get('/newcomer/add','GuestController@newComer_view')->name('guest.newComer_view');
+    Route::post('/newcomer/store','GuestController@newComer_add')->name('guest.newComer_add');
 });
 Route::group([
     'prefix' => 'admin',
