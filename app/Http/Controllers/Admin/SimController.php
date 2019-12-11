@@ -271,7 +271,7 @@ public function store_simTransaction(Request $request){
     ->last();
     $rider_id = null;
     if(isset($sim_history)){
-        $rider_id=$sim_history->rider_id;
+        // $rider_id=$sim_history->rider_id;
     }
     $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
         'sim_transaction_id'=>$sim_trans->id,
@@ -279,7 +279,7 @@ public function store_simTransaction(Request $request){
     ]);
     $ca->sim_transaction_id =$sim_trans->id;
     $ca->type='dr';
-    $ca->rider_id=$rider_id;
+    $ca->rider_id=$request->rider_id;
     $ca->month = Carbon::parse($sim_trans->month_year)->startOfMonth()->format('Y-m-d');
     $ca->given_date = Carbon::parse($sim_trans->given_date)->format('Y-m-d');
     $ca->source="Sim Transaction"; 
@@ -292,7 +292,7 @@ public function store_simTransaction(Request $request){
         ]);
         $ra->sim_transaction_id =$sim_trans->id;
         $ra->type='cr_payable';
-        $ra->rider_id=$rider_id;
+        $ra->rider_id=$request->rider_id;
         $ra->month = Carbon::parse($sim_trans->month_year)->startOfMonth()->format('Y-m-d');
         $ra->given_date = Carbon::parse($sim_trans->given_date)->format('Y-m-d');
         $ra->source="Sim extra usage"; 
@@ -305,7 +305,7 @@ public function store_simTransaction(Request $request){
         ]);
         $ca->sim_transaction_id =$sim_trans->id;
         $ca->type='cr';
-        $ca->rider_id=$rider_id;
+        $ca->rider_id=$request->rider_id;
         $ca->month = Carbon::parse($sim_trans->month_year)->startOfMonth()->format('Y-m-d');
         $ca->given_date = Carbon::parse($sim_trans->given_date)->format('Y-m-d');
         $ca->source="Sim extra usage";
