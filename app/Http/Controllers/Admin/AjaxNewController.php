@@ -689,6 +689,7 @@ class AjaxNewController extends Controller
             return  0;
         })
         ->with([
+            'closing_balance_prev'=>round($closing_balance_prev,2),
             'closing_balance' => round($closing_balance,2),
             'rider_debits_cr_prev_payable'=>$rider_debits_cr_prev_payable,
             'rider_debits_dr_prev_payable'=>$rider_debits_dr_prev_payable,
@@ -3068,7 +3069,7 @@ class AjaxNewController extends Controller
             return $client->name;
         })
         ->addColumn('month', function($invoice){
-            return Carbon::parse($invoice->month)->format('F Y');
+            return Carbon::parse($invoice->month)->format('M Y');
         })
         ->addColumn('date', function($invoice){
             return Carbon::parse($invoice->invoice_date)->format('d-M-Y');
@@ -3114,6 +3115,11 @@ class AjaxNewController extends Controller
                     $invoice_status='Paid';
                     break;
             }
+            $payments = $invoice->Invoice_Payment;
+            if(count($payments)>0 && ($invoice->invoice_status=='generated' || $invoice->invoice_status=='drafted')){
+                if(count($payments)>1) $invoice_status='Partially paid';
+                else $invoice_status='Paid';
+            }
 
 
             $statusBar='<div class="step__wrapper" style="display:none"> 
@@ -3152,9 +3158,9 @@ class AjaxNewController extends Controller
                 if($abs_remainingDays==1) $daysText='tomorrow';
                 $statusText='Due '.$daysText.' ('.$invoice_status.')';
             }
+            
             if($invoice->payment_status=="paid"){
                 //paid
-                
                 $statusText='<span class="kt-font-success"><i class="fa fa-check-circle" style="font-size: 130%;"></i> Paid</span>';
             }
 
@@ -3190,7 +3196,7 @@ class AjaxNewController extends Controller
                 
                 $daysText = $abs_remainingDays.' '.Str::plural('day', $abs_remainingDays);
                 
-                $statusText='Overdue '.$daysText.'
+                $statusText='Overdue '.$daysText.'. Due: '.Carbon::parse($invoice->invoice_due)->format('d-M-Y').'
                             <a href="" class="invoice__details-print"><span>Print Invoice</span> <i class="flaticon2-next text-white"></i></a>';
             }
             else {
@@ -3199,23 +3205,33 @@ class AjaxNewController extends Controller
                 $daysText = 'in '.$abs_remainingDays.' '.Str::plural('day', $abs_remainingDays);
                 if($abs_remainingDays==0) $daysText='today';
                 if($abs_remainingDays==1) $daysText='tomorrow';
-                $statusText='Due '.$daysText.' <a href="" class="invoice__details-print"><span>Print Invoice</span> <i class="flaticon2-next text-white"></i></a>';
+                $statusText='Due '.$daysText.'. Due: '.Carbon::parse($invoice->invoice_due)->format('d-M-Y').' <a href="" class="invoice__details-print"><span>Print Invoice</span> <i class="flaticon2-next text-white"></i></a>';
             }
-
-            switch ($invoice->invoice_status) {
-                case 'partially_paid':
-                case 'paid':
-                    $classes='bg-success text-white';
-                    $payments = $invoice->Invoice_Payment;
-                    $payments_lis='';
-                    foreach ($payments as $payment) {
-                        $payments_lis.='<li>
-                                Payment on '.Carbon::parse($payment->payment_date)->format('d/m/Y').'. Payment: <strong>AED '.round($payment->payment, 2).'</strong>
-                        </li>';
-                    }
-                    $statusText='<ul class="invoice__details-payments">'.$payments_lis.'</ul>';
-                    break;
+            $payments = $invoice->Invoice_Payment;
+            if(count($payments)>0){
+                $classes='bg-success text-white';
+                $payments_lis='';
+                foreach ($payments as $payment) {
+                    $payments_lis.='<li>
+                            Payment on '.Carbon::parse($payment->payment_date)->format('d/m/Y').'. Payment: <strong>AED '.round($payment->payment, 2).'</strong>
+                    </li>';
+                }
+                $statusText='<ul class="invoice__details-payments">'.$payments_lis.'</ul>';
             }
+            // switch ($invoice->invoice_status) {
+            //     case 'partially_paid':
+            //     case 'paid':
+            //         $classes='bg-success text-white';
+            //         $payments = $invoice->Invoice_Payment;
+            //         $payments_lis='';
+            //         foreach ($payments as $payment) {
+            //             $payments_lis.='<li>
+            //                     Payment on '.Carbon::parse($payment->payment_date)->format('d/m/Y').'. Payment: <strong>AED '.round($payment->payment, 2).'</strong>
+            //             </li>';
+            //         }
+            //         $statusText='<ul class="invoice__details-payments">'.$payments_lis.'</ul>';
+            //         break;
+            // }
             
             $html='<div class="invoice__details-wrapper">
                         <div class="'.$classes.' invoice__details-inner">'.$statusText.'</div>

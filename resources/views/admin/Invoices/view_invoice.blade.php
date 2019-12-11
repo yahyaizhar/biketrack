@@ -68,6 +68,9 @@
             margin: 0;
             padding-left: 33px;
         }
+        td.col_editable{
+            cursor: pointer;
+        }
         </style>
     <!--end::Page Vendors Styles -->
 @endsection
@@ -90,7 +93,7 @@
                     <div class="kt-portlet__head-actions">
                         {{-- <button class="btn btn-danger btn-elevate btn-icon-sm" id="bulk_delete">Delete Selected</button> --}}
                         &nbsp;
-                        <a href="{{ route('tax.add_invoice') }}" class="btn btn-brand btn-elevate btn-icon-sm">
+                        <a href="" data-ajax="{{ route('tax.add_invoice') }}" class="btn btn-brand btn-elevate btn-icon-sm" id="add_invoice_ajax">
                             <i class="la la-plus"></i>
                             New Invoice
                         </a>
@@ -111,7 +114,6 @@
                         <th>Client</th>
                         <th>Month</th>
                         <th>Date</th>
-                        <th>Due Date</th>
                         <th>Balance</th>
                         <th>Total</th>
                         <th>Status</th>
@@ -139,7 +141,7 @@
         </div>
         <form class="kt-form" enctype="multipart/form-data" id="receive_payment_form">
             <div class="modal-body">
-                <div data-ktmenu-scroll="1" id="receive_payment_inner">
+                <div data-ktmenu-scroll="1" id="receive_payment_inner" class="bk-scroll">
 
                     <div class="row">
                         <div class="col-md-3">
@@ -234,6 +236,22 @@
     </div>
 </div>
 
+<div class="modal fade bk-modal-lg" id="quick_view" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header border-bottom-0">
+            <h5 class="modal-title"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body bk-scroll">
+
+        </div>
+    </div>
+    </div>
+</div>
+
 <!-- end:: Content -->
 @endsection
 @section('foot')
@@ -246,68 +264,154 @@
 
 <!--begin::Page Scripts(used by this page) -->
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/datatables/basic/basic.js') }}" type="text/javascript"></script>
-
+<script src=" https://printjs-4de6.kxcdn.com/print.min.js" type="text/javascript"></script>
+<link href=" https://printjs-4de6.kxcdn.com/print.min.css" rel="stylesheet">
 <!--end::Page Scripts -->
 <script>
 var invoice_table;
-var basic_alert= '   <div><div class="alert alert-outline-danger fade show" role="alert">  '  + 
- '                                   <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div>  '  + 
- '                                       <div class="alert-text">A simple danger alert—check it out!</div>  '  + 
- '                                       <div class="alert-close">  '  + 
- '                                       <button type="button" class="close" data-dismiss="alert" aria-label="Close">  '  + 
- '                                           <span aria-hidden="true"><i class="la la-close"></i></span>  '  + 
- '                                       </button>  '  + 
- '                                   </div>  '  + 
- '                              </div> </div>  ' ; 
-$(function() {
-    
+var basic_alert = '   <div><div class="alert alert-outline-danger fade show" role="alert">  ' +
+    '                                   <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div>  ' +
+    '                                       <div class="alert-text">A simple danger alert—check it out!</div>  ' +
+    '                                       <div class="alert-close">  ' +
+    '                                       <button type="button" class="close" data-dismiss="alert" aria-label="Close">  ' +
+    '                                           <span aria-hidden="true"><i class="la la-close"></i></span>  ' +
+    '                                       </button>  ' +
+    '                                   </div>  ' +
+    '                              </div> </div>  ';
+$(function () {
 
 
-    $('#receive_payment [data-name="client_id"]').on('change', function(){
+
+    $('#receive_payment [data-name="client_id"]').on('change', function () {
         getOpenInvoice()
     });
     $('#receive_payment_form').on('submit', function (e) {
         e.preventDefault();
         var _form = $(this);
         receive_payment.remove_msg();
-        if(receive_payment.validatePayment(_form)){
+        if (receive_payment.validatePayment(_form)) {
             receive_payment.savePayment(_form);
         }
     });
-    $('#receive_payment [data-name="payment_method"]').on('change', function(){
+    $('#receive_payment [data-name="payment_method"]').on('change', function () {
         var _val = $(this).val();
         $('#receive_payment .bank_id-wrapper').show().find('[data-name="bank_id"]').prop('required', true).val('').trigger('change.select2');
-        if(_val=="cash")$('#receive_payment .bank_id-wrapper').hide().find('[data-name="bank_id"]').prop('required', false); 
+        if (_val == "cash") $('#receive_payment .bank_id-wrapper').hide().find('[data-name="bank_id"]').prop('required', false);
     });
 
-    $(".bk-modal-lg").on('hidden.bs.modal', function(){
+    $("#quick_view").on('hide.bs.modal', function () {
+        var _this=$(this);
+        console.log('==================', receive_payment.modal_confirmation_required);
+        var is_edit = biketrack.getUrlParameter('edit');
+        if(receive_payment.modal_confirmation_required && is_edit!=1){
+            Swal.fire({
+                title: 'Are you sure?',
+                position: 'center',
+                type: 'warning',
+                text: "Do you want to leave without saving?",
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                showCancelButton: true,
+                reverseButtons: true
+            }).then((result) => {
+                console.l
+                if (result.value) {
+                    receive_payment.modal_confirmation_required=false;
+                    _this.modal('hide');
+                }
+            console.log(result)
+            })
+            return false;
+        }
+    });
+
+    $(".bk-modal-lg").on('hidden.bs.modal', function () {
         getInvoices();
+    });
+    $('[data-ajax]').on('click', function (e, parem) {
+        e.preventDefault();
+        if(!(parem && parem.reseturl==false)){
+            var url_data = {    
+                edit:0
+            }
+            biketrack.updateURL(url_data);
+        }
+        var _ajaxUrl = $(this).attr('data-ajax');
+        console.log(_ajaxUrl);
+        var _self = $(this);
+        var loading_html = '<div class="d-flex justify-content-center modal_loading"><i class="la la-spinner fa-spin display-3"></i></div>';
+        var _quickViewModal = $('#quick_view');
+        _quickViewModal.find('.modal-body').html(loading_html);
+        _quickViewModal.modal('show');
+        $.ajax({
+            url: _ajaxUrl,
+            type: 'GET',
+            dataType: 'html',
+            success: function (data) {
+                var _d = $(data).wrapAll('<div class="new__ajax__testing">');
+                // console.log( $(data).filter('[data-ajax]')  );
+
+                var _targetForm = $(data).find('form').wrap('<p/>').parent().html();
+
+
+                _quickViewModal.find('.modal-title').html($(data).find('.page__title').html());
+
+                _quickViewModal.find('.modal-body').html(_targetForm);
+                $('script[data-ajax],style[data-ajax]').remove();
+
+                $('body').append('<script data-ajax>' + $(data).filter('script[data-ajax]').eq(0).html() + '<\/script>');
+                $('body').append('<style data-ajax>' + $(data).find('style[data-ajax]').eq(0).html() + '<\/style>');
+                biketrack.refresh_global();
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+
+    });
+    $('#invoice-table').on('click', 'td.col_editable',function (e) {
+        console.log('e.target', e.target, $(e.target).find('.statusText__wrapper').length);
+        
+        
+        var tr = $(this).closest('tr');
+        var row = invoice_table.row(tr);
+        var _data = row.data();
+        var url_data = {
+            client_id: _data.client_id,
+            month:new Date(_data.month).format('yyyy-mm-dd'),
+            invoice_id:_data.invoice,
+            edit:1
+        }
+        biketrack.updateURL(url_data);
+        console.log(row.data());
+        $('#add_invoice_ajax').trigger('click', {reseturl:false})
     });
 });
 
-var receive_payment={
-    updateReceivedAmount:function(){
-        var _receivedAmt =0;
-        if($('#open_invoice_table [data-name="payment"]').length==0) {
+var receive_payment = {
+    modal_confirmation_required:false,
+    updateReceivedAmount: function () {
+        var _receivedAmt = 0;
+        if ($('#open_invoice_table [data-name="payment"]').length == 0) {
             $('#receive_payment .amount_recevied').attr('data-amount', 0).text('AED 0.00');
-         return;   
+            return;
         }
-        $('#open_invoice_table [data-name="payment"]').each(function(i,amountElem){
-            _receivedAmt +=parseFloat($(this).val())||0;
+        $('#open_invoice_table [data-name="payment"]').each(function (i, amountElem) {
+            _receivedAmt += parseFloat($(this).val()) || 0;
         });
-        $('#receive_payment .amount_recevied').attr('data-amount', _receivedAmt).text('AED '+(_receivedAmt).toFixed(2));
+        $('#receive_payment .amount_recevied').attr('data-amount', _receivedAmt).text('AED ' + (_receivedAmt).toFixed(2));
     },
-    show_msg:function(msg=""){
-        if(msg=="")return;
+    show_msg: function (msg = "") {
+        if (msg == "") return;
         var _msg = $(basic_alert);
         _msg.find('.alert-text').html(msg);
         $('#receive_payment .messages').html(_msg.html());
         $('#receive_payment_inner').scrollTop(0);
     },
-    remove_msg:function(){
+    remove_msg: function () {
         $('#receive_payment .messages').html('');
     },
-    savePayment:function(_form){
+    savePayment: function (_form) {
         // return;
         $.ajax({
             url: "{{route('invoice.save_payment')}}",
@@ -339,19 +443,20 @@ var receive_payment={
             }
         });
     },
-    validatePayment:function(_form){
-        var _totalreceived = parseFloat($('#receive_payment .amount_recevied').attr('data-amount'))||0;
-        if(_totalreceived==0){
+    validatePayment: function (_form) {
+        var _totalreceived = parseFloat($('#receive_payment .amount_recevied').attr('data-amount')) || 0;
+        if (_totalreceived == 0) {
             receive_payment.show_msg('Payment must be greater than Zero.');
             return false;
         }
         return true;
     }
 };
+
 function getOpenInvoice() {
     var client_id = $('#receive_payment [data-name="client_id"]').val();
     $.ajax({
-        url: "{{url('admin/invoice/get/open/')}}"+"/"+client_id,
+        url: "{{url('admin/invoice/get/open/')}}" + "/" + client_id,
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
@@ -364,59 +469,59 @@ function getOpenInvoice() {
         },
         success: function (data) {
             console.warn(data);
-            if(data && data.open_invoices){
-                var invoices=data.open_invoices;
+            if (data && data.open_invoices) {
+                var invoices = data.open_invoices;
                 receive_payment.remove_msg();
-                if(invoices.length == 0){
+                if (invoices.length == 0) {
                     $("#open_invoice_table tbody").html('');
                     receive_payment.show_msg('No open invoices found against this customer.');
                     return;
                 }
                 $('#receive_payment [data-name="payment_method"]')[0].selectedIndex = -1;
                 $('#receive_payment [data-name="payment_method"]').trigger('change');
-                var  markup='';
-                invoices.forEach(function(invoice, i){
+                var markup = '';
+                invoices.forEach(function (invoice, i) {
                     var total_rows = parseFloat($("#open_invoice_table tbody tr").length);
                     markup += '' +
-                            '   <tr>  ' +
-                            '       <td class="invoice__table-row_cell-sr">'+ (i + 1) + ' </td>  ' +
-                            '       <td> <a href="">Invoice #'+invoice.id+'</a> ('+new Date(invoice.invoice_date).format('mmmm dd, yyyy')+') </td>  ' +
-                            '       <td> '+new Date(invoice.invoice_due).format('mmmm dd, yyyy')+' </td>  ' +
-                            '       <td> AED '+invoice.invoice_total+' </td>  ' +
-                            '       <td> AED '+invoice.due_balance+' </td>   ' +
-                            '       <td>' +
-                            '           <input type="hidden" name="payments['+i+'][invoice_id]" value="'+invoice.id+'">'+
-                            '           <input data-input-type="float_limited" data-max="'+invoice.due_balance+'"  type="text" class="form-control" data-name="payment" onchange="receive_payment.updateReceivedAmount()" name="payments['+i+'][amount]" min="0" value="'+invoice.due_balance+'">'+
-                            '       </td>'+
-                            '  </tr>  ';
+                        '   <tr>  ' +
+                        '       <td class="invoice__table-row_cell-sr">' + (i + 1) + ' </td>  ' +
+                        '       <td> <a href="">Invoice #' + invoice.id + '</a> (' + new Date(invoice.month).format('mmm yyyy') + ') </td>  ' +
+                        '       <td> ' + new Date(invoice.invoice_due).format('mmmm dd, yyyy') + ' </td>  ' +
+                        '       <td> AED ' + invoice.invoice_total + ' </td>  ' +
+                        '       <td> AED ' + invoice.due_balance + ' </td>   ' +
+                        '       <td>' +
+                        '           <input type="hidden" name="payments[' + i + '][invoice_id]" value="' + invoice.id + '">' +
+                        '           <input data-input-type="float_limited" data-max="' + invoice.due_balance + '"  type="text" class="form-control" data-name="payment" onchange="receive_payment.updateReceivedAmount()" name="payments[' + i + '][amount]" min="0" value="' + invoice.due_balance + '">' +
+                        '       </td>' +
+                        '  </tr>  ';
                 });
                 $("#open_invoice_table tbody").html(markup);
-                $('[data-input-type]').each(function(i,elem){
+                $('[data-input-type]').each(function (i, elem) {
                     var _type = $(this).attr('data-input-type');
-                    var _max = parseFloat($(this).attr('data-max'))||0;
+                    var _max = parseFloat($(this).attr('data-max')) || 0;
                     switch (_type) {
                         case "float_limited":
-                            biketrack.setInputFilter(this, function(value) {
+                            biketrack.setInputFilter(this, function (value) {
                                 return /^-?\d*[.,]?\d*$/.test(value) && (value === "" || parseFloat(value) <= _max);
                             });
                             break;
                         case "float":
-                            biketrack.setInputFilter(this, function(value) {
-                                return /^-?\d*[.,]?\d*$/.test(value); 
+                            biketrack.setInputFilter(this, function (value) {
+                                return /^-?\d*[.,]?\d*$/.test(value);
                             });
                             break;
                         case "int":
-                            biketrack.setInputFilter(this, function(value) {
-                                return /^-?\d*$/.test(value); 
+                            biketrack.setInputFilter(this, function (value) {
+                                return /^-?\d*$/.test(value);
                             });
                             break;
-                    
+
                         default:
                             break;
                     }
                 });
                 receive_payment.updateReceivedAmount();
-            } 
+            }
         },
         error: function (error) {
             console.warn(error);
@@ -431,95 +536,134 @@ function getOpenInvoice() {
         }
     });
 }
+
 function setScrollBkModal() {
-    KTUtil.scrollInit(document.getElementById('receive_payment_inner'), {
-        mobileNativeScroll: true, 
-        resetHeightOnDestroy: true, 
-        handleWindowResize: true, 
-        height: function() {
-            var height;
+    $('.bk-scroll').each(function (i, elem) {
+        KTUtil.scrollInit(this, {
+            mobileNativeScroll: true,
+            resetHeightOnDestroy: true,
+            handleWindowResize: true,
+            height: function () {
+                var height;
 
-            height = KTUtil.getViewPort().height;
+                height = KTUtil.getViewPort().height;
 
-            if (KTUtil.getByID('kt_header')) {
-                height = height - KTUtil.actualHeight('kt_header');
+                if (KTUtil.getByID('kt_header')) {
+                    height = height - KTUtil.actualHeight('kt_header');
+                }
+
+                if (KTUtil.getByID('kt_subheader')) {
+                    height = height - KTUtil.actualHeight('kt_subheader');
+                }
+
+                if (KTUtil.getByID('kt_footer')) {
+                    height = height - parseInt(KTUtil.css('kt_footer', 'height'));
+                }
+
+                if (KTUtil.getByID('kt_content')) {
+                    height = height - parseInt(KTUtil.css('kt_content', 'padding-top')) - parseInt(KTUtil.css('kt_content', 'padding-bottom'));
+                }
+
+                return height;
             }
-
-            if (KTUtil.getByID('kt_subheader')) {
-                height = height - KTUtil.actualHeight('kt_subheader');
-            }
-
-            if (KTUtil.getByID('kt_footer')) {
-                height = height - parseInt(KTUtil.css('kt_footer', 'height'));
-            }
-
-            if (KTUtil.getByID('kt_content')) {
-                height = height - parseInt(KTUtil.css('kt_content', 'padding-top')) - parseInt(KTUtil.css('kt_content', 'padding-bottom'));
-            }
-
-            return height;
-        }
+        });
     });
+
 }
 
 function receive_payment_popup($this) {
-    var invoice = JSON.parse($this.nextElementSibling.innerHTML);  
+    var invoice = JSON.parse($this.nextElementSibling.innerHTML);
     console.log(invoice);
     $('#receive_payment').modal('show');
     $('#receive_payment [data-name="client_id"]').val(invoice.client_id).trigger('change');
     return false;
-        
+
 }
 
 function getInvoices() {
     invoice_table = $('#invoice-table').DataTable({
-        lengthMenu: [[50,-1], [50,"All"]],
+        lengthMenu: [
+            [50, -1],
+            [50, "All"]
+        ],
         processing: true,
         destroy: true,
         serverSide: false,
-        'language': { 
+        'language': {
             // 'loadingRecords': '&nbsp;',
             'processing': $('.loading').show()
         },
-        drawCallback:function(data){
+        drawCallback: function (data) {
             $('.total_entries').remove();
-            $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
+            $('.dataTables_length').append('<div class="total_entries">' + $('.dataTables_info').html() + '</div>');
         },
         ajax: "{!! route('invoice.get_invoices') !!}",
         columns: [
             //  { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
-            { data: 'invoice', name: 'invoice' },
-            { data: 'client_name', name: 'client_name' }, 
-            { data: 'month', name: 'month' }, 
-            { data: 'date', name: 'date' },            
-            { data: 'due_date', name: 'due_date' },
-            { data: 'balance', name: 'balance' },
-            { data: 'total', name: 'total' },
-            { data: 'status', name: 'status' },
-            { data: 'actions', name: 'actions' },
-            { data: 'details', name: 'details' },
-        ],
-        responsive:true,
-        columnDefs: [
             {
-                targets: [ 9 ],
-                visible: false,
-                searchable: true,
-            }
+                data: 'invoice',
+                name: 'invoice',
+                className:'col_editable'
+            },
+            {
+                data: 'client_name',
+                name: 'client_name',
+                className:'col_editable'
+            },
+            {
+                data: 'month',
+                name: 'month',
+                className:'col_editable'
+            },
+            {
+                data: 'date',
+                name: 'date',
+                className:'col_editable'
+            },
+            {
+                data: 'balance',
+                name: 'balance',
+                className:'col_editable'
+            },
+            {
+                data: 'total',
+                name: 'total',
+                className:'col_editable'
+            },
+            {
+                data: 'status',
+                name: 'status'
+            },
+            {
+                data: 'actions',
+                name: 'actions'
+            },
+            {
+                data: 'details',
+                name: 'details'
+            },
         ],
+        responsive: true,
+        columnDefs: [{
+            targets: [8],
+            visible: false,
+            searchable: true,
+        }],
         // 'select': {
         //     'style': 'multi'
         // },
-        order:[0,'desc'],
+        order: [0, 'desc'],
     });
-    
+
 }
-function set_table_accordion ( data ) {
+
+function set_table_accordion(data) {
     // `d` is the original data object for the row
     console.log(data);
     // return '';
     return data.details;
 }
+
 function handle_status($this) {
     console.log($this);
     $($this).find('.statusText__wrapper').toggle();
@@ -527,15 +671,14 @@ function handle_status($this) {
 
     //showing details row
     var tr = $($this).closest('tr');
-    var row = invoice_table.row( tr );
-    if ( row.child.isShown() ) {
+    var row = invoice_table.row(tr);
+    if (row.child.isShown()) {
         // This row is already open - close it
         row.child.hide();
         tr.removeClass('shown');
-    }
-    else {
+    } else {
         // Open this row
-        var _arow = row.child( set_table_accordion(row.data()) );
+        var _arow = row.child(set_table_accordion(row.data()));
         _arow.show();
         row.child().addClass('invoice__details-container');
         tr.addClass('shown');

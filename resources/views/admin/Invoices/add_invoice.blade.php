@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 @section('main-content')
 <!-- begin:: Content -->
-<style>
+<style data-ajax>
     .custom-file-label::after{
            color: white;
            background-color: #5578eb;
@@ -83,6 +83,18 @@
             font-weight: 600;
             font-size: 20px;
         }
+        .__pm__content{
+            width: 170px;
+            display: grid;
+            grid-template-columns: auto auto;
+            justify-content: normal;
+        }
+        .__pm__heading{
+            font-weight: 500;
+            margin-bottom: 5px;
+            font-size: 13px;
+            color: #000;
+        }
 </style>
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <div class="row">
@@ -90,7 +102,7 @@
             <div class="kt-portlet">
                 <div class="kt-portlet__head">
                     <div class="kt-portlet__head-label">
-                        <h3 class="kt-portlet__head-title">
+                        <h3 class="kt-portlet__head-title page__title">
                             Invoice <span id="invoice_number"></span>
                         </h3>
                     </div>
@@ -128,7 +140,12 @@
                             <div class="col-md-6 balance_due--wrapper text-right">
                                 <h3>BALANCE DUE</h3>    
                                 <span class="balance_due">AED 0.00</span>
+                                <div class="payments_made_container">
+                                    <a href="" class="payments_made" onclick="return false;"></a>
+                                </div>
+                                
                             </div>
+
                             <div class="col-md-12">
                                 <div class="messages">
     
@@ -238,7 +255,7 @@
                                                 <div class="row">
                                                     <div class="col-md-9">
                                                         <select class="form-control" data-name="discount" name="discount" >
-                                                            <option value="">Select a discount type</option>
+                                                            
                                                             <option value="percent">Discount Percent</option>
                                                             <option value="value">Discount Value</option>  
                                                         </select>
@@ -278,12 +295,163 @@
                                 <button type="button" class="btn btn-outline-hover-success invoice__print-btn">Print & Preview</button>
                             </div>
                             <div class="col-md-6 text-right">
-                                <button type="submit" class="btn btn-primary">Save & Send</button>
+                                <button type="submit" class="btn btn-primary">Save Invoice</button>
                             </div>
                         </div>
                     </div>
 
                     <input type="hidden" name="invoice_status" value="drafted">
+
+                    {{-- Print & Preview --}}
+                    <div class="invoice_slip__wrapper" style="display:none">
+                        <div style="display:grid;padding: 145px 20px 0px 20px;font-family: sans-serif;font-weight: normal;position: relative;" id="invoice_slip">
+                            <div style="height:50px"></div>
+                            <table style="">
+                                <tr>
+                                    <div class="maintax" style="font-size:0;">
+                                        <div class="childa" style="display:inline-block;width:50%;font-size:12px;float:left;">
+                                            <ul style="padding-left:0px;margin-bottom: 0px;">
+                                                <li class="company_name"
+                                                    style="display:block;font-weight: bold; font-size: 14px;color: black; letter-spacing: 1px; font-family: monospace;">
+                                                    {{$company_info->company_name}}</li>
+                                                <li style="display:block;color: #6f6e6e;">{{$company_info->company_address}}</li>
+                                                <li style="display:block;color: #6f6e6e;font-size: 12px; letter-spacing: 0.5px;">
+                                                    {{$company_info->company_email}}</li>
+                                                <li style="display: block; color: #6f6e6e; font-weight: 400;">
+                                                    {{$company_info->company_phone_no}}</li>
+                                                <li style="display: block; color: #6f6e6e; font-weight: 400;">TRN :
+                                                    {{$company_info->company_tax_return_no}}</li>
+                                            </ul>
+                                            {{-- <ul style="padding-left:0px">
+                                            
+                                        </ul> --}}
+                                        </div>
+                                        <div class="childb"
+                                            style="display: inline-block; width: 50%; text-align: right; font-size: 24px; font-weight: 700; color: black;">
+                                            TAX INVOICE
+                                        </div>
+
+                                    </div>
+                                </tr>
+                            </table>
+                            <p style="border-top: 1px solid #dddd;margin-top: -1px; margin-bottom: 1px;"></p>
+                            <table>
+                                <tr>
+
+                                    <td
+                                        style="float:left;font-weight: 500; text-align: left; color: black; text-transform: capitalize; font-size: 12px;">
+                                        <ul style="padding-left:0px;">
+                                            <li style="display: block;color: black; font-size: 17px;font-weight:bold;">Bill To:</li>
+                                            <li class="invoice_slip__client_name"
+                                                style="display: block;font-size: 14px; letter-spacing: 1px; font-weight: bold; font-family: monospace; color: black;">
+                                                Zomato Media Pvt Ltd</li>
+                                            <li class="invoice_slip__client_address"
+                                                style="display: block;max-width: 350px; font-weight: 400;color: #6f6e6e; text-transform: capitalize;">
+                                                Address</li>
+                                            <li class="invoice_slip__client_email"
+                                                style="display:block;color: #6f6e6e;font-size: 12px; letter-spacing: 0.5px;font-weight: 300;">
+                                                info@kindrider.net</li>
+                                            <li class="invoice_slip__client_no" style="display: block; color: #6f6e6e; font-weight: 400;">
+                                                050-000000</li>
+                                            <li style="display: block; color: #6f6e6e; font-weight: 400;">TRN : 000000000000</li>
+                                        </ul>
+                                    </td>
+                                    <td
+                                        style="font-weight: 500; text-align: right; color: gray; text-transform: uppercase; font-size: 12px;">
+                                        <ul>
+                                            <li style="display:block">Invoice # : <span class="invoice_id"></span></li>
+                                            <li style="display:block">Invoice Month : <span class="invoice_month"></span></li>
+                                            <li style="display:block">Invoice date : <span class="invoice_date"></span></li>
+                                            <li style="display:block">Due date : <span class="invoice_due"></span> </li>
+                                        </ul>
+                                        <div
+                                            style="display: inline-block;color: #6f6d6d; padding: 12px 30px; border: 1px solid #000; border-radius: 6px;text-align: center;">
+                                            BALANCE DUE:
+                                            <div style="font-size: 18px; font-weight: 800;color:black;" class="invoice_slip__total_amount">
+                                                0.00</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table class="print_class"
+                                style=" margin-top: 1px;border-collapse: collapse;font-family: sans-serif;font-size: 12px;">
+                                <tr style="    background: #E9F8FF;">
+                                    <th style="width:50%;text-align:left;text-transform: uppercase;">Item Description</th>
+                                    <th style="width:10%;text-align:left;text-transform: uppercase;">Rate</th>
+                                    <th style="width:10%;text-align:left;text-transform: uppercase;">QTY</th>
+                                    <th style="width:10%;text-align:left;text-transform: uppercase;">Total</th>
+                                    <th style="width:10%;text-align:left;text-transform: uppercase;">5% VAT</th>
+                                    <th style="width:10%;text-align:left;text-transform: uppercase;">INC. OF VAT</th>
+
+
+                                </tr>
+                            </table>
+                            <table class="invoice_slip__invoice_items"
+                                style=" margin-top: 0px;border-collapse: collapse;font-size: 12px; font-family: sans-serif;">
+                                {{-- <tr>
+                                    <th style="border:1px solid #dddd;width:75%;text-align:left;">Item Description</th>
+                                    <td style="border:1px solid #dddd;width:25%;text-align:left;">2000</td>
+                                </tr> --}}
+                            </table>
+                            <table class="invoice_slip__invoice_total" style=" margin-top: 0px;display:none;">
+                                <tr style="background: #E9F8FF;">
+                                    <th style="border:1px solid #dddd;border-top: unset;width:75%;text-align:right;">Total payable</th>
+                                    <td style="border:1px solid #dddd;border-top: unset;width:25%;text-align:right;"
+                                        class="invoice_slip__total_amount">Total</td>
+                                </tr>
+                            </table>
+
+                            <div style="">
+                                <p style="font-size:12px;line-height: 14px;margin: 5px;" class="invoice_slip__message"></p>
+                            </div>
+
+                            <div style="text-align:end;">
+                                <div class="invoice_footer" style="display: flow-root;">
+                                    <div style="display:inline-block;float:left;width:50%;text-align:left;">
+                                        <div
+                                            style="color: black; font-size: 13px; font-weight: normal; padding-bottom: 0px; padding-top: 10px;">
+                                            Invoice Notes:</div>
+                                        <div class="custm_message_on_invoice"
+                                            style="color: black; display: inline-block; border: 1px solid #dddd; padding: 4px 35px 41px 10px;font-size: 12px; border-radius: 5px;">
+                                            Thank for your business and have a great day!</div>
+                                    </div>
+                                    <div style="display:inline-block;float:left;width:50%;font-weight: 500; color: black;">
+                                        <ul style="display: inline-block; float: left;text-align: right;">
+                                            <li style="display: block;">Subtotal</li>
+                                            <li style="display: block;">Tax(5%)</li>
+                                            <li style="display: block;" class="invoice_without_discount_total">Total </li>
+                                            <li style="display: block;"><b>Balance due</b></li>
+                                        </ul>
+
+                                        <ul>
+                                            <li style="display: block;" class="custm_subtotal">0.00</li>
+                                            <li style="display: block;" class="custm_tax">0.00</li>
+                                            <li style="display: block;" class="custm_totl invoice_without_discount_total">0.00 </li>
+                                            <li style="display: block;" class="custm_total_price">0.00</li>
+                                        </ul>
+                                    </div>
+
+                                </div>
+                                <ul style="padding-left: 0px;position: absolute; top: 680px;">
+                                    <li
+                                        style="display: block;text-align: left; margin-top: 55px; color: #504e4e; font-weight: 800; text-transform: capitalize; font-size: 14px; font-family: sans-serif;">
+                                        Make All Payment Through Cheque</li>
+                                    <li
+                                        style="display: block;font-weight: 500; text-align: left; color: #504e4e; font-size: 13px;    font-family: sans-serif;">
+                                        Account Title: <span class="account_title"> {{$company_info->company_name}}</span></li>
+                                    <li
+                                        style="display: block;font-weight: 500; text-align: left; color: #504e4e; font-size: 13px;    font-family: sans-serif;">
+                                        Account No: <span class="account_no">{{$company_info->company_account_no}}</span></li>
+                                    <li
+                                        style="display: block;font-weight: 500; text-align: left; color: #504e4e; font-size: 13px;    font-family: sans-serif;">
+                                        Bank Name: <span class="bank_name"> {{$company_info->company_bank_name}}</span></li>
+                                </ul>
+                                <p
+                                    style="font-weight: 600; text-align: right; color: #504e4e; font-size: 12px; padding-top: 3px; display: inline-block; border-top: 1px solid #dddd; margin-top: 70px;position: absolute; top: 800px;right:5px ">
+                                    COMPANY STAMP & SIGN</p>
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -291,122 +459,6 @@
 </div>
 
 
-{{-- Print & Preview --}}
-<div class="invoice_slip__wrapper" style="display:none;">
-    <div style="display:grid;padding: 145px 20px 0px 20px;font-family: sans-serif;font-weight: normal;position: relative;" id="invoice_slip">
-        <div style="height:50px"></div>
-        <table style="">
-            <tr>
-                <div class="maintax" style="font-size:0;">
-                    <div class="childa" style="display:inline-block;width:50%;font-size:12px;float:left;">
-                    <ul style="padding-left:0px;margin-bottom: 0px;">
-                        <li class="company_name" style="display:block;font-weight: bold; font-size: 14px;color: black; letter-spacing: 1px; font-family: monospace;" >{{$company_info->company_name}}</li>
-                        <li style="display:block;color: #6f6e6e;">{{$company_info->company_address}}</li>
-                        <li style="display:block;color: #6f6e6e;font-size: 12px; letter-spacing: 0.5px;">{{$company_info->company_email}}</li>
-                        <li style="display: block; color: #6f6e6e; font-weight: 400;">{{$company_info->company_phone_no}}</li>
-                        <li style="display: block; color: #6f6e6e; font-weight: 400;">TRN : {{$company_info->company_tax_return_no}}</li>
-                    </ul>
-                    {{-- <ul style="padding-left:0px">
-                        
-                    </ul> --}}
-                    </div>
-                    <div class="childb" style="display: inline-block; width: 50%; text-align: right; font-size: 24px; font-weight: 700; color: black;">
-                    TAX INVOICE
-                    </div>
-
-                </div>
-            </tr>
-        </table>
-        <p style="border-top: 1px solid #dddd;margin-top: -1px; margin-bottom: 1px;"></p>
-        <table>
-        <tr>
-            
-                    <td  style="float:left;font-weight: 500; text-align: left; color: black; text-transform: capitalize; font-size: 12px;">
-                <ul style="padding-left:0px;">
-                        <li style="display: block;color: black; font-size: 17px;font-weight:bold;">Bill To:</li>    
-                        <li class="invoice_slip__client_name" style="display: block;font-size: 14px; letter-spacing: 1px; font-weight: bold; font-family: monospace; color: black;">Zomato Media Pvt Ltd</li>
-                        <li class="invoice_slip__client_address" style="display: block;max-width: 350px; font-weight: 400;color: #6f6e6e; text-transform: capitalize;">Address</li>
-                        <li class="invoice_slip__client_email" style="display:block;color: #6f6e6e;font-size: 12px; letter-spacing: 0.5px;font-weight: 300;">info@kindrider.net</li>
-                        <li class="invoice_slip__client_no" style="display: block; color: #6f6e6e; font-weight: 400;">050-000000</li> 
-                        <li style="display: block; color: #6f6e6e; font-weight: 400;">TRN : 000000000000</li>
-                </ul>    
-                </td>
-                    <td  style="font-weight: 500; text-align: right; color: gray; text-transform: uppercase; font-size: 12px;">
-                    <ul>
-                    <li style="display:block">Invoice # : <span class="invoice_id"></span></li>
-                    <li style="display:block">Invoice Month : <span class="invoice_month"></span></li>
-                    <li style="display:block">Invoice date : <span class="invoice_date"></span></li>
-                    <li style="display:block">Due date : <span class="invoice_due"></span> </li>
-                    </ul>
-                    <div style="display: inline-block;color: #6f6d6d; padding: 12px 30px; border: 1px solid #dddd; border-radius: 6px;text-align: center;">
-                        BALANCE DUE:
-                        <div style="font-size: 18px; font-weight: 800;color:black;" class="invoice_slip__total_amount">0.00</div>
-                    </div>
-                    </td>
-                </tr>
-        </table>
-        <table class="print_class" style=" margin-top: 1px;border-collapse: collapse;font-family: sans-serif;font-size: 12px;">
-            <tr style="    background: #E9F8FF;">
-                <th style="width:50%;text-align:left;text-transform: uppercase;">Item Description</th>
-                <th style="width:10%;text-align:left;text-transform: uppercase;">Rate</th>
-                <th style="width:10%;text-align:left;text-transform: uppercase;">QTY</th>
-                <th style="width:10%;text-align:left;text-transform: uppercase;">Total</th>
-                <th style="width:10%;text-align:left;text-transform: uppercase;">5% VAT</th>
-                <th style="width:10%;text-align:left;text-transform: uppercase;">INC. OF VAT</th>
-
-
-            </tr>
-        </table>
-        <table class="invoice_slip__invoice_items" style=" margin-top: 0px;border-collapse: collapse;font-size: 12px; font-family: sans-serif;">
-            {{-- <tr>
-                <th style="border:1px solid #dddd;width:75%;text-align:left;">Item Description</th>
-                <td style="border:1px solid #dddd;width:25%;text-align:left;">2000</td>
-            </tr> --}}
-        </table>
-        <table class="invoice_slip__invoice_total" style=" margin-top: 0px;display:none;">  
-            <tr style="background: #E9F8FF;">
-                <th style="border:1px solid #dddd;border-top: unset;width:75%;text-align:right;">Total payable</th>
-                <td style="border:1px solid #dddd;border-top: unset;width:25%;text-align:right;" class="invoice_slip__total_amount">Total</td>
-            </tr>
-        </table>
-
-        <div style=""> 
-            <p style="font-size:12px;line-height: 14px;margin: 5px;" class="invoice_slip__message"></p>
-        </div>
-
-        <div style="text-align:end;"> 
-   <div class="invoice_footer" style="display: flow-root;">
-    <div style="display:inline-block;float:left;width:50%;text-align:left;">
-    <div style="color: black; font-size: 13px; font-weight: normal; padding-bottom: 0px; padding-top: 10px;">Invoice Notes:</div>
-    <div class="custm_message_on_invoice" style="color: black; display: inline-block; border: 1px solid #dddd; padding: 4px 35px 41px 10px;font-size: 12px; border-radius: 5px;">Thank for your business and have a great day!</div>
-    </div>
-    <div style="display:inline-block;float:left;width:50%;font-weight: 500; color: black;">
-        <ul style="display: inline-block; float: left;text-align: right;">
-    <li style="display: block;">Subtotal</li>
-    <li style="display: block;">Tax(5%)</li>
-    <li style="display: block;" class="invoice_without_discount_total">Total </li>
-    <li style="display: block;"><b>Balance due</b></li>
-       </ul>
-
-       <ul>
-            <li style="display: block;" class="custm_subtotal">0.00</li>
-            <li style="display: block;" class="custm_tax">0.00</li>
-            <li style="display: block;" class="custm_totl invoice_without_discount_total">0.00 </li>
-            <li style="display: block;font-weight:bold;" class="custm_total_price">0.00</li>
-       </ul>
-    </div>
-
-   </div>
-   <ul style="padding-left: 0px;position: absolute; top: 680px;">
-   <li style="display: block;text-align: left; margin-top: 55px; color: #504e4e; font-weight: 800; text-transform: capitalize; font-size: 14px; font-family: sans-serif;">Make All Payment Through Cheque</li>
-   <li style="display: block;font-weight: 500; text-align: left; color: #504e4e; font-size: 13px;    font-family: sans-serif;">Account Title: <span class="account_title"> {{$company_info->company_name}}</span></li>
-   <li style="display: block;font-weight: 500; text-align: left; color: #504e4e; font-size: 13px;    font-family: sans-serif;">Account No: <span class="account_no">{{$company_info->company_account_no}}</span></li>
-   <li style="display: block;font-weight: 500; text-align: left; color: #504e4e; font-size: 13px;    font-family: sans-serif;">Bank Name: <span class="bank_name"> {{$company_info->company_bank_name}}</span></li>
-   </ul>
-   <p style="font-weight: 600; text-align: right; color: #504e4e; font-size: 12px; padding-top: 3px; display: inline-block; border-top: 1px solid #dddd; margin-top: 70px;position: absolute; top: 800px;right:5px ">COMPANY STAMP & SIGN</p>
-        </div>
-    </div>
-    </div>
 
 @endsection
 @section('foot')
@@ -418,7 +470,7 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src=" https://printjs-4de6.kxcdn.com/print.min.js" type="text/javascript"></script>
 <link href=" https://printjs-4de6.kxcdn.com/print.min.css" rel="stylesheet">
-<script>
+<script data-ajax>
 var invoiceObj=null;
 var basic_alert= '   <div><div class="alert alert-outline-danger fade show" role="alert">  '  + 
  '                                   <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div>  '  + 
@@ -432,15 +484,20 @@ var basic_alert= '   <div><div class="alert alert-outline-danger fade show" role
 $(document).ready(function () {
     // append_row();
     $('#invoices [data-name="client_id"],#invoices [name="month"]').on("change input", function () {
+        typeof receive_payment !=="undefined" && (receive_payment.modal_confirmation_required=false);
         var client_id = $('#invoices [data-name="client_id"]').val();
         console.log('client_id', client_id);
         var _month = new Date("01-"+$('#invoices [name="month"]').val()+"-"+new Date(Date.now()).format('yyyy')).format('yyyy-mm-dd');
-        var url_data = {
-            edit:0,
-            client_id: client_id,
-            month:_month
-        }
-        biketrack.updateURL(url_data);
+        var is_edit = biketrack.getUrlParameter('edit');
+        // if(is_edit!=1){
+            var url_data = {
+                client_id: client_id,
+                month:_month,
+                edit:is_edit
+            }
+            biketrack.updateURL(url_data);
+        // }
+        
         $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -452,15 +509,21 @@ $(document).ready(function () {
                 console.log(resp);
                 if (resp.status == 1) {
                     $("#invoice-table tbody").html('');
+                    $('#invoices [data-name="tax_rate"]').val('');
+                    $('#invoices [data-name="discount_values"]').val('');
                     $('#invoice_number').removeAttr('data-invoice').html('');
+                    $('a.payments_made').html('');
+                    $('a.payments_made').popover('dispose')
                     _invoices.remove_msg();
                     invoiceObj=null;
+                    _invoices.invoice=null;
                     $('#invoices [data-name="billing_address"]').val(resp.billing_address);
                     // $('[data-name="tax_rate"]').val(5);
                     var row_data = resp.items;
                     append_row(row_data);
-                    
-                    if(resp.is_edit){
+                    _invoices.invoice=null;
+                    var _isedit = biketrack.getUrlParameter('edit');
+                    if(resp.is_edit){//&& _isedit==1
                         _invoices.invoice=resp.invoice;
                         _invoices.reload_page(resp);
                     }
@@ -483,6 +546,7 @@ $(document).ready(function () {
                         }
                     });
                     subtotal();
+                    typeof receive_payment !=="undefined" && (receive_payment.modal_confirmation_required=true);
                     
                 } else {
                     _invoices.show_msg(resp.message);
@@ -495,6 +559,15 @@ $(document).ready(function () {
 
     $(document).on("change input", '[data-name="rate"], [data-name="amount"], [data-name="tax_rate"], [data-name="discount_values"], [data-name="tax"], [data-name="discount"], [data-name="qty"], [data-name="deductable"]', function () {
         if($(this).attr('data-name')=="deductable"){
+            var _taxBox = $(this).parents('tr').find('[data-name="tax"]');
+            
+            _taxBox.prop('disabled', false)
+            if($(this).is(':checked')){
+                _taxBox.prop('disabled', true);
+            }
+            
+        }
+        if($(this).attr('data-name')=="discount"){
             var _taxBox = $(this).parents('tr').find('[data-name="tax"]');
             
             _taxBox.prop('disabled', false)
@@ -548,8 +621,10 @@ $(document).ready(function () {
             },
             success: function (data) {
                 console.warn(data);
+                typeof receive_payment !=="undefined" && (receive_payment.modal_confirmation_required=false);
                 if(data && data.invoice){
                     invoiceObj=data.invoice;
+                    _invoices.invoice=data.invoice;
                     $('#invoice_number').attr('data-invoice',data.invoice.id).text('#'+(data.invoice.id));
                 } 
                 if(callback && typeof callback=="function"){
@@ -794,22 +869,58 @@ var _invoices={
             return;
         }
         //updating url
-        var url_data = {
-            invoice_id:invoice.id,
-            edit:1,
-            client_id: invoice.client_id,
-            month: invoice.month
+        var is_edit = biketrack.getUrlParameter('edit');
+        if(is_edit!=1){
+            var url_data = {
+                invoice_id:invoice.id,
+                client_id: invoice.client_id,
+                month: invoice.month
+            }
+            biketrack.updateURL(url_data);
         }
-        biketrack.updateURL(url_data);
         //changing invoice id
         $('#invoice_number').attr('data-invoice',invoice.id).text('#'+(invoice.id));
         $('#invoices [data-name="invoice_date"]').attr('data-month', new Date(invoice.invoice_date).format('mmm dd, yyyy'));
         $('#invoices [data-name="due_date"]').attr('data-month', new Date(invoice.invoice_due).format('mmm dd, yyyy'));
         $('#invoices [name="month"]').attr('data-month', new Date(invoice.month).format('mmmm yyyy'));
 
+        if(invoice.tax_method_id!=null){
+            $('#invoices [data-name="tax_rate"]').val(invoice.tax_method_id);
+        }
+        $('#invoices [data-name="discount_values"]').val('');
+        if(invoice.discount_type!=null){
+            $('#invoices [data-name="discount"]').val(invoice.discount_type);
+            $('#invoices [data-name="discount_values"]').val(invoice.discount_value);
+        }
+        $('#invoices [data-name="message_on_invoice"]').text(invoice.message_on_invoice);
+
+        //payments_made
+        
+        if(_invoices.invoice.invoice_payment&&_invoices.invoice.invoice_payment.length>0){
+            var payments = _invoices.invoice.invoice_payment;
+            var _payment_len = payments.length;
+            var _totalPayments = 0;
+            var inner_html='<div class="__pm__content"><span class="__pm__heading">Date</span><span class="__pm__heading">Amount</span>';
+            payments.forEach(function(payment, i){
+                _totalPayments+=parseFloat(payment.payment);
+                inner_html+='<a href="">'+new Date(payment.payment_date).format('dd/mmm/yyyy')+'</a><span>AED '+payment.payment+'</span>';
+            });
+            var _html = _payment_len+' Payment made (AED '+_totalPayments+')';
+            inner_html+='</div>';
+            $('a.payments_made').html(_html);
+            $('a.payments_made').popover({
+                content:inner_html,
+                html:true,
+                placement:'left',
+                trigger: "focus"
+            });
+        }
+
         biketrack.refresh_global();
+        subtotal();
     },
     fetch_url_data:function(){
+        typeof receive_payment !=="undefined" && (receive_payment.modal_confirmation_required=false);
         var _clientId=biketrack.getUrlParameter('client_id');
         var _month=biketrack.getUrlParameter('month');
         if(_clientId!="" && _month!=""){

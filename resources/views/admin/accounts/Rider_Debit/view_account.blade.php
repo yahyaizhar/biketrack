@@ -671,6 +671,11 @@
                     </button>
                 </div>
                 <div>
+                    <button style="float:right;margin-right: 10px;" class="btn btn-info btn-elevate btn-icon-sm" id="for_days_payouts" type="button">
+                        Rider Payout detail
+                    </button>
+                </div>
+                <div>
                     <button style="float:right;margin-right: 10px;" data-toggle="modal" class="btn btn-success btn-elevate btn-icon-sm" id="to_pay" type="button">
                         <i class="fa fa-dollar-sign"></i> Pay Salary
                     </button>
@@ -679,6 +684,63 @@
         </div>
     </div>
 </div>
+{{-- rider payouts by days --}}
+<div class="kt-content  kt-grid__item kt-grid__item--fluid days_payout" id="kt_content">
+    <div class="kt-portlet kt-portlet--mobile">
+        <div class="kt-portlet__head kt-portlet__head--lg">
+            <div class="kt-portlet__head-label">
+                <span class="kt-portlet__head-icon">
+                    <i class="kt-font-brand fa fa-hotel"></i>
+                </span>
+                <h3 class="kt-portlet__head-title">
+                    Days Payouts
+                </h3>
+            </div>
+            {{-- <div class="kt-portlet__head-toolbar">
+                <div class="kt-portlet__head-wrapper">
+                    <div class="kt-portlet__head-actions">
+                        <div class="mt-2">
+                            <div class="kt-portlet__head-actions" id="select_day">
+                                <label for="dr1">Select Weekly Off Day</label>
+                                <select class="form-control bk-select2" name="custom_select_Day" value="select Day">
+                                    <option >Select Day</option>
+                                    <option value="Monday">Monday</option>   
+                                    <option value="Tuesday">Tuesday</option>   
+                                    <option value="Wednesday">Wednesday</option>   
+                                    <option value="Thursday">Thursday</option>   
+                                    <option value="Friday">Friday</option>   
+                                    <option value="Saturday">Saturday</option>   
+                                    <option value="Sunday">Sunday</option>   
+                                </select> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> --}}
+        </div>
+        <div class="kt-portlet__body">
+            <table class="table table-striped- table-hover table-checkable table-condensed rider_days_detail">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Trips</th>
+                        <th>Hours</th>     
+                        <th>Status</th>                   
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot></tfoot>
+            </table>
+            <div>
+                <button style="float:right;margin-right: 10px;" onclick="SYNC_DATA()"  class="btn btn-success btn-elevate btn-icon-sm" id="sync_data" type="button">
+                    Sync Data
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{{-- end rider payouts by days --}}
 {{-- salary slip --}}
 <div>
 <div class="print_slip_editable" style="">
@@ -714,6 +776,11 @@
             <th style="border:1px solid #dddd;width:50%;text-align:center;">DESCRIPTION</th>
             <th style="border:1px solid #dddd;width:25%;text-align:center;">EARNINGS</th>
             <th style="border:1px solid #dddd;width:25%;text-align:center;">DEDUCTIONS:</th>
+        </tr>
+        <tr>
+            <td style="border:1px solid #dddd;width:50%;text-align:left;">Previous Balance</td>
+            <td contenteditable='true' class="previous_balance" style="border:1px solid #dddd;width:25%;text-align:end;"></td> 
+            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
         </tr>
         <tr>
             <td style="border:1px solid #dddd;width:50%;text-align:left;">BASIC SALARY (<strong>Trips:</strong><span class="total_trips"></span>) (<strong>Hours:</strong><span class="total_hours"></span>) (<strong>Extra Trips:</strong><span class="extra_trips"></span>)</td>
@@ -845,6 +912,10 @@
     
 </div>
 {{-- end salary slip --}}
+<input type="hidden" name="absent_days">
+<input type="hidden" name="weekly_off">
+<input type="hidden" name="weekly_off_day">
+<input type="hidden" name="extra_day">
 @endsection
 @section('foot')
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
@@ -864,6 +935,7 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script src="{{ asset('js/dataTables.cellEdit.js') }}" type="text/javascript"></script>
 <script>
+  
     $("#advance").on('shown.bs.modal', function(){
         var month=biketrack.getUrlParameter('r1d1');
         var _month=new Date(month).format("mmmm yyyy");
@@ -873,12 +945,14 @@
         }
     });
     $("#cash_paid").on('shown.bs.modal', function(){
-    var month=biketrack.getUrlParameter('r1d1');
-    var _month=new Date(month).format("mmmm yyyy");
-    if (month!="") { 
-        $("#cash_paid [name='month']").attr("data-month", _month)
-        biketrack.refresh_global()
-    }
+        var rider_id=biketrack.getUrlParameter('rider_id');
+        $('#cash_paid [name="cash_rider_id"]').val(rider_id);
+        var month=biketrack.getUrlParameter('r1d1');
+        var _month=new Date(month).format("mmmm yyyy");
+        if (month!="") { 
+            $("#cash_paid [name='month']").attr("data-month", _month)
+            biketrack.refresh_global()
+        }
     });
     $("#cash_pay_debit").on('shown.bs.modal', function(){
     var month=biketrack.getUrlParameter('r1d1');
@@ -906,13 +980,160 @@
     });
     
    
-  
+        $(".days_payout").hide();
         $('.print_slip_editable').hide();
+        $("#for_days_payouts").on("click",function(){
+        $(".days_payout").show();
+        $('.print_slip_editable').hide();
+        var month=biketrack.getUrlParameter('r1d1');
+        var rider_id=biketrack.getUrlParameter('rider_id');
+         var _Url = "{{url('admin/rider/hours/trips/details')}}"+"/"+month+"/"+rider_id;
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url : _Url,
+                type : 'GET',
+                success: function(data){
+                    var _data=data.data;
+                    console.log(_data);
+                    var  rows='';
+                    var t_trips=0;
+                    var hours=0;
+                    var status='';
+                    var weekdays=[{day:'Monday',rep:0},{day:'Tuesday',rep:0},{day:'Wednesday',rep:0},{day:'Thursday',rep:0},{day:'Friday',rep:0},{day:'Saturday',rep:0},{day:'Sunday',rep:0}];
+                    var total_absents=0;
+                    var extra_day=0;
+                    _data.forEach(function(item,j){
+                        if (item.trips=='0' && item.login_hours=='0') {
+                            //rider_days absents
+                            console.log(weekdays);
+                            var offdays=new Date(item.date).format("dddd");
+                            var days_off=weekdays.find(function(x){return x.day==offdays});
+                            var count=days_off.rep++;
+                            weekdays.sort(function(a,b){
+                                return a.rep<b.rep?1:-1;
+                            })
+                            var repeated=weekdays[0].rep;
+                            var din=weekdays[0].day;
+                            total_absents++;
+                        }
+                    });
+                    _data.forEach(function(item,j){
+                        var date=new Date(item.date).format("dd mmm yyyy dddd");
+                        t_trips+=parseFloat(item.trips);
+                        if (item.login_hours>11) {
+                            item.login_hours=11;
+                        }
+                        if (item.trips!='0' || item.login_hours!='0') {
+                            status="present";
+                        }
+                        if (item.trips=='0' && item.login_hours=='0') {
+                            console.log(weekdays);
+                            // var offdays=new Date(item.date).format("dddd");
+                            // var days_off=weekdays.find(function(x){return x.day==offdays});
+                            // var count=days_off.rep++;
+                            weekdays.sort(function(a,b){
+                                return a.rep<b.rep?1:-1;
+                            })
+                            var repeated=weekdays[0].rep;
+                            var din=weekdays[0].day;
+                            total_absents
+                            var date_match=new Date(item.date).format("dddd")   
+                            if (repeated>3 || date_match==din) {
+                                status='<div style="color:green;">weekly-off</div>';
+                            }
+                            else if (item.trips=='0' && item.login_hours=='0'){
+                                status='<div style="color:red;">absent</div>';
+                            }
+                           
+                            $("[name='weekly_off']").val(repeated);
+                            $("[ name='weekly_off_day']").val(din);
+                        }
+                        else{
+                            var offdays=new Date(item.date).format("dddd");
+                            weekdays.sort(function(a,b){
+                                return a.rep<b.rep?1:-1;
+                            })
+                            var din=weekdays[0].day;
+                            if (item.trips!='0' && item.login_hours!='0' && offdays==din) {
+                                extra_day++;
+                                status='<div style="color:orange;">extra-day</div>';
+                            }
+                        }
+                        hours+=parseFloat(item.login_hours);
+                       rows+='<tr><td>'+date+'</td><td>'+item.trips+'</td><td>'+item.login_hours+'</td> <td class="absents">'+status+'</td></tr>';
+                    });
+                    $("[name='absent_days']").val(total_absents);
+                    $('[name="extra_day"]').val(extra_day);
+                    $(".rider_days_detail tbody").html(rows); 
+                    $(".rider_days_detail tfoot").html('<tr><th>Total</th><th>'+t_trips.toFixed(2)+'</th><th>'+hours.toFixed(2)+'</th></tr>');
+                 
+                    swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Record Entered successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    table.ajax.reload(null, false);
+                },
+                error: function(error){
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Unable to update.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+        });
+        $('[name="custom_select_Day"]').on("change",function(){
+            var _day=$(this).val();
+            console.log(_day);
+            var month=biketrack.getUrlParameter('r1d1');
+            var rider_id=biketrack.getUrlParameter('rider_id');
+            var _Url = "{{url('admin/rider/week/days/off/status')}}"+"/"+month+"/"+rider_id+"/"+_day;
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url : _Url,
+                type : 'GET',
+                success: function(data){
+                    swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Record Entered successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    table.ajax.reload(null, false);
+                },
+                error: function(error){
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Unable to update.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+        });
         $("#for_print").on("click",function(){
             $('.print_slip_editable').hide();
         });
         $("#for_edit").on("click",function(){
             $('.print_slip_editable').show();
+            $(".days_payout").hide();
         });
         $('form#advance_paid').on('submit', function(e){
             e.preventDefault();
@@ -1302,7 +1523,7 @@
                     console.log(response);
                     var _ClosingBalance = 0;
                     if(response && typeof response.closing_balance !== "undefined")_ClosingBalance = response.closing_balance;
-                    $('#closing_balance').text(_ClosingBalance);
+                    $('.previous_balance').text(response.closing_balance_prev);
                     $('.rider_name').html(response.rider);
                     $('.month_year').html(response.month_year);
                     $('.today_date').html(response.today_date);
@@ -1332,7 +1553,7 @@
                     $('.cash_paid').html(response.cash_paid);
                     
 
-                    var total_cr=parseFloat(response.salary)+parseFloat(response.ncw)+parseFloat(response.bike_allowns)+parseFloat(response.tip)+parseFloat(response.bones);
+                    var total_cr=parseFloat(response.closing_balance_prev)+parseFloat(response.salary)+parseFloat(response.ncw)+parseFloat(response.bike_allowns)+parseFloat(response.tip)+parseFloat(response.bones);
                     var total_dr=parseFloat(response.cash_paid)+parseFloat(response.bike_fine)+parseFloat(response.mics)+parseFloat(response.denial_penalty)+parseFloat(response.dicipline)+parseFloat(response.mobile)+parseFloat(response.rta)+parseFloat(response.advance)+parseFloat(response.salik)+parseFloat(response.sim)+parseFloat(response.dc)+parseFloat(response.macdonald);
                     var net_pay=(total_cr-total_dr).toFixed(2);
                     $('.remaining_pay').text(_ClosingBalance);
@@ -1366,6 +1587,7 @@
                     
                 ],
                 responsive:true,
+                order: [0, 'asc'],
             });
 
             table.MakeCellsEditable("destroy"); 
@@ -1558,7 +1780,7 @@
     });
 }
  function change_edit_prints_inputs(){
-     
+        var previous_balance=$(".previous_balance").text();
         var salary=$('.salary').text();
         var ncw=$('.ncw').text();
         var bike_allowns=$('.bike_allowns').text();
@@ -1578,7 +1800,8 @@
         var mics=$('.mics').text();
         var denial_penalty='0';
         var cash_paid=$('.cash_paid').text();
-
+        
+        previous_balance=previous_balance==""?0:previous_balance;
         salary=salary==""?0:salary;
         ncw=ncw==""?0:ncw;
         bike_allowns=bike_allowns==""?0:bike_allowns;
@@ -1599,7 +1822,7 @@
         dicipline=dicipline==""?0:dicipline;
         cash_paid=cash_paid==""?0:cash_paid;
 
-        var total_cr=parseFloat(salary)+parseFloat(ncw)+parseFloat(bike_allowns)+parseFloat(tip)+parseFloat(bones);
+        var total_cr=parseFloat(previous_balance)+parseFloat(salary)+parseFloat(ncw)+parseFloat(bike_allowns)+parseFloat(tip)+parseFloat(bones);
         var total_dr=parseFloat(zomato)+parseFloat(bike_fine)+parseFloat(cash_paid)+parseFloat(mics)+parseFloat(denial_penalty)+parseFloat(dicipline)+parseFloat(mobile)+parseFloat(rta)+parseFloat(advance)+parseFloat(salik)+parseFloat(sim)+parseFloat(dc)+parseFloat(macdonald);
         var net_pay=parseFloat(total_cr-total_dr).toFixed(2);
         $('.total_cr').html(total_cr);
@@ -1680,6 +1903,45 @@ function deleteCompanyRows(id,model_class,model_id,rider_id,string,month){
         }
     });
     
+}
+function SYNC_DATA(){
+    var absent_days=$('[name="absent_days"]').val();
+    var weekly_off=$('[name="weekly_off"]').val();
+    var weekly_off_day=$('[name="weekly_off_day"]').val();
+    var extra_day=$('[name="extra_day"]').val();
+    var month=r1d1=biketrack.getUrlParameter('r1d1');
+    var rider_id=biketrack.getUrlParameter('rider_id');
+    var _Url = "{{url('admin/rider/week/days/sync/data')}}"+"/"+month+"/"+rider_id+"/"+weekly_off_day+"/"+absent_days+"/"+weekly_off+"/"+extra_day;
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        url : _Url,
+        type : 'GET',
+        success: function(data){
+            swal.fire({
+                position: 'center',
+                type: 'success',
+                title: 'Record Synchronized successfully.',
+                showConfirmButton: false,
+                timer: 1500
+            });
+            table.ajax.reload(null, false);
+        },
+        error: function(error){
+            swal.fire({
+                position: 'center',
+                type: 'error',
+                title: 'Oops...',
+                text: 'Unable to Synchronized.',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+    });
+
 }
 </script>
 @endsection

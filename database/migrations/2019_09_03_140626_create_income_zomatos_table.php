@@ -33,6 +33,11 @@ class CreateIncomeZomatosTable extends Migration
             $table->string('date')->nullable();
             $table->string('active_status')->default("A");
             $table->string('setting')->nullable();
+            $table->string('off_day')->nullable();
+            $table->integer('absents_count')->nullable();
+            $table->integer('weekly_off')->nullable();
+            $table->integer('extra_day')->nullable();
+            $table->integer('working_days')->nullable();
             $table->timestamps();
         });
     }

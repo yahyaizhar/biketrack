@@ -165,6 +165,9 @@ Route::group([
     Route::get("/zomato/salary/sheet/export","AccountsController@zomato_salary_sheet_export")->name("admin.zomato_salary_sheet_export");
     Route::get('/zomato/riders/payout/by/days','AccountsController@view_riders_payouts_days')->name('zomato.view_riders_payouts_days');
     Route::post('/import/riders/payouts/days','AccountsController@import_rider_daysPayouts')->name('import.import_rider_daysPayouts');
+    Route::get("/rider/hours/trips/details/{month}/{rider_id}","AccountsController@hours_trips_details");
+    Route::get("/rider/week/days/off/status/{month}/{rider_id}/{day}","AccountsController@weekly_days_off");
+    Route::get("/rider/week/days/sync/data/{month}/{rider_id}/{weekly_off_day}/{absent_days}/{weekly_off}/{extra_day}/","AccountsController@weekly_days_sync_data"); 
 //ends import Zomato
 
 //payout method

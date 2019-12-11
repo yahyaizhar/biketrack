@@ -53,4 +53,8 @@ class Income_zomato extends Authenticatable
         'amount_for_login_hours','amount_to_be_paid_against_orders_completed','ncw_incentives','tips_payouts','dc_deductions',
         'mcdonalds_deductions', 'date'
     ];
+    public function Time_sheet(){
+        return $this->hasMany('App\Model\Zomato\Riders_Payouts_By_Days','zomato_income_id');
+  
+      }
 }
