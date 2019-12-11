@@ -622,6 +622,11 @@
                     _quickViewModal.find('[name="month_year"]').attr('data-month',selected_month);
                     $('script[data-ajax]').remove();
                     $('body').append('<script data-ajax>'+$(data).find('[data-ajax]').html()+'<\/script>');
+
+                    var rider_id = $('#gb_rider_id').val();
+                    if(_quickViewModal.find('[name="rider_id"]').length){
+                        _quickViewModal.find('[name="rider_id"]').val(rider_id).trigger('change.select2');
+                    }
                         biketrack.refresh_global();
                     //add event handler to submit form in modal
                     _quickViewModal.find('form').off('submit').on('submit', function(e){

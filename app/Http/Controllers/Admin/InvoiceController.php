@@ -20,6 +20,7 @@ use App\Model\Accounts\Rider_Account;
 use App\Model\Accounts\Income_zomato;
 use App\Model\Client\Client_Rider;
 use App\Model\Admin\Company_info;
+use App\Model\Admin\Admin;  
 use Arr;
 
 class InvoiceController extends Controller
@@ -61,7 +62,6 @@ class InvoiceController extends Controller
         $invoice->payment_status="pending";
         $invoice->generated_by=Auth::user()->id;
         
-        $invoice->bank_id="0";
         $invoice->amount_paid=0;
         $invoice->due_balance=$r->invoice_total;
 
@@ -103,6 +103,95 @@ class InvoiceController extends Controller
             $invoice_item->subtotal=$invoice_itemObj['amount'];
             $invoice_item->save();
             array_push($invoice_modal['invoice']['invoice_items'], $invoice_item->toArray());
+        }
+
+        //received amount
+        $invoice_payment=$invoice->Invoice_payment;
+        $invoice_modal['invoice']['invoice_payment']=$invoice_payment;
+        if(count($invoice_payment) > 0){
+            //payments received
+            $total_payment = $invoice_payment->sum('payment');
+            $balance_due = $invoice->invoice_total - $total_payment;
+
+            //updating the invoice
+            $inv_paymentStatus="pending";
+            $inv_invoiceStatus="partially_paid";
+            $inv_receivedDate=null;
+            $inv_status="open";
+            if($balance_due==0){
+                //invoice paid
+                $inv_paymentStatus="paid";
+                $inv_invoiceStatus="paid";
+                $inv_receivedDate=Carbon::now()->format('Y-m-d');
+                $inv_status="closed";
+            }
+            $invoice->amount_paid=$total_payment;
+            $invoice->due_balance=$balance_due;
+            $invoice->payment_status=$inv_paymentStatus;
+            $invoice->invoice_status=$inv_invoiceStatus;
+            $invoice->received_date =$inv_receivedDate;
+            $invoice->status=$inv_status;
+            $invoice->save();
+
+
+            
+            // return response()->json([
+            //     'status'=>21,
+            //     'invoice'=>$balance_due
+            // ]);
+            if($balance_due<0){
+                //delete all payments and add a new one
+
+                // $last_payment=$invoice_payment->last();
+
+                
+                $invoice_payment = new Invoice_Payment;
+                $invoice_payment->invoice_id=$invoice->id;
+
+                $payment_amount=$invoice->invoice_total;
+                $inv_status='closed';
+                $due=0;
+
+                $invoice->amount_paid=$invoice->invoice_total;
+                $invoice->due_balance=$due;
+                $invoice->payment_status='paid';
+                $invoice->invoice_status='paid';
+                $invoice->received_date =Carbon::now()->format('Y-m-d');
+                $invoice->status=$inv_status;
+
+
+
+                //saving payment
+                $payment_method='cash';
+                $invoice_payment->payment_method=$payment_method;
+                // if($payment_method=="bank"){
+                //     $invoice_payment->bank_id=$last_payment->bank_id; 
+                //     //saving transaction
+                //     $bank_transaction=new Bank_transaction;
+                //     $bank_transaction->bank_id=$last_payment->bank_id;
+                //     $bank_transaction->type='cr';
+                //     $bank_transaction->amount=$payment_amount;
+                //     $bank_transaction->source=get_class($invoice);
+                //     $bank_transaction->source_id=$invoice->id;
+                //     $bank_transaction->created_by=Auth::user()->id;
+                //     $bank_transaction->save();
+                // }
+
+                $invoice_payment->payment_date=Carbon::now()->format('Y-m-d'); 
+                $invoice_payment->payment=$payment_amount;
+
+                $invoice_payment->payment_received_by=Auth::user()->id; 
+                $invoice_payment->status=$inv_status;
+                $invoice_payment->notes='AED '.abs($balance_due).' is due to the customer'; 
+
+                
+                $invoice->Invoice_payment()->delete();
+                $invoice->save();
+                $invoice_payment->save();
+                $invoice_modal['invoice']['invoice_payment']=$invoice_payment;
+
+
+            }
         }
 
         
@@ -161,10 +250,8 @@ class InvoiceController extends Controller
                 $bank_transaction->save();
             }
 
-            $invoice_payment->original_amount= $invoice->invoice_total; 
             $invoice_payment->payment_date=Carbon::parse($r->payment_date)->format('Y-m-d'); 
-            $invoice_payment->payment=$payment_amount; 
-            $invoice_payment->due_balance=$due; 
+            $invoice_payment->payment=$payment_amount;
 
             $invoice_payment->payment_received_by=Auth::user()->id; 
             $invoice_payment->status=$inv_status; 
@@ -229,6 +316,9 @@ class InvoiceController extends Controller
                 ];
                 array_push($invoice_items_data,$obj);
             }
+            $genrated_by=Admin::find($open_invoice->generated_by);
+            $open_invoice->generated_by=$genrated_by;
+            $open_invoice->client=$client;
             return response()->json([
                 'status'=>1,
                 'billing_address' => $billing_address,
@@ -320,6 +410,13 @@ class InvoiceController extends Controller
                     }
                     $aed_hours+=$_hours*7.87;
 
+                }
+                if ($total_hours == 0) {
+                    //zomato payour sheet isnot imported
+                    return response()->json([
+                        'status'=>0,
+                        'message'=>'Customer\'s Payout sheet for '.Carbon::parse($formatted_month)->format('M Y').' is not imported yet.'
+                    ]);
                 }
                 $total_hours_payable=$total_hours*$per_hour_amount;
                 $total_trips_payable=$total_trips*$per_trip_amount;
@@ -447,6 +544,7 @@ class InvoiceController extends Controller
         $tax_method->name=$request->name;
         $tax_method->type=$request->type;
         $tax_method->value=$request->value;
+        $tax_method->is_default=$request->is_default;
         $tax_method->save();
         return redirect(url('admin/invoice/tax_method/add'))->with('message', 'Record Created Successfully.');
     }

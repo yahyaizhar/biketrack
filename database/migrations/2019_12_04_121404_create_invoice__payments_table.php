@@ -18,9 +18,7 @@ class CreateInvoicePaymentsTable extends Migration
             $table->integer('invoice_id')->nullable();
             $table->integer('bank_id')->nullable();
             $table->string('payment_date')->nullable();
-            $table->string('original_amount')->nullable();
             $table->string('payment')->nullable();
-            $table->string('due_balance')->nullable();
             $table->string('payment_method')->nullable();
             $table->string('payment_received_by')->nullable();
             $table->text('notes')->nullable();

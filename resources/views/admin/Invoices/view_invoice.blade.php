@@ -68,7 +68,7 @@
             margin: 0;
             padding-left: 33px;
         }
-        td.col_editable{
+        .col_editable{
             cursor: pointer;
         }
         </style>
@@ -104,7 +104,7 @@
         <div class="kt-portlet__body">
 
             <!--begin: Datatable -->
-            <table class="table table-striped- table-hover table-checkable table-condensed" id="invoice-table">
+            <table class="table table-striped- table-hover table-checkable table-condensed" id="invoice-table-view">
                 <thead>
                     <tr>
                         {{-- <th>
@@ -314,7 +314,7 @@ $(function () {
                 showCancelButton: true,
                 reverseButtons: true
             }).then((result) => {
-                console.l
+                
                 if (result.value) {
                     receive_payment.modal_confirmation_required=false;
                     _this.modal('hide');
@@ -369,11 +369,26 @@ $(function () {
         });
 
     });
-    $('#invoice-table').on('click', 'td.col_editable',function (e) {
+    $('#invoice-table-view').on('click', '.col_editable',function (e) {
         console.log('e.target', e.target, $(e.target).find('.statusText__wrapper').length);
         
         
         var tr = $(this).closest('tr');
+        var row = invoice_table.row(tr);
+        var _data = row.data();
+        var url_data = {
+            client_id: _data.client_id,
+            month:new Date(_data.month).format('yyyy-mm-dd'),
+            invoice_id:_data.invoice,
+            edit:1
+        }
+        biketrack.updateURL(url_data);
+        console.log(row.data());
+        $('#add_invoice_ajax').trigger('click', {reseturl:false})
+    });
+    $('#invoice-table-view').on('click', '.col_editable_child',function (e) {
+        
+        var tr = $(this).closest('tr').prev();
         var row = invoice_table.row(tr);
         var _data = row.data();
         var url_data = {
@@ -455,6 +470,8 @@ var receive_payment = {
 
 function getOpenInvoice() {
     var client_id = $('#receive_payment [data-name="client_id"]').val();
+    var _currentInvoiceId = parseFloat($('#receive_payment [data-name="client_id"]').attr('data-current-invoice'))||null;
+    $('#receive_payment [data-name="client_id"]').removeAttr('data-current-invoice');
     $.ajax({
         url: "{{url('admin/invoice/get/open/')}}" + "/" + client_id,
         headers: {
@@ -482,6 +499,10 @@ function getOpenInvoice() {
                 var markup = '';
                 invoices.forEach(function (invoice, i) {
                     var total_rows = parseFloat($("#open_invoice_table tbody tr").length);
+                    var _paymentAmount=invoice.due_balance;
+                    if(_currentInvoiceId!=null){
+                        _paymentAmount = _currentInvoiceId==invoice.id?invoice.due_balance:0;
+                    }
                     markup += '' +
                         '   <tr>  ' +
                         '       <td class="invoice__table-row_cell-sr">' + (i + 1) + ' </td>  ' +
@@ -491,7 +512,7 @@ function getOpenInvoice() {
                         '       <td> AED ' + invoice.due_balance + ' </td>   ' +
                         '       <td>' +
                         '           <input type="hidden" name="payments[' + i + '][invoice_id]" value="' + invoice.id + '">' +
-                        '           <input data-input-type="float_limited" data-max="' + invoice.due_balance + '"  type="text" class="form-control" data-name="payment" onchange="receive_payment.updateReceivedAmount()" name="payments[' + i + '][amount]" min="0" value="' + invoice.due_balance + '">' +
+                        '           <input data-input-type="float_limited" data-max="' + _paymentAmount + '"  type="text" class="form-control" data-name="payment" onchange="receive_payment.updateReceivedAmount()" name="payments[' + i + '][amount]" min="0" value="' + _paymentAmount + '">' +
                         '       </td>' +
                         '  </tr>  ';
                 });
@@ -574,14 +595,15 @@ function setScrollBkModal() {
 function receive_payment_popup($this) {
     var invoice = JSON.parse($this.nextElementSibling.innerHTML);
     console.log(invoice);
+    $('.modal').modal('hide');
     $('#receive_payment').modal('show');
-    $('#receive_payment [data-name="client_id"]').val(invoice.client_id).trigger('change');
+    $('#receive_payment [data-name="client_id"]').val(invoice.client_id).attr('data-current-invoice', invoice.id).trigger('change');
     return false;
 
 }
 
 function getInvoices() {
-    invoice_table = $('#invoice-table').DataTable({
+    invoice_table = $('#invoice-table-view').DataTable({
         lengthMenu: [
             [50, -1],
             [50, "All"]

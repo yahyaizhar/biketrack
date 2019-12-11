@@ -95,6 +95,10 @@
             font-size: 13px;
             color: #000;
         }
+        .invoice__header-generated_by-text{
+            font-size: 11px;
+            color: #999;
+        }
 </style>
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <div class="row">
@@ -114,7 +118,7 @@
                         <div class="row">
                             <div class="form-group col-md-3">
                                 <label>Month:</label>
-                                <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Select Month" value="">
+                                <input type="text" data-non-readonly data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Select Month" value="">
                                 @if ($errors->has('month'))
                                     <span class="invalid-response" role="alert">
                                         <strong>
@@ -128,7 +132,7 @@
 
                             <div class="form-group col-md-3">
                                 <label>Customer:</label>
-                                <select class="form-control bk-select2 kt-select2" id="kt_select2_3" data-name="client_id" name="client_id" required>
+                                <select class="form-control bk-select2 kt-select2" id="kt_select2_3" data-non-readonly data-name="client_id" name="client_id" required>
                                 @foreach ($clients as $client)
                                     <option value="{{ $client->id }}">
                                         {{ $client->name }}
@@ -137,9 +141,19 @@
                                 </select> 
                             </div>
 
-                            <div class="col-md-6 balance_due--wrapper text-right">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Customer Details:</label>
+                                    <textarea type="text" cols="20" data-non-readonly rows="5" class="form-control" data-name="company_details" name="company_details" placeholder="Enter Customer Details">{{$company_info->company_address}}&#13;&#10;{{$company_info->company_email}}&#13;&#10;{{$company_info->company_phone_no}}&#13;&#10;{{$company_info->company_tax_return_no}}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 balance_due--wrapper text-right">
                                 <h3>BALANCE DUE</h3>    
                                 <span class="balance_due">AED 0.00</span>
+                                <div class="receive_payment_btn" style="display:none;">
+                                    <a href="" class="reveive_payment btn btn-secondary" onclick="receive_payment_popup(this);return false;">Receive Payment</a>
+                                </div>
                                 <div class="payments_made_container">
                                     <a href="" class="payments_made" onclick="return false;"></a>
                                 </div>
@@ -189,7 +203,7 @@
                     <div class="kt-portlet__foot">
                             
                             <div class="kt-form__actions kt-form__actions--right">
-                                <button style="float:left;padding: 5px;" class="btn btn-primary" onclick="append_row();return false">Add Rows</button>
+                                <button style="float:left;padding: 5px;" class="btn btn-primary btn--addnewrow" onclick="append_row();return false">Add Rows</button>
                                 <div class="row mt-3">
                                         <div class="col-md-5 text-right offset-md-7">
                                             <div class="row">
@@ -237,7 +251,7 @@
                                                 <select class="form-control" aria-placeholder="Select a Tax rate" data-name="tax_rate" name="tax_method_id" >
                                                     <option value=""> Select a Tax Method</option> 
                                                     @foreach ($tax_methods as $tax_method)
-                                                <option value="{{$tax_method->id}}" data-type="{{$tax_method->type}}" data-value="{{$tax_method->value}}">{{$tax_method->name}} ({{$tax_method->type=='fixed'?'AED':''}} {{$tax_method->value}}{{$tax_method->type=='percentage'?'%':''}})</option> 
+                                                <option value="{{$tax_method->id}}" @if ($tax_method->is_default==1)selected @endif data-default="{{$tax_method->is_default}}" data-type="{{$tax_method->type}}" data-value="{{$tax_method->value}}">{{$tax_method->name}} ({{$tax_method->type=='fixed'?'AED':''}} {{$tax_method->value}}{{$tax_method->type=='percentage'?'%':''}})</option> 
                                                     @endforeach
                                                      
                                                 </select>
@@ -285,6 +299,35 @@
                                         </div>
                                     </div>
                                 </div> 
+
+                                <div class="edit_page_content">
+                                    <div class="row amount_received-wrapper">
+                                        <div class="col-md-5 text-right offset-md-7">
+                                            <div class="row">
+                                                <div class="col-md-7">
+                                                <h4>Amount received</h4>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <h4 class="all_amount_received">AED 0.00</h4>
+                                                    <input type="hidden" data-name="amount_received" name="amount_received">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-5 text-right offset-md-7">
+                                            <div class="row">
+                                                <div class="col-md-7">
+                                                <h4>Balance Due</h4>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <h4 class="balance_due">AED 0.00</h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                  
                             </div>
                         
@@ -295,7 +338,9 @@
                                 <button type="button" class="btn btn-outline-hover-success invoice__print-btn">Print & Preview</button>
                             </div>
                             <div class="col-md-6 text-right">
-                                <button type="submit" class="btn btn-primary">Save Invoice</button>
+                                    <button type="button" class="btn btn-warning btn-form-submit btn-save-invoice-drafted">Save As Draft</button>
+                                <button type="button" class="btn btn-info btn-wide btn-form-submit btn-save-invoice-generate">Generate Invoice</button>
+                                <button type="button" class="btn btn-info btn-wide btn-form-submit btn-edit-invoice" style="display:none">Edit Invoice</button>
                             </div>
                         </div>
                     </div>
@@ -309,18 +354,21 @@
                             <table style="">
                                 <tr>
                                     <div class="maintax" style="font-size:0;">
-                                        <div class="childa" style="display:inline-block;width:50%;font-size:12px;float:left;">
+                                        <div class="childa " style="display:inline-block;width:50%;font-size:12px;float:left;">
                                             <ul style="padding-left:0px;margin-bottom: 0px;">
                                                 <li class="company_name"
                                                     style="display:block;font-weight: bold; font-size: 14px;color: black; letter-spacing: 1px; font-family: monospace;">
                                                     {{$company_info->company_name}}</li>
-                                                <li style="display:block;color: #6f6e6e;">{{$company_info->company_address}}</li>
-                                                <li style="display:block;color: #6f6e6e;font-size: 12px; letter-spacing: 0.5px;">
+                                                <li style="display:block;color: #6f6e6e;" class="company__details">
+                                                    {{$company_info->company_address}}
+
+                                                </li>
+                                                {{-- <li style="display:block;color: #6f6e6e;font-size: 12px; letter-spacing: 0.5px;">
                                                     {{$company_info->company_email}}</li>
                                                 <li style="display: block; color: #6f6e6e; font-weight: 400;">
                                                     {{$company_info->company_phone_no}}</li>
                                                 <li style="display: block; color: #6f6e6e; font-weight: 400;">TRN :
-                                                    {{$company_info->company_tax_return_no}}</li>
+                                                    {{$company_info->company_tax_return_no}}</li> --}}
                                             </ul>
                                             {{-- <ul style="padding-left:0px">
                                             
@@ -503,16 +551,27 @@ $(document).ready(function () {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 url: "{{url('admin/invoice/tax/ajax/get_clients_details/')}}" + '/' + client_id + "/" + _month,
-                method: "GET"
+                method: "GET",
+                beforeSend: function () {
+                    $('.bk_loading').show();
+                },
+                complete: function () {
+                    $('.bk_loading').hide();
+                }
             })
             .done(function (resp) {
                 console.log(resp);
+                _invoices.remove_invoice_readonly();
+                $('.btn-form-submit').prop('disabled',false);
                 if (resp.status == 1) {
                     $("#invoice-table tbody").html('');
-                    $('#invoices [data-name="tax_rate"]').val('');
+                    $('#invoices [data-name="tax_rate"]').find('[data-default="1"]').prop('selected', true);
                     $('#invoices [data-name="discount_values"]').val('');
                     $('#invoice_number').removeAttr('data-invoice').html('');
                     $('a.payments_made').html('');
+                    //amount received
+                    $('#invoices .all_amount_received').text('AED '+0);
+                    $('#invoices [data-name="amount_received"]').val(0);
                     $('a.payments_made').popover('dispose')
                     _invoices.remove_msg();
                     invoiceObj=null;
@@ -523,8 +582,21 @@ $(document).ready(function () {
                     append_row(row_data);
                     _invoices.invoice=null;
                     var _isedit = biketrack.getUrlParameter('edit');
+                    $('#invoices .btn-save-invoice-drafted,#invoices .btn-save-invoice-generate').show();
+                    $('noscript[data-receive-script]').remove();
+                    $('#invoices .btn-edit-invoice, .receive_payment_btn, #invoices .edit_page_content').hide();
+
                     if(resp.is_edit){//&& _isedit==1
                         _invoices.invoice=resp.invoice;
+                        $('#invoices .btn-save-invoice-drafted,#invoices .btn-save-invoice-generate').hide();
+                        _invoices.make_invoice_readonly();
+                        $('#invoices .btn-edit-invoice, .receive_payment_btn, #invoices .edit_page_content').show();
+                        if(_invoices.invoice.payment_status=="paid"){
+                            $('#invoices .receive_payment_btn').hide();
+                        }
+                        $('#invoices .receive_payment_btn').append('<noscript>'+JSON.stringify(resp.invoice)+'</noscript>');
+
+                        
                         _invoices.reload_page(resp);
                     }
                     $('[data-input-type]').each(function(i,elem){
@@ -549,6 +621,8 @@ $(document).ready(function () {
                     typeof receive_payment !=="undefined" && (receive_payment.modal_confirmation_required=true);
                     
                 } else {
+                    _invoices.make_invoice_readonly();
+                    $('.btn-form-submit').prop('disabled',true);
                     _invoices.show_msg(resp.message);
                 }
 
@@ -581,12 +655,39 @@ $(document).ready(function () {
 
     $(document).on("keydown", 'textarea.auto-expandable', autosize);
 
-    $('#invoices').on('submit', function (e) {
+    //generate invoice
+    $('#invoices .btn-save-invoice-generate').on('click', function (e) {
         e.preventDefault();
-        var _form = $(this);
+        var _form = $(this).parents('form');
         if(validate_invoice(_form)){
             save_invoice(_form, "generated");
         }
+    });
+    //save as draft
+    $('#invoices .btn-save-invoice-drafted').on('click', function (e) {
+        e.preventDefault();
+        var _form = $(this).parents('form');
+        if(validate_invoice(_form)){
+            save_invoice(_form, "drafted");
+        }
+    });
+
+     //enable edit
+     $('#invoices .btn-edit-invoice').on('click', function (e) {
+        e.preventDefault();
+        var _form = $(this).parents('form');
+        var is_allowed=_invoices.is_allow;
+        if(is_allowed){
+            if(validate_invoice(_form)){
+                save_invoice(_form, "generated");
+            }
+        }
+        else{
+            _invoices.remove_invoice_readonly();
+            _invoices.is_allow=true;
+            $(this).text('Save Invoice');
+        }
+        
     });
 
     var validate_invoice=function(_form){
@@ -601,6 +702,31 @@ $(document).ready(function () {
 
     var save_invoice =function(_form=null,invoice_status, callback=null){
         _form = _form||$('#invoices');
+        if(_invoices.invoice&&_invoices.invoice.invoice_payment&&_invoices.invoice.invoice_payment.length>0){
+            //some payment received
+            Swal.fire({
+                title: 'Are you sure?',
+                position: 'center',
+                type: 'warning',
+                text: "The transaction you are editing is linked to others. Are you sure you want to modify it?",
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                showCancelButton: true,
+                reverseButtons: true
+            }).then((result) => {
+                
+                if (result.value) {
+                    post_invoice(_form,invoice_status,callback);
+                }
+                console.log(result)
+            })
+        }
+        else{
+            post_invoice(_form,invoice_status,callback);
+        }
+        
+    }
+    var post_invoice=function(_form=null,invoice_status, callback=null){
         $('[name="invoice_status"]').val('drafted');
         if(invoice_status && invoice_status != ""){
             $('[name="invoice_status"]').val(invoice_status);
@@ -654,9 +780,12 @@ $(document).ready(function () {
     }
 
     var print_invoice=function(invoice){
-        var invoice = invoice||invoiceObj;
+        var invoice = _invoices.invoice;
         console.log(invoice);
+        
         if(invoice){
+            var company__details=$('[data-name="company_details"]').val().replace(/(\r\n|\n)/g, "<br/>");
+            $('.company__details').html(company__details);
             $('.invoice_slip__client_address').text(invoice.client.address);
             $('.invoice_slip__client_email').text(invoice.client.email);
             $('.invoice_slip__client_no').text(invoice.client.phone);
@@ -686,7 +815,8 @@ $(document).ready(function () {
             $('.invoice_due').text(invoice.invoice_due)
             var _addrow=true;
             var _total_inclusive_of_vat = 0;
-                invoice.invoice_items.forEach(function(item, i){
+            var _invoiceItems = invoice.invoice_item||invoice.invoice_items;
+            _invoiceItems.forEach(function(item, i){
                     var _txt_amount=0;
                     if(item.taxable_amount >0){
                         _txt_amount =item.taxable_amount ; 
@@ -749,7 +879,7 @@ $(document).ready(function () {
             if(validate_invoice(_form)){
                 save_invoice(_form, "drafted", function(invoice){
                     // $('.invoice_slip__number').text('Invoice #'+(invoice.id));
-                    $('.invoice_slip__client_address').text(invoice.client.address);
+                    $('.invoice_slip__client_address').html(invoice.client.address);
                     $('.invoice_slip__client_email').text(invoice.client.email);
                     $('.invoice_slip__client_no').text(invoice.client.phone);
                     $('.invoice_slip__client_name').text(invoice.client.name);
@@ -762,7 +892,7 @@ $(document).ready(function () {
                         invoice.taxable_amount = '0.00'
                     }
                     if(invoice.discount_amount == null){
-                      $('.invoice_without_discount_total').hide();
+                      $('.invoice_without_discount_total').hide(); 
                     } 
                     else{
                         $('.invoice_without_discount_total').show();
@@ -770,7 +900,7 @@ $(document).ready(function () {
                     $('.custm_tax').text('AED '+invoice.taxable_amount);
                     $('.custm_totl').text('AED '+invoice.invoice_subtotal);
                     $('.custm_total_price').text('AED '+Math.round(invoice.invoice_total));
-                    $('.custm_message_on_invoice').text(invoice.message_on_invoice);
+                    $('.custm_message_on_invoice').html(invoice.message_on_invoice);
                     $('.invoice_id').text(invoice.id)
                     $('.invoice_date').text(invoice.invoice_date)
                     $('.invoice_due').text(invoice.invoice_due)
@@ -851,6 +981,7 @@ var taxable_amount = 0;
 
 var _invoices={
     invoice:null,
+    is_allow:false,
     show_msg:function(msg=""){
         if(msg=="")return;
         var _msg = $(basic_alert);
@@ -879,7 +1010,7 @@ var _invoices={
             biketrack.updateURL(url_data);
         }
         //changing invoice id
-        $('#invoice_number').attr('data-invoice',invoice.id).text('#'+(invoice.id));
+        $('#invoice_number').attr('data-invoice',invoice.id).html('#'+(invoice.id+' <span class="invoice__header-generated_by-text">Generated by '+invoice.generated_by.name+' on '+new Date(invoice.invoice_date).format('dd/mmm/yyyy')+'</span>'));
         $('#invoices [data-name="invoice_date"]').attr('data-month', new Date(invoice.invoice_date).format('mmm dd, yyyy'));
         $('#invoices [data-name="due_date"]').attr('data-month', new Date(invoice.invoice_due).format('mmm dd, yyyy'));
         $('#invoices [name="month"]').attr('data-month', new Date(invoice.month).format('mmmm yyyy'));
@@ -905,19 +1036,28 @@ var _invoices={
                 _totalPayments+=parseFloat(payment.payment);
                 inner_html+='<a href="">'+new Date(payment.payment_date).format('dd/mmm/yyyy')+'</a><span>AED '+payment.payment+'</span>';
             });
+            _totalPayments=_totalPayments.toFixed(2);
             var _html = _payment_len+' Payment made (AED '+_totalPayments+')';
             inner_html+='</div>';
-            $('a.payments_made').html(_html);
-            $('a.payments_made').popover({
+            $('#invoices a.payments_made').html(_html);
+            $('#invoices a.payments_made').popover({
                 content:inner_html,
                 html:true,
                 placement:'left',
                 trigger: "focus"
             });
+
+            //amount received
+            $('#invoices .all_amount_received').text('AED '+_totalPayments);
+            $('#invoices [data-name="amount_received"]').val(_totalPayments);
         }
 
         biketrack.refresh_global();
         subtotal();
+        
+        // if(_invoices.invoice.payment_status=="paid"){
+        //     $('#invoices .balance_due').text('PAID');
+        // }
     },
     fetch_url_data:function(){
         typeof receive_payment !=="undefined" && (receive_payment.modal_confirmation_required=false);
@@ -929,6 +1069,13 @@ var _invoices={
             $('#invoices [name="client_id"]').val(_clientId).trigger('change');
 
         }
+    },
+    make_invoice_readonly:function(){
+        $('#invoices input:not([type="hidden"],[data-non-readonly]), #invoices select:not([data-non-readonly]), #invoices textarea:not([data-non-readonly]), #invoices .btn--addnewrow').prop('disabled', true);
+        
+    },
+    remove_invoice_readonly:function(){
+        $('#invoices input:not([type="hidden"],[data-non-readonly]), #invoices select:not([data-non-readonly]), #invoices textarea:not([data-non-readonly]), #invoices .btn--addnewrow').prop('disabled', false);
     }
 };
 function subtotal() {
@@ -981,7 +1128,7 @@ function subtotal() {
                 $(this).find('[data-name="tax_amount"]').val((tax_amount).toFixed(2));
             }
         }
-
+console.log('total_amount', total_amount);
         $(this).find('[data-name="amount"]').val((amount).toFixed(2));
     });
 
@@ -1014,16 +1161,19 @@ function subtotal() {
         $('.discount_amount').text('AED -' + (res_of_discount).toFixed(2));
         total_amount -= res_of_discount;
     }
+    var amount_received=parseFloat($('#invoices [data-name="amount_received"]').val())||0;
 
-    $(".subtotal_value").text("AED " + (non_tax_amount).toFixed(2));
+    $("#invoices .subtotal_value").text("AED " + (non_tax_amount).toFixed(2));
     
-    $(".taxable_subtotal").text("AED " + (taxable_amount).toFixed(2));
-    $('.all_total_amount').text("AED " + (total_amount).toFixed(2));
-    $('.balance_due').text("AED " + (total_amount).toFixed(2));
+    $("#invoices .taxable_subtotal").text("AED " + (taxable_amount).toFixed(2));
+    $('#invoices .all_total_amount').text("AED " + (total_amount).toFixed(2));
 
-    $("[data-name='invoice_subtotal']").val((non_tax_amount).toFixed(2));
-    $("[data-name='taxable_subtotal']").val((taxable_amount).toFixed(2));
-    $("[data-name='invoice_total']").val((total_amount).toFixed(2));
+    var balance_due = total_amount-amount_received;
+    $('#invoices .balance_due').text("AED " + (balance_due).toFixed(2));
+
+    $("#invoices [data-name='invoice_subtotal']").val((non_tax_amount).toFixed(2));
+    $("#invoices [data-name='taxable_subtotal']").val((taxable_amount).toFixed(2));
+    $("#invoices [data-name='invoice_total']").val((total_amount).toFixed(2));
     // 
 }
 

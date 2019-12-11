@@ -30,6 +30,20 @@
                             <label>Value:</label>
                             <input required step="0.01" type="number" class="form-control @if($errors->has('value')) invalid-field @endif" name="value" placeholder="Enter Amount" value="">
                         </div>
+
+                        <div class="form-group">
+                            <label>Is default:</label>
+                            <div class="kt-radio-inline">
+                                <label class="kt-radio">
+                                    <input type="radio" name="is_default" value="0" checked> No
+                                    <span></span>
+                                </label>
+                                <label class="kt-radio">
+                                    <input type="radio" name="is_default" value="1"> Yes
+                                <span></span>
+                            </label>
+                            </div>
+                        </div>
                     </div>
                     <div class="kt-portlet__foot">
                         <div class="kt-form__actions kt-form__actions--right">
