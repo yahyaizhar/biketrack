@@ -604,6 +604,8 @@ Route::group([
 // Guest routes
     Route::get('/newcomer/add','GuestController@newComer_view')->name('guest.newComer_view');
     Route::post('/newcomer/store','GuestController@newComer_add')->name('guest.newComer_add');
+    Route::post('/newcomer/status_check','GuestController@newComer_status')->name('guest.newComer_status');
+
 });
 Route::group([
     'prefix' => 'admin',

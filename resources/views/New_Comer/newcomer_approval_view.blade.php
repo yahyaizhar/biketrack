@@ -106,7 +106,7 @@ margin-left: 10px;
         </div>
         </div>
        <div class="modal-footer">
-         <form style="width:100%;" action="">
+         <form style="width:100%;" action="" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label>Approval status message</label>
                 <textarea class="form-control" name="status_approval_message" id="status_approval_message"></textarea>
