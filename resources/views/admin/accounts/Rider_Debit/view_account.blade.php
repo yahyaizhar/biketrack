@@ -945,12 +945,14 @@
         }
     });
     $("#cash_paid").on('shown.bs.modal', function(){
-    var month=biketrack.getUrlParameter('r1d1');
-    var _month=new Date(month).format("mmmm yyyy");
-    if (month!="") { 
-        $("#cash_paid [name='month']").attr("data-month", _month)
-        biketrack.refresh_global()
-    }
+        var rider_id=biketrack.getUrlParameter('rider_id');
+        $('#cash_paid [name="cash_rider_id"]').val(rider_id);
+        var month=biketrack.getUrlParameter('r1d1');
+        var _month=new Date(month).format("mmmm yyyy");
+        if (month!="") { 
+            $("#cash_paid [name='month']").attr("data-month", _month)
+            biketrack.refresh_global()
+        }
     });
     $("#cash_pay_debit").on('shown.bs.modal', function(){
     var month=biketrack.getUrlParameter('r1d1');
@@ -1025,7 +1027,7 @@
                         if (item.login_hours>11) {
                             item.login_hours=11;
                         }
-                        if (item.trips!='0' && item.login_hours!='0') {
+                        if (item.trips!='0' || item.login_hours!='0') {
                             status="present";
                         }
                         if (item.trips=='0' && item.login_hours=='0') {
@@ -1040,10 +1042,10 @@
                             var din=weekdays[0].day;
                             total_absents
                             var date_match=new Date(item.date).format("dddd")   
-                            if (repeated>=3 && date_match==din) {
+                            if (repeated>3 || date_match==din) {
                                 status='<div style="color:green;">weekly-off</div>';
                             }
-                            else{
+                            else if (item.trips=='0' && item.login_hours=='0'){
                                 status='<div style="color:red;">absent</div>';
                             }
                            
@@ -1585,6 +1587,7 @@
                     
                 ],
                 responsive:true,
+                order: [0, 'asc'],
             });
 
             table.MakeCellsEditable("destroy"); 

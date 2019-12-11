@@ -840,8 +840,27 @@ class AccountsController extends Controller
             $ra_zomatos_no_of_hours =0;
             $ra_zomatos_no_of_trips = 0;
             if(isset($ra_zomatos)){
-                $ra_zomatos_no_of_hours = $ra_zomatos->log_in_hours_payable > 286?286:$ra_zomatos->log_in_hours_payable;
-                $ra_zomatos_no_of_hours = $ra_zomatos_no_of_hours * 7.87;
+                $absent_count=$ra_zomatos->absents_count;
+                $working_days=$ra_zomatos->working_days;
+                $income_zomato_id=$ra_zomatos->id;
+                $rider_payout_by_days=Riders_Payouts_By_Days::where("Zomato_income_id",$income_zomato_id)
+                ->whereMonth("date",$onlyMonth)
+                ->get();
+                foreach ($rider_payout_by_days as $value) {
+                    $hours_by_day=$value->login_hours;
+                    if ($hours_by_day>11) {
+                        $hours_by_day=11;
+                    }
+                    $ra_zomatos_no_of_hours+=$hours_by_day;
+                }
+                $absents=$absent_count*11;
+                $working_days=$working_days*11;
+                // $ra_zomatos_no_of_hours = $ra_zomatos_no_of_hours > 286?286:$ra_zomatos->log_in_hours_payable;
+                $working_hours=$working_days-$ra_zomatos_no_of_hours;
+                $hours_for_working_days=round(286-($working_hours+$absents),2);
+                $ra_zomatos_no_of_hours =$hours_for_working_days * 7.87;
+
+
                 $ra_zomatos_no_of_trips = $ra_zomatos->trips_payable > 400?400:$ra_zomatos->trips_payable;
                 $ra_zomatos_no_of_trips = $ra_zomatos_no_of_trips * 2;
 
@@ -852,7 +871,10 @@ class AccountsController extends Controller
         
             
             $ra_deduction = $ra_payable;
-            $ra_salary=$ra_zomatos_no_of_hours + $ra_zomatos_no_of_trips + $ra_cr;
+            $a=round($ra_zomatos_no_of_hours,2);
+            $b=round($ra_zomatos_no_of_trips,2);
+            $c=round($ra_cr,2);
+            $ra_salary=$a +$b  +$c ;
             $ra_recieved=$ra_salary - $ra_deduction;
 
             $total_salary_amt = round($ra_zomatos_no_of_hours+$ra_zomatos_no_of_trips,2);
@@ -878,15 +900,53 @@ class AccountsController extends Controller
        }else{
         $is_paid_salary=false;
        }
+       $data_zomato=Income_zomato::where("rider_id",$rider_id)
+       ->whereMonth("date",$onlyMonth)
+       ->get()
+       ->first();
+       $trips=0;
+       $hours=0;
+       if (isset($data_zomato)) {
+           $absent_count=$data_zomato->absents_count;
+           $weekly_off=$data_zomato->weekly_off;
+           $extra_day=$data_zomato->extra_day;
+           $working_days=$data_zomato->working_days;
+           $income_zomato_id=$data_zomato->id;
+           $rider_payout_by_days=Riders_Payouts_By_Days::where("Zomato_income_id",$income_zomato_id)
+           ->whereMonth("date",$onlyMonth)
+           ->get();
+           foreach ($rider_payout_by_days as $value) {
+               $trips+=$value->trips;
+               
+               $hour=$value->login_hours;
+               if ($hour>11) {
+                   $hour=11;
+               }
+               $hours+=$hour;
+           }
+           
+       }
+       if (!isset($data_zomato)) {
+        $absent_count=0;
+        $weekly_off=0;
+        $extra_day=0;
+        $working_days=0;
+    }
        
         return response()->json([
             'net_salary'=>round($ra_salary,2),
             'gross_salary'=>round($ra_recieved,2),
-            'total_salary'=>$total_salary_amt,
+            // 'ra_zomatos_no_of_hours'=>$ra_zomatos_no_of_hours,
             'total_deduction'=>round($ra_payable,2),
-            'total_bonus'=>round($ra_cr,2),
-            'closing_balance_prev'=>$closing_balance_prev,
+            // 'total_bonus'=>round($ra_cr,2),
+            // 'closing_balance_prev'=>$closing_balance_prev,
             'is_paid'=>$is_paid_salary,
+            'absent_count'=>$absent_count,
+            'weekly_off'=>$weekly_off,
+            'extra_day'=>$extra_day,
+            'working_days'=>$working_days,
+            'trips'=>round($trips,2),
+            'hours'=>round($hours,2),
         ]);
     }
     public function new_salary_added(Request $request){
@@ -996,21 +1056,25 @@ class AccountsController extends Controller
         $ca->given_date = Carbon::parse($request->get('given_date'))->format('Y-m-d');
         $ca->source="salary";
         $ca->payment_status="pending";
-        $ca->amount=$request->total_salary;
+        $ca->amount=round($request->total_salary,2);
         $ca->save();
 
-        $ca = \App\Model\Accounts\Rider_Account::firstOrCreate([
+        $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
             'salary_id'=>$salary->id
         ]);
-        $ca->salary_id =$salary->id;
-        $ca->type='cr';
-        $ca->rider_id=$rider_id;
-        $ca->month = Carbon::parse($request->get('month'))->startOfMonth()->format('Y-m-d');
-        $ca->given_date = Carbon::parse($request->get('given_date'))->format('Y-m-d');
-        $ca->source="salary"; 
-        $ca->payment_status="pending";
-        $ca->amount=$request->total_salary;
-        $ca->save();
+        $ra->salary_id =$salary->id;
+        $ra->type='cr';
+        $ra->rider_id=$rider_id;
+        $ra->month = Carbon::parse($request->get('month'))->startOfMonth()->format('Y-m-d');
+        $ra->given_date = Carbon::parse($request->get('given_date'))->format('Y-m-d');
+        $ra->source="salary"; 
+        $ra->payment_status="pending";
+        $ra->amount=round($request->total_salary,2);
+        $ra->save();
+        // return response()->json([
+        //     'ca'=>$ca,
+        //     'ra'=>$ra,
+        // ]);
     
         // $remaining_salary=$request->remaining_salary;
         // if ($remaining_salary>0) { // rider will give to company
@@ -2545,7 +2609,7 @@ public function client_income_update(Request $request,$id){
             $data->absents_count=$absent_days-$weekly_off;
             $data->weekly_off=$weekly_off+$extra_day;
             $data->extra_day=$extra_day;
-            $data->working_days=$_total_days_in_month-$absent_days;
+            $data->working_days=$_total_days_in_month-$absent_days-$extra_day;
             $data->save();
         }
         
