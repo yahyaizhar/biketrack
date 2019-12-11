@@ -471,7 +471,12 @@ jQuery(function($) {
     }).on('hidden.bs.modal', function(){
         $('body').removeClass('bk-modal-open')
     });
-    
+
+    /////on hover add class to sidebar
+
+$('ul.kt-menu__nav li.kt-menu__item,.kt-menu__submenu ').hover(function(){$(this).addClass('kt-menu__item--hover')})
+$('ul.kt-menu__nav li.kt-menu__item,.kt-menu__submenu ').mouseleave(function(){$(this).removeClass('kt-menu__item--hover')})
+
 });
 
 

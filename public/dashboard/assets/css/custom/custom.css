@@ -123,3 +123,17 @@ body.bk-modal-open{overflow: hidden !important;padding: 0 !important;}
 .bk-modal-lg .kt-form__actions{
     margin-top: 15px;
 }
+span.show_waiting_comer{
+    cursor: pointer;
+    padding: 0px 5px;
+    font-size: 20px;
+}
+span.show_waiting_comer:hover{
+    background: #f5efef;
+}
+table.new_commer_approval_table tr td {
+    padding: 8px;
+}
+ul.list-group.list-group-horizontal li {
+    cursor: pointer;
+}

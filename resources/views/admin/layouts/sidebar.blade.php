@@ -119,7 +119,7 @@ if (Auth::user()->type=="su") {
 }
 @endphp 
 <div class="kt-aside-menu-wrapper kt-grid__item kt-grid__item--fluid" id="kt_aside_menu_wrapper">
-        <div id="kt_aside_menu" class="kt-aside-menu " data-ktmenu-vertical="1" data-ktmenu-scroll="1" data-ktmenu-dropdown-timeout="500">
+        <div id="kt_aside_menu" class="kt-aside-menu kt-aside-menu--dropdown" data-ktmenu-vertical="1" data-ktmenu-dropdown-timeout="500">
             <ul class="kt-menu__nav">
                     <li class="kt-menu__item" aria-haspopup="true">
                         <div class="form-group px-3">
@@ -614,6 +614,7 @@ if (Auth::user()->type=="su") {
                             <ul class="kt-menu__subnav">
                                 <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text">New Comer</span></span></li>
                                 <li class="kt-menu__item @if(strpos(Request::url(), "admin/newComer/add") !== false) kt-menu__item--active @endif " aria-haspopup="true"><a href="{{ route('NewComer.form') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">New Comer</span></a></li>
+                                <li class="kt-menu__item @if(strpos(Request::url(), "admin/newComer/approval") !== false && strpos(Request::url(), "admin/newComer/approval") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('NewComer.approval') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Approval Pending Comer</span></a></li>
                                 <li class="kt-menu__item @if(strpos(Request::url(), "admin/newComer/view") !== false && strpos(Request::url(), "admin/newComer/view") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('NewComer.view') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">NewComer Table</span></a></li>
                             </ul>
                         </div>

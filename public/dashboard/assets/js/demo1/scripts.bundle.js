@@ -1811,7 +1811,7 @@ var KTUtil = function() {
                 if (ps = KTUtil.data(element).get('ps')) {
                     ps.update();
                 } else {
-                    KTUtil.addClass(element, 'kt-scroll');
+                    // KTUtil.addClass(element, 'kt-scroll');
                     ps = new PerfectScrollbar(element, {
                         wheelSpeed: 0.5,
                         swipeEasing: true,
@@ -2563,7 +2563,7 @@ var KTMenu = function(elementId, options) {
 
             // Init scrollable menu
             if (the.options.scroll && the.options.scroll.height) {
-                Plugin.scrollInit();
+                //Plugin.scrollInit();
             }
         },
 
@@ -9962,7 +9962,7 @@ var KTLayout = function() {
 		getContentHeight: function() {
 			return getContentHeight();
 		}
-	};
+	};   
 }();
 
 KTUtil.ready(function() {

@@ -292,7 +292,7 @@
 
 
 {{-- Print & Preview --}}
-<div class="invoice_slip__wrapper">
+<div class="invoice_slip__wrapper" style="display:none;">
     <div style="display:grid;padding: 145px 20px 0px 20px;font-family: sans-serif;font-weight: normal;position: relative;" id="invoice_slip">
         <div style="height:50px"></div>
         <table style="">
@@ -392,7 +392,7 @@
             <li style="display: block;" class="custm_subtotal">0.00</li>
             <li style="display: block;" class="custm_tax">0.00</li>
             <li style="display: block;" class="custm_totl invoice_without_discount_total">0.00 </li>
-            <li style="display: block;" class="custm_total_price">0.00</li>
+            <li style="display: block;font-weight:bold;" class="custm_total_price">0.00</li>
        </ul>
     </div>
 
@@ -746,7 +746,7 @@ $(document).ready(function () {
                         }
                     }
 
-                        var item_row = '    <tr>'+
+                     var item_row = '    <tr>'+
                                 '     <td style="border:1px solid #dddd;width:50%;text-align:left;">'+item.item_desc+'</td>'+
                                 '     <td style="border:1px solid #dddd;width:10%;text-align:left;">'+_itemRate+'</td>'+
                                 '     <td style="border:1px solid #dddd;width:10%;text-align:left;">'+_itemQty+'</td>'+
