@@ -18,6 +18,7 @@ class CreateTaxMethodsTable extends Migration
             $table->string('name')->nullable();
             $table->string('type')->nullable();
             $table->string('value')->nullable();
+            $table->string('is_default')->nullable();
             $table->string('active_status')->default("A");
             $table->timestamps();
         });

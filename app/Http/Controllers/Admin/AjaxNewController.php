@@ -3173,7 +3173,7 @@ class AjaxNewController extends Controller
         ->addColumn('actions', function($invoice){
             $text='<a href="" class="reveive_payment" onclick=\'receive_payment_popup(this);return false;\'>Receive Payment</a>';
             if ($invoice->payment_status=="paid") {
-                $text='<a href="" class="receive_payment" onclick=\';return false;\'>Print</a>';
+                $text='<a href="" class="receive_payment col_editable" onclick=\';return false;\'>Print</a>';
             }
             return $text.'
             <noscript>'.$invoice->toJson().'</noscript>';
@@ -3197,7 +3197,7 @@ class AjaxNewController extends Controller
                 $daysText = $abs_remainingDays.' '.Str::plural('day', $abs_remainingDays);
                 
                 $statusText='Overdue '.$daysText.'. Due: '.Carbon::parse($invoice->invoice_due)->format('d-M-Y').'
-                            <a href="" class="invoice__details-print"><span>Print Invoice</span> <i class="flaticon2-next text-white"></i></a>';
+                            <a href="" class="invoice__details-print col_editable_child" onclick="return false"><span>Print Invoice</span> <i class="flaticon2-next text-white"></i></a>';
             }
             else {
                 //not due yet
@@ -3205,7 +3205,7 @@ class AjaxNewController extends Controller
                 $daysText = 'in '.$abs_remainingDays.' '.Str::plural('day', $abs_remainingDays);
                 if($abs_remainingDays==0) $daysText='today';
                 if($abs_remainingDays==1) $daysText='tomorrow';
-                $statusText='Due '.$daysText.'. Due: '.Carbon::parse($invoice->invoice_due)->format('d-M-Y').' <a href="" class="invoice__details-print"><span>Print Invoice</span> <i class="flaticon2-next text-white"></i></a>';
+                $statusText='Due '.$daysText.'. Due: '.Carbon::parse($invoice->invoice_due)->format('d-M-Y').' <a href="" class="invoice__details-print col_editable_child" onclick="return false"><span>Print Invoice</span> <i class="flaticon2-next text-white"></i></a>';
             }
             $payments = $invoice->Invoice_Payment;
             if(count($payments)>0){
