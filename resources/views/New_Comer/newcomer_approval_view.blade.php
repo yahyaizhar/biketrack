@@ -561,8 +561,7 @@ $('.custom_approval_comer_model').find('form').off('submit').on('submit', functi
                                     showConfirmButton: false,
                                     timer: 1500
                                 });
-                                // table.ajax.reload(null, false);
-                                // table_bills.ajax.reload(null, false);
+                                newcomer_table.ajax.reload(null, false);
                             },
                             error: function(error){
                                 swal.fire({

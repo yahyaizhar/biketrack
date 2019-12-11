@@ -93,7 +93,8 @@ class NewComerController extends Controller
       }
       public function new_comer_approved(Request $request){
         $comer_id = $request->new_commer_id;
-        DB::table('post') ->where('id', $comer_id) ->update(['active_status' => $request->approval_status]);
+        
+        DB::table('guest_new_comers') ->where('id', $comer_id) ->update(['approval_status' => $request->approval_status , 'status_approval_message' => $request->status_approval_message]);
       }
       public function newComer_popup($id){
           $newComer=New_comer::find($id);

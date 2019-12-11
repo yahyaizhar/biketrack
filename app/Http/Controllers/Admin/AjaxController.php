@@ -1367,7 +1367,7 @@ class AjaxController extends Controller
     }
     public function getApprovalComer()
     {
-        $newComer = GuestNewComer::orderByDesc('created_at')->where("active_status","0")->get();
+        $newComer = GuestNewComer::orderByDesc('created_at')->where("approval_status","pending")->get();
         // return $clients;
         return DataTables::of($newComer)
         ->addColumn('full_name', function($newComer){
