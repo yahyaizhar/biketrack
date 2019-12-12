@@ -30,7 +30,7 @@ margin-left: 10px;
     <div class="modal-dialog modal-dialog-centered" role="document" style=" max-width: 70%">
     <div class="modal-content">
         <div class="modal-header border-bottom-0">
-            <h5 class="modal-title"></h5>
+            <h5 class="modal-title text-center" style=" margin: 0px auto; width: 100%;">New Commer Details</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -87,6 +87,10 @@ margin-left: 10px;
                     <td class="approval_passport_status">Full Name</td>
             </tr>
            </table>
+        <div class="form-group">
+            <label style="font-weight: 800;">Extra reviews:</label>
+           <textarea readonly class="new_commer_reviews form-control"></textarea>
+        </div>
             </div>
             <div class="col-md-4">
              <div class="approval_custom_images_section">
@@ -100,6 +104,23 @@ margin-left: 10px;
             </div>
 
         </div>
+        </div>
+       <div class="modal-footer">
+         <form style="width:100%;" action="" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>Approval status message</label>
+                <textarea class="form-control" name="status_approval_message" id="status_approval_message"></textarea>
+                <input name="new_commer_id" id="new_commer_id" type="hidden">
+            </div>
+            <div class="form-group">
+                <label>Approval status</label>
+                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control" id="approval_status" name="approval_status" style="width: 2% !important;" value="approve"  required /><h6 style="margin-top:10px;margin-left:10px;">Approve</h6></div>
+                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control" id="approval_status" name="approval_status" style="width: 2% !important;" value="reject"  required /><h6 style="margin-top:10px;margin-left:10px;">Reject</h6></div>
+            </div>
+            <div class="form-group"> 
+                <button class="btn btn-success" name="submit" type="submit">Submit</button>
+            </div>
+         </form>
         </div>
     </div>
     </div>
@@ -483,6 +504,7 @@ function updateStatus(bike_id)
 
 function show_waiting_comer(id,$this){
     var _row = $($this).parents('.odd,.even');
+    $('#new_commer_id').val(id);
     $('.custom_approval_comer_model').modal('show');
     var _newcommerdata = newcomer_table.row(_row).data();
     console.log(_newcommerdata);
@@ -493,6 +515,7 @@ function show_waiting_comer(id,$this){
     $('.approval_id_card_no').text(_newcommerdata.national_id_card_number);
     $('.approval_education').text(_newcommerdata.education);
     $('.approval_license').text(_newcommerdata.license_check);
+    $('.new_commer_reviews').text(_newcommerdata.overall_remarks);
     $('.approval_license_no').text(_newcommerdata.license_number);
     $('.approval_license_date').text(_newcommerdata.licence_issue_date);
     $('.approval_source').text(_newcommerdata.source);
@@ -507,10 +530,51 @@ function show_waiting_comer(id,$this){
     $('.profile').attr('img_src',_newcommerdata.newcommer_image);
     $('.license').attr('img_src',_newcommerdata.license_image);
     $('.passport').attr('img_src',_newcommerdata.passport_image);
-
-    
-
+    $('ul.list-group.list-group-horizontal li').removeClass('active');
+    $('ul.list-group.list-group-horizontal li.profile').addClass('active');
 }
+$('ul.list-group.list-group-horizontal li').click(function(){
+    $('ul.list-group.list-group-horizontal li').removeClass('active');
+    $(this).addClass('active');
+    var _newimgsrc = $(this).attr('img_src');
+    $('.approval_custom_images_section img').attr('src',_newimgsrc);
+})
+$('.custom_approval_comer_model').find('form').off('submit').on('submit', function(e){
+                        e.preventDefault();
+                        $('.custom_approval_comer_model').modal('hide');
+                        var _form = $(this);
+                        var _url ="{{url('admin/newComer/approved')}}";
+                        $.ajax({
+                            url : _url,
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            type : 'POST',
+                            data: _form.serialize(),
+                            success: function(data){
+                                console.log(data);
+                                
+                                swal.fire({
+                                    position: 'center',
+                                    type: 'success',
+                                    title: 'Record updated successfully.',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                                newcomer_table.ajax.reload(null, false);
+                            },
+                            error: function(error){
+                                swal.fire({
+                                    position: 'center',
+                                    type: 'error',
+                                    title: 'Oops...',
+                                    text: 'Unable to update.',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                            }
+                        });
+                    });
 
 </script>
 <style>

@@ -421,12 +421,14 @@ Route::group([
     Route::get('/newComer/add','NewComerController@new_comer_form')->name('NewComer.form');
     Route::post('/newComer/insert','NewComerController@insert_newcomer')->name('NewComer.insert');
     Route::get('/newComer/view','NewComerController@new_comer_view')->name('NewComer.view');
-    Route::get('/newComer/approval','NewComerController@new_comer_approval_view')->name('NewComer.approval');
     Route::delete('/newComer/delete/{newComer_id}','NewComerController@delete_new_comer')->name('NewCome.delete');
     Route::get('/newComer/Edit/{id}','NewComerController@newComer_edit')->name('NewComer.edit');
     Route::get('/newComer/Edit/view/{id}','NewComerController@newComer_edit_view')->name('NewComer.edit_view');
     Route::post('/newComer/{id}/update', 'NewComerController@updateNewComer')->name('NewComer.updatenewComer');
     Route::get('/newComer/popup/{newComer_id}','NewComerController@newComer_popup')->name('NewComer.popup');
+    Route::get('/newComer/approval','NewComerController@new_comer_approval_view')->name('NewComer.approval');
+    Route::post('/newComer/approved','NewComerController@new_comer_approved')->name('NewComer.approved');
+
     
 });
 // End NewComer
@@ -602,6 +604,8 @@ Route::group([
 // Guest routes
     Route::get('/newcomer/add','GuestController@newComer_view')->name('guest.newComer_view');
     Route::post('/newcomer/store','GuestController@newComer_add')->name('guest.newComer_add');
+    Route::post('/newcomer/status_check','GuestController@newComer_status')->name('guest.newComer_status');
+
 });
 Route::group([
     'prefix' => 'admin',
