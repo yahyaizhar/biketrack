@@ -132,7 +132,7 @@ span.show_waiting_comer:hover{
     background: #f5efef;
 }
 table.new_commer_approval_table tr td {
-    padding: 8px;
+    padding: 12px;
 }
 ul.list-group.list-group-horizontal li {
     cursor: pointer;

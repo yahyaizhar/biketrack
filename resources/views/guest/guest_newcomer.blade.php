@@ -18,6 +18,21 @@
                 <!--begin::Form-->
                 
                 @include('admin.includes.message')
+                <div class="alreay_registred" style="padding: 10px 25px;">
+                                  <button class="btn btn-info custm_hidden_btn float-right" style=" margin-bottom: 10px;">Track your application</button>
+                        <div class="hidde_status_form" style="display:none;">
+                       <form method="POST" enctype="multipart/form-data">
+                       <div class="form-group">
+                           <label>National id card number</label>
+                           <input class="form-control" name="national_id_card_no" id="national_id_card_no" type="text">
+                           <button name="submit" type="submit" class="btn btn-success" style="margin-top: 10px;">Submit</button>
+                       </div>
+                       </form>
+                        </div>
+                    <div class="approval_message" style="display:none;overflow: hidden;width: 100%;">
+
+                    </div>
+                </div>
                 <form class="kt-form" action="{{ route('guest.newComer_add') }}" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="kt-portlet__body">
@@ -813,8 +828,92 @@ $('[name="current_residence"]').change(function(){
         $('.current_residence_countries').hide();
     }
 })
+$('.custm_hidden_btn').click(function(){
+    $('.hidde_status_form').toggle();
+})
 
-
+$('.alreay_registred').find('form').off('submit').on('submit', function(e){
+                        e.preventDefault();
+                        var _form = $(this);
+                        var _url ="{{url('guest/newcomer/status_check')}}";
+                        $.ajax({
+                            url : _url,
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            type : 'POST',
+                            data: _form.serialize(),
+                            success: function(data){
+                                console.log(data);
+                                var _title = '';
+                                if(data == 'error'){
+                                    swal.fire({
+                                    position: 'center',
+                                    type: 'error',
+                                    title: 'Oops...',
+                                    text: 'No data found.',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                                $('.approval_message').show();
+                                $('.approval_message').css('color','red');
+                                $('.approval_message').text('No data found against your national id card number.Please submit you application if you have not applied yet.')
+                                }
+                               else{
+                                   var _type= 'success';
+                                   if(data[0].approval_status =="pending"){
+                                        _type ='error';
+                                        _title = 'You application is still pending.';
+                                $('.approval_message').show();
+                                $('.approval_message').css('color','red'); 
+                                $('.approval_message').text('Your application is still pending.We will inform you shortly within a week.');
+                                   }
+                                   else if(data[0].approval_status == "reject"){
+                                       if(data[0].status_approval_message !== 'null'){
+                                        _title = 'You application is rejected.\n'+data[0].status_approval_message;
+                                        _type ='error';
+                                $('.approval_message').show();
+                                $('.approval_message').css('color','red'); 
+                                $('.approval_message').html('Your application is reject due to the following reason. <br>'+data[0].status_approval_message);
+                                       }else{
+                                        _type ='error';
+                                        _title = 'You application is rejected.';
+                                $('.approval_message').show();
+                                $('.approval_message').css('color','red'); 
+                                $('.approval_message').html('Your application is rejected.');
+                                       
+                                       }
+                                    
+                                   }
+                                   else{
+                                    _title = 'You application has been approved.';
+                                    _type= 'success';
+                                $('.approval_message').show();
+                                $('.approval_message').css('color','red'); 
+                                $('.approval_message').html('Your application has been Approved. We will inform you about your interview soon.');
+                                   }
+                                swal.fire({
+                                    position: 'center',
+                                    type: _type,
+                                    title: _title,
+                                    showConfirmButton: false,
+                                    timer: 2500
+                                });
+                               }
+                                $('.hidde_status_form').toggle();
+                            },
+                            error: function(error){
+                                swal.fire({
+                                    position: 'center',
+                                    type: 'error',
+                                    title: 'Oops...',
+                                    text: 'No data found.',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                            }
+                        });
+                    });
 
     });
         </script>

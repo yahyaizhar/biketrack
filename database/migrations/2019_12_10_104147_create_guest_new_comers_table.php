@@ -34,6 +34,8 @@ class CreateGuestNewComersTable extends Migration
             $table->string('current_residence_countries')->nullable();
             $table->string('source')->nullable();
             $table->text('overall_remarks')->nullable();
+            $table->string('status_approval_message')->nullable();
+            $table->string('approval_status')->default('pending');
             $table->string('active_status')->default("0");
             $table->timestamps();
         });

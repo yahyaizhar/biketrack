@@ -28,7 +28,7 @@ margin-left: 10px;
 
 <div class="modal fade custom_approval_comer_model" id="quick_view" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document" style=" max-width: 70%">
-    <div class="modal-content"  style=" padding: 5px 10px;">
+    <div class="modal-content" style=" padding: 5px 10px;">
         <div class="modal-header border-bottom-0">
             <h5 class="modal-title text-center" style=" margin: 0px auto; width: 100%;">New Commer Details</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -106,21 +106,7 @@ margin-left: 10px;
         </div>
         </div>
        <div class="modal-footer">
-         <form style="width:100%;" action="" method="POST" enctype="multipart/form-data">
-            <div class="form-group">
-                <label>Approval status message</label>
-                <textarea class="form-control" name="status_approval_message" id="status_approval_message"></textarea>
-                <input name="new_commer_id" id="new_commer_id" type="hidden">
-            </div>
-            <div class="form-group">
-                <label>Approval status</label>
-                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control" id="approval_status" name="approval_status" style="width: 2% !important;" value="approve"  required /><h6 style="margin-top:10px;margin-left:10px;">Approve</h6></div>
-                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control" id="approval_status" name="approval_status" style="width: 2% !important;" value="reject"  required /><h6 style="margin-top:10px;margin-left:10px;">Reject</h6></div>
-            </div>
-            <div class="form-group"> 
-                <button class="btn btn-success" name="submit" type="submit">Submit</button>
-            </div>
-         </form>
+
         </div>
     </div>
     </div>
@@ -136,7 +122,7 @@ margin-left: 10px;
                     <i class="kt-font-brand fa fa-hotel"></i>
                 </span>
                 <h3 class="kt-portlet__head-title">
-                    New Comers
+                    Approved New Comers
                 </h3>
                 
             </div>
@@ -236,7 +222,7 @@ $(function() {
         $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
         mark_table();
         },
-        ajax: "{!! route('NewComer.view_approval_ajax') !!}",
+        ajax: "{!! route('NewComer.view_approved_ajax') !!}",
         columns:null, 
         responsive:true,
         order:[0,'desc'],

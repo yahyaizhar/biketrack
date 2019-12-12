@@ -20,6 +20,7 @@ class CreateFuelExpensesTable extends Migration
             $table->string('type')->nullable();
             $table->string('amount')->nullable();
             $table->string('month')->nullable();
+            $table->string('given_date')->nullable();
             $table->string('status')->nullable();
             $table->string('active_status')->default("A");
             $table->string('setting')->nullable();

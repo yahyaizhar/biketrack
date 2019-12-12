@@ -63,5 +63,17 @@ class GuestController extends Controller
         return redirect(url('/guest/newcomer/add'))->with('message', 'You have already registred.');
       }
     }
+
+    public function newComer_status(Request $request){
+      $national_id_card_no = $request->national_id_card_no;
+      $data = DB::table('guest_new_comers') ->where('national_id_card_number', $national_id_card_no) ->get();
+
+      if($data->count() > 0){
+        return $data;
+      }
+      else{
+        return 'error';
+      }
+    }
     
 }
