@@ -219,7 +219,7 @@
                     $("#bike_rent #bike_allowns_field").show();
                     $("#bike_rent [name='absent_days']").val(absent_days);
                     $("#bike_rent [name='working_days']").val(work_days_with_off);
-                    $("bike_rent [name='#month_days']").val(final_date);
+                    $("bike_rent [name='month_days']").val(final_date);
                     $('#bike_rent [name="amount"]').val(final_amount); 
                        
                 }
