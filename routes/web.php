@@ -430,9 +430,6 @@ Route::group([
     Route::get('/newComer/popup/{newComer_id}','NewComerController@newComer_popup')->name('NewComer.popup');
     Route::get('/newComer/approval','NewComerController@new_comer_approval_view')->name('NewComer.approval');
     Route::post('/newComer/approved','NewComerController@new_comer_approved')->name('NewComer.approved');
-    Route::get('/newComer/approved','NewComerController@show_approved_customer')->name('NewComer.show_approved');
-
-
     
 });
 // End NewComer
