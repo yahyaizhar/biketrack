@@ -19,11 +19,7 @@
                 
                 @include('admin.includes.message')
                 <div class="alreay_registred" style="padding: 10px 25px;">
-                        <div class="alert alert-secondary" role="alert">
-                                <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div>
-                                  <div class="alert-text">If you are alreay registred then click here!</div>
-                                  <button class="btn btn-info btn-sm custm_hidden_btn">click here</button>
-                            </div>
+                                  <button class="btn btn-info custm_hidden_btn float-right" style=" margin-bottom: 10px;">Track your application</button>
                         <div class="hidde_status_form" style="display:none;">
                        <form method="POST" enctype="multipart/form-data">
                        <div class="form-group">
@@ -33,6 +29,9 @@
                        </div>
                        </form>
                         </div>
+                    <div class="approval_message" style="display:none;overflow: hidden;width: 100%;">
+
+                    </div>
                 </div>
                 <form class="kt-form" action="{{ route('guest.newComer_add') }}" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
@@ -856,27 +855,42 @@ $('.alreay_registred').find('form').off('submit').on('submit', function(e){
                                     showConfirmButton: false,
                                     timer: 1500
                                 });
+                                $('.approval_message').show();
+                                $('.approval_message').css('color','red');
+                                $('.approval_message').text('No data found against your national id card number.Please submit you application if you have not applied yet.')
                                 }
                                else{
                                    var _type= 'success';
                                    if(data[0].approval_status =="pending"){
                                         _type ='error';
                                         _title = 'You application is still pending.';
+                                $('.approval_message').show();
+                                $('.approval_message').css('color','red'); 
+                                $('.approval_message').text('Your application is still pending.We will inform you shortly within a week.');
                                    }
                                    else if(data[0].approval_status == "reject"){
                                        if(data[0].status_approval_message !== 'null'){
                                         _title = 'You application is rejected.\n'+data[0].status_approval_message;
                                         _type ='error';
+                                $('.approval_message').show();
+                                $('.approval_message').css('color','red'); 
+                                $('.approval_message').html('Your application is reject due to the following reason. <br>'+data[0].status_approval_message);
                                        }else{
                                         _type ='error';
                                         _title = 'You application is rejected.';
+                                $('.approval_message').show();
+                                $('.approval_message').css('color','red'); 
+                                $('.approval_message').html('Your application is rejected.');
+                                       
                                        }
                                     
                                    }
                                    else{
                                     _title = 'You application has been approved.';
                                     _type= 'success';
-
+                                $('.approval_message').show();
+                                $('.approval_message').css('color','red'); 
+                                $('.approval_message').html('Your application has been Approved. We will inform you about your interview soon.');
                                    }
                                 swal.fire({
                                     position: 'center',
