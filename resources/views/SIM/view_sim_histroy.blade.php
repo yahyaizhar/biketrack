@@ -5,8 +5,8 @@ function updateDates(rider_id,assign_sim_id,created,updated){
             $("#sim_status").modal("show");
             $('input[name="rider_id"]').val(rider_id);
             $('input[name="assign_sim_id"]').val(assign_sim_id);
-            $('input[name="created_at"]').attr('data-month', created);
-            $('input[name="updated_at"]').attr('data-month', updated);
+            $('#sim_status input[name="created_at"]').attr('data-month', created);
+            $('#sim_status input[name="updated_at"]').attr('data-month', updated);
             biketrack.refresh_global();
             $("form#active_sim_status").on("submit",function(e){
                 e.preventDefault();

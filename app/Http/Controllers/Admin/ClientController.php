@@ -259,6 +259,7 @@ class ClientController extends Controller
             $client_history->rider_id = $rider;
             $client_history->status = "active";
             $client_history->assign_date =Carbon::parse($request->assign_date)->format('Y-m-d');
+            $client_history->deassign_date =Carbon::parse($request->assign_date)->format('Y-m-d');
             $client_history->save();
         }
         return redirect(route('admin.clients.riders', $client));
