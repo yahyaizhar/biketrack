@@ -40,6 +40,10 @@ class NewComerController extends Controller
         $newComer_approval_count=GuestNewComer::all()->count();
         return view('New_Comer.newcomer_approval_view',compact('newComer_approval_count'));
     }
+    public function show_approved_customer(){
+        $show_approved_customer=GuestNewComer::all()->count();
+        return view('New_Comer.newcomer_approved_view',compact('show_approved_customer'));
+    }
     public function delete_new_comer(Request $request){
         $newComer_id=$request->newComer_id;
         $newcomer=New_comer::find($newComer_id);
