@@ -133,10 +133,10 @@ public function get_active_riders_ajax($rider_id, $date){
     $sim_histories = null;
     // foreach ($sims_RAW as $sim) {
         $history_found = Arr::first($sim_history, function ($item, $key) use ($rider_id, $date) {
-            $created_at =Carbon::parse($item->created_at)->format('Y-m-d');
+            $created_at =Carbon::parse($item->given_date)->format('Y-m-d');
             $created_at =Carbon::parse($created_at);
 
-            $updated_at =Carbon::parse($item->updated_at)->format('Y-m-d');
+            $updated_at =Carbon::parse($item->return_date)->format('Y-m-d');
             $updated_at =Carbon::parse($updated_at);
             $req_date =Carbon::parse($date);
             if($item->status=="active"){ 
@@ -166,8 +166,8 @@ public function get_sim_ajax($sim_id, $month,$rider_id){
     $usage_limit = 105;
     $sim_history = Sim_history::all()->toArray();
     $history_found = Arr::first($sim_history, function ($item, $key) use ($sim_id, $month, $rider_id) {
-        $created_at =Carbon::parse($item['created_at'])->format('m');
-        $updated_at =Carbon::parse($item['updated_at'])->format('m');
+        $created_at =Carbon::parse($item['given_date'])->format('m');
+        $updated_at =Carbon::parse($item['return_date'])->format('m');
         $req_date =Carbon::parse($month)->format('m');
         if ($item['status']=='active') {
             return $item['sim_id'] == $sim_id && $item['rider_id'] == $rider_id;
@@ -265,14 +265,7 @@ public function store_simTransaction(Request $request){
 
 
     $sim=$sim_trans->Sim;
-    $sim_history = Sim_history::where('sim_id', $sim->id)
-    ->whereDate('created_at','<=',Carbon::parse($sim_trans->month_year)->format('Y-m-d'))
-    ->get()
-    ->last();
-    $rider_id = null;
-    if(isset($sim_history)){
-        // $rider_id=$sim_history->rider_id;
-    }
+    
     $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
         'sim_transaction_id'=>$sim_trans->id,
         'type' => 'dr'
@@ -408,13 +401,33 @@ public function update_simTransaction(Request $request, $id){
            // else{
                 //updated
                 $sim=$sim_trans->Sim;
-                $sim_history =Sim_history::where('sim_id', $sim->id)
-                ->whereDate('created_at','<=',Carbon::parse($sim_trans->month_year)->format('Y-m-d'))
-                ->get()
-                ->last();
-                $rider_id = null;
-                if(isset($sim_history)){
-                    $rider_id=$sim_history->rider_id;
+                $sim_history = Sim_history::all();		 
+                $sim_id = $sim->id;
+                $date = $sim_trans->month_year;
+                $history_found = Arr::first($sim_history, function ($item, $key) use ($sim_id, $date) {
+                    $created_at =Carbon::parse($item->given_date)->format('Y-m-d');
+                    $created_at =Carbon::parse($created_at);
+
+                    $updated_at =Carbon::parse($item->return_date)->format('Y-m-d');
+                    $updated_at =Carbon::parse($updated_at);
+                    $req_date =Carbon::parse($date);
+                    if($item->status=="active"){ 
+                        // mean its still active, we need to match only created at
+                        return $item->sim_id == $sim_id && $req_date->greaterThanOrEqualTo($created_at);
+                    }
+                    
+                    return $item->sim_id == $sim_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
+                });
+
+                $rider_id=null;
+                if (isset($history_found)) {
+                    $rider_id=$history_found->rider_id;
+                }else {
+                    $sim_history = Sim_history::where('sim_id', $sim_id)
+                    ->where('status', 'active')->get()->first();
+                    if(isset($sim_history)){
+                        $rider_id=$sim_history->rider_id;
+                    }
                 }
                 // if(strtolower($sim_trans->extra_usage_payment_status)=='paid'){
                 //     // dr to ca,
@@ -513,12 +526,13 @@ public function store_simHistory(Request $request,$id){
     foreach($old_histories as $old_history)
     {
         $old_history->status='deactive';
+        $old_history->return_date=Carbon::now()->format("Y-m-d");
         $old_history->save();
     }
     $sim_history=$rider->Sim_History()->create([
         'allowed_balance'=>$request->get('allowed_balance'),
-        'given_date'=>$request->get('given_date'),
-        'return_date'=>$request->get('return_date'),
+        'given_date'=>Carbon::parse($request->get('given_date'))->format('Y-m-d'),
+        'return_date'=>Carbon::parse($request->get('return_date'))->format('Y-m-d'),
         'rider_id'=>$request->get('rider_id'),
         'sim_id'=>$request->get('sim_id'),
         'status'=>'active',
@@ -563,7 +577,7 @@ public function removeSim($sim_id,$rider_id){
     ->get()
     ->first();
     $delete_active_sim->status='deactive';
-    $delete_active_sim->updated_at=Carbon::now()->format("Y-m-d");
+    $delete_active_sim->return_date=Carbon::now()->format("Y-m-d");
     $delete_active_sim->save();
     return response()->json([
         'status' => $rider_id,
@@ -575,7 +589,7 @@ public function removeSim($sim_id,$rider_id){
   public function sim_deactive_date(Request $request,$rider_id,$sim_id){
     $deactive_sim =Sim_History::where('sim_id', $sim_id)->where('rider_id', $rider_id)->where('status','active')->get()->first();
     if (isset( $deactive_sim)) {
-        $deactive_sim->updated_at=Carbon::parse($request->updated_at)->format("Y-m-d");  
+        $deactive_sim->return_date=Carbon::parse($request->updated_at)->format("Y-m-d");  
         $deactive_sim->status='deactive';
     }
     $deactive_sim->update();
@@ -592,21 +606,21 @@ public function removeSim($sim_id,$rider_id){
         ]);
   }
   public function sim_History($id){
-$rider=Rider::find($id);
-$sim=Sim::find($id);
-$sim_history=$rider->Sim_History()->get();
-$simHistory_count=$sim_history->count();
-// $hasRider=Rider::find($assign_rider->pluck('rider_id'));
-// $hasSim=Sim::find($sim_history->pluck('sim_id'));
-// return $simHistory_count; 
-return view('SIM.view_sim_histroy',compact('rider','sim_history','simHistory_count','sim'));
+    $rider=Rider::find($id);
+    $sim=Sim::find($id);
+    $sim_history=$rider->Sim_History()->get();
+    $simHistory_count=$sim_history->count();
+    // $hasRider=Rider::find($assign_rider->pluck('rider_id'));
+    // $hasSim=Sim::find($sim_history->pluck('sim_id'));
+    // return $simHistory_count; 
+    return view('SIM.view_sim_histroy',compact('rider','sim_history','simHistory_count','sim'));
   }
   public function sim_dates_History(Request $request,$rider_id,$assign_sim_id){
       
       $assign_sim=Sim_History::where("rider_id",$rider_id)->where("id",$assign_sim_id)->get()->first();
       if (isset($assign_sim)) {
-        $assign_sim->created_at=Carbon::parse($request->created_at)->format('Y-m-d');
-        $assign_sim->updated_at=Carbon::parse($request->updated_at)->format('Y-m-d');
+        $assign_sim->given_date=Carbon::parse($request->created_at)->format('Y-m-d');
+        $assign_sim->return_date=Carbon::parse($request->updated_at)->format('Y-m-d');
       }
       $assign_sim->update();
     return response()->json([

@@ -72,8 +72,8 @@
                         </div>
 
                         <div class="form-group">
-                                <label>Given Date:</label>
-                                <input required type="text" id="datepicker1" autocomplete="off" class="form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter given Date" >
+                                <label>Given Date:</label> 
+                                <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}"  readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter given date" >
                                 @if ($errors->has('given_date'))
                                     <span class="invalid-response" role="alert">
                                         <strong>
@@ -86,7 +86,7 @@
                             </div>
                             <div class="form-group">
                                     <label>Return Date:</label>
-                                    <input type="text" id="datepicker2" autocomplete="off" class="form-control @if($errors->has('return_date')) invalid-field @endif" name="return_date" placeholder="Enter Return Date">
+                                    <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}"  readonly class="month_picker form-control @if($errors->has('return_date')) invalid-field @endif" name="return_date" placeholder="Enter return date" >
                                     @if ($errors->has('return_date'))
                                         <span class="invalid-response" role="alert">
                                             <strong>
