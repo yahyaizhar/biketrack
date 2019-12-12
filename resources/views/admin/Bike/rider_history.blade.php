@@ -83,8 +83,8 @@
                                                     <div class="kt-widget__desc">
                                                         {{ $rider->address }}
                                                         @php
-                                                            $mytimestamp = strtotime($bike_history->created_at);
-                                                            $timestampupdated=strtotime($bike_history->updated_at);
+                                                            $mytimestamp = strtotime($bike_history->bike_assign_date);
+                                                            $timestampupdated=strtotime($bike_history->bike_unassign_date);
                                                         @endphp
                                                         <h6 style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}}</h6>
                                                     </div>
@@ -162,8 +162,8 @@
                                                     <div class="kt-widget__desc">
                                                         {{ $rider->address }}
                                                         @php
-                                                            $mytimestamp = strtotime($bike_history->created_at);
-                                                            $timestampupdated=strtotime($bike_history->updated_at);
+                                                            $mytimestamp = strtotime($bike_history->bike_assign_date);
+                                                            $timestampupdated=strtotime($bike_history->bike_unassign_date);
                                                         @endphp
                                                         <h6 style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}} {{'to'}} {{gmdate("d-m-Y", $timestampupdated)}}</h6>
                                                     

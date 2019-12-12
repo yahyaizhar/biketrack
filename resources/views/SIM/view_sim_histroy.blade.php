@@ -5,8 +5,9 @@ function updateDates(rider_id,assign_sim_id,created,updated){
             $("#sim_status").modal("show");
             $('input[name="rider_id"]').val(rider_id);
             $('input[name="assign_sim_id"]').val(assign_sim_id);
-            $('input[name="created_at"]').val(created);
-            $('input[name="updated_at"]').val(updated);
+            $('#sim_status input[name="created_at"]').attr('data-month', created);
+            $('#sim_status input[name="updated_at"]').attr('data-month', updated);
+            biketrack.refresh_global();
             $("form#active_sim_status").on("submit",function(e){
                 e.preventDefault();
                 var _form = $(this);
@@ -133,10 +134,10 @@ function updateDates(rider_id,assign_sim_id,created,updated){
                                 {{-- <a><i class="flaticon2-calendar-3"></i>{{ $bike1['availability'] }} </a> --}}
                                 {{-- <a><i class="fa fa-motorcycle"></i>{{ $bike1['bike_number'] }}</a> --}}
                                 @php
-                                $mytimestamp = strtotime($history['created_at']);
-                                $timestampupdated=strtotime($history['updated_at']);
-                                $created=Carbon\Carbon::parse($history['created_at'])->format('F d, Y');
-                                $updated=Carbon\Carbon::parse($history['updated_at'])->format('F d, Y');
+                                $mytimestamp = strtotime($history['given_date']);
+                                $timestampupdated=strtotime($history['return_date']);
+                                $created=Carbon\Carbon::parse($history['given_date'])->format('F d, Y');
+                                $updated=Carbon\Carbon::parse($history['return_date'])->format('F d, Y');
                               @endphp
                                 @if($history->status=='active')
                                 <h6 style="float:right;color:green;" onclick="updateDates({{$rider->id}},{{$history['id']}},'{{$created}}','{{$updated}}')">{{gmdate("d-m-Y", $mytimestamp)}}</h6> 
@@ -172,7 +173,7 @@ function updateDates(rider_id,assign_sim_id,created,updated){
                             </div> --}}
                             <div class="form-group">
                                 <label>When Sim is unassigned:</label>
-                                <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::parse($history['updated_at'])->format('M d, Y')}}" required readonly class="month_picker form-control" name="updated_at" placeholder="Enter Month" value="">
+                                <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control" name="updated_at" placeholder="Enter Month" value="">
                             </div>
                             <div class="modal-footer border-top-0 d-flex justify-content-center">
                                 <button class="upload-button btn btn-success">Save</button>
@@ -228,10 +229,10 @@ function updateDates(rider_id,assign_sim_id,created,updated){
                                 <a><i class="flaticon2-calendar-3"></i>Allowed Balance:&nbsp;{{$history->allowed_balance}} </a>
                                 {{-- <a><i class="fa fa-motorcycle"></i>{{ $bike1['bike_number'] }}</a> --}}
                                 @php
-                                $mytimestamp = strtotime($history['created_at']);
-                                $timestampupdated=strtotime($history['updated_at']);
-                                $created=Carbon\Carbon::parse($history['created_at'])->format('F d, Y');
-                                $updated=Carbon\Carbon::parse($history['updated_at'])->format('F d, Y');
+                                $mytimestamp = strtotime($history['given_date']);
+                                $timestampupdated=strtotime($history['return_date']);
+                                $created=Carbon\Carbon::parse($history['given_date'])->format('F d, Y');
+                                $updated=Carbon\Carbon::parse($history['return_date'])->format('F d, Y');
                               @endphp
                                 @if($history->status=='active')
                             <h6 style="float:right;color:green;" onclick="updateDates({{$rider->id}},{{$history['id']}},'{{$created}}','{{$updated}}')">{{gmdate("d-m-Y", $mytimestamp)}}</h6> 

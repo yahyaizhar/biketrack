@@ -299,11 +299,11 @@ $(function () {
         if (_val == "cash") $('#receive_payment .bank_id-wrapper').hide().find('[data-name="bank_id"]').prop('required', false);
     });
 
-    $("#quick_view").on('hide.bs.modal', function () {
+    $("#quick_view").on('hide.bs.modal', function (e) {
         var _this=$(this);
-        console.log('==================', receive_payment.modal_confirmation_required);
+        console.log('==================', receive_payment.modal_confirmation_required, e);
         var is_edit = biketrack.getUrlParameter('edit');
-        if(receive_payment.modal_confirmation_required && is_edit!=1){
+        if(receive_payment.modal_confirmation_required){
             Swal.fire({
                 title: 'Are you sure?',
                 position: 'center',
@@ -326,7 +326,9 @@ $(function () {
     });
 
     $(".bk-modal-lg").on('hidden.bs.modal', function () {
-        getInvoices();
+        console.warn('receive_payment.reloadable_table', receive_payment.reloadable_table);
+        if(receive_payment.reloadable_table) getInvoices();
+        
     });
     $('[data-ajax]').on('click', function (e, parem) {
         e.preventDefault();
@@ -404,7 +406,9 @@ $(function () {
 });
 
 var receive_payment = {
-    modal_confirmation_required:false,
+    modal_confirmation_required:false, // ask if user really wanna close modal
+    reloadable_table:false, // detect changings made on add/edit invoice modal
+
     updateReceivedAmount: function () {
         var _receivedAmt = 0;
         if ($('#open_invoice_table [data-name="payment"]').length == 0) {

@@ -64,10 +64,10 @@
                                         <a><i class="flaticon2-calendar-3"></i>{{ $bike->availability }} </a>
                                         <a><i class="fa fa-motorcycle"></i>{{ $bike->bike_number }}</a>
                                         @php
-                                        $mytimestamp = strtotime($assign_bike->created_at);
-                                        $timestampupdated=strtotime($assign_bike->updated_at);
-                                        $created=Carbon\Carbon::parse($assign_bike->created_at)->format('F d, Y');
-                                        $updated=Carbon\Carbon::parse($assign_bike->updated_at)->format('F d, Y');
+                                        $mytimestamp = strtotime($assign_bike->bike_assign_date);
+                                        $timestampupdated=strtotime($assign_bike->bike_unassign_date);
+                                        $created=Carbon\Carbon::parse($assign_bike->bike_assign_date)->format('F d, Y');
+                                        $updated=Carbon\Carbon::parse($assign_bike->bike_unassign_date)->format('F d, Y');
                                         
                                     @endphp 
                                         @if($assign_bike->status=='active')
@@ -99,11 +99,11 @@
                                         <input type="hidden" id="bike_id" >
                                         <div class="form-group">
                                             <label>Started Month:</label>
-                                            <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::parse($assign_bike->created_at)->format('M d, Y')}}" required readonly class="month_picker form-control" name="bike_assign_date" placeholder="Enter Month" value="">
+                                            <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::parse($assign_bike->bike_assign_date)->format('M d, Y')}}" required readonly class="month_picker form-control" name="bike_assign_date" placeholder="Enter Month" value="">
                                         </div>
                                         <div class="form-group">
                                             <label>Ended Month:</label>
-                                            <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::parse($assign_bike->updated_at)->format('M d, Y')}}" required readonly class="month_picker form-control" name="bike_unassign_date" placeholder="Enter Month" value="">
+                                            <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::parse($assign_bike->bike_unassign_date)->format('M d, Y')}}" required readonly class="month_picker form-control" name="bike_unassign_date" placeholder="Enter Month" value="">
                                         </div>
                                         <div class="modal-footer border-top-0 d-flex justify-content-center">
                                             <button class="upload-button btn btn-success">Submit</button>
@@ -134,7 +134,7 @@
                                         </div> --}}
                                         <div class="form-group">
                                             <label>When bike is unassigned:</label>
-                                            <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::parse($assign_bike->updated_at)->format('M d, Y')}}" required readonly class="month_picker form-control" name="updated_at" placeholder="Enter Month" value="">
+                                            <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control" name="bike_unassign_date" placeholder="Enter Month" value="">
                                         </div>
                                         <div class="modal-footer border-top-0 d-flex justify-content-center">
                                             <button class="upload-button btn btn-success">Save</button>

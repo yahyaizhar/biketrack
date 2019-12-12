@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Bikes\bike;
 use App\Model\Bikes\bike_detail;
+use App\Model\Client\Client_History;
 use App\Model\Client\Client;
 use Illuminate\Support\Facades\Hash;
 use App\Model\Rider\Rider;
@@ -339,14 +340,29 @@ class AccountsController extends Controller
                 $maintenance->invoice_image = $filepath;
             }
             $maintenance->save();
-        $assign_bike=Assign_bike::where('bike_id', $maintenance->bike_id)
-        ->whereDate('created_at','<=',Carbon::parse($r->month)->format('Y-m-d'))
-        ->get()
-        ->last();
-        $rider_id = null;
-        if($assign_bike){
-            $rider_id=Rider::find($assign_bike->rider_id)->id;
+            $bike_history = Assign_bike::all();
+            $bike_id = $r->bike_id;
+            $date =  Carbon::parse($r->get('month'))->format('Y-m-d');
+            $history_found = Arr::first($bike_history, function ($item, $key) use ($bike_id, $date) {
+                $created_at =Carbon::parse($item->bike_assign_date)->format('Y-m-d');
+                $created_at =Carbon::parse($bike_assign_date);
+    
+                $updated_at =Carbon::parse($item->bike_unassign_date)->format('Y-m-d');
+                $updated_at =Carbon::parse($bike_unassign_date);
+                $req_date =Carbon::parse($date);
+                if($item->status=="active"){ 
+                    // mean its still active, we need to match only created at
+                    return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at);
+                }
+                
+                return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
+        });
+        $rider_id=null;
+    
+        if (isset($history_found)) {
+            $rider_id=$history_found->rider_id;
         }
+    
         if($maintenance->accident_payment_status == 'pending'){
             
             $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
@@ -1342,11 +1358,11 @@ public function fuel_expense_insert(Request $r){
      $assign_bike=Assign_bike::all();
     $date = $fuel_expense->month;
     $history_found = Arr::first($assign_bike, function ($item, $key) use ($bike_id, $date) {
-        $created_at =Carbon::parse($item->created_at)->format('Y-m-d');
-        $created_at =Carbon::parse($created_at);
+        $created_at =Carbon::parse($item->bike_assign_date)->format('Y-m-d');
+        $created_at =Carbon::parse($bike_assign_date);
 
-        $updated_at =Carbon::parse($item->updated_at)->format('Y-m-d');
-        $updated_at =Carbon::parse($updated_at);
+        $updated_at =Carbon::parse($item->bike_unassign_date)->format('Y-m-d');
+        $updated_at =Carbon::parse($bike_unassign_date);
         $req_date =Carbon::parse($date);
         if($item->status=="active"){ 
             // mean its still active, we need to match only bike id
@@ -1458,13 +1474,27 @@ public function update_edit_fuel_expense(Request $r,$id){
     $fuel_expense->rider_id=$r->rider_id;
     $fuel_expense->update();
 
-    $assign_bike=Assign_bike::where('bike_id', $fuel_expense->bike_id)
-    ->whereDate('created_at','<=',Carbon::parse($r->get('month'))->format('Y-m-d'))
-    ->get()
-    ->last();
-    $rider_id = null;
-    if($assign_bike){
-        $rider_id=Rider::find($assign_bike->rider_id)->id;
+    $bike_history = Assign_bike::all();
+        $bike_id = $bike_id->id;
+        $date = Carbon::parse($r->get('month'))->format('Y-m-d');
+        $history_found = Arr::first($bike_history, function ($item, $key) use ($bike_id, $date) {
+            $created_at =Carbon::parse($item->bike_assign_date)->format('Y-m-d');
+            $created_at =Carbon::parse($bike_assign_date);
+
+            $updated_at =Carbon::parse($item->bike_unassign_date)->format('Y-m-d');
+            $updated_at =Carbon::parse($bike_unassign_date);
+            $req_date =Carbon::parse($date);
+            if($item->status=="active"){ 
+                // mean its still active, we need to match only created at
+                return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at);
+            }
+            
+            return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
+    });
+    $rider_id=null;
+
+    if (isset($history_found)) {
+        $rider_id=$history_found->rider_id;
     }
 if ($fuel_expense->type=="vip_tag") {
     
@@ -1534,7 +1564,7 @@ public function income_zomato_import(Request $r){
     $ra_objects=[];
     $ra_objects_updates=[];
     $zi = Income_zomato::all(); // r1
-    $client_riders = Client_Rider::all();
+    $client_riders = Client_History::all();
     $update_data = [];
     $i=0;
     $unique_id=uniqid().'-'.time();
@@ -2470,7 +2500,7 @@ public function client_income_update(Request $request,$id){
             if($date==null){
                 //throw exception. No feid found
                 $is_exception=true;
-                $exception_msg='No Date found against feid '.$item_row['feid'].' and row '.$i.'. Please recheck the data';
+                $exception_msg='No DATE found against feid '.$item_row['feid'].' and row '.$i.'. Please recheck the data';
                 break;
             }
             $start_of_month = Carbon::parse($date)->startOfMonth()->format('Y-m-d');
@@ -2621,6 +2651,14 @@ public function client_income_update(Request $request,$id){
         
         return response()->json([
             'data'=>$data,
+        ]);
+    }
+    public function getPreviousMonthIncomeZomato($month){
+        $only_month=Carbon::parse($month)->format("m");
+        $income_zomato=Income_Zomato::whereMonth("date",$only_month)
+        ->get();
+        return response()->json([
+            'income_zomato'=>$income_zomato,
         ]);
     }
 }

@@ -52,7 +52,7 @@
             
                                     <div class="kt-widget__action">
                                       
-                                        <button onclick="deleteBike({{$rider->id}},{{$bike_id['id']}})" class="btn btn-label-info btn-sm btn-upper">Remove</button>&nbsp;
+                                        <button onclick="deleteBike({{$rider->id}},{{$bike_id['id']}})" class="btn btn-label-info btn-sm btn-upper">Unassign Bike</button>&nbsp;
                                         {{-- <button class="btn btn-label-success btn-sm btn-upper"><span class="label label-success">Active</span></button> --}}
                                     </div>
                                 </div>
@@ -64,7 +64,7 @@
                                     @php
                                       $mytimestamp = strtotime($bike_id['created_at']);
                                     @endphp
-                                    <h5 style="    text-align: -webkit-right;">{{gmdate("d-m-Y", $mytimestamp)}}</h5>
+                                    {{-- <h5 style="    text-align: -webkit-right;">{{gmdate("d-m-Y", $mytimestamp)}}</h5> --}}
                                 </div>
             
                                

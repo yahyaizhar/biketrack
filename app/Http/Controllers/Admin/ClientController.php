@@ -259,6 +259,7 @@ class ClientController extends Controller
             $client_history->rider_id = $rider;
             $client_history->status = "active";
             $client_history->assign_date =Carbon::parse($request->assign_date)->format('Y-m-d');
+            $client_history->deassign_date =Carbon::parse($request->assign_date)->format('Y-m-d');
             $client_history->save();
         }
         return redirect(route('admin.clients.riders', $client));
@@ -366,7 +367,7 @@ public function bike_assigned_show($id){
         $assign_bike_id = $assign_bike->first()->id;
         $ab = Assign_bike::find($assign_bike_id);
         $ab->status='deactive';
-        $ab->bike_unassign_date=$month;
+        $ab->bike_unassign_date=Carbon::now()->format("Y-m-d");
         $ab->save();
         $bikes_availability=bike::find($assign_bike->first()->bike_id);
         $bikes_availability->availability='yes'; 
@@ -381,6 +382,7 @@ public function bike_assigned_show($id){
     'status'=>'active'
     ]);
     $assign_bikes->bike_assign_date=$month;
+    $assign_bikes->bike_unassign_date=$month;
     $assign_bikes->save();
     $bikes->availability='no';
     // return $assign_bikes;
@@ -404,6 +406,7 @@ return redirect()->route('bike.bike_assigned', ['id'=>$rider->id]) ;
     $assign_bike = $bike->Assign_bike()->where('status', 'active')->get()->first();
     if(isset($assign_bike)){
         $assign_bike->status='deactive';
+        $assign_bike->bike_unassign_date=Carbon::now()->format("Y-m-d");
         $assign_bike->update();
     }
     
@@ -441,6 +444,7 @@ public function deletebikeprofile($rider_id,$bike_id){
 $assign_bike=Assign_bike::where('rider_id',$rider_id)->where('bike_id',$bike_id)->get()->first();
    if (isset($assign_bike)) {
        $assign_bike->status='deactive';
+       $assign_bike->bike_unassign_date=Carbon::now()->format("Y-m-d");
        $assign_bike->save();
        $bike=bike::find($bike_id);
        $bike->availability='yes';
@@ -451,8 +455,8 @@ $assign_bike=Assign_bike::where('rider_id',$rider_id)->where('bike_id',$bike_id)
 public function change_dates_history(Request $request,$rider_id,$assign_bike_id){
     $assign_bike=Assign_bike::find($assign_bike_id);
     if (isset($assign_bike)) {
-        $assign_bike->created_at=Carbon::parse($request->bike_assign_date)->format("Y-m-d");
-        $assign_bike->updated_at=Carbon::parse($request->bike_unassign_date)->format("Y-m-d"); 
+        $assign_bike->bike_assign_date=Carbon::parse($request->bike_assign_date)->format("Y-m-d");
+        $assign_bike->bike_unassign_date=Carbon::parse($request->bike_unassign_date)->format("Y-m-d"); 
         $assign_bike->update();
     }
     
