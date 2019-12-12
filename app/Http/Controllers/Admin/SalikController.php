@@ -19,6 +19,7 @@ use App\Model\Rider\Rider;
 use App\Model\Rider\Rider_detail;
 use App\Model\Sim\Sim_History;
 use Carbon\Carbon;
+use App\Model\Accounts\Income_zomato;
 
 class SalikController extends Controller
 {
@@ -420,8 +421,37 @@ class SalikController extends Controller
                $bike_histories = $assign_bikeBK;
             }
         }
+        $bike_id=$bike_histories->bike_id;
+        if (isset($bike_id)) {
+            $bike=bike::find($bike_id);
+            if(isset($bike)){
+                $owner=$bike->owner;
+            }
+            $absent_days=0;
+            $weekly_off=0;
+            $extra_day=0;
+            $working_days=0;
+            $total_month_days=0;
+            $income_zomato=Income_zomato::where("rider_id",$bike_histories->rider_id)
+            ->whereMonth("date",Carbon::parse($date)->format("m"))
+            ->get()
+            ->first();
+            if (isset($income_zomato)) {
+                $absent_days=$income_zomato->absents_count;
+                $weekly_off=$income_zomato->weekly_off;
+                $extra_day=$income_zomato->extra_day;
+                $working_days=$income_zomato->working_days;
+                $total_month_days=$date;
+            }
+        }
         return response()->json([
             'bike_histories' => $bike_histories,
+            'owner'=>$owner,
+            'absent_days'=>$absent_days,
+            'weekly_off'=>$weekly_off,
+            'extra_day'=>$extra_day,
+            'working_days'=>$working_days,
+            'total_month_days'=>$total_month_days,
         ]);
     }
 

@@ -906,6 +906,7 @@ class AccountsController extends Controller
        ->first();
        $trips=0;
        $hours=0;
+       $zomato_hours=0;
        if (isset($data_zomato)) {
            $absent_count=$data_zomato->absents_count;
            $weekly_off=$data_zomato->weekly_off;
@@ -923,6 +924,7 @@ class AccountsController extends Controller
                    $hour=11;
                }
                $hours+=$hour;
+               $zomato_hours+=$value->login_hours;
            }
            
        }
@@ -947,6 +949,7 @@ class AccountsController extends Controller
             'working_days'=>$working_days,
             'trips'=>round($trips,2),
             'hours'=>round($hours,2),
+            'zomato_hours'=>round($zomato_hours,2),
         ]);
     }
     public function new_salary_added(Request $request){
@@ -1448,7 +1451,8 @@ public function update_edit_fuel_expense(Request $r,$id){
     $bike_id=bike::find($r->bike_id);
     $fuel_expense=Fuel_Expense::find($id);
     $fuel_expense->amount=$r->amount;
-    $fuel_expense->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+    $fuel_expense->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+    $fuel_expense->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
     $fuel_expense->type=$r->type;
     $fuel_expense->bike_id=$bike_id->id;
     $fuel_expense->rider_id=$r->rider_id;
@@ -1468,7 +1472,8 @@ if ($fuel_expense->type=="vip_tag") {
         'fuel_expense_id'=>$fuel_expense->id
     ]);
     $ca->type='dr';
-    $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+    $ca->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+    $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
     $ca->rider_id = $rider_id;
     $ca->source="fuel_expense_vip"; 
     $ca->amount=$r->amount;
@@ -1487,7 +1492,8 @@ elseif($fuel_expense->type=="cash"){
     ]);
     $ca->type='dr';
     $ca->rider_id = $rider_id;
-    $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+    $ca->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+    $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
     $ca->source="fuel_expense_cash"; 
     $ca->amount=$r->amount;
     $ca->payment_status='paid';

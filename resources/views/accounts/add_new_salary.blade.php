@@ -103,6 +103,10 @@
                             <input type="text" required readonly class="form-control col-md-3" name="workable_hours_based_on_available_days" placeholder="Enter Workable Days Based On Available Days" value="" >
                         </div>
                         <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
+                            <input type="text" required readonly class="form-control col-md-6" value="Working Zomato hours during available days" >
+                            <input type="text" required readonly class="form-control col-md-6" name="working_zomato_hours" placeholder="Enter Working hours during available days" value="" >
+                        </div>
+                        <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
                             <input type="text" required readonly class="form-control col-md-6" value="Working hours during available days" >
                             <input type="text" required readonly class="form-control col-md-6" name="working_hours_during_available_days" placeholder="Enter Working hours during available days" value="" >
                         </div>
@@ -258,6 +262,7 @@
                 var working_days=data.working_days;
                 var working_days_hours=working_days*11;
                 var monthly_hours=286;
+                var working_zomato_hours=data.zomato_hours;
                 var hours=data.hours;
                 var less_time_calculated=working_days_hours-hours;
                 var final_hours_payout=monthly_hours-(absent_hours+less_time_calculated);
@@ -277,6 +282,7 @@
                 $('#salary [name="workable_days"]').val(working_days);
                 $('#salary [name="workable_hours_based_on_available_days"]').val(working_days_hours.toFixed(2));
                 $('#salary [name="working_hours_during_available_days"]').val(hours.toFixed(2));
+                $('#salary [name="working_zomato_hours"]').val(working_zomato_hours.toFixed(2));
                 $('#salary [name="hours_multiply_with"]').val(7.87);
                 $('#salary [name="Less time calculated"]').val(less_time_calculated.toFixed(2));
                 $('#salary [name="hours_amount"]').val(hours_amount.toFixed(2));
