@@ -596,6 +596,7 @@ class RiderController extends Controller
         $assign_bike=$rider->Assign_bike()->where('status','active')->get()->first();
         if(isset($assign_bike)){
             $assign_bike->status='deactive';
+            $assign_bike->bike_unassign_date=Carbon::now()->format("Y-m-d");
             $assign_bike->update();
             $bike=bike::find($assign_bike->bike_id);
             $bike->availability='yes';
@@ -604,6 +605,7 @@ class RiderController extends Controller
         $sim_history=$rider->Sim_History()->where('status','active')->get()->first();
         if(isset($sim_history)){
             $sim_history->status='deactive';
+            $sim_history->return_date=Carbon::now()->format("Y-m-d");
             $sim_history->update();
         }
         return redirect(url('admin/riders'))->with('message', 'Record Deleted Successfully.');
@@ -677,6 +679,7 @@ class RiderController extends Controller
             $sim_history=Sim_History::where("rider_id",$rider->id)->where("status","active")->get()->first();
             if (isset($sim_history)) {
                 $sim_history->status="deactive";
+                $sim_history->return_date=Carbon::parse($req->inactive_month)->format("Y-m-d");
                 $sim_history->update();
             }
             

@@ -339,14 +339,29 @@ class AccountsController extends Controller
                 $maintenance->invoice_image = $filepath;
             }
             $maintenance->save();
-        $assign_bike=Assign_bike::where('bike_id', $maintenance->bike_id)
-        ->whereDate('created_at','<=',Carbon::parse($r->month)->format('Y-m-d'))
-        ->get()
-        ->last();
-        $rider_id = null;
-        if($assign_bike){
-            $rider_id=Rider::find($assign_bike->rider_id)->id;
+            $bike_history = Assign_bike::all();
+            $bike_id = $r->bike_id;
+            $date =  Carbon::parse($r->get('month'))->format('Y-m-d');
+            $history_found = Arr::first($bike_history, function ($item, $key) use ($bike_id, $date) {
+                $created_at =Carbon::parse($item->bike_assign_date)->format('Y-m-d');
+                $created_at =Carbon::parse($bike_assign_date);
+    
+                $updated_at =Carbon::parse($item->bike_unassign_date)->format('Y-m-d');
+                $updated_at =Carbon::parse($bike_unassign_date);
+                $req_date =Carbon::parse($date);
+                if($item->status=="active"){ 
+                    // mean its still active, we need to match only created at
+                    return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at);
+                }
+                
+                return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
+        });
+        $rider_id=null;
+    
+        if (isset($history_found)) {
+            $rider_id=$history_found->rider_id;
         }
+    
         if($maintenance->accident_payment_status == 'pending'){
             
             $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
@@ -1342,11 +1357,11 @@ public function fuel_expense_insert(Request $r){
      $assign_bike=Assign_bike::all();
     $date = $fuel_expense->month;
     $history_found = Arr::first($assign_bike, function ($item, $key) use ($bike_id, $date) {
-        $created_at =Carbon::parse($item->created_at)->format('Y-m-d');
-        $created_at =Carbon::parse($created_at);
+        $created_at =Carbon::parse($item->bike_assign_date)->format('Y-m-d');
+        $created_at =Carbon::parse($bike_assign_date);
 
-        $updated_at =Carbon::parse($item->updated_at)->format('Y-m-d');
-        $updated_at =Carbon::parse($updated_at);
+        $updated_at =Carbon::parse($item->bike_unassign_date)->format('Y-m-d');
+        $updated_at =Carbon::parse($bike_unassign_date);
         $req_date =Carbon::parse($date);
         if($item->status=="active"){ 
             // mean its still active, we need to match only bike id
@@ -1458,13 +1473,27 @@ public function update_edit_fuel_expense(Request $r,$id){
     $fuel_expense->rider_id=$r->rider_id;
     $fuel_expense->update();
 
-    $assign_bike=Assign_bike::where('bike_id', $fuel_expense->bike_id)
-    ->whereDate('created_at','<=',Carbon::parse($r->get('month'))->format('Y-m-d'))
-    ->get()
-    ->last();
-    $rider_id = null;
-    if($assign_bike){
-        $rider_id=Rider::find($assign_bike->rider_id)->id;
+    $bike_history = Assign_bike::all();
+        $bike_id = $bike_id->id;
+        $date = Carbon::parse($r->get('month'))->format('Y-m-d');
+        $history_found = Arr::first($bike_history, function ($item, $key) use ($bike_id, $date) {
+            $created_at =Carbon::parse($item->bike_assign_date)->format('Y-m-d');
+            $created_at =Carbon::parse($bike_assign_date);
+
+            $updated_at =Carbon::parse($item->bike_unassign_date)->format('Y-m-d');
+            $updated_at =Carbon::parse($bike_unassign_date);
+            $req_date =Carbon::parse($date);
+            if($item->status=="active"){ 
+                // mean its still active, we need to match only created at
+                return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at);
+            }
+            
+            return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
+    });
+    $rider_id=null;
+
+    if (isset($history_found)) {
+        $rider_id=$history_found->rider_id;
     }
 if ($fuel_expense->type=="vip_tag") {
     
