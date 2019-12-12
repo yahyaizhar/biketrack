@@ -70,7 +70,7 @@
                                     @php
                                       $mytimestamp = strtotime($sim['created_at']);
                                     @endphp
-                                    <h5 style="    text-align: -webkit-right;">{{gmdate("d-m-Y", $mytimestamp)}}</h5>
+                                    {{-- <h5 style="    text-align: -webkit-right;">{{gmdate("d-m-Y", $mytimestamp)}}</h5> --}}
                                 </div>
             
                                

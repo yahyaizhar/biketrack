@@ -1042,7 +1042,7 @@
                             var din=weekdays[0].day;
                             total_absents
                             var date_match=new Date(item.date).format("dddd")   
-                            if (repeated>3 || date_match==din) {
+                            if (repeated>=3 && date_match==din) {
                                 status='<div style="color:green;">weekly-off</div>';
                             }
                             else if (item.trips=='0' && item.login_hours=='0'){

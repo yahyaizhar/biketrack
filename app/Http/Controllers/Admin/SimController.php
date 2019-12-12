@@ -555,7 +555,7 @@ public function view_assigned_sim($id){
     
     return view('SIM.view_assigned_sim',compact('rider','sim','sim_history','sim_count')); 
 }
-public function removeSim($rider_id,$sim_id){
+public function removeSim($sim_id,$rider_id){
 
     $delete_active_sim =Sim_History::where('sim_id', $sim_id)
     ->where('rider_id', $rider_id)
@@ -563,10 +563,13 @@ public function removeSim($rider_id,$sim_id){
     ->get()
     ->first();
     $delete_active_sim->status='deactive';
+    $delete_active_sim->updated_at=Carbon::now()->format("Y-m-d");
     $delete_active_sim->save();
     return response()->json([
-        'status' => true
+        'status' => $rider_id,
+        's' => $sim_id,
     ]);
+   
    
   }
   public function sim_deactive_date(Request $request,$rider_id,$sim_id){

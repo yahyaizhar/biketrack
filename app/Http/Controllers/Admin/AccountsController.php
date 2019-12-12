@@ -906,6 +906,7 @@ class AccountsController extends Controller
        ->first();
        $trips=0;
        $hours=0;
+       $zomato_hours=0;
        if (isset($data_zomato)) {
            $absent_count=$data_zomato->absents_count;
            $weekly_off=$data_zomato->weekly_off;
@@ -923,6 +924,7 @@ class AccountsController extends Controller
                    $hour=11;
                }
                $hours+=$hour;
+               $zomato_hours+=$value->login_hours;
            }
            
        }
@@ -947,6 +949,7 @@ class AccountsController extends Controller
             'working_days'=>$working_days,
             'trips'=>round($trips,2),
             'hours'=>round($hours,2),
+            'zomato_hours'=>round($zomato_hours,2),
         ]);
     }
     public function new_salary_added(Request $request){
