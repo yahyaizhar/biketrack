@@ -1451,7 +1451,8 @@ public function update_edit_fuel_expense(Request $r,$id){
     $bike_id=bike::find($r->bike_id);
     $fuel_expense=Fuel_Expense::find($id);
     $fuel_expense->amount=$r->amount;
-    $fuel_expense->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+    $fuel_expense->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+    $fuel_expense->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
     $fuel_expense->type=$r->type;
     $fuel_expense->bike_id=$bike_id->id;
     $fuel_expense->rider_id=$r->rider_id;
@@ -1471,7 +1472,8 @@ if ($fuel_expense->type=="vip_tag") {
         'fuel_expense_id'=>$fuel_expense->id
     ]);
     $ca->type='dr';
-    $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+    $ca->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+    $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
     $ca->rider_id = $rider_id;
     $ca->source="fuel_expense_vip"; 
     $ca->amount=$r->amount;
@@ -1490,7 +1492,8 @@ elseif($fuel_expense->type=="cash"){
     ]);
     $ca->type='dr';
     $ca->rider_id = $rider_id;
-    $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+    $ca->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+    $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
     $ca->source="fuel_expense_cash"; 
     $ca->amount=$r->amount;
     $ca->payment_status='paid';
