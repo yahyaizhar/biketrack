@@ -215,40 +215,43 @@ uppy.use(Uppy.DragDrop, {
                var import_data = results.data;
                console.log(import_data);
                _ImportHeading=[],_ImportData=[];
-               import_data.forEach(function(first_chunk, i){
-                    var _feid='';   
-                    var _firstKey = Object.keys(first_chunk)[0];
-                    _feid=first_chunk[_firstKey];
+               setTimeout(function(){
                     
-                    Object.keys(first_chunk).forEach(function(second_chunk_key, j){
-                        if(j==0) return true;
-                        var second_chunk = first_chunk[second_chunk_key];
-                        var _date = (second_chunk_key.split('@')[0]).replace(/[_]/g, '-');
-                        var _date_index=parseInt(second_chunk_key.split('@')[1]);
-                        // var _firstObj=_ImportData.find(function(x){return x.date==_date});
-                        // if(typeof _firstObj == "undefined") _ImportData.push({date:_date,rows:[]}),_firstObj=_ImportData.find(function(x){return x.date==_date});
-                        if(i==0){
-                            _ImportHeading.includes(second_chunk) || _ImportHeading.push(second_chunk);   
-                        }
-                        else{
-                            var _secondObj=_ImportData.find(function(x){return x.feid==_feid && x.date==_date});
-			                if(typeof _secondObj == "undefined") _ImportData.push({feid:_feid, date:_date}),_secondObj=_ImportData.find(function(x){return x.feid==_feid&& x.date==_date});
-                            _secondObj[_ImportHeading[_date_index]]=second_chunk;
-                        }
+                import_data.forEach(function(first_chunk, i){
+                        var _feid='';   
+                        var _firstKey = Object.keys(first_chunk)[0];
+                        _feid=first_chunk[_firstKey];
+                        
+                        Object.keys(first_chunk).forEach(function(second_chunk_key, j){
+                            if(j==0) return true;
+                            var second_chunk = first_chunk[second_chunk_key];
+                            var _date = (second_chunk_key.split('@')[0]).replace(/[_]/g, '-');
+                            var _date_index=parseInt(second_chunk_key.split('@')[1]);
+                            // var _firstObj=_ImportData.find(function(x){return x.date==_date});
+                            // if(typeof _firstObj == "undefined") _ImportData.push({date:_date,rows:[]}),_firstObj=_ImportData.find(function(x){return x.date==_date});
+                            if(i==0){
+                                _ImportHeading.includes(second_chunk) || _ImportHeading.push(second_chunk);   
+                            }
+                            else{
+                                var _secondObj=_ImportData.find(function(x){return x.feid==_feid && x.date==_date});
+                                if(typeof _secondObj == "undefined") _ImportData.push({feid:_feid, date:_date}),_secondObj=_ImportData.find(function(x){return x.feid==_feid&& x.date==_date});
+                                _secondObj[_ImportHeading[_date_index]]=second_chunk;
+                            }
+                        })
                     })
-                })
-                import_data=_ImportData;
-                import_data.forEach(function(data0, i){
-                    var client_rider=client_riders.find(function(x){return x.client_rider_id===data0.feid});
-                    var _riderID = null;
-                    if(typeof client_rider !== "undefined"){
-                        _riderID=client_rider.rider_id;
-                    }
-                    import_data[i]['rider_id']=_riderID;
-                    
-                });
-                console.log('import_data',import_data);
-                save_data(import_data,1000); //******************//
+                    import_data=_ImportData;
+                    import_data.forEach(function(data0, i){
+                        var client_rider=client_riders.find(function(x){return x.client_rider_id===data0.feid});
+                        var _riderID = null;
+                        if(typeof client_rider !== "undefined"){
+                            _riderID=client_rider.rider_id;
+                        }
+                        import_data[i]['rider_id']=_riderID;
+                        
+                    });
+                    console.log('import_data',import_data);
+                    //save_data(import_data,1000); //******************//
+                },200);
                return;
                 $.ajax({
                     headers: {

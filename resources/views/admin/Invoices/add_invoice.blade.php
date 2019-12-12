@@ -533,6 +533,7 @@ $(document).ready(function () {
     // append_row();
     $('#invoices [data-name="client_id"],#invoices [name="month"]').on("change input", function () {
         typeof receive_payment !=="undefined" && (receive_payment.modal_confirmation_required=false);
+        typeof receive_payment !=="undefined" && (receive_payment.reloadable_table=false);
         var client_id = $('#invoices [data-name="client_id"]').val();
         console.log('client_id', client_id);
         var _month = new Date("01-"+$('#invoices [name="month"]').val()+"-"+new Date(Date.now()).format('yyyy')).format('yyyy-mm-dd');
@@ -617,8 +618,8 @@ $(document).ready(function () {
                                 break;
                         }
                     });
+                    console.info("====================================================4");
                     subtotal();
-                    typeof receive_payment !=="undefined" && (receive_payment.modal_confirmation_required=true);
                     
                 } else {
                     _invoices.make_invoice_readonly();
@@ -629,7 +630,9 @@ $(document).ready(function () {
             });
     });
 
-    
+    $(document).on("changeDate", '[data-name="invoice_date"], [data-name="due_date"]', function () {
+        // typeof receive_payment !=="undefined" && (receive_payment.modal_confirmation_required=true);
+    });
 
     $(document).on("change input", '[data-name="rate"], [data-name="amount"], [data-name="tax_rate"], [data-name="discount_values"], [data-name="tax"], [data-name="discount"], [data-name="qty"], [data-name="deductable"]', function () {
         if($(this).attr('data-name')=="deductable"){
@@ -650,7 +653,9 @@ $(document).ready(function () {
             }
             
         }
+        console.info("====================================================1");
         subtotal();
+        typeof receive_payment !=="undefined" && (receive_payment.modal_confirmation_required=true);
     });
 
     $(document).on("keydown", 'textarea.auto-expandable', autosize);
@@ -748,6 +753,7 @@ $(document).ready(function () {
             success: function (data) {
                 console.warn(data);
                 typeof receive_payment !=="undefined" && (receive_payment.modal_confirmation_required=false);
+                typeof receive_payment !=="undefined" && (receive_payment.reloadable_table=true);
                 if(data && data.invoice){
                     invoiceObj=data.invoice;
                     _invoices.invoice=data.invoice;
@@ -1053,6 +1059,7 @@ var _invoices={
         }
 
         biketrack.refresh_global();
+        console.info("====================================================2");
         subtotal();
         
         // if(_invoices.invoice.payment_status=="paid"){
@@ -1060,7 +1067,6 @@ var _invoices={
         // }
     },
     fetch_url_data:function(){
-        typeof receive_payment !=="undefined" && (receive_payment.modal_confirmation_required=false);
         var _clientId=biketrack.getUrlParameter('client_id');
         var _month=biketrack.getUrlParameter('month');
         if(_clientId!="" && _month!=""){
@@ -1087,7 +1093,6 @@ function subtotal() {
     var tax_type=$('[data-name="tax_rate"] :selected').attr('data-type')||"";
     var tax_value=parseFloat($('[data-name="tax_rate"] :selected').attr('data-value'))||0;
 
-    console.log('yes');
 
     $('[data-name="tax_value"]').val("");
     $('[data-name="tax_amount"]').val(0);
@@ -1128,7 +1133,6 @@ function subtotal() {
                 $(this).find('[data-name="tax_amount"]').val((tax_amount).toFixed(2));
             }
         }
-console.log('total_amount', total_amount);
         $(this).find('[data-name="amount"]').val((amount).toFixed(2));
     });
 
@@ -1256,7 +1260,9 @@ function append_row($row_data = null) {
 
 function delete_row(ctl) {
     $(ctl).parents("tr").remove();
+    console.info("====================================================3");
     subtotal();
+    typeof receive_payment !=="undefined" && (receive_payment.modal_confirmation_required=true);
 }
 
 

@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Bikes\bike;
 use App\Model\Bikes\bike_detail;
+use App\Model\Client\Client_History;
 use App\Model\Client\Client;
 use Illuminate\Support\Facades\Hash;
 use App\Model\Rider\Rider;
@@ -1563,7 +1564,7 @@ public function income_zomato_import(Request $r){
     $ra_objects=[];
     $ra_objects_updates=[];
     $zi = Income_zomato::all(); // r1
-    $client_riders = Client_Rider::all();
+    $client_riders = Client_History::all();
     $update_data = [];
     $i=0;
     $unique_id=uniqid().'-'.time();
@@ -2499,7 +2500,7 @@ public function client_income_update(Request $request,$id){
             if($date==null){
                 //throw exception. No feid found
                 $is_exception=true;
-                $exception_msg='No Date found against feid '.$item_row['feid'].' and row '.$i.'. Please recheck the data';
+                $exception_msg='No DATE found against feid '.$item_row['feid'].' and row '.$i.'. Please recheck the data';
                 break;
             }
             $start_of_month = Carbon::parse($date)->startOfMonth()->format('Y-m-d');
@@ -2650,6 +2651,14 @@ public function client_income_update(Request $request,$id){
         
         return response()->json([
             'data'=>$data,
+        ]);
+    }
+    public function getPreviousMonthIncomeZomato($month){
+        $only_month=Carbon::parse($month)->format("m");
+        $income_zomato=Income_Zomato::whereMonth("date",$only_month)
+        ->get();
+        return response()->json([
+            'income_zomato'=>$income_zomato,
         ]);
     }
 }

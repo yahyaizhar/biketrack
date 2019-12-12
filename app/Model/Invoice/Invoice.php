@@ -18,6 +18,8 @@ class Invoice extends Authenticatable
     {
         parent::boot();
 
+        // $old_modal=null;
+
         // auto-sets values on creation
         self::created(function($model){
             $activity_model = new \App\Log_activity;
@@ -45,6 +47,14 @@ class Invoice extends Authenticatable
             $activity_model->causer_type=get_class(Auth::user());
             $activity_model->save();
         });
+        // self::updating(function ($model) {
+        //     foreach( $model->toArray() as $key => $value )
+        //     {
+        //         $old_modal[$key]=$value;
+        //         // echo $key;
+        //     }
+        //     dd($model->invoice_status);
+        // });
     }
 
     // ends logging

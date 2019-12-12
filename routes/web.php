@@ -80,6 +80,8 @@ Route::group([
     Route::get('/newApprovedComer/view/ajax', 'AjaxController@getApprovedComer')->name('NewComer.view_approved_ajax');
 
 
+    
+
 
 });
 // End Ajax Routes
@@ -558,6 +560,8 @@ Route::group([
     Route::get("/Salary/accounts/income/zomato/index","AccountsController@income_zomato_index")->name("admin.accounts.income_zomato_index");
     Route::post('/accounts/income/zomato/import','AccountsController@income_zomato_import')->name('admin.accounts.income_zomato_import');
     Route::delete('/accounts/income/zomato/delete','AccountsController@income_zomato_delete')->name('admin.accounts.income_zomato_delete');
+
+    Route::get('/get_previous_month', 'AccountsController@getPreviousMonthIncomeZomato')->name('income_zomato.get_previous_month');
 //zomato income 
 // Client_income
     Route::get('/client_income/index','AccountsController@client_income_index')->name('admin.client_income_index');
