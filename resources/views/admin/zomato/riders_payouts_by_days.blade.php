@@ -319,7 +319,7 @@ uppy.use(Uppy.DragDrop, {
                             var total_daysInMonth=new Date(current_year , current_month , 0).getDate();
                             var totalweekDayInMonth = weekDaysInMonth(new Date(current_year , current_month , 0).format('yyyy-mm-dd'), week_day)
                             var extra_days = totalweekDayInMonth-week_absents;
-                            var working_days=total_daysInMonth-total_absent_days;
+                            var working_days=total_daysInMonth-total_absent_days-extra_days;
                             
                             time_sheet.working_days=working_days;
                             if(week_absents!=scnd_obj.rep){

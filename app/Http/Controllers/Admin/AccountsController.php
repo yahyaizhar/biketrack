@@ -907,7 +907,7 @@ class AccountsController extends Controller
             $total_salary_amt = $fixed_salary;
         }
         
-       $is_paid= \App\Model\Accounts\Company_Account::where("source","salary")
+       $is_paid= \App\Model\Accounts\Rider_Account::where("source","salary_paid")
        ->where("payment_status","paid")
        ->where("rider_id",$rider_id)
        ->whereMonth("month",$onlyMonth)
@@ -958,7 +958,7 @@ class AccountsController extends Controller
             'total_deduction'=>round($ra_payable,2),
             // 'total_bonus'=>round($ra_cr,2),
             // 'closing_balance_prev'=>$closing_balance_prev,
-            'is_paid'=>$is_paid_salary,
+            'is_paid'=>$is_paid,
             'absent_count'=>$absent_count,
             'weekly_off'=>$weekly_off,
             'extra_day'=>$extra_day,
