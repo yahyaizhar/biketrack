@@ -30,7 +30,7 @@ margin-left: 10px;
     <div class="modal-dialog modal-dialog-centered" role="document" style=" max-width: 70%">
     <div class="modal-content" style=" padding: 5px 10px;">
         <div class="modal-header border-bottom-0">
-            <h5 class="modal-title text-center" style=" margin: 0px auto; width: 100%;">New Commer Details</h5>
+            <h5 class="modal-title text-center" style=" margin: 0px auto; width: 100%;">Approved Commer Details</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
