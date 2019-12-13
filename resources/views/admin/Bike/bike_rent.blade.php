@@ -28,7 +28,8 @@
                                 <span class="form-text text-muted">Please enter Month</span>
                             @endif
                         </div>
-                        <div class="form-group">
+                        <div class="row">
+                        <div class="form-group col-md-6">
                             <label>Rider:</label>
                             <select class="form-control bk-select2 kt-select2-general" name="rider_id" >
                                 <option value="">Select a Rider<option>
@@ -39,7 +40,7 @@
                                 @endforeach 
                             </select>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group col-md-6">
                             <label>Bike:</label>
                             <select  class="form-control bk-select2" name="bike_id" >
                                     <option value="">Select a Bike<option>
@@ -49,6 +50,7 @@
                                 </option>     
                                 @endforeach 
                             </select> 
+                        </div>
                         </div>
                         <div class="form-group">
                             <label>Owner:</label>
