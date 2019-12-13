@@ -163,16 +163,25 @@ margin-left: 10px;
             <table class="table table-striped- table-hover table-checkable table-condensed" id="newComer-table">
                 <thead>
                     <tr>
-                        {{-- <th>
-                            <input type="checkbox" id="select_all" >
-                        </th> --}}
-                      
                         <th>Name</th>
                         <th>Phone Number</th>
                         <th>Nationality</th>
                         <th>Experience</th>
                         <th>National id card number</th>
-                        <th>Actions</th>  
+                        <th>Actions
+                        <span class="dtr-data" style=" z-index: 999999999999999999;">
+                            <span class="dropdown">
+                                <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+                                <i class="la la-ellipsis-h"></i>
+                                </a>
+                                  <div class="dropdown-menu dropdown-menu-right">
+                                  <a class="dropdown-item" onclick="sort_by_status('approve')"><i class="flaticon2-checkmark"></i> Approved</a>
+                                  <a class="dropdown-item" onclick="sort_by_status('reject')"><i class="flaticon2-cross"></i> Reject</a>
+                                  <a class="dropdown-item" onclick="sort_by_status('pending')"><i class="flaticon2-pen"></i> Pending</a>
+                                  <a class="dropdown-item" onclick="sort_by_status('interview')"><i class="flaticon2-check-mark"></i> Interview</a>
+                                  </div>    
+                           </span>
+                        </th>
                         <th class="d-none"></th>
                         <th class="d-none"></th>
                         <th class="d-none"></th>
@@ -587,6 +596,10 @@ $('.custom_approval_comer_model').find('form').off('submit').on('submit', functi
                         });
                     });
 
+function sort_by_status(status){
+    // alert(status)
+    // getApprovalComer(status);
+}
 </script>
 <style>
    
