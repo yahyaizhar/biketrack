@@ -56,6 +56,7 @@
                         <th>Name</th>
                         <th>Phone</th>
                         <th>Payout Method</th>
+                        <th>Salary Method</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -84,7 +85,6 @@
                             <option value="">Select Payout Method</option>
                             <option value="trip_based">Based on Trips and Hours</option>   
                             <option value="fixed_based">Based on Fixed Amount</option> 
-                            <option value="commission_based">Based on Commission</option> 
                         </select>
                     </div>
 
@@ -110,23 +110,6 @@
                         </div>
                     </div>
 
-                    <div class="d-none" data-payout-types data-show="commission_based">
-                        <div class="form-group">
-                            <label>Amount:</label>
-                            <div class="input-group">
-                                <input type="text" autocomplete="off" class="form-control" name="cb__amount" placeholder="Enter commission amount" />
-                                <div class="input-group-append"><span class="input-group-text" id="cb__amount_postfix"></span></div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Type:</label>
-                            <select class="form-control kt-select2 bk-select2" id="cb__type" name="cb__type" >
-                                <option value="percentage" selected>Percentage</option>   
-                                <option value="fixed">Fixed</option> 
-                            </select>
-                        </div>
-                    </div>
-
                     <div class="modal-footer border-top-0 d-flex justify-content-center">
                         <button class="upload-button btn btn-success">Submit</button>
                     </div>
@@ -135,6 +118,89 @@
         </div>
     </div>
 </div> 
+
+
+<div class="modal fade" id="salary_method_pop" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title" id="exampleModalLabel">Select Salary Method</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form class="kt-form" id="salary_methodForm" enctype="multipart/form-data">
+                    <input type="hidden" name="client_id">
+                    <div class="container">
+                        <div class="form-group">
+                            <label>Salary Method:</label>
+                            <select class="form-control kt-select2 bk-select2" id="salary_method" name="salary_method" >
+                                <option value="">Select Payout Method</option>
+                                <option value="trip_based">Based on Trips and Hours</option>   
+                                <option value="fixed_based">Based on Fixed Amount</option> 
+                                <option value="commission_based">Based on Commission</option> 
+                            </select>
+                        </div>
+    
+                        <div class="d-none" data-salary-types data-show="trip_based">
+                            <div class="form-group">
+                                <label>Amount per Trip:</label>
+                                <input type="text" autocomplete="off" class="form-control" name="tb_sm__trip_amount" placeholder="Enter per trip amount" />
+                            </div>
+                            <div class="form-group">
+                                <label>Amount per Hour:</label>
+                                <input type="text" autocomplete="off" class="form-control" name="tb_sm__hour_amount" placeholder="Enter per hour amount" />
+                            </div>
+                            <div class="form-group">
+                                <label>Bonus trips (e.g. 400):</label>
+                                <input type="text" autocomplete="off" class="form-control" name="tb_sm__bonus_trips" placeholder="Enter bonus trips" />
+                            </div>
+                            <div class="form-group">
+                                <label>Bonus amount after bonus trips:</label>
+                                <input type="text" autocomplete="off" class="form-control" name="tb_sm__bonus_amount" placeholder="Enter bonus amount when bonus (e.g. 400) trips reached" />
+                            </div>
+                            <div class="form-group">
+                                <label>Amount per Trip after bonus trips:</label>
+                                <input type="text" autocomplete="off" class="form-control" name="tb_sm__trips_bonus_amount" placeholder="Enter per trip after bonus (e.g. 400) trips reached" />
+                            </div>
+                        </div>
+    
+                        <div class="d-none" data-salary-types data-show="fixed_based">
+                            <div class="form-group">
+                                <label>Amount:</label>
+                                <input type="text" autocomplete="off" class="form-control" name="fb_sm__amount" placeholder="Enter fixed amount" />
+                            </div>
+                            <div class="form-group">
+                                <label>Extra Hours Rate:</label>
+                                <input type="text" autocomplete="off" class="form-control" name="fb_sm__exrta_hours" placeholder="Enter extra hours rate" />
+                            </div>
+                        </div>
+    
+                        <div class="d-none" data-salary-types data-show="commission_based">
+                            <div class="form-group">
+                                <label>Amount:</label>
+                                <div class="input-group">
+                                    <input type="text" autocomplete="off" class="form-control" name="cb_sm__amount" placeholder="Enter commission amount" />
+                                    <div class="input-group-append"><span class="input-group-text" id="cb_sm__amount_postfix"></span></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Type:</label>
+                                <select class="form-control kt-select2 bk-select2" id="cb_sm__type" name="cb_sm__type" >
+                                    <option value="percentage" selected>Percentage</option>   
+                                    <option value="fixed">Fixed</option> 
+                                </select>
+                            </div>
+                        </div>
+    
+                        <div class="modal-footer border-top-0 d-flex justify-content-center">
+                            <button class="upload-button btn btn-success">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 <!-- end:: Content -->
 @endsection
@@ -150,6 +216,20 @@
 <!--end::Page Scripts -->
 <script>
 var clients_table;
+
+function show_salary_modal(salary_method, client_id){
+    salary_method = JSON.parse(salary_method);
+    console.log(salary_method);
+    $('#salary_method_pop').find('[name="salary_method"]').val('').trigger('change');
+    $('#salary_method_pop').find('input').val('').trigger('change');
+    if(salary_method!= null){
+        Object.keys(salary_method).forEach(function(obj_val, i){
+            $('#salary_method_pop').find('[name="'+obj_val+'"]').val(salary_method[obj_val]).trigger('change');
+        });
+    }
+    $('#salary_method_pop').find('[name="client_id"]').val(client_id);
+    $('#salary_method_pop').modal('show');
+}
 
 function show_payout_modal(client_setting, client_id){
     client_setting = JSON.parse(client_setting)
@@ -172,10 +252,18 @@ $('#payout_method').on('change', function(){
     var _elem = $('[data-payout-types][data-show="'+_val+'"]');
     _elem.length && (_elem.removeClass('d-none'));
 });
-$('#cb__type').on('change', function(){
+$('#salary_method').on('change', function(){
+	var _val = $(this).val().trim();
+    console.log(_val)
+    $('[data-salary-types]').removeClass('d-none').addClass('d-none');
+    if(_val == "") return;
+    var _elem = $('[data-salary-types][data-show="'+_val+'"]');
+    _elem.length && (_elem.removeClass('d-none'));
+});
+$('#cb_sm__type').on('change', function(){
 	var _type = $(this).val().trim();
     var _sign = _type=="percentage"?'%':'AED';
-    $('#cb__amount_postfix').text(_sign);
+    $('#cb_sm__amount_postfix').text(_sign);
 }).trigger('change');
 
 $('#payout_methodForm').on('submit', function(e){
@@ -183,6 +271,51 @@ $('#payout_methodForm').on('submit', function(e){
     var url = "{{route('admin.add_payout_method')}}";
     var _form = $(this);
     $('#payout_method_pop').modal('hide');
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        url : url,
+        type : 'POST',
+        data: _form.serializeArray(),
+        beforeSend: function() {            
+            $('.bk_loading').show();
+        },
+        complete: function(){
+            $('.bk_loading').hide();
+        },
+        success: function(data){
+            console.warn(data);
+            swal.fire({
+                position: 'center',
+                type: 'success',
+                title: 'Record updated successfully.',
+                showConfirmButton: false,
+                timer: 1500
+            });
+            clients_table.ajax.reload(null, false);
+        },
+        error: function(error){
+            console.warn(error);
+            swal.fire({
+                position: 'center',
+                type: 'error',
+                title: 'Oops...',
+                text: 'Unable to update.',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+    });
+
+})
+$('#salary_methodForm').on('submit', function(e){
+    e.preventDefault();
+    var url = "{{route('admin.add_salary_method')}}";
+    var _form = $(this);
+    $('#salary_method_pop').modal('hide');
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -244,6 +377,7 @@ $(function() {
             { data: 'new_name', name: 'name' },
             { data: 'new_phone', name: 'phone' },
             { data: 'payout_method', name: 'payout_method' },
+            { data: 'salary_method', name: 'salary_method' },
             { data: 'actions', name: 'actions', orderable: false, searchable: false }
         ],
         responsive:true,

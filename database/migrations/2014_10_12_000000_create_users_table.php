@@ -40,6 +40,7 @@ class CreateUsersTable extends Migration
             $table->string('active_status')->default("A");
             $table->timestamp('email_verified_at')->nullable();
             $table->text('setting')->nullable();
+            $table->text('salary_methods')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

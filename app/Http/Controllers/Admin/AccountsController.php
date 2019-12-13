@@ -5,8 +5,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Bikes\bike;
 use App\Model\Bikes\bike_detail;
-use App\Model\Client\Client_History;
 use App\Model\Client\Client;
+use App\Model\Client\Client_History;
 use Illuminate\Support\Facades\Hash;
 use App\Model\Rider\Rider;
 use App\Model\Client\Client_Rider;
@@ -340,29 +340,14 @@ class AccountsController extends Controller
                 $maintenance->invoice_image = $filepath;
             }
             $maintenance->save();
-            $bike_history = Assign_bike::all();
-            $bike_id = $r->bike_id;
-            $date =  Carbon::parse($r->get('month'))->format('Y-m-d');
-            $history_found = Arr::first($bike_history, function ($item, $key) use ($bike_id, $date) {
-                $created_at =Carbon::parse($item->bike_assign_date)->format('Y-m-d');
-                $created_at =Carbon::parse($bike_assign_date);
-    
-                $updated_at =Carbon::parse($item->bike_unassign_date)->format('Y-m-d');
-                $updated_at =Carbon::parse($bike_unassign_date);
-                $req_date =Carbon::parse($date);
-                if($item->status=="active"){ 
-                    // mean its still active, we need to match only created at
-                    return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at);
-                }
-                
-                return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
-        });
-        $rider_id=null;
-    
-        if (isset($history_found)) {
-            $rider_id=$history_found->rider_id;
+        $assign_bike=Assign_bike::where('bike_id', $maintenance->bike_id)
+        ->whereDate('created_at','<=',Carbon::parse($r->month)->format('Y-m-d'))
+        ->get()
+        ->last();
+        $rider_id = null;
+        if($assign_bike){
+            $rider_id=Rider::find($assign_bike->rider_id)->id;
         }
-    
         if($maintenance->accident_payment_status == 'pending'){
             
             $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
@@ -848,8 +833,25 @@ class AccountsController extends Controller
             $ra_cr += abs($closing_balance_prev);
         }
         $total_salary_amt = 0;
-        $feid = $rider->clients()->first()->pivot->client_rider_id;
-        if(isset($feid)){ // rider belongs to zomato
+
+        $client_history = Client_History::all();
+        $history_found = Arr::first($client_history, function ($item, $key) use ($rider_id, $startMonth) {
+            $start_created_at =Carbon::parse($item->assign_date)->startOfMonth()->format('Y-m-d');
+            $created_at =Carbon::parse($start_created_at);
+
+            $start_updated_at =Carbon::parse($item->deassign_date)->endOfMonth()->format('Y-m-d');
+            $updated_at =Carbon::parse($start_updated_at);
+            $req_date =Carbon::parse($startMonth);
+
+            return $item->rider_id==$rider_id &&
+                ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+        });
+
+        $feid=null;
+        if (isset($history_found)) {
+            $feid=$history_found->client_rider_id;
+        }
+        if(isset($feid) && $feid!=null){ // rider belongs to zomato
             $ra_zomatos=Income_zomato::where("rider_id",$rider_id)
             ->whereMonth("date",$onlyMonth)
             ->get()->first();  
@@ -922,7 +924,6 @@ class AccountsController extends Controller
        ->first();
        $trips=0;
        $hours=0;
-       $zomato_hours=0;
        if (isset($data_zomato)) {
            $absent_count=$data_zomato->absents_count;
            $weekly_off=$data_zomato->weekly_off;
@@ -940,7 +941,6 @@ class AccountsController extends Controller
                    $hour=11;
                }
                $hours+=$hour;
-               $zomato_hours+=$value->login_hours;
            }
            
        }
@@ -965,7 +965,6 @@ class AccountsController extends Controller
             'working_days'=>$working_days,
             'trips'=>round($trips,2),
             'hours'=>round($hours,2),
-            'zomato_hours'=>round($zomato_hours,2),
         ]);
     }
     public function new_salary_added(Request $request){
@@ -1358,11 +1357,11 @@ public function fuel_expense_insert(Request $r){
      $assign_bike=Assign_bike::all();
     $date = $fuel_expense->month;
     $history_found = Arr::first($assign_bike, function ($item, $key) use ($bike_id, $date) {
-        $created_at =Carbon::parse($item->bike_assign_date)->format('Y-m-d');
-        $created_at =Carbon::parse($bike_assign_date);
+        $created_at =Carbon::parse($item->created_at)->format('Y-m-d');
+        $created_at =Carbon::parse($created_at);
 
-        $updated_at =Carbon::parse($item->bike_unassign_date)->format('Y-m-d');
-        $updated_at =Carbon::parse($bike_unassign_date);
+        $updated_at =Carbon::parse($item->updated_at)->format('Y-m-d');
+        $updated_at =Carbon::parse($updated_at);
         $req_date =Carbon::parse($date);
         if($item->status=="active"){ 
             // mean its still active, we need to match only bike id
@@ -1467,34 +1466,19 @@ public function update_edit_fuel_expense(Request $r,$id){
     $bike_id=bike::find($r->bike_id);
     $fuel_expense=Fuel_Expense::find($id);
     $fuel_expense->amount=$r->amount;
-    $fuel_expense->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
-    $fuel_expense->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+    $fuel_expense->month=Carbon::parse($r->get('month'))->format('Y-m-d');
     $fuel_expense->type=$r->type;
     $fuel_expense->bike_id=$bike_id->id;
     $fuel_expense->rider_id=$r->rider_id;
     $fuel_expense->update();
 
-    $bike_history = Assign_bike::all();
-        $bike_id = $bike_id->id;
-        $date = Carbon::parse($r->get('month'))->format('Y-m-d');
-        $history_found = Arr::first($bike_history, function ($item, $key) use ($bike_id, $date) {
-            $created_at =Carbon::parse($item->bike_assign_date)->format('Y-m-d');
-            $created_at =Carbon::parse($bike_assign_date);
-
-            $updated_at =Carbon::parse($item->bike_unassign_date)->format('Y-m-d');
-            $updated_at =Carbon::parse($bike_unassign_date);
-            $req_date =Carbon::parse($date);
-            if($item->status=="active"){ 
-                // mean its still active, we need to match only created at
-                return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at);
-            }
-            
-            return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
-    });
-    $rider_id=null;
-
-    if (isset($history_found)) {
-        $rider_id=$history_found->rider_id;
+    $assign_bike=Assign_bike::where('bike_id', $fuel_expense->bike_id)
+    ->whereDate('created_at','<=',Carbon::parse($r->get('month'))->format('Y-m-d'))
+    ->get()
+    ->last();
+    $rider_id = null;
+    if($assign_bike){
+        $rider_id=Rider::find($assign_bike->rider_id)->id;
     }
 if ($fuel_expense->type=="vip_tag") {
     
@@ -1502,8 +1486,7 @@ if ($fuel_expense->type=="vip_tag") {
         'fuel_expense_id'=>$fuel_expense->id
     ]);
     $ca->type='dr';
-    $ca->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
-    $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+    $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
     $ca->rider_id = $rider_id;
     $ca->source="fuel_expense_vip"; 
     $ca->amount=$r->amount;
@@ -1522,8 +1505,7 @@ elseif($fuel_expense->type=="cash"){
     ]);
     $ca->type='dr';
     $ca->rider_id = $rider_id;
-    $ca->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
-    $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+    $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
     $ca->source="fuel_expense_cash"; 
     $ca->amount=$r->amount;
     $ca->payment_status='paid';
@@ -1564,7 +1546,7 @@ public function income_zomato_import(Request $r){
     $ra_objects=[];
     $ra_objects_updates=[];
     $zi = Income_zomato::all(); // r1
-    $client_riders = Client_History::all();
+    $client_riders = Client_Rider::all();
     $update_data = [];
     $i=0;
     $unique_id=uniqid().'-'.time();
@@ -2493,6 +2475,10 @@ public function client_income_update(Request $request,$id){
         $is_exception=false;
         $exception_msg='';
         $j=0;
+
+        $time_sheets=[];
+
+        
         foreach ($data as $item_row) {
             $i++;
             
@@ -2523,6 +2509,7 @@ public function client_income_update(Request $request,$id){
             });
             if(isset($zi_found)){
                 //found the row in Income Zomato table
+                $income_zomatoObj = $zi_found;
                 $income_zomato_id=$zi_found->id;
 
                 //finding if row exist in this table
@@ -2549,7 +2536,55 @@ public function client_income_update(Request $request,$id){
                 $obj['grand_total']=$grand_total;
                 $obj['created_at']=Carbon::now();
                 $obj['updated_at']=Carbon::now();
+                
+
+                //updating time sheet data (weekday, absents etc) on income zomato
+                $timeSheetObj = isset($item_row['time_sheet'])?$item_row['time_sheet']:null;
+                if($timeSheetObj!=null){
+                    $off_day_status=isset($timeSheetObj['off_day_status'])?$timeSheetObj['off_day_status']:null;
+                    $obj['off_days_status']=$off_day_status;
+                }
                 array_push($zomato_objects, $obj);
+
+                $ts_found = Arr::first($time_sheets, function ($item_ts, $key) use ($income_zomatoObj) {
+                    return $item_ts['id']==$income_zomatoObj->id;
+                });
+                if(!isset($ts_found)){
+                    $off_day=isset($timeSheetObj['off_day'])?$timeSheetObj['off_day']:null;
+                    $absents_count=isset($timeSheetObj['absents_count'])?$timeSheetObj['absents_count']:null;
+                    $weekly_off=isset($timeSheetObj['weekly_off'])?$timeSheetObj['weekly_off']:null;
+                    $extra_day=isset($timeSheetObj['extra_day'])?$timeSheetObj['extra_day']:null;
+                    $working_days=isset($timeSheetObj['working_days'])?$timeSheetObj['working_days']:null;
+                    $calculated_hours=isset($timeSheetObj['calculated_hours'])?$timeSheetObj['calculated_hours']:null;
+                    $calculated_trips=isset($timeSheetObj['calculated_trips'])?$timeSheetObj['calculated_trips']:null;
+                    //error
+                    $is_error=isset($timeSheetObj['is_error'])?$timeSheetObj['is_error']:null;
+                    $error_code=isset($timeSheetObj['error_code'])?$timeSheetObj['error_code']:null;
+                    $error_message=isset($timeSheetObj['error_message'])?$timeSheetObj['error_message']:null;
+                    $error_type=isset($timeSheetObj['error_type'])?$timeSheetObj['error_type']:null;
+
+                
+
+                    $obj = [];
+                    $obj['id']=$income_zomato_id;
+                    $obj['off_day']=$off_day;
+                    $obj['absents_count']=$absents_count;
+                    $obj['weekly_off']=$weekly_off;
+                    $obj['extra_day']=$extra_day;
+                    $obj['working_days']=$working_days;
+                    $obj['calculated_hours']=$calculated_hours;
+                    $obj['calculated_trips']=$calculated_trips;
+                    if($is_error==true){
+                        $err=[];
+                        $err['error_code']=$error_code;
+                        $err['error_message']=$error_message;
+                        $err['error_type']=$error_type;
+                        $obj['error']=json_encode($err);
+                    }
+                    array_push($time_sheets, $obj); 
+                }
+
+                
             }
             else {
                 //throw exception. No rows found
@@ -2566,35 +2601,29 @@ public function client_income_update(Request $request,$id){
                 'message'=>$exception_msg
             ]);
         }
-        // DB::table('riders__payouts__by__days')->insert($zomato_objects);
-        $deletes = DB::table('riders__payouts__by__days')
+        $delete_data = DB::table('riders__payouts__by__days')
                     ->whereIn('id', $delete_data)
                     ->delete();
-        DB::table('riders__payouts__by__days')->insert($zomato_objects); //r2 
-        // $data=Batch::update(new Riders_Payouts_By_Days, $update_data, 'id'); //r3
+        DB::table('riders__payouts__by__days')->insert($zomato_objects);
+        $time_sheets_update=Batch::update(new Income_zomato, $time_sheets, 'id'); //r3
         return response()->json([
             'status'=>1,
             'data'=>$zomato_objects,
-            'deletedata_count'=>$deletes,
+            'deletedata_count'=>$delete_data,
+            'time_sheet'=>$time_sheets,
             'count'=>$i
         ]);
     }
     public function hours_trips_details($month,$rider_id){
         $_only_month=Carbon::parse($month)->format("m");
-        $data=Income_Zomato::where('rider_id',$rider_id)
+        $data=Income_Zomato::with('Time_sheet')->where('rider_id',$rider_id)
         ->whereMonth("date",$_only_month)
         ->get()
         ->first();
-        if (isset($data)) {
-        $rider_payout=Riders_Payouts_By_Days::where("zomato_income_id", $data->id)->get();
-        }
-        else{
-            return 0;
-        }
         return response()->json([
             'month'=>$_only_month,
             'rider_id'=>$rider_id,
-            'data'=>$rider_payout,
+            'data'=>$data,
         ]);
     }
     public function weekly_days_off($month,$rider_id,$days){
@@ -2654,9 +2683,10 @@ public function client_income_update(Request $request,$id){
         ]);
     }
     public function getPreviousMonthIncomeZomato($month){
-        $only_month=Carbon::parse($month)->format("m");
+        $only_month=Carbon::parse($month)->subMonth()->format("m");
         $income_zomato=Income_Zomato::whereMonth("date",$only_month)
         ->get();
+       
         return response()->json([
             'income_zomato'=>$income_zomato,
         ]);

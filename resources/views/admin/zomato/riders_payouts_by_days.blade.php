@@ -168,6 +168,7 @@ uppy.use(Uppy.DragDrop, {
             alert('Choose .csv file first');
             return;
         }
+        $('.bk_loading').show();
         Papa.parse(files[files.length-1].data, {
             header:true,
             dynamicTyping: true,
@@ -208,104 +209,248 @@ uppy.use(Uppy.DragDrop, {
             // chunk: function(chunk, e, d) {
             //     console.log("Row data:", chunk, e, d);
             // },
-            error: function(err, file, inputElem, reason){ console.log(err); },
+            error: function(err, file, inputElem, reason){ console.log(err);$('.bk_loading').hide(); },
             complete: function(results, file){ 
                 // console.log( results);
                 // ajax to import data
                var import_data = results.data;
                console.log(import_data);
                _ImportHeading=[],_ImportData=[];
+               var time_sheet_data=[];
+                var weekdays_template=[
+                    {day:1,day_name:'Monday',rep:0},
+                    {day:2,day_name:'Tuesday',rep:0},
+                    {day:3,day_name:'Wednesday',rep:0},
+                    {day:4,day_name:'Thursday',rep:0},
+                    {day:5,day_name:'Friday',rep:0},
+                    {day:6,day_name:'Saturday',rep:0},
+                    {day:0,day_name:'Sunday',rep:0}
+                ];
+                
                setTimeout(function(){
-                    
-                import_data.forEach(function(first_chunk, i){
-                        var _feid='';   
-                        var _firstKey = Object.keys(first_chunk)[0];
-                        _feid=first_chunk[_firstKey];
+                    var _month = Object.keys(import_data[0])[0].split('@')[0].replace(/[_]/g, '-');
+                    $.ajax({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        url: "{{url('admin/get_previous_month/')}}" + "/" + _month,
+                        method: "GET",
+                    })
+                    .done(function (resp) {
+                        console.log(resp);
+                        var old_income_zomato=resp;
                         
-                        Object.keys(first_chunk).forEach(function(second_chunk_key, j){
-                            if(j==0) return true;
-                            var second_chunk = first_chunk[second_chunk_key];
-                            var _date = (second_chunk_key.split('@')[0]).replace(/[_]/g, '-');
-                            var _date_index=parseInt(second_chunk_key.split('@')[1]);
-                            // var _firstObj=_ImportData.find(function(x){return x.date==_date});
-                            // if(typeof _firstObj == "undefined") _ImportData.push({date:_date,rows:[]}),_firstObj=_ImportData.find(function(x){return x.date==_date});
-                            if(i==0){
-                                _ImportHeading.includes(second_chunk) || _ImportHeading.push(second_chunk);   
+                        import_data.forEach(function(first_chunk, i){
+                            var _feid='';   
+                            var _firstKey = Object.keys(first_chunk)[0];
+                            _feid=first_chunk[_firstKey];
+                            var _timeSheet=time_sheet_data.find(function(x){return x.feid==_feid});
+                            if(typeof _timeSheet == "undefined" && i!=0) 
+                                time_sheet_data.push({
+                                    feid:_feid, 
+                                    weekdays:JSON.parse(JSON.stringify(weekdays_template)), 
+                                    total_absent_days:0,
+                                    calculated_trips:0,
+                                    calculated_hours:0
+                                }); //initializing
+
+                            Object.keys(first_chunk).forEach(function(second_chunk_key, j){
+                                if(j==0) return true;
+                                var second_chunk = first_chunk[second_chunk_key];
+                                var _date = (second_chunk_key.split('@')[0]).replace(/[_]/g, '-');
+                                var _date_index=parseInt(second_chunk_key.split('@')[1]);
+                                // var _firstObj=_ImportData.find(function(x){return x.date==_date});
+                                // if(typeof _firstObj == "undefined") _ImportData.push({date:_date,rows:[]}),_firstObj=_ImportData.find(function(x){return x.date==_date});
+                                if(i==0){
+                                    _ImportHeading.includes(second_chunk) || _ImportHeading.push(second_chunk);   
+                                }
+                                else{
+                                    var _secondObj=_ImportData.find(function(x){return x.feid==_feid && x.date==_date});
+                                    if(typeof _secondObj == "undefined") _ImportData.push({feid:_feid, date:_date}),_secondObj=_ImportData.find(function(x){return x.feid==_feid&& x.date==_date});
+                                    _secondObj[_ImportHeading[_date_index]]=second_chunk;
+                                }
+                            })
+                        });
+                        import_data=_ImportData;
+                        //calculating absents againts each day
+                        import_data.forEach(function(item, i){
+                            var _feid = item.feid;
+                            var day=new Date(item.date).getDay();
+                            var time_sheet=time_sheet_data.find(function(x){return x.feid==_feid && x.weekdays.findIndex(function(y){return y.day==day}) != -1});
+                            if(item.orders==0 && item.login_hours==0){
+                                //rider is absent on this day
+                                time_sheet.weekdays.find(function(y){return y.day==day}).rep++;
+                                time_sheet.total_absent_days++;
+                            }
+                            //storing total trips and hours
+                            time_sheet.calculated_trips+=item.orders;
+                            time_sheet.calculated_hours+=item.login_hours;
+                            
+                            //adding rider_id
+                            var client_rider=client_riders.find(function(x){return x.client_rider_id===_feid});
+                            var _riderID = null;
+                            if(typeof client_rider !== "undefined"){
+                                _riderID=client_rider.rider_id;
+                            }
+                            item.rider_id=_riderID;
+                        });
+                        //sorting weekdays (larger value would be week-off day)
+                        time_sheet_data.forEach(function(time_sheet, i){
+                            time_sheet.weekdays.sort(function(a,b){
+                                return a.rep<b.rep?1:-1;
+                            });
+                            
+                            var _feid = time_sheet.feid;
+                            var weekdayObj = time_sheet.weekdays[0];
+                            
+                            var scnd_obj=time_sheet.weekdays[1];
+                            var _oldincome_zomato =old_income_zomato.income_zomato.find(function(x){return x.feid==_feid})||[];
+                            var total_absent_days = time_sheet.total_absent_days;
+                            
+                            var current_year=new Date(_month).format("yyyy");
+                            var current_month=new Date(_month).format("mm");
+                            // if(_feid=="FE527064")debugger;
+                            
+                            var week_day=weekdayObj.day;
+                            var weekday_name=weekdayObj.day_name;
+                            var week_absents=weekdayObj.rep;
+                            var absent_days = total_absent_days-week_absents;
+
+                            var total_daysInMonth=new Date(current_year , current_month , 0).getDate();
+                            var totalweekDayInMonth = weekDaysInMonth(new Date(current_year , current_month , 0).format('yyyy-mm-dd'), week_day)
+                            var extra_days = totalweekDayInMonth-week_absents;
+                            var working_days=total_daysInMonth-total_absent_days;
+                            
+                            time_sheet.working_days=working_days;
+                            if(week_absents!=scnd_obj.rep){
+                                //means it is the greatest, so week day will be week_day
+
+                                //check if previous week day match the current's
+                                if(_oldincome_zomato.off_day!=null){ // null means no time_sheet was imported last month
+                                    if(_oldincome_zomato.off_day!=weekday_name){
+                                        //store warning
+                                        time_sheet.is_error=true;
+                                        time_sheet.error_code=001;
+                                        time_sheet.error_type='warning';
+                                        time_sheet.error_message='Previous month weekday is not matched with current month';
+                                    }
+                                }
+                                time_sheet.weekly_off=week_absents;
+                                time_sheet.absents_count=absent_days;
+                                time_sheet.off_day=weekday_name;
+                                time_sheet.extra_day=extra_days;
                             }
                             else{
-                                var _secondObj=_ImportData.find(function(x){return x.feid==_feid && x.date==_date});
-                                if(typeof _secondObj == "undefined") _ImportData.push({feid:_feid, date:_date}),_secondObj=_ImportData.find(function(x){return x.feid==_feid&& x.date==_date});
-                                _secondObj[_ImportHeading[_date_index]]=second_chunk;
+                                //2 number of absents are same
+                                //check previous month off week
+                                if(_oldincome_zomato.off_day!=null){ // null means no time_sheet was imported last month
+                                    if(_oldincome_zomato.off_day==weekday_name){//check what was the last week day;
+                                        //we considers the first
+                                        time_sheet.weekly_off=week_absents;
+                                        time_sheet.absents_count=absent_days;
+                                        time_sheet.off_day=weekday_name;
+                                        time_sheet.extra_day=extra_days;
+                                    }
+                                    if(_oldincome_zomato.off_day==scnd_obj.day_name){//check what was the last week day;
+                                        //we considers the second
+
+                                        var week_day=scnd_obj.day;
+                                        var weekday_name=scnd_obj.day_name;
+                                        var week_absents=scnd_obj.rep;
+                                        var absent_days = total_absent_days-week_absents;
+
+                                        var total_daysInMonth=new Date(current_year , current_month , 0).getDate();
+                                        var totalweekDayInMonth = weekDaysInMonth(new Date(current_year , current_month , 0).format('yyyy-mm-dd'), week_day)
+                                        var extra_days = totalweekDayInMonth-week_absents;
+
+                                        time_sheet.weekly_off=week_absents;
+                                        time_sheet.absents_count=absent_days;
+                                        time_sheet.off_day=weekday_name;
+                                        time_sheet.extra_day=extra_days;
+                                    }
+                                }
+                                else{
+                                    //means no time_sheet was imported last month - so we simply generate the error
+                                    time_sheet.is_error=true;
+                                    time_sheet.error_code=002;
+                                    time_sheet.error_type='error';
+                                    time_sheet.error_message='Cannot find weekday.';
+                                }
+                            }                        
+                        });
+                        //adding time sheet data to import data (because we neeed to chunk the data before sending, so it would better if we use single array)
+                        import_data.forEach(function(item, i){
+                            var _feid = item.feid;
+                            var time_sheet=time_sheet_data.find(function(x){return x.feid==_feid});
+
+                            
+                            if(typeof time_sheet != "undefined"){
+                                item.time_sheet=JSON.parse(JSON.stringify(time_sheet));
+                                if (!item.time_sheet.is_error) { // error found on this riders
+                                    var _feid = item.feid;
+                                    var day=new Date(item.date).getDay();
+                                    // debugger;
+                                    var offday_name = item.time_sheet.off_day;
+                                    var offday=item.time_sheet.weekdays.find(function(x){return x.day_name==offday_name}).day;
+                                    if(item.orders==0 && item.login_hours==0){
+                                        //absent
+                                        if(day==offday){
+                                            //weekday
+                                            item.time_sheet.off_day_status='weeklyoff';
+                                        }
+                                        else{
+                                            //absent
+                                            item.time_sheet.off_day_status='absent';
+                                        }
+                                    }
+                                    else{
+                                        if(day==offday){
+                                            //extraday
+                                            item.time_sheet.off_day_status='extraday';
+                                        }
+                                        else{
+                                            //present
+                                            item.time_sheet.off_day_status='present';
+                                        }
+                                    }
+                                }
                             }
-                        })
-                    })
-                    import_data=_ImportData;
-                    import_data.forEach(function(data0, i){
-                        var client_rider=client_riders.find(function(x){return x.client_rider_id===data0.feid});
-                        var _riderID = null;
-                        if(typeof client_rider !== "undefined"){
-                            _riderID=client_rider.rider_id;
-                        }
-                        import_data[i]['rider_id']=_riderID;
-                        
-                    });
-                    console.log('import_data',import_data);
-                    //save_data(import_data,1000); //******************//
+                        });
+                        // var data=[
+                        //     'import_data':import_data,
+                        //     'time_sheet':time_sheet_data
+                        // ];
+                        console.log('import_data', import_data);
+                        save_data(import_data,250); //******************// parem1: data to send, parem2: number of chunks
+                    }); 
                 },200);
-               return;
-                $.ajax({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    url : "{{route('import.import_rider_daysPayouts')}}",
-                    type : 'POST',
-                    data: {data: import_data},
-                    beforeSend: function() {            
-                        $('.bk_loading').show();
-                    },
-                    complete: function(){
-                        $('.bk_loading').hide();
-                    },
-                    success: function(data){
-                        console.warn(data);
-                        if(data.status==0){
-                            swal.fire({
-                                position: 'center',
-                                type: 'error',
-                                title: 'Oops...',
-                                text: data.message,
-                                showConfirmButton: true  
-                            });
-                            return;
-                        }
-                        
-                        swal.fire({
-                            position: 'center',
-                            type: 'success',
-                            title: 'Record imported successfully.',
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                        performance_table.ajax.reload(null, false);
-                    },
-                    error: function(error){
-                        swal.fire({
-                            position: 'center',
-                            type: 'error',
-                            title: 'Oops...',
-                            text: 'Unable to update.',
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                    }
-                });
             }
         });
         // uppy.upload()
     });
 
+    function weekDaysInMonth(sMonth, sDay) {
+
+        // Month starts from 0 - Jan to 11 - Dec
+        // Day starts from 0 - Sunday to 6 - Saturday
+        var iCount = 0;
+        var current_year=new Date(sMonth).format("yyyy");
+        var current_month=new Date(sMonth).format("mm");
+        var total_daysInMonth=new Date(current_year , current_month , 0).getDate();
+        console.log(total_daysInMonth)
+        for (var i = 1; i <= total_daysInMonth; i++) {
+            var xDate = new Date();
+            xDate.setYear(current_year);
+            xDate.setMonth(current_month-1);
+            xDate.setDate(i);
+            if (xDate.getDay() == sDay) {
+                iCount = iCount + 1;
+            }
+        }
+        //Number of sundays
+        return iCount;
+    }
 var save_data=function(arr, chunks_size){
-    $('.bk_loading').show();
     var chunked_arr=biketrack.chunk_array(arr, chunks_size); 
     moveAlong(chunked_arr);
 }

@@ -21,6 +21,8 @@ class CreateIncomeZomatosTable extends Migration
             $table->string('import_id')->nullable();
             $table->string('log_in_hours_payable')->nullable();
             $table->string('trips_payable')->nullable();
+            $table->integer('calculated_trips')->nullable();
+            $table->integer('calculated_hours')->nullable();
             $table->string('total_to_be_paid_out')->nullable();
             $table->string('amount_for_login_hours')->nullable();
             $table->string('amount_to_be_paid_against_orders_completed')->nullable();
@@ -38,6 +40,7 @@ class CreateIncomeZomatosTable extends Migration
             $table->integer('weekly_off')->nullable();
             $table->integer('extra_day')->nullable();
             $table->integer('working_days')->nullable();
+            $table->integer('error')->nullable();
             $table->timestamps();
         });
     }

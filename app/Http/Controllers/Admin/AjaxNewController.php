@@ -763,6 +763,11 @@ class AjaxNewController extends Controller
             }
         }
         
+        $Client_Rider = Client_Rider::where('rider_id', $ranges['rider_id'])->get()->first();
+        $_feid=null;
+        if(isset($Client_Rider)){
+            $_feid=$Client_Rider->client_rider_id;
+        } 
 
         
         $c_debits_cr_payable = \App\Model\Accounts\Company_Account::where("rider_id",$ranges['rider_id'])
@@ -1045,7 +1050,8 @@ class AjaxNewController extends Controller
         ->with([
             'closing_balance' => round($closing_balance,2),
             'last_month' => $first_month,
-            'running_static_balance' => $running_static_balance
+            'running_static_balance' => $running_static_balance,
+            'feid'=>$_feid
         ])
         ->rawColumns(['desc','date','cr','dr','balance', 'company_profit','action'])
         ->make(true);
