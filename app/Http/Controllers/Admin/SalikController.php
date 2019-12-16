@@ -402,7 +402,7 @@ class SalikController extends Controller
             $updated_at =Carbon::parse($start_updated_at);
             $req_date =Carbon::parse($date);
             
-            if($item->status=='active'){
+            if($item['status']=='active'){
                 if($according_to=='bike'){
                     return $item['bike_id']==$_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
                 }
