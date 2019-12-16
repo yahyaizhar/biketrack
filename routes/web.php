@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 /*
 |--------------------------------------------------------------------------
@@ -71,17 +71,11 @@ Route::group([
     Route::get("/zomato/salary/sheet/export/ajax/{month_name}","AjaxNewController@zomato_salary_export")->name("admin.zomato_salary_export");
     Route::get("/zomato/profit/sheet/export/ajax/{month_name}/{client_id}","AjaxNewController@zomato_profit_export")->name("admin.zomato_profit_export");
     Route::get('/ajax/generated/rider/bill/status/{month}/{client_id}','AjaxNewController@getGeneratedBillStatus')->name('ajax.getGeneratedBillStatus');
-    
     Route::GET('/get/invoices','AjaxNewController@getInvoices')->name('invoice.get_invoices');
     Route::get("/accounts/employee/account/{range}","AjaxNewController@getEmployeeAccounts")->name("admin.accounts.getEmployeeAccounts");
     Route::get("/accounts/employee/bills/{range}","AjaxNewController@getEmployeeAccountsBills")->name("admin.accounts.getEmployeeAccountsBills");
     Route::get("/invoice/ajax/payments/view","AjaxNewController@getInvoicePayments")->name("admin.getInvoicePayments");
-    Route::get('/newApprovalComer/view/ajax', 'AjaxController@getApprovalComer')->name('NewComer.view_approval_ajax');
-    Route::get('/newApprovedComer/view/ajax', 'AjaxController@getApprovedComer')->name('NewComer.view_approved_ajax');
-
-
-    
-
+    Route::get('/newApprovalComer/view/ajax/{id}', 'AjaxController@getApprovalComer')->name('NewComer.view_approval_ajax');
 
 });
 // End Ajax Routes
@@ -432,6 +426,9 @@ Route::group([
     Route::get('/newComer/popup/{newComer_id}','NewComerController@newComer_popup')->name('NewComer.popup');
     Route::get('/newComer/approval','NewComerController@new_comer_approval_view')->name('NewComer.approval');
     Route::post('/newComer/approved','NewComerController@new_comer_approved')->name('NewComer.approved');
+    Route::post('/newComer/add_interview_status','NewComerController@add_interview_status')->name('NewComer.add_interview_status');
+    Route::post('/newComer/add_interview_date','NewComerController@add_interview_date')->name('NewComer.add_interview_date');
+
     
 });
 // End NewComer

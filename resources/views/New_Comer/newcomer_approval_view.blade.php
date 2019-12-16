@@ -6,7 +6,7 @@
     .highlighted{
         background-color: #FFFF88;
     }
-    .dataTables_length{
+    .dataTables_length{ 
    display: block;   
 }
 .total_entries{
@@ -85,6 +85,12 @@ margin-left: 10px;
             <tr>
                     <th>Passport status:</th>
                     <td class="approval_passport_status">Full Name</td>
+                    <th>Application status:</th>
+                    <td class="approval_app_status">Full Name</td>
+            </tr>
+            <tr>
+                    <th>Interview status:</th>
+                    <td class="approval_interview_status">Full Name</td>
             </tr>
            </table>
         <div class="form-group">
@@ -106,6 +112,7 @@ margin-left: 10px;
         </div>
         </div>
        <div class="modal-footer">
+           <div class="footer_f_form" style="display:none;width:100%;">
          <form style="width:100%;" action="" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label>Approval status message</label>
@@ -116,12 +123,49 @@ margin-left: 10px;
                 <label>Approval status</label>
                 <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control" id="approval_status" name="approval_status" style="width: 2% !important;" value="approve"  required /><h6 style="margin-top:10px;margin-left:10px;">Approve</h6></div>
                 <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control" id="approval_status" name="approval_status" style="width: 2% !important;" value="reject"  required /><h6 style="margin-top:10px;margin-left:10px;">Reject</h6></div>
+            <input style="display:none;" type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker2 form-control @if($errors->has('given_date')) invalid-field @endif" name="interview_date" placeholder="Enter Given Date" value="">
             </div>
             <div class="form-group"> 
                 <button class="btn btn-success" name="submit" type="submit">Submit</button>
             </div>
          </form>
         </div>
+        <div class="footer_s_form" style="display:none;width:100%;">
+                <form style="width:100%;" action="" method="POST" enctype="multipart/form-data">
+                    <input name="new_commer_id" id="new_commer_id" type="hidden">
+
+                   <div class="form-group">
+                       <label>Interview by</label>
+                       <input name="interview_by" id="interview_by" type="text" class="form-control">
+                   </div>
+                   <div class="form-group">
+                       <label>Interview status message</label>
+                       <textarea name="interview_status_message" id="interview_status_message" type="text" class="form-control"></textarea>
+                   </div>
+                   <div class="form-group">
+                      <label>Interview status</label>
+                   <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control" id="interview_status" name="interview_status" style="width: 2% !important;" value="approve"  required /><h6 style="margin-top:10px;margin-left:10px;">Approve</h6></div>
+                   <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control" id="interview_status" name="interview_status" style="width: 2% !important;" value="reject"  required /><h6 style="margin-top:10px;margin-left:10px;">Reject</h6></div>
+                   </div>
+                   <div class="form-group"> 
+                       <button class="btn btn-success" name="submit" type="submit">Submit</button>
+                   </div>
+                </form>
+               </div>
+               <div class="footer_t_form" style="display:none;width:100%;">
+                    <form style="width:100%;" action="" method="POST" enctype="multipart/form-data">
+                        <input name="new_commer_id" id="new_commer_id" type="hidden">
+
+                       <div class="form-group">
+                           <label>Interview date</label>
+                          <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker2 form-control @if($errors->has('given_date')) invalid-field @endif" name="interview_date" placeholder="Enter Given Date" value="">
+                       </div>
+                       <div class="form-group"> 
+                           <button class="btn btn-success" name="submit" type="submit">Submit</button>
+                       </div>
+                    </form>
+                   </div>
+    </div>
     </div>
     </div>
 </div>
@@ -175,10 +219,11 @@ margin-left: 10px;
                                 <i class="la la-ellipsis-h"></i>
                                 </a>
                                   <div class="dropdown-menu dropdown-menu-right">
+                                  <a class="dropdown-item" onclick="sort_by_status('all')"><i class="flaticon2-group"></i> All</a>
                                   <a class="dropdown-item" onclick="sort_by_status('approve')"><i class="flaticon2-checkmark"></i> Approved</a>
-                                  <a class="dropdown-item" onclick="sort_by_status('reject')"><i class="flaticon2-cross"></i> Reject</a>
+                                  <a class="dropdown-item" onclick="sort_by_status('reject')"><i class="flaticon2-cross"></i> Rejected</a>
                                   <a class="dropdown-item" onclick="sort_by_status('pending')"><i class="flaticon2-pen"></i> Pending</a>
-                                  <a class="dropdown-item" onclick="sort_by_status('interview')"><i class="flaticon2-check-mark"></i> Interview</a>
+                                  <a class="dropdown-item" onclick="sort_by_status('interview')"><i class="flaticon2-check-mark"></i> Interviewer's</a>
                                   </div>    
                            </span>
                         </th>
@@ -212,7 +257,8 @@ margin-left: 10px;
 @section('foot')
 <!--begin::Page Vendors(used by this page) -->
 <script src="{{ asset('dashboard/assets/vendors/custom/datatables/datatables.bundle.js') }}" type="text/javascript"></script>
-
+<link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
 <!--end::Page Vendors -->
 
 <!--begin::Page Scripts(used by this page) -->
@@ -223,6 +269,7 @@ margin-left: 10px;
 <script>
 var newcomer_table;
 var newcomer_data = [];
+window._url = "https://"+window.location.host+"/admin/newApprovalComer/view/ajax/all";
 $(function() { 
     var _settings =  {
         processing: true,
@@ -233,6 +280,7 @@ $(function() {
             'processing': $('.loading').show()
         },
         drawCallback:function(data){
+            data.ajax = window._url;
             console.log(data)
             var api = this.api();
             var _data = api.data();
@@ -245,7 +293,7 @@ $(function() {
         $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
         mark_table();
         },
-        ajax: "{!! route('NewComer.view_approval_ajax') !!}",
+        ajax: window._url,
         columns:null, 
         responsive:true,
         order:[0,'desc'],
@@ -458,64 +506,23 @@ $(function() {
     }
 });
 
-
-
-function updateStatus(bike_id)
-{
-    var url = "{{ url('admin/bike') }}" + "/" + bike_id + "/updateStatus";
-    console.log(url,true);
-    swal.fire({
-        title: 'Are you sure?',
-        text: "You want update status!",
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes!'
-    }).then(function(result) {
-        if (result.value) {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            }); 
-            $.ajax({
-                url : url,
-                type : 'POST',
-                beforeSend: function() {            
-                    $('.loading').show();
-                },
-                complete: function(){
-                    $('.loading').hide();
-                },
-                success: function(data){
-                    swal.fire({
-                        position: 'center',
-                        type: 'success',
-                        title: 'Record updated successfully.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                    bike_table.ajax.reload(null, false);
-                },
-                error: function(error){
-                    swal.fire({
-                        position: 'center',
-                        type: 'error',
-                        title: 'Oops...',
-                        text: 'Unable to update.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                }
-            });
-        }
-    });
-}
-
 function show_waiting_comer(id,$this){
+    $('.footer_f_form').hide();
+    $('.footer_s_form').hide();
+    $('.footer_t_form').hide();
     var _row = $($this).parents('.odd,.even');
-    $('#new_commer_id').val(id);
+    $('[name="new_commer_id"]').val(id);
     $('.custom_approval_comer_model').modal('show');
     var _newcommerdata = newcomer_table.row(_row).data();
+    if(_newcommerdata.approval_status == 'reject' || _newcommerdata.approval_status == 'pending'){
+        $('.footer_f_form').show();
+    }
+    if(_newcommerdata.interview_status == 'pending'){
+        $('.footer_s_form').show();
+    }
+    if(_newcommerdata.approval_status == 'approve' && _newcommerdata.interview_status == null){
+    $('.footer_t_form').show();
+    }
     console.log(_newcommerdata);
     $('.approval_full_name').text(_newcommerdata.full_name);
     $('.approval_phone_no').text(_newcommerdata.phone_number);
@@ -531,6 +538,8 @@ function show_waiting_comer(id,$this){
     $('.approval_w_no').text(_newcommerdata.whatsapp_number);
     $('.approval_passport_status').text(_newcommerdata.passport_status);
     $('.approval_passport_no').text(_newcommerdata.passport_number);
+    $('.approval_interview_status').text(_newcommerdata.interview_status);
+    $('.approval_app_status').text(_newcommerdata.approval_status);
     if(_newcommerdata.current_residence == 'other'){
         _newcommerdata.current_residence = _newcommerdata.current_residence_countries
     }
@@ -559,7 +568,10 @@ $('ul.list-group.list-group-horizontal li').click(function(){
     $('.approval_custom_images_section a').attr('href',_newimgsrc);
 
 })
-$('.custom_approval_comer_model').find('form').off('submit').on('submit', function(e){
+
+// first form
+
+$('.custom_approval_comer_model .footer_f_form').find('form').off('submit').on('submit', function(e){
                         e.preventDefault();
                         $('.custom_approval_comer_model').modal('hide');
                         var _form = $(this);
@@ -596,10 +608,107 @@ $('.custom_approval_comer_model').find('form').off('submit').on('submit', functi
                         });
                     });
 
-function sort_by_status(status){
-    // alert(status)
-    // getApprovalComer(status);
-}
+
+
+                    // second form
+
+                    $('.custom_approval_comer_model .footer_s_form').find('form').off('submit').on('submit', function(e){
+                        e.preventDefault();
+                        $('.custom_approval_comer_model').modal('hide');
+                        var _form = $(this);
+                        var _url ="{{url('admin/newComer/add_interview_status')}}";
+                        $.ajax({
+                            url : _url,
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            type : 'POST',
+                            data: _form.serialize(),
+                            success: function(data){
+                                console.log(data);
+                                
+                                swal.fire({
+                                    position: 'center',
+                                    type: 'success',
+                                    title: 'Record updated successfully.',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                                newcomer_table.ajax.reload(null, false);
+                            },
+                            error: function(error){
+                                swal.fire({
+                                    position: 'center',
+                                    type: 'error',
+                                    title: 'Oops...',
+                                    text: 'Unable to update.',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                            }
+                        });
+                    });
+
+
+
+                    // Third form
+
+                    $('.custom_approval_comer_model .footer_t_form').find('form').off('submit').on('submit', function(e){
+                        e.preventDefault();
+                        $('.custom_approval_comer_model').modal('hide');
+                        var _form = $(this);
+                        var _url ="{{url('admin/newComer/add_interview_date')}}";
+                        $.ajax({
+                            url : _url,
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            type : 'POST',
+                            data: _form.serialize(),
+                            success: function(data){
+                                console.log(data);
+                                
+                                swal.fire({
+                                    position: 'center',
+                                    type: 'success',
+                                    title: 'Record updated successfully.',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                                newcomer_table.ajax.reload(null, false);
+                            },
+                            error: function(error){
+                                swal.fire({
+                                    position: 'center',
+                                    type: 'error',
+                                    title: 'Oops...',
+                                    text: 'Unable to update.',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                            }
+                        });
+                    });
+
+
+
+                    // end of forms
+
+            function sort_by_status(status){
+                window._url = "https://"+window.location.host+"/admin/newApprovalComer/view/ajax/"+status;
+                setTimeout(function(){
+                newcomer_table.ajax.reload();
+                },1000)
+            }
+            $('[name="approval_status"]').change(function(){
+                $('[name="interview_date"]').val('');
+                if($(this).val()=='approve'){
+                   $('[name="interview_date"]').show();
+                }
+                else{
+                    $('[name="interview_date"]').hide();
+                }
+            })
 </script>
 <style>
    

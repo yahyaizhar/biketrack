@@ -36,6 +36,10 @@ class CreateGuestNewComersTable extends Migration
             $table->text('overall_remarks')->nullable();
             $table->string('status_approval_message')->nullable();
             $table->string('approval_status')->default('pending');
+            $table->string('interview_status')->nullable();
+            $table->string('interview_status_message')->nullable();
+            $table->string('interview_date')->nullable();
+            $table->string('interview_by')->nullable();
             $table->string('active_status')->default("0");
             $table->timestamps();
         });

@@ -294,6 +294,23 @@ biketrack.refresh_global = function(){
             $(this).fdatepicker('update', new Date(_initDate));
         }
     });
+    $('.month_picker2').each(function(){
+        var _initDate = $(this).attr('data-month');
+        var now = new Date();   
+        if(!$(this).hasClass("ft-init")){
+            $(this).fdatepicker({ 
+                format: 'MM dd, yyyy', 
+                startDate: now,
+                startView:2,
+                minView:2,
+                maxView:4
+            });
+            $(this).removeClass('ft-init').addClass('ft-init');
+            $(this).fdatepicker('update', new Date(_initDate));
+        }else{
+            $(this).fdatepicker('update', new Date(_initDate));
+        }
+    });
     $('.month_picker_only').each(function(){
         var _initDate = $(this).attr('data-month');
         if(!$(this).hasClass("ft-init")){

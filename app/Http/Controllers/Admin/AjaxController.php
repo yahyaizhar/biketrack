@@ -1,5 +1,5 @@
 <?php
-
+ 
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
@@ -1365,9 +1365,17 @@ class AjaxController extends Controller
         ->rawColumns(['name','passport_status','education','whatsapp_number','licence_issue_date','overall_remarks','interview','kingriders_interview','passport_reason', 'nationality','experience_input', 'phone_number','experience', 'source_of_contact','actions', 'status','interview_status',])
         ->make(true);
     }
-    public function getApprovalComer()
+    public function getApprovalComer($id)
     {
-        $newComer = GuestNewComer::orderByDesc('created_at')->where("approval_status","pending")->get();
+        if($id =='all'){
+            $newComer = GuestNewComer::orderByDesc('created_at')->get();
+        }
+        elseif($id =='interview'){
+            $newComer = GuestNewComer::orderByDesc('created_at')->where("interview_status","approve")->get();
+        }
+        else{
+        $newComer = GuestNewComer::orderByDesc('created_at')->where("approval_status",$id)->get();
+        }
         // return $clients;
         return DataTables::of($newComer)
         ->addColumn('full_name', function($newComer){

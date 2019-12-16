@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Bikes\bike;
-use App\Model\Bikes\bike_detail;
+use App\Model\Bikes\bike_detail; 
 use App\Model\Client\Client;
 use Illuminate\Support\Facades\Hash;
 use App\Model\Rider\Rider;
@@ -97,7 +97,25 @@ class NewComerController extends Controller
       }
       public function new_comer_approved(Request $request){
         $comer_id = $request->new_commer_id;
-        DB::table('guest_new_comers') ->where('id', $comer_id) ->update(['approval_status' => $request->approval_status , 'status_approval_message' => $request->status_approval_message]);
+        if($request->interview_date){
+            $request->interview_status ='pending';
+        }
+        DB::table('guest_new_comers') ->where('id', $comer_id) ->update(['approval_status' => $request->approval_status,'interview_status' => $request->approval_status, 'interview_date' => $request->interview_date , 'interview_status' => $request->interview_status ,'status_approval_message' => $request->status_approval_message]);
+      }
+      public function add_interview_status(Request $request){
+        $comer_id = $request->new_commer_id;
+        if($request->interview_status == 'approve'){
+        DB::table('guest_new_comers') ->where('id', $comer_id) ->update(['interview_by' => $request->interview_by,'interview_status_message' => $request->interview_status_message,  'interview_status' => $request->interview_status, 'active_status' => '1']);
+        }
+        else{
+            DB::table('guest_new_comers') ->where('id', $comer_id) ->update(['interview_by' => $request->interview_by,'interview_status_message' => $request->interview_status_message,  'interview_status' => $request->interview_status, 'active_status' => '0']);
+
+        }
+      }
+
+      public function add_interview_date(Request $request){
+        $comer_id = $request->new_commer_id;
+        DB::table('guest_new_comers') ->where('id', $comer_id) ->update(['interview_status' => 'pending', 'interview_date' => $request->interview_date]);
       }
       public function newComer_popup($id){
           $newComer=New_comer::find($id);
