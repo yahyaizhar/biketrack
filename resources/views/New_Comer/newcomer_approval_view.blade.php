@@ -709,6 +709,12 @@ $('.custom_approval_comer_model .footer_f_form').find('form').off('submit').on('
                     $('[name="interview_date"]').hide();
                 }
             })
+        var _h6 = $('input[type="radio"]').siblings('h6');
+            $(_h6).css('cursor','pointer');
+            $(_h6).click(function(){
+                $(this).siblings('input[type="radio"]').prop( "checked", true );
+                $(this).siblings('input[type="radio"]').change();
+            })
 </script>
 <style>
    
