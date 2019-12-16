@@ -282,7 +282,7 @@ class InvoiceController extends Controller
     }
     public function get_ajax_client_details($client_id, $formatted_month){
         $client=Client::find($client_id);
-        $client_riders=Client_Rider::where('client_id', $client->id)->get();
+        $client_riders=Client_History::where('client_id', $client->id)->get();
         $billing_address=$client->address;
         $month = Carbon::parse($formatted_month)->format('m');
 
