@@ -401,6 +401,13 @@ class SalikController extends Controller
             $start_updated_at =Carbon::parse($item['bike_unassign_date'])->endOfMonth()->format('Y-m-d');
             $updated_at =Carbon::parse($start_updated_at);
             $req_date =Carbon::parse($date);
+            
+            if($item->status=='active'){
+                if($according_to=='bike'){
+                    return $item['bike_id']==$_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+                }
+                return $item['rider_id']==$_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+            }
             if($according_to=='bike'){
                 return $item['bike_id']==$_id &&
                 ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
