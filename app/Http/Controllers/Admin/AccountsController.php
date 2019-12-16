@@ -1482,6 +1482,7 @@ public function update_edit_fuel_expense(Request $r,$id){
     $fuel_expense=Fuel_Expense::find($id);
     $fuel_expense->amount=$r->amount;
     $fuel_expense->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+    $fuel_expense->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
     $fuel_expense->type=$r->type;
     $fuel_expense->bike_id=$bike_id->id;
     $fuel_expense->rider_id=$r->rider_id;
