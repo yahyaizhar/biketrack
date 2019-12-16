@@ -40,6 +40,7 @@
                             </option>     
                             @endforeach 
                         </select>
+                        <span class="form-text text-muted float-right rider__feid"></span>
                             
                     </div>
                 </div>
@@ -830,6 +831,7 @@
 
         var getData = function(ranges){
             var rider_id=biketrack.getUrlParameter('rider_id');
+            $('.rider__feid').text('');
             $('[name="rider_id"], [name="rider_id_num"]').val(rider_id).trigger("change.select2");
             var url = "{{ url('admin/accounts/company/account/') }}"+"/"+ranges;
             console.warn(url)
@@ -861,6 +863,7 @@
                     }
 
                     var feid=response.feid;
+                    $('.rider__feid').text(feid);
                     
                     
                 },

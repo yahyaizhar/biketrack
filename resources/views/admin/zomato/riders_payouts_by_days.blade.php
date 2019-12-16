@@ -282,9 +282,6 @@ uppy.use(Uppy.DragDrop, {
                                 time_sheet.weekdays.find(function(y){return y.day==day}).rep++;
                                 time_sheet.total_absent_days++;
                             }
-                            //storing total trips and hours
-                            time_sheet.calculated_trips+=item.orders;
-                            time_sheet.calculated_hours+=item.login_hours;
                             
                             //adding rider_id
                             var client_rider=client_riders.find(function(x){return x.client_rider_id===_feid});
@@ -404,6 +401,7 @@ uppy.use(Uppy.DragDrop, {
                                         }
                                     }
                                     else{
+                                        time_sheet.calculated_trips+=item.orders;
                                         if(day==offday){
                                             //extraday
                                             item.time_sheet.off_day_status='extraday';
@@ -411,7 +409,12 @@ uppy.use(Uppy.DragDrop, {
                                         else{
                                             //present
                                             item.time_sheet.off_day_status='present';
+                                            //storing total trips and hours
+                                            time_sheet.calculated_hours+=item.login_hours>11?11:item.login_hours; 
                                         }
+                                        //adding it to data
+                                        item.time_sheet.calculated_trips=time_sheet.calculated_trips;
+                                        item.time_sheet.calculated_hours=time_sheet.calculated_hours;
                                     }
                                 }
                             }
