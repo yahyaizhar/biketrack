@@ -1488,14 +1488,29 @@ public function update_edit_fuel_expense(Request $r,$id){
     $fuel_expense->rider_id=$r->rider_id;
     $fuel_expense->update();
 
-    $assign_bike=Assign_bike::where('bike_id', $fuel_expense->bike_id)
-    ->whereDate('created_at','<=',Carbon::parse($r->get('month'))->format('Y-m-d'))
-    ->get()
-    ->last();
-    $rider_id = null;
-    if($assign_bike){
-        $rider_id=Rider::find($assign_bike->rider_id)->id;
-    }
+    $rider_id=$r->rider_id;
+
+    // $bike_histories = null;
+    // $bike_history = Assign_bike::all()->toArray();
+    // $date=Carbon::parse($r->get('month'))->format('Y-m-d');
+    // $history_found = Arr::first($bike_history, function ($item, $key) use ($bike_id, $date) {
+    //     $start_created_at =Carbon::parse($item['bike_assign_date'])->startOfMonth()->format('Y-m-d');
+    //     $created_at =Carbon::parse($start_created_at);
+
+    //     $start_updated_at =Carbon::parse($item['bike_unassign_date'])->endOfMonth()->format('Y-m-d');
+    //     $updated_at =Carbon::parse($start_updated_at);
+    //     $req_date =Carbon::parse($date);
+        
+    //     if($item['status']=='active'){
+            
+    //         return $item['bike_id']==$bike_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+    //     }
+    //     return $item['bike_id']==$bike_id &&
+    //         ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+    // });
+    // if(isset($history_found)){
+    //     $rider_id=$history_found->rider_id;
+    // }
 if ($fuel_expense->type=="vip_tag") {
     
     $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
