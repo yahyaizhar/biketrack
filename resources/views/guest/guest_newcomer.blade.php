@@ -845,72 +845,48 @@ $('.alreay_registred').find('form').off('submit').on('submit', function(e){
                             data: _form.serialize(),
                             success: function(data){
                                 console.log(data);
-                                var _title = '';
                                 if(data == 'error'){
-                                    swal.fire({
-                                    position: 'center',
-                                    type: 'error',
-                                    title: 'Oops...',
-                                    text: 'No data found.',
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                });
                                 $('.approval_message').show();
                                 $('.approval_message').css('color','red');
-                                $('.approval_message').text('No data found against your national id card number.Please submit you application if you have not applied yet.')
+                                $('.approval_message').html('<ul><li>No data found against your national id card number.Please submit you application if you have not applied yet.</li></ul>')
                                 }
                                else{
-                                   var _type= 'success';
                                    if(data[0].approval_status =="pending"){
-                                        _type ='error';
-                                        _title = 'You application is still pending.';
                                 $('.approval_message').show();
                                 $('.approval_message').css('color','red'); 
-                                $('.approval_message').text('Your application is still pending.We will inform you shortly within a week.');
+                                $('.approval_message').html('<ul><li>Your application is still pending.We will inform you shortly within a week.</li></ul>');
                                    }
-                                   else if(data[0].approval_status == "reject"){
-                                       if(data[0].status_approval_message !== 'null'){
-                                        _title = 'You application is rejected.\n'+data[0].status_approval_message;
-                                        _type ='error';
+                                else if(data[0].approval_status == "reject"){
+                                if(data[0].status_approval_message !== 'null'){
                                 $('.approval_message').show();
                                 $('.approval_message').css('color','red'); 
-                                $('.approval_message').html('Your application is reject due to the following reason. <br>'+data[0].status_approval_message);
-                                       }else{
-                                        _type ='error';
-                                        _title = 'You application is rejected.';
+                                $('.approval_message').html('<ul><li>Your application is reject </li><li> Application status message:'+data[0].status_approval_message+'</li></ul>');
+                                }else{
                                 $('.approval_message').show();
                                 $('.approval_message').css('color','red'); 
-                                $('.approval_message').html('Your application is rejected.');
-                                       
-                                       }
+                                $('.approval_message').html('<ul><li>Your application is rejected.</li></ul>');
+                                }
                                     
-                                   }
-                                   else{
-                                    _title = 'You application has been approved.';
-                                    _type= 'success';
+                                }
+                                else{
                                 $('.approval_message').show();
                                 $('.approval_message').css('color','red'); 
-                                $('.approval_message').html('Your application has been Approved. We will inform you about your interview soon.');
-                                   }
-                                swal.fire({
-                                    position: 'center',
-                                    type: _type,
-                                    title: _title,
-                                    showConfirmButton: false,
-                                    timer: 2500
-                                });
+                                if(data[0].interview_date ==''){
+                                $('.approval_message').html('<ul><li>Your application has been Approved. We will inform you about your interview soon.</li></ul>');
+                                }
+                                else{
+                                if(data[0].interview_status =='pending'){
+                                    $('.approval_message').html('<ul><li>Your application has been Approved</li><li>Your Interview is scheduled on '+data[0].interview_date+'</li></ul>');
+                                }
+                                else{
+                                    $('.approval_message').html('<ul><li>Your application has been Approved</li><li>Your Interview is scheduled on '+data[0].interview_date+'</li><li>Interview status: '+data[0].interview_status+'</li><li>Interview Message: '+data[0].interview_status_message+'</li></ul>');
+
+                                }
+                                }
+                                }
                                }
-                                $('.hidde_status_form').toggle();
                             },
                             error: function(error){
-                                swal.fire({
-                                    position: 'center',
-                                    type: 'error',
-                                    title: 'Oops...',
-                                    text: 'No data found.',
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                });
                             }
                         });
                     });
@@ -923,6 +899,12 @@ $('.alreay_registred').find('form').off('submit').on('submit', function(e){
         <script>
             $(document).ready(function(){
                 $('#licence_date').fdatepicker({format: 'dd-mm-yyyy'}); 
+                var _h6 = $('input[type="radio"]').siblings('h6');
+                $(_h6).css('cursor','pointer');
+                $(_h6).click(function(){
+                    $(this).siblings('input[type="radio"]').prop( "checked", true );
+                    $(this).siblings('input[type="radio"]').change();
+                })
                
              });
         </script>
