@@ -311,6 +311,14 @@
                     $('.upload-button').html("Submit").prop("disabled",false);
                 }
 
+                var is_generated=data.is_generated; 
+                if (is_generated) {
+                    $('.upload-button').html("Update Salary");
+                }else{
+                    $('.upload-button').html("Generate Salary");
+                }
+
+
             });
         });
 

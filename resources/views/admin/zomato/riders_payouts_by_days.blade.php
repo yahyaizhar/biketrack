@@ -383,6 +383,7 @@ uppy.use(Uppy.DragDrop, {
                             
                             if(typeof time_sheet != "undefined"){
                                 item.time_sheet=JSON.parse(JSON.stringify(time_sheet));
+                                item.time_sheet_mutable=time_sheet;
                                 if (!item.time_sheet.is_error) { // error found on this riders
                                     var _feid = item.feid;
                                     var day=new Date(item.date).getDay();
@@ -413,8 +414,8 @@ uppy.use(Uppy.DragDrop, {
                                             time_sheet.calculated_hours+=item.login_hours>11?11:item.login_hours; 
                                         }
                                         //adding it to data
-                                        item.time_sheet.calculated_trips=time_sheet.calculated_trips;
-                                        item.time_sheet.calculated_hours=time_sheet.calculated_hours;
+                                        item.time_sheet_mutable.calculated_trips=time_sheet.calculated_trips;
+                                        item.time_sheet_mutable.calculated_hours=time_sheet.calculated_hours;
                                     }
                                 }
                             }
@@ -424,7 +425,7 @@ uppy.use(Uppy.DragDrop, {
                         //     'time_sheet':time_sheet_data
                         // ];
                         console.log('import_data', import_data);
-                        save_data(import_data,250); //******************// parem1: data to send, parem2: number of chunks
+                        save_data(import_data,140); //******************// parem1: data to send, parem2: number of chunks
                     }); 
                 },200);
             }
