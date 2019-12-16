@@ -92,8 +92,36 @@ class AjaxController extends Controller
                         $to_return .='<p><strong>Amount:</strong> '.$settings['fb__amount'].'</p>';
                         $to_return .='<p><strong>Workable Hours:</strong> '.$settings['fb__workable_hours'].'</p>';
                         break;
+                    
+                    default:
+                        
+                        break;
+                }
+                return $to_return;
+            }
+            return 'No Payout Method is set.';
+        })
+        ->addColumn('salary_method', function($clients){
+            if($clients->salary_methods!=null){
+                $settings = json_decode($clients->salary_methods, true);
+                $pm = $settings['salary_method'];
+                $to_return ='';
+                switch ($pm) {
+                    case 'trip_based':
+                        $to_return .='<p><strong>Salary Method:</strong> Based on Trips and Hours</p>';
+                        $to_return .='<p><strong>Per trip amount:</strong> '.$settings['tb_sm__trip_amount'].'</p>';
+                        $to_return .='<p><strong>Per hour amount:</strong> '.$settings['tb_sm__hour_amount'].'</p>';
+                        $to_return .='<p><strong>Bonus trips:</strong> '.$settings['tb_sm__bonus_trips'].'</p>';
+                        $to_return .='<p><strong>Bonus amount:</strong> '.$settings['tb_sm__bonus_amount'].'</p>';
+                        $to_return .='<p><strong>Bonus trips amount:</strong> '.$settings['tb_sm__trips_bonus_amount'].'</p>';
+                        break;
+                    case 'fixed_based':
+                        $to_return .='<p><strong>Salary Method:</strong> Based on Fixed Amount</p>';
+                        $to_return .='<p><strong>Amount:</strong> '.$settings['fb_sm__amount'].'</p>';
+                        $to_return .='<p><strong>Extra Hours Rate:</strong> '.$settings['fb_sm__exrta_hours'].'</p>';
+                        break;
                     case 'commission_based':
-                        $to_return .='<p><strong>Payout Method:</strong> Based on Commission</p>';
+                        $to_return .='<p><strong>Salary Method:</strong> Based on Commission</p>';
                         $to_return .='<p><strong>Amount:</strong> '.$settings['cb__amount'];
                         if($settings['cb__type']=='percent'){
                             $to_return .='%</p>' ;
@@ -109,13 +137,17 @@ class AjaxController extends Controller
                 }
                 return $to_return;
             }
-            return 'No Payout Method is set.';
+            return 'No Salary Method is set.';
         })
         ->addColumn('actions', function($clients){
             $status_text = $clients->status == 1 ? 'Inactive' : 'Active';
             $payout_method_HTML_suffix = '<i class="fa fa-plus"></i>Set Payout Method';
+            $salary_method_HTML_suffix = '<i class="fa fa-plus"></i>Set Salary Method';
             if($clients->setting!=null){
                 $payout_method_HTML_suffix = '<i class="fa fa-edit"></i>Update Payout Method';
+            }
+            if($clients->salary_methods!=null){
+                $salary_method_HTML_suffix = '<i class="fa fa-edit"></i>Update Salary Method';
             }
             return '<span class="dtr-data">
             <span class="dropdown">
@@ -131,11 +163,12 @@ class AjaxController extends Controller
                     <a class="dropdown-item" href="'.route('client.profit_sheet_view', $clients).'"><i class="fa fa-edit"></i>View Record Sheet</a>
                     <a class="dropdown-item" href="'.route('client.client_total_expense', $clients).'"><i class="fa fa-edit"></i>View Record Summary</a>
                     <a class="dropdown-item" href="" onclick=\'show_payout_modal('.json_encode($clients->setting).', '.$clients->id.');return false;\'>'.$payout_method_HTML_suffix.'</a> 
+                    <a class="dropdown-item" href="" onclick=\'show_salary_modal('.json_encode($clients->salary_methods).', '.$clients->id.');return false;\'>'.$salary_method_HTML_suffix.'</a> 
                 </div>
             </span>
         </span>';
         })
-        ->rawColumns(['new_name', 'new_email', 'new_phone', 'actions', 'status', 'payout_method'])
+        ->rawColumns(['new_name', 'new_email', 'new_phone', 'actions', 'status', 'payout_method', 'salary_method'])
         ->make(true);
     }
     public function getSims()

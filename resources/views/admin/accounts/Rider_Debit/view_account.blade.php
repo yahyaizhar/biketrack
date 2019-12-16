@@ -685,6 +685,12 @@
     </div>
 </div>
 {{-- rider payouts by days --}}
+<div class="attendance__msg-container">
+    <div class="attendance__msg"></div>
+    <div class="attendance__sync-data">
+
+    </div>
+</div>
 <div class="kt-content  kt-grid__item kt-grid__item--fluid days_payout" id="kt_content">
     <div class="kt-portlet kt-portlet--mobile">
         <div class="kt-portlet__head kt-portlet__head--lg">
@@ -996,89 +1002,63 @@
             $.ajax({
                 url : _Url,
                 type : 'GET',
+                beforeSend: function() {            
+                    $('.bk_loading').show();
+                },
+                complete: function(){
+                    $('.bk_loading').hide();
+                },
                 success: function(data){
                     var _data=data.data;
                     console.log(_data);
+                    if(!_data) return; 
+                    var time_sheet=_data.time_sheet;
                     var  rows='';
-                    var t_trips=0;
-                    var hours=0;
-                    var status='';
-                    var weekdays=[{day:'Monday',rep:0},{day:'Tuesday',rep:0},{day:'Wednesday',rep:0},{day:'Thursday',rep:0},{day:'Friday',rep:0},{day:'Saturday',rep:0},{day:'Sunday',rep:0}];
-                    var total_absents=0;
-                    var extra_day=0;
-                    _data.forEach(function(item,j){
-                        if (item.trips=='0' && item.login_hours=='0') {
-                            //rider_days absents
-                            console.log(weekdays);
-                            var offdays=new Date(item.date).format("dddd");
-                            var days_off=weekdays.find(function(x){return x.day==offdays});
-                            var count=days_off.rep++;
-                            weekdays.sort(function(a,b){
-                                return a.rep<b.rep?1:-1;
-                            })
-                            var repeated=weekdays[0].rep;
-                            var din=weekdays[0].day;
-                            total_absents++;
-                        }
-                    });
-                    _data.forEach(function(item,j){
+                    var calculated_trips=0;
+                    var calculated_hours=0;
+                    
+                    var total_absents=_data.absents_count;
+                    var extra_day=_data.extra_day;
+                    time_sheet.forEach(function(item,j){
+                        var trips=parseFloat(item.trips)||0;
+                        var login_hours=parseFloat(item.login_hours)||0;
                         var date=new Date(item.date).format("dd mmm yyyy dddd");
-                        t_trips+=parseFloat(item.trips);
-                        if (item.login_hours>11) {
-                            item.login_hours=11;
+                        if (login_hours>11) {
+                            login_hours=11;
                         }
-                        if (item.trips!='0' || item.login_hours!='0') {
-                            status="present";
+                        
+                        
+                        var off__status=item.off_days_status;
+                        
+                        var status='';
+                        switch (off__status) {
+                            case 'weeklyoff':
+                                status='<div style="color:green;">Weekly Off</div>';
+                                break;
+                            case 'absent':
+                                status='<div style="color:red;">Absent</div>';
+                                break;
+                            case 'extraday':
+                                login_hours=0;
+                                status='<div style="color:orange;">Extra Day</div>';
+                                break;
+                            case 'present':
+                                status='<div>Present</div>';
+                                break;
+                        
+                            default:
+                                break;
                         }
-                        if (item.trips=='0' && item.login_hours=='0') {
-                            console.log(weekdays);
-                            // var offdays=new Date(item.date).format("dddd");
-                            // var days_off=weekdays.find(function(x){return x.day==offdays});
-                            // var count=days_off.rep++;
-                            weekdays.sort(function(a,b){
-                                return a.rep<b.rep?1:-1;
-                            })
-                            var repeated=weekdays[0].rep;
-                            var din=weekdays[0].day;
-                            total_absents
-                            var date_match=new Date(item.date).format("dddd")   
-                            if (repeated>=3 && date_match==din) {
-                                status='<div style="color:green;">weekly-off</div>';
-                            }
-                            else if (item.trips=='0' && item.login_hours=='0'){
-                                status='<div style="color:red;">absent</div>';
-                            }
-                           
-                            $("[name='weekly_off']").val(repeated);
-                            $("[ name='weekly_off_day']").val(din);
-                        }
-                        else{
-                            var offdays=new Date(item.date).format("dddd");
-                            weekdays.sort(function(a,b){
-                                return a.rep<b.rep?1:-1;
-                            })
-                            var din=weekdays[0].day;
-                            if (item.trips!='0' && item.login_hours!='0' && offdays==din) {
-                                extra_day++;
-                                status='<div style="color:orange;">extra-day</div>';
-                            }
-                        }
-                        hours+=parseFloat(item.login_hours);
-                       rows+='<tr><td>'+date+'</td><td>'+item.trips+'</td><td>'+item.login_hours+'</td> <td class="absents">'+status+'</td></tr>';
+                        calculated_trips+=trips;
+                        calculated_hours+=login_hours;
+                       rows+='<tr><td>'+date+'</td><td>'+trips+'</td><td>'+login_hours+'</td> <td class="absents">'+status+'</td></tr>';
                     });
                     $("[name='absent_days']").val(total_absents);
                     $('[name="extra_day"]').val(extra_day);
                     $(".rider_days_detail tbody").html(rows); 
-                    $(".rider_days_detail tfoot").html('<tr><th>Total</th><th>'+t_trips.toFixed(2)+'</th><th>'+hours.toFixed(2)+'</th></tr>');
+                    $(".rider_days_detail tfoot").html('<tr><th>Total</th><th>'+calculated_trips.toFixed(2)+'</th><th>'+calculated_hours.toFixed(2)+'</th></tr>');
                  
-                    swal.fire({
-                        position: 'center',
-                        type: 'success',
-                        title: 'Record Entered successfully.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                    table.ajax.reload(null, false);
+
                 },
                 error: function(error){
                     swal.fire({

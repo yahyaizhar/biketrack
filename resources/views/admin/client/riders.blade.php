@@ -5,8 +5,10 @@ function updateClientHistoryDates(rider_id,client_history_id,assign_date,deassig
             $("#client_update_dates").modal("show");
             $('input[name="rider_id"]').val(rider_id);
             $('input[name="client_history_id"]').val(client_history_id);
-            $('input[name="assign_date"]').val(assign_date);
-            $('input[name="deassign_date"]').val(deassign_date);
+            $('input[name="assign_date"]').attr('data-month',assign_date);
+            $('input[name="deassign_date"]').attr('data-month',deassign_date);
+
+            biketrack.refresh_global();
             $("form#client_dates").on("submit",function(e){
                 e.preventDefault();
                 var _form = $(this);
@@ -148,6 +150,10 @@ function updateClientHistoryDates(rider_id,client_history_id,assign_date,deassig
         @php
             $rider=App\Model\Rider\Rider::find($client_H_A->rider_id);
         @endphp
+        @isset($rider)
+            @else
+            @continue
+        @endisset
         <div class="row" >
             <div class="col-xl-12">
             <!--begin:: Widgets/Applications/User/Profile3-->
@@ -240,6 +246,10 @@ function updateClientHistoryDates(rider_id,client_history_id,assign_date,deassig
         @php
             $rider=App\Model\Rider\Rider::find($client_H->rider_id);
         @endphp
+        @isset($rider)
+            @else
+            @continue
+        @endisset
         <div class="row" >
                 <div class="col-xl-12">
                 <!--begin:: Widgets/Applications/User/Profile3-->

@@ -486,10 +486,6 @@ public function add_payout_method(Request $r){
             $settings['fb__amount']=$r->fb__amount;
             $settings['fb__workable_hours']=$r->fb__workable_hours;
             break;
-        case 'commission_based':
-            $settings['cb__amount']=$r->cb__amount;
-            $settings['cb__type']=$r->cb__type;
-            break;
         
         default:
             return response()->json([
@@ -499,6 +495,43 @@ public function add_payout_method(Request $r){
             break;
     }
     $client->setting=json_encode($settings);
+    $client->save();
+    return response()->json([
+        'status'=>1,
+        'client'=>$client 
+    ]);
+}
+public function add_salary_method(Request $r){
+
+    $method = $r->salary_method;
+    $client = Client::find($r->client_id);
+    $settings=[];
+    $settings['salary_method']=$method;
+    switch ($method) {
+        case 'trip_based':
+            $settings['tb_sm__trip_amount']=$r->tb_sm__trip_amount;
+            $settings['tb_sm__hour_amount']=$r->tb_sm__hour_amount;
+            $settings['tb_sm__bonus_trips']=$r->tb_sm__bonus_trips;
+            $settings['tb_sm__bonus_amount']=$r->tb_sm__bonus_amount;
+            $settings['tb_sm__trips_bonus_amount']=$r->tb_sm__trips_bonus_amount;
+            break;
+        case 'fixed_based':
+            $settings['fb_sm__amount']=$r->fb_sm__amount;
+            $settings['fb_sm__exrta_hours']=$r->fb_sm__exrta_hours;
+            break;
+        case 'commission_based':
+            $settings['cb_sm__amount']=$r->cb_sm__amount;
+            $settings['cb_sm__type']=$r->cb_sm__type;
+            break;
+        
+        default:
+            return response()->json([
+                'status'=>0,
+                'message'=>'No Payout Method is selected.'
+            ]);
+            break;
+    }
+    $client->salary_methods=json_encode($settings);
     $client->save();
     return response()->json([
         'status'=>1,

@@ -132,20 +132,17 @@ public function get_active_riders_ajax($rider_id, $date){
     $sim_history = Sim_history::all();
     $sim_histories = null;
     // foreach ($sims_RAW as $sim) {
-        $history_found = Arr::first($sim_history, function ($item, $key) use ($rider_id, $date) {
-            $created_at =Carbon::parse($item->given_date)->format('Y-m-d');
-            $created_at =Carbon::parse($created_at);
+    $history_found = Arr::first($sim_history, function ($item, $key) use ($rider_id, $startMonth) {
+        $start_created_at =Carbon::parse($item->given_date)->startOfMonth()->format('Y-m-d');
+        $created_at =Carbon::parse($start_created_at);
 
-            $updated_at =Carbon::parse($item->return_date)->format('Y-m-d');
-            $updated_at =Carbon::parse($updated_at);
-            $req_date =Carbon::parse($date);
-            if($item->status=="active"){ 
-                // mean its still active, we need to match only created at
-                return $item->rider_id == $rider_id && $req_date->greaterThanOrEqualTo($created_at);
-            }
-            
-            return $item->rider_id == $rider_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
-        });
+        $start_updated_at =Carbon::parse($item->return_date)->endOfMonth()->format('Y-m-d');
+        $updated_at =Carbon::parse($start_updated_at);
+        $req_date =Carbon::parse($startMonth);
+
+        return $item->rider_id==$rider_id &&
+            ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+    });
 
         if(isset($history_found)){
             $sim_histories = $history_found;

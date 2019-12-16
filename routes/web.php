@@ -171,6 +171,9 @@ Route::group([
 //payout method
 Route::POST("/client/add_payout_method","ClientController@add_payout_method")->name("admin.add_payout_method");
 //payout method
+//salary method
+Route::POST("/client/add_salary_method","ClientController@add_salary_method")->name("admin.add_salary_method");
+//salary method
 });
 // clients
 // Bike
@@ -555,7 +558,7 @@ Route::group([
     Route::post('/accounts/income/zomato/import','AccountsController@income_zomato_import')->name('admin.accounts.income_zomato_import');
     Route::delete('/accounts/income/zomato/delete','AccountsController@income_zomato_delete')->name('admin.accounts.income_zomato_delete');
 
-    Route::get('/get_previous_month', 'AccountsController@getPreviousMonthIncomeZomato')->name('income_zomato.get_previous_month');
+    Route::get('/get_previous_month/{month}', 'AccountsController@getPreviousMonthIncomeZomato')->name('income_zomato.get_previous_month'); 
 //zomato income 
 // Client_income
     Route::get('/client_income/index','AccountsController@client_income_index')->name('admin.client_income_index');

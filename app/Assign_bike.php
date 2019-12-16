@@ -50,7 +50,7 @@ class Assign_bike extends Model
         'rider_id', 'bike_id', 'status','settings',
     ];
     public function Rider(){
-        return $this->belongsTo(Rider::class);
+        return $this->belongsTo('App\Model\Rider\Rider');
     }
     public function bike(){
         return $this->belongsTo('App\Model\Bikes\bike');

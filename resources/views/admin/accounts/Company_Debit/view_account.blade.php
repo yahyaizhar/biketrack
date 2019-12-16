@@ -40,6 +40,7 @@
                             </option>     
                             @endforeach 
                         </select>
+                        <span class="form-text text-muted float-right rider__feid"></span>
                             
                     </div>
                 </div>
@@ -621,7 +622,12 @@
                     _quickViewModal.find('[name="month"]').attr('data-month',selected_month);
                     _quickViewModal.find('[name="month_year"]').attr('data-month',selected_month);
                     $('script[data-ajax]').remove();
-                    $('body').append('<script data-ajax>'+$(data).find('[data-ajax]').html()+'<\/script>');
+                    console.warn($(data).find('[data-ajax]'));
+                    var $ajax_script = $(data).find('[data-ajax]');
+                    if($ajax_script.length==0) $ajax_script = $(data).filter('[data-ajax]');
+
+                    if($ajax_script.length==0) alert('Cannot find ajax script in this form');
+                    $('body').append('<script data-ajax>'+$ajax_script.eq(0).html()+'<\/script>');
 
                     var rider_id = $('#gb_rider_id').val();
                     if(_quickViewModal.find('[name="rider_id"]').length){
@@ -825,6 +831,7 @@
 
         var getData = function(ranges){
             var rider_id=biketrack.getUrlParameter('rider_id');
+            $('.rider__feid').text('');
             $('[name="rider_id"], [name="rider_id_num"]').val(rider_id).trigger("change.select2");
             var url = "{{ url('admin/accounts/company/account/') }}"+"/"+ranges;
             console.warn(url)
@@ -854,6 +861,10 @@
                     if(running_closing_balance > 0){
                         $('#btnSend_profit').text('Send '+parseFloat(_Running_Balance).toFixed(2)+' to Company Profit').attr('data-month', _Month).attr('data-profit', _Running_Balance).fadeIn('fast'); 
                     }
+
+                    var feid=response.feid;
+                    $('.rider__feid').text(feid);
+                    
                     
                 },
                 ajax: url,
