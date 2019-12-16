@@ -117,7 +117,7 @@
   $(document).ready(function(){
       $(".bike_that_assigned_in_month").hide();
       $(".rider_that_assigned_in_month").hide();
-    $('#fuel_expense [name="bike_id"]').on('change', function(){
+    $('#fuel_expense [name="bike_id"], #fuel_expense [name="month"]').on('change', function(){
         $('.rider_that_assigned_in_month').html("");
         $('.bike_that_assigned_in_month').html("");
         var _month = $('#fuel_expense [name="month"]').val();
@@ -166,6 +166,8 @@
                 }
                 var date2 = new Date(date_for_inactive);
                 var work_days = date2.getDate() - date1.getDate();
+                console.log(date2.getDate(), ' ', date1.getDate());
+                
                 // $('.rider_id').hide();
                 $(".bike_that_assigned_in_month").hide();
                 $(".rider_that_assigned_in_month").show();
@@ -181,7 +183,7 @@
 '                                    <input readonly type="text" class="form-control" value="'+total_days_in_month+'" name="data['+i+'][total_days]">'+
 '                                </div>'+
 '                                <div class="form-group">'+
-'                                    <input readonly type="text" class="form-control" value="" name="data['+i+'][amount_given_by_days]">'+
+'                                    <input type="text" class="form-control" value="" name="data['+i+'][amount_given_by_days]">'+
 '                                </div>'+
 '                            </div>';      
                 $('.rider_that_assigned_in_month').append(append_bike);
@@ -263,7 +265,7 @@
 '                                    <input readonly type="text" class="form-control" value="'+total_days_in_month+'" name="data['+i+'][total_days]">'+
 '                                </div>'+
 '                                <div class="form-group">'+
-'                                    <input readonly type="text" class="form-control" value="" name="data['+i+'][amount_given_by_days]">'+
+'                                    <input type="text" class="form-control" value="" name="data['+i+'][amount_given_by_days]">'+
 '                                </div>'+
 '                            </div>';      
                 $('.bike_that_assigned_in_month').append(append_bike);

@@ -1341,6 +1341,7 @@ public function fuel_rider_selector($rider_id,$bike_id){
 public function fuel_expense_insert(Request $r){
     $data=$r->data;
     foreach ($data as $value) {
+        if($value['amount_given_by_days']<=0) continue;
         $fuel_expense=new Fuel_Expense();
         $fuel_expense->amount=$value['amount_given_by_days'];
         $fuel_expense->type=$r->type;
