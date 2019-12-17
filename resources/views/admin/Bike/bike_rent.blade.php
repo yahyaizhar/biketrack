@@ -73,7 +73,7 @@
                                 <span class="form-text text-muted">Please enter Given Date</span>
                             @endif
                         </div>
-                        <div class="form-group" id="bike_allowns_field">
+                        {{-- <div class="form-group" id="bike_allowns_field">
                             <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;" >
                                 <input type="text" disabled class="form-control col-md-6" value="Absent Days">
                                 <input type="text" readonly class="form-control col-md-6" name="absent_days" placeholder="Enter Absent Days">
@@ -86,7 +86,7 @@
                                 <input type="text" disabled class="form-control col-md-6" value="Total Month Days">
                                 <input type="text" readonly class="form-control col-md-6" name="month_days" placeholder="Enter Month Days">
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="form-group">
                             <label>Amount:</label>
                             <input required type="number" step="0.01" class="form-control @if($errors->has('amount')) invalid-field @endif" name="amount" placeholder="Enter Amount" value="">
