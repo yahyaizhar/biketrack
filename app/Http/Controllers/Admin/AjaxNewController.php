@@ -2923,18 +2923,20 @@ class AjaxNewController extends Controller
         })
         ->addColumn('bike_rent', function($bills) use ($month){
             $rider_id=$bills->rider_id;
+            $rent=0;
             $bike_rent=Company_Account::where("rider_id",$rider_id)
             ->whereMonth("month",$month)
             ->where("source","Bike Rent")
-            ->get()
-            ->first();
+            ->get();
+           foreach ($bike_rent as $item) {
+               $rent+=$item->amount;
+           }
+           $bike_rent=$bike_rent->first();
             if (isset($bike_rent)) {
                 if ($bike_rent->payment_status=="pending") {
-                    $rent=($bike_rent->amount);
                     return "<div style='color:red;'>".$rent." <span class='flaticon2-delete'></span></div>";
                 }
                 if ($bike_rent->payment_status=="paid") {
-                    $rent=($bike_rent->amount);
                     return "<div  style='color:green;'>".$rent." <span class='flaticon2-correct'></span></div>";
                 }
             }
