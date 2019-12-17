@@ -82,7 +82,7 @@
                                 <span class="invalid-response" role="alert">
                                     <strong>
                                         {{$errors->first('description')}}
-                                    </strong>
+                                    </strong> 
                                 </span>
                             @endif
                         </div> --}}
