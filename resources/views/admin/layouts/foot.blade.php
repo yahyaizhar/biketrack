@@ -494,6 +494,17 @@ jQuery(function($) {
 $('ul.kt-menu__nav li.kt-menu__item,.kt-menu__submenu ').hover(function(){$(this).addClass('kt-menu__item--hover')})
 $('ul.kt-menu__nav li.kt-menu__item,.kt-menu__submenu ').mouseleave(function(){$(this).removeClass('kt-menu__item--hover')})
 
+function _search_recursion(times){
+if(times <=0) return false;
+var _queryRiderId = biketrack.getUrlParameter('search');
+$('input[type="search"]').val(_queryRiderId);
+$('input[type="search"]').trigger('input')
+setTimeout(function(){
+_search_recursion(--times);
+},200)
+}
+_search_recursion(6);
+
 });
 
 

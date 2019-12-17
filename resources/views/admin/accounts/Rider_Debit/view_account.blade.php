@@ -724,14 +724,33 @@
                 </div>
             </div> --}}
         </div>
-        <div class="kt-portlet__body">
-            <table class="table table-striped- table-hover table-checkable table-condensed rider_days_detail">
+        <div class="kt-portlet__body" id="rider_days_detail">
+                <style type="text/css">
+                    table {
+                        border:solid #000 !important;
+                        border-width:1px 0 0 1px !important;
+                    }
+                    th, td {
+                        border:solid #000 !important;
+                        border-width:0 1px 1px 0 !important;
+                    }
+                    .custom_rider_id {
+                        font-size: 18px;
+                        }
+                    .custom_rider_name {
+                    font-size: 18px;
+                    }
+                    </style>
+                    <div class="custom_rider_id"></div>
+                    <div class="custom_rider_name"></div>
+
+            <table class="table table-striped- table-hover table-checkable table-condensed rider_days_detail"  style="width:100%;margin:0px auto;">
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Trips</th>
-                        <th>Hours</th>     
-                        <th>Status</th>                   
+                        <th style=" width: 25%;border: 1px solid black;">Date</th>
+                        <th style=" width: 25%;border: 1px solid black;">Trips</th>
+                        <th style=" width: 25%;border: 1px solid black;">Hours</th>     
+                        <th style=" width: 25%;border: 1px solid black;">Status</th>                   
                     </tr>
                 </thead>
                 <tbody>
@@ -739,11 +758,11 @@
                 <tfoot></tfoot>
             </table>
             <div>
-                <button style="float:right;margin-right: 10px;" onclick="SYNC_DATA()"  class="btn btn-success btn-elevate btn-icon-sm" id="sync_data" type="button">
-                    Sync Data
-                </button>
             </div>
         </div>
+        <button style="float:right;margin-right: 10px;" onclick="print_data()"  class="btn btn-success btn-elevate btn-icon-sm" id="sync_data" type="button">
+                Print Data
+        </button>
     </div>
 </div>
 {{-- end rider payouts by days --}}
@@ -1051,13 +1070,16 @@
                         }
                         calculated_trips+=trips;
                         calculated_hours+=login_hours;
-                       rows+='<tr><td>'+date+'</td><td>'+trips+'</td><td>'+login_hours+'</td> <td class="absents">'+status+'</td></tr>';
+                       rows+='<tr><td style=" width: 25%;">'+date+'</td><td style=" width: 25%;text-align: center;">'+trips+'</td><td style=" width: 25%;text-align: center;">'+login_hours+'</td> <td class="absents" style=" width: 25%;text-align: center;">'+status+'</td></tr>';
                     });
                     $("[name='absent_days']").val(total_absents);
                     $('[name="extra_day"]').val(extra_day);
                     $(".rider_days_detail tbody").html(rows); 
                     $(".rider_days_detail tfoot").html('<tr><th>Total</th><th>'+calculated_trips.toFixed(2)+'</th><th>'+calculated_hours.toFixed(2)+'</th></tr>');
-                 
+                  var _name =  $('[name="rider_id"]:eq(0) option:selected').text().trim();
+                  $('.custom_rider_id').text('Rider id: '+_data.rider_id);
+                  $('.custom_rider_name').text('Rider name: '+_name);
+
 
                 },
                 error: function(error){
@@ -1922,6 +1944,9 @@ function SYNC_DATA(){
         }
     });
 
+}
+function print_data(){
+    printJS('rider_days_detail','html');
 }
 </script>
 @endsection
