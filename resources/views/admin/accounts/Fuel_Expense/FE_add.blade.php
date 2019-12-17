@@ -115,172 +115,135 @@
 <script data-ajax>
 
   $(document).ready(function(){
-      $(".bike_that_assigned_in_month").hide();
-      $(".rider_that_assigned_in_month").hide();
-    $('#fuel_expense [name="bike_id"], #fuel_expense [name="month"]').on('change', function(){
-        $('.rider_that_assigned_in_month').html("");
-        $('.bike_that_assigned_in_month').html("");
+    $('#fuel_expense [name="month"],#fuel_expense [name="bike_id"]').on('change', function(){
         var _month = $('#fuel_expense [name="month"]').val();
         
         if(_month=='')return;
         _month = new Date(_month).format('yyyy-mm-dd');
 
-        var bike_id = $('#fuel_expense [name="bike_id"]').val();
-        if(typeof bike_id !== "undefined"){
+        var _bike_id = $('#fuel_expense [name="bike_id"]').val();
+        if(typeof _bike_id !== "undefined" && _bike_id!=""){
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }, 
-                url:"{{url('admin/salik/ajax/get_active_bikes/')}}"+'/'+bike_id+"/"+_month+"/bike",
+                url:"{{url('admin/salik/ajax/get_active_bikes/')}}"+'/'+_bike_id+"/"+_month+"/bike",
                 method: "GET"
             })
             .done(function(data) {  
                 console.log(data);
-                Object.keys(data.bike_histories).forEach(function(x ,i){
-                var obj = data.bike_histories[x];
-                var year=new Date(_month).format('yyyy');
-                var month=new Date(_month).format('mm');
-                var total_days_in_month=new Date(year , month , 00).getDate();
-                var date_for_active=obj.bike_assign_date;
-                var date_for_inactive=obj.bike_unassign_date;
-                var test_month=new Date(_month).format('yyyy-mm')
-                var test_date_assign=new Date(date_for_active).format('yyyy-mm');
-                var test_date_unassign=new Date(date_for_inactive).format('yyyy-mm');
-                if (test_date_assign!==test_month) {
-                    date_for_active=new Date(test_month).format("yyyy-mm-01");
+                if(data.bike_histories!==null){
+                    split_objects(data.bike_histories, _month, 'rider');
                 }
-                if (test_date_unassign!==test_month) {
-                    var month_inactive=new Date(date_for_inactive).format("mm");
-                    var year_inactive=new Date(date_for_inactive).format("yyyy");
-                    date_inactive_total=new Date(year_inactive , month_inactive , 00).getDate();
-                    var final_date_handle=new Date(year_inactive , month_inactive , date_inactive_total).format("yyyy-mm-dd");
-                    date_for_inactive=new Date(final_date_handle).format("yyyy-mm-dd");
-                }
-                var date1 = new Date(date_for_active);
-                if (date_for_active==date_for_inactive) {
-                    var month_inactive=new Date(date_for_inactive).format("mm");
-                    var year_inactive=new Date(date_for_inactive).format("yyyy");
-                    date_inactive_total=new Date(year_inactive , month_inactive , 00).getDate();
-                    var final_date_handle=new Date(year_inactive , month_inactive , date_inactive_total).format("yyyy-mm-dd");
-                    date_for_inactive=final_date_handle;
-                }
-                var date2 = new Date(date_for_inactive);
-                var work_days = date2.getDate() - date1.getDate();
-                console.log(date2.getDate(), ' ', date1.getDate());
                 
-                // $('.rider_id').hide();
-                $(".bike_that_assigned_in_month").hide();
-                $(".rider_that_assigned_in_month").show();
-                var append_bike='<div class="calculated__div" >'+
-'                        <input type="hidden" name="data['+i+'][rider_id]" value="'+obj.rider.id+'">'+
-'                                <div class="form-group">'+
-'                                    <input readonly type="text" class="form-control" value="'+obj.rider.name+'" >'+
-'                                </div>'+
-'                                <div class="form-group">'+
-'                                    <input readonly type="text" class="form-control" value="'+(work_days+1)+'" name="data['+i+'][work_days_count]">'+
-'                                </div>'+
-'                                <div class="form-group">'+
-'                                    <input readonly type="text" class="form-control" value="'+total_days_in_month+'" name="data['+i+'][total_days]">'+
-'                                </div>'+
-'                                <div class="form-group">'+
-'                                    <input type="text" class="form-control" value="" name="data['+i+'][amount_given_by_days]">'+
-'                                </div>'+
-'                            </div>';      
-                $('.rider_that_assigned_in_month').append(append_bike);
-
-            });
-                // if(data.bike_histories!==null){
-                //     $('#fuel_expense [name="rider_id"]').val(data.bike_histories.rider_id).trigger('change.select2');
-                // }
-                // else{
-                //     $('#fuel_expense [name="rider_id"]')[0].selectedIndex = -1;
-                //     $('#fuel_expense [name="rider_id"]').trigger('change.select2');
-                //     $('#fuel_expense [name="amount"]').val('');
-                // }
             });
         }
     });
 
+    var split_objects=function(histories, _month, according_to){
+        $('#fuel_expense .split__object-container').remove();
+        if(Object.keys(histories).length>0){
+            $('#fuel_expense [name="bike_id"]').parents('.form-group').after('<div class="split__object-container"></div>');
+            var previous_unassigned_date=null;
+            Object.keys(histories).forEach(function(x ,i){
+                var obj = histories[x];
+                var days_in_month=moment(_month, "YYYY-MM-DD").daysInMonth();
+                var start  = moment(_month, "YYYY-MM-DD").startOf('month');
+                var end    = moment(_month, "YYYY-MM-DD").endOf('month');
+                var assign_date = moment(obj.bike_assign_date, "YYYY-MM-DD").min(start).max(end);
+                var unassign_date = moment(obj.bike_unassign_date, "YYYY-MM-DD").min(start).max(end);
+    // debugger;
+                if(previous_unassigned_date!=null){
+                    var _differPrevious = previous_unassigned_date.diff(assign_date, 'days');
+                    if(_differPrevious==0){
+                        //dates are same
+                        assign_date = assign_date.add(1, 'days');
+                    }
+                }
+                previous_unassigned_date=unassign_date;
+                if(obj.status=="active"){ // unassign_date will be last of the month
+                    unassign_date = end;
+                }
+                
+                var work_days = unassign_date.diff(assign_date, 'days')+1;
+                console.log('assign_date', assign_date.format("YYYY-MM-DD"), 'unassign_date', unassign_date.format("YYYY-MM-DD"));
+                
+                console.warn(work_days);
+                var append_bike='';
+                if(according_to=="bike"){
+                    append_bike='<div class="split--calculated__div" >'+
+    '                                <div class="form-group">'+
+    '                                    <input type="hidden" name="data['+i+'][bike_id]" value="'+obj.bike.id+'"> <input type="hidden" name="data['+i+'][type]" value="'+according_to+'">'+
+    '                                    <input readonly type="text" class="form-control" value="'+obj.bike.brand+'-'+obj.bike.bike_number+'">'+
+    '                                </div>'+
+    '                                <div class="form-group">'+
+    '                                    <input type="text" class="form-control" value="'+(work_days)+'" name="data['+i+'][work_days_count]">'+
+    '                                     <span class="form-text text-muted">'+assign_date.format("DD/MM/YYYY")+' - '+unassign_date.format("DD/MM/YYYY")+'</span>'+
+    '                                </div>'+
+    '                                <div class="form-group">'+
+    '                                    <input readonly type="text" class="form-control" value="'+days_in_month+'" name="data['+i+'][total_days]">'+
+    '                                </div>'+
+    '                                <div class="form-group">'+
+    '                                    <input type="text" class="form-control" value="" name="data['+i+'][amount_given_by_days]">'+
+    '                                </div>'+
+    '                            </div>'; 
+                }
+                else{
+                    append_bike='<div class="split--calculated__div" >'+
+    '                                <div class="form-group">'+
+    '                                   <input type="hidden" name="data['+i+'][rider_id]" value="'+obj.rider.id+'"> <input type="hidden" name="data['+i+'][type]" value="'+according_to+'">'+
+    '                                    <input readonly type="text" class="form-control" value="'+obj.rider.name+'" >'+
+    '                                </div>'+
+    '                                <div class="form-group">'+
+    '                                    <input type="text" class="form-control" value="'+(work_days)+'" name="data['+i+'][work_days_count]">'+
+    '                                     <span class="form-text text-muted">'+assign_date.format("DD/MM/YYYY")+' - '+unassign_date.format("DD/MM/YYYY")+'</span>'+
+    '                                </div>'+
+    '                                <div class="form-group">'+
+    '                                    <input readonly type="text" class="form-control" value="'+days_in_month+'" name="data['+i+'][total_days]">'+
+    '                                </div>'+
+    '                                <div class="form-group">'+
+    '                                    <input type="text" class="form-control" value="" name="data['+i+'][amount_given_by_days]">'+
+    '                                </div>'+
+    '                            </div>';   
+                }
+
+                
+                $('#fuel_expense .split__object-container').append(append_bike);
+            });
+
+        }
+    }
+    $("#fuel_expense [name='amount']").on("change input",function(){
+        var amount=$(this).val();
+        $('#fuel_expense .split--calculated__div').each(function(i, item){
+            var total_days = parseFloat($(this).find('[name="data['+i+'][total_days]"]').val())||0;
+            var work_days = parseFloat($(this).find('[name="data['+i+'][work_days_count]"]').val())||0;
+            var days=work_days/total_days;
+            var amount_to_give=amount*days;
+            $(this).find('[name="data['+i+'][amount_given_by_days]"]').val(amount_to_give.toFixed(2));
+
+        });
+    });
     $('#fuel_expense [name="rider_id"]').on('change', function(){
-        $('.bike_that_assigned_in_month').html("");
-        $('.rider_that_assigned_in_month').html("");
         var _month = $('#fuel_expense [name="month"]').val();
         
         if(_month=='')return;
         _month = new Date(_month).format('yyyy-mm-dd');
-
-        var ride_id = $('#fuel_expense [name="rider_id"]').val();
-        if(typeof ride_id !== "undefined"){
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }, 
-                url:"{{url('admin/salik/ajax/get_active_bikes/')}}"+'/'+ride_id+"/"+_month+"/rider",
-                method: "GET"
-            })
-            .done(function(data) {  
-                console.log(data);
-                Object.keys(data.bike_histories).forEach(function(x, i){
-                var obj = data.bike_histories[x];
-                var year=new Date(_month).format('yyyy');
-                var month=new Date(_month).format('mm');
-                var total_days_in_month=new Date(year , month , 00).getDate();
-                var date_for_active=obj.bike_assign_date;
-                var date_for_inactive=obj.bike_unassign_date;
-                var test_month=new Date(_month).format('yyyy-mm')
-                var test_date_assign=new Date(date_for_active).format('yyyy-mm');
-                var test_date_unassign=new Date(date_for_inactive).format('yyyy-mm');
-                if (test_date_assign!==test_month) {
-                    date_for_active=new Date(test_month).format("yyyy-mm-01");
-                }
-                if (test_date_unassign!==test_month) {
-                    var month_inactive=new Date(date_for_inactive).format("mm");
-                    var year_inactive=new Date(date_for_inactive).format("yyyy");
-                    date_inactive_total=new Date(year_inactive , month_inactive , 00).getDate();
-                    var final_date_handle=new Date(year_inactive , month_inactive , date_inactive_total).format("yyyy-mm-dd");
-                    date_for_inactive=new Date(final_date_handle).format("yyyy-mm-dd");
-                }
-                var date1 = new Date(date_for_active);
-                if (date_for_active==date_for_inactive) {
-                    var month_inactive=new Date(date_for_inactive).format("mm");
-                    var year_inactive=new Date(date_for_inactive).format("yyyy");
-                    date_inactive_total=new Date(year_inactive , month_inactive , 00).getDate();
-                    var final_date_handle=new Date(year_inactive , month_inactive , date_inactive_total).format("yyyy-mm-dd");
-                    date_for_inactive=final_date_handle;
-                }
-                var date2 = new Date(date_for_inactive);
-                var work_days = date2.getDate() - date1.getDate();
-                // $('.bike_id').hide();
-                $(".bike_that_assigned_in_month").show();
-                $(".rider_that_assigned_in_month").hide();
-                var append_bike='<div class="calculated__div">'+
-'                                <div class="form-group">'+
-'                                   <input type="hidden" name="data['+i+'][bike_id]" value="'+obj.bike.id+'">'+
-'                                    <input readonly type="text" class="form-control" value="'+obj.bike.brand+'-'+obj.bike.bike_number+'">'+
-'                                </div>'+
-'                                <div class="form-group">'+
-'                                    <input readonly type="text" class="form-control" value="'+(work_days+1)+'" name="data['+i+'][work_days_count]">'+
-'                                </div>'+
-'                                <div class="form-group">'+
-'                                    <input readonly type="text" class="form-control" value="'+total_days_in_month+'" name="data['+i+'][total_days]">'+
-'                                </div>'+
-'                                <div class="form-group">'+
-'                                    <input type="text" class="form-control" value="" name="data['+i+'][amount_given_by_days]">'+
-'                                </div>'+
-'                            </div>';      
-                $('.bike_that_assigned_in_month').append(append_bike);
-
-                });
-                // if(data.bike_histories!==null){
-                //     $('#fuel_expense [name="bike_id"]').val(data.bike_histories.bike_id).trigger('change.select2');
-                // }
-                // else{
-                //     $('#fuel_expense [name="bike_id"]')[0].selectedIndex = -1;
-                //     $('#fuel_expense [name="bike_id"]').trigger('change.select2');
-                //     $('#fuel_expense [name="amount"]').val('');
-                // }
-            });
-        }
+        var rider_id=$(this).val();
+        if(rider_id=="") return;
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }, 
+            url:"{{url('admin/salik/ajax/get_active_bikes/')}}"+'/'+rider_id+"/"+_month+"/rider",
+            method: "GET"
+        })
+        .done(function(data) {  
+            console.log(data);
+            if(data.bike_histories!==null){
+                split_objects(data.bike_histories, _month, "bike");
+            }
+        });
     });
 
     var _gb_rider_id = $('#gb_rider_id').val();

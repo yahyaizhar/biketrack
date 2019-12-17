@@ -1130,10 +1130,10 @@ function subtotal() {
                 }
                 
                 amount += tax_amount;
-                $(this).find('[data-name="tax_amount"]').val((tax_amount).toFixed(2));
+                $(this).find('[data-name="tax_amount"]').val(Math.round(tax_amount));
             }
         }
-        $(this).find('[data-name="amount"]').val((amount).toFixed(2));
+        $(this).find('[data-name="amount"]').val(Math.round(amount));
     });
 
 
@@ -1147,7 +1147,7 @@ function subtotal() {
             else{
                 res_of_tax = tax_value;
             }
-            $('[data-name="tax_value"]').val((res_of_tax).toFixed(2));
+            $('[data-name="tax_value"]').val(Math.round(res_of_tax));
             total_amount += res_of_tax;
         }
     }
@@ -1155,29 +1155,29 @@ function subtotal() {
     if (discount == 'percent') {
         var discount_value_percent = parseFloat($('[data-name="discount_values"]').val()) || 0;
         res_of_discount = (discount_value_percent * non_tax_amount) / 100;
-        $('.discount_amount').text('AED -' + (res_of_discount).toFixed(2));
-        $('[data-name="discount_amount"]').val((res_of_discount).toFixed(2));
+        $('.discount_amount').text('AED -' + Math.round(res_of_discount));
+        $('[data-name="discount_amount"]').val(Math.round(res_of_discount));
         total_amount -= res_of_discount;
     }
     if (discount == 'value') {
         var discount_value_value = parseFloat($('[data-name="discount_values"]').val()) || 0;
         var res_of_discount = discount_value_value;
-        $('.discount_amount').text('AED -' + (res_of_discount).toFixed(2));
+        $('.discount_amount').text('AED -' + Math.round(res_of_discount));
         total_amount -= res_of_discount;
     }
     var amount_received=parseFloat($('#invoices [data-name="amount_received"]').val())||0;
 
-    $("#invoices .subtotal_value").text("AED " + (non_tax_amount).toFixed(2));
+    $("#invoices .subtotal_value").text("AED " + Math.round(non_tax_amount));
     
-    $("#invoices .taxable_subtotal").text("AED " + (taxable_amount).toFixed(2));
-    $('#invoices .all_total_amount').text("AED " + (total_amount).toFixed(2));
+    $("#invoices .taxable_subtotal").text("AED " + Math.round(taxable_amount));
+    $('#invoices .all_total_amount').text("AED " + Math.round(total_amount));
 
     var balance_due = total_amount-amount_received;
-    $('#invoices .balance_due').text("AED " + (balance_due).toFixed(2));
+    $('#invoices .balance_due').text("AED " + Math.round(balance_due));
 
-    $("#invoices [data-name='invoice_subtotal']").val((non_tax_amount).toFixed(2));
-    $("#invoices [data-name='taxable_subtotal']").val((taxable_amount).toFixed(2));
-    $("#invoices [data-name='invoice_total']").val((total_amount).toFixed(2));
+    $("#invoices [data-name='invoice_subtotal']").val(Math.round(non_tax_amount));
+    $("#invoices [data-name='taxable_subtotal']").val(Math.round(taxable_amount));
+    $("#invoices [data-name='invoice_total']").val(Math.round(total_amount));
     // 
 }
 

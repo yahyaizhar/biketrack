@@ -38,17 +38,31 @@
                         </div>
 
                         <div class="form-group">
-                            <label>Date:</label>
-                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
-                                @if ($errors->has('month'))
-                                    <span class="invalid-response" role="alert">
-                                        <strong>
-                                            {{ $errors->first('month') }}
-                                        </strong>
-                                    </span>
-                                @else
-                                    <span class="form-text text-muted">Please enter Month</span>
-                                @endif
+                            <label>Month:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                            @if ($errors->has('month'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('month') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Month</span>
+                            @endif
+                        </div>
+
+                        <div class="form-group">
+                            <label>Given Date:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="">
+                            @if ($errors->has('given_date'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('given_date') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Given Date</span>
+                            @endif
                         </div>
                         <div class="form-group">
                             <label>Amount:</label>
@@ -68,7 +82,7 @@
                                 <span class="invalid-response" role="alert">
                                     <strong>
                                         {{$errors->first('description')}}
-                                    </strong>
+                                    </strong> 
                                 </span>
                             @endif
                         </div> --}}
@@ -94,19 +108,19 @@
 <script data-ajax>
   $(document).ready(function(){
     //   $('#datepicker').datepicker({dateFormat: 'yy-mm-dd'}); 
-    $('#bike_fine [name="month"]').on('change', function(){
+    $('#bike_fine [name="month"], #bike_fine [name="bike_id"]').on('change', function(){
         var _month = $('#bike_fine [name="month"]').val();
         
         if(_month=='')return;
         _month = new Date(_month).format('yyyy-mm-dd');
 
-        var gb_rider_id = $('#gb_rider_id').val();
-        if(typeof gb_rider_id !== "undefined"){
+        var bike_id = $('#bike_fine [name="bike_id"]').val();
+        if(typeof bike_id !== "undefined"){
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }, 
-                url:"{{url('admin/salik/ajax/get_active_riders/')}}"+'/'+gb_rider_id+"/"+_month,
+                url:"{{url('admin/salik/ajax/get_active_riders/')}}"+'/'+bike_id+"/"+_month+"/bike",
                 method: "GET"
             })
             .done(function(data) {  
@@ -114,11 +128,11 @@
 
                 // $('#salik [name="amount"]').val(data.salik_amount).trigger('change');
                 if(data.bike_histories!==null){
-                    $('#bike_fine [name="bike_id"]').val(data.bike_histories.bike_id).trigger('change');
+                    $('#bike_fine [name="rider_id"]').val(data.bike_histories.rider_id).trigger('change.select2');
                 }
                 else{
-                    $('#bike_fine [name="bike_id"]')[0].selectedIndex = -1;
-                    $('#bike_fine [name="bike_id"]').trigger('change');
+                    $('#bike_fine [name="rider_id"]')[0].selectedIndex = -1;
+                    $('#bike_fine [name="rider_id"]').trigger('change.select2');
                     $('#bike_fine [name="amount"]').val('');
                 }
                 
@@ -128,21 +142,36 @@
     $('#bike_fine [name="month"]').trigger('change');
 
     $('#bike_fine [name="rider_id"]').on('change', function(){
-        var rider_id=$(this).val();
-        var bike_id=$('#bike_fine [name="bike_id"]').val();
-        $.ajax({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }, 
-            url:"{{url('admin/accounts/fuel/expense/select/riders/bike')}}"+'/'+rider_id+"/"+bike_id,
-            method: "GET"
-        })
-        .done(function(data) {  
-            console.log(data);
-            $('#bike_fine [name="bike_id"]').val(data.assign_bike.bike_id).trigger('change');
-        });
+        var _month = $('#bike_fine [name="month"]').val();
+        
+        if(_month=='')return;
+        _month = new Date(_month).format('yyyy-mm-dd');
+
+        var _rider_id = $('#bike_fine [name="rider_id"]').val();
+        if(typeof _rider_id !== "undefined"){
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }, 
+                url:"{{url('admin/salik/ajax/get_active_riders/')}}"+'/'+_rider_id+"/"+_month+"/rider",
+                method: "GET"
+            })
+            .done(function(data) {  
+                console.log(data);
+
+                // $('#salik [name="amount"]').val(data.salik_amount).trigger('change');
+                if(data.bike_histories!==null){
+                    $('#bike_fine [name="bike_id"]').val(data.bike_histories.bike_id).trigger('change.select2');
+                }
+                else{
+                    $('#bike_fine [name="bike_id"]')[0].selectedIndex = -1;
+                    $('#bike_fine [name="bike_id"]').trigger('change.select2');
+                    $('#bike_fine [name="amount"]').val('');
+                }
+                
+            });
+        }
     });
-    $('#bike_fine [name="rider_id"]').trigger('change');
   });
 
 </script>

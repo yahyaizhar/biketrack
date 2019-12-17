@@ -770,7 +770,7 @@
 <div>
 <div class="print_slip_editable" style="">
 <div style="display:grid;padding: 15px 50px 0px 50px;" id="print_slip_for_rider">
-    <div style="height:50px"></div>
+    
     <table style="">
         <tr><th style="border:1px solid #dddd;background-color:#73acac69;text-align:center;">SALARY SLIP</th></tr>
         <tr><th class="month_year" style="border:1px solid #dddd;text-align:center;"></th></tr>
