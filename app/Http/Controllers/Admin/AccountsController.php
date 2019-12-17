@@ -2369,8 +2369,8 @@ public function client_income_update(Request $request,$id){
                 $obj['feid']=$feid;
                 $obj['zomato_income_id']=$income_zomato_id;
                 $obj['rider_id']=$rider_id;
-                $obj['login_hours']=0;
-                $obj['trips']=0;
+                $obj['login_hours']=$login_hours;
+                $obj['trips']=$trips;
                 $obj['off_days_status']=NULL;
                 $obj['payout_for_login_hours']=$payout_for_login_hours;
                 $obj['payout_for_trips']=$payout_for_trips;
@@ -2385,11 +2385,11 @@ public function client_income_update(Request $request,$id){
                 if($timeSheetObj!=null){
                     $off_day_status=isset($timeSheetObj['off_day_status'])?$timeSheetObj['off_day_status']:null;
                     $obj['off_days_status']=$off_day_status;
-                    if ($off_day_status=='present') {
-                        $login_hours=$login_hours>11?11:$login_hours;
-                        $obj['login_hours']=$login_hours;
-                    }
-                    $obj['trips']=$trips;
+                    // if ($off_day_status=='present') {
+                    //     $login_hours=$login_hours>11?11:$login_hours;
+                    //     $obj['login_hours']=$login_hours;
+                    // }
+                    // $obj['trips']=$trips;
                     
                 }
                 array_push($zomato_objects, $obj);
