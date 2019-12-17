@@ -38,18 +38,31 @@
                                     
                         </div>
                         <div class="form-group">
-                                <label>Month:</label>
-                                <input disabled type="text" data-month="{{Carbon\Carbon::parse($bf->month)->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
-                                @if ($errors->has('month'))
-                                    <span class="invalid-response" role="alert">
-                                        <strong>
-                                            {{ $errors->first('month') }}
-                                        </strong>
-                                    </span>
-                                @else
-                                    <span class="form-text text-muted">Please enter Month</span>
-                                @endif
-                            </div>
+                            <label>Month:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::parse($bf->month)->format('M Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                            @if ($errors->has('month'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('month') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Month</span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Given Date:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::parse($bf->given_date)->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="">
+                            @if ($errors->has('given_date'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('given_date') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Given Date</span>
+                            @endif
+                        </div>
                         <div class="form-group">
                                 <label>Amount:</label>
                             <input disabled step="0.01" type="number" class="form-control @if($errors->has('amount')) invalid-field @endif" name="amount" placeholder="Enter Amount" value="{{$bf->amount}}">
@@ -98,7 +111,7 @@
                     <!--begin::Form-->
                     
                     @include('admin.includes.message')
-                    <form class="kt-form" id="fuel_expense" action="{{ route('admin.BF_update',$bf->id) }}" method="POST" enctype="multipart/form-data">
+                    <form class="kt-form" id="bike_fine" action="{{ route('admin.BF_update',$bf->id) }}" method="POST" enctype="multipart/form-data">
                         {{ csrf_field() }}
                         <div class="kt-portlet__body">
                         <div class="form-group">
@@ -123,18 +136,31 @@
                         </div>
                         
                         <div class="form-group">
-                                <label>Month:</label>
-                                <input type="text" data-month="{{Carbon\Carbon::parse($bf->month)->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
-                                @if ($errors->has('month'))
-                                    <span class="invalid-response" role="alert">
-                                        <strong>
-                                            {{ $errors->first('month') }}
-                                        </strong>
-                                    </span>
-                                @else
-                                    <span class="form-text text-muted">Please enter Month</span>
-                                @endif
-                            </div>
+                            <label>Month:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::parse($bf->month)->format('M Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                            @if ($errors->has('month'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('month') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Month</span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Given Date:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::parse($bf->given_date)->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="">
+                            @if ($errors->has('given_date'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('given_date') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Given Date</span>
+                            @endif
+                        </div>
                         <div class="form-group">
                                 <label>Amount:</label>
                             <input required step="0.01" type="number" class="form-control @if($errors->has('amount')) invalid-field @endif" name="amount" placeholder="Enter Amount" value="{{$bf->amount}}">
@@ -183,23 +209,70 @@
 <script>
   $(document).ready(function(){
     //   $('#datepicker').datepicker({dateFormat: 'yy-mm-dd'}); 
-      $('#datepicker').fdatepicker({format: 'dd-mm-yyyy'}); 
-      $('#fuel_expense [name="rider_id"]').on('change', function(){
-        var rider_id=$(this).val();
-        var bike_id=$('#fuel_expense [name="bike_id"]').val();
-        $.ajax({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }, 
-            url:"{{url('admin/accounts/fuel/expense/select/riders/bike')}}"+'/'+rider_id+"/"+bike_id,
-            method: "GET"
-        })
-        .done(function(data) {  
-            console.log(data);
-            $('#fuel_expense [name="bike_id"]').val(data.assign_bike.bike_id).trigger('change');
-        });
+    $('#bike_fine [name="month"], #bike_fine [name="bike_id"]').on('change', function(){
+        var _month = $('#bike_fine [name="month"]').val();
+        
+        if(_month=='')return;
+        _month = new Date(_month).format('yyyy-mm-dd');
+
+        var bike_id = $('#bike_fine [name="bike_id"]').val();
+        if(typeof bike_id !== "undefined"){
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }, 
+                url:"{{url('admin/salik/ajax/get_active_riders/')}}"+'/'+bike_id+"/"+_month+"/bike",
+                method: "GET"
+            })
+            .done(function(data) {  
+                console.log(data);
+
+                // $('#salik [name="amount"]').val(data.salik_amount).trigger('change');
+                if(data.bike_histories!==null){
+                    $('#bike_fine [name="rider_id"]').val(data.bike_histories.rider_id).trigger('change.select2');
+                }
+                else{
+                    $('#bike_fine [name="rider_id"]')[0].selectedIndex = -1;
+                    $('#bike_fine [name="rider_id"]').trigger('change.select2');
+                    $('#bike_fine [name="amount"]').val('');
+                }
+                
+            });
+        }
     });
-    $('#fuel_expense [name="rider_id"]').trigger('change');
+    $('#bike_fine [name="month"]').trigger('change');
+
+    $('#bike_fine [name="rider_id"]').on('change', function(){
+        var _month = $('#bike_fine [name="month"]').val();
+        
+        if(_month=='')return;
+        _month = new Date(_month).format('yyyy-mm-dd');
+
+        var _rider_id = $('#bike_fine [name="rider_id"]').val();
+        if(typeof _rider_id !== "undefined"){
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }, 
+                url:"{{url('admin/salik/ajax/get_active_riders/')}}"+'/'+_rider_id+"/"+_month+"/rider",
+                method: "GET"
+            })
+            .done(function(data) {  
+                console.log(data);
+
+                // $('#salik [name="amount"]').val(data.salik_amount).trigger('change');
+                if(data.bike_histories!==null){
+                    $('#bike_fine [name="bike_id"]').val(data.bike_histories.bike_id).trigger('change.select2');
+                }
+                else{
+                    $('#bike_fine [name="bike_id"]')[0].selectedIndex = -1;
+                    $('#bike_fine [name="bike_id"]').trigger('change.select2');
+                    $('#bike_fine [name="amount"]').val('');
+                }
+                
+            });
+        }
+    });
   });
 
 </script>

@@ -71,12 +71,14 @@ class KRController extends Controller
         $bf->bike_id=$r->bike_id;
         $bf->description='Bike Fine';
         $bf->amount=$r->amount;
+        $bf->given_date=Carbon::parse($r->given_date)->format('Y-m-d');
         $bf->month=Carbon::parse($r->month)->format('Y-m-d');
         $bf->save();
 
         $ca = new Company_Account();
         $ca->type='dr';
         $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
+        $ca->given_date=Carbon::parse($r->given_date)->format('Y-m-d');
         $ca->amount=$r->amount;
         $ca->rider_id=$r->rider_id;
         $ca->source='Bike Fine';
@@ -115,6 +117,7 @@ class KRController extends Controller
         $bf->description='Bike Fine';
         $bf->amount=$r->amount;
         $bf->month=Carbon::parse($r->month)->format('Y-m-d');
+        $bf->given_date=Carbon::parse($r->given_date)->format('Y-m-d');
         $bf->update();
 
         $ca =Company_Account::firstOrCreate([
@@ -122,6 +125,7 @@ class KRController extends Controller
             ]);
             $ca->type='dr';
             $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
+            $ca->given_date=Carbon::parse($r->given_date)->format('Y-m-d');
             $ca->amount=$r->amount;
             $ca->source='Bike Fine';
             $ca->bike_fine=$bf->id;

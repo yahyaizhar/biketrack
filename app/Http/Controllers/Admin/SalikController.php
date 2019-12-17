@@ -349,40 +349,41 @@ class SalikController extends Controller
             'rider_id'=>$rider,
         ]);
     }
-    public function get_active_riders_ajax_salik($rider_id, $date){
+    public function get_active_riders_ajax_salik($_id, $date, $according_to=null){
         $bike_history = Assign_bike::all();
         $bike_histories = null;
-        $history_found = Arr::first($bike_history, function ($item, $key) use ($rider_id, $date) {
-            $created_at =Carbon::parse($item->created_at)->format('Y-m-d');
-            $created_at =Carbon::parse($created_at);
+        $history_found = Arr::first($bike_history, function ($item, $key) use ($_id, $date, $according_to) {
+            $start_created_at =Carbon::parse($item->bike_assign_date)->startOfMonth()->format('Y-m-d');
+            $created_at =Carbon::parse($start_created_at);
 
-            $updated_at =Carbon::parse($item->updated_at)->format('Y-m-d');
-            $updated_at =Carbon::parse($updated_at);
+            $start_updated_at =Carbon::parse($item->bike_unassign_date)->endOfMonth()->format('Y-m-d');
+            $updated_at =Carbon::parse($start_updated_at);
             $req_date =Carbon::parse($date);
-            if($item->status=="active"){ 
-                // mean its still active, we need to match only created at
-                return $item->rider_id == $rider_id && $req_date->greaterThanOrEqualTo($created_at);
-            }
             
-            return $item->rider_id == $rider_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
+            if($item->status=='active'){
+                if($according_to=='bike'){
+                    return $item->bike_id==$_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+                }
+                return $item->rider_id==$_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+            }
+            if($according_to=='bike'){
+                return $item->bike_id==$_id &&
+                ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+            }
+            return $item->rider_id==$_id &&
+                ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
         });
 
+        $salik_amount=0;
         if(isset($history_found)){
             $bike_histories = $history_found;
-        }else {
-            $assign_bikeBK = Assign_bike::where('rider_id', $rider_id)
-            ->where('status', 'active')->get()->first();
-            if(isset($assign_bikeBK)){
-               $bike_histories = $assign_bikeBK;
-            }
+            $rider = Rider::find($bike_histories->rider_id);
+            $salik_amount=$rider->Rider_Detail->salik_amount;
         }
-
         
-    
-        $rider = Rider::find($rider_id);
         return response()->json([
             'bike_histories' => $bike_histories,
-            'salik_amount' => $rider->Rider_Detail->salik_amount
+            'salik_amount' => $salik_amount
         ]);
     }
 
@@ -466,18 +467,25 @@ class SalikController extends Controller
         $sim_history = Sim_history::all();
         $sim_histories = null;
         $history_found = Arr::first($sim_history, function ($item, $key) use ($_id, $date,$according_to) {
-            $created_at =Carbon::parse($item->created_at)->format('Y-m-d');
-            $created_at =Carbon::parse($created_at);
+            $start_created_at =Carbon::parse($item->given_date)->startOfMonth()->format('Y-m-d');
+            $created_at =Carbon::parse($start_created_at);
 
-            $updated_at =Carbon::parse($item->updated_at)->format('Y-m-d');
-            $updated_at =Carbon::parse($updated_at);
+            $start_updated_at =Carbon::parse($item->return_date)->endOfMonth()->format('Y-m-d');
+            $updated_at =Carbon::parse($start_updated_at);
             $req_date =Carbon::parse($date);
-            if($item->status=="active"){ 
-                // mean its still active, we need to match only created at
-                return $according_to=='sim'?$item->sim_id == $_id && $req_date->greaterThanOrEqualTo($created_at):$item->rider_id == $_id && $req_date->greaterThanOrEqualTo($created_at);
-            }
             
-            return $according_to=='sim'?$item->sim_id == $_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at):$item->rider_id == $_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
+            if($item->status=='active'){
+                if($according_to=='bike'){
+                    return $item->bike_id==$_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+                }
+                return $item['rider_id']==$_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+            }
+            if($according_to=='bike'){
+                return $item->bike_id==$_id &&
+                ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+            }
+            return $item->rider_id==$_id &&
+                ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
         });
 
         if(isset($history_found)){

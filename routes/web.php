@@ -219,7 +219,7 @@ Route::group([
     Route::get('/store/salik/{rider_id}','SalikController@store_salik')->name("salik.store_salik");
     Route::post('/insert/salik','SalikController@insert_salik')->name('Saik.insert_salik');
 
-    Route::get('/salik/ajax/get_active_riders/{rider_id}/{month}','SalikController@get_active_riders_ajax_salik')->name('Saik.get_active_riders_ajax_salik');
+    Route::get('/salik/ajax/get_active_riders/{rider_id}/{month}/{according_to}','SalikController@get_active_riders_ajax_salik')->name('Saik.get_active_riders_ajax_salik');
     Route::get('/salik/ajax/get_active_bikes/{rider_id}/{month}/{according_to}','SalikController@get_active_bikes_ajax_salik')->name('Saik.get_active_bikes_ajax_salik');
     Route::get('/sim/ajax/get_active_sims/{id}/{month}/{according_to}','SalikController@get_active_sims_ajax_salik')->name('Saik.get_active_sims_ajax_salik');
 // end salik   
