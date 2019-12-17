@@ -120,8 +120,7 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script data-ajax>
   $(document).ready(function(){
-    //   $('#datepicker').datepicker({dateFormat: 'yy-mm-dd'}); 
-    $("#bike_allowns_field").hide();
+    //   $('#datepicker').datepicker({dateFormat: 'yy-mm-dd'});
       $('#datepicker').fdatepicker({format: 'dd-mm-yyyy'}); 
 
       $('#bike_rent [name="month"],#bike_rent [name="bike_id"]').on('change', function(){
@@ -186,7 +185,7 @@
     '                                    <input readonly type="text" class="form-control" value="'+obj.bike.brand+'-'+obj.bike.bike_number+'">'+
     '                                </div>'+
     '                                <div class="form-group">'+
-    '                                    <input readonly type="text" class="form-control" value="'+(work_days)+'" name="data['+i+'][work_days_count]">'+
+    '                                    <input type="text" class="form-control" value="'+(work_days)+'" name="data['+i+'][work_days_count]">'+
     '                                     <span class="form-text text-muted">'+assign_date.format("DD/MM/YYYY")+' - '+unassign_date.format("DD/MM/YYYY")+'</span>'+
     '                                </div>'+
     '                                <div class="form-group">'+
