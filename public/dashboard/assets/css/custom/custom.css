@@ -143,3 +143,9 @@ input[type="radio"] {
 input[type="radio"] h6{
     cursor: pointer;
 }
+
+.split__object-container{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}

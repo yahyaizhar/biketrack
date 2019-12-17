@@ -389,11 +389,9 @@ class SalikController extends Controller
 
     /* ===Get bike according to rider and rider according to bike=== */
     public function get_active_bikes_ajax_salik($_id, $date,$according_to){
-        if ($according_to=='bike') {
-            $bike_history = Assign_bike::with('Rider')->get()->toArray();
-        }else{
-            $bike_history = Assign_bike::with('bike')->get()->toArray();
-        }
+       
+        $bike_history = Assign_bike::with('Rider')->with('bike')->get()->toArray();
+        
         $bike_histories = null;
         $history_found = Arr::where($bike_history, function ($item, $key) use ($_id, $date,$according_to) {
             $start_created_at =Carbon::parse($item['bike_assign_date'])->startOfMonth()->format('Y-m-d');

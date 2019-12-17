@@ -313,7 +313,7 @@
 
                 var is_generated=data.is_generated; 
                 if (is_generated) {
-                    $('.upload-button').html("Update Salary");
+                    $('.upload-button').html("Update Salary").prop("disabled",false);
                 }else{
                     $('.upload-button').html("Generate Salary");
                 }
