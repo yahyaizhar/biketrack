@@ -1373,16 +1373,17 @@ public function fuel_expense_insert(Request $r){
         $fuel_expense->amount=$value['amount_given_by_days'];
         $fuel_expense->type=$r->type;
         $fuel_expense->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+        $fuel_expense->bike_id=$r->bike_id;
         if(isset($value['bike_id'])){
             $fuel_expense->bike_id=$value['bike_id'];
             
         }
-        $fuel_expense->bike_id=$r->bikeid;
+        $fuel_expense->rider_id=$r->rider_id;
         if(isset($value['rider_id'])){
             $fuel_expense->rider_id=$value['rider_id'];
             
         }
-        $fuel_expense->rider_id=$r->rider_id;
+        
         if($r->status)
             $fuel_expense->status = 1;
         else
