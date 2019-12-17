@@ -997,6 +997,109 @@
      var _data = JSON.parse($('#resync__attendace_data').html());
      if(_data){
          console.log(_data);
+        var dayoff = parseInt($('#resync__attendance-form [name="weekday"]').val())||0;
+         var time_sheet_data=JSON.parse(JSON.stringify(_data.time_sheet));
+         var _zi={
+            calculated_hours:0,
+            calculated_trips:0,
+            weekly_off:0,
+            absents_count:0,
+            extra_day:0,
+            working_days:0,
+            id:_data.id
+        };
+
+        time_sheet_data.forEach(function(item, i){
+            var _trips = parseFloat(item.trips)||0;
+            var _hours = parseFloat(item.login_hours)||0;
+            console.log(_hours);
+            var item_dayoff = parseFloat(moment(item.date, 'YYYY-MM-DD').format('d'))||0;
+            var item_dayoff_name = moment(item.date, 'YYYY-MM-DD').format('dddd');
+            _zi.off_day=item_dayoff_name;
+            if(_trips==0 && _hours==0){//absent
+                
+                if(item_dayoff==dayoff){
+                    //weekday
+                    _zi.weekly_off++;
+                    item.off_days_status='weeklyoff';
+                }
+                else{
+                    //absent
+                    _zi.absents_count++;
+                    item.off_days_status='absent';
+                }
+            }
+            else{
+                _zi.calculated_trips+=_trips;
+                if(item_dayoff==dayoff){
+                    //extraday
+                    _zi.extra_day++;
+                    item.off_days_status='extraday';
+                    
+                }
+                else{
+                    //present
+                    
+                    _zi.calculated_hours+=(_hours>11?11:_hours);
+                    _zi.working_days++;
+                    item.off_days_status='present';
+
+                }
+            }
+        });
+
+        var __data={
+            time_sheet:time_sheet_data,
+            zomato_income:_zi
+        }
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url : "{{route('import.resync_attendance_data')}}",
+            type : 'POST',
+            data: __data,
+            beforeSend: function() {            
+                $('.bk_loading').show();
+            },
+            complete: function(){
+                $('.bk_loading').hide();
+            },
+            success: function(data){
+                console.warn(data);
+                $('.bk_loading').hide();
+                if(data.status==0){
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: data.message,
+                        showConfirmButton: true  
+                    });
+                    return;
+                }
+                swal.fire({
+                    position: 'center',
+                    type: 'success',
+                    title: 'Record imported successfully.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                $('#for_days_payouts').trigger('click');
+            },
+            error: function(error){
+                $('.bk_loading').hide();
+                swal.fire({
+                    position: 'center',
+                    type: 'error',
+                    title: 'Oops...',
+                    text: 'Unable to update.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        });
+        console.log(__data)
          
      }
  }
@@ -1084,7 +1187,7 @@
                             $('.attendance__sync-data').show();
                             $('.attendance__msg').html(_msg.html());
                             $('#resync__attendace_data').html(JSON.stringify(_data));
-                            return;
+                            // return;
                         }
                         if(_errCode==1){
                             //weekday not matched with previous weekday, just show the warning
