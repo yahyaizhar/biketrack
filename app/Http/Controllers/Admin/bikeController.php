@@ -277,7 +277,7 @@ class bikeController extends Controller
           $ra->save();
         }
 
-        $splitted_amount++;
+        $splitted_amount+=$amount_given_by_days;
       }
       $remaining_amount=$total_amount-$splitted_amount;
 
