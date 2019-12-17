@@ -52,14 +52,14 @@
                             </select> 
                         </div>
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label>Owner:</label>
                             <select  class="form-control bk-select2" name="owner" >
                                 <option value="kr_bike">Kr-Bike</option>
                                 <option value="rent">Rental Bike</option>
                                 <option value="self">Rider Own Bike</option>
                             </select> 
-                        </div>
+                        </div> --}}
                         <div class="form-group">
                             <label>Given Date:</label>
                             <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="">
@@ -178,6 +178,12 @@
                 
                 console.warn(work_days);
                 var append_bike='';
+                var owner__kr_bike='';
+                var owner__rent='';
+                var owner__self='';
+                if(obj.bike.owner=='kr_bike') owner__kr_bike='selected';
+                if(obj.bike.owner=='rent') owner__rent='selected';
+                if(obj.bike.owner=='self') owner__self='selected';
                 if(according_to=="bike"){
                     append_bike='<div class="split--calculated__div" >'+
     '                                <div class="form-group">'+
@@ -194,6 +200,14 @@
     '                                <div class="form-group">'+
     '                                    <input type="text" class="form-control" value="" name="data['+i+'][amount_given_by_days]">'+
     '                                </div>'+
+'                                   <div class="form-group">  '  + 
+    '                                   <label>Owner:</label>  '  + 
+    '                                   <select  class="form-control bk-select2" name="data['+i+'][owner]" >  '  + 
+    '                                       <option value="kr_bike" '+owner__kr_bike+'>Kr-Bike</option>  '  + 
+    '                                       <option value="rent" '+owner__rent+'>Rental Bike</option>  '  + 
+    '                                       <option value="self" '+owner__self+'>Rider Own Bike</option>  '  + 
+    '                                   </select>   '  + 
+    '                               </div>  ' +
     '                            </div>'; 
                 }
                 else{
@@ -212,16 +226,25 @@
     '                                <div class="form-group">'+
     '                                    <input type="text" class="form-control" value="" name="data['+i+'][amount_given_by_days]">'+
     '                                </div>'+
+    '                                <div class="form-group">  '  + 
+    '                                   <label>Owner:</label>  '  + 
+    '                                   <select  class="form-control bk-select2" name="data['+i+'][owner]" >  '  + 
+    '                                       <option value="kr_bike" '+owner__kr_bike+'>Kr-Bike</option>  '  + 
+    '                                       <option value="rent" '+owner__rent+'>Rental Bike</option>  '  + 
+    '                                       <option value="self" '+owner__self+'>Rider Own Bike</option>  '  + 
+    '                                   </select>   '  + 
+    '                               </div>  ' +
     '                            </div>';   
                 }
 
                 
                 $('#bike_rent .split__object-container').append(append_bike);
+                
+                // $('#bike_rent [name=*"owner"]').val(histories[Object.keys(histories)[0]].bike.owner).trigger('change');
+                
             });
 
-            if(according_to=="bike"){
-                $('#bike_rent [name="owner"]').val(histories[Object.keys(histories)[0]].bike.owner).trigger('change');
-            }
+           
         }
     }
     $("#bike_rent [name='amount']").on("change input",function(){
