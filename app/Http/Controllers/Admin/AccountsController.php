@@ -851,59 +851,80 @@ class AccountsController extends Controller
         if (isset($history_found)) {
             $feid=$history_found->client_rider_id;
         }
-        $ra_zomatos_no_of_hours =0;
-        $ra_zomatos_no_of_trips = 0;
+        $zomato_hours =0;
+        $zomato_trips = 0;
+
+        $calculated_hours =0;
+        $calculated_trips = 0;
+        $absent_count=0;
+        $working_count=0;
+        $absent_hours=0;
+        $working_hours=0;
+        $less_time=0;
+        $bonus=0;
+
+        //some static_data
+        $_s_maxTrips=400;
+        $_s_tripsFormula=2;
+        $_s_maxTripsFormula=4;
+        $_s_monthlyHours=286;
+        $_s_hoursFormula=7.87;
+        $_s_maxHours=11;
         if(isset($feid) && $feid!=null){ // rider belongs to zomato
             $ra_zomatos=Income_zomato::where("rider_id",$rider_id)
             ->whereMonth("date",$onlyMonth)
             ->get()->first();  
             
             if(isset($ra_zomatos)){
+
                 $absent_count=$ra_zomatos->absents_count;
-                $working_days=$ra_zomatos->working_days;
-                $income_zomato_id=$ra_zomatos->id;
-                $rider_payout_by_days=Riders_Payouts_By_Days::where("Zomato_income_id",$income_zomato_id)
-                ->whereMonth("date",$onlyMonth)
-                ->get();
-                foreach ($rider_payout_by_days as $value) {
-                    $hours_by_day=$value->login_hours;
-                    if ($hours_by_day>11) {
-                        $hours_by_day=11;
-                    }
-                    $ra_zomatos_no_of_hours+=$hours_by_day;
+                $working_count=$ra_zomatos->working_days;
+
+                $weekly_off=$ra_zomatos->weekly_off;
+                $extra_day=$ra_zomatos->extra_day;
+                
+                $absent_hours=$absent_count*$_s_maxHours;
+                $working_hours=$working_count*$_s_maxHours;
+
+                $calculated_hours =$ra_zomatos->calculated_hours;
+                $calculated_trips = $ra_zomatos->calculated_trips;
+
+                $less_time=$working_hours-$calculated_hours;
+
+                $zomato_hours =$ra_zomatos->log_in_hours_payable;
+                $zomato_trips = $ra_zomatos->trips_payable;
+
+                $hours=$calculated_hours;
+                $hours_payable=$hours*$_s_hoursFormula;
+
+                $trips = $calculated_trips > $_s_maxTrips?$_s_maxTrips:$calculated_trips;
+                $trips_payable = $trips * $_s_tripsFormula;
+
+                $trips_EXTRA = $calculated_trips > $_s_maxTrips?$calculated_trips-$_s_maxTrips:0;
+                $trips_EXTRA_payable = $trips_EXTRA * $_s_maxTripsFormula;
+
+                // $trips_payable+=$trips_EXTRA_payable;
+
+                $payable_hours=$_s_monthlyHours - $absent_hours - $less_time;
+
+                if($calculated_trips > $_s_maxTrips){
+                    $bonus=50;
                 }
-                $absents=$absent_count*11;
-                $working_days=$working_days*11;
-                // $ra_zomatos_no_of_hours = $ra_zomatos_no_of_hours > 286?286:$ra_zomatos->log_in_hours_payable;
-                $working_hours=$working_days-$ra_zomatos_no_of_hours;
-                $hours_for_working_days=round(286-($working_hours+$absents),2);
-                $ra_zomatos_no_of_hours =$hours_for_working_days * 7.87;
-
-
-                $ra_zomatos_no_of_trips = $ra_zomatos->trips_payable > 400?400:$ra_zomatos->trips_payable;
-                $ra_zomatos_no_of_trips = $ra_zomatos_no_of_trips * 2;
-
-                $ra_zomatos_no_of_trips_EXTRA = $ra_zomatos->trips_payable > 400?$ra_zomatos->trips_payable-400:0;
-                $ra_zomatos_no_of_trips_EXTRA = $ra_zomatos_no_of_trips_EXTRA * 4;
-                $ra_zomatos_no_of_trips+=$ra_zomatos_no_of_trips_EXTRA;
             }
-        
             
-            $ra_deduction = $ra_payable;
-            $a=round($ra_zomatos_no_of_hours,2);
-            $b=round($ra_zomatos_no_of_trips,2);
-            $c=round($ra_cr,2);
-            $ra_salary=$a +$b  +$c ;
-            $ra_recieved=$ra_salary - $ra_deduction;
+            $salary_hours=round($hours_payable,2);
+            $salary_trips=$trips_payable+$trips_EXTRA_payable;
+            $salary_credits=round($ra_cr,2);
+            $ra_salary=$salary_hours +$salary_trips  +$salary_credits ;
+            $ra_recieved=$ra_salary - $ra_payable;
 
-            $total_salary_amt = round($ra_zomatos_no_of_hours+$ra_zomatos_no_of_trips,2);
+            $total_salary_amt = round($hours_payable+$trips_payable+$trips_EXTRA_payable,2);
         }
         else { // other clients
             $fixed_salary = $rider->Rider_Detail->salary;
             $fixed_salary = isset($fixed_salary)?$fixed_salary:0;
-            $ra_deduction = $ra_payable;
             $ra_salary= $fixed_salary + $ra_cr;
-            $ra_recieved=$ra_salary - $ra_deduction;
+            $ra_recieved=$ra_salary - $ra_payable;
 
             $total_salary_amt = $fixed_salary;
         }
@@ -928,63 +949,47 @@ class AccountsController extends Controller
        if (isset($is_paid)) {
            $is_paid_salary=true;
        }else{
-        $is_paid_salary=false;
+            $is_paid_salary=false;
        }
-       $data_zomato=Income_zomato::where("rider_id",$rider_id)
-       ->whereMonth("date",$onlyMonth)
-       ->get()
-       ->first();
-       $trips=0;
-       $hours=0;
-       $zomato_hours=0;
-        $zomato_trips=0;
-       if (isset($data_zomato)) {
-           $absent_count=$data_zomato->absents_count;
-           $weekly_off=$data_zomato->weekly_off;
-           $extra_day=$data_zomato->extra_day;
-           $working_days=$data_zomato->working_days;
-           $trips=$data_zomato->calculated_trips;
-           $hours=$data_zomato->calculated_hours;
-           $zomato_hours=$data_zomato->log_in_hours_payable;
-           $zomato_trips=$data_zomato->trips_payable;
-        //    $income_zomato_id=$data_zomato->id;
-        //    $rider_payout_by_days=Riders_Payouts_By_Days::where("Zomato_income_id",$income_zomato_id)
-        //    ->whereMonth("date",$onlyMonth)
-        //    ->get();
-        //    foreach ($rider_payout_by_days as $value) {
-        //        $trips+=$value->trips;
-               
-        //        $hour=$value->login_hours;
-        //        if ($hour>11) {
-        //            $hour=11;
-        //        }
-        //        $hours+=$hour;
-        //    }
-           
-       }
-       if (!isset($data_zomato)) {
-            $absent_count=0;
-            $weekly_off=0;
-            $extra_day=0;
-            $working_days=0;
-        }
-       
         return response()->json([
+            'ra_salary'=>$ra_salary,
+            
+            'salary_hours'=>$salary_hours,
+            'salary_trips'=>$salary_trips,
+            'salary_credits'=>$salary_credits,
+
             'net_salary'=>round($ra_salary,2),
             'gross_salary'=>round($ra_recieved,2),
             'zomato_hours'=>round($zomato_hours,2),
             'zomato_trips'=>round($zomato_trips,2),
             'total_deduction'=>round($ra_payable,2),
-            // 'total_bonus'=>round($ra_cr,2),
-            // 'closing_balance_prev'=>$closing_balance_prev,
+            'total_salary'=>round($total_salary_amt,2),
+            'closing_balance_prev'=>$closing_balance_prev,
             'is_paid'=>$is_paid,
             'is_generated'=>$is_generated_salary,
             'absent_count'=>$absent_count,
             'weekly_off'=>$weekly_off,
             'extra_day'=>$extra_day,
-            'working_days'=>$working_days,
+            'working_days'=>$working_count,
+            'absent_hours'=>$absent_hours,
+            'working_hours'=>$working_hours,
             'trips'=>round($trips,2),
             'hours'=>round($hours,2),
+            'bonus'=>$bonus,
+            
+            'hours_payable'=>round($hours_payable,2),
+            'trips_payable'=>round($trips_payable,2),
+            'trips_EXTRA'=>round($trips_EXTRA,2),
+            'trips_EXTRA_payable'=>round($trips_EXTRA_payable,2),
+            'less_time'=>round($less_time,2),
+            'payable_hours'=>round($payable_hours,2),
+
+            '_s_maxTrips'=>round($_s_maxTrips,2),
+            '_s_tripsFormula'=>round($_s_tripsFormula,2),
+            '_s_maxTripsFormula'=>round($_s_maxTripsFormula,2),
+            '_s_monthlyHours'=>round($_s_monthlyHours,2),
+            '_s_hoursFormula'=>round($_s_hoursFormula,2),
+            '_s_maxHours'=>$_s_maxHours
         ]);
     }
     public function new_salary_added(Request $request){
@@ -2302,6 +2307,34 @@ public function client_income_update(Request $request,$id){
     public function view_riders_payouts_days(){
         return view('admin.zomato.riders_payouts_by_days');
     }
+    public function resync_attendance_data(Request $r)
+    {
+        $time_sheet=$r->time_sheet;
+        $zi=$r->zomato_income;
+
+        foreach ($time_sheet as $item) {
+            $zi_timesheet=Riders_Payouts_By_Days::find($item['id']);
+            $zi_timesheet->off_days_status=$item['off_days_status'];
+            $zi_timesheet->save();
+        }
+        //updating zi
+        $zomato_income=Income_zomato::find($zi['id']);
+        $zomato_income->absents_count=$zi['absents_count'];
+        $zomato_income->weekly_off=$zi['weekly_off'];
+        $zomato_income->extra_day=$zi['extra_day'];
+        $zomato_income->working_days=$zi['working_days'];
+        $zomato_income->calculated_hours=round($zi['calculated_hours'],2);
+        $zomato_income->calculated_trips=round($zi['calculated_trips'],2);
+        $zomato_income->off_day=$zi['off_day'];
+        $zomato_income->error=null;
+        $zomato_income->save();
+
+        return response()->json([
+            'status'=>1,
+            'data'=>$zomato_income,
+            'data2'=>$zi_timesheet
+        ]);
+    }
     public function import_rider_daysPayouts(Request $r)
     {
         $data = $r->data;
@@ -2369,8 +2402,8 @@ public function client_income_update(Request $request,$id){
                 $obj['feid']=$feid;
                 $obj['zomato_income_id']=$income_zomato_id;
                 $obj['rider_id']=$rider_id;
-                $obj['login_hours']=0;
-                $obj['trips']=0;
+                $obj['login_hours']=$login_hours;
+                $obj['trips']=$trips;
                 $obj['off_days_status']=NULL;
                 $obj['payout_for_login_hours']=$payout_for_login_hours;
                 $obj['payout_for_trips']=$payout_for_trips;
@@ -2385,11 +2418,11 @@ public function client_income_update(Request $request,$id){
                 if($timeSheetObj!=null){
                     $off_day_status=isset($timeSheetObj['off_day_status'])?$timeSheetObj['off_day_status']:null;
                     $obj['off_days_status']=$off_day_status;
-                    if ($off_day_status=='present') {
-                        $login_hours=$login_hours>11?11:$login_hours;
-                        $obj['login_hours']=$login_hours;
-                    }
-                    $obj['trips']=$trips;
+                    // if ($off_day_status=='present') {
+                    //     $login_hours=$login_hours>11?11:$login_hours;
+                    //     $obj['login_hours']=$login_hours;
+                    // }
+                    // $obj['trips']=$trips;
                     
                 }
                 array_push($zomato_objects, $obj);

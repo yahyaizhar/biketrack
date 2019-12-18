@@ -685,12 +685,7 @@
     </div>
 </div>
 {{-- rider payouts by days --}}
-<div class="attendance__msg-container">
-    <div class="attendance__msg"></div>
-    <div class="attendance__sync-data">
 
-    </div>
-</div>
 <div class="kt-content  kt-grid__item kt-grid__item--fluid days_payout" id="kt_content">
     <div class="kt-portlet kt-portlet--mobile">
         <div class="kt-portlet__head kt-portlet__head--lg">
@@ -724,13 +719,40 @@
                 </div>
             </div> --}}
         </div>
+        <div class="kt-portlet__body">
+            <div class="attendance__msg-container" style="display:none">
+                <div class="attendance__msg"></div>
+                <div class="attendance__sync-data">
+                    <div class="row">
+                        <div class="col-md-3 offset-md-9">
+                            <form class="kt-form" enctype="multipart/form-data" id="resync__attendance-form">
+                                <select class="form-control" name="weekday" >
+                                    <option value="0">Sunday</option>
+                                    <option value="1">Monday</option>
+                                    <option value="2">Tuesday</option>
+                                    <option value="3">Wednesday</option>
+                                    <option value="4">Thursday</option>
+                                    <option value="5">Friday</option>
+                                    <option value="6">Saturday</option>
+                                </select>
+            
+                                <button onclick="resync__attendace(this)" class="btn btn-success btn-elevate btn-icon-sm mt-3 float-right" type="button">
+                                    Resync Data
+                                </button> 
+                                <noscript id="resync__attendace_data"></noscript>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="kt-portlet__body" id="rider_days_detail">
                 <style type="text/css">
-                    table {
+                    #rider_days_detail table {
                         border:solid #000 !important;
                         border-width:1px 0 0 1px !important;
                     }
-                    th, td {
+                    #rider_days_detail th,#rider_days_detail td {
                         border:solid #000 !important;
                         border-width:0 1px 1px 0 !important;
                     }
@@ -762,7 +784,7 @@
         </div>
         <button style="float:right;margin-right: 10px;" onclick="print_data()"  class="btn btn-success btn-elevate btn-icon-sm" id="sync_data" type="button">
                 Print Data
-        </button>
+        </button> 
     </div>
 </div>
 {{-- end rider payouts by days --}}
@@ -960,7 +982,127 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script src="{{ asset('js/dataTables.cellEdit.js') }}" type="text/javascript"></script>
 <script>
-  
+  var basic_alert= '   <div><div class="alert fade show" role="alert">  '  + 
+ '                                   <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div>  '  + 
+ '                                       <div class="alert-text">A simple danger alert—check it out!</div>  '  + 
+ '                                       <div class="alert-close">  '  + 
+ '                                       <button type="button" class="close" data-dismiss="alert" aria-label="Close">  '  + 
+ '                                           <span aria-hidden="true"><i class="la la-close"></i></span>  '  + 
+ '                                       </button>  '  + 
+ '                                   </div>  '  + 
+ '                              </div> </div>  ' ;
+ 
+
+ var resync__attendace=function(_this){
+     var _data = JSON.parse($('#resync__attendace_data').html());
+     if(_data){
+         console.log(_data);
+        var dayoff = parseInt($('#resync__attendance-form [name="weekday"]').val())||0;
+         var time_sheet_data=JSON.parse(JSON.stringify(_data.time_sheet));
+         var _zi={
+            calculated_hours:0,
+            calculated_trips:0,
+            weekly_off:0,
+            absents_count:0,
+            extra_day:0,
+            working_days:0,
+            id:_data.id
+        };
+
+        time_sheet_data.forEach(function(item, i){
+            var _trips = parseFloat(item.trips)||0;
+            var _hours = parseFloat(item.login_hours)||0;
+            console.log(_hours);
+            var item_dayoff = parseFloat(moment(item.date, 'YYYY-MM-DD').format('d'))||0;
+            var item_dayoff_name = moment(item.date, 'YYYY-MM-DD').format('dddd');
+            _zi.off_day=item_dayoff_name;
+            if(_trips==0 && _hours==0){//absent
+                
+                if(item_dayoff==dayoff){
+                    //weekday
+                    _zi.weekly_off++;
+                    item.off_days_status='weeklyoff';
+                }
+                else{
+                    //absent
+                    _zi.absents_count++;
+                    item.off_days_status='absent';
+                }
+            }
+            else{
+                _zi.calculated_trips+=_trips;
+                if(item_dayoff==dayoff){
+                    //extraday
+                    _zi.extra_day++;
+                    item.off_days_status='extraday';
+                    
+                }
+                else{
+                    //present
+                    
+                    _zi.calculated_hours+=(_hours>11?11:_hours);
+                    _zi.working_days++;
+                    item.off_days_status='present';
+
+                }
+            }
+        });
+
+        var __data={
+            time_sheet:time_sheet_data,
+            zomato_income:_zi
+        }
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url : "{{route('import.resync_attendance_data')}}",
+            type : 'POST',
+            data: __data,
+            beforeSend: function() {            
+                $('.bk_loading').show();
+            },
+            complete: function(){
+                $('.bk_loading').hide();
+            },
+            success: function(data){
+                console.warn(data);
+                $('.bk_loading').hide();
+                if(data.status==0){
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: data.message,
+                        showConfirmButton: true  
+                    });
+                    return;
+                }
+                swal.fire({
+                    position: 'center',
+                    type: 'success',
+                    title: 'Record imported successfully.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                $('#for_days_payouts').trigger('click');
+            },
+            error: function(error){
+                $('.bk_loading').hide();
+                swal.fire({
+                    position: 'center',
+                    type: 'error',
+                    title: 'Oops...',
+                    text: 'Unable to update.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        });
+        console.log(__data)
+         
+     }
+ }
     $("#advance").on('shown.bs.modal', function(){
         var month=biketrack.getUrlParameter('r1d1');
         var _month=new Date(month).format("mmmm yyyy");
@@ -1030,7 +1172,34 @@
                 success: function(data){
                     var _data=data.data;
                     console.log(_data);
+                    $('.attendance__msg-container').hide();
                     if(!_data) return; 
+                    if(_data.error!=null){
+                        var _err = JSON.parse(_data.error);
+                        var _errCode=parseInt(_err.error_code);
+                        $('.attendance__msg-container, .attendance__sync-data').show();
+                        if(_errCode==2){
+                            //no weekday found
+                            var msg="No weekday found. Please manually select the weekly-off day for this rider.";
+                            var _msg = $(basic_alert);
+                            _msg.find('.alert-text').html(msg);
+                            _msg.find('.alert').addClass('alert-outline-danger');
+                            $('.attendance__sync-data').show();
+                            $('.attendance__msg').html(_msg.html());
+                            $('#resync__attendace_data').html(JSON.stringify(_data));
+                            // return;
+                        }
+                        if(_errCode==1){
+                            //weekday not matched with previous weekday, just show the warning
+                            var msg="Current Weekly Off Day iis not matched with previous month's weekday.";
+                            var _msg = $(basic_alert);
+                            _msg.find('.alert-text').html(msg);
+                            _msg.find('.alert').addClass('alert-outline-warning');
+                            $('.attendance__sync-data').hide();
+                            $('.attendance__msg').html(_msg.html());
+                        }
+
+                    }
                     var time_sheet=_data.time_sheet;
                     var  rows='';
                     var calculated_trips=0;

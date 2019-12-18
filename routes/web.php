@@ -168,6 +168,8 @@ Route::group([
     Route::get("/rider/week/days/sync/data/{month}/{rider_id}/{weekly_off_day}/{absent_days}/{weekly_off}/{extra_day}/","AccountsController@weekly_days_sync_data"); 
 //ends import Zomato
 
+Route::post('/resync_attendance_data','AccountsController@resync_attendance_data')->name('import.resync_attendance_data');
+
 //payout method
 Route::POST("/client/add_payout_method","ClientController@add_payout_method")->name("admin.add_payout_method");
 //payout method

@@ -276,26 +276,27 @@
                 var trips_amount=trips*2;
                 var extra_trips_amount=extra_trips*4;
                 var final_salary=trips_amount+hours_amount+extra_trips_amount;
-                $('#salary [name="monthly_hours_val"]').val(monthly_hours);
-                $('#salary [name="absent_day_val"]').val(absent_days);
-                $('#salary [name="absent_hours_val"]').val(absent_hours.toFixed(2));
-                $('#salary [name="workable_days"]').val(working_days);
-                $('#salary [name="workable_hours_based_on_available_days"]').val(working_days_hours.toFixed(2));
-                $('#salary [name="working_hours_during_available_days"]').val(hours.toFixed(2));
-                $('#salary [name="working_zomato_hours"]').val(working_zomato_hours.toFixed(2));
-                $('#salary [name="hours_multiply_with"]').val(7.87);
-                $('#salary [name="Less time calculated"]').val(less_time_calculated.toFixed(2));
-                $('#salary [name="hours_amount"]').val(hours_amount.toFixed(2));
-                $('#salary [name="trips"]').val(trips);
-                $('#salary [name="trips_multiply_with"]').val(2);
-                $('#salary [name="trips_amount"]').val(trips_amount);
-                $('#salary [name="extra_trips"]').val(extra_trips);
-                $('#salary [name="extra_trips_multiply_with"]').val(4);
-                $('#salary [name="extra_trips_amount"]').val(extra_trips_amount);
-                $('#salary [name="finals_hours"]').val(final_hours_payout.toFixed(2));
-                $('#salary [name="bonus"]').val(bonus);
-                $('#salary [name="final_salary"]').val(final_salary.toFixed(2));
-                $('#salary [name="total_salary"]').val(final_salary.toFixed(2));
+                $('#salary [name="monthly_hours_val"]').val(data._s_monthlyHours);
+                $('#salary [name="absent_day_val"]').val(data.absent_count);
+                $('#salary [name="absent_hours_val"]').val((data.absent_count*data._s_maxHours).toFixed(2));
+                $('#salary [name="workable_days"]').val(data.working_days);
+                $('#salary [name="workable_hours_based_on_available_days"]').val((data.working_hours).toFixed(2));
+                $('#salary [name="working_hours_during_available_days"]').val((data.hours).toFixed(2));
+                $('#salary [name="working_zomato_hours"]').val((data.zomato_hours).toFixed(2));
+                $('#salary [name="Less time calculated"]').val((data.less_time).toFixed(2));
+                $('#salary [name="finals_hours"]').val((data.payable_hours).toFixed(2));
+                $('#salary [name="hours_multiply_with"]').val(data._s_hoursFormula);
+                $('#salary [name="hours_amount"]').val((data.payable_hours*data._s_hoursFormula).toFixed(2));
+                $('#salary [name="trips"]').val(data.trips);
+                $('#salary [name="trips_multiply_with"]').val(data._s_tripsFormula);
+                $('#salary [name="trips_amount"]').val(data.trips_payable);
+                $('#salary [name="extra_trips"]').val(data.trips_EXTRA);
+                $('#salary [name="extra_trips_multiply_with"]').val(data._s_maxTripsFormula);
+                $('#salary [name="extra_trips_amount"]').val(data.trips_EXTRA_payable);
+                
+                $('#salary [name="bonus"]').val(data.bonus);
+                $('#salary [name="final_salary"]').val((data.total_salary).toFixed(2));
+                $('#salary [name="total_salary"]').val((data.total_salary).toFixed(2));
                 
 
                 $('#salary [name="is_paid"]').val(data.is_paid);
