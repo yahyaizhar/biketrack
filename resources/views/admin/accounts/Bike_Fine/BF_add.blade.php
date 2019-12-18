@@ -108,8 +108,8 @@
 <script data-ajax>
   $(document).ready(function(){
     //   $('#datepicker').datepicker({dateFormat: 'yy-mm-dd'}); 
-    $('#bike_fine [name="month"], #bike_fine [name="bike_id"]').on('change', function(){
-        var _month = $('#bike_fine [name="month"]').val();
+    $('#bike_fine [name="given_date"], #bike_fine [name="bike_id"]').on('change', function(){
+        var _month = $('#bike_fine [name="given_date"]').val();
         
         if(_month=='')return;
         _month = new Date(_month).format('yyyy-mm-dd');
@@ -139,10 +139,10 @@
             });
         }
     });
-    $('#bike_fine [name="month"]').trigger('change');
+    $('#bike_fine [name="given_date"]').trigger('change');
 
     $('#bike_fine [name="rider_id"]').on('change', function(){
-        var _month = $('#bike_fine [name="month"]').val();
+        var _month = $('#bike_fine [name="given_date"]').val();
         
         if(_month=='')return;
         _month = new Date(_month).format('yyyy-mm-dd');
