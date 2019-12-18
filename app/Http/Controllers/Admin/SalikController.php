@@ -362,16 +362,16 @@ class SalikController extends Controller
             
             if($item->status=='active'){
                 if($according_to=='bike'){
-                    return $item->bike_id==$_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+                    return $item->bike_id==$_id && ( $req_date->greaterThanOrEqualTo($created_at));
                 }
-                return $item->rider_id==$_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+                return $item->rider_id==$_id && ( $req_date->greaterThanOrEqualTo($created_at));
             }
             if($according_to=='bike'){
                 return $item->bike_id==$_id &&
-                ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+                ($req_date->greaterThanOrEqualTo($created_at)) && ( $req_date->lessThanOrEqualTo($updated_at));
             }
             return $item->rider_id==$_id &&
-                ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+                ($req_date->greaterThanOrEqualTo($created_at)) && ( $req_date->lessThanOrEqualTo($updated_at));
         });
 
         $salik_amount=0;
