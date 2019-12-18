@@ -262,6 +262,25 @@ biketrack.updateURL = function(array){
         window.history.pushState({path:newurl},'',newurl);
     }
 }
+biketrack.updateURLParameter2 = function(url, param, paramVal){
+    var newAdditionalURL = "";
+    var tempArray = url.split("?");
+    var baseURL = tempArray[0];
+    var additionalURL = tempArray[1];
+    var temp = "";
+    if (additionalURL) {
+        tempArray = additionalURL.split("&");
+        for (var i=0; i<tempArray.length; i++){
+            if(tempArray[i].split('=')[0] != param){
+                newAdditionalURL += temp + tempArray[i];
+                temp = "&";
+            }
+        }
+    }
+
+    var rows_txt = temp + "" + param + "=" + paramVal;
+    return baseURL + "?" + newAdditionalURL + rows_txt;
+}
 biketrack.getUrlParameter = function(name) {
     name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
     var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
@@ -494,6 +513,8 @@ jQuery(function($) {
 $('ul.kt-menu__nav li.kt-menu__item,.kt-menu__submenu ').hover(function(){$(this).addClass('kt-menu__item--hover')})
 $('ul.kt-menu__nav li.kt-menu__item,.kt-menu__submenu ').mouseleave(function(){$(this).removeClass('kt-menu__item--hover')})
 
+
+//// get url search value and search it
 function _search_recursion(times){
 if(times <=0) return false;
 var _queryRiderId = biketrack.getUrlParameter('search');
@@ -508,6 +529,12 @@ _search_recursion(6);
 });
 
 
+/////on search input change update the url
+$(document).on('keyup','input[type="search"]',function(){
+        var _val = $('input[type="search"]').val();
+        var newURL = biketrack.updateURLParameter2(window.location.href, 'search', _val);
+        window.history.pushState({path:newURL},'',newURL);
+})
 
 </script>
     <!--end:: Global Optional Vendors -->

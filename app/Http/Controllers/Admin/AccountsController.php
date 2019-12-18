@@ -918,7 +918,7 @@ class AccountsController extends Controller
             $ra_salary=$salary_hours +$salary_trips  +$salary_credits ;
             $ra_recieved=$ra_salary - $ra_payable;
 
-            $total_salary_amt = round($hours_payable+$trips_payable,2);
+            $total_salary_amt = round($hours_payable+$trips_payable+$trips_EXTRA_payable,2);
         }
         else { // other clients
             $fixed_salary = $rider->Rider_Detail->salary;
@@ -953,7 +953,10 @@ class AccountsController extends Controller
        }
         return response()->json([
             'ra_salary'=>$ra_salary,
-            'ra_cr'=>$ra_cr,
+            
+            'salary_hours'=>$salary_hours,
+            'salary_trips'=>$salary_trips,
+            'salary_credits'=>$salary_credits,
 
             'net_salary'=>round($ra_salary,2),
             'gross_salary'=>round($ra_recieved,2),
