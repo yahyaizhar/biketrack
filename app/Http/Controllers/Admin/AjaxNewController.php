@@ -880,7 +880,7 @@ class AjaxNewController extends Controller
             if($company_statement->source == 'Bike Fine Paid'){
                 return "Bike Fine Paid";
             }
-            if($company_statement->source == 'Zomato Payout'){
+            if($company_statement->source == 'Zomato Payout' || $company_statement->source == 'Jeebly Payout'){
                 $tips_found = Arr::first($ras, function ($item, $key) use ($company_statement) { 
                     if($item['type']=='skip') return false;
                     return $item['income_zomato_id'] == $company_statement->income_zomato_id
