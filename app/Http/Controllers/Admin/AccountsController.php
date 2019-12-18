@@ -744,7 +744,7 @@ class AccountsController extends Controller
             'status' => true
         ]);
     }
-    //ends investment
+    //ends investment 
 
     // add new salary
     public function add_new_salary_create(){

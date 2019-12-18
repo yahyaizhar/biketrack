@@ -662,9 +662,14 @@
             <div>
                 <div>
                     <button style="float:right;margin-right: 10px;" class="btn btn-warning btn-elevate btn-icon-sm" id="for_print" type="button" onclick="printJS('print_slip_for_rider', 'html')">
-                        Print Salary Slip
+                        Print Company Slip
                     </button>
                 </div>
+                <div>
+                        <button style="float:right;margin-right: 10px;" class="btn btn-warning btn-elevate btn-icon-sm" id="for_print" type="button" onclick="rider_full_detail();">
+                            Print Rider Slip
+                        </button>
+                    </div>
                 <div>
                     <button style="float:right;margin-right: 10px;" class="btn btn-info btn-elevate btn-icon-sm" id="for_edit" type="button">
                         Edit Salary Slip
@@ -794,7 +799,7 @@
 <div style="display:grid;padding: 15px 50px 0px 50px;" id="print_slip_for_rider">
     
     <table style="">
-        <tr><th style="border:1px solid #dddd;background-color:#73acac69;text-align:center;">SALARY SLIP</th></tr>
+        <tr><th style="border:1px solid #dddd;background-color:#73acac69;text-align:center;">SALARY SLIP RIDER</th></tr>
         <tr><th class="month_year" style="border:1px solid #dddd;text-align:center;"></th></tr>
     </table>
     <table class="print_class" style=" margin-top: 1px;">
@@ -955,6 +960,155 @@
         <p style="margin-bottom: 3px;"><strong>DANISH MUNIR</strong></p>
     </div>
 </div>
+<div style="display:grid;padding: 15px 50px 0px 50px;" id="print_slip_for_rider2">
+    
+        <table style="">
+            <tr><th style="border:1px solid #dddd;background-color:#73acac69;text-align:center;">SALARY SLIP COMPANY</th></tr>
+            <tr><th class="month_year" style="border:1px solid #dddd;text-align:center;"></th></tr>
+        </table>
+        <table class="print_class" style=" margin-top: 1px;">
+            <tr>
+                <th style="border:1px solid #dddd;width:25%;text-align:left;">NAME</th>
+                <td class="rider_name" style="border:1px solid #dddd;width:25%;text-align:left;"></td>
+                <th style="border:1px solid #dddd;width:25%;text-align:left;">Designation:</th>
+                <td style="border:1px solid #dddd;width:25%;text-align:left;"></td>
+            </tr>
+            <tr>
+                <th style="border:1px solid #dddd;width:25%;text-align:left;">EMPLOYEE ID:</th>
+                <td class="employee_id" style="border:1px solid #dddd;width:25%;text-align:left;"></td>
+                <th style="border:1px solid #dddd;width:25%;text-align:left;">WORKPLACE:</th>
+                <td style="border:1px solid #dddd;width:25%;text-align:left;"></td>
+            </tr>
+            <tr>
+                <th style="border:1px solid #dddd;width:25%;text-align:left;">DATE OF JOINING:</th>
+                <td class="today_date" style="border:1px solid #dddd;width:25%;text-align:left;"></td>
+                <th style="border:1px solid #dddd;width:25%;text-align:left;"></th>
+                <td style="border:1px solid #dddd;width:25%;text-align:left;"></td>
+            </tr>
+        </table>
+    
+        <table style=" margin-top: 1px;">
+            <tr>
+                <th style="border:1px solid #dddd;width:50%;text-align:center;">DESCRIPTION</th>
+                <th style="border:1px solid #dddd;width:25%;text-align:center;">EARNINGS</th>
+                <th style="border:1px solid #dddd;width:25%;text-align:center;">DEDUCTIONS:</th>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">Previous Balance</td>
+                <td contenteditable='true' class="previous_balance" style="border:1px solid #dddd;width:25%;text-align:end;"></td> 
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">BASIC SALARY (<strong>Trips:</strong><span class="total_trips"></span>) (<strong>Hours:</strong><span class="total_hours"></span>) (<strong>Extra Trips:</strong><span class="extra_trips"></span>)</td>
+                <td contenteditable='true' class="salary" style="border:1px solid #dddd;width:25%;text-align:end;"></td> 
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">NCW ALLOWANCE</td>
+                <td contenteditable='true' class="ncw" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">CUSTOMER TIP</td>
+                <td contenteditable='true' class="tip" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">BIKE ALLOWANCE</td>
+                <td contenteditable='true' class="bike_allowns" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">BONES</td>
+                <td contenteditable='true' class="bones" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">Bike Fine</td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="bike_fine" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">ADVANCE</td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="advance" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">SALIK PLANTI</td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="salik" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">SIM PLANTI</td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="sim" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">ZOMATO PLANTI</td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="zomato" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">DC DEDUCTION</td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="dc" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">MCDONALD DEDUCTION</td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="macdonald" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">RTA FINE</td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="rta" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">MOBILE EMI</td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="mobile" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">DISPLAN FINE</td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="discipline" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">MICS CHARGES</td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="mics" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">Others</td>
+                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="cash_paid" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:left;">TOTAL</td>
+                <td class="total_cr" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td class="total_dr" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+            </tr>
+            
+        </table>
+        <table style="">
+            <tr>
+                <td class="payment_date" style="border:1px solid #dddd;width:50%;text-align:left;"></td>
+                <td style="border:1px solid #dddd;width:50%;text-align:center;background-color:#73acac69;">NET PAY</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #dddd;width:50%;text-align:center;"></td>
+                <td class="net_pay" style="border:1px solid #dddd;width:50%;text-align:center;background-color:#73acac69;"></td>
+            </tr>
+        </table>
+        <div style=""> 
+            <p style="font-size:12px;line-height: 14px;"><strong>Note: </strong>MR <span id="rider_id_1"></span> received <span id="total_net_pay"></span> from King Riders Delivery Services LLC, and MR <span id="rider_id_2"></span> no is not valid for any kind of Gratuity, yearly tickets or any other expenses other than the salary.
+            </p>
+        </div>
+   <div id="rider_attendance_detail">
+
+   </div>
+
+    </div>
 </div>
     
 </div>
@@ -2027,6 +2181,9 @@
  $('#print_slip_for_rider [contenteditable]').on('change input', function(){
 	change_edit_prints_inputs();
 })
+$('#print_slip_for_rider2 [contenteditable]').on('change input', function(){
+	change_edit_prints_inputs();
+})
 function deleteCompanyRows(id,model_class,model_id,rider_id,string,month){
     var url = "{{ url('admin/delete/accounts/rows') }}";
     console.log(url);
@@ -2128,6 +2285,20 @@ function SYNC_DATA(){
 }
 function print_data(){
     printJS('rider_days_detail','html');
+}
+function rider_full_detail(){
+$('#for_days_payouts').trigger('click');
+setTimeout(function(){
+var _html2 = $('#rider_days_detail').html();
+$('#rider_attendance_detail').html(_html2)
+$('.days_payout').hide();
+var _style='<style type="text/css"> #rider_attendance_detail table { border:solid #000 !important; border-width:1px 0 0 1px !important; } #rider_attendance_detail th,#rider_attendance_detail td { border:solid #000 !important; border-width:0 1px 1px 0 !important; } </style>';
+$('#rider_attendance_detail').append(_style);
+$('#rider_attendance_detail').find('.custom_rider_id').hide()
+$('#rider_attendance_detail').find('.custom_rider_name').hide()
+
+printJS('print_slip_for_rider2', 'html');
+},1000)
 }
 </script>
 @endsection
