@@ -528,6 +528,7 @@ class SalikController extends Controller
         if(isset($history_found)){
             $bike_histories = $history_found;
             $rider = Rider::find($bike_histories->rider_id);
+            $rider_id=$rider->id;
             $allow_salik=$rider->Rider_Detail->salik_amount;
         if($used_salik>$allow_salik){
             $_greater_ca= new Company_Account;
