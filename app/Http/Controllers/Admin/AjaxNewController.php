@@ -419,7 +419,7 @@ class AjaxNewController extends Controller
         $hours=Income_zomato::where("rider_id",$ranges['rider_id'])
         ->whereDate('date', '>=',$from)
         ->whereDate('date', '<=',$to)
-        ->sum('log_in_hours_payable');
+        ->sum('calculated_hours');
         if($hours > 286) $hours = 286;
         $trips=Income_zomato::where("rider_id",$ranges['rider_id'])
         ->whereDate('date', '>=',$from)
@@ -701,7 +701,7 @@ class AjaxNewController extends Controller
             'salary'=>$salary,
             'trips'=>$trips,
             'extra_trips'=>$extra_trips,
-            'hours'=>$hours,
+            'hours'=>round($hours,2),
             'bike_allowns'=>$bike_allowns,
             'bike_fine'=>$bike_fine,
             'ncw'=>$ncw,
@@ -880,7 +880,7 @@ class AjaxNewController extends Controller
             if($company_statement->source == 'Bike Fine Paid'){
                 return "Bike Fine Paid";
             }
-            if($company_statement->source == 'Zomato Payout'){
+            if($company_statement->source == 'Zomato Payout' || $company_statement->source == 'Jeebly Payout'){
                 $tips_found = Arr::first($ras, function ($item, $key) use ($company_statement) { 
                     if($item['type']=='skip') return false;
                     return $item['income_zomato_id'] == $company_statement->income_zomato_id
