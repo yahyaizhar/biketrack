@@ -2302,6 +2302,34 @@ public function client_income_update(Request $request,$id){
     public function view_riders_payouts_days(){
         return view('admin.zomato.riders_payouts_by_days');
     }
+    public function resync_attendance_data(Request $r)
+    {
+        $time_sheet=$r->time_sheet;
+        $zi=$r->zomato_income;
+
+        foreach ($time_sheet as $item) {
+            $zi_timesheet=Riders_Payouts_By_Days::find($item['id']);
+            $zi_timesheet->off_days_status=$item['off_days_status'];
+            $zi_timesheet->save();
+        }
+        //updating zi
+        $zomato_income=Income_zomato::find($zi['id']);
+        $zomato_income->absents_count=$zi['absents_count'];
+        $zomato_income->weekly_off=$zi['weekly_off'];
+        $zomato_income->extra_day=$zi['extra_day'];
+        $zomato_income->working_days=$zi['working_days'];
+        $zomato_income->calculated_hours=$zi['calculated_hours'];
+        $zomato_income->calculated_trips=$zi['calculated_trips'];
+        $zomato_income->off_day=$zi['off_day'];
+        $zomato_income->error=null;
+        $zomato_income->save();
+
+        return response()->json([
+            'status'=>1,
+            'data'=>$zomato_income,
+            'data2'=>$zi_timesheet
+        ]);
+    }
     public function import_rider_daysPayouts(Request $r)
     {
         $data = $r->data;
@@ -2369,8 +2397,8 @@ public function client_income_update(Request $request,$id){
                 $obj['feid']=$feid;
                 $obj['zomato_income_id']=$income_zomato_id;
                 $obj['rider_id']=$rider_id;
-                $obj['login_hours']=0;
-                $obj['trips']=0;
+                $obj['login_hours']=$login_hours;
+                $obj['trips']=$trips;
                 $obj['off_days_status']=NULL;
                 $obj['payout_for_login_hours']=$payout_for_login_hours;
                 $obj['payout_for_trips']=$payout_for_trips;
@@ -2385,11 +2413,11 @@ public function client_income_update(Request $request,$id){
                 if($timeSheetObj!=null){
                     $off_day_status=isset($timeSheetObj['off_day_status'])?$timeSheetObj['off_day_status']:null;
                     $obj['off_days_status']=$off_day_status;
-                    if ($off_day_status=='present') {
-                        $login_hours=$login_hours>11?11:$login_hours;
-                        $obj['login_hours']=$login_hours;
-                    }
-                    $obj['trips']=$trips;
+                    // if ($off_day_status=='present') {
+                    //     $login_hours=$login_hours>11?11:$login_hours;
+                    //     $obj['login_hours']=$login_hours;
+                    // }
+                    // $obj['trips']=$trips;
                     
                 }
                 array_push($zomato_objects, $obj);
