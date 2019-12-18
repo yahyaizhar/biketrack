@@ -535,6 +535,7 @@ class SalikController extends Controller
          }
 
          $rider=Rider::find($rider_id);
+         return response()->json(['status'=>$rider,]);
         $rider_detail=$rider->Rider_detail;
         $allow_salik=$rider_detail->salik_amount;
         if($used_salik>$allow_salik){
