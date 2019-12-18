@@ -419,7 +419,7 @@ class AjaxNewController extends Controller
         $hours=Income_zomato::where("rider_id",$ranges['rider_id'])
         ->whereDate('date', '>=',$from)
         ->whereDate('date', '<=',$to)
-        ->sum('log_in_hours_payable');
+        ->sum('calculated_hours');
         if($hours > 286) $hours = 286;
         $trips=Income_zomato::where("rider_id",$ranges['rider_id'])
         ->whereDate('date', '>=',$from)
