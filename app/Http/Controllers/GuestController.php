@@ -53,7 +53,11 @@ class GuestController extends Controller
       $new_commer->passport_status = $req->passport_status;
       $new_commer->passport_number = $req->passport_number;
       $new_commer->current_residence = $req->current_residence;
+      if($new_commer->current_residence =="uae"){
+        $new_commer->current_residence_countries = "United Arab Emirates";
+      }else{
       $new_commer->current_residence_countries = $req->current_residence_countries;
+       }
       $new_commer->source = $req->source;
       $new_commer->overall_remarks = $req->overall_remarks;
       $new_commer->save();

@@ -395,11 +395,7 @@ $(function() {
         order:[0,'desc'],
     });
     clients_table.on( 'search.dt', function () {
-        var _val = $('input[type="search"]').val();
-        var data = {
-                search:_val
-            }
-            biketrack.updateURL(data);
+
     });
 });
 function deleteClient(id)

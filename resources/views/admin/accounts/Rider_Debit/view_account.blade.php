@@ -1391,11 +1391,14 @@
                 },
                 rider_id: _riderId
             };
+            var _search = biketrack.getUrlParameter('search');
+
             var data = {
                 r1d1:_data.range.start_date, 
                 r1d2:_data.range.end_date,
                 rider_id: _riderId,
-                sort_by: $('[name="sort_by"]:checked').val()
+                sort_by: $('[name="sort_by"]:checked').val(),
+                search:_search
             }
             
             console.log(data);
@@ -1424,11 +1427,14 @@
                 },
                 rider_id: $('[name="rider_id"]').val()
             };
+            var _search = biketrack.getUrlParameter('search');
+
             var data = {
                 r1d1:_data.range.start_date, 
                 r1d2:_data.range.end_date,
                 rider_id: $('[name="rider_id"]').val(),
-                sort_by: $('[name="sort_by"]:checked').val()
+                sort_by: $('[name="sort_by"]:checked').val(),
+                search:_search
             }
             
             console.log(data);
@@ -1451,11 +1457,14 @@
                 },
                 rider_id: $('[name="rider_id"]').val()
             };
+            var _search = biketrack.getUrlParameter('search');
+
             var data = {
                 r1d1:_data.range.start_date, 
                 r1d2:_data.range.end_date,
                 rider_id: $('[name="rider_id"]').val(),
-                sort_by: $('[name="sort_by"]:checked').val()
+                sort_by: $('[name="sort_by"]:checked').val(),
+                search:_search
             }
             
             console.log(data);
@@ -1487,11 +1496,14 @@
                 },
                 rider_id: $('[name="rider_id"]').val()
             };
+            var _search = biketrack.getUrlParameter('search');
+
             var data = {
                 r1d1:_data.range.start_date, 
                 r1d2:_data.range.end_date,
                 rider_id: $('[name="rider_id"]').val(),
-                sort_by: $('[name="sort_by"]:checked').val()
+                sort_by: $('[name="sort_by"]:checked').val(),
+                search:_search
             }
             
             console.log(data);
