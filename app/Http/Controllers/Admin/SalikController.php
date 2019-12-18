@@ -505,38 +505,31 @@ class SalikController extends Controller
         
         $bike=bike::find($request->bike_id);
 
-        $bike_history = Assign_bike::all();
-        $bike_id = $bike->id;
+        $_id = $bike->id;
         $date = $request->month;
-        $history_found = Arr::first($bike_history, function ($item, $key) use ($bike_id, $date) {
-            $created_at =Carbon::parse($item->created_at)->format('Y-m-d');
-            $created_at =Carbon::parse($created_at);
+        $bike_history = Assign_bike::all();
+        $bike_histories = null;
+        $history_found = Arr::first($bike_history, function ($item, $key) use ($_id, $date ) {
+            $start_created_at =Carbon::parse($item->bike_assign_date)->startOfMonth()->format('Y-m-d');
+            $created_at =Carbon::parse($start_created_at);
 
-            $updated_at =Carbon::parse($item->updated_at)->format('Y-m-d');
-            $updated_at =Carbon::parse($updated_at);
+            $start_updated_at =Carbon::parse($item->bike_unassign_date)->endOfMonth()->format('Y-m-d');
+            $updated_at =Carbon::parse($start_updated_at);
             $req_date =Carbon::parse($date);
-            if($item->status=="active"){ 
-                // mean its still active, we need to match only created at
-                return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at);
-            }
             
-            return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
+            if($item->status=='active'){
+                return $item->bike_id==$_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+            }
+           return $item->bike_id==$_id &&
+                ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
         });
-        $rider_id=null;
 
-         if (isset($history_found)) {
-            $rider_id=$history_found->rider_id;
-         }else {
-             $assign_bikeBK = Assign_bike::where('bike_id', $bike_id)
-             ->where('status', 'active')->get()->first();
-             if(isset($assign_bikeBK)){
-                $rider_id=$assign_bikeBK->rider_id;
-             }
-         }
-
-         $rider=Rider::find($rider_id);
-        $rider_detail=$rider->Rider_detail;
-        $allow_salik=$rider_detail->salik_amount;
+        $allow_salik=0;
+        if(isset($history_found)){
+            $bike_histories = $history_found;
+            $rider = Rider::find($bike_histories->rider_id);
+            $rider_id=$rider->id;
+            $allow_salik=$rider->Rider_Detail->salik_amount;
         if($used_salik>$allow_salik){
             $_greater_ca= new Company_Account;
             $_greater_ca->source="Salik";
@@ -601,4 +594,5 @@ class SalikController extends Controller
         return redirect(route('admin.salik'));
     }
 
+}
 }
