@@ -141,37 +141,37 @@
     });
     $('#bike_fine [name="given_date"]').trigger('change');
 
-    $('#bike_fine [name="rider_id"]').on('change', function(){
-        var _month = $('#bike_fine [name="given_date"]').val();
+    // $('#bike_fine [name="rider_id"]').on('change', function(){
+    //     var _month = $('#bike_fine [name="given_date"]').val();
         
-        if(_month=='')return;
-        _month = new Date(_month).format('yyyy-mm-dd');
+    //     if(_month=='')return;
+    //     _month = new Date(_month).format('yyyy-mm-dd');
 
-        var _rider_id = $('#bike_fine [name="rider_id"]').val();
-        if(typeof _rider_id !== "undefined"){
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }, 
-                url:"{{url('admin/salik/ajax/get_active_riders/')}}"+'/'+_rider_id+"/"+_month+"/rider",
-                method: "GET"
-            })
-            .done(function(data) {  
-                console.log(data);
+    //     var _rider_id = $('#bike_fine [name="rider_id"]').val();
+    //     if(typeof _rider_id !== "undefined"){
+    //         $.ajax({
+    //             headers: {
+    //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //             }, 
+    //             url:"{{url('admin/salik/ajax/get_active_riders/')}}"+'/'+_rider_id+"/"+_month+"/rider",
+    //             method: "GET"
+    //         })
+    //         .done(function(data) {  
+    //             console.log(data);
 
-                // $('#salik [name="amount"]').val(data.salik_amount).trigger('change');
-                if(data.bike_histories!==null){
-                    $('#bike_fine [name="bike_id"]').val(data.bike_histories.bike_id).trigger('change.select2');
-                }
-                else{
-                    $('#bike_fine [name="bike_id"]')[0].selectedIndex = -1;
-                    $('#bike_fine [name="bike_id"]').trigger('change.select2');
-                    $('#bike_fine [name="amount"]').val('');
-                }
+    //             // $('#salik [name="amount"]').val(data.salik_amount).trigger('change');
+    //             if(data.bike_histories!==null){
+    //                 $('#bike_fine [name="bike_id"]').val(data.bike_histories.bike_id).trigger('change.select2');
+    //             }
+    //             else{
+    //                 $('#bike_fine [name="bike_id"]')[0].selectedIndex = -1;
+    //                 $('#bike_fine [name="bike_id"]').trigger('change.select2');
+    //                 $('#bike_fine [name="amount"]').val('');
+    //             }
                 
-            });
-        }
-    });
+    //         });
+    //     }
+    // });
   });
 
 </script>
