@@ -701,7 +701,7 @@ class AjaxNewController extends Controller
             'salary'=>$salary,
             'trips'=>$trips,
             'extra_trips'=>$extra_trips,
-            'hours'=>$hours,
+            'hours'=>round($hours,2),
             'bike_allowns'=>$bike_allowns,
             'bike_fine'=>$bike_fine,
             'ncw'=>$ncw,
