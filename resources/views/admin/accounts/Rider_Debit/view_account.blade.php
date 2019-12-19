@@ -1489,7 +1489,7 @@
                     $("[name='absent_days']").val(total_absents);
                     $('[name="extra_day"]').val(extra_day);
                     $(".rider_days_detail tbody").html(rows); 
-                    $(".rider_days_detail tfoot").html('<tr><th>Total</th><th>'+calculated_trips.toFixed(2)+'</th><th colspan="2">'+calculated_hours.toFixed(2)+'</th></tr>');
+                    $(".rider_days_detail tfoot").html('<tr><th>Total</th><th>'+calculated_trips.toFixed(2)+'</th><th>'+calculated_hours.toFixed(2)+'</th><th></th></tr>');
                   var _name =  $('[name="rider_id"]:eq(0) option:selected').text().trim();
                   $('.custom_rider_id').text('Rider id: '+_data.rider_id);
                   $('.custom_rider_name').text('Rider name: '+_name);
