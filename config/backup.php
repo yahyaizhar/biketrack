@@ -79,13 +79,14 @@ return [
             /*
              * The filename prefix used for the backup zip file.
              */
-            'filename_prefix' => '',
+            'filename_prefix' => 'kingriders__',
 
             /*
              * The disk names on which the backups will be stored.
              */
             'disks' => [
-                'google', 
+                'local',
+                'google',
             ],
         ], 
 
@@ -204,7 +205,7 @@ return [
              * After cleaning up the backups remove the oldest backup until
              * this amount of megabytes has been reached.
              */
-            'deleteOldestBackupsWhenUsingMoreMegabytesThan' => 5000,
+            'deleteOldestBackupsWhenUsingMoreMegabytesThan' => 10000,
         ],
     ],
 ];
