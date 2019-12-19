@@ -864,153 +864,155 @@
 <div>
 <div class="print_slip_editable" style="">
 <div style="display:grid;padding: 15px 50px 0px 50px;" id="print_slip_for_rider">
+        <style type="text/css">
+            #print_slip_for_rider table {
+                border:solid #000 !important;
+                border-width:1px 0 0 1px !important;
+            }
+            #print_slip_for_rider th,#print_slip_for_rider td {
+                border:solid #000 !important;
+                border-width:0 1px 1px 0 !important;
+            }
+            </style>
+    <div style="height:25px"></div>
+    <table style="">
+            <tr><th style="background-color:#73acac69;text-align:center;">SALARY SLIP FOR COMPANY</th></tr>
+            <tr><th class="month_year" style="text-align:center;"></th></tr>
+        </table>
+        <table class="print_class" style="border-top: unset !important;">
+                <tr>
+                    <th style="width:15%;text-align:left;">NAME</th>
+                    <td class="rider_name" style="width:45%;text-align:left;"></td>
+                    <th style="width:15%;text-align:left;">Designation:</th>
+                    <td style="width:45%;text-align:left;"></td>
+                </tr>
+                <tr>
+                    <th style="width:15%;text-align:left;">EMPLOYEE ID:</th>
+                    <td class="employee_id" style="width:45%;text-align:left;"></td>
+                    <th style="width:15%;text-align:left;">WORKPLACE:</th>
+                    <td style="width:45%;text-align:left;"></td>
+                </tr>
+                <tr>
+                    <th style="width:15%;text-align:left;">DATE OF JOINING:</th>
+                    <td class="today_date" style="width:45%;text-align:left;"></td>
+                    <th style="width:15%;text-align:left;"></th>
+                    <td style="width:45%;text-align:left;"></td>
+                </tr>
+            </table>
     
-    <table style="">
-        <tr><th style="border:1px solid #dddd;background-color:#73acac69;text-align:center;">SALARY SLIP FOR COMPANY</th></tr>
-        <tr><th class="month_year" style="border:1px solid #dddd;text-align:center;"></th></tr>
-    </table>
-    <table class="print_class" style=" margin-top: 1px;">
-        <tr>
-            <th style="border:1px solid #dddd;width:25%;text-align:left;">NAME</th>
-            <td class="rider_name" style="border:1px solid #dddd;width:25%;text-align:left;"></td>
-            <th style="border:1px solid #dddd;width:25%;text-align:left;">Designation:</th>
-            <td style="border:1px solid #dddd;width:25%;text-align:left;"></td>
-        </tr>
-        <tr>
-            <th style="border:1px solid #dddd;width:25%;text-align:left;">EMPLOYEE ID:</th>
-            <td class="employee_id" style="border:1px solid #dddd;width:25%;text-align:left;"></td>
-            <th style="border:1px solid #dddd;width:25%;text-align:left;">WORKPLACE:</th>
-            <td style="border:1px solid #dddd;width:25%;text-align:left;"></td>
-        </tr>
-        <tr>
-            <th style="border:1px solid #dddd;width:25%;text-align:left;">DATE OF JOINING:</th>
-            <td class="today_date" style="border:1px solid #dddd;width:25%;text-align:left;"></td>
-            <th style="border:1px solid #dddd;width:25%;text-align:left;"></th>
-            <td style="border:1px solid #dddd;width:25%;text-align:left;"></td>
-        </tr>
-    </table>
-
-    <table style=" margin-top: 1px;">
-        <tr>
-            <th style="border:1px solid #dddd;width:50%;text-align:center;">DESCRIPTION</th>
-            <th style="border:1px solid #dddd;width:25%;text-align:center;">EARNINGS</th>
-            <th style="border:1px solid #dddd;width:25%;text-align:center;">DEDUCTIONS:</th>
-        </tr>
-        <tr>
-            <td style="border:1px solid #dddd;width:50%;text-align:left;">Previous Balance</td>
-            <td contenteditable='true' class="previous_balance" style="border:1px solid #dddd;width:25%;text-align:end;"></td> 
-            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #dddd;width:50%;text-align:left;">BASIC SALARY (<strong>Trips:</strong><span class="total_trips"></span>) (<strong>Hours:</strong><span class="total_hours"></span>) (<strong>Extra Trips:</strong><span class="extra_trips"></span>)</td>
-            <td contenteditable='true' class="salary" style="border:1px solid #dddd;width:25%;text-align:end;"></td> 
-            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #dddd;width:50%;text-align:left;">NCW ALLOWANCE</td>
-            <td contenteditable='true' class="ncw" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #dddd;width:50%;text-align:left;">CUSTOMER TIP</td>
-            <td contenteditable='true' class="tip" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #dddd;width:50%;text-align:left;">BIKE ALLOWANCE</td>
-            <td contenteditable='true' class="bike_allowns" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #dddd;width:50%;text-align:left;">BONES</td>
-            <td contenteditable='true' class="bones" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #dddd;width:50%;text-align:left;">Bike Fine</td>
-            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td contenteditable='true' class="bike_fine" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #dddd;width:50%;text-align:left;">ADVANCE</td>
-            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td contenteditable='true' class="advance" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #dddd;width:50%;text-align:left;">SALIK PLANTI</td>
-            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td contenteditable='true' class="salik" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #dddd;width:50%;text-align:left;">SIM PLANTI</td>
-            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td contenteditable='true' class="sim" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #dddd;width:50%;text-align:left;">ZOMATO PLANTI</td>
-            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td contenteditable='true' class="zomato" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #dddd;width:50%;text-align:left;">DC DEDUCTION</td>
-            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td contenteditable='true' class="dc" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #dddd;width:50%;text-align:left;">MCDONALD DEDUCTION</td>
-            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td contenteditable='true' class="macdonald" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #dddd;width:50%;text-align:left;">RTA FINE</td>
-            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td contenteditable='true' class="rta" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #dddd;width:50%;text-align:left;">MOBILE EMI</td>
-            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td contenteditable='true' class="mobile" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #dddd;width:50%;text-align:left;">DISPLAN FINE</td>
-            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td contenteditable='true' class="discipline" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #dddd;width:50%;text-align:left;">MICS CHARGES</td>
-            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td contenteditable='true' class="mics" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #dddd;width:50%;text-align:left;">Others</td>
-            <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td contenteditable='true' class="cash_paid" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #dddd;width:50%;text-align:left;">TOTAL</td>
-            <td class="total_cr" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-            <td class="total_dr" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-        </tr>
-        
-    </table>
-    <table style="">
-        <tr>
-            <td class="payment_date" style="border:1px solid #dddd;width:50%;text-align:left;"></td>
-            <td style="border:1px solid #dddd;width:50%;text-align:center;background-color:#73acac69;">NET PAY</td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #dddd;width:50%;text-align:center;"></td>
-            <td class="net_pay" style="border:1px solid #dddd;width:50%;text-align:center;background-color:#73acac69;"></td>
-        </tr>
-        {{-- <tr>
-            <td style="border:1px solid #dddd;width:50%;text-align:left;">Cash Paid</td>
-            <td contenteditable='true' class="cash_pay" style="border:1px solid #dddd;width:25%;text-align:center;background-color:#73acac69;">0</td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #dddd;width:50%;text-align:left;">Remaining Pay</td>
-            <td class="remaining_pay" style="border:1px solid #dddd;width:50%;text-align:center;background-color:#73acac69;">0</td>
-        </tr> --}}
-    </table>
+        <table style="border-top: unset !important;">
+            <tr>
+                <th style="width:50%;text-align:center;">DESCRIPTION</th>
+                <th style="width:25%;text-align:center;">EARNINGS</th>
+                <th style="width:25%;text-align:center;">DEDUCTIONS:</th>
+            </tr>
+            <tr>
+                <td style="width:50%;text-align:left;">Previous Balance</td>
+                <td contenteditable='true' class="previous_balance" style="width:25%;text-align:end;"></td> 
+                <td style="width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="width:50%;text-align:left;">BASIC SALARY (<strong>Trips:</strong><span class="total_trips"></span>) (<strong>Hours:</strong><span class="total_hours"></span>) (<strong>Extra Trips:</strong><span class="extra_trips"></span>)</td>
+                <td contenteditable='true' class="salary" style="width:25%;text-align:end;"></td> 
+                <td style="width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="width:50%;text-align:left;">NCW ALLOWANCE</td>
+                <td contenteditable='true' class="ncw" style="width:25%;text-align:end;"></td>
+                <td style="width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="width:50%;text-align:left;">CUSTOMER TIP</td>
+                <td contenteditable='true' class="tip" style="width:25%;text-align:end;"></td>
+                <td style="width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="width:50%;text-align:left;">BIKE ALLOWANCE</td>
+                <td contenteditable='true' class="bike_allowns" style="width:25%;text-align:end;"></td>
+                <td style="width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="width:50%;text-align:left;">BONES</td>
+                <td contenteditable='true' class="bones" style="width:25%;text-align:end;"></td>
+                <td style="width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="width:50%;text-align:left;">Bike Fine</td>
+                <td style="width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="bike_fine" style="width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="width:50%;text-align:left;">ADVANCE</td>
+                <td style="width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="advance" style="width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="width:50%;text-align:left;">SALIK PLANTI</td>
+                <td style="width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="salik" style="width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="width:50%;text-align:left;">SIM PLANTI</td>
+                <td style="width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="sim" style="width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="width:50%;text-align:left;">ZOMATO PLANTI</td>
+                <td style="width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="zomato" style="width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="width:50%;text-align:left;">DC DEDUCTION</td>
+                <td style="width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="dc" style="width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="width:50%;text-align:left;">MCDONALD DEDUCTION</td>
+                <td style="width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="macdonald" style="width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="width:50%;text-align:left;">RTA FINE</td>
+                <td style="width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="rta" style="width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="width:50%;text-align:left;">MOBILE EMI</td>
+                <td style="width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="mobile" style="width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="width:50%;text-align:left;">DISPLAN FINE</td>
+                <td style="width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="discipline" style="width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="width:50%;text-align:left;">MICS CHARGES</td>
+                <td style="width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="mics" style="width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="width:50%;text-align:left;">Others</td>
+                <td style="width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="cash_paid" style="width:25%;text-align:end;"></td>
+            </tr>
+            <tr>
+                <td style="width:50%;text-align:left;">TOTAL</td>
+                <td class="total_cr" style="width:25%;text-align:end;"></td>
+                <td class="total_dr" style="width:25%;text-align:end;"></td>
+            </tr>
+            
+        </table>
+        <table style="border-top: unset !important;">
+            <tr>
+                <td class="payment_date" style="width:50%;text-align:left;"></td>
+                <td style="width:50%;text-align:center;background-color:#73acac69;">NET PAY</td>
+            </tr>
+            <tr>
+                <td style="width:50%;text-align:center;"></td>
+                <td class="net_pay" style="width:50%;text-align:center;background-color:#73acac69;"></td>
+            </tr>
+        </table>
     <div style=""> 
         <p style="font-size:12px;line-height: 14px;"><strong>Note: </strong>MR <span id="rider_id_1"></span> received <span id="total_net_pay"></span> from King Riders Delivery Services LLC, and MR <span id="rider_id_2"></span> no is not valid for any kind of Gratuity, yearly tickets or any other expenses other than the salary.
         </p>
@@ -1028,143 +1030,153 @@
     </div>
 </div>
 <div style="display:grid;padding: 15px 50px 0px 50px;" id="print_slip_for_rider2">
-    
+        <style type="text/css">
+            #print_slip_for_rider2 table {
+                border:solid #000 !important;
+                border-width:1px 0 0 1px !important;
+            }
+            #print_slip_for_rider2 th,#print_slip_for_rider2 td {
+                border:solid #000 !important;
+                border-width:0 1px 1px 0 !important;
+            }
+            </style>
+        <div style="height:25px"></div>
         <table style="">
-            <tr><th style="border:1px solid #dddd;background-color:#73acac69;text-align:center;">SALARY SLIP FOR RIDER</th></tr>
-            <tr><th class="month_year" style="border:1px solid #dddd;text-align:center;"></th></tr>
+            <tr><th style="background-color:#73acac69;text-align:center;">SALARY SLIP FOR RIDER</th></tr>
+            <tr><th class="month_year" style="text-align:center;"></th></tr>
         </table>
-        <table class="print_class" style=" margin-top: 1px;">
-            <tr>
-                <th style="border:1px solid #dddd;width:25%;text-align:left;">NAME</th>
-                <td class="rider_name" style="border:1px solid #dddd;width:25%;text-align:left;"></td>
-                <th style="border:1px solid #dddd;width:25%;text-align:left;">Designation:</th>
-                <td style="border:1px solid #dddd;width:25%;text-align:left;"></td>
-            </tr>
-            <tr>
-                <th style="border:1px solid #dddd;width:25%;text-align:left;">EMPLOYEE ID:</th>
-                <td class="employee_id" style="border:1px solid #dddd;width:25%;text-align:left;"></td>
-                <th style="border:1px solid #dddd;width:25%;text-align:left;">WORKPLACE:</th>
-                <td style="border:1px solid #dddd;width:25%;text-align:left;"></td>
-            </tr>
-            <tr>
-                <th style="border:1px solid #dddd;width:25%;text-align:left;">DATE OF JOINING:</th>
-                <td class="today_date" style="border:1px solid #dddd;width:25%;text-align:left;"></td>
-                <th style="border:1px solid #dddd;width:25%;text-align:left;"></th>
-                <td style="border:1px solid #dddd;width:25%;text-align:left;"></td>
-            </tr>
-        </table>
+        <table class="print_class" style="border-top: unset !important;">
+                <tr>
+                    <th style="width:15%;text-align:left;">NAME</th>
+                    <td class="rider_name" style="width:45%;text-align:left;"></td>
+                    <th style="width:15%;text-align:left;">Designation:</th>
+                    <td style="width:45%;text-align:left;"></td>
+                </tr>
+                <tr>
+                    <th style="width:15%;text-align:left;">EMPLOYEE ID:</th>
+                    <td class="employee_id" style="width:45%;text-align:left;"></td>
+                    <th style="width:15%;text-align:left;">WORKPLACE:</th>
+                    <td style="width:45%;text-align:left;"></td>
+                </tr>
+                <tr>
+                    <th style="width:15%;text-align:left;">DATE OF JOINING:</th>
+                    <td class="today_date" style="width:45%;text-align:left;"></td>
+                    <th style="width:15%;text-align:left;"></th>
+                    <td style="width:45%;text-align:left;"></td>
+                </tr>
+            </table>
     
-        <table style=" margin-top: 1px;">
+        <table style="border-top: unset !important;">
             <tr>
-                <th style="border:1px solid #dddd;width:50%;text-align:center;">DESCRIPTION</th>
-                <th style="border:1px solid #dddd;width:25%;text-align:center;">EARNINGS</th>
-                <th style="border:1px solid #dddd;width:25%;text-align:center;">DEDUCTIONS:</th>
+                <th style="width:50%;text-align:center;">DESCRIPTION</th>
+                <th style="width:25%;text-align:center;">EARNINGS</th>
+                <th style="width:25%;text-align:center;">DEDUCTIONS:</th>
             </tr>
             <tr>
-                <td style="border:1px solid #dddd;width:50%;text-align:left;">Previous Balance</td>
-                <td contenteditable='true' class="previous_balance" style="border:1px solid #dddd;width:25%;text-align:end;"></td> 
-                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="width:50%;text-align:left;">Previous Balance</td>
+                <td contenteditable='true' class="previous_balance" style="width:25%;text-align:end;"></td> 
+                <td style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="border:1px solid #dddd;width:50%;text-align:left;">BASIC SALARY (<strong>Trips:</strong><span class="total_trips"></span>) (<strong>Hours:</strong><span class="total_hours"></span>) (<strong>Extra Trips:</strong><span class="extra_trips"></span>)</td>
-                <td contenteditable='true' class="salary" style="border:1px solid #dddd;width:25%;text-align:end;"></td> 
-                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="width:50%;text-align:left;">BASIC SALARY (<strong>Trips:</strong><span class="total_trips"></span>) (<strong>Hours:</strong><span class="total_hours"></span>) (<strong>Extra Trips:</strong><span class="extra_trips"></span>)</td>
+                <td contenteditable='true' class="salary" style="width:25%;text-align:end;"></td> 
+                <td style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="border:1px solid #dddd;width:50%;text-align:left;">NCW ALLOWANCE</td>
-                <td contenteditable='true' class="ncw" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="width:50%;text-align:left;">NCW ALLOWANCE</td>
+                <td contenteditable='true' class="ncw" style="width:25%;text-align:end;"></td>
+                <td style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="border:1px solid #dddd;width:50%;text-align:left;">CUSTOMER TIP</td>
-                <td contenteditable='true' class="tip" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="width:50%;text-align:left;">CUSTOMER TIP</td>
+                <td contenteditable='true' class="tip" style="width:25%;text-align:end;"></td>
+                <td style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="border:1px solid #dddd;width:50%;text-align:left;">BIKE ALLOWANCE</td>
-                <td contenteditable='true' class="bike_allowns" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="width:50%;text-align:left;">BIKE ALLOWANCE</td>
+                <td contenteditable='true' class="bike_allowns" style="width:25%;text-align:end;"></td>
+                <td style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="border:1px solid #dddd;width:50%;text-align:left;">BONES</td>
-                <td contenteditable='true' class="bones" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="width:50%;text-align:left;">BONES</td>
+                <td contenteditable='true' class="bones" style="width:25%;text-align:end;"></td>
+                <td style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="border:1px solid #dddd;width:50%;text-align:left;">Bike Fine</td>
-                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-                <td contenteditable='true' class="bike_fine" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="width:50%;text-align:left;">Bike Fine</td>
+                <td style="width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="bike_fine" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="border:1px solid #dddd;width:50%;text-align:left;">ADVANCE</td>
-                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-                <td contenteditable='true' class="advance" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="width:50%;text-align:left;">ADVANCE</td>
+                <td style="width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="advance" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="border:1px solid #dddd;width:50%;text-align:left;">SALIK PLANTI</td>
-                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-                <td contenteditable='true' class="salik" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="width:50%;text-align:left;">SALIK PLANTI</td>
+                <td style="width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="salik" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="border:1px solid #dddd;width:50%;text-align:left;">SIM PLANTI</td>
-                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-                <td contenteditable='true' class="sim" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="width:50%;text-align:left;">SIM PLANTI</td>
+                <td style="width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="sim" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="border:1px solid #dddd;width:50%;text-align:left;">ZOMATO PLANTI</td>
-                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-                <td contenteditable='true' class="zomato" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="width:50%;text-align:left;">ZOMATO PLANTI</td>
+                <td style="width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="zomato" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="border:1px solid #dddd;width:50%;text-align:left;">DC DEDUCTION</td>
-                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-                <td contenteditable='true' class="dc" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="width:50%;text-align:left;">DC DEDUCTION</td>
+                <td style="width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="dc" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="border:1px solid #dddd;width:50%;text-align:left;">MCDONALD DEDUCTION</td>
-                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-                <td contenteditable='true' class="macdonald" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="width:50%;text-align:left;">MCDONALD DEDUCTION</td>
+                <td style="width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="macdonald" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="border:1px solid #dddd;width:50%;text-align:left;">RTA FINE</td>
-                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-                <td contenteditable='true' class="rta" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="width:50%;text-align:left;">RTA FINE</td>
+                <td style="width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="rta" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="border:1px solid #dddd;width:50%;text-align:left;">MOBILE EMI</td>
-                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-                <td contenteditable='true' class="mobile" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="width:50%;text-align:left;">MOBILE EMI</td>
+                <td style="width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="mobile" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="border:1px solid #dddd;width:50%;text-align:left;">DISPLAN FINE</td>
-                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-                <td contenteditable='true' class="discipline" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="width:50%;text-align:left;">DISPLAN FINE</td>
+                <td style="width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="discipline" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="border:1px solid #dddd;width:50%;text-align:left;">MICS CHARGES</td>
-                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-                <td contenteditable='true' class="mics" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="width:50%;text-align:left;">MICS CHARGES</td>
+                <td style="width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="mics" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="border:1px solid #dddd;width:50%;text-align:left;">Others</td>
-                <td style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-                <td contenteditable='true' class="cash_paid" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="width:50%;text-align:left;">Others</td>
+                <td style="width:25%;text-align:end;"></td>
+                <td contenteditable='true' class="cash_paid" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="border:1px solid #dddd;width:50%;text-align:left;">TOTAL</td>
-                <td class="total_cr" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
-                <td class="total_dr" style="border:1px solid #dddd;width:25%;text-align:end;"></td>
+                <td style="width:50%;text-align:left;">TOTAL</td>
+                <td class="total_cr" style="width:25%;text-align:end;"></td>
+                <td class="total_dr" style="width:25%;text-align:end;"></td>
             </tr>
             
         </table>
-        <table style="">
+        <table style="border-top: unset !important;">
             <tr>
-                <td class="payment_date" style="border:1px solid #dddd;width:50%;text-align:left;"></td>
-                <td style="border:1px solid #dddd;width:50%;text-align:center;background-color:#73acac69;">NET PAY</td>
+                <td class="payment_date" style="width:50%;text-align:left;"></td>
+                <td style="width:50%;text-align:center;background-color:#73acac69;">NET PAY</td>
             </tr>
             <tr>
-                <td style="border:1px solid #dddd;width:50%;text-align:center;"></td>
-                <td class="net_pay" style="border:1px solid #dddd;width:50%;text-align:center;background-color:#73acac69;"></td>
+                <td style="width:50%;text-align:center;"></td>
+                <td class="net_pay" style="width:50%;text-align:center;background-color:#73acac69;"></td>
             </tr>
         </table>
         <div style=""> 
@@ -1477,7 +1489,7 @@
                     $("[name='absent_days']").val(total_absents);
                     $('[name="extra_day"]').val(extra_day);
                     $(".rider_days_detail tbody").html(rows); 
-                    $(".rider_days_detail tfoot").html('<tr><th>Total</th><th>'+calculated_trips.toFixed(2)+'</th><th>'+calculated_hours.toFixed(2)+'</th></tr>');
+                    $(".rider_days_detail tfoot").html('<tr><th>Total</th><th>'+calculated_trips.toFixed(2)+'</th><th colspan="2">'+calculated_hours.toFixed(2)+'</th></tr>');
                   var _name =  $('[name="rider_id"]:eq(0) option:selected').text().trim();
                   $('.custom_rider_id').text('Rider id: '+_data.rider_id);
                   $('.custom_rider_name').text('Rider name: '+_name);

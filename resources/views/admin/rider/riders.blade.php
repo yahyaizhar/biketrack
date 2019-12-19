@@ -207,7 +207,7 @@ $(function() {
     riders_table = $('#riders-table').DataTable(_settings);
     var _queryRiderId = biketrack.getUrlParameter('rider_id');
     if(_queryRiderId!=""){
-        var regex = '\\b' + _queryRiderId + '\\b';
+        var regex = '\\bKR' + _queryRiderId + '\\b';
         riders_table.columns( 1 ) 
         .search(regex, true, false)
         .draw();
