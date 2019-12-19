@@ -71,7 +71,7 @@ Route::group([
     Route::get("/zomato/salary/sheet/export/ajax/{month_name}","AjaxNewController@zomato_salary_export")->name("admin.zomato_salary_export");
     Route::get("/zomato/profit/sheet/export/ajax/{month_name}/{client_id}","AjaxNewController@zomato_profit_export")->name("admin.zomato_profit_export");
     Route::get('/ajax/generated/rider/bill/status/{month}/{client_id}','AjaxNewController@getGeneratedBillStatus')->name('ajax.getGeneratedBillStatus');
-    Route::GET('/get/invoices','AjaxNewController@getInvoices')->name('invoice.get_invoices');
+    Route::GET('/get/invoices','AjaxNewController@getInvoices')->name('invoice.get_invoices'); 
     Route::get("/accounts/employee/account/{range}","AjaxNewController@getEmployeeAccounts")->name("admin.accounts.getEmployeeAccounts");
     Route::get("/accounts/employee/bills/{range}","AjaxNewController@getEmployeeAccountsBills")->name("admin.accounts.getEmployeeAccountsBills");
     Route::get("/invoice/ajax/payments/view","AjaxNewController@getInvoicePayments")->name("admin.getInvoicePayments");
@@ -99,7 +99,7 @@ Route::group([
 });
 // end Client Side
 // Riders
-Route::group([
+Route::group([ 
     'prefix' => 'admin',
     'namespace' => 'Admin',
     'middleware' => ['roles:riders']

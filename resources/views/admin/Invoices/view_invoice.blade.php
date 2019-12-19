@@ -605,6 +605,8 @@ function setScrollBkModal() {
 
 function receive_payment_popup($this) {
     var invoice = JSON.parse($this.nextElementSibling.innerHTML);
+    var _newurl = biketrack.updateURLParameter2(window.location.href,'invoice_id',invoice.id);
+    window.history.pushState({path:_newurl},'',_newurl);
     console.log(invoice);
     $('.modal').modal('hide');
     $('#receive_payment').modal('show');
@@ -728,6 +730,35 @@ $('.filter_invoices_status select').change(function(){
         }
     })
 })
+var _client_name = biketrack.getUrlParameter('client_name');
+var _box = biketrack.getUrlParameter('box');
+var _monthurl = biketrack.getUrlParameter('month');
+var invoice_id_url = biketrack.getUrlParameter('invoice_id');
+function getMonthFromString(mon){
+   return new Date(Date.parse(mon +" 1, 2012")).getMonth()+1
+}
+if(_box !== ''){
+    setTimeout(function(){
+    $('#invoice-table-view tbody tr').each(function(){
+        if(invoice_id_url ==''){
+        var _name_client = $(this).find('td:nth-child(2)').text().trim().replace(' ','').split(' ')[0].toLowerCase();
+        var _month = $(this).find('td:nth-child(3)').text().split(' ');
+        var _moth_in_fig = getMonthFromString(_month[0]);
+        var _moth_formate = _month[1]+'-'+_moth_in_fig+'-01';
+        if((_monthurl.indexOf(_moth_formate) > -1) && (_client_name.indexOf(_name_client) > -1)){
+            $(this).find('td:nth-child(2)').trigger('click');
+            }
+            }
+            else{
+                if($(this).find('td.col_editable.sorting_1').text().indexOf(invoice_id_url) > -1){
+                $(this).find('.reveive_payment').trigger('click');
+                }
+            }
+
+    })
+},1000)
+}
+
 getInvoices();
 setScrollBkModal();
 </script>
