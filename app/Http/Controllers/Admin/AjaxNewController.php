@@ -548,7 +548,7 @@ class AjaxNewController extends Controller
         ->sum('amount');
 
         $closing_balance = $rider_debits_cr_payable - $rider_debits_dr_payable;
-        $closing_balance_prev = $rider_debits_cr_prev_payable - $rider_debits_dr_prev_payable;
+        $closing_balance_prev = round($rider_debits_cr_prev_payable - $rider_debits_dr_prev_payable,2);
         $running_balance =$closing_balance_prev;
         $cash_paid =0;
 
