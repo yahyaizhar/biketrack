@@ -809,29 +809,29 @@
             </style>
     <div style="height:25px"></div>
     <table style="">
-            <tr><th style="background-color:#73acac69;text-align:center;">SALARY SLIP FOR RIDER</th></tr>
+            <tr><th style="background-color:#73acac69;text-align:center;">SALARY SLIP FOR COMPANY</th></tr>
             <tr><th class="month_year" style="text-align:center;"></th></tr>
         </table>
-        <table class="print_class" style=" margin-top: 1px;">
-            <tr>
-                <th style="width:25%;text-align:left;">NAME</th>
-                <td class="rider_name" style="width:25%;text-align:left;"></td>
-                <th style="width:25%;text-align:left;">Designation:</th>
-                <td style="width:25%;text-align:left;"></td>
-            </tr>
-            <tr>
-                <th style="width:25%;text-align:left;">EMPLOYEE ID:</th>
-                <td class="employee_id" style="width:25%;text-align:left;"></td>
-                <th style="width:25%;text-align:left;">WORKPLACE:</th>
-                <td style="width:25%;text-align:left;"></td>
-            </tr>
-            <tr>
-                <th style="width:25%;text-align:left;">DATE OF JOINING:</th>
-                <td class="today_date" style="width:25%;text-align:left;"></td>
-                <th style="width:25%;text-align:left;"></th>
-                <td style="width:25%;text-align:left;"></td>
-            </tr>
-        </table>
+        <table class="print_class" style="border-top: unset !important;">
+                <tr>
+                    <th style="width:15%;text-align:left;">NAME</th>
+                    <td class="rider_name" style="width:45%;text-align:left;"></td>
+                    <th style="width:15%;text-align:left;">Designation:</th>
+                    <td style="width:45%;text-align:left;"></td>
+                </tr>
+                <tr>
+                    <th style="width:15%;text-align:left;">EMPLOYEE ID:</th>
+                    <td class="employee_id" style="width:45%;text-align:left;"></td>
+                    <th style="width:15%;text-align:left;">WORKPLACE:</th>
+                    <td style="width:45%;text-align:left;"></td>
+                </tr>
+                <tr>
+                    <th style="width:15%;text-align:left;">DATE OF JOINING:</th>
+                    <td class="today_date" style="width:45%;text-align:left;"></td>
+                    <th style="width:15%;text-align:left;"></th>
+                    <td style="width:45%;text-align:left;"></td>
+                </tr>
+            </table>
     
         <table style="border-top: unset !important;">
             <tr>
@@ -978,26 +978,26 @@
             <tr><th style="background-color:#73acac69;text-align:center;">SALARY SLIP FOR RIDER</th></tr>
             <tr><th class="month_year" style="text-align:center;"></th></tr>
         </table>
-        <table class="print_class" style=" margin-top: 1px;">
-            <tr>
-                <th style="width:25%;text-align:left;">NAME</th>
-                <td class="rider_name" style="width:25%;text-align:left;"></td>
-                <th style="width:25%;text-align:left;">Designation:</th>
-                <td style="width:25%;text-align:left;"></td>
-            </tr>
-            <tr>
-                <th style="width:25%;text-align:left;">EMPLOYEE ID:</th>
-                <td class="employee_id" style="width:25%;text-align:left;"></td>
-                <th style="width:25%;text-align:left;">WORKPLACE:</th>
-                <td style="width:25%;text-align:left;"></td>
-            </tr>
-            <tr>
-                <th style="width:25%;text-align:left;">DATE OF JOINING:</th>
-                <td class="today_date" style="width:25%;text-align:left;"></td>
-                <th style="width:25%;text-align:left;"></th>
-                <td style="width:25%;text-align:left;"></td>
-            </tr>
-        </table>
+        <table class="print_class" style="border-top: unset !important;">
+                <tr>
+                    <th style="width:15%;text-align:left;">NAME</th>
+                    <td class="rider_name" style="width:45%;text-align:left;"></td>
+                    <th style="width:15%;text-align:left;">Designation:</th>
+                    <td style="width:45%;text-align:left;"></td>
+                </tr>
+                <tr>
+                    <th style="width:15%;text-align:left;">EMPLOYEE ID:</th>
+                    <td class="employee_id" style="width:45%;text-align:left;"></td>
+                    <th style="width:15%;text-align:left;">WORKPLACE:</th>
+                    <td style="width:45%;text-align:left;"></td>
+                </tr>
+                <tr>
+                    <th style="width:15%;text-align:left;">DATE OF JOINING:</th>
+                    <td class="today_date" style="width:45%;text-align:left;"></td>
+                    <th style="width:15%;text-align:left;"></th>
+                    <td style="width:45%;text-align:left;"></td>
+                </tr>
+            </table>
     
         <table style="border-top: unset !important;">
             <tr>
@@ -1410,7 +1410,7 @@
                     $("[name='absent_days']").val(total_absents);
                     $('[name="extra_day"]').val(extra_day);
                     $(".rider_days_detail tbody").html(rows); 
-                    $(".rider_days_detail tfoot").html('<tr><th>Total</th><th>'+calculated_trips.toFixed(2)+'</th><th>'+calculated_hours.toFixed(2)+'</th></tr>');
+                    $(".rider_days_detail tfoot").html('<tr><th>Total</th><th>'+calculated_trips.toFixed(2)+'</th><th colspan="2">'+calculated_hours.toFixed(2)+'</th></tr>');
                   var _name =  $('[name="rider_id"]:eq(0) option:selected').text().trim();
                   $('.custom_rider_id').text('Rider id: '+_data.rider_id);
                   $('.custom_rider_name').text('Rider name: '+_name);
