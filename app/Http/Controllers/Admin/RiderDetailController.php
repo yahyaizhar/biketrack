@@ -503,24 +503,35 @@ class RiderDetailController extends Controller
 }
 public function cash_debit_rider(Request $r){
 
-        // $ca = new \App\Model\Accounts\Company_Account;
-        // $ca->type='cr';
-        // $ca->amount=$r->amount;
-        // $ca->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
-        // $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
-        // $ca->rider_id = $r->cash_rider_id;
-        // $ca->source=$r->desc;
-        // $ca->save();
+        $ca = new \App\Model\Accounts\Company_Account;
+        $ca->type='cr';
+        $ca->amount=$r->amount;
+        $ca->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+        $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+        $ca->rider_id = $r->cash_rider_id_debit;
+        $ca->source=$r->desc;
+        $ca->save();
         
         $ra = new \App\Model\Accounts\Rider_Account;
-        $ra->type='cr';
+        $ra->type='dr';
         $ra->amount=$r->amount;
         $ra->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
         $ra->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
-        $ra->rider_id = $r->cash_rider_id;
+        $ra->rider_id = $r->cash_rider_id_debit;
         $ra->source=$r->desc;
         $ra->save();
     
+}
+public function mics_charges(Request $r){
+    $ra = new \App\Model\Accounts\Rider_Account;
+    $ra->type='dr';
+    $ra->amount=$r->amount;
+    $ra->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+    $ra->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+    $ra->rider_id = $r->visa_rider_id;
+    $ra->source="Visa Charges";
+    $ra->payment_status="paid";
+    $ra->save();
 }
 public function cash_credit_rider(Request $r){
         $ca = new \App\Model\Accounts\Company_Account;

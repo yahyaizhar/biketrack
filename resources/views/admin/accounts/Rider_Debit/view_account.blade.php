@@ -174,12 +174,11 @@
                              Mobile Charges
                         </a>
                         &nbsp; --}}
-                        {{-- <a href="" class="btn btn-info btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_modal" >
+                        <a href="" class="btn btn-info btn-elevate btn-icon-sm" data-toggle="modal" data-target="#mics_charges" >
                             <i class="la la-money"></i>
-                             Bike Allowns
+                             MICS Charges
                         </a>  
-                        &nbsp; --}}
-                         &nbsp;
+                        &nbsp;
                         <a style="" href="" class="btn btn-info btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_paid" >
                             <i class="la la-money"></i>
                                  Pay Cash To Rider
@@ -192,7 +191,7 @@
                          &nbsp;
                          <a style="" href="" class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_debit" >
                             <i class="la la-money"></i>
-                                Receive Amount From Rider
+                                Receive Cash From Rider
                         </a>
                         {{-- &nbsp; --}}
                         {{-- <a style="" href="" class="btn btn-success btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_credit" >
@@ -209,6 +208,74 @@
             </div> 
         </div>
         {{-- pay cash --}}
+        <div class="modal fade" id="mics_charges" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title">MICS Charges</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form class="kt-form" enctype="multipart/form-data" id="visa_charges">
+                    <div class="modal-body">
+                        <input type="hidden" name="visa_rider_id">
+                        <div class="form-group">
+                            <label>Visa Paid Month:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                            @if ($errors->has('month'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('month') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Month</span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Given Date:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="">
+                            @if ($errors->has('given_date'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('given_date') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Given Date</span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Amount:</label>
+                            <input required type="number" step="0.01" class="form-control @if($errors->has('amount')) invalid-field @endif" name="amount" placeholder="Enter Amount" value="">
+                            @if ($errors->has('amount'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{$errors->first('amount')}}
+                                    </strong>
+                                </span>
+                            @endif
+                        </div>
+                        {{-- <div class="form-group">
+                            <label>Description:</label>
+                            <textarea required class="form-control @if($errors->has('desc')) invalid-field @endif" name="desc" cols="3" rows="5"></textarea>
+                            @if ($errors->has('desc'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{$errors->first('desc')}}
+                                    </strong>
+                                </span>
+                            @endif
+                        </div> --}}
+                        <div class="kt-form__actions kt-form__actions--right">
+                            <button type="submit" class="btn btn-primary">Pay Visa Charges</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            </div>
+        </div>
         <div class="modal fade" id="cash_paid" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -301,7 +368,7 @@
                 </div>
                 <form class="kt-form" enctype="multipart/form-data" id="cash_pay_dr">
                     <div class="modal-body">
-                        <input type="hidden" name="cash_rider_id">
+                        <input type="text" name="cash_rider_id_debit">
                         {{-- <div class="form-group">
                             <label>Month:</label>
                             <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
@@ -1287,7 +1354,19 @@
             biketrack.refresh_global()
         }
     });
+    $("#mics_charges").on('shown.bs.modal', function(){
+        var rider_id=biketrack.getUrlParameter('rider_id');
+        $('#visa_charges [name="visa_rider_id"]').val(rider_id);
+        var month=biketrack.getUrlParameter('r1d1');
+        var _month=new Date(month).format("mmmm yyyy");
+        if (month!="") { 
+            $("#visa_charges [name='month']").attr("data-month", _month)
+            biketrack.refresh_global()
+        }
+    });
     $("#cash_pay_debit").on('shown.bs.modal', function(){
+        var rider_id=biketrack.getUrlParameter('rider_id');
+        $('#cash_pay_debit [name="cash_rider_id_debit"]').val(rider_id);
     var month=biketrack.getUrlParameter('r1d1');
     var _month=new Date(month).format("mmmm yyyy");
     if (month!="") { 
@@ -1471,6 +1550,44 @@
         $("#for_edit").on("click",function(){
             $('.print_slip_editable').show();
             $(".days_payout").hide();
+        });
+        $('form#visa_charges').on('submit', function(e){
+            e.preventDefault();
+            var _form = $(this);
+            var url = '{{route('admin.mics_charges')}}';
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url : url,
+                type : 'POST',
+                data: _form.serializeArray(),
+                success: function(data){
+                    $('#mics_charges').modal('hide');
+                    // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
+                    swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Record updated successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    table.ajax.reload(null, false);
+                },
+                error: function(error){
+                    // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Unable to update.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
         });
         $('form#advance_paid').on('submit', function(e){
             e.preventDefault();
