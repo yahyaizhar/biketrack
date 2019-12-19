@@ -535,14 +535,19 @@ $(document).ready(function () {
         typeof receive_payment !=="undefined" && (receive_payment.modal_confirmation_required=false);
         typeof receive_payment !=="undefined" && (receive_payment.reloadable_table=false);
         var client_id = $('#invoices [data-name="client_id"]').val();
+        var client_name = $('#invoices [data-name="client_id"] option:selected').text().trim().replace(' ','').split(' ')[0].toLowerCase();
+        var invoice_no = $('#invoice_number').attr('data-invoice');
         console.log('client_id', client_id);
         var _month = new Date("01-"+$('#invoices [name="month"]').val()+"-"+new Date(Date.now()).format('yyyy')).format('yyyy-mm-dd');
         var is_edit = biketrack.getUrlParameter('edit');
+
         // if(is_edit!=1){
             var url_data = {
                 client_id: client_id,
                 month:_month,
-                edit:is_edit
+                edit:is_edit,
+                client_name:client_name,
+                box:true
             }
             biketrack.updateURL(url_data);
         // }
