@@ -91,7 +91,14 @@
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
-                        {{-- <button class="btn btn-danger btn-elevate btn-icon-sm" id="bulk_delete">Delete Selected</button> --}}
+                        <div style="float:left;" class="filter_invoices_status">
+                        <select class="form-control">
+                            <option selected disabled>Select invoice status</option>
+                            <option value="Due">Due</option>
+                            <option value="Overdue">Over Due</option>
+                            <option value="Paid">Paid</option>
+                        </select>
+                        </div>
                         &nbsp;
                         <a href="" data-ajax="{{ route('tax.add_invoice') }}" class="btn btn-brand btn-elevate btn-icon-sm" id="add_invoice_ajax">
                             <i class="la la-plus"></i>
@@ -710,6 +717,17 @@ function handle_status($this) {
         tr.addClass('shown');
     }
 }
+$('.filter_invoices_status select').change(function(){
+    var _val = $(this).val();
+    $('#invoice-table-view tbody tr').each(function(){
+        if($(this).find('.statusText__wrapper').text().indexOf(_val) >  -1){
+            $(this).show();
+        }
+        else{
+            $(this).hide();
+        }
+    })
+})
 getInvoices();
 setScrollBkModal();
 </script>

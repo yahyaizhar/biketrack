@@ -174,12 +174,11 @@
                              Mobile Charges
                         </a>
                         &nbsp; --}}
-                        {{-- <a href="" class="btn btn-info btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_modal" >
+                        <a href="" class="btn btn-info btn-elevate btn-icon-sm" data-toggle="modal" data-target="#mics_charges" >
                             <i class="la la-money"></i>
-                             Bike Allowns
+                             MICS Charges
                         </a>  
-                        &nbsp; --}}
-                         &nbsp;
+                        &nbsp;
                         <a style="" href="" class="btn btn-info btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_paid" >
                             <i class="la la-money"></i>
                                  Pay Cash To Rider
@@ -192,7 +191,7 @@
                          &nbsp;
                          <a style="" href="" class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_debit" >
                             <i class="la la-money"></i>
-                                Receive Amount From Rider
+                                Receive Cash From Rider
                         </a>
                         {{-- &nbsp; --}}
                         {{-- <a style="" href="" class="btn btn-success btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_credit" >
@@ -209,6 +208,74 @@
             </div> 
         </div>
         {{-- pay cash --}}
+        <div class="modal fade" id="mics_charges" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title">MICS Charges</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form class="kt-form" enctype="multipart/form-data" id="visa_charges">
+                    <div class="modal-body">
+                        <input type="hidden" name="visa_rider_id">
+                        <div class="form-group">
+                            <label>Visa Paid Month:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                            @if ($errors->has('month'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('month') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Month</span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Given Date:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="">
+                            @if ($errors->has('given_date'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('given_date') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Given Date</span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Amount:</label>
+                            <input required type="number" step="0.01" class="form-control @if($errors->has('amount')) invalid-field @endif" name="amount" placeholder="Enter Amount" value="">
+                            @if ($errors->has('amount'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{$errors->first('amount')}}
+                                    </strong>
+                                </span>
+                            @endif
+                        </div>
+                        {{-- <div class="form-group">
+                            <label>Description:</label>
+                            <textarea required class="form-control @if($errors->has('desc')) invalid-field @endif" name="desc" cols="3" rows="5"></textarea>
+                            @if ($errors->has('desc'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{$errors->first('desc')}}
+                                    </strong>
+                                </span>
+                            @endif
+                        </div> --}}
+                        <div class="kt-form__actions kt-form__actions--right">
+                            <button type="submit" class="btn btn-primary">Pay Visa Charges</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            </div>
+        </div>
         <div class="modal fade" id="cash_paid" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -301,7 +368,7 @@
                 </div>
                 <form class="kt-form" enctype="multipart/form-data" id="cash_pay_dr">
                     <div class="modal-body">
-                        <input type="hidden" name="cash_rider_id">
+                        <input type="text" name="cash_rider_id_debit">
                         {{-- <div class="form-group">
                             <label>Month:</label>
                             <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
@@ -1287,7 +1354,19 @@
             biketrack.refresh_global()
         }
     });
+    $("#mics_charges").on('shown.bs.modal', function(){
+        var rider_id=biketrack.getUrlParameter('rider_id');
+        $('#visa_charges [name="visa_rider_id"]').val(rider_id);
+        var month=biketrack.getUrlParameter('r1d1');
+        var _month=new Date(month).format("mmmm yyyy");
+        if (month!="") { 
+            $("#visa_charges [name='month']").attr("data-month", _month)
+            biketrack.refresh_global()
+        }
+    });
     $("#cash_pay_debit").on('shown.bs.modal', function(){
+        var rider_id=biketrack.getUrlParameter('rider_id');
+        $('#cash_pay_debit [name="cash_rider_id_debit"]').val(rider_id);
     var month=biketrack.getUrlParameter('r1d1');
     var _month=new Date(month).format("mmmm yyyy");
     if (month!="") { 
@@ -1471,6 +1550,44 @@
         $("#for_edit").on("click",function(){
             $('.print_slip_editable').show();
             $(".days_payout").hide();
+        });
+        $('form#visa_charges').on('submit', function(e){
+            e.preventDefault();
+            var _form = $(this);
+            var url = '{{route('admin.mics_charges')}}';
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url : url,
+                type : 'POST',
+                data: _form.serializeArray(),
+                success: function(data){
+                    $('#mics_charges').modal('hide');
+                    // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
+                    swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Record updated successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    table.ajax.reload(null, false);
+                },
+                error: function(error){
+                    // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Unable to update.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
         });
         $('form#advance_paid').on('submit', function(e){
             e.preventDefault();
@@ -2128,27 +2245,27 @@
         }
     });
 }
- function change_edit_prints_inputs(){
-        var previous_balance=$(".previous_balance").text();
-        var salary=$('.salary').text();
-        var ncw=$('.ncw').text();
-        var bike_allowns=$('.bike_allowns').text();
-        var tip=$('.tip').text();
-        var bones=$('.bones').text();
+ function change_edit_prints_inputs(_this){
+        var previous_balance=$(_this).find(".previous_balance").text();
+        var salary=$(_this).find('.salary').text();
+        var ncw=$(_this).find('.ncw').text();
+        var bike_allowns=$(_this).find('.bike_allowns').text();
+        var tip=$(_this).find('.tip').text();
+        var bones=$(_this).find('.bones').text();
 
-        var bike_fine=$('.bike_fine').text();
-        var advance=$('.advance').text();
-        var salik=$('.salik').text();
-        var sim=$('.sim').text();
-        var macdonald=$('.macdonald').text();
-        var dc=$('.dc').text();
-        var rta=$('.rta').text();
-        var dicipline=$('.discipline').text();
-        var mobile=$('.mobile').text();
-        var zomato=$('.zomato').text();
-        var mics=$('.mics').text();
+        var bike_fine=$(_this).find('.bike_fine').text();
+        var advance=$(_this).find('.advance').text();
+        var salik=$(_this).find('.salik').text();
+        var sim=$(_this).find('.sim').text();
+        var macdonald=$(_this).find('.macdonald').text();
+        var dc=$(_this).find('.dc').text();
+        var rta=$(_this).find('.rta').text();
+        var dicipline=$(_this).find('.discipline').text();
+        var mobile=$(_this).find('.mobile').text();
+        var zomato=$(_this).find('.zomato').text();
+        var mics=$(_this).find('.mics').text();
         var denial_penalty='0';
-        var cash_paid=$('.cash_paid').text();
+        var cash_paid=$(_this).find('.cash_paid').text();
         
         previous_balance=previous_balance==""?0:previous_balance;
         salary=salary==""?0:salary;
@@ -2174,27 +2291,16 @@
         var total_cr=parseFloat(previous_balance)+parseFloat(salary)+parseFloat(ncw)+parseFloat(bike_allowns)+parseFloat(tip)+parseFloat(bones);
         var total_dr=parseFloat(zomato)+parseFloat(bike_fine)+parseFloat(cash_paid)+parseFloat(mics)+parseFloat(denial_penalty)+parseFloat(dicipline)+parseFloat(mobile)+parseFloat(rta)+parseFloat(advance)+parseFloat(salik)+parseFloat(sim)+parseFloat(dc)+parseFloat(macdonald);
         var net_pay=parseFloat(total_cr-total_dr).toFixed(2);
-        $('.total_cr').html(total_cr);
-        $('.total_dr').html(total_dr);
-        $('.net_pay').html(net_pay);
-        $('#total_net_pay').html(net_pay);
-        // var cash_paid=$('.cash_pay').text();
-        // cash_paid=cash_paid==""?0:parseFloat(cash_paid);
-        // var total_remain=net_pay-cash_paid;
-        // if (cash_paid=="") {
-        //     $(".remaining_pay").html($('#closing_balance').text(_ClosingBalance));
-        // }
-        // else{
-        //     $(".remaining_pay").html(total_remain);
-        // }
-        
-
+        $(_this).find('.total_cr').html(total_cr);
+        $(_this).find('.total_dr').html(total_dr);
+        $(_this).find('.net_pay').html(net_pay);
+        $(_this).find('#total_net_pay').html(net_pay);
  }
  $('#print_slip_for_rider [contenteditable]').on('change input', function(){
-	change_edit_prints_inputs();
+	change_edit_prints_inputs('#print_slip_for_rider');
 })
 $('#print_slip_for_rider2 [contenteditable]').on('change input', function(){
-	change_edit_prints_inputs();
+	change_edit_prints_inputs('#print_slip_for_rider2');
 })
 function deleteCompanyRows(id,model_class,model_id,rider_id,string,month){
     var url = "{{ url('admin/delete/accounts/rows') }}";
