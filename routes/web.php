@@ -267,6 +267,7 @@ Route::group([
     Route::post("/accounts/rider/cash/paid","RiderDetailController@cash_paid")->name("admin.cash_paid");
     Route::post("/accounts/rider/cash/credit","RiderDetailController@cash_credit_rider")->name("admin.cash_credit_rider");
     Route::post("/accounts/rider/cash/debit","RiderDetailController@cash_debit_rider")->name("admin.cash_debit_rider");
+    Route::post("/accounts/rider/mics/charges","RiderDetailController@mics_charges")->name("admin.mics_charges");
 
     Route::post("/accounts/company/profit/add","AccountsController@add_company_profit")->name("admin.accounts.add_company_profit");
     Route::get("/company/overall/report","AccountsController@company_overall_report")->name("admin.accounts.company_overall_report");

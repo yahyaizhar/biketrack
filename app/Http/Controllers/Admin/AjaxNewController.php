@@ -442,6 +442,12 @@ class AjaxNewController extends Controller
         ->whereDate('month', '<=',$to)
         ->where('source','NCW Incentives')
         ->sum('amount');
+        $mics=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','Visa Charges')
+        ->where("payment_status","paid")
+        ->sum('amount');
         $tip=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
@@ -474,6 +480,7 @@ class AjaxNewController extends Controller
         ->where("payment_status","paid")
         ->where("source","!=","advance")
         ->where("source","!=","salary_paid")
+        ->where("source","!=","Visa Charges")
         ->sum('amount');
         $salik=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
@@ -716,7 +723,7 @@ class AjaxNewController extends Controller
             'mobile'=>$mobile,
             'dicipline'=>0,
             'denial_penalty'=>$denial_penalty,
-            'mics'=>0,
+            'mics'=>$mics,
             'cash_paid'=>$cash_paid_in_advance,
         ])
     
