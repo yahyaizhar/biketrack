@@ -27,13 +27,19 @@
                     <i class="kt-font-brand fa fa-hotel"></i>
                 </span>
                 <h3 class="kt-portlet__head-title">
-                   Sims
+                   Active Sims
                 </h3>
             </div>
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
                         {{-- <button class="btn btn-danger btn-elevate btn-icon-sm" id="bulk_delete">Delete Selected</button> --}}
+                        <div style="float:left;" class="filter_record_status">
+                            <select class="form-control">
+                                <option value="">All Sims</option>
+                                <option value="free">Free Sims</option>
+                            </select>
+                        </div>
                         &nbsp;
                         <a href="{{ route('Sim.new_sim') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
@@ -108,6 +114,19 @@ $(function() {
        
         order:[0,'desc'],
     });
+
+    $('.filter_record_status select').on('change', function(){
+        var _val = $(this).val();
+        $('#sim-table tbody tr').show();
+        $('#sim-table tbody tr').each(function(){
+            var _tr = $(this);
+            var row=sim_table.row(_tr).data();
+            if($(row.assigned_to).is('a') && _val=="free"){
+                // assinged
+                _tr.hide();
+            }
+        });
+    });
 });
 function deleteSim(id)
 {
@@ -163,6 +182,8 @@ function updateStatus(sim_id)
         }
     });
 }
+
+
 
 </script>
 @endsection

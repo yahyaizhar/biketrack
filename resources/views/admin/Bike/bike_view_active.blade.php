@@ -27,13 +27,19 @@
                     <i class="kt-font-brand fa fa-hotel"></i>
                 </span>
                 <h3 class="kt-portlet__head-title">
-                    Bikes
+                    Active Bikes
                 </h3>
             </div>
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
                         {{-- <button class="btn btn-danger btn-elevate btn-icon-sm" id="bulk_delete">Delete Selected</button> --}}
+                        <div style="float:left;" class="filter_record_status">
+                            <select class="form-control">
+                                <option value="">All Bikes</option>
+                                <option value="free">Free Bikes</option>
+                            </select>
+                        </div>
                         &nbsp;
                         <a href="{{ route('bike.bike_login') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
@@ -97,6 +103,19 @@ $('.total_entries').remove();
         ],
         responsive:true,
         order:[0,'desc'],
+    });
+
+    $('.filter_record_status select').on('change', function(){
+        var _val = $(this).val();
+        $('#bike-table tbody tr').show();
+        $('#bike-table tbody tr').each(function(){
+            var _tr = $(this);
+            var row=bike_table.row(_tr).data();
+            if($(row.assigned_to).is('a') && _val=="free"){
+                // assinged
+                _tr.hide();
+            }
+        });
     });
 });
 function deleteBike(bike_id)
