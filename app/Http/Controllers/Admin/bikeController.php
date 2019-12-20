@@ -47,6 +47,14 @@ class bikeController extends Controller
       return view('admin.Bike.bike_view_active',compact('bike_count'));
     }
     public function create_bike(Request $r){
+      $bike_number=$r->bike_number;
+      $bike=bike::where("bike_number",$bike_number)->get()->first();
+     if (isset($bike)) {
+             if($bike->active_status==="A"){
+              return redirect(url('/admin/bike_view?search='.$bike->bike_number))->with('error', 'Bike is already created with id= '.$bike->id.'. And status is Active.');
+             }
+             return redirect(url('/admin/bike_view?search='.$bike->bike_number))->with('error', 'Bike is already created with id= '.$bike->id.'.But status is deactive now.');
+      }
       $bike_object=new bike;
       $bike_object->owner = $r->owner;
       $bike_object->model = $r->model;
