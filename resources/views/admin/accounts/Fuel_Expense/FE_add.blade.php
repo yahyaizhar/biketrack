@@ -250,17 +250,6 @@
     if(typeof _gb_rider_id !== "undefined"){
         $('#fuel_expense [name="rider_id"]').val(_gb_rider_id).trigger('change');
     }
-    $("#fuel_expense [name='amount']").on("change input",function(){
-        var amount=$(this).val();
-        $('#fuel_expense .calculated__div').each(function(i, item){
-            var total_days = parseFloat($(this).find('[name="data['+i+'][total_days]"]').val())||0;
-            var work_days = parseFloat($(this).find('[name="data['+i+'][work_days_count]"]').val())||0;
-            var days=work_days/total_days;
-            var amount_to_give=amount*days;
-            $(this).find('[name="data['+i+'][amount_given_by_days]"]').val(amount_to_give);
-
-        });
-    });
   });
 
 
