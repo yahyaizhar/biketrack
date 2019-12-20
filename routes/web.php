@@ -28,10 +28,12 @@ Route::group([
     Route::get('get/ajax/rider/active','AjaxController@getActiveRiders')->name('admin.ajax_active_rider');
     Route::get('/riders/details/data', 'AjaxController@getRidersDetails')->name('admin.riders_detail.data');
     Route::get('/clients/data', 'AjaxController@getClients')->name('admin.clients.data');
+    Route::get('/clients/data/active', 'AjaxController@getActiveClients')->name('admin.clients.data.active');
     Route::get('get/ajax/rider/performance','AjaxController@getRiderPerformance')->name('admin.ajax_performance');
     Route::get('get/ajax/rider/payouts/days','AjaxController@getRiderPayoutsByDays')->name('admin.getRiderPayoutsByDays');
     Route::get('/range/ajax/adt/{data}','AjaxController@getRiderRangesADT')->name('ajax.adt'); 
     Route::get('/bike_getData','AjaxController@getBikes')->name('bike.bike_show');
+    Route::get('/bike_getData/active','AjaxController@getActiveBikes')->name('bike.bike_show.active');
     Route::get('/get/salik/bike/ajax/{id}','AjaxController@getSalik_Bike')->name('bike.ajax_salik_bike');
     Route::get('get/ajax/salik/trip_details','AjaxController@getSalikTrip_Details')->name('admin.ajax_details');
     Route::get('/Developer/Salary/ajax','AjaxController@getSalary_by_developer')->name('account.developer_salary_ajax');
@@ -47,6 +49,7 @@ Route::group([
     Route::get("/accounts/kr-bikes/account/{range}","AjaxNewController@getKR_bikes")->name("admin.accounts.getKR_bikes");
     Route::get('/newComer/view/ajax', 'AjaxController@getNewComer')->name('NewComer.view_ajax');
     Route::get('get/ajax/Sim','AjaxController@getSims')->name('Sim.ajax_sim');
+    Route::get('get/ajax/Sim/active','AjaxController@getActiveSims')->name('Sim.ajax_sim.active');
     Route::get('/map/testing/{id}','AjaxController@client_name');
     Route::get('/get/ajax/Transaction/Sim/{month}','AjaxController@getSimTransaction')->name('SimTransaction.ajax_simTransaction');
     Route::get('/get/ajax/Transaction/Mobile/{month}','AjaxNewController@getMobileTransaction')->name('Transaction.getMobileTransaction');
