@@ -145,6 +145,7 @@ Route::group([
         'as' => 'admin'
     ]);
     Route::get('/client/{client}/profile', 'ClientController@showClientProfile')->name('admin.client.profile');
+    Route::get('/get/active/client','ClientController@get_active_clients')->name('admin.get_active_clients');
     Route::get('/client/{client}/riders', 'ClientController@showRiders')->name('admin.clients.riders');
     Route::get('/client/{client}/assignRider', 'ClientController@assignRiders')->name('admin.clients.assignRiders');
     Route::put('/client/{client}/assignRider', 'ClientController@updateAssignedRiders')->name('admin.clients.assignRiders');
@@ -190,6 +191,7 @@ Route::group([
     Route::get('/bike_login','bikeController@bike_login')->name('bike.bike_login');
     Route::post('/bike_create','bikeController@create_bike')->name('bike.bike_create');
     Route::get('/bike_view','bikeController@bike_view')->name('bike.bike_view');
+    Route::get('/active/bike_view','bikeController@bike_view_active')->name('bike.bike_view_active');
     Route::get('/bike/{bike}/assigned', 'ClientController@bike_assigned_show')->name('bike.bike_assigned');
     Route::get('/bike/{id}/assignRider', 'ClientController@bike_assigned_toRider')->name('bike.bike_assignRiders');
     Route::put('/bike/{rider}/assignRider', 'ClientController@updateAssignedBike')->name('bike.bike_assignRiders');
@@ -467,6 +469,7 @@ Route::group([
     Route::get('/create/Sim','SimController@add_sim')->name('Sim.new_sim');
     Route::post('/store/Sim','SimController@store_sim')->name('Sim.store_sim');
     Route::get('/view/records/Sim','SimController@view_records_sim')->name('Sim.view_records');
+    Route::get('/view/records/Sim/active','SimController@view_records_sim_active')->name('Sim.view_records_sim_active');
     Route::get('/edit/{id}/Sim','SimController@edit_sim')->name('Sim.edit_sim');
     Route::get('/edit/Sim/view/{id}','SimController@edit_sim_view')->name('Sim.edit_sim_view');
     Route::post('/update/{id}/Sim','SimController@update_sim')->name('Sim.update_sim');
