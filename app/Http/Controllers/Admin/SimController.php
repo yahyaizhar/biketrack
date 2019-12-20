@@ -52,6 +52,11 @@ class SimController extends Controller
         $sim_count=Sim::all()->count();
         return view('SIM.view_sim_records',compact('sim_records','sim_count'));
     }
+    public function view_records_sim_active(){
+        $sim_records=Sim::all();
+        $sim_count=Sim::all()->count();
+        return view('SIM.view_sim_records_active',compact('sim_records','sim_count'));
+    }
 
     public function edit_sim($id){
         $readonly=false;

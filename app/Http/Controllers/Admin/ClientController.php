@@ -36,19 +36,13 @@ class ClientController extends Controller
      */
     public function index()
     {
-        // $crs = Client_Rider::all();
-        // foreach ($crs as $cr) {
-        //     $cleint_history = new Client_History;
-        //     $cleint_history->client_id = $cr->client_id;
-        //     $cleint_history->rider_id = $cr->rider_id;
-        //     $cleint_history->assign_date = '2019-07-01';
-        //     $cleint_history->client_rider_id = $cr->client_rider_id;
-        //     $cleint_history->status = 'active';
-        //     $cleint_history->save();
-        // }
-        // return 123;
         $clients_count=Client::where("active_status","A")->get()->count();
         return view('admin.client.clients',compact('clients_count'));
+    }
+    public function get_active_clients()
+    {
+        $clients_count=Client::where("active_status","A")->get()->count();
+        return view('admin.client.clients_active',compact('clients_count'));
     }
 
     /**
