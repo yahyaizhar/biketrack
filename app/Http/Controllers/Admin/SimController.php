@@ -241,69 +241,71 @@ public function get_sim_ajax($sim_id, $month,$rider_id){
 }
 
 public function store_simTransaction(Request $request){
-    $this->validate($request, [
-        'month_year'=> 'required | string |max:255',
-        'bill_amount'=> 'required | string |max:255',
-        'extra_usage_amount'=> 'required | string |max:255',
-    ]);
-    $sim_trans=new Sim_Transaction();
-    $sim_trans->month_year=Carbon::parse($request->month_year)->format('Y-m-d');
-    $sim_trans->bill_amount=$request->bill_amount;
-    $sim_trans->sim_id=$request->sim_id;
-    $extra = $request->bill_amount - $request->usage_limit;
-    if($extra<0){
-        $extra=0;
-    }
-    $sim_trans->extra_usage_amount=$extra;
-    $sim_trans->extra_usage_payment_status="pending";
-    $sim_trans->bill_status="pending";
-    $sim_trans->status=1;
-    $sim_trans->save();
+    $data=$request->data;
+    foreach ($data as $value) {
+        $sim_trans=new Sim_Transaction();
+        $sim_trans->month_year=Carbon::parse($request->month_year)->startOfMonth()->format('Y-m-d');
+        $sim_trans->bill_amount=$value['bill_amount_given_by_days'];
+        $sim_trans->sim_id=$request->sim_id;
+        if(isset($value['sim_id'])){
+            $sim_trans->sim_id=$value['sim_id'];
+        }
+        $extra = $value['bill_amount_given_by_days'] - $value['work_days_allowed_balance'];
+        if($extra<0){
+            $extra=0;
+        }
+        $sim_trans->extra_usage_amount=round($extra,2);
+        $sim_trans->extra_usage_payment_status="pending";
+        $sim_trans->bill_status="pending";
+        $sim_trans->status=1;
+        $sim_trans->save();
 
-
-    $sim=$sim_trans->Sim;
+        $sim=$sim_trans->Sim;
     
-    $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
-        'sim_transaction_id'=>$sim_trans->id,
-        'type' => 'dr'
-    ]);
-    $ca->sim_transaction_id =$sim_trans->id;
-    $ca->type='dr';
-    $ca->rider_id=$request->rider_id;
-    $ca->month = Carbon::parse($sim_trans->month_year)->startOfMonth()->format('Y-m-d');
-    $ca->given_date = Carbon::parse($sim_trans->given_date)->format('Y-m-d');
-    $ca->source="Sim Transaction"; 
-    $ca->amount=$request->bill_amount;
-    $ca->save();
-
-    if($extra>0){
-        $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
-            'sim_transaction_id'=>$sim_trans->id
-        ]);
-        $ra->sim_transaction_id =$sim_trans->id;
-        $ra->type='cr_payable';
-        $ra->rider_id=$request->rider_id;
-        $ra->month = Carbon::parse($sim_trans->month_year)->startOfMonth()->format('Y-m-d');
-        $ra->given_date = Carbon::parse($sim_trans->given_date)->format('Y-m-d');
-        $ra->source="Sim extra usage"; 
-        $ra->amount=$extra;
-        $ra->save();
-        
         $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
             'sim_transaction_id'=>$sim_trans->id,
-            'type' => 'cr'
+            'type' => 'dr'
         ]);
         $ca->sim_transaction_id =$sim_trans->id;
-        $ca->type='cr';
+        $ca->type='dr';
         $ca->rider_id=$request->rider_id;
+        if(isset($value['rider_id'])){
+            $ca->rider_id=$value['rider_id'];
+        }
         $ca->month = Carbon::parse($sim_trans->month_year)->startOfMonth()->format('Y-m-d');
         $ca->given_date = Carbon::parse($sim_trans->given_date)->format('Y-m-d');
-        $ca->source="Sim extra usage";
-        $ca->amount=$extra;
+        $ca->source="Sim Transaction"; 
+        $ca->amount=$value['bill_amount_given_by_days'];
         $ca->save();
-    }
-    
 
+        if($extra>0){
+            $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
+                'sim_transaction_id'=>$sim_trans->id
+            ]);
+            $ra->sim_transaction_id =$sim_trans->id;
+            $ra->type='cr_payable';
+            $ra->rider_id=$request->rider_id;
+            $ra->month = Carbon::parse($sim_trans->month_year)->startOfMonth()->format('Y-m-d');
+            $ra->given_date = Carbon::parse($sim_trans->given_date)->format('Y-m-d');
+            $ra->source="Sim extra usage"; 
+            $ra->amount=round($extra,2);
+            $ra->save();
+            
+            $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+                'sim_transaction_id'=>$sim_trans->id,
+                'type' => 'cr'
+            ]);
+            $ca->sim_transaction_id =$sim_trans->id;
+            $ca->type='cr';
+            $ca->rider_id=$request->rider_id;
+            $ca->month = Carbon::parse($sim_trans->month_year)->startOfMonth()->format('Y-m-d');
+            $ca->given_date = Carbon::parse($sim_trans->given_date)->format('Y-m-d');
+            $ca->source="Sim extra usage";
+            $ca->amount=round($extra,2);
+            $ca->save();
+        }
+    }
+    return redirect(route('SimTransaction.view_records'))->with('message', 'Sim Transaction is completed successfully.');
     return response()->json([
         'status' => true
     ]);
