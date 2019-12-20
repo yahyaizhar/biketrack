@@ -318,7 +318,7 @@ class AjaxController extends Controller
             }
         })
         ->addColumn('id', function($sim){
-            return '1000'.$sim->id;
+            return $sim->id;
         })
         ->addColumn('checkbox', function($sim){
             // return '<input type="checkbox" name="client_checkbox[]" class="client_checkbox" value="'.$clients->id.'">';
@@ -377,7 +377,7 @@ class AjaxController extends Controller
             }
         })
         ->addColumn('id', function($sim){
-            return '1000'.$sim->id;
+            return $sim->id;
         })
         ->addColumn('checkbox', function($sim){
             // return '<input type="checkbox" name="client_checkbox[]" class="client_checkbox" value="'.$clients->id.'">';
@@ -626,7 +626,7 @@ class AjaxController extends Controller
             }
         })
         ->addColumn('id', function($bike){
-            return '1000'.$bike->id;
+            return $bike->id;
         })
         ->addColumn('owner', function($bike){
            return '<strong>'.$bike->owner.'</strong>';
@@ -716,7 +716,7 @@ class AjaxController extends Controller
             }
         })
         ->addColumn('id', function($bike){
-            return '1000'.$bike->id;
+            return $bike->id;
         })
         ->addColumn('owner', function($bike){
            return '<strong>'.$bike->owner.'</strong>';

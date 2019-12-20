@@ -32,17 +32,22 @@ class SimController extends Controller
         return view('SIM.create_sim');
     }
     public function store_sim(Request $request){
+        $sim_number=$request->sim_number;
+        $sim=Sim::where("sim_number",$sim_number)->get()->first();
+       if (isset($sim)) {
+               if($sim->active_status==="A"){
+                return redirect(url('admin/view/records/Sim?search='.$sim->sim_number))->with('error', 'Sim is already created with id= '.$sim->id.'. And status is Active.');
+               }
+               return redirect(url('admin/view/records/Sim?search='.$sim->sim_number))->with('error', 'Sim is already created with id= '.$sim->id.'.But status is deactive now.');
+        }
         $this->validate($request, [
             'sim_company' => 'required | string | max:255',
             'sim_number'=> 'required | unique:sims'
         ]);
         $sim=new Sim();
-        $sim->sim_number=$request->sim_number;
-        $sim->sim_company=$request->sim_company;
-        if ($request->status) 
-            $sim->status=1;
-        else
-            $sim->status=0;
+        $sim->sim_number=$sim_number;
+        $sim->sim_company=$request->sim_company; 
+        $sim->status=1;
         $sim->save();
         return redirect(route('Sim.view_records'))->with('message', 'Sim created successfully.');
     }
