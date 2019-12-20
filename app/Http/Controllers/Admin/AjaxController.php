@@ -149,6 +149,7 @@ class AjaxController extends Controller
             if($clients->salary_methods!=null){
                 $salary_method_HTML_suffix = '<i class="fa fa-edit"></i>Update Salary Method';
             }
+            //<button class="dropdown-item" onclick="deleteClient('.$clients->id.');"><i class="fa fa-trash"></i> Delete</button>
             return '<span class="dtr-data">
             <span class="dropdown">
                 <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
@@ -159,7 +160,7 @@ class AjaxController extends Controller
                     <button class="dropdown-item" onclick="updateStatus('.$clients->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                     <a class="dropdown-item" href="'.route('admin.clients.riders', $clients).'"><i class="fa fa-eye"></i> View Riders</a>
                     <a class="dropdown-item" href="'.route('admin.clients.assignRiders', $clients).'"><i class="fa fa-edit"></i> Assign Riders</a>
-                    <button class="dropdown-item" onclick="deleteClient('.$clients->id.');"><i class="fa fa-trash"></i> Delete</button>
+                    
                     <a class="dropdown-item" href="'.route('client.profit_sheet_view', $clients).'"><i class="fa fa-edit"></i>View Record Sheet</a>
                     <a class="dropdown-item" href="'.route('client.client_total_expense', $clients).'"><i class="fa fa-edit"></i>View Record Summary</a>
                     <a class="dropdown-item" href="" onclick=\'show_payout_modal('.json_encode($clients->setting).', '.$clients->id.');return false;\'>'.$payout_method_HTML_suffix.'</a> 
@@ -212,6 +213,7 @@ class AjaxController extends Controller
         })
         ->addColumn('actions', function($sim){
             $status_text = $sim->status == 1 ? 'Inactive' : 'Active';
+            //<button class="dropdown-item" onclick="deleteSim('.$sim->id.');"><i class="fa fa-trash"></i> Delete</button>
             return '<span class="dtr-data">
             <span class="dropdown">
                 <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
@@ -220,7 +222,7 @@ class AjaxController extends Controller
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" href="'.route('Sim.edit_sim_view', $sim).'"><i class="fa fa-edit"></i> View</a>
                     <button class="dropdown-item" onclick="updateStatus('.$sim->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
-                    <button class="dropdown-item" onclick="deleteSim('.$sim->id.');"><i class="fa fa-trash"></i> Delete</button>
+                    
                     <a class="dropdown-item" href="'.route('Sim.rider.history', $sim->id).'"><i class="fa fa-eye"></i> View Rider history</a>
                     </div>
             </span>
@@ -486,6 +488,7 @@ class AjaxController extends Controller
             if ($bike->is_given=='1') {
                 $assign_bike_to_kingriders='<a class="dropdown-item" href="'.route('bike.give_bike_to_company', $bike->id).'"><i class="fa fa-eye"></i>Give Bike To Comapany</a>';
             }
+            //<button class="dropdown-item" onclick="deleteBike('.$bike->id.');"><i class="fa fa-trash"></i> Delete</button>
             return '<span class="dtr-data">
             <span class="dropdown">
                 <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
@@ -494,7 +497,7 @@ class AjaxController extends Controller
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" href="'.route('Bike.edit_bike', $bike).'"><i class="fa fa-edit"></i> Edit</a>
                     <button class="dropdown-item" onclick="updateStatus('.$bike->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
-                    <button class="dropdown-item" onclick="deleteBike('.$bike->id.');"><i class="fa fa-trash"></i> Delete</button>
+                    
                     <a class="dropdown-item" href="'.route('bike.rider_history', $bike).'"><i class="fa fa-eye"></i> View Rider history</a>
                     <a class="dropdown-item" href="'.route('bike.bike_salik', $bike->id).'"><i class="fa fa-eye"></i> View Salik</a>
                     '.$assign_bike_to_kingriders.'
@@ -842,6 +845,7 @@ class AjaxController extends Controller
         })
         ->addColumn('actions', function($mobile){
             $status_text = $mobile->status == 1 ? 'Inactive' : 'Active';
+            //<button class="dropdown-item" onclick="deletemobile('.$mobile->id.')"><i class="fa fa-trash"></i> Delete</button>
             return '<span class="dtr-data">
             <span class="dropdown">
                 <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
@@ -851,7 +855,7 @@ class AjaxController extends Controller
                     <button class="dropdown-item" onclick="updateStatus('.$mobile->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                     
                     <a class="dropdown-item" href="'.route('mobile.edit_view', $mobile).'"><i class="fa fa-edit"></i> View</a>
-                    <button class="dropdown-item" onclick="deletemobile('.$mobile->id.')"><i class="fa fa-trash"></i> Delete</button>
+                    
                     
                     </div>
             </span>
