@@ -67,15 +67,10 @@
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/bootstrap-switch.js') }}" type="text/javascript"></script>
 <script>
     $(document).ready(function(){
-        biketrack.setInputFilter($('#sim [name="sim_number"]')[0], function (value) {
-            
-        if( /^\d*$/.test(value) == false){
-            $(".input_error").html("Only Numbers Are Allowed. '-' and spaces are not allowed")
-        }
-        else{
-            // $(".input_error").html("");
-        }
-            return /^\d*$/.test(value);
+        $('#sim [name="sim_number"]').on('input change', function(){
+            var _val= $(this).val();
+            var validated_val = _val.match( /[ ]{0,1}[\d]/g ).join([]);
+            $(this).val(validated_val);
         });
     });
 </script>
