@@ -548,7 +548,7 @@ class AjaxNewController extends Controller
         ->sum('amount');
 
         $closing_balance = $rider_debits_cr_payable - $rider_debits_dr_payable;
-        $closing_balance_prev = $rider_debits_cr_prev_payable - $rider_debits_dr_prev_payable;
+        $closing_balance_prev = round($rider_debits_cr_prev_payable - $rider_debits_dr_prev_payable,2);
         $running_balance =$closing_balance_prev;
         $cash_paid =0;
 
@@ -2900,17 +2900,21 @@ class AjaxNewController extends Controller
             $sim=0;
             $sim_extra=0;
             $status="";
+            $temp="";
             foreach ($sim_balance_allowed as $value) {
                 $sim+=$value->amount;
                 $status=$value->payment_status;
+                $temp.=$value->sim_transaction_id.",";
             }
             
+            $tempextra="";
             $sim_extra_usage=Company_Account::where("rider_id",$rider_id)
             ->whereMonth("month",$month)
             ->where("source","Sim extra usage")
             ->get();
             foreach ($sim_extra_usage as $value) {
                 $sim_extra+=$value->amount;
+                $tempextra.=$value->sim_transaction_id.",";
             }
             
 
@@ -2923,7 +2927,7 @@ class AjaxNewController extends Controller
                 if ($status=="paid") {
                     $sim=$sim-$sim_extra;
                     $sim_rider_paid=$sim_extra;
-                    return "<div  style='color:green;'>".$sim."(". $sim_rider_paid.") <span class='flaticon2-correct'></span></div>";
+                    return "<div  style='color:green;' data-simtrans='".$temp."' data-simextratrans='".$tempextra."'>".$sim."(". $sim_rider_paid.") <span class='flaticon2-correct'></span></div>";
                 }
             }
             return "0";

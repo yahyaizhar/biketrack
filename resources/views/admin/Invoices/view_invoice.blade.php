@@ -91,7 +91,14 @@
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
-                        {{-- <button class="btn btn-danger btn-elevate btn-icon-sm" id="bulk_delete">Delete Selected</button> --}}
+                        <div style="float:left;" class="filter_invoices_status">
+                        <select class="form-control">
+                            <option selected disabled>Select invoice status</option>
+                            <option value="Due">Due</option>
+                            <option value="Overdue">Over Due</option>
+                            <option value="Paid">Paid</option>
+                        </select>
+                        </div>
                         &nbsp;
                         <a href="" data-ajax="{{ route('tax.add_invoice') }}" class="btn btn-brand btn-elevate btn-icon-sm" id="add_invoice_ajax">
                             <i class="la la-plus"></i>
@@ -598,6 +605,8 @@ function setScrollBkModal() {
 
 function receive_payment_popup($this) {
     var invoice = JSON.parse($this.nextElementSibling.innerHTML);
+    var _newurl = biketrack.updateURLParameter2(window.location.href,'invoice_id',invoice.id);
+    window.history.pushState({path:_newurl},'',_newurl);
     console.log(invoice);
     $('.modal').modal('hide');
     $('#receive_payment').modal('show');
@@ -710,6 +719,46 @@ function handle_status($this) {
         tr.addClass('shown');
     }
 }
+$('.filter_invoices_status select').change(function(){
+    var _val = $(this).val();
+    $('#invoice-table-view tbody tr').each(function(){
+        if($(this).find('.statusText__wrapper').text().indexOf(_val) >  -1){
+            $(this).show();
+        }
+        else{
+            $(this).hide();
+        }
+    })
+})
+var _client_name = biketrack.getUrlParameter('client_name');
+var _box = biketrack.getUrlParameter('box');
+var _monthurl = biketrack.getUrlParameter('month');
+var invoice_id_url = biketrack.getUrlParameter('invoice_id');
+function getMonthFromString(mon){
+   return new Date(Date.parse(mon +" 1, 2012")).getMonth()+1
+}
+if(_box !== ''){
+    setTimeout(function(){
+    $('#invoice-table-view tbody tr').each(function(){
+        if(invoice_id_url ==''){
+        var _name_client = $(this).find('td:nth-child(2)').text().trim().replace(' ','').split(' ')[0].toLowerCase();
+        var _month = $(this).find('td:nth-child(3)').text().split(' ');
+        var _moth_in_fig = getMonthFromString(_month[0]);
+        var _moth_formate = _month[1]+'-'+_moth_in_fig+'-01';
+        if((_monthurl.indexOf(_moth_formate) > -1) && (_client_name.indexOf(_name_client) > -1)){
+            $(this).find('td:nth-child(2)').trigger('click');
+            }
+            }
+            else{
+                if($(this).find('td.col_editable.sorting_1').text().indexOf(invoice_id_url) > -1){
+                $(this).find('.reveive_payment').trigger('click');
+                }
+            }
+
+    })
+},1000)
+}
+
 getInvoices();
 setScrollBkModal();
 </script>

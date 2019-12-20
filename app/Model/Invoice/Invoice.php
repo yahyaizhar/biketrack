@@ -47,13 +47,29 @@ class Invoice extends Authenticatable
             $activity_model->causer_type=get_class(Auth::user());
             $activity_model->save();
         });
-        // self::updating(function ($model) {
-        //     foreach( $model->toArray() as $key => $value )
+        // self::updating(function ($updated_model) {
+        //     $subject_class=get_class($updated_model);
+        //     $subject_id=$updated_model->id;
+        //     $old_modal=$subject_class::find($subject_id)->toArray();
+
+        //     $changed_array=[];
+        //     $old_changed_array=[];
+        //     foreach( $updated_model->toArray() as $key => $value )
         //     {
-        //         $old_modal[$key]=$value;
+        //         if($old_modal[$key]!=$value){
+        //             //data changed on this field
+        //             $changed_array[$key]=$value;
+        //             $old_changed_array[$key]=$old_modal[$key];
+        //         }
+        //         // $new_modal[$key]=$value;
         //         // echo $key;
         //     }
-        //     dd($model->invoice_status);
+        //     // foreach( $model->toArray() as $key => $value )
+        //     // {
+        //     //     $new_modal[$key]=$value;
+        //     //     // echo $key;
+        //     // }
+        //     dd($old_changed_array);
         // });
     }
 
