@@ -1418,7 +1418,9 @@
                     var _data=data.data;
                     console.log(_data);
                     $('.attendance__msg-container').hide();
-                    if(!_data) return; 
+                    $(".rider_days_detail tbody").html(""); 
+                    $(".rider_days_detail tfoot").html(""); 
+                    if(!_data) {return; }
                     if(_data.error!=null){
                         var _err = JSON.parse(_data.error);
                         var _errCode=parseInt(_err.error_code);
