@@ -1418,7 +1418,9 @@
                     var _data=data.data;
                     console.log(_data);
                     $('.attendance__msg-container').hide();
-                    if(!_data) return; 
+                    $(".rider_days_detail tbody").html(""); 
+                    $(".rider_days_detail tfoot").html(""); 
+                    if(!_data) {return; }
                     if(_data.error!=null){
                         var _err = JSON.parse(_data.error);
                         var _errCode=parseInt(_err.error_code);
@@ -1498,7 +1500,7 @@
                     $("[name='absent_days']").val(total_absents);
                     $('[name="extra_day"]').val(extra_day);
                     $(".rider_days_detail tbody").html(rows); 
-                    var tr='<tr><th>Total</th><th>'+calculated_trips.toFixed(2)+'</th><th>'+calculated_hours.toFixed(2)+'</th><th></th></tr><tr><th>Actual HOurs</th><th></th><th>(total: 286)-(off: '+absent_hours+')-(Less time: '+less_time.toFixed(2)+')= '+actual_hours.toFixed(2)+'</th><th></th></tr>';
+                    var tr='<tr><th>Total</th><th>'+calculated_trips.toFixed(2)+'</th><th>'+calculated_hours.toFixed(2)+'</th><th></th></tr><tr><th>Actual Hours</th><th></th><th colspan="2">(Total: 286)-(Off: '+absent_hours+')-(Less time: '+less_time.toFixed(2)+')= '+actual_hours.toFixed(2)+'</th></tr>';
                     $(".rider_days_detail tfoot").html(tr);
                   var _name =  $('[name="rider_id"]:eq(0) option:selected').text().trim(); 
                   $('.custom_rider_id').text('Rider id: '+_data.rider_id);
@@ -2049,7 +2051,7 @@
                         $("#to_pay").hide();
                     }
                     
-                    
+                    $("#for_days_payouts").trigger("click");
                 },
                 ajax: url,
                 columns: [
