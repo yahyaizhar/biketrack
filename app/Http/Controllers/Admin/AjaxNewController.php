@@ -2305,7 +2305,7 @@ class AjaxNewController extends Controller
             })
             ->whereDate('month', '<',$startMonth)
             ->sum('amount');
-            $closing_balance_prev = $rider_debits_cr_prev_payable - $rider_debits_dr_prev_payable;
+            $closing_balance_prev = round($rider_debits_cr_prev_payable - $rider_debits_dr_prev_payable,2);
             //ends prev payables
 
             $ra_payable=Rider_Account::where("rider_id",$rider_id)
