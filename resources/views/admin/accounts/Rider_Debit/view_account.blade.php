@@ -1452,6 +1452,10 @@
                     
                     var total_absents=_data.absents_count;
                     var extra_day=_data.extra_day;
+
+                    var absent_hours=total_absents*11;
+                    var work_hours_days=_data.working_days*11;
+                    
                     time_sheet.forEach(function(item,j){
                         var trips=parseFloat(item.trips)||0;
                         var login_hours=parseFloat(item.login_hours)||0;
@@ -1486,11 +1490,14 @@
                         calculated_hours+=login_hours;
                        rows+='<tr><td style=" width: 25%;">'+date+'</td><td style=" width: 25%;text-align: center;">'+trips+'</td><td style=" width: 25%;text-align: center;">'+login_hours+'</td> <td class="absents" style=" width: 25%;text-align: center;">'+status+'</td></tr>';
                     });
+                    var less_time=work_hours_days - calculated_hours;
+                    var actual_hours=286 - less_time - absent_hours;
                     $("[name='absent_days']").val(total_absents);
                     $('[name="extra_day"]').val(extra_day);
                     $(".rider_days_detail tbody").html(rows); 
-                    $(".rider_days_detail tfoot").html('<tr><th>Total</th><th>'+calculated_trips.toFixed(2)+'</th><th>'+calculated_hours.toFixed(2)+'</th><th></th></tr>');
-                  var _name =  $('[name="rider_id"]:eq(0) option:selected').text().trim();
+                    var tr='<tr><th>Total</th><th>'+calculated_trips.toFixed(2)+'</th><th>'+calculated_hours.toFixed(2)+'</th><th></th></tr><tr><th>Actual HOurs</th><th></th><th>(total: 286)-(off: '+absent_hours+')-(Less time: '+less_time.toFixed(2)+')= '+actual_hours.toFixed(2)+'</th><th></th></tr>';
+                    $(".rider_days_detail tfoot").html(tr);
+                  var _name =  $('[name="rider_id"]:eq(0) option:selected').text().trim(); 
                   $('.custom_rider_id').text('Rider id: '+_data.rider_id);
                   $('.custom_rider_name').text('Rider name: '+_name);
 

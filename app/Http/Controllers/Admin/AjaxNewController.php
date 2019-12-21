@@ -432,7 +432,7 @@ class AjaxNewController extends Controller
             
             $total_hours=$workable_hours -  $calculate_hour;
 
-            $hours=286 - $absent_hours - $total_hours;
+            $hours=286 - $absent_hours - $total_hours; 
         }
 
         $trips=Income_zomato::where("rider_id",$ranges['rider_id'])
