@@ -907,12 +907,13 @@ class AccountsController extends Controller
 
                 $payable_hours=$_s_monthlyHours - $absent_hours - $less_time;
 
+                $hours_payable=$payable_hours*$_s_hoursFormula;
                 if($calculated_trips > $_s_maxTrips){
                     $bonus=50;
                 }
             }
             
-            $salary_hours=round($payable_hours,2);
+            $salary_hours=round($hours_payable,2);
             $salary_trips=$trips_payable+$trips_EXTRA_payable;
             $salary_credits=round($ra_cr,2);
             $ra_salary=$salary_hours +$salary_trips  +$salary_credits ;
