@@ -1955,7 +1955,7 @@ class AjaxNewController extends Controller
         }) 
         ->addColumn('bonus', function($rider) use ($month) {
             $bonus=Rider_Account::where('source',"400 Trips Acheivement Bonus")
-            ->where('rider_id',$rider->rider_id)
+            ->where('rider_id',$rider->id)
             ->whereMonth('month',$month)
             ->get()
             ->sum('amount');
