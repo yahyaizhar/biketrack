@@ -1967,7 +1967,7 @@ class AjaxNewController extends Controller
             ->get()
             ->first();
             if(isset($income_zomato)){
-                $absent_count = $income_zomato->absent_count;
+                $absent_count = $income_zomato->absents_count;
                 $working_days = $income_zomato->working_days;
                 $calculated_hours = $income_zomato->calculated_hours;
 
@@ -1998,7 +1998,7 @@ class AjaxNewController extends Controller
             ->get()
             ->first();
             if(isset($income_zomato)){
-                $absent_count = $income_zomato->absent_count;
+                $absent_count = $income_zomato->absents_count;
                 $working_days = $income_zomato->working_days;
                 $calculated_hours = $income_zomato->calculated_hours;
 
@@ -2173,7 +2173,7 @@ class AjaxNewController extends Controller
             ->get()
             ->first();
             if(isset($income_zomato)){
-                $absent_count = $income_zomato->absent_count;
+                $absent_count = $income_zomato->absents_count;
                 $working_days = $income_zomato->working_days;
                 $calculated_hours = $income_zomato->calculated_hours;
                 $calculated_trips = $income_zomato->calculated_trips;
@@ -2196,6 +2196,7 @@ class AjaxNewController extends Controller
                 $salary_trips=$trips_payable+$trips_EXTRA_payable;
 
                 $total_salary_amt = round($salary_hours+$salary_trips,2);
+                // return 'salary_hours: '.$salary_hours.' salary_trips:'.$salary_trips.' payable_hours:'.$payable_hours.' absent_hours:'.$absent_count;
                 return $total_salary_amt; 
             }
             return 0;
@@ -2245,7 +2246,7 @@ class AjaxNewController extends Controller
             ->get()
             ->first();
             if(isset($income_zomato)){
-                $absent_count = $income_zomato->absent_count;
+                $absent_count = $income_zomato->absents_count;
                 $working_days = $income_zomato->working_days;
                 $calculated_hours = $income_zomato->calculated_hours;
                 $calculated_trips = $income_zomato->calculated_trips;
@@ -2335,7 +2336,7 @@ class AjaxNewController extends Controller
             ->get()
             ->first();
             if(isset($income_zomato)){
-                $absent_count = $income_zomato->absent_count;
+                $absent_count = $income_zomato->absents_count;
                 $working_days = $income_zomato->working_days;
                 $calculated_hours = $income_zomato->calculated_hours;
                 $calculated_trips = $income_zomato->calculated_trips;
