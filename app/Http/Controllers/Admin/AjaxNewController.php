@@ -401,6 +401,7 @@ class AjaxNewController extends Controller
         // rider name
         $rider='';
         $date='';
+        $hours=0;
         $rider_name=Rider::find($ranges['rider_id']);
         if (isset($rider_name)) {
             $rider=$rider_name->name;
@@ -416,11 +417,24 @@ class AjaxNewController extends Controller
         ->where('source','salary')
         ->where('payment_status','pending')
         ->sum('amount');
-        $hours=Income_zomato::where("rider_id",$ranges['rider_id'])
+        $hour=Income_zomato::where("rider_id",$ranges['rider_id'])
         ->whereDate('date', '>=',$from)
         ->whereDate('date', '<=',$to)
-        ->sum('calculated_hours');
-        if($hours > 286) $hours = 286;
+        ->first();
+        if (isset($hour)) {
+            $absent_days=$hour->absents_count;
+            $absent_hours=$absent_days*11;
+            
+            $work_days=$hour->working_days;
+            $workable_hours=$work_days*11;
+
+            $calculate_hour=$hour->calculated_hours;
+            
+            $total_hours=$workable_hours -  $calculate_hour;
+
+            $hours=286 - $absent_hours - $total_hours;
+        }
+
         $trips=Income_zomato::where("rider_id",$ranges['rider_id'])
         ->whereDate('date', '>=',$from)
         ->whereDate('date', '<=',$to)
