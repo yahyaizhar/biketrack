@@ -91,7 +91,14 @@ margin-left: 10px;
             <tr>
                     <th>Interview status:</th>
                     <td class="approval_interview_status">Full Name</td>
+                    <th>Visa status:</th>
+                    <td class="approval_visa_status">Full Name</td>
             </tr>
+            <tr>
+                    <th>Noc status:</th>
+                    <td class="approval_noc_status">Full Name</td>
+            </tr>
+
            </table>
         <div class="form-group">
             <label style="font-weight: 800;">Extra reviews:</label>
@@ -539,6 +546,8 @@ function show_waiting_comer(id,$this){
     $('.approval_passport_status').text(_newcommerdata.passport_status);
     $('.approval_passport_no').text(_newcommerdata.passport_number);
     $('.approval_interview_status').text(_newcommerdata.interview_status);
+    $('.approval_visa_status').text(_newcommerdata.visa_status);
+    $('.approval_noc_status').text(_newcommerdata.noc_status);
     $('.approval_app_status').text(_newcommerdata.approval_status);
     if(_newcommerdata.current_residence == 'other'){
         _newcommerdata.current_residence = _newcommerdata.current_residence_countries

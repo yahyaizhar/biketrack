@@ -22,6 +22,8 @@ class CreateGuestNewComersTable extends Migration
             $table->string('national_id_card_number')->nullable();
             $table->string('whatsapp_number')->nullable();
             $table->string('education')->nullable();
+            $table->string('visa_status')->nullable();
+            $table->string('noc_status')->nullable();
             $table->string('license_check')->nullable();
             $table->string('license_number')->nullable();
             $table->string('licence_issue_date')->nullable();

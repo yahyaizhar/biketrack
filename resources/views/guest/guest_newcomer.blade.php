@@ -1,4 +1,4 @@
-@extends('guest.layouts.app')
+    @extends('guest.layouts.app')
 @section('main-content')
 <!-- begin:: Content -->
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
@@ -366,6 +366,16 @@
                                 </span>
                             
                             @endif
+                        </div>
+                        <div class="form-group">
+                                <label>Visa status:</label>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="visa_status" name="visa_status" style="width: 2% !important;" value="employment" required=""><h6 style="margin-top:10px;margin-left:10px;">Employment</h6></div>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="visa_status" name="visa_status" style="width: 2% !important;" value="visit" required=""><h6 style="margin-top:10px;margin-left:10px;">Visit</h6></div>
+                        </div>
+                        <div class="form-group noc_status" style="display:none;">
+                                <label>Noc status:</label>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="noc_status" name="noc_status" style="width: 2% !important;" value="yes" required=""><h6 style="margin-top:10px;margin-left:10px;">Yes</h6></div>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="noc_status" name="noc_status" style="width: 2% !important;" value="no" required=""><h6 style="margin-top:10px;margin-left:10px;">No</h6></div>
                         </div>
                         <div class="form-group">
                                 <label>Do you have license:</label>
@@ -814,6 +824,14 @@ $('[name="passport_status"]').change(function(){
         $('.passport_number_label').hide();
         $('#passport_image').hide();
         $('.passport_image_label').hide();
+    }
+})
+$('[name="visa_status"]').change(function(){
+    if($(this).val()== 'employment'){
+        $('.noc_status').show();
+    }
+    else{
+        $('.noc_status').hide();
     }
 })
 $('[name="current_residence"]').change(function(){

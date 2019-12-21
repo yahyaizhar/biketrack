@@ -895,7 +895,7 @@ class AccountsController extends Controller
                 $zomato_trips = $ra_zomatos->trips_payable;
 
                 $hours=$calculated_hours;
-                $hours_payable=$hours*$_s_hoursFormula;
+                // $hours_payable=$hours*$_s_hoursFormula;
 
                 $trips = $calculated_trips > $_s_maxTrips?$_s_maxTrips:$calculated_trips;
                 $trips_payable = $trips * $_s_tripsFormula;
@@ -966,7 +966,7 @@ class AccountsController extends Controller
             'total_deduction'=>round($ra_payable,2),
             'total_salary'=>round($total_salary_amt,2),
             'closing_balance_prev'=>$closing_balance_prev,
-            'is_paid'=>$is_paid,
+            'is_paid'=>$is_paid_salary,
             'is_generated'=>$is_generated_salary,
             'absent_count'=>$absent_count,
             'weekly_off'=>$weekly_off,

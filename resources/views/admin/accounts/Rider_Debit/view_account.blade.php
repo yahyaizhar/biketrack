@@ -1431,7 +1431,7 @@
                             _msg.find('.alert').addClass('alert-outline-danger');
                             $('.attendance__sync-data').show();
                             $('.attendance__msg').html(_msg.html());
-                            $('#resync__attendace_data').html(JSON.stringify(_data));
+                            // $('#resync__attendace_data').html(JSON.stringify(_data));
                             // return;
                         }
                         if(_errCode==1){
@@ -1445,6 +1445,7 @@
                         }
 
                     }
+                    $('#resync__attendace_data').html(JSON.stringify(_data));
                     var time_sheet=_data.time_sheet;
                     var  rows='';
                     var calculated_trips=0;
