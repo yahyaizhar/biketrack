@@ -149,3 +149,11 @@ input[type="radio"] h6{
     justify-content: space-between;
     width: 100%;
 }
+
+td.details-control {
+    background: url('../../../../details_open.png') no-repeat center center !important; 
+    cursor: pointer;
+}
+tr.shown td.details-control {
+    background: url('../../../../details_close.png') no-repeat center center !important;
+}
