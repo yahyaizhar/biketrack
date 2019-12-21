@@ -148,14 +148,14 @@
                     <div class="kt-portlet__head-toolbar col-md-12">
                         <div class="kt-portlet__head-wrapper">
                             <div class="kt-portlet__head-actions">
-                                <a href="" data-ajax="{{ route('MobileInstallment.create') }}" class=" btn btn-success btn-elevate btn-icon-sm">
+                                {{-- <a href="" data-ajax="{{ route('MobileInstallment.create') }}" class=" btn btn-success btn-elevate btn-icon-sm">
                                     <i class="fa fa-mobile-alt"></i>
                                     Mobile Installment
                                 </a>
                                 
-                                &nbsp;
+                                &nbsp; --}}
                                 
-                                <a href="" data-ajax="{{ route('admin.fuel_expense_create') }}" class=" btn btn-danger btn-elevate btn-icon-sm">
+                                <a href="" data-ajax="{{ route('admin.fuel_expense_create') }}" class=" btn btn-success btn-elevate btn-icon-sm">
                                     <i class="fa fa-gas-pump"></i>
                                     Fuel
                                 </a>

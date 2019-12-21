@@ -163,7 +163,7 @@
             </div>
             <div class="kt-portlet__head-toolbar"> 
                 <div class="kt-portlet__head-wrapper">
-                    <div class="kt-portlet__head-actions">
+                    <div class="kt-portlet__head-actions" style="display:contents !important;">
                          {{-- <a href="" class="btn btn-primary btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_modal" >
                             <i class="la la-money"></i>
                              Bike Rent
@@ -174,6 +174,12 @@
                              Mobile Charges
                         </a>
                         &nbsp; --}}
+                        <a href="" data-ajax="{{ route('MobileInstallment.create') }}" class=" btn btn-success btn-elevate btn-icon-sm">
+                            <i class="fa fa-mobile-alt"></i>
+                            Mobile Installment
+                        </a>
+                        
+                        &nbsp;
                         <a href="" class="btn btn-info btn-elevate btn-icon-sm" data-toggle="modal" data-target="#mics_charges" >
                             <i class="la la-money"></i>
                              MICS Charges
@@ -792,7 +798,7 @@
             </div> --}}
         </div>
         <div class="kt-portlet__body">
-            <div class="attendance__msg-container" style="display:none">
+            <div class="attendance__msg-container" style="">
                 <div class="attendance__msg"></div>
                 <div class="attendance__sync-data">
                     <div class="row">
@@ -1196,6 +1202,21 @@
 <input type="hidden" name="weekly_off">
 <input type="hidden" name="weekly_off_day">
 <input type="hidden" name="extra_day">
+<div class="modal fade" id="quick_view" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header border-bottom-0">
+            <h5 class="modal-title"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+
+        </div>
+    </div>
+    </div>
+</div>
 @endsection
 @section('foot')
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
@@ -1417,7 +1438,7 @@
                 success: function(data){
                     var _data=data.data;
                     console.log(_data);
-                    $('.attendance__msg-container').hide();
+                    // $('.attendance__msg-container').hide();
                     $(".rider_days_detail tbody").html(""); 
                     $(".rider_days_detail tfoot").html(""); 
                     if(!_data) {return; }
@@ -1777,6 +1798,92 @@
     });
     var table;
     $(function(){
+        $('[data-ajax]').on('click', function(e){
+            e.preventDefault();
+            var _ajaxUrl = $(this).attr('data-ajax');
+            console.log(_ajaxUrl);
+            var _self = $(this);
+            var loading_html = '<div class="d-flex justify-content-center modal_loading"><i class="la la-spinner fa-spin display-3"></i></div>';
+            var _quickViewModal = $('#quick_view');
+            var selected_month=new Date(biketrack.getUrlParameter("r1d1")).format('mmmm yyyy');
+            console.log(selected_month);
+            _quickViewModal.find('.modal-body').html(loading_html);
+            _quickViewModal.modal('show');
+            $.ajax({
+                url : _ajaxUrl,
+                type : 'GET',
+                dataType: 'html',
+                success: function(data){
+                    console.log($(data));
+                    
+                    var _targetForm = $(data).find('form').wrap('<p/>').parent().html();
+                    
+                    
+                    _quickViewModal.find('.modal-title').text(_self.text().trim());
+                   
+                    _quickViewModal.find('.modal-body').html(_targetForm);
+                    _quickViewModal.find('[name="month"]').attr('data-month',selected_month);
+                    _quickViewModal.find('[name="month_year"]').attr('data-month',selected_month);
+                    $('script[data-ajax]').remove();
+                    console.warn($(data).find('[data-ajax]'));
+                    var $ajax_script = $(data).find('[data-ajax]');
+                    if($ajax_script.length==0) $ajax_script = $(data).filter('[data-ajax]');
+
+                    if($ajax_script.length==0) alert('Cannot find ajax script in this form');
+                    $('body').append('<script data-ajax>'+$ajax_script.eq(0).html()+'<\/script>');
+
+                    var rider_id = $('#gb_rider_id').val();
+                    if(_quickViewModal.find('[name="rider_id"]').length){
+                        _quickViewModal.find('[name="rider_id"]').val(rider_id).trigger('change.select2');
+                    }
+                        biketrack.refresh_global();
+                    //add event handler to submit form in modal
+                    _quickViewModal.find('form').off('submit').on('submit', function(e){
+                        e.preventDefault();
+                        _quickViewModal.modal('hide');
+                        var _form = $(this);
+                        var _url = _form.attr('action');
+                        $.ajax({
+                            url : _url,
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            type : 'POST',
+                            data: _form.serialize(),
+                            success: function(data){
+                                console.log(data);
+                                
+                                swal.fire({
+                                    position: 'center',
+                                    type: 'success',
+                                    title: 'Record updated successfully.',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                                table.ajax.reload(null, false);
+                                table_bills.ajax.reload(null, false);
+                            },
+                            error: function(error){
+                                swal.fire({
+                                    position: 'center',
+                                    type: 'error',
+                                    title: 'Oops...',
+                                    text: 'Unable to update.',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                            }
+                        });
+                    });
+
+                    biketrack.refresh_global();
+                },
+                error: function(error){
+                    console.log(error);
+                }
+            });
+            
+        });
         
         $('.kt-select2').select2({
             placeholder: "Select a rider",

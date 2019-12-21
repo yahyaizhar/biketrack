@@ -524,7 +524,7 @@ class AjaxNewController extends Controller
         $mobile=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
-        ->where('source','Mobile Charges')
+        ->where('source','Mobile Installment')
         ->sum('amount');
         $denial_penalty=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)

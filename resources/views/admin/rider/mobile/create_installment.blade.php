@@ -63,7 +63,10 @@
                             <div>
                                 <select id="mobile" class="form-control kt-select2" id="kt_select2_3" name="brand" >
                                     @foreach ($mobiles as $mobile)
-                                <option value='{{$mobile->id}}'>{{$mobile->model}}</option>
+                                    @php
+                                        $rider=App\Model\Rider\Rider::find($mobile->rider_id);
+                                    @endphp
+                                <option value='{{$mobile->id}}' data-rider="{{$rider->id}}">kr{{$rider->id}} - {{$mobile->model}} </option>
                                     @endforeach
                                 </select> 
                                 <span class="form-text text-muted">Like <strong>Samsung</strong>.</span>
@@ -91,14 +94,14 @@
                         </div>
                         <div class="form-group">
                             <label>Installment Amount:</label>
-                            <input   type="number" class="form-control " autocomplete="off" name="per_month_installment_amount" placeholder="Per month installments " >
+                            <input step="0.01" type="number" class="form-control " autocomplete="off" name="per_month_installment_amount" placeholder="Per month installments " >
                         </div>
                     </div>
                         
                     </div>
                     <div class="kt-portlet__foot">
                         <div class="kt-form__actions kt-form__actions--right">
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-primary">Pay Installment</button>
                             {{-- <span class="kt-margin-l-10">or <a href="{{url('/admin/riders')}}" class="kt-link kt-font-bold">Cancel</a></span> --}}
                         </div>
                     </div>
@@ -119,50 +122,73 @@
             placeholder: "Select an option",
             width:'100%'    
         });
-    });
-    $('#mobile [name="brand"],#mobile [name="month_year"] ').on('change', function(){
-            var _brandId = $('#mobile [name="brand"]').val();
-            var _month = $('#mobile [name="month_year"]').val();
-            console.log(_brandId);
-            console.log(_month);
-            _month = new Date(_month).format('yyyy-mm-dd');
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }, 
-                url:"{{url('/admin/mobile/ajax/data/')}}"+"/"+_brandId+"/"+_month,
-                method: "GET"
-            })
-            .done(function(data) {  
-                console.log(data);
-                $('#mobile [name="sale_price"]').val(data.sale_price).attr('data-amount', data.sale_price); 
-                $('#mobile [name="amount_received"]').val(data.amount_received).attr('data-amount', data.amount_received);  
-                $('#mobile [name="remaining_amount"]').val(data.remaining_amount).attr('data-amount', data.remaining_amount); 
-                $('#mobile [name="per_month_installment_amount"]').val(data.installment_amount).attr('data-amount', data.installment_amount); 
-            });
-        }); 
-        $(document).ready(function(){
-        $('#mobile [name="per_month_installment_amount"]').on('change input', function(){
-            var _installment=parseFloat($(this).val());
-            var sale_price = parseFloat($('#mobile [name="sale_price"]').attr('data-amount'));
-            var remaining_amount = parseFloat($('#mobile [name="remaining_amount"]').attr('data-amount'));
-            var _amount_received =parseFloat($('#mobile [name="amount_received"]').attr('data-amount'));
-            var _rest_RA =remaining_amount-_installment; 
-            var _res_AR=_amount_received+_installment;
-            if (_res_AR<=sale_price ) {
-            $('#mobile [name="amount_received"]').val(_res_AR);
-            $('#mobile [name="remaining_amount"]').val(_rest_RA);
-            }
-            else if(_rest_RA<=0){
-              $(this).val(remaining_amount).trigger('change');
-            }
-            if(_installment==0 || isNaN(_installment)){
-                $('#mobile [name="remaining_amount"]').val(remaining_amount);
-                $('#mobile [name="amount_received"]').val(_amount_received);
-            }
-           
+        $('#mobile [name="brand"],#mobile [name="month_year"] ').on('change', function(){
+                var _brandId = $('#mobile [name="brand"]').val();
+                var _month = $('#mobile [name="month_year"]').val();
+                console.log(_brandId);
+                console.log(_month);
+                _month = new Date(_month).format('yyyy-mm-dd');
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }, 
+                    url:"{{url('/admin/mobile/ajax/data/')}}"+"/"+_brandId+"/"+_month,
+                    method: "GET"
+                })
+                .done(function(data) {  
+                    console.log(data);
+                    $('#mobile [name="sale_price"]').val(data.sale_price).attr('data-amount', data.sale_price); 
+                    $('#mobile [name="amount_received"]').val(data.amount_received).attr('data-amount', data.amount_received);  
+                    $('#mobile [name="remaining_amount"]').val(data.remaining_amount).attr('data-amount', data.remaining_amount); 
+                    $('#mobile [name="per_month_installment_amount"]').val(data.installment_amount).attr('data-amount', data.installment_amount);
+                    if (data.sale_price==data.amount_received) {
+                        $('#mobile [type="submit"]').prop("disabled", true ).text("Installment is already Paid"); 
+                    }
+                    if(data.sale_price!==data.amount_received){
+                        $('#mobile [type="submit"]').text("Pay Installment").prop("disabled",false);
+                    } 
+                });
+            }); 
+            $(document).ready(function(){
+            $('#mobile [name="per_month_installment_amount"]').on('change input', function(){
+                var _installment=parseFloat($(this).val());
+                var sale_price = parseFloat($('#mobile [name="sale_price"]').attr('data-amount'));
+                var remaining_amount = parseFloat($('#mobile [name="remaining_amount"]').attr('data-amount'));
+                var _amount_received =parseFloat($('#mobile [name="amount_received"]').attr('data-amount'));
+                var _rest_RA =remaining_amount-_installment; 
+                var _res_AR=_amount_received+_installment;
+                if (_res_AR<=sale_price ) {
+                $('#mobile [name="amount_received"]').val(_res_AR);
+                $('#mobile [name="remaining_amount"]').val(_rest_RA);
+                }
+                else if(_rest_RA<=0){
+                $(this).val(remaining_amount).trigger('change');
+                }
+                if(_installment==0 || isNaN(_installment)){
+                    $('#mobile [name="remaining_amount"]').val(remaining_amount);
+                    $('#mobile [name="amount_received"]').val(_amount_received);
+                }
             
+                
+            });
         });
+         
+        $('#mobile [name="month_year"]').trigger("change");
+        var gb_rider_id=biketrack.getUrlParameter("rider_id");
+        if (gb_rider_id!="") {
+            
+
+            if ($('#mobile [name="brand"] option[data-rider="'+gb_rider_id+'"]').length>0) {
+                $('#mobile [name="brand"] option[data-rider="'+gb_rider_id+'"]').prop('selected', true).parent().trigger("change");
+            }
+            else{
+                $('#mobile [name="brand"]')[0].selectedIndex=-1;
+                $('#mobile [name="brand"]').trigger('change.select2');
+                
+            }
+        }
+            
+
     });
     </script>
 @endsection

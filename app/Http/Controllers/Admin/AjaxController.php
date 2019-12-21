@@ -1152,7 +1152,10 @@ class AjaxController extends Controller
         })
         ->addColumn('mobile', function($installment){
             $mobile=Mobile::find($installment->mobile_id);
-            return $mobile->model;
+            if (isset($mobile)) {
+                return $mobile->model;
+            }
+           
         })
         ->addColumn('rider_name', function($installment){
             $mobile=Mobile::find($installment->mobile_id);
