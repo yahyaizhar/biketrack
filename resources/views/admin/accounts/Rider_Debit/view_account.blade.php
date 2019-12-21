@@ -1456,7 +1456,9 @@
 
                     var absent_hours=total_absents*11;
                     var work_hours_days=_data.working_days*11;
-                    
+                    time_sheet.sort(function(a,b){
+                        return a.date<b.date?-1:1;
+                    });
                     time_sheet.forEach(function(item,j){
                         var trips=parseFloat(item.trips)||0;
                         var login_hours=parseFloat(item.login_hours)||0;
