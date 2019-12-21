@@ -2346,7 +2346,7 @@ class AjaxNewController extends Controller
                 $working_hours = $working_days*11;
                 $absent_hours = $absent_count*11;
 
-                $less_time = $working_hours - $calculated_hours;
+                $less_time = round($working_hours - $calculated_hours,2);
                 $payable_hours = round(286 - $absent_hours - $less_time,2);
 
                 $hours_payable=$payable_hours*7.87;
@@ -2393,7 +2393,7 @@ class AjaxNewController extends Controller
         ->addColumn('bike_number', function($rider) {
               $assign_bike=Assign_bike::where("rider_id",$rider->rider_id)->where("status","active")->get()->first();             
             if (isset($assign_bike)) {
-                $bike=bike::find($assign_bike->bike_id);
+                $bike=bike::find($assign_bike->bike_id);    
                 return $bike->bike_number;
             }
               return 'No Bike is assigned';
