@@ -276,7 +276,7 @@ margin-left: 10px;
 <script>
 var newcomer_table;
 var newcomer_data = [];
-window._url = "https://"+window.location.host+"/admin/newApprovalComer/view/ajax/all";
+window._url = "{{url('admin/newApprovalComer/view/ajax/all')}}";
 $(function() { 
     var _settings =  {
         processing: true,
