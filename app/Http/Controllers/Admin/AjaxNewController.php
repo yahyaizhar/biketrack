@@ -2184,7 +2184,7 @@ class AjaxNewController extends Controller
                 $less_time = $working_hours - $calculated_hours;
                 $payable_hours = 286 - $absent_hours - $less_time;
 
-                $hours_payable=$payable_hours*7.87;
+                $hours_payable=round($payable_hours*7.87,2);
 
                 $trips = $calculated_trips > 400?400:$calculated_trips;
                 $trips_payable = $trips * 2;
