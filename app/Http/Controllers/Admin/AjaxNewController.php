@@ -2086,7 +2086,7 @@ class AjaxNewController extends Controller
             return $fuel_amount;
         }) 
         ->addColumn('sim_charges', function($rider) use ($month) {
-            $sim_charges=Rider_Account::where('rider_id',$rider->id)
+            $sim_charges=Company_Account::where('rider_id',$rider->id)
             ->whereNotNull('sim_transaction_id')
             ->whereMonth('month', $month)
             ->get()
