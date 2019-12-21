@@ -111,31 +111,31 @@ class MobileController extends Controller
         $mobile_installment->installment_month=Carbon::parse($r->filterMonth)->format('Y-m-d');
         $mobile_installment->save();
 
-        $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
-            'mobile_installment_id'=>$mobile_installment->id
-        ]);
-        $ca->mobile_installment_id =$mobile_installment->id;
-        $ca->type='dr';
-        $ca->rider_id=$r->rider_id;
-        $ca->month = Carbon::parse($mobile_installment->installment_month)->startOfMonth()->format('Y-m-d');
-        $ca->given_date = Carbon::parse($mobile_installment->given_date)->format('Y-m-d');
-        $ca->source="Mobile Purchase";
-        $ca->amount=$r->purchase_price;
-        $ca->save();
+        // $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+        //     'mobile_installment_id'=>$mobile_installment->id
+        // ]);
+        // $ca->mobile_installment_id =$mobile_installment->id;
+        // $ca->type='dr';
+        // $ca->rider_id=$r->rider_id;
+        // $ca->month = Carbon::parse($mobile_installment->installment_month)->startOfMonth()->format('Y-m-d');
+        // $ca->given_date = Carbon::parse($mobile_installment->given_date)->format('Y-m-d');
+        // $ca->source="Mobile Purchase";
+        // $ca->amount=$r->purchase_price;
+        // $ca->save();
 
         $recevied_amt = $r->amount_received;
         if($recevied_amt > 0){
-            $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
-                'mobile_installment_id'=>$mobile_installment->id
-            ]);
-            $ca->mobile_installment_id =$mobile_installment->id;
-            $ca->type='cr';
-            $ca->rider_id=$r->rider_id;
-            $ca->month = Carbon::parse($mobile_installment->installment_month)->startOfMonth()->format('Y-m-d');
-            $ca->given_date = Carbon::parse($mobile_installment->given_date)->format('Y-m-d');
-            $ca->source="Mobile Installment";
-            $ca->amount=$recevied_amt;
-            $ca->save();
+            // $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+            //     'mobile_installment_id'=>$mobile_installment->id
+            // ]);
+            // $ca->mobile_installment_id =$mobile_installment->id;
+            // $ca->type='cr';
+            // $ca->rider_id=$r->rider_id;
+            // $ca->month = Carbon::parse($mobile_installment->installment_month)->startOfMonth()->format('Y-m-d');
+            // $ca->given_date = Carbon::parse($mobile_installment->given_date)->format('Y-m-d');
+            // $ca->source="Mobile Installment";
+            // $ca->amount=$recevied_amt;
+            // $ca->save();
 
             $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
                 'mobile_installment_id'=>$mobile_installment->id
@@ -147,6 +147,7 @@ class MobileController extends Controller
             $ra->given_date = Carbon::parse($mobile_installment->given_date)->format('Y-m-d');
             $ra->source="Mobile Installment";
             $ra->amount=$recevied_amt;
+            $ra->payment_status="paid";
             $ra->save();
         }
 
@@ -310,14 +311,20 @@ class MobileController extends Controller
 
     public function consumption_mobile_records_insert(Request $r){
             $id = $r->brand; 
+            if ($r->per_month_installment_amount<=0) {
+                return redirect(url('/admin/mobiles'));
+            }
 
             $mobile=Mobile::find($id);
-            $mobile->amount_received=$r->amount_received;
-            $mobile->sale_price=$r->sale_price;
             $sp= $mobile->sale_price;
             $ar=$mobile->amount_received;
             $RA=$sp-$ar;
-                if($RA!==0){
+            $mobile->amount_received=$r->amount_received;
+            $mobile->sale_price=$r->sale_price;
+                if($RA<=0){
+                    return redirect(url('/admin/mobiles'));
+                }
+                else{
                     $mobile_trans= Mobile::firstOrCreate([
                         'id'=>$id
                     ]);
@@ -326,20 +333,20 @@ class MobileController extends Controller
 
                     $mobile_installment=new Mobile_installment;
                     $mobile_installment->installment_amount=$r->per_month_installment_amount;
-                    $mobile_installment->mobile_id=$mobile_trans->rider_id;
+                    $mobile_installment->mobile_id=$r->brand;
                     $mobile_installment->installment_month=Carbon::parse($r->month_year)->format('Y-m-d');
                     $mobile_installment->save();
     
-                    $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
-                        'mobile_installment_id'=>$mobile_installment->id
-                    ]);
-                    $ca->mobile_installment_id =$mobile_installment->id;
-                    $ca->type='cr';
-                    $ca->rider_id=$mobile_trans->rider_id;
-                    $ca->month = $mobile_installment->installment_month;
-                    $ca->source="Mobile Installment";
-                    $ca->amount=$mobile_installment->installment_amount;
-                    $ca->save();
+                    // $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+                    //     'mobile_installment_id'=>$mobile_installment->id
+                    // ]);
+                    // $ca->mobile_installment_id =$mobile_installment->id;
+                    // $ca->type='cr';
+                    // $ca->rider_id=$mobile_trans->rider_id;
+                    // $ca->month = $mobile_installment->installment_month;
+                    // $ca->source="Mobile Installment";
+                    // $ca->amount=$mobile_installment->installment_amount;
+                    // $ca->save();
         
                     $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
                         'mobile_installment_id'=>$mobile_installment->id
@@ -350,8 +357,10 @@ class MobileController extends Controller
                     $ra->month = $mobile_installment->installment_month;
                     $ra->source="Mobile Installment";
                     $ra->amount=$mobile_installment->installment_amount;
+                    $ra->given_date=carbon::parse($mobile_installment->given_date)->format('Y-m-d');
+                    $ra->payment_status="paid";
                     $ra->save();   
-                    return redirect(url('/admin/mobiles'));
+                    return redirect(url('/admin/mobile/installment/show'));
                 }
              }
          }
