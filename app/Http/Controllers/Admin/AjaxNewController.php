@@ -1975,7 +1975,7 @@ class AjaxNewController extends Controller
                 $absent_hours = $absent_count*11;
 
                 $less_time = $working_hours - $calculated_hours;
-                $payable_hours = 286 - $absent_hours - $less_time;
+                $payable_hours = round(286 - $absent_hours - $less_time,2);
                 return round($payable_hours,2); 
             }
             return 0;
@@ -2006,7 +2006,7 @@ class AjaxNewController extends Controller
                 $absent_hours = $absent_count*11;
 
                 $less_time = $working_hours - $calculated_hours;
-                $payable_hours = 286 - $absent_hours - $less_time;
+                $payable_hours = round(286 - $absent_hours - $less_time,2);
                 return round($payable_hours*7.87,2); 
             }
             return 0;
@@ -2182,9 +2182,9 @@ class AjaxNewController extends Controller
                 $absent_hours = $absent_count*11;
 
                 $less_time = $working_hours - $calculated_hours;
-                $payable_hours = 286 - $absent_hours - $less_time;
+                $payable_hours = round(286 - $absent_hours - $less_time,2);
 
-                $hours_payable=round($payable_hours*7.87,2);
+                $hours_payable=$payable_hours*7.87;
 
                 $trips = $calculated_trips > 400?400:$calculated_trips;
                 $trips_payable = $trips * 2;
@@ -2254,7 +2254,7 @@ class AjaxNewController extends Controller
                 $absent_hours = $absent_count*11;
 
                 $less_time = $working_hours - $calculated_hours;
-                $payable_hours = 286 - $absent_hours - $less_time;
+                $payable_hours = round(286 - $absent_hours - $less_time,2);
 
                 $hours_payable=$payable_hours*7.87;
 
@@ -2344,7 +2344,7 @@ class AjaxNewController extends Controller
                 $absent_hours = $absent_count*11;
 
                 $less_time = $working_hours - $calculated_hours;
-                $payable_hours = 286 - $absent_hours - $less_time;
+                $payable_hours = round(286 - $absent_hours - $less_time,2);
 
                 $hours_payable=$payable_hours*7.87;
 
