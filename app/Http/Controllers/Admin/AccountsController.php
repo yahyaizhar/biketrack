@@ -912,7 +912,7 @@ class AccountsController extends Controller
                 }
             }
             
-            $salary_hours=round($hours_payable,2);
+            $salary_hours=round($payable_hours,2);
             $salary_trips=$trips_payable+$trips_EXTRA_payable;
             $salary_credits=round($ra_cr,2);
             $ra_salary=$salary_hours +$salary_trips  +$salary_credits ;
@@ -2455,14 +2455,14 @@ public function client_income_update(Request $request,$id){
                     $obj['extra_day']=$extra_day;
                     $obj['working_days']=$working_days;
 
-                    $workable_days = $working_days * 11;
-                    $absent_hours = $absents_count * 11;
+                    // $workable_days = $working_days * 11;
+                    // $absent_hours = $absents_count * 11;
 
-                    $less_time = $workable_days - $calculated_hours;
+                    // $less_time = $workable_days - $calculated_hours;
 
-                    $payable_hours = 286 - $absent_hours - $less_time;
+                    // $payable_hours = 286 - $absent_hours - $less_time;
 
-                    $obj['calculated_hours']=$payable_hours;
+                    $obj['calculated_hours']=$calculated_hours;
                     $obj['calculated_trips']=$calculated_trips;
                     if($is_error==true){
                         $err=[];
@@ -2491,15 +2491,15 @@ public function client_income_update(Request $request,$id){
                 'message'=>$exception_msg
             ]);
         }
-        // $delete_data = DB::table('riders__payouts__by__days')
-        //             ->whereIn('id', $delete_data)
-        //             ->delete();
-        // DB::table('riders__payouts__by__days')->insert($zomato_objects);
-        // $time_sheets_update=Batch::update(new Income_zomato, $time_sheets, 'id'); //r3
+        $delete_data = DB::table('riders__payouts__by__days')
+                    ->whereIn('id', $delete_data)
+                    ->delete();
+        DB::table('riders__payouts__by__days')->insert($zomato_objects);
+        $time_sheets_update=Batch::update(new Income_zomato, $time_sheets, 'id'); //r3
         return response()->json([
             'status'=>1,
             'data'=>$zomato_objects,
-            // 'deletedata_count'=>$delete_data,
+            'deletedata_count'=>$delete_data,
             'time_sheet'=>$time_sheets,
             'count'=>$i
         ]);
