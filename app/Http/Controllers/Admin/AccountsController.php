@@ -905,8 +905,9 @@ class AccountsController extends Controller
 
                 // $trips_payable+=$trips_EXTRA_payable;
 
-                $payable_hours=$_s_monthlyHours - $absent_hours - $less_time;
+                $payable_hours=round($_s_monthlyHours - $absent_hours - $less_time,2);
 
+                $hours_payable=$payable_hours*$_s_hoursFormula;
                 if($calculated_trips > $_s_maxTrips){
                     $bonus=50;
                 }
@@ -2454,6 +2455,14 @@ public function client_income_update(Request $request,$id){
                     $obj['weekly_off']=$weekly_off;
                     $obj['extra_day']=$extra_day;
                     $obj['working_days']=$working_days;
+
+                    // $workable_days = $working_days * 11;
+                    // $absent_hours = $absents_count * 11;
+
+                    // $less_time = $workable_days - $calculated_hours;
+
+                    // $payable_hours = 286 - $absent_hours - $less_time;
+
                     $obj['calculated_hours']=$calculated_hours;
                     $obj['calculated_trips']=$calculated_trips;
                     if($is_error==true){
