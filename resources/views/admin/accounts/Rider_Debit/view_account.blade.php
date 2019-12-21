@@ -2049,7 +2049,7 @@
                         $("#to_pay").hide();
                     }
                     
-                    
+                    $("#for_days_payouts").trigger("click");
                 },
                 ajax: url,
                 columns: [
