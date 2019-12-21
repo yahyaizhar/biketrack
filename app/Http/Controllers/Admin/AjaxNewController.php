@@ -2305,7 +2305,7 @@ class AjaxNewController extends Controller
             })
             ->whereDate('month', '<',$startMonth)
             ->sum('amount');
-            $closing_balance_prev = round($rider_debits_cr_prev_payable - $rider_debits_dr_prev_payable,2);
+            $closing_balance_prev = $rider_debits_cr_prev_payable - $rider_debits_dr_prev_payable;
             //ends prev payables
 
             $ra_payable=Rider_Account::where("rider_id",$rider_id)
@@ -2346,7 +2346,7 @@ class AjaxNewController extends Controller
                 $working_hours = $working_days*11;
                 $absent_hours = $absent_count*11;
 
-                $less_time = round($working_hours - $calculated_hours,2);
+                $less_time = $working_hours - $calculated_hours;
                 $payable_hours = round(286 - $absent_hours - $less_time,2);
 
                 $hours_payable=$payable_hours*7.87;
