@@ -2031,6 +2031,7 @@ class AjaxNewController extends Controller
             if(isset($income_zomato)){
                 $trips =$income_zomato->calculated_trips; 
                 if ( $trips > 400) $trips=$trips-400;
+                else $trips=0;
                 return round($trips,2);
             }
             return 0;
@@ -2043,6 +2044,7 @@ class AjaxNewController extends Controller
             if(isset($income_zomato)){
                 $trips =$income_zomato->calculated_trips; 
                 if ( $trips > 400) $trips=$trips-400;
+                else $trips=0;
                 return round($trips*4,2);
             }
             return 0;
