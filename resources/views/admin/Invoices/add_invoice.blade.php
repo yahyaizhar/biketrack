@@ -1235,7 +1235,7 @@ function append_row($row_data = null) {
     markup = '' +
         '   <tr>  ' +
         '       <td class="invoice__table-row_cell-sr"> <span class="flaticon2-trash invoice__remove" onclick="delete_row(this);"></span>' + (total_rows + 1) + ' </td>  ' +
-        '       <td> <textarea type="text" class="form-control auto-expandable" data-name="tax_amount" name="invoice_items['+total_rows+'][description]" rows="1"></textarea> </td>  ' +
+        '       <td> <textarea type="text" class="form-control auto-expandable" data-name="description" name="invoice_items['+total_rows+'][description]" rows="1"></textarea> </td>  ' +
         '       <td> <input data-input-type="float" class="form-control" data-name="rate" name="invoice_items['+total_rows+'][rate]" min="0" value="0"> </td>  ' +
         '       <td> <input data-input-type="float" class="form-control" data-name="qty" name="invoice_items['+total_rows+'][qty]" min="1" value="1"> </td>  ' +
         '       <td> ' +
