@@ -163,6 +163,7 @@ class AjaxController extends Controller
                     
                     <a class="dropdown-item" href="'.route('client.profit_sheet_view', $clients).'"><i class="fa fa-edit"></i>View Record Sheet</a>
                     <a class="dropdown-item" href="'.route('client.client_total_expense', $clients).'"><i class="fa fa-edit"></i>View Record Summary</a>
+                    <a class="dropdown-item" href="'.route('admin.zomato_salary_sheet_export', $clients).'"><i class="fa fa-edit"></i>View Salary Sheet</a> 
                     <a class="dropdown-item" href="" onclick=\'show_payout_modal('.json_encode($clients->setting).', '.$clients->id.');return false;\'>'.$payout_method_HTML_suffix.'</a> 
                     <a class="dropdown-item" href="" onclick=\'show_salary_modal('.json_encode($clients->salary_methods).', '.$clients->id.');return false;\'>'.$salary_method_HTML_suffix.'</a> 
                 </div>
@@ -293,6 +294,7 @@ class AjaxController extends Controller
                     
                     <a class="dropdown-item" href="'.route('client.profit_sheet_view', $clients).'"><i class="fa fa-edit"></i>View Record Sheet</a>
                     <a class="dropdown-item" href="'.route('client.client_total_expense', $clients).'"><i class="fa fa-edit"></i>View Record Summary</a>
+                    <a class="dropdown-item" href="'.route('admin.zomato_salary_sheet_export', $clients).'"><i class="fa fa-edit"></i>View Salary Sheet</a> 
                     <a class="dropdown-item" href="" onclick=\'show_payout_modal('.json_encode($clients->setting).', '.$clients->id.');return false;\'>'.$payout_method_HTML_suffix.'</a> 
                     <a class="dropdown-item" href="" onclick=\'show_salary_modal('.json_encode($clients->salary_methods).', '.$clients->id.');return false;\'>'.$salary_method_HTML_suffix.'</a> 
                 </div>

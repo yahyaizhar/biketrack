@@ -276,7 +276,7 @@ margin-left: 10px;
 <script>
 var newcomer_table;
 var newcomer_data = [];
-window._url = "https://"+window.location.host+"/admin/newApprovalComer/view/ajax/all";
+window._url = "{{url('admin/newApprovalComer/view/ajax/all')}}";
 $(function() { 
     var _settings =  {
         processing: true,
@@ -554,8 +554,7 @@ function show_waiting_comer(id,$this){
     }
     $('.approval_residence').text(_newcommerdata.current_residence);
     if(_newcommerdata.newcommer_image.indexOf('uploads') <= -1){
-        var _host = window.location.host;
-        _newcommerdata.newcommer_image = "https://"+_host+"/storage/uploads/no_image.png";
+        _newcommerdata.newcommer_image = "{{asset('dashboard/assets/media/no_image.png')}}";
     }
     $('.approval_custom_images_section img').attr('src',_newcommerdata.newcommer_image);
     $('.approval_custom_images_section a').attr('href',_newcommerdata.newcommer_image);
@@ -570,8 +569,7 @@ $('ul.list-group.list-group-horizontal li').click(function(){
     $(this).addClass('active');
     var _newimgsrc = $(this).attr('img_src');
     if(_newimgsrc.indexOf('uploads') <= -1){
-        var _host = window.location.host;
-        _newimgsrc ="https://"+_host+"/storage/uploads/no_image.png";
+        _newimgsrc ="{{asset('dashboard/assets/media/no_image.png')}}";
     }
     $('.approval_custom_images_section img').attr('src',_newimgsrc);
     $('.approval_custom_images_section a').attr('href',_newimgsrc);
@@ -704,7 +702,7 @@ $('.custom_approval_comer_model .footer_f_form').find('form').off('submit').on('
                     // end of forms
 
             function sort_by_status(status){
-                window._url = "https://"+window.location.host+"/admin/newApprovalComer/view/ajax/"+status;
+                window._url = "{{url('admin/newApprovalComer/view/ajax')}}"+"/"+status;
                 setTimeout(function(){
                 newcomer_table.ajax.reload();
                 },1000)

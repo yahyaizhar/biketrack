@@ -29,8 +29,7 @@ margin-left: 10px;
                 <div class="kt-portlet__head">
                     <div class="kt-portlet__head-label">
                         <h3 class="kt-portlet__head-title">
-                        Zomato Salary Sheet(Month) 
-                        
+                        Salary Sheet of {{$client->name}}
                         </h3>
                     </div>
                 </div>
@@ -216,7 +215,7 @@ console.log(riders_data);
             "Net Salary ":item.net_salary,
             "Gross Salary":item.gross_salary,
             "Cash Paid":"",
-            "Advance":"",
+            "Remaining Salary":"",
            });
         });
         var export_data = new CSVExport(export_details, 'Zomato Salary Sheet '+$('[name="month_id"] option:selected').text());
@@ -352,13 +351,10 @@ console.log(riders_data);
 var salary_sheet;
 var riders_data = [];
 $('#kt_content-b').hide(); 
-$("#kt_select2_3_5").change(function(){
-    $('th#remove_head').remove();
-    $('#kt_content-b').show(); 
-   var month=$(this).val();
-$(function() {
-    // salary_sheet = $('').DataTable({
-        var _settings={   processing: true,
+var client_id = {{$client->id}};
+var init_table=function(month){
+    var _settings={   
+        processing: true,
         serverSide: true,
         destroy:true,
         lengthMenu: [[-1], ["All"]],
@@ -377,17 +373,17 @@ $(function() {
             $('.total_entries').remove();
             $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
             mark_table();
-             
+            
         },
         // ajax: '{!! route('admin.accounts.income_zomato_ajax') !!}',
-        ajax: "{{url('admin/zomato/salary/sheet/export/ajax')}}"+"/"+month,
+        ajax: "{{url('admin/zomato/salary/sheet/export/ajax')}}"+"/"+month+"/"+client_id,
         columns:null,
         responsive:true,
         
         order:[0,'desc'],
     };
 
-        if(window.outerWidth>=521){
+    if(window.outerWidth>=521){
         //visa_expiry
         $('#zomato_salary_sheet thead tr').prepend('<th id="remove_head"></th>');
         _settings.columns=[
@@ -440,8 +436,6 @@ $(function() {
         _settings.responsive=false;
     }
     else{
-        
-        
         $('#zomato_salary_sheet thead tr th').eq(6).before('<th>Trip Date:</th>');
         $('#zomato_salary_sheet thead tr th').eq(7).before('<th>Trip Time:</th>');
         $('#zomato_salary_sheet thead tr th').eq(8).before('<th>Transaction Post Date:</th>');
@@ -539,8 +533,66 @@ $(function() {
             }
         });
     }
+}
 
-    function format ( data ) {
+
+$(function() {
+    $("#kt_select2_3_5").change(function(){
+        $('th#remove_head').remove();
+        $('#kt_content-b').show(); 
+        var month=$(this).val();
+        var push_state={
+            month: month
+        }
+        biketrack.updateURL(push_state);
+        init_table(month)
+    });
+    var query_month = biketrack.getUrlParameter('month');
+    if(query_month!=""){
+        $("#kt_select2_3_5").val(query_month).trigger('change')
+    }
+    if(window.outerWidth>=521){
+        $("#check_id").change(function(){
+
+            if($("#check_id").prop("checked") == true){
+                $("td.details-control").each(function(){
+                    if (!$(this).parent().hasClass("shown")) {
+                        $(this).trigger("click");
+                    }  
+                });
+            }
+            if($("#check_id"). prop("checked") == false){
+                $("td.details-control").each(function(){
+                    if ($(this).parent().hasClass("shown")) {
+                        $(this).trigger("click");
+                    }  
+                });
+            }
+        });
+    }
+    else if(window.outerWidth<521){
+        $("#check_id").change(function(){
+            if($("#check_id").prop("checked") == true){
+                $("td.sorting_1").each(function(){
+                    if (!$(this).parent().hasClass("parent")) {
+                        $(this).trigger("click");
+                    }  
+                });
+            }
+            if($("#check_id"). prop("checked") == false){
+                $("td.sorting_1").each(function(){
+                    if ($(this).parent().hasClass("parent")) {
+                        $(this).trigger("click");
+                    }  
+                });
+            }
+        });
+    }
+
+});
+
+
+function format ( data ) {
     // `d` is the original data object for the row
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
             '<tr>'+
@@ -597,46 +649,6 @@ $(function() {
             
         '</table>';
 }
-
-    if(window.outerWidth>=521){
-        $("#check_id").change(function(){
-
-            if($("#check_id").prop("checked") == true){
-                $("td.details-control").each(function(){
-                    if (!$(this).parent().hasClass("shown")) {
-                        $(this).trigger("click");
-                    }  
-                });
-            }
-            if($("#check_id"). prop("checked") == false){
-                $("td.details-control").each(function(){
-                    if ($(this).parent().hasClass("shown")) {
-                        $(this).trigger("click");
-                    }  
-                });
-            }
-        });
-    }
-    else if(window.outerWidth<521){
-        $("#check_id").change(function(){
-            if($("#check_id").prop("checked") == true){
-                $("td.sorting_1").each(function(){
-                    if (!$(this).parent().hasClass("parent")) {
-                        $(this).trigger("click");
-                    }  
-                });
-            }
-            if($("#check_id"). prop("checked") == false){
-                $("td.sorting_1").each(function(){
-                    if ($(this).parent().hasClass("parent")) {
-                        $(this).trigger("click");
-                    }  
-                });
-            }
-        });
-    }
-});
-});
 
 // table accordian end
 function delete_lastImport()

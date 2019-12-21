@@ -18,6 +18,8 @@ class CreateLogActivitiesTable extends Migration
             $table->string('description')->nullable();
             $table->string('subject_id')->nullable();
             $table->string('subject_type')->nullable();
+            $table->text('updated_old')->nullable();
+            $table->text('updated_new')->nullable();
             $table->string('causer_id')->nullable();
             $table->string('causer_type')->nullable();   
             $table->string('setting')->nullable();  

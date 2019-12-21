@@ -71,7 +71,7 @@ Route::group([
     Route::get("/accounts/bike/bills/{range}","AjaxNewController@getBikeAccountsBills")->name("admin.accounts.get_bike_account_bills");
     Route::get('/cash/paid/to/rider/{rider_id}','HomeController@cash_paid_to_rider')->name('admin.cash_paid_to_rider');
     Route::get("/accounts/kr_investment/view/data","AjaxNewController@getCompanyInvestment")->name("admin.getCompanyInvestment");
-    Route::get("/zomato/salary/sheet/export/ajax/{month_name}","AjaxNewController@zomato_salary_export")->name("admin.zomato_salary_export");
+    Route::get("/zomato/salary/sheet/export/ajax/{month_name}/{client_id}","AjaxNewController@zomato_salary_export")->name("admin.zomato_salary_export");
     Route::get("/zomato/profit/sheet/export/ajax/{month_name}/{client_id}","AjaxNewController@zomato_profit_export")->name("admin.zomato_profit_export");
     Route::get('/ajax/generated/rider/bill/status/{month}/{client_id}','AjaxNewController@getGeneratedBillStatus')->name('ajax.getGeneratedBillStatus');
     Route::GET('/get/invoices','AjaxNewController@getInvoices')->name('invoice.get_invoices'); 
@@ -164,7 +164,7 @@ Route::group([
 //import Zomato
     Route::post('/import/zomato','RiderController@import_zomato')->name('import.zomato');
     Route::delete('/delete/last/import','RiderController@delete_lastImport')->name('delete.import_data');
-    Route::get("/zomato/salary/sheet/export","AccountsController@zomato_salary_sheet_export")->name("admin.zomato_salary_sheet_export");
+    Route::get("/client/{cleint_id}/salarysheet","AccountsController@zomato_salary_sheet_export")->name("admin.zomato_salary_sheet_export");
     Route::get('/zomato/riders/payout/by/days','AccountsController@view_riders_payouts_days')->name('zomato.view_riders_payouts_days');
     Route::post('/import/riders/payouts/days','AccountsController@import_rider_daysPayouts')->name('import.import_rider_daysPayouts');
     Route::get("/rider/hours/trips/details/{month}/{rider_id}","AccountsController@hours_trips_details");

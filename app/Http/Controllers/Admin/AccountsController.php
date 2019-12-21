@@ -2251,8 +2251,9 @@ public function client_income_update(Request $request,$id){
     ]);
 
 }
-    public function zomato_salary_sheet_export(){
-        return view('admin.accounts.Income.zomato_salary_sheet');
+    public function zomato_salary_sheet_export($client_id){
+        $client=Client::find($client_id);
+        return view('admin.accounts.Income.zomato_salary_sheet', compact('client'));
     }
     public function salary_slip(){
         return view('salary_slip_month');
@@ -2456,14 +2457,16 @@ public function client_income_update(Request $request,$id){
                     $obj['extra_day']=$extra_day;
                     $obj['working_days']=$working_days;
 
-                    // $workable_days = $working_days * 11;
-                    // $absent_hours = $absents_count * 11;
+                    $workable_days = $working_days * 11;
+                    $absent_hours = $absents_count * 11;
 
-                    // $less_time = $workable_days - $calculated_hours;
+                    $less_time = $workable_days - $calculated_hours;
 
-                    // $payable_hours = 286 - $absent_hours - $less_time;
+                    $payable_hours = 286 - $absent_hours - $less_time;
 
+                    $obj['actual_hours']=$payable_hours;
                     $obj['calculated_hours']=$calculated_hours;
+
                     $obj['calculated_trips']=$calculated_trips;
                     if($is_error==true){
                         $err=[];
