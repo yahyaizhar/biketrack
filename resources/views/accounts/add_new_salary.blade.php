@@ -274,8 +274,9 @@
                     bonus=50;
                 }
                 var trips_amount=trips*2;
-                var extra_trips_amount=extra_trips*4;
+                var extra_trips_amount=data.trips_EXTRA_payable;
                 var final_salary=trips_amount+hours_amount+extra_trips_amount;
+                console.log("gdsjhdsghaj"+final_salary);
                 $('#salary [name="monthly_hours_val"]').val(data._s_monthlyHours);
                 $('#salary [name="absent_day_val"]').val(data.absent_count);
                 $('#salary [name="absent_hours_val"]').val((data.absent_count*data._s_maxHours).toFixed(2));
@@ -295,8 +296,8 @@
                 $('#salary [name="extra_trips_amount"]').val(data.trips_EXTRA_payable);
                 
                 $('#salary [name="bonus"]').val(data.bonus);
-                $('#salary [name="final_salary"]').val((data.total_salary).toFixed(2));
-                $('#salary [name="total_salary"]').val((data.total_salary).toFixed(2));
+                $('#salary [name="final_salary"]').val((final_salary).toFixed(2));
+                $('#salary [name="total_salary"]').val((final_salary).toFixed(2));
                 
 
                 $('#salary [name="is_paid"]').val(data.is_paid);
