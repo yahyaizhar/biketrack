@@ -187,7 +187,7 @@ console.log(riders_data);
            export_details.push({
             "KR-ID":item.rider_id, 
             "FEID":item.client_rider_id, 
-            "Name":item.rider_name,
+            "Name":item.name,
             "Bike No": item.bike_number,
             "Fuel Expense": item.fuel,
             "Advance":item.advance,
