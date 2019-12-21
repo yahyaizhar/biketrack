@@ -2454,7 +2454,15 @@ public function client_income_update(Request $request,$id){
                     $obj['weekly_off']=$weekly_off;
                     $obj['extra_day']=$extra_day;
                     $obj['working_days']=$working_days;
-                    $obj['calculated_hours']=$calculated_hours;
+
+                    $workable_days = $working_days * 11;
+                    $absent_hours = $absents_count * 11;
+
+                    $less_time = $workable_days - $calculated_hours;
+
+                    $payable_hours = 286 - $absent_hours - $less_time;
+
+                    $obj['calculated_hours']=$payable_hours;
                     $obj['calculated_trips']=$calculated_trips;
                     if($is_error==true){
                         $err=[];
@@ -2483,15 +2491,15 @@ public function client_income_update(Request $request,$id){
                 'message'=>$exception_msg
             ]);
         }
-        $delete_data = DB::table('riders__payouts__by__days')
-                    ->whereIn('id', $delete_data)
-                    ->delete();
-        DB::table('riders__payouts__by__days')->insert($zomato_objects);
-        $time_sheets_update=Batch::update(new Income_zomato, $time_sheets, 'id'); //r3
+        // $delete_data = DB::table('riders__payouts__by__days')
+        //             ->whereIn('id', $delete_data)
+        //             ->delete();
+        // DB::table('riders__payouts__by__days')->insert($zomato_objects);
+        // $time_sheets_update=Batch::update(new Income_zomato, $time_sheets, 'id'); //r3
         return response()->json([
             'status'=>1,
             'data'=>$zomato_objects,
-            'deletedata_count'=>$delete_data,
+            // 'deletedata_count'=>$delete_data,
             'time_sheet'=>$time_sheets,
             'count'=>$i
         ]);
