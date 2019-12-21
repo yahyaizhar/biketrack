@@ -554,7 +554,7 @@ function show_waiting_comer(id,$this){
     }
     $('.approval_residence').text(_newcommerdata.current_residence);
     if(_newcommerdata.newcommer_image.indexOf('uploads') <= -1){
-        _newcommerdata.newcommer_image = "{{url('/storage/uploads/no_image.png')}}";
+        _newcommerdata.newcommer_image = "{{asset('dashboard/assets/media/no_image.png')}}";
     }
     $('.approval_custom_images_section img').attr('src',_newcommerdata.newcommer_image);
     $('.approval_custom_images_section a').attr('href',_newcommerdata.newcommer_image);
@@ -569,7 +569,7 @@ $('ul.list-group.list-group-horizontal li').click(function(){
     $(this).addClass('active');
     var _newimgsrc = $(this).attr('img_src');
     if(_newimgsrc.indexOf('uploads') <= -1){
-        _newimgsrc ="{{url('/storage/uploads/no_image.png')}}";
+        _newimgsrc ="{{asset('dashboard/assets/media/no_image.png')}}";
     }
     $('.approval_custom_images_section img').attr('src',_newimgsrc);
     $('.approval_custom_images_section a').attr('href',_newimgsrc);
