@@ -1896,7 +1896,7 @@ class AjaxNewController extends Controller
             $riderFound = Rider::find($rider->id);
             return 'KR'.$riderFound->id.' - '.$riderFound->name;
         }) 
-        ->addColumn('feid', function($rider) {
+        ->addColumn('feid', function($rider) use ($month) {
             $riderFound = Rider::find($rider->id);
             $client_history = Client_History::all();
             $rider_id=$rider->id;
