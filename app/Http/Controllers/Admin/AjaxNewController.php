@@ -1896,6 +1896,28 @@ class AjaxNewController extends Controller
             $riderFound = Rider::find($rider->id);
             return 'KR'.$riderFound->id.' - '.$riderFound->name;
         }) 
+        ->addColumn('feid', function($rider) {
+            $riderFound = Rider::find($rider->id);
+            $client_history = Client_History::all();
+            $rider_id=$rider->id;
+            $month = '01-'.$month.'-'.Carbon::now()->format('Y');
+            $history_found = Arr::first($client_history, function ($item, $key) use ($rider_id, $month) {
+                $start_created_at =Carbon::parse($item->assign_date)->startOfMonth()->format('Y-m-d');
+                $created_at =Carbon::parse($start_created_at);
+
+                $start_updated_at =Carbon::parse($item->deassign_date)->endOfMonth()->format('Y-m-d');
+                $updated_at =Carbon::parse($start_updated_at);
+                $req_date =Carbon::parse($month);
+
+                return $item->rider_id==$rider_id &&
+                    ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+            });
+            $feid=null;
+            if (isset($history_found)) {
+                $feid=$history_found->client_rider_id;
+            }
+            return $feid;
+        }) 
         ->addColumn('bike_number', function($rider) {
               $assign_bike=Assign_bike::where("rider_id",$rider->id)->where("status","active")->get()->first();             
             if (isset($assign_bike)) {
