@@ -1453,7 +1453,7 @@
                             _msg.find('.alert-text').html(msg);
                             _msg.find('.alert').addClass('alert-outline-danger');
                             $('.attendance__sync-data').show();
-                            $('.attendance__msg').html(_msg.html());
+                            $('.attendance__msg').html(_msg.html()).show();
                             // $('#resync__attendace_data').html(JSON.stringify(_data));
                             // return;
                         }
