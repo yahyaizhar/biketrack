@@ -1896,6 +1896,28 @@ class AjaxNewController extends Controller
             $riderFound = Rider::find($rider->id);
             return 'KR'.$riderFound->id.' - '.$riderFound->name;
         }) 
+        ->addColumn('feid', function($rider) use ($month) {
+            $riderFound = Rider::find($rider->id);
+            $client_history = Client_History::all();
+            $rider_id=$rider->id;
+            $month = '01-'.$month.'-'.Carbon::now()->format('Y');
+            $history_found = Arr::first($client_history, function ($item, $key) use ($rider_id, $month) {
+                $start_created_at =Carbon::parse($item->assign_date)->startOfMonth()->format('Y-m-d');
+                $created_at =Carbon::parse($start_created_at);
+
+                $start_updated_at =Carbon::parse($item->deassign_date)->endOfMonth()->format('Y-m-d');
+                $updated_at =Carbon::parse($start_updated_at);
+                $req_date =Carbon::parse($month);
+
+                return $item->rider_id==$rider_id &&
+                    ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+            });
+            $feid=null;
+            if (isset($history_found)) {
+                $feid=$history_found->client_rider_id;
+            }
+            return $feid;
+        }) 
         ->addColumn('bike_number', function($rider) {
               $assign_bike=Assign_bike::where("rider_id",$rider->id)->where("status","active")->get()->first();             
             if (isset($assign_bike)) {
@@ -1955,7 +1977,7 @@ class AjaxNewController extends Controller
         }) 
         ->addColumn('bonus', function($rider) use ($month) {
             $bonus=Rider_Account::where('source',"400 Trips Acheivement Bonus")
-            ->where('rider_id',$rider->rider_id)
+            ->where('rider_id',$rider->id)
             ->whereMonth('month',$month)
             ->get()
             ->sum('amount');
@@ -2031,6 +2053,7 @@ class AjaxNewController extends Controller
             if(isset($income_zomato)){
                 $trips =$income_zomato->calculated_trips; 
                 if ( $trips > 400) $trips=$trips-400;
+                else $trips=0;
                 return round($trips,2);
             }
             return 0;
@@ -2043,6 +2066,7 @@ class AjaxNewController extends Controller
             if(isset($income_zomato)){
                 $trips =$income_zomato->calculated_trips; 
                 if ( $trips > 400) $trips=$trips-400;
+                else $trips=0;
                 return round($trips*4,2);
             }
             return 0;
@@ -2391,7 +2415,7 @@ class AjaxNewController extends Controller
         ->addColumn('bike_number', function($rider) {
               $assign_bike=Assign_bike::where("rider_id",$rider->rider_id)->where("status","active")->get()->first();             
             if (isset($assign_bike)) {
-                $bike=bike::find($assign_bike->bike_id);
+                $bike=bike::find($assign_bike->bike_id);    
                 return $bike->bike_number;
             }
               return 'No Bike is assigned';
