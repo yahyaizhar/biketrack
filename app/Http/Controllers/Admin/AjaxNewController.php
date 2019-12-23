@@ -495,6 +495,7 @@ class AjaxNewController extends Controller
         ->where("source","!=","advance")
         ->where("source","!=","salary_paid")
         ->where("source","!=","Visa Charges")
+        ->where("source","!=","Mobile Installment")
         ->sum('amount');
         $salik=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
