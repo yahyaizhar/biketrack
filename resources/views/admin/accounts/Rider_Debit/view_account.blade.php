@@ -1438,7 +1438,7 @@
                 success: function(data){
                     var _data=data.data;
                     console.log(_data);
-                    // $('.attendance__msg-container').hide();
+                    $('.attendance__msg').hide();
                     $(".rider_days_detail tbody").html(""); 
                     $(".rider_days_detail tfoot").html(""); 
                     if(!_data) {return; }
