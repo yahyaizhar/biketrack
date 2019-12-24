@@ -2416,7 +2416,7 @@ class AjaxNewController extends Controller
             ->get()
             ->first();
             if(isset($salary_paid)){
-                return '<div>'.round($ra_recieved,2).' <i class="flaticon2-correct"></i></div>';
+                return '<div>'.round($ra_recieved,2).' <i class="flaticon2-correct" style="color: green;"></i></div>';
             }
             return round($ra_recieved,2);
         })
