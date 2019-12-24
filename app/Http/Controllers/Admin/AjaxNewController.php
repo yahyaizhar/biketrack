@@ -569,7 +569,7 @@ class AjaxNewController extends Controller
 
         $closing_balance = $rider_debits_cr_payable - $rider_debits_dr_payable;
         $closing_balance_prev = round($rider_debits_cr_prev_payable - $rider_debits_dr_prev_payable,2);
-        $running_balance =$closing_balance_prev;
+        $running_balance =round($closing_balance_prev,2);
         $cash_paid =0;
 
         $flag = new \App\Model\Accounts\Rider_Account;
@@ -642,10 +642,10 @@ class AjaxNewController extends Controller
         })
         ->addColumn('balance', function($rider_statement) use (&$running_balance){
             if($rider_statement->type=='dr' || $rider_statement->type=='dr_payable' || $rider_statement->type=='cr_payable'){
-                $running_balance -= $rider_statement->amount;
+                $running_balance -= round($rider_statement->amount,2);
             }
             else{
-                $running_balance += $rider_statement->amount; 
+                $running_balance += round($rider_statement->amount,2); 
             }
             if($rider_statement->type=='skip') return '<strong >'.round($running_balance,2).'</strong>';
             return round($running_balance,2);
