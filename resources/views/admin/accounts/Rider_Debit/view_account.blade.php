@@ -275,7 +275,7 @@
                             @endif
                         </div> --}}
                         <div class="kt-form__actions kt-form__actions--right">
-                            <button type="submit" class="btn btn-primary">Pay Visa Charges</button>
+                            <button type="submit" class="btn btn-primary button_disabled">Pay Visa Charges</button>
                         </div>
                     </div>
                 </form>
@@ -1375,7 +1375,7 @@
             biketrack.refresh_global()
         }
     });
-    $("#mics_charges").on('shown.bs.modal', function(){
+    $("#mics_charges").on('shown.bs.modal', function(){ 
         var rider_id=biketrack.getUrlParameter('rider_id');
         $('#visa_charges [name="visa_rider_id"]').val(rider_id);
         var month=biketrack.getUrlParameter('r1d1');
@@ -1585,6 +1585,8 @@
             $(".days_payout").hide();
         });
         $('form#visa_charges').on('submit', function(e){
+            var _self = $(this);
+            _self.find('[type="submit"]').prop('disabled',true);
             e.preventDefault();
             var _form = $(this);
             var url = '{{route('admin.mics_charges')}}';
@@ -1599,6 +1601,7 @@
                 data: _form.serializeArray(),
                 success: function(data){
                     $('#mics_charges').modal('hide');
+                    _self.find('[type="submit"]').prop('disabled',false);
                     // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
                     swal.fire({
                         position: 'center',
@@ -1610,6 +1613,7 @@
                     table.ajax.reload(null, false);
                 },
                 error: function(error){
+                    _self.find('[type="submit"]').prop('disabled',false);
                     // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
                     swal.fire({
                         position: 'center',
@@ -1624,6 +1628,8 @@
         });
         $('form#advance_paid').on('submit', function(e){
             e.preventDefault();
+            var _self = $(this);
+            _self.find('[type="submit"]').prop('disabled',true);
             var _form = $(this);
             var url = '{{route('admin.AR_store')}}';
             $.ajaxSetup({
@@ -1637,6 +1643,7 @@
                 data: _form.serializeArray(),
                 success: function(data){
                     $('#advance').modal('hide');
+                    _self.find('[type="submit"]').prop('disabled',false);
                     // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
                     swal.fire({
                         position: 'center',
@@ -1648,6 +1655,7 @@
                     table.ajax.reload(null, false);
                 },
                 error: function(error){
+                    _self.find('[type="submit"]').prop('disabled',false);
                     // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
                     swal.fire({
                         position: 'center',
@@ -1663,6 +1671,8 @@
         $('form#cash_paid').on('submit', function(e){
             e.preventDefault();
             var _form = $(this);
+            var _self = $(this);
+            _self.find('[type="submit"]').prop('disabled',true);
             // var _cta = _form.find('[type="submit"]');
             // _cta.prop('disabled', true).addClass('btn-icon').html('<i class="fa flaticon2-refresh fa-spin"></i>');
             var url = '{{route('admin.cash_paid')}}';
@@ -1677,6 +1687,7 @@
                 data: _form.serializeArray(),
                 success: function(data){
                     $('#cash_paid').modal('hide');
+                    _self.find('[type="submit"]').prop('disabled',false);
                     // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
                     swal.fire({
                         position: 'center',
@@ -1688,6 +1699,7 @@
                     table.ajax.reload(null, false);
                 },
                 error: function(error){
+                    _self.find('[type="submit"]').prop('disabled',false);
                     // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
                     swal.fire({
                         position: 'center',
@@ -1703,6 +1715,8 @@
         $('form#cash_pay_cr').on('submit', function(e){
             e.preventDefault();
             var _form = $(this);
+            var _self = $(this);
+            _self.find('[type="submit"]').prop('disabled',true);
             // var _cta = _form.find('[type="submit"]');
             // _cta.prop('disabled', true).addClass('btn-icon').html('<i class="fa flaticon2-refresh fa-spin"></i>');
             var url = '{{route('admin.cash_credit_rider')}}';
@@ -1716,6 +1730,7 @@
                 type : 'POST',
                 data: _form.serializeArray(),
                 success: function(data){
+                    _self.find('[type="submit"]').prop('disabled',false)
                     $('#cash_pay_credit').modal('hide');
                     // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
                     swal.fire({
@@ -1728,6 +1743,7 @@
                     table.ajax.reload(null, false);
                 },
                 error: function(error){
+                    _self.find('[type="submit"]').prop('disabled',false)
                     // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
                     swal.fire({
                         position: 'center',
@@ -1743,6 +1759,8 @@
         $('form#cash_pay_dr').on('submit', function(e){
             e.preventDefault();
             var _form = $(this);
+            var _self = $(this);
+            _self.find('[type="submit"]').prop('disabled',true);
             // var _cta = _form.find('[type="submit"]');
             // _cta.prop('disabled', true).addClass('btn-icon').html('<i class="fa flaticon2-refresh fa-spin"></i>');
             var url = '{{route('admin.cash_debit_rider')}}';
@@ -1756,6 +1774,7 @@
                 type : 'POST',
                 data: _form.serializeArray(),
                 success: function(data){
+                    _self.find('[type="submit"]').prop('disabled',false)
                     $('#cash_pay_debit').modal('hide');
                     // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
                     swal.fire({
@@ -1768,6 +1787,7 @@
                     table.ajax.reload(null, false);
                 },
                 error: function(error){
+                    _self.find('[type="submit"]').prop('disabled',false)
                     // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
                     swal.fire({
                         position: 'center',
@@ -1803,6 +1823,7 @@
             var _ajaxUrl = $(this).attr('data-ajax');
             console.log(_ajaxUrl);
             var _self = $(this);
+            _self.find('[type="submit"]').prop('disabled',true);
             var loading_html = '<div class="d-flex justify-content-center modal_loading"><i class="la la-spinner fa-spin display-3"></i></div>';
             var _quickViewModal = $('#quick_view');
             var selected_month=new Date(biketrack.getUrlParameter("r1d1")).format('mmmm yyyy');
@@ -1852,6 +1873,7 @@
                             data: _form.serialize(),
                             success: function(data){
                                 console.log(data);
+                                _self.find('[type="submit"]').prop('disabled',true);
                                 
                                 swal.fire({
                                     position: 'center',
@@ -1864,6 +1886,7 @@
                                 table_bills.ajax.reload(null, false);
                             },
                             error: function(error){
+                                _self.find('[type="submit"]').prop('disabled',true);
                                 swal.fire({
                                     position: 'center',
                                     type: 'error',
