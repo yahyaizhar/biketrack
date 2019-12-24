@@ -1024,7 +1024,7 @@
             </tr>
         </table>
     <div style=""> 
-        <p style="font-size:12px;line-height: 14px;"><strong>Note: </strong>MR <span id="rider_id_1"></span> received <span id="paid_salary"></span> from King Riders Delivery Services LLC, and MR <span id="rider_id_2"></span> no is not valid for any kind of Gratuity, yearly tickets or any other expenses other than the salary.
+        <p style="font-size:12px;line-height: 14px;"><strong>Note: </strong>MR <span id="rider_id_1"></span> received <span class="paid_salary"></span> from King Riders Delivery Services LLC, and MR <span id="rider_id_2"></span> no is not valid for any kind of Gratuity, yearly tickets or any other expenses other than the salary.
         </p>
     </div>
     <div style=" margin-top: 1px;">  
@@ -1194,7 +1194,7 @@
             </tr>
         </table>
         <div style=""> 
-            <p style="font-size:12px;line-height: 14px;"><strong>Note: </strong>MR <span id="rider_id_1"></span> received <span id="total_net_pay"></span> from King Riders Delivery Services LLC, and MR <span id="rider_id_2"></span> no is not valid for any kind of Gratuity, yearly tickets or any other expenses other than the salary.
+            <p style="font-size:12px;line-height: 14px;"><strong>Note: </strong>MR <span id="rider_id_1"></span> received <span class="paid_salary"></span> from King Riders Delivery Services LLC, and MR <span id="rider_id_2"></span> no is not valid for any kind of Gratuity, yearly tickets or any other expenses other than the salary.
             </p>
         </div>
    <div id="rider_attendance_detail">
