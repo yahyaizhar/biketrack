@@ -938,7 +938,7 @@
                 <td style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:left;">BONES</td>
+                <td style="width:50%;text-align:left;">BONUS</td>
                 <td contenteditable='true' class="bones" style="width:25%;text-align:end;"></td>
                 <td style="width:25%;text-align:end;"></td>
             </tr>
@@ -968,7 +968,7 @@
                 <td contenteditable='true' class="zomato" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:left;">DC DEDUCTION</td>
+                <td style="width:50%;text-align:left;">Cash Taken</td>
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="dc" style="width:25%;text-align:end;"></td>
             </tr>
@@ -1018,9 +1018,13 @@
                 <td style="width:50%;text-align:center;"></td>
                 <td class="net_pay" style="width:50%;text-align:center;background-color:#73acac69;"></td>
             </tr>
+            <tr>
+                <td style="width:50%;">SALARY PAID</td>
+                <td class="paid_salary" style="width:50%;text-align:center;background-color:#73acac69;"></td>
+            </tr>
         </table>
     <div style=""> 
-        <p style="font-size:12px;line-height: 14px;"><strong>Note: </strong>MR <span id="rider_id_1"></span> received <span id="total_net_pay"></span> from King Riders Delivery Services LLC, and MR <span id="rider_id_2"></span> no is not valid for any kind of Gratuity, yearly tickets or any other expenses other than the salary.
+        <p style="font-size:12px;line-height: 14px;"><strong>Note: </strong>MR <span id="rider_id_1"></span> received <span id="paid_salary"></span> from King Riders Delivery Services LLC, and MR <span id="rider_id_2"></span> no is not valid for any kind of Gratuity, yearly tickets or any other expenses other than the salary.
         </p>
     </div>
     <div style=" margin-top: 1px;">  
@@ -1104,7 +1108,7 @@
                 <td style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:left;">BONES</td>
+                <td style="width:50%;text-align:left;">BONUS</td>
                 <td contenteditable='true' class="bones" style="width:25%;text-align:end;"></td>
                 <td style="width:25%;text-align:end;"></td>
             </tr>
@@ -1134,7 +1138,7 @@
                 <td contenteditable='true' class="zomato" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:left;">DC DEDUCTION</td>
+                <td style="width:50%;text-align:left;">CASH TAKEN</td>
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="dc" style="width:25%;text-align:end;"></td>
             </tr>
@@ -1183,6 +1187,10 @@
             <tr>
                 <td style="width:50%;text-align:center;"></td>
                 <td class="net_pay" style="width:50%;text-align:center;background-color:#73acac69;"></td>
+            </tr>
+            <tr>
+                <td style="width:50%;">SALARY PAID</td>
+                <td class="paid_salary" style="width:50%;text-align:center;background-color:#73acac69;"></td>
             </tr>
         </table>
         <div style=""> 
@@ -2146,7 +2154,6 @@
                     $('.tip').html(response.tip);
                     $('.bones').html(response.bones);
 
-
                     $('.bike_fine').html(response.bike_fine);
                     $('.advance').html(response.advance);
                     $('.salik').html(response.salik);
@@ -2169,6 +2176,7 @@
                     $('.total_dr').html(total_dr);
                     $('.net_pay').html(net_pay);
                     $('#total_net_pay').html(net_pay);
+                    $('.paid_salary').html(response.salary_paid);
                     $('#rider_id_1').html(response.rider);
                     $('#rider_id_2').html(response.rider);
                    var onclick_event_of_pay=$("#getting_val").attr('onclick')||"";
