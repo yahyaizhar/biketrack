@@ -510,6 +510,7 @@
         $('form#discipline').on('submit', function(e){
             e.preventDefault();
             var _form = $(this);
+            _form.find('[type="submit"]').prop('disabled',true);
             var _modal = _form.parents('.modal');
             var url ="{{ url('admin/rider/expense/discipline/') }}";
             $.ajaxSetup({
@@ -522,6 +523,7 @@
                 type : 'GET',
                 data: _form.serializeArray(),
                 success: function(data){
+                    _form.find('[type="submit"]').prop('disabled',false);
                     _modal.modal('hide');
                     swal.fire({
                         position: 'center',
@@ -534,6 +536,7 @@
                     table.ajax.reload(null, false);
                 },
                 error: function(error){
+                    _form.find('[type="submit"]').prop('disabled',false);
                     // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
                     _modal.modal('hide');
                     swal.fire({

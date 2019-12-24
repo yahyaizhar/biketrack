@@ -517,6 +517,11 @@ class AjaxNewController extends Controller
         ->whereDate('month', '<=',$to)
         ->where('source','Mcdonalds Deductions')
         ->sum('amount');
+        $dicipline=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','Discipline Fine')
+        ->sum('amount');
         $rta=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
@@ -736,7 +741,7 @@ class AjaxNewController extends Controller
             'macdonald'=>$macdonald,
             'rta'=>$rta,
             'mobile'=>$mobile,
-            'dicipline'=>0,
+            'dicipline'=>$dicipline,
             'denial_penalty'=>$denial_penalty,
             'mics'=>$mics,
             'cash_paid'=>$cash_paid_in_advance,

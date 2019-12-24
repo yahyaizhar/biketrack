@@ -471,7 +471,7 @@ class RiderDetailController extends Controller
     public function rider_expense_discipline(Request $request)
     {
         $ca = new \App\Model\Accounts\Company_Account;
-        $ca->type='dr';
+        $ca->type='cr';
         $ca->amount=$request->amount;
         $ca->month=Carbon::parse($request->get('month'))->startOfMonth()->format('Y-m-d');
         $ca->given_date=Carbon::parse($request->get('given_date'))->format('Y-m-d');
