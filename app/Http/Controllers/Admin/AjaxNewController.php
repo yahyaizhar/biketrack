@@ -2409,6 +2409,16 @@ class AjaxNewController extends Controller
 
                 $total_salary_amt = $fixed_salary;
             }
+            $salary_paid=Rider_Account::where("rider_id",$rider_id)
+            ->whereMonth("month",$onlyMonth)
+            ->where("source","salary_paid")
+            ->where("payment_status","paid")
+            ->get()
+            ->first();
+            if(isset($salary_paid)){
+                $_isPaid='<div>'.round($ra_recieved,2).' <iclass="flaticon2-correct"></i></div>';
+                return $isPaid;
+            }
             return round($ra_recieved,2);
         })
         ->rawColumns(['sim_extra_charges','fuel','mobile_charges','bonus','bike_allowns','aed_extra_trips','extra_trips','net_salary','gross_salary','rider_name','bike_number','advance','poor_performance', 'salik', 'sim_charges', 'dc', 'cod', 'rta_fine', 'total_deduction', 'aed_hours', 'total_salary','visa','mobile','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
