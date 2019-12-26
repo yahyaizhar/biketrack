@@ -733,6 +733,11 @@
             </table>
             <!--end: Datatable -->
             <div>
+                <div class="_for_view_upload_salary_slip">
+                    <button style="float:left;margin-right: 10px;" data-image="0" class="btn btn-success btn-elevate btn-icon-sm" id="view-upload-slip" type="button">
+                        Upload Salary Slip
+                    </button>
+                </div>
                 <div>
                     <button style="float:right;margin-right: 10px;" class="btn btn-warning btn-elevate btn-icon-sm" id="for_print" type="button" onclick="printJS('print_slip_for_rider', 'html')">
                         Print Company Slip
@@ -1225,6 +1230,35 @@
     </div>
     </div>
 </div>
+<div class="modal fade" id="view_upload_slip" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title">VIEW OR UPLOAD SLIP</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="kt-form" enctype="multipart/form-data" id="upload_slip_view">
+                <div class="modal-body">
+                    <div class="show_salary_slip_image" style="display:none; text-align:center;"></div>
+                    <div class="form-group select_salary_slip" style="margin-top:10px;">
+                        <div class="custom-file">
+                            <div class="custom-file" style="">
+                                <input type="file" name="slip_image" class="custom-file-input" id="slip_image">
+                                <label class="custom-file-label" for="slip_image">Choose Slip Picture</label>
+                                <span class="form-text text-muted">Select Rider Salary Slip</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kt-form__actions kt-form__actions--right">
+                        <button type="submit" class="btn btn-primary">Upload Slip</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 @section('foot')
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
@@ -1244,6 +1278,71 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script src="{{ asset('js/dataTables.cellEdit.js') }}" type="text/javascript"></script>
 <script>
+    $(document).on("click","#view-upload-slip",function(){
+        $("#view_upload_slip").modal("show");
+        $(".show_salary_slip_image").html("");
+        var _attr_image=$("#view-upload-slip").attr("data-image");
+        var _showImage=' <img class="profile-logo img img-thumbnail" src="'+_attr_image+'" alt="image"><div></div>'
+        if (_attr_image!=0) {
+            $(".show_salary_slip_image").show();
+           $(".show_salary_slip_image").html(_showImage);
+           $('form#upload_slip_view').find('[type="submit"]').html("Update Salary Slip");
+        }
+    });
+    $(".update_salary_slip_button").on("click",function(){
+        alert("aloo Bukhara ki chatni");
+    });
+    $('form#upload_slip_view').on('submit', function(e){
+            var _self = $(this);
+            var rider_id=biketrack.getUrlParameter("rider_id");
+            var month=biketrack.getUrlParameter("r1d1");
+            _self.find('[type="submit"]').prop('disabled',true);
+            e.preventDefault();
+            var _form = $(this);
+            var _Url = "{{url('admin/view/upload/salary_slip')}}"+"/"+month+"/"+rider_id;
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url : _Url,
+                type : 'POST',
+                data:new FormData(_form[0]),
+                contentType: false,
+                cache: false,
+                processData:false,
+                success: function(data){
+                    $('#view_upload_slip').modal('hide');
+                    _self.find('[type="submit"]').prop('disabled',false);
+                    // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
+                    swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Record updated successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    table.ajax.reload(null, false);
+                },
+                error: function(error){
+                    _self.find('[type="submit"]').prop('disabled',false);
+                    // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Unable to update.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+        });
+
+
+
+
   var basic_alert= '   <div><div class="alert fade show" role="alert">  '  + 
  '                                   <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div>  '  + 
  '                                       <div class="alert-text">A simple danger alert—check it out!</div>  '  + 
@@ -2137,6 +2236,19 @@
                     console.log(data);
                     var response = table.ajax.json();
                     console.log(response);
+                    console.log(response.salary_paid+"response");
+                        $('form#upload_slip_view').find('[type="submit"]').prop('disabled',false);
+                        $('form#upload_slip_view').find('[type="submit"]').html("Upload Slip");
+                    if (response.salary_paid==0) {
+                        $('form#upload_slip_view').find('[type="submit"]').prop('disabled',true);
+                        $('form#upload_slip_view').find('[type="submit"]').html("Salary is not Paid"); 
+                    }
+                    $("#view-upload-slip").attr("data-image",response.salary_slip);
+                    $("#view-upload-slip").html("Upload Salary Slip")
+                    if(response.salary_slip!=0){
+                        $("#view-upload-slip").html("View Salary Slip");
+                    }
+                   
                     var _ClosingBalance = 0;
                     if(response && typeof response.closing_balance !== "undefined")_ClosingBalance = response.closing_balance;
                     $('.previous_balance').text(response.closing_balance_prev);

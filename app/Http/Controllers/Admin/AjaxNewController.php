@@ -402,6 +402,7 @@ class AjaxNewController extends Controller
         $rider='';
         $date='';
         $hours=0;
+        $salary_slip=0;
         $rider_name=Rider::find($ranges['rider_id']);
         if (isset($rider_name)) {
             $rider=$rider_name->name;
@@ -417,6 +418,19 @@ class AjaxNewController extends Controller
         ->where('source','salary')
         ->where('payment_status','pending')
         ->sum('amount');
+        $salary_paid_status=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','salary_paid')
+        ->get()
+        ->first();
+        if (isset($salary_paid_status)) {
+           $rider_salary_slip=Rider_salary::where("id",$salary_paid_status->salary_id)->get()->first();
+           $salary_slip=asset(Storage::url($rider_salary_slip->salary_slip_image));
+           if ($rider_salary_slip->salary_slip_image==null) {
+            $salary_slip='';
+           }
+        }
         $hour=Income_zomato::where("rider_id",$ranges['rider_id'])
         ->whereDate('date', '>=',$from)
         ->whereDate('date', '<=',$to)
@@ -752,6 +766,7 @@ class AjaxNewController extends Controller
             'mics'=>$mics,
             'cash_paid'=>$cash_paid_in_advance,
             'salary_paid'=>$salary_paid,
+            'salary_slip'=>$salary_slip,
         ])
     
         ->rawColumns(['action','closing_balance','cash_paid','desc','date','cr','dr','balance'])
