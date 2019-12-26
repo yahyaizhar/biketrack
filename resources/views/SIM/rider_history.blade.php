@@ -208,7 +208,7 @@
         }
         function deleteSim(sim_id, rider_id)
         {
-            // console.log(client_id + ' , ' + rider_id);
+            // console.log(sim_id + ' , ' + rider_id);
             var url = "{{ url('admin/sim') }}" + "/" + rider_id + "/removeSim/"+sim_id ;
             console.log(url);
             sendDeleteRequest(url, true);
