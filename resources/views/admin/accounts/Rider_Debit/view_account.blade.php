@@ -973,7 +973,7 @@
                 <td contenteditable='true' class="zomato" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:left;">Cash Taken</td>
+                <td style="width:50%;text-align:left;">CASH DELIVERY</td>
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="dc" style="width:25%;text-align:end;"></td>
             </tr>
@@ -1143,7 +1143,7 @@
                 <td contenteditable='true' class="zomato" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:left;">CASH TAKEN</td>
+                <td style="width:50%;text-align:left;">CASH DELIVERY</td>
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="dc" style="width:25%;text-align:end;"></td>
             </tr>
