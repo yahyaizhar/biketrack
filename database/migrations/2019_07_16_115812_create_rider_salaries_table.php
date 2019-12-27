@@ -26,6 +26,7 @@ class CreateRiderSalariesTable extends Migration
             $table->string('status')->nullable();
             $table->string('settings')->nullable();
             $table->string('active_status')->default("A");
+            $table->string('salary_slip_image')->nullable();
             $table->timestamps();
         });
     }

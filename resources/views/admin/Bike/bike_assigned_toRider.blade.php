@@ -33,8 +33,9 @@
                                 @endforeach
                             </select>      
                         </div>
-                        <div class="form-group">
-                            <input type="hidden" data-month="{{Carbon\Carbon::now()->format('Y-m-d')}}"  readonly class="month_picker form-control" name="bike_assign_date" placeholder="Enter Expiry Date">
+                        <div class="form-group mt-4">
+                            <label>Bike Assign Date:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('Y-m-d')}}"  readonly class="month_picker form-control" name="bike_assign_date" placeholder="Enter Expiry Date">
                         </div>
                             @else
                             <div>
@@ -48,8 +49,9 @@
                                         @endforeach
                                     </select>     
                                 </div>
-                                <div class="form-group">
-                                    <input type="hidden" data-month="{{Carbon\Carbon::now()->format('Y-m-d')}}"  readonly class="month_picker form-control" name="bike_assign_date" placeholder="Enter Expiry Date">
+                                <div class="form-group mt-4">
+                                    <label>Bike Assign Date:</label>
+                                    <input type="text" data-month="{{Carbon\Carbon::now()->format('Y-m-d')}}"  readonly class="month_picker form-control" name="bike_assign_date" placeholder="Enter Expiry Date">
                                 </div>
                             </div>
                             @endif

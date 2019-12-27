@@ -29,6 +29,7 @@ use App\Model\Accounts\Company_Account;
 use App\Model\Accounts\Rider_Account;
 use App\Model\Accounts\Income_zomato;
 use App\Model\Rider\Trip_Detail;
+use App\Model\Accounts\Rider_salary;
 
 class RiderDetailController extends Controller
 {
@@ -471,7 +472,7 @@ class RiderDetailController extends Controller
     public function rider_expense_discipline(Request $request)
     {
         $ca = new \App\Model\Accounts\Company_Account;
-        $ca->type='dr';
+        $ca->type='cr';
         $ca->amount=$request->amount;
         $ca->month=Carbon::parse($request->get('month'))->startOfMonth()->format('Y-m-d');
         $ca->given_date=Carbon::parse($request->get('given_date'))->format('Y-m-d');
@@ -552,4 +553,30 @@ public function cash_credit_rider(Request $r){
         $ra->source=$r->desc;
         $ra->save();
 }
+public function view_upload_salary_slip(Request $request,$month,$rider_id){
+    $_month=Carbon::parse($month)->format('Y-m-d');
+    $slip_image=0;
+    $salary_paid=Rider_Account::where("rider_id",$rider_id)
+    ->where("month",$_month)
+    ->where("source","salary_paid")
+    ->get()
+    ->first();
+    if (isset($salary_paid)) {
+        $id=$salary_paid->salary_id;
+        $slip_image=Rider_salary::find($id);
+        if($request->hasFile('slip_image'))
+       {
+           $filename = $request->slip_image->getClientOriginalName();
+           $filesize = $request->slip_image->getClientSize();
+           $filepath = Storage::putfile('public/uploads/riders/salary_slip', $request->file('slip_image'));
+           $slip_image->salary_slip_image = $filepath;
+       }
+       $slip_image->save();
+    }
+    
+return response()->json([
+    'image'=>$slip_image,
+]);
+}
+
 }
