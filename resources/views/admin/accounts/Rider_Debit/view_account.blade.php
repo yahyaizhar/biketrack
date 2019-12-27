@@ -538,6 +538,7 @@
                 <form class="kt-form" enctype="multipart/form-data" id="remaining_salary">
                     <div class="modal-body">
                         <input type="hidden" name="account_id" value="">
+                        <input type="hidden" name="statement_id" value="">
                         {{-- <div class="form-group">
                             <label>Rider Date Paid:</label>
                             <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month_paid_rider')) invalid-field @endif" name="month_paid_rider" placeholder="Enter Month" value="">
@@ -727,7 +728,7 @@
                         <th>Debit To Company Account</th>
                         <th>Cash Paid</th> 
                         <th>Running Balance</th>
-                        {{-- <th>Action</th> --}}
+                        <th>Action</th>
                     </tr>
                 </thead>
             </table>
@@ -2148,9 +2149,17 @@
                     $('#total_net_pay').html(net_pay);
                     $('#rider_id_1').html(response.rider);
                     $('#rider_id_2').html(response.rider);
-                   var onclick_event_of_pay=$("#getting_val").attr('onclick')||"";
-                    if (onclick_event_of_pay!=="") {
+                    var is_salary_generated=$("#getting_val").length>0;
+                   var is_update=$("#getting_val").attr('data-update');
+                   is_update=typeof is_update!=="undefined" && is_update!==false;
+
+                    if (is_salary_generated) {
                         $("#to_pay").show();
+                        $("#to_pay").html('<i class="fa fa-dollar-sign"></i> Pay Salary');
+                        if(is_update){
+                            //update salary
+                            $("#to_pay").html('<i class="fa fa-dollar-sign"></i> Update Salary');
+                        }
                         $("#to_pay").attr("onclick",$("#getting_val").attr('onclick'));
                         $("#to_pay").attr("data-target",$("#getting_val").attr('data-target'));
                     }
@@ -2168,7 +2177,7 @@
                     { data: 'dr', name: 'dr' },
                     { data: 'cash_paid', name: 'cash_paid' },
                     { data: 'balance', name: 'balance' },
-                    // { data: 'action', name: 'action' },
+                    { data: 'action', name: 'action' },
                     
                 ],
                 responsive:true,
@@ -2264,20 +2273,23 @@
         }
         init_table();
     })
-    function remaining_pay($rider_id, account_id){
+    function remaining_pay($rider_id, account_id,statement_id=""){
         var r1d1=biketrack.getUrlParameter('r1d1');
         $('#remaining_salary [name="month_paid_rider"]').fdatepicker('update', new Date(r1d1));
+        var is_update=statement_id!="";
         _month = new Date(r1d1).format('yyyy-mm-dd');
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }, 
                 url:"{{url('admin/accounts/company/debits/get_salary_deduction/')}}"+'/'+_month+'/'+$rider_id,
-                method: "GET"
+                method: "GET",
+                data:{update:is_update}
             })
             .done(function(data) {  
                 console.log(data);
                 $('#remaining_salary [name="account_id"]').val(account_id);
+                $('#remaining_salary [name="statement_id"]').val(statement_id);
                 $('#remaining_salary [name="recieved_salary"]').off('change input').on('change input', function(){
                     var _gross_salary = parseFloat($('#remaining_salary [name="gross_salary"]').val().trim());
                     var _recieved_salary = parseFloat($(this).val().trim());
@@ -2290,11 +2302,11 @@
                 $('#remaining_salary [name="total_salary"]').val(data.total_salary);
                 $('#remaining_salary [name="total_bonus"]').val(data.total_bonus); 
                 var is_paid=data.is_paid; 
-                if (is_paid) {
-                    $('#remaining_salary [type="submit"]').html("The Rider has already paid").prop("disabled",true);
-                }else{
-                    $('#remaining_salary [type="submit"]').html("Submit").prop("disabled",false);
-                }
+                // if (is_paid) {
+                //     $('#remaining_salary [type="submit"]').html("The Rider has already paid").prop("disabled",true);
+                // }else{
+                //     $('#remaining_salary [type="submit"]').html("Submit").prop("disabled",false);
+                // }
                 
 
             });
@@ -2421,7 +2433,7 @@
 $('#print_slip_for_rider2 [contenteditable]').on('change input', function(){
 	change_edit_prints_inputs('#print_slip_for_rider2');
 })
-function deleteCompanyRows(id,model_class,model_id,rider_id,string,month){
+function deleteRows(id,model_class,model_id,rider_id,string,month){
     var url = "{{ url('admin/delete/accounts/rows') }}";
     console.log(url);
     swal.fire({

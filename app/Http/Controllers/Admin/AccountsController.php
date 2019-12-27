@@ -784,11 +784,22 @@ class AccountsController extends Controller
                         
         return view('admin.accounts.Rider_Debit.view_account',compact('closing_balance','rider', 'rider_statements', 'opening_balance')); 
     }
-    public function get_salary_deduction($month, $rider_id){   
+    public function get_salary_deduction(Request $r,$month, $rider_id){   
         // before tthat check if rider is zomato's
         $startMonth = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
         $month = Carbon::parse($month)->format('Y-m-d');
         $onlyMonth = Carbon::parse($month)->format('m');
+
+        $is_update = $r->update;
+        if($is_update==true || $is_update=='true'){
+            $is_update=true;
+        }
+        else {
+            $is_update=false;
+        }
+        // return response()->json([
+        //     'a'=>$is_update
+        // ]);
         
         $rider = Rider::find($rider_id);
 
@@ -817,6 +828,18 @@ class AccountsController extends Controller
             ->orWhere('type', 'dr');
         })
         ->sum('amount'); 
+        if($is_update)
+        {
+            //we skip paid salary
+            $ra_payable=Rider_Account::where("rider_id",$rider_id)
+            ->whereMonth("month",$onlyMonth)
+            ->where(function($q) {
+                $q->where('type', "cr_payable")
+                ->orWhere('type', 'dr');
+            })
+            ->where("source",'!=',"salary_paid")
+            ->sum('amount');
+        }
 
 
         $ra_cr=Rider_Account::where("rider_id",$rider_id)
@@ -1816,12 +1839,16 @@ public function income_zomato_import(Request $r){
             $bonus_amount = 50;  // bonus amount
             $extra_msg = "";
             if( $obj['feid'] == $top_rider_1_FEID){
-                $bonus_amount = 100;
+                $bonus_amount = 100 + 50;
                 $extra_msg = " + 1st Position Bonus";
             } 
             if( $obj['feid'] == $top_rider_2_FEID){
-                $bonus_amount = 75;
+                $bonus_amount = 75 + 50;
                 $extra_msg = " + 2nd Position Bonus";
+            }
+            if( $obj['feid'] == $top_rider_3_FEID){
+                $bonus_amount = 50 + 50;
+                $extra_msg = " + 3rd Position Bonus";
             } 
 
             $ca_obj = [];
@@ -2155,9 +2182,18 @@ public function client_income_update(Request $request,$id){
     public function rider_remaining_salary_add(Request $r){
         $ra=Rider_Account::find($r->account_id);
         $salary = Rider_salary::find($ra->salary_id);
-
         //adding cash
-        $new_ra=new Rider_Account;
+        $statement_id=$r->statement_id;
+        if(isset($statement_id) && $statement_id!=""){
+            //update salary
+            $new_ra=Rider_Account::find($statement_id);
+        }
+        else {
+            $new_ra=new Rider_Account;
+        }
+        // return response()->json([
+        //     'a'=>$new_ra
+        // ]);
         $new_ra->type="dr";
         $new_ra->amount=$r->recieved_salary;
         $new_ra->source="salary_paid";

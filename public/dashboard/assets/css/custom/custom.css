@@ -157,3 +157,10 @@ td.details-control {
 tr.shown td.details-control {
     background: url('../../../../details_close.png') no-repeat center center !important;
 }
+.tr-remove:hover {
+    color: #fd1361;
+}
+.tr-remove {
+    color: #bd0744;
+    cursor: pointer;
+}

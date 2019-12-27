@@ -601,12 +601,12 @@ class AjaxNewController extends Controller
                     $salary_paid=Rider_salary::find($rider_statement->salary_id);
                     $total=$salary_paid->total_salary;
                     $gross=$salary_paid->gross_salary;
-                    $rider_id=$rider_statement->rider_id;
+                    $rider_id=$rider_statement->rider_id; 
                     //not found, can pay
-                    return '<div>Salary Recieved from Kingriders <button style="display:none;" type="button" id="getting_val" onclick="remaining_pay('.$rider_id.','.$rider_statement->id.')" data-toggle="modal" data-target="#remaining_pay_modal" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
+                    return '<div>Salary Recieved from Kingriders <button style="display:none;" type="button" id="getting_val" onclick="remaining_pay('.$rider_id.', '.$rider_statement->id.')" data-toggle="modal" data-target="#remaining_pay_modal" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
                 }
                 // updateStatus('.$rider_statement->id.')
-                return "Salary Recieved from Kingriders";
+                return '<div>Salary Recieved from Kingriders <button style="display:none;" type="button" id="getting_val" data-update onclick="remaining_pay('.$rider_statement->rider_id.','.$rider_statement->id.','.$ra_found['id'].')" data-toggle="modal" data-target="#remaining_pay_modal" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
             }
             if($rider_statement->source == 'salary_paid'){
                 return "Salary Paid";
@@ -644,58 +644,180 @@ class AjaxNewController extends Controller
             if($rider_statement->type=='skip') return '<strong >'.round($running_balance,2).'</strong>';
             return round($running_balance,2);
         })
-        // ->addColumn('action', function($rider_statement) use (&$running_balance){
-        //     $model="";
-        //     $model_id="";
-        //     $rider_id="";
-        //     $month="";
-        //     $string="";
-        //     if($rider_statement->sim_transaction_id!=null){
-        //         $model_id=$rider_statement->sim_transaction_id;
-        //         $rider_id=$rider_statement->rider_id;
-        //         $string="sim_transaction_id";
-        //         $month=Carbon::parse($rider_statement->month)->format('m');
-        //         $sim_transaction=new Sim_Transaction();
-        //         $model=get_class($sim_transaction);
+        ->addColumn('action', function($rider_statement) use (&$running_balance){
+            if($rider_statement->type=='skip') return '';
+            $model="";
+            $model_id="";
+            $rider_id="";
+            $month="";
+            $string="";
+            // foreach ($rider_statement as $key => $value) {
+            //     if(strpos($key, "_id") && $key!='rider_id'){
+            //         //check if some columns ends with _id postfix
+            //         if($value!=null && $value!=''){
+            //             $model_id=$value;
+            //             $rider_id=$rider_statement->rider_id;
+            //             $string=$key;
+            //             $month=Carbon::parse($rider_statement->month)->format('m');
+            //             $sim_transaction=new Sim_Transaction();
+            //             switch ($key) {
+            //                 case 'bike_rent_id':
+            //                     # code...
+            //                     break;
+                            
+            //                 default:
+            //                     # code...
+            //                     break;
+            //             }
+            //             $model=get_class($sim_transaction);
+            //         }
+            //     }
+            // }
+            if($rider_statement->bike_fine!=null){
+                $model_id=$rider_statement->bike_fine;
+                $rider_id=$rider_statement->rider_id;
+                $string="bike_fine";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $modelObj=new Bike_Fine();
+                $model=get_class($modelObj);
+            }
+            if($rider_statement->bike_rent_id!=null){
+                $model_id=$rider_statement->bike_rent_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="bike_rent_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $modelObj=null;
+                $model=null;
+            }
+            if($rider_statement->salary_id!=null){
+                $model_id=$rider_statement->salary_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="salary_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $modelObj=new Rider_salary();
+                $model=get_class($modelObj);
+            }
+            if($rider_statement->client_income_id!=null){
+                $model_id=$rider_statement->client_income_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="client_income_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $modelObj=new Client_Income();
+                $model=get_class($modelObj);
+            }
+            if($rider_statement->investment_id!=null){
+                $model_id=$rider_statement->investment_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="investment_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $modelObj=new Company_investment();
+                $model=get_class($modelObj);
+            }
+            if($rider_statement->income_zomato_id!=null){
+                $model_id=$rider_statement->source;
+                $rider_id=$rider_statement->rider_id;
+                $string="source";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $modelObj=null;
+                $model=null;
+            }
+            if($rider_statement->advance_return_id!=null){
+                $model_id=$rider_statement->advance_return_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="advance_return_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $modelObj=new AdvanceReturn();
+                $model=get_class($modelObj);
+            }
+            if($rider_statement->id_charge_id!=null){
+                $model_id=$rider_statement->id_charge_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="id_charge_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $modelObj=new Id_charge();
+                $model=get_class($modelObj);
+            }
+            if($rider_statement->fuel_expense_id!=null){
+                $model_id=$rider_statement->fuel_expense_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="fuel_expense_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $fuel=new Fuel_Expense();
+                $model=get_class($fuel);
+            }	
+            if($rider_statement->maintenance_id!=null){
+                $model_id=$rider_statement->maintenance_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="maintenance_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $modelObj=new Maintenance();
+                $model=get_class($modelObj);
+            }
+            if($rider_statement->mobile_installment_id!=null){
+                $model_id=$rider_statement->mobile_installment_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="mobile_installment_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $mobile_installment=new Mobile_installment();
+                $model=get_class($mobile_installment);
+            }
+            if($rider_statement->edirham_id!=null){
+                $model_id=$rider_statement->edirham_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="edirham_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $model_obj=new Edirham();
+                $model=get_class($model_obj);
+            }
+            if($rider_statement->company_expense_id!=null){
+                $model_id=$rider_statement->company_expense_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="company_expense_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $model_obj=new Company_Expense();
+                $model=get_class($model_obj);
+            }
+            if($rider_statement->salik_id!=null){
+                $model_id=$rider_statement->salik_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="salik_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $model_obj=new Salik();
+                $model=get_class($model_obj);
+            }
+            if($rider_statement->sim_transaction_id!=null){
+                $model_id=$rider_statement->sim_transaction_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="sim_transaction_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $sim_transaction=new Sim_Transaction();
+                $model=get_class($sim_transaction);
                 
-        //     }
-        //     if($rider_statement->fuel_expense_id!=null){
-        //         $model_id=$rider_statement->fuel_expense_id;
-        //         $rider_id=$rider_statement->rider_id;
-        //         $string="fuel_expense_id";
-        //         $month=Carbon::parse($rider_statement->month)->format('m');
-        //         $fuel=new Fuel_Expense();
-        //         $model=get_class($fuel);
-        //     }	
-        //     if($rider_statement->advance_return_id!=null){
-        //         $model_id=$rider_statement->advance_return_id;
-        //         $rider_id=$rider_statement->rider_id;
-        //         $string="advance_return_id";
-        //         $month=Carbon::parse($rider_statement->month)->format('m');
-        //         $advance=new AdvanceReturn();
-        //         $model=get_class($advance);
-        //     }
-        //     if($rider_statement->id_charge_id!=null){
-        //         $model_id=$rider_statement->id_charge_id;
-        //         $rider_id=$rider_statement->rider_id;
-        //         $string="id_charge_id";
-        //         $month=Carbon::parse($rider_statement->month)->format('m');
-        //         $id_charges=new Id_charge();
-        //         $model=get_class($id_charges);
-        //     }
-        //     if($rider_statement->mobile_installment_id!=null){
-        //         $model_id=$rider_statement->mobile_installment_id;
-        //         $rider_id=$rider_statement->rider_id;
-        //         $string="mobile_installment_id";
-        //         $month=Carbon::parse($rider_statement->month)->format('m');
-        //         $mobile_installment=new Mobile_installment();
-        //         $model=get_class($mobile_installment);
-        //     }
-        //     if ($model_id!=null) {
-        //         $model = addslashes($model);
-        //         return '<i class="fa fa-trash-alt"  onclick="deleteCompanyRows('.$rider_statement->id.',\''.$model.'\','.$model_id.','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
-        //     }
-        // })
+            }
+            if($rider_statement->mobile_installment_id!=null){
+                $model_id=$rider_statement->mobile_installment_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="mobile_installment_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $mobile_installment=new Mobile_installment();
+                $model=get_class($mobile_installment);
+            }
+            
+            // if ($model_id!=null) {
+            //     $model = addslashes($model);
+            //     return '<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
+            // }
+            // else {
+                // no id was found, lets just match the source, rider_id and month
+                $model_id=$rider_statement->source;
+                $rider_id=$rider_statement->rider_id;
+                $string="source";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $modelObj=null;
+                $model=null;
+                return '<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
+            // }
+        })
         ->addColumn('cash_paid', function($rider_statement) use (&$cash_paid){
             if($rider_statement->payment_status=='paid'){
                 // if($rider_statement->type=='dr' || $rider_statement->type=='dr_payable' || $rider_statement->type=='cr_payable'){
