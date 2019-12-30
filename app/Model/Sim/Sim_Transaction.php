@@ -72,7 +72,7 @@ self::updating(function ($updated_model) {
     // ends logging
     
     protected $fillable = [
-        'sim_id','rider_id','month_year','bill_amount','extra_usage_amount','extra_usage_payment_status','bill_status','status',
+        'sim_id','rider_id','sim_bill_image','month_year','bill_amount','extra_usage_amount','extra_usage_payment_status','bill_status','status',
     ];
     public function Sim(){
         return $this->belongsTo(Sim::class);

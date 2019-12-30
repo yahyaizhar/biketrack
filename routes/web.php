@@ -654,6 +654,7 @@ Route::group([
    Route::post('/companyinfo/store','InvoiceController@company_info_store')->name('invoice.company_info_store');
 
    Route::post('/view/upload/salary_slip/{month}/{rider_id}','RiderDetailController@view_upload_salary_slip')->name('rider.view_upload_salary_slip');//[Accounts-Upload salary Slip] .
+   Route::get('/sim/bill/image/{rider_id}/{month}/{type}','SimController@SimBIllImage')->name('Sim.SimBIllImage');//[Accounts-Sim Bill Image] .
 });   
 
 

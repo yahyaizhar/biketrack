@@ -733,6 +733,8 @@
                 </thead>
             </table>
             <!--end: Datatable -->
+            
+            <tfoot>
             <div>
                 <div class="_for_view_upload_salary_slip">
                     <button style="float:left;margin-right: 10px;" data-image="0" class="btn btn-success btn-elevate btn-icon-sm" id="view-upload-slip" type="button">
@@ -765,6 +767,23 @@
                     </button>
                 </div>
             </div>
+        </tfoot>
+        <div class="row">
+            <div class="col">
+                <div class="h1 text-center mt-5">Bill Account</div>
+                <table class="table table-striped- table-hover table-checkable table-condensed" id="table-bills">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Bill</th>
+                            <th>Amount</th>
+                            <th>Payment Status</th>
+                            <th>Action</th> 
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
         </div>
     </div>
 </div>
@@ -2105,7 +2124,7 @@
             
             console.log(data);
             biketrack.updateURL(data);
-            var url = "{{ url('admin/accounts/rider/account/') }}"+"/"+JSON.stringify(_data) ;
+            var url =JSON.stringify(_data);
             getData(url);
         });
 
@@ -2141,7 +2160,7 @@
             
             console.log(data);
             biketrack.updateURL(data);
-            var url = "{{ url('admin/accounts/rider/account/') }}"+"/"+JSON.stringify(_data) ;
+            var url = JSON.stringify(_data);
             getData(url);
             // var _Url = "{{url('/company/debits/get_salary_deduction/')}}"+"/"+_riderId+''
         });
@@ -2171,7 +2190,7 @@
             
             console.log(data);
             biketrack.updateURL(data);
-            var url = "{{ url('admin/accounts/rider/account/') }}"+"/"+JSON.stringify(_data) ;
+            var url =JSON.stringify(_data) ;
             getData(url);
         });
                 
@@ -2219,10 +2238,11 @@
         
 
 
-        var getData = function(url){
+        var getData = function(ranges){
             var rider_id=biketrack.getUrlParameter('rider_id');
             $('[name="rider_id"], [name="rider_id_num"]').val(rider_id).trigger("change.select2");
-            console.warn(url)
+            console.warn(ranges)
+            var url="{{ url('admin/accounts/rider/account/') }}"+"/"+ranges;
             table = $('#data-table').DataTable({
                 lengthMenu: [[-1], ["All"]],
                 destroy: true,
@@ -2326,7 +2346,46 @@
                 responsive:true,
                 order: [0, 'asc'],
             });
-
+            var url = "{{ url('admin/accounts/company/bills/') }}"+"/"+ranges;
+            table_bills = $('#table-bills').DataTable({
+                lengthMenu: [[-1], ["All"]],
+                dom: 't',
+                destroy: true,
+                processing: true,
+                ordering: false,
+                serverSide: true,
+                'language': { 
+                    'loadingRecords': '&nbsp;',
+                    'processing': $('.loading').show()
+                },
+                drawCallback:function(data){
+                    console.log(data);
+                    $('#btnSend_profit').text('').fadeOut('fast'); 
+                    var response = table.ajax.json();
+                    console.log(response);
+                    
+                    if(typeof response == "undefined") return;
+                    var _ClosingBalance = response.closing_balance;
+                    var _Month = response.last_month;
+                    var _Running_Balance = response.running_static_balance;
+                    $('#closing_balance').text(_ClosingBalance);
+                    var running_closing_balance = _Running_Balance;
+                    if(running_closing_balance > 0){
+                        $('#btnSend_profit').text('Send '+parseFloat(_Running_Balance).toFixed(2)+' to Company Profit').attr('data-month', _Month).attr('data-profit', _Running_Balance).fadeIn('fast'); 
+                    }
+                    
+                },
+                ajax: url,
+                columns: [
+                    { data: 'date', name: 'date' },            
+                    { data: 'bill', name: 'bill' },
+                    { data: 'amount', name: 'amount' },
+                    { data: 'payment_status', name: 'payment_status' },
+                    { data: 'action', name: 'action' },
+                   
+                ],
+                responsive:true,
+            });
             table.MakeCellsEditable("destroy"); 
             table.MakeCellsEditable({
                 "onUpdate": InlineEdit_CallBack,
@@ -2468,6 +2527,57 @@
         // $('#remaining_salary [name="recieved_salary"]').val(total_G);
        
     }
+        function updateStatusBills(rider_id,month,type)
+{
+    var url = "{{ url('admin/bill/payment') }}" + "/" + rider_id + "/updateStatus" + "/" + month + "/" + type;
+    console.log(url,true);
+    swal.fire({
+        title: 'Are you sure?',
+        text: "You want to Pay Bill!",
+        type: 'warning', 
+        showCancelButton: true,
+        confirmButtonText: 'Yes!'
+    }).then(function(result) {
+        if (result.value) {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url : url,
+                type : 'PUT',
+                beforeSend: function() {            
+                    $('.loading').show();
+                },
+                complete: function(){
+                    $('.loading').hide();
+                },
+                success: function(data){
+                    swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Record updated successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    table.ajax.reload(null, false);
+                    table_bills.ajax.reload(null, false);
+                },
+                error: function(error){
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Unable to update.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+        }
+    });
+}
     
     function updateStatus(id)
 {

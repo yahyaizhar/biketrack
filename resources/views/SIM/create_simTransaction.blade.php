@@ -94,6 +94,13 @@
                                 <label>Amount To be Given:</label>
                                 <input required type="text" class="form-control @if($errors->has('amount')) invalid-field @endif" name="amount">
                             </div>
+                            <div class="form-group">
+                                <div class="custom-file" style="margin-top: 26px;">
+                                    <input type="file" name="sim_bill_image" class="custom-file-input" id="sim_bill_image">
+                                    <label class="custom-file-label" for="sim_bill_image">Choose Sim Bill Picture</label>
+                                    <span class="form-text text-muted">Choose Sim Bill Image</span>
+                                </div>
+                            </div>
                             {{-- <div class="form-group">
                                 <label>Extra Usage Amount:</label>
                                 <input required readonly type="text" class="form-control @if($errors->has('extra_usage_amount')) invalid-field @endif" name="extra_usage_amount" placeholder="Enter extra usage amount " value="{{ old('extra_usage_amount') }}">

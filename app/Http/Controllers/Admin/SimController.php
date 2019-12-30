@@ -19,6 +19,7 @@ use App\Model\Sim\Sim_Transaction;
 use App\Model\Sim\Sim_History;
 use Carbon\Carbon;
 use Arr;
+use \App\Model\Accounts\Company_Account;
 
 class SimController extends Controller
 {
@@ -268,6 +269,15 @@ public function store_simTransaction(Request $request){
         $sim_trans->extra_usage_payment_status="pending";
         $sim_trans->bill_status="pending";
         $sim_trans->status=1;
+        if($request->hasFile('sim_bill_image'))
+        {
+            // return 'yes';
+            $filename = $request->sim_bill_image->getClientOriginalName();
+            $filesize = $request->sim_bill_image->getClientSize();
+            // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
+            $filepath = Storage::putfile('public/uploads/riders/sim_bill_image', $request->file('sim_bill_image'));
+            $sim_trans->sim_bill_image = $filepath;
+        }
         $sim_trans->save();
 
         $sim=$sim_trans->Sim;
@@ -635,5 +645,31 @@ public function removeSim($rider_id,$sim_id){
         'status' =>$assign_sim,
     ]);
   }
+    public function SimBIllImage($rider_id,$month,$type){
+        $_onlyMonth=Carbon::parse($month)->format("m");
+        $ca=Company_Account::where("rider_id",$rider_id)
+        ->where("source","Sim Transaction")
+        ->whereMonth("month",$_onlyMonth)
+        ->get();
+        if (isset($ca)) {
+        $image_id=[];
+            foreach ($ca as $value) {
+                $sim_trans_id=$value->sim_transaction_id;
+                $image_show=Sim_Transaction::find( $sim_trans_id);
+                $_image_link=url(asset(Storage::url($image_show->sim_bill_image)));
+                if ($image_show->sim_bill_image=="") {
+                    $_image_link="";
+                }
+                array_push($image_id,$_image_link);
+            }
+        }
+        return response()->json([
+            '_onlyMonth'=>$_onlyMonth,
+            'rider_id'=>$rider_id,
+            'type'=>$type,
+            'ca'=>$ca,
+            'sim_trans_id'=>$image_id,
+        ]);
+    }
 
 }
