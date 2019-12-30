@@ -164,3 +164,11 @@ tr.shown td.details-control {
     color: #bd0744;
     cursor: pointer;
 }
+.tr-edit {
+    color: #3758ff;
+    cursor: pointer;
+    padding-right: 4px;
+}
+.tr-edit:hover {
+    color: #1e3296;
+}

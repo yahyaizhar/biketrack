@@ -1231,6 +1231,37 @@
     </div>
     </div>
 </div>
+<div class="modal fade" id="edit_row_model" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header border-bottom-0">
+            <h5 class="modal-title">Edit Rider Account</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form class="kt-form" enctype="multipart/form-data">
+                <input type="hidden" name="statement_id">
+                <div class="form-group">
+                    <label>Description:</label>
+                    <textarea readonly class="form-control" name="source" placeholder="Enter Description"></textarea>
+                    <span class="form-text text-muted">Please enter Description</span>
+                </div>
+                <div class="form-group">
+                    <label>Amount:</label>
+                    <input type="number" step="0.01" required class="form-control" name="amount" placeholder="Enter Amount" value="0">
+                    <span class="form-text text-muted">Please enter Amount</span>
+                </div>
+
+                <div class="kt-form__actions kt-form__actions--right">
+                    <button type="submit" class="btn btn-success">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    </div>
+</div>
 <div class="modal fade" id="view_upload_slip" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -2576,6 +2607,62 @@
 $('#print_slip_for_rider2 [contenteditable]').on('change input', function(){
 	change_edit_prints_inputs('#print_slip_for_rider2');
 })
+function editRows($this,id,model_class,model_id,rider_id,string,month){
+    console.log(id);
+    var _tr = $($this).parents('tr');
+    var _row = table.row(_tr).data();
+    var _model = $('#edit_row_model');
+    _model.find('[name="source"]').val(_row.source);
+    _model.find('[name="amount"]').val(_row.amount);
+    _model.find('[name="statement_id"]').val(_row.id);
+    
+    _model.modal('show');
+
+    _model.find('form').off('submit').on('submit', function(e){
+        e.preventDefault();
+        var url = "{{route('admin.accounts.edit_rider')}}";
+        var _form = $(this);
+        var _submitBtn = _form.find('[type="submit"]');
+        $.ajax({
+            url : url,
+            type : 'PUT',
+            data:_form.serializeArray(),
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            beforeSend: function() {            
+                // $('.loading').show();
+                _submitBtn.prop('disabled', true);
+            },
+            complete: function(){
+                // $('.loading').hide();
+                _submitBtn.prop('disabled', false);
+                _model.modal('hide');
+            },
+            success: function(data){
+                swal.fire({
+                    position: 'center',
+                    type: 'success',
+                    title: 'Record updated successfully.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                table.ajax.reload(null, false);
+            },
+            error: function(error){
+                swal.fire({
+                    position: 'center',
+                    type: 'error',
+                    title: 'Oops...',
+                    text: 'Unable to update.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        });
+    });
+
+}
 function deleteRows(id,model_class,model_id,rider_id,string,month){
     var url = "{{ url('admin/delete/accounts/rows') }}";
     console.log(url);

@@ -2621,4 +2621,27 @@ public function client_income_update(Request $request,$id){
             'income_zomato'=>$income_zomato,
         ]);
     }
+    public function edit_company_account(Request $r){
+       $statement_id=$r->statement_id;
+       $source=$r->source;
+       $amount = $r->amount;
+       $company_statement = Company_account::find($statement_id);
+       $company_statement->amount=$amount;
+       $company_statement->save();
+        return response()->json([
+            'status'=>1
+        ]);
+    }
+    public function edit_rider_account(Request $r){
+        $statement_id=$r->statement_id;
+        $source=$r->source;
+        $amount = $r->amount;
+        $company_statement = Rider_account::find($statement_id);
+        $company_statement->amount=$amount;
+        $company_statement->save();
+         return response()->json([
+             'status'=>1
+         ]);
+     }
+    
 }

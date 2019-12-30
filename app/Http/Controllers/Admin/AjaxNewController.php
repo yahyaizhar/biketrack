@@ -828,6 +828,8 @@ class AjaxNewController extends Controller
                 $mobile_installment=new Mobile_installment();
                 $model=get_class($mobile_installment);
             }
+
+            
             
             // if ($model_id!=null) {
             //     $model = addslashes($model);
@@ -835,13 +837,23 @@ class AjaxNewController extends Controller
             // }
             // else {
                 // no id was found, lets just match the source, rider_id and month
-                $model_id=$rider_statement->source;
-                $rider_id=$rider_statement->rider_id;
-                $string="source";
-                $month=Carbon::parse($rider_statement->month)->format('m');
-                $modelObj=null;
-                $model=null;
-                return '<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
+            $model_id=$rider_statement->source;
+            $rider_id=$rider_statement->rider_id;
+            $string="source";
+            $month=Carbon::parse($rider_statement->month)->format('m');
+            $modelObj=null;
+            $model=null;
+            $editHTML = '<i class="fa fa-edit tr-edit" onclick="editRows(this,'.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
+        
+            /**
+             * Skip
+             * -Salary row
+             */
+            if($rider_statement->salary_id!=null){
+                //skip edit
+                $editHTML='';
+            }
+            return $editHTML.'<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
             // }
         })
         ->addColumn('cash_paid', function($rider_statement) use (&$cash_paid){
@@ -1166,6 +1178,7 @@ class AjaxNewController extends Controller
             return round($running_balance,2);
         })
         ->addColumn('action', function($company_statements) use (&$running_balance){
+            if($company_statements->type=='skip') return '';
             $model="";
             $model_id="";
             $rider_id="";
@@ -1211,11 +1224,32 @@ class AjaxNewController extends Controller
                 $mobile_installment=new Mobile_installment();
                 $model=get_class($mobile_installment);
             }
+
+            
            
-            if ($model_id!=null) {
-                $model = addslashes($model);
-                return '<i class="fa fa-trash-alt"  onclick="deleteCompanyRows('.$company_statements->id.',\''.$model.'\','.$model_id.','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
-            } 
+            // if ($model_id!=null) {
+            //     $model = addslashes($model);
+            //     return '<i class="fa fa-trash-alt"  onclick="deleteCompanyRows('.$company_statements->id.',\''.$model.'\','.$model_id.','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
+            // } 
+            $model_id=$company_statements->source;
+            $rider_id=$company_statements->rider_id;
+            $string="source";
+            $month=Carbon::parse($company_statements->month)->format('m');
+            $modelObj=null;
+            $model=null;
+
+            $editHTML = '<i class="fa fa-edit tr-edit" onclick="editRows(this,'.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
+            
+            /**
+             * Skip
+             * -Salary row
+             */
+            if($company_statements->salary_id!=null){
+                //skip edit
+                $editHTML='';
+            }
+            return $editHTML.'<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
+
         })
         
         ->with([
