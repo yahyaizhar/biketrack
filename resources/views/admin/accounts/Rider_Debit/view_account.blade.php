@@ -2417,28 +2417,28 @@
                 ],
                 responsive:true,
             });
-            table.MakeCellsEditable("destroy"); 
-            table.MakeCellsEditable({
-                "onUpdate": InlineEdit_CallBack,
-                "onValidate": function(updatedCell, updatedRow, newValue){
-                    var __data = updatedRow.data();
-                    console.warn('__data', __data);
-                    return true;
-                },
-                "allowNulls": {
-                    "errorClass": 'error'
-                },
-                "columns": [1,2,3,4],
-                "inputCss":'form-control',
-                "dont_apply_if_null": "action", // check the field, if null, then will not make the cell editable (custom work - on public\js\dataTables.cellEdit.js)
-                "inputTypes": [
-                    {
-                        "column":2, 
-                        "type":"number-confirm", 
-                        "options":null 
-                    }
-                ]
-            });
+            // table.MakeCellsEditable("destroy"); 
+            // table.MakeCellsEditable({
+            //     "onUpdate": InlineEdit_CallBack,
+            //     "onValidate": function(updatedCell, updatedRow, newValue){
+            //         var __data = updatedRow.data();
+            //         console.warn('__data', __data);
+            //         return true;
+            //     },
+            //     "allowNulls": {
+            //         "errorClass": 'error'
+            //     },
+            //     "columns": [1,2,3,4],
+            //     "inputCss":'form-control',
+            //     "dont_apply_if_null": "action", // check the field, if null, then will not make the cell editable (custom work - on public\js\dataTables.cellEdit.js)
+            //     "inputTypes": [
+            //         {
+            //             "column":2, 
+            //             "type":"number-confirm", 
+            //             "options":null 
+            //         }
+            //     ]
+            // });
         }
 
         function InlineEdit_CallBack (updatedCell, updatedRow, oldValue) {
