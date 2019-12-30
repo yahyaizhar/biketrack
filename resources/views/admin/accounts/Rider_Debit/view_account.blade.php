@@ -2914,39 +2914,39 @@ function SimBillsImage(rider_id,month,type){
     var url = "{{ url('admin/sim/bill/image') }}" + "/" + rider_id + "/" + month + "/" + type ;
     console.log(url,true);
     $("#bills_image_model").modal("show");
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    $(".sim_bills").html("");
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        url : url,
+        type : 'GET',
+        success: function(data){
+            console.log(data);
+            data.sim_trans_id.forEach(function(i,j){
+                console.log(i);
+                var image='<div style="text-align: center;margin: 2px 0px 20px 0px;"><img class="profile-logo img img-thumbnail" src="'+i+'" alt="image"></div>'
+                if (i!=null&&i!='') {
+                    $(".sim_bills").append(image);   
                 }
             });
-            $.ajax({
-                url : url,
-                type : 'GET',
-                success: function(data){
-                    console.log(data);
-                    $(".sim_bills").html("");
-                    data.sim_trans_id.forEach(function(i,j){
-                        console.log(i);
-                       var image='<div style="text-align: center;margin: 2px 0px 20px 0px;"><img class="profile-logo img img-thumbnail" src="'+i+'" alt="image"></div>'
-                        if (i!=null&&i!='') {
-                         $(".sim_bills").append(image);   
-                        }
-                    });
-                    
-                    table.ajax.reload(null, false);
-                    table_bills.ajax.reload(null, false);
-                },
-                error: function(error){
-                    swal.fire({
-                        position: 'center',
-                        type: 'error',
-                        title: 'Oops...',
-                        text: 'Unable to Show.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                }
+            
+            table.ajax.reload(null, false);
+            table_bills.ajax.reload(null, false);
+        },
+        error: function(error){
+            swal.fire({
+                position: 'center',
+                type: 'error',
+                title: 'Oops...',
+                text: 'Unable to Show.',
+                showConfirmButton: false,
+                timer: 1500
             });
+        }
+    });
 
 }
 </script>
