@@ -383,7 +383,7 @@ public function bike_assigned_show($id){
     
     $bikes->save();
 // return $assign_bikes; 
-return redirect()->route('bike.bike_assigned', ['id'=>$rider->id]) ;
+return redirect(route('Bike.assignedToRiders_History', $rider->id))->with('message', 'Bike assigned successfully.');;
 }
   public function mutlipleDeleteBike(Request $request)
   {

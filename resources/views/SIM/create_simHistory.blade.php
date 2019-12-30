@@ -61,7 +61,7 @@
                            
                         <div class="form-group">
                             <label>Allowed Balance:</label>
-                            <input required type="text" class="form-control @if($errors->has('allowed_balance')) invalid-field @endif" name="allowed_balance" placeholder="Allowed Balance " value="{{ old('allowed_balance') }}">
+                            <input required type="text" class="form-control @if($errors->has('allowed_balance')) invalid-field @endif" name="allowed_balance" placeholder="Allowed Balance " value="105">
                             @if ($errors->has('allowed_balance'))
                                 <span class="invalid-response" role="alert">
                                     <strong>

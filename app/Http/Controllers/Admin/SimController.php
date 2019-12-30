@@ -558,7 +558,7 @@ public function store_simHistory(Request $request,$id){
     ]);
     
     $sim_history->save();
-    return redirect(url('admin/view/Sim/'.$id))->with('message', 'Sim Assigned successfully.');
+    return redirect(route('Sim.simHistory', $rider->id))->with('message', 'Sim Assigned successfully.');
 }
 public function update_simHistory(Request $request,$id){
     $rider=Rider::find($id);
