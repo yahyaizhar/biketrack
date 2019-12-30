@@ -214,6 +214,7 @@ Route::group([
     Route::get('/assigned/company/{bike}', 'bikeController@give_bike_to_company')->name('bike.give_bike_to_company');
     Route::post('/is/given/bike/to/company/{bike_id}','bikeController@is_given_bike_status')->name('bike.is_given_bike_status');
     Route::get('/bike/deactive/{rider_id}/date/{bike_id}','bikeController@deactive_date')->name('admin.deactive_date');
+    Route::get('/bike/Edit/{id}/view','bikeController@bike_edit_view')->name('Bike.bike_edit_view');
 // salik 
     Route::resource('/salik', 'SalikController', [
     'as' => 'admin'

@@ -129,11 +129,21 @@ class bikeController extends Controller
       
     }
     public function bike_edit(Request $request,$id){
+      $is_readonly=false;
       $bike_id_array =$request->id;
       $bike = bike::find($bike_id_array);
       $riders=Rider::where('active_status','A')->get();
       $insurance_co_name=insurance_company::all();
-      return view('admin.Bike.Edit_bike',compact('bike','riders','insurance_co_name'));
+      return view('admin.Bike.Edit_bike',compact('is_readonly','bike','riders','insurance_co_name'));
+      // return $bike;
+    }
+    public function bike_edit_view(Request $request,$id){
+      $is_readonly=true;
+      $bike_id_array =$request->id;
+      $bike = bike::find($bike_id_array);
+      $riders=Rider::where('active_status','A')->get();
+      $insurance_co_name=insurance_company::all();
+      return view('admin.Bike.Edit_bike',compact('is_readonly','bike','riders','insurance_co_name'));
       // return $bike;
     }
     public function bike_update(Request $request,bike $bike,$id){
@@ -202,7 +212,7 @@ class bikeController extends Controller
         }
     $bike->update();
    
-    return redirect(route('bike.bike_view'))->with('message', 'Record Updated Successfully.');
+    return redirect(route('Bike.bike_edit_view',$bike->id))->with('message', 'Record Updated Successfully.');
 
       
       

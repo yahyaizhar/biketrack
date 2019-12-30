@@ -121,7 +121,7 @@ class AccountsController extends Controller
         $ra->source=str_replace('_',' ',ucfirst($r->type))." Charges";
         $ra->id_charge_id=$id_charge->id;
         $ra->save();
-        return redirect(route('admin.accounts.id_charges_view'));
+        return redirect(route('admin.id_charges_edit_view',$id_charge->id));
     }
     public function delete_id_charges($id)
     {
@@ -198,7 +198,7 @@ class AccountsController extends Controller
         $workshop->update();
 
         
-        return redirect(route('admin.accounts.workshop_view'));
+        return redirect(route('admin.workshop_edit_view',$workshop->id));
     }
     public function delete_workshop($id)
     {
@@ -284,7 +284,7 @@ class AccountsController extends Controller
         $ca->amount=$r->amount;
         $ca->save();
 
-        return redirect(route('admin.accounts.edirham_view'));
+        return redirect(route('admin.edirham_edit_view',$edirham->id));
     }
     public function delete_edirham($id)
     {
@@ -492,7 +492,7 @@ class AccountsController extends Controller
             $maintenance->status = 0;
         $maintenance->update();
         
-        $assign_bike=where('bike_id', $maintenance->bike_id)
+        $assign_bike=Assign_bike::where('bike_id', $maintenance->bike_id)
         ->whereDate('created_at','<=',Carbon::parse($r->month)->format('Y-m-d'))
         ->get()
         ->last();
@@ -626,7 +626,7 @@ class AccountsController extends Controller
         }
         
         
-        return redirect(route('admin.accounts.maintenance_view'));
+        return redirect(route('admin.maintenance_edit_view',$maintenance->id));
     }
     public function delete_maintenance($id)
     {
@@ -1587,7 +1587,7 @@ elseif($fuel_expense->type=="cash"){
     // $ra->save();
     
 }
-    return redirect(route('admin.fuel_expense_view'));
+    return redirect(route('admin.edit_fuel_expense_view',$fuel_expense->id));
 }
 
 
@@ -2110,7 +2110,7 @@ public function client_income_update(Request $request,$id){
     $ca->amount=$update_income->amount;
     $ca->save();
    
-        return redirect(route('admin.client_income_view'));
+        return redirect(route('admin.client_income_edit_view',$update_income->id));
 }
 // end Client_income
 

@@ -112,7 +112,7 @@ class ExpenseController extends Controller
         $ca->source='company_expense';
         $ca->company_expense_id=$ce->id;
         $ca->update();
-        return redirect(route('admin.CE_view'));
+        return redirect(route('admin.CE_edit_view',$ce->id));
     }
     public function CE_delete($id)
 { 
@@ -505,7 +505,7 @@ public function AR_update(Request $r,$id){
         $ra->payment_status="paid";
         $ra->save();
     }
-    return redirect(route('admin.AR_view'));
+    return redirect(route('admin.AR_edit_view',$update_ar->id));
 }
 // End ADVANCE & RETURN
 

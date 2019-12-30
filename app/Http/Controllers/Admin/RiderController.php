@@ -562,7 +562,7 @@ class RiderController extends Controller
        
        $rider_detail->update();
     
-       return redirect(route('admin.riders.index'))->with('message', 'Record Updated Successfully.');
+       return redirect(route('admin.rider.profile',$rider->id))->with('message', 'Record Updated Successfully.');
     }
 
     /**

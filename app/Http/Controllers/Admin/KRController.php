@@ -149,7 +149,7 @@ class KRController extends Controller
         $ra->payment_status='pending';
         $ra->save();
             
-        return redirect(route('admin.BF_view'));
+        return redirect(route('admin.BF_edit_view',$bf->id));
     }
     public function paid_fine_by_rider($amount,$rider_id,$bike_fine_id,$month){
         $ca = new Company_Account();
