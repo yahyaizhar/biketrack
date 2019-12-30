@@ -365,9 +365,24 @@ class AjaxNewController extends Controller
                     $rider_id=$bill->rider_id;
                     $type=$bill->source;
                     $month_given=$bill->given_date;
-                    return '<div>Pending <button type="button" onclick="updateStatus('.$rider_id.',\''.$month.'\',\''.$type.'\',\''.$month_given.'\')" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
+                    if ($type=="Sim Transaction") {
+                        $sim_transaction_id=$bill->sim_transaction_id;
+                        return '<div>Pending <button style="margin-right: 5px;" type="button" onclick="updateStatusBills('.$rider_id.',\''.$month.'\',\''.$type.'\',\''.$month_given.'\')" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button><button class="btn btn-sm btn-success" type="button" onclick="SimBillsImage('.$rider_id.',\''.$month.'\',\''.$type.'\')">View Sim Bill Image</button></div>';
+                    }
+                    return '<div>Pending <button type="button" onclick="updateStatusBills('.$rider_id.',\''.$month.'\',\''.$type.'\',\''.$month_given.'\')" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
+                    
                 }
-                
+                if($bill->payment_status == 'paid'){
+                    //enable pay
+                    $month=$bill->month;
+                    $rider_id=$bill->rider_id;
+                    $type=$bill->source;
+                    $month_given=$bill->given_date;
+                    if ($type=="Sim Transaction") {
+                        $sim_transaction_id=$bill->sim_transaction_id;
+                        return ucfirst($bill->payment_status).' <i class="flaticon2-correct text-success h5"></i><button class="btn btn-sm btn-success" type="button" onclick="SimBillsImage('.$rider_id.',\''.$month.'\',\''.$type.'\')">View Sim Bill Image</button>';
+                    }
+                }
                 return ucfirst($bill->payment_status).' <i class="flaticon2-correct text-success h5"></i>';
             
             }

@@ -658,6 +658,7 @@ Route::group([
 
    Route::put('accounts/company/edit', 'AccountsController@edit_company_account')->name('admin.accounts.edit_company'); //[Accounts - Edit company account]
    Route::put('accounts/rider/edit', 'AccountsController@edit_rider_account')->name('admin.accounts.edit_rider'); //[Accounts - Edit rider account]
+   Route::get('/sim/bill/image/{rider_id}/{month}/{type}','SimController@SimBIllImage')->name('Sim.SimBIllImage');//[Accounts-Sim Bill Image] .
 });   
 
 

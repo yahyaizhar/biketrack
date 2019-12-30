@@ -468,6 +468,27 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="sim_bill_image" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">  
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title" id="title_rider_expense">Sim Bills Image</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="kt-form" enctype="multipart/form-data" id="sim_image">
+                <div class="modal-body">
+                  <div class="sim_bills" style="display:grid;"></div>
+                    {{-- <div class="kt-form__actions kt-form__actions--right">
+                        <button type="submit" class="btn btn-danger">Add Fine</button>
+                    </div> --}}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 @section('foot')
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
@@ -1041,7 +1062,7 @@ function FineBike(rider_id,bike_fine_id,amount,month){
             });
 }
 
-    function updateStatus(rider_id,month,type)
+    function updateStatusBills(rider_id,month,type)
 {
     var url = "{{ url('admin/bill/payment') }}" + "/" + rider_id + "/updateStatus" + "/" + month + "/" + type;
     console.log(url,true);
@@ -1209,6 +1230,45 @@ function deleteRows(id,model_class,model_id,rider_id,string,month){
         }
     });
     
+}
+function SimBillsImage(rider_id,month,type){
+    var url = "{{ url('admin/sim/bill/image') }}" + "/" + rider_id + "/" + month + "/" + type ;
+    console.log(url,true);
+    $("#sim_bill_image").modal("show");
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url : url,
+                type : 'GET',
+                success: function(data){
+                    console.log(data);
+                    $(".sim_bills").html("");
+                    data.sim_trans_id.forEach(function(i,j){
+                        console.log(i);
+                       var image='<div style="text-align: center;margin: 2px 0px 20px 0px;"><img class="profile-logo img img-thumbnail" src="'+i+'" alt="image"></div>'
+                        if (i!=null&&i!='') {
+                         $(".sim_bills").append(image);   
+                        }
+                    });
+                    
+                    table.ajax.reload(null, false);
+                    table_bills.ajax.reload(null, false);
+                },
+                error: function(error){
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Unable to Show.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+
 }
 </script> 
 @endsection

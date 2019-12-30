@@ -21,6 +21,7 @@ class CreateSimTransactionsTable extends Migration
             $table->string('extra_usage_amount')->nullable();
             $table->string('extra_usage_payment_status')->nullable();
             $table->string('bill_status')->nullable();
+            $table->string('sim_bill_image')->nullable();
             $table->string('status')->nullable();
             $table->timestamps();
         });
