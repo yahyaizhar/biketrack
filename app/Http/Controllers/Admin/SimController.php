@@ -87,7 +87,7 @@ class SimController extends Controller
         else
             $sim->status=0;
         $sim->update();
-        return redirect(route('Sim.view_records'))->with('message', 'Sim updated successfully.');
+        return redirect(route('Sim.edit_sim_view',$sim->id))->with('message', 'Sim updated successfully.');
     
     }
     public function updateStatusSim(Request $request,$id)
