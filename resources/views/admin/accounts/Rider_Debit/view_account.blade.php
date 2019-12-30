@@ -1310,7 +1310,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="sim_bill_image" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="bills_image_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">  
             <div class="modal-header border-bottom-0">
@@ -2913,7 +2913,7 @@ printJS('print_slip_for_rider2', 'html');
 function SimBillsImage(rider_id,month,type){
     var url = "{{ url('admin/sim/bill/image') }}" + "/" + rider_id + "/" + month + "/" + type ;
     console.log(url,true);
-    $("#sim_bill_image").modal("show");
+    $("#bills_image_model").modal("show");
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
