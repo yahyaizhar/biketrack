@@ -36,10 +36,10 @@ class SimController extends Controller
         $sim_number=$request->sim_number;
         $sim=Sim::where("sim_number",$sim_number)->get()->first();
        if (isset($sim)) {
-               if($sim->active_status==="A"){
+               if($sim->status==="1"){
                 return redirect(url('admin/view/records/Sim?search='.$sim->sim_number))->with('error', 'Sim is already created with id= '.$sim->id.'. And status is Active.');
                }
-               return redirect(url('admin/view/records/Sim?search='.$sim->sim_number))->with('error', 'Sim is already created with id= '.$sim->id.'.But status is deactive now.');
+               return redirect(url('admin/view/records/Sim?search='.$sim->sim_number))->with('error', 'Sim is already created with id= '.$sim->id.'.But status is Inactive.');
         }
         $this->validate($request, [
             'sim_company' => 'required | string | max:255',
