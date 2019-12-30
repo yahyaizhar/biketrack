@@ -701,7 +701,10 @@
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                             },
                             type : 'POST',
-                            data: _form.serialize(),
+                            data: new FormData(_form[0]),
+                            contentType: false,
+                            cache: false,
+                            processData:false,
                             success: function(data){
                                 console.log(data);
                                 
