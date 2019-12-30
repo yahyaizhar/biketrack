@@ -11,8 +11,11 @@
 |
 */
 
-Route::get('/', function () {
+Route::get('/mobileapp', function () {
     return view('welcome');
+});
+Route::get('/', function () {
+    return redirect(route('admin.home'));
 });
 Route::get('/phpinfo', function () {
     return phpinfo();
