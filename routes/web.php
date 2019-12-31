@@ -12,6 +12,9 @@
 */
 
 Route::get('/', function () {
+    return redirect(route('admin.home'));
+});
+Route::get('/mobileapp', function () {
     return view('welcome');
 });
 
@@ -32,12 +35,12 @@ Route::group([
     Route::get('get/ajax/rider/active','AjaxController@getActiveRiders')->name('admin.ajax_active_rider');
     Route::get('/riders/details/data', 'AjaxController@getRidersDetails')->name('admin.riders_detail.data');
     Route::get('/clients/data', 'AjaxController@getClients')->name('admin.clients.data');
-																											 
+    Route::get('/clients/data/active', 'AjaxController@getActiveClients')->name('admin.clients.data.active');																											 
     Route::get('get/ajax/rider/performance','AjaxController@getRiderPerformance')->name('admin.ajax_performance');
     Route::get('get/ajax/rider/payouts/days','AjaxController@getRiderPayoutsByDays')->name('admin.getRiderPayoutsByDays');
     Route::get('/range/ajax/adt/{data}','AjaxController@getRiderRangesADT')->name('ajax.adt'); 
     Route::get('/bike_getData','AjaxController@getBikes')->name('bike.bike_show');
-																									  
+    Route::get('/bike_getData/active','AjaxController@getActiveBikes')->name('bike.bike_show.active');
     Route::get('/get/salik/bike/ajax/{id}','AjaxController@getSalik_Bike')->name('bike.ajax_salik_bike');
     Route::get('get/ajax/salik/trip_details','AjaxController@getSalikTrip_Details')->name('admin.ajax_details');
     Route::get('/Developer/Salary/ajax','AjaxController@getSalary_by_developer')->name('account.developer_salary_ajax');
@@ -75,7 +78,7 @@ Route::group([
     Route::get("/accounts/bike/bills/{range}","AjaxNewController@getBikeAccountsBills")->name("admin.accounts.get_bike_account_bills");
 																													   
     Route::get("/accounts/kr_investment/view/data","AjaxNewController@getCompanyInvestment")->name("admin.getCompanyInvestment");
-    Route::get("/zomato/salary/sheet/export/ajax/{month_name}","AjaxNewController@zomato_salary_export")->name("admin.zomato_salary_export");
+    Route::get("/zomato/salary/sheet/export/ajax/{month_name}/{client_id}","AjaxNewController@zomato_salary_export")->name("admin.zomato_salary_export");
     Route::get("/zomato/profit/sheet/export/ajax/{month_name}/{client_id}","AjaxNewController@zomato_profit_export")->name("admin.zomato_profit_export");
     Route::get('/ajax/generated/rider/bill/status/{month}/{client_id}','AjaxNewController@getGeneratedBillStatus')->name('ajax.getGeneratedBillStatus');
     Route::GET('/get/invoices','AjaxNewController@getInvoices')->name('invoice.get_invoices'); 
@@ -94,6 +97,8 @@ Route::group([
     Route::get('/get_previous_month/{month}', 'AccountsController@getPreviousMonthIncomeZomato')->name('income_zomato.get_previous_month');
 
     Route::get("/accounts/company/expense/investment/detail/{month}","ExpenseController@get_investment_detail")->name("admin.get_investment_detail");
+
+    Route::get("/accounts/company/debits/get_salary_deduction/{month}/{rider_id}","AccountsController@get_salary_deduction")->name("admin.accounts.get_salary_deduction");
 
 });
 // End Ajax Routes
@@ -128,11 +133,11 @@ Route::group([
 // Riders
     /*[rider-view]*/Route::get('/riders', 'RiderController@index')->name('admin.riders.index');
     /*[rider-create]*/Route::get('/riders/create', 'RiderController@create')->name('admin.riders.create');
-    /*[rider-create]*/Route::post('/riders/create', 'RiderController@store')->name('admin.riders.store');
+    /*[rider-create]*/Route::post('/riders', 'RiderController@store')->name('admin.riders.store');
 	   
-    /*[rider-edit]*/Route::get('/riders/{id}/edit', 'RiderController@edit')->name('admin.riders.edit');
-    /*[rider-edit]*/Route::post('/riders/index', 'RiderController@update')->name('admin.riders.update'); // update rider
-    /*[rider-Delete]*/Route::post('/delete/Rider/{rider_id}', 'RiderController@destroy')->name('admin.riders.destroy');//ajax_route ////ok
+    /*[rider-edit]*/Route::get('/riders/{rider}/edit', 'RiderController@edit')->name('admin.riders.edit');
+    /*[rider-edit]*/Route::PUT('/riders/{rider}', 'RiderController@update')->name('admin.riders.update'); // update rider
+    /*[rider-Delete]*/Route::DELETE('/riders/{rider}', 'RiderController@destroy')->name('admin.riders.destroy');//ajax_route ////ok
     Route::get('/rider/{rider}/location', 'RiderController@showRiderLocation')->name('admin.rider.location'); //mobile_route //not_using
     /*[rider-profile]*/Route::get('/rider/{rider}/profile', 'RiderController@showRiderProfile')->name('admin.rider.profile');
     /*[rider-Active riders]*/Route::get('/active_riders','RiderController@getRider_active')->name('admin.riders.active');
@@ -180,7 +185,7 @@ Route::group([
 //import Zomato
     /*[clients- Zomato import rider performance]*/Route::post('/import/zomato','RiderController@import_zomato')->name('import.zomato');
     /*[clients- performance delete last import]*/Route::delete('/delete/last/import','RiderController@delete_lastImport')->name('delete.import_data');
-    Route::get("/zomato/salary/sheet/export","AccountsController@zomato_salary_sheet_export")->name("admin.zomato_salary_sheet_export");//not_using
+    /*[clients- View salary sheet]*/Route::get("/client/{cleint_id}/salarysheet","AccountsController@zomato_salary_sheet_export")->name("admin.zomato_salary_sheet_export");
     /*[rider- View attendance data]*/Route::get('/zomato/riders/payout/by/days','AccountsController@view_riders_payouts_days')->name('zomato.view_riders_payouts_days');
     /*[rider- Import attendance data]*/Route::post('/import/riders/payouts/days','AccountsController@import_rider_daysPayouts')->name('import.import_rider_daysPayouts');
     /*[rider- view attendance]*/Route::get("/rider/hours/trips/details/{month}/{rider_id}","AccountsController@hours_trips_details")->name('attendance.get_attendance_ajax');
@@ -260,7 +265,7 @@ Route::group([
     /*[accounts - bike account]*/Route::get("/Salary/accounts/bike/account","AccountsController@bike_account")->name("admin.accounts.bike_account");
     Route::get('/rider/accounts/{id}/updateStatus','AccountsController@updatePaymentStatus')->name('Rider.updatePaymentStatus');//not_using
 
-    /*[accounts - get salary deduction]*/Route::get("/accounts/company/debits/get_salary_deduction/{month}/{rider_id}","AccountsController@get_salary_deduction")->name("admin.accounts.get_salary_deduction");//imp
+    
     
     /*[accounts - add rider expense]*/Route::get("/Salary/accounts/rider/expense","AccountsController@rider_expense_get")->name("admin.accounts.rider_expense_get");
     /*[accounts - add rider expense]*/Route::post("/accounts/rider/expense/add","AccountsController@rider_expense_post")->name("admin.accounts.rider_expense_post");
@@ -514,11 +519,6 @@ Route::group([
     Route::get('/generated/month/bills','BillsController@rider_generated_bills')->name('bills.rider_generated_bills'); //ok [Accounts: bill details]
 // end company profit
     //admin routes only
-   Route::get('/add_routes','HomeController@show_add_routes')->name('admin.add_routes'); //ok [for developer]
-   Route::post('/insert_routes','HomeController@insert_add_routes')->name('admin.insert_routes'); //ok [for developer]
-   Route::get('/view_routes','HomeController@view_add_routes')->name('admin.view_routes'); //ok [for developer]
-   Route::post('{route}/edit_route','HomeController@update_add_routes')->name('admin.update_route'); //ok [for developer]
-   Route::get('{route}/edit_route','HomeController@edit_routes')->name('admin.edit_route'); //ok [for developer]
    Route::get('/add/invoice/tax','InvoiceController@add_invoice')->name('tax.add_invoice');  //ok [Invoice: add invoice]
    Route::POST('/add/invoice','InvoiceController@add_invoice_post')->name('tax.add_invoice_post'); //ok [Invoice: add invoice]
    Route::get('/invoice/tax/ajax/get_clients_details/{client_id}/{month}','InvoiceController@get_ajax_client_details')->name('tax.get_ajax_client_details'); //ok [Invoice: add invoice]
@@ -533,14 +533,27 @@ Route::group([
    Route::get('/companyinfo','InvoiceController@company_info')->name('invoice.company_info');   //ok  [Company: show company info]
    Route::post('/companyinfo/store','InvoiceController@company_info_store')->name('invoice.company_info_store'); //ok  [Company: update company info]
   
-    Route::get('/add/employee','Auth\EmployeeController@showloginform')->name('Employee.showloginform');   ///only for admin
-    Route::post('/insert/employee','Auth\EmployeeController@insert_employee')->name('Employee.insert_employee'); ///only for admin
-    Route::get('/show/employee','Auth\EmployeeController@viewEmployee')->name('Employee.viewEmployee'); ///only for admin
-    Route::get('/show/employee/ajax','Auth\EmployeeController@getEmployee')->name('Employee.getEmployee'); ///only for admin
-    Route::delete('/delete/employee/{employee_id}','Auth\EmployeeController@deleteEmployee')->name('Employee.deleteEmployee'); ///only for admin
-    Route::get('/edit/employee/{employee_id}','Auth\EmployeeController@edit_employee')->name('Employee.edit_employee'); ///only for admin
-    Route::post('/update/employee/{employee_id}','Auth\EmployeeController@update_employee')->name('Employee.update_employee'); ///only for admin
+   Route::post('/view/upload/salary_slip/{month}/{rider_id}','RiderDetailController@view_upload_salary_slip')->name('rider.view_upload_salary_slip');//[Accounts-Upload salary Slip] .
+
+   Route::put('accounts/company/edit', 'AccountsController@edit_company_account')->name('admin.accounts.edit_company'); //[Accounts - Edit company account]
+   Route::put('accounts/rider/edit', 'AccountsController@edit_rider_account')->name('admin.accounts.edit_rider'); //[Accounts - Edit rider account]
+   Route::get('/sim/bill/image/{rider_id}/{month}/{type}','SimController@SimBIllImage')->name('Sim.SimBIllImage');//[Accounts-Sim Bill Image] .
 //end admin routs only
+
+
+//routes not added on access page
+Route::get('/add_routes','HomeController@show_add_routes')->name('admin.add_routes'); //ok [for developer]
+Route::post('/insert_routes','HomeController@insert_add_routes')->name('admin.insert_routes'); //ok [for developer]
+Route::get('/view_routes','HomeController@view_add_routes')->name('admin.view_routes'); //ok [for developer]
+Route::post('{route}/edit_route','HomeController@update_add_routes')->name('admin.update_route'); //ok [for developer]
+Route::get('{route}/edit_route','HomeController@edit_routes')->name('admin.edit_route'); //ok [for developer]
+Route::get('/add/employee','Auth\EmployeeController@showloginform')->name('Employee.showloginform');   ///only for admin
+Route::post('/insert/employee','Auth\EmployeeController@insert_employee')->name('Employee.insert_employee'); ///only for admin
+Route::get('/show/employee','Auth\EmployeeController@viewEmployee')->name('Employee.viewEmployee'); ///only for admin
+Route::get('/show/employee/ajax','Auth\EmployeeController@getEmployee')->name('Employee.getEmployee'); ///only for admin
+Route::delete('/delete/employee/{employee_id}','Auth\EmployeeController@deleteEmployee')->name('Employee.deleteEmployee'); ///only for admin
+Route::get('/edit/employee/{employee_id}','Auth\EmployeeController@edit_employee')->name('Employee.edit_employee'); ///only for admin
+Route::post('/update/employee/{employee_id}','Auth\EmployeeController@update_employee')->name('Employee.update_employee'); ///only for admin
 });
 // end for Admin
 
@@ -553,19 +566,8 @@ Route::group([
     Route::get('/profile', 'HomeController@profile')->name('admin.profile');   ///ok [Admin:view profile]
     Route::put('/profile', 'HomeController@updateProfile')->name('admin.profile.update');  ///ok [Admin:update profile]
     Route::get('/403','HomeController@request403')->name('request.403'); ///ok
-
-    
 });
-
-			  
-						
-						  
-			  
-					
-																					
-																			 
-																			   
-																							 
+																				 
    
 // end for Admin global
 

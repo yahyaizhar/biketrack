@@ -27,14 +27,19 @@
                     <i class="kt-font-brand fa fa-hotel"></i>
                 </span>
                 <h3 class="kt-portlet__head-title">
-                    Bikes
+                    Active Bikes
                 </h3>
             </div>
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
                         {{-- <button class="btn btn-danger btn-elevate btn-icon-sm" id="bulk_delete">Delete Selected</button> --}}
-                        <input class="btn btn-success" type="button" onclick="export_data()" value="Export Bike Data">
+                        <div style="float:left;" class="filter_record_status">
+                            <select class="form-control">
+                                <option value="">All Bikes</option>
+                                <option value="free">Free Bikes</option>
+                            </select>
+                        </div>
                         &nbsp;
                         <a href="{{ route('bike.bike_login') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
@@ -70,25 +75,7 @@
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/datatables/basic/basic.js') }}" type="text/javascript"></script>
 
 <script>
-var bike_table; 
-var bikes_data = [];
-console.log(bikes_data);
-function export_data(){
-    var export_details=[];
-    var _data=bike_table.ajax.json().data;
-    _data.forEach(function(item,index) {
-        export_details.push({
-        "ID":item.id,
-        "Owner":item.owner,
-        "Brand":item.brand,
-        "Model":item.model,
-        "Bike Number":item.bike_number,
-        "Rent":item.rent,
-        });
-    });
-        var export_data = new CSVExport(export_details);
-    return false;
-}
+var bike_table;   
 $(function() {
     bike_table = $('#bike-table').DataTable({
         lengthMenu: [[-1], ["All"]],
@@ -99,16 +86,16 @@ $(function() {
             'processing': $('.loading').show()
         },
         drawCallback:function(data){
-            $('.total_entries').remove();
-            $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
-        },
-        ajax: "{!! route('bike.bike_show') !!}",
+$('.total_entries').remove();
+        $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
+    },
+        ajax: "{!! route('bike.bike_show.active') !!}",
         columns: [
             { data: 'id', name: 'id' },
-            { data: 'owner_type', name: 'owner_type' }, 
+            { data: 'owner', name: 'owner' }, 
             { data: 'brand', name: 'brand' },            
-            { data: 'models', name: 'models' },
-            { data: 'bike_no', name: 'bike_no' },
+            { data: 'model', name: 'model' },
+            { data: 'bike_number', name: 'bike_number' },
             { data: 'rent', name: 'rent' },
             { data: 'assigned_to', name: 'assigned_to' },
             { data: 'status', name: 'status' },
@@ -116,6 +103,19 @@ $(function() {
         ],
         responsive:true,
         order:[0,'desc'],
+    });
+
+    $('.filter_record_status select').on('change', function(){
+        var _val = $(this).val();
+        $('#bike-table tbody tr').show();
+        $('#bike-table tbody tr').each(function(){
+            var _tr = $(this);
+            var row=bike_table.row(_tr).data();
+            if($(row.assigned_to).is('a') && _val=="free"){
+                // assinged
+                _tr.hide();
+            }
+        });
     });
 });
 function deleteBike(bike_id)

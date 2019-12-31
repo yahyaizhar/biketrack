@@ -150,6 +150,7 @@ class AjaxController extends Controller
             if($clients->salary_methods!=null){
                 $salary_method_HTML_suffix = '<i class="fa fa-edit"></i>Update Salary Method';
             }
+            //<button class="dropdown-item" onclick="deleteClient('.$clients->id.');"><i class="fa fa-trash"></i> Delete</button>
             return '<span class="dtr-data">
             <span class="dropdown">
                 <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
@@ -160,9 +161,141 @@ class AjaxController extends Controller
                     <button class="dropdown-item" onclick="updateStatus('.$clients->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                     <a class="dropdown-item" href="'.route('admin.clients.riders', $clients).'"><i class="fa fa-eye"></i> View Riders</a>
                     <a class="dropdown-item" href="'.route('admin.clients.assignRiders', $clients).'"><i class="fa fa-edit"></i> Assign Riders</a>
-                    <button class="dropdown-item" onclick="deleteClient('.$clients->id.');"><i class="fa fa-trash"></i> Delete</button>
+                    
                     <a class="dropdown-item" href="'.route('client.profit_sheet_view', $clients).'"><i class="fa fa-edit"></i>View Record Sheet</a>
                     <a class="dropdown-item" href="'.route('client.client_total_expense', $clients).'"><i class="fa fa-edit"></i>View Record Summary</a>
+                    <a class="dropdown-item" href="'.route('admin.zomato_salary_sheet_export', $clients).'"><i class="fa fa-edit"></i>View Salary Sheet</a> 
+                    <a class="dropdown-item" href="" onclick=\'show_payout_modal('.json_encode($clients->setting).', '.$clients->id.');return false;\'>'.$payout_method_HTML_suffix.'</a> 
+                    <a class="dropdown-item" href="" onclick=\'show_salary_modal('.json_encode($clients->salary_methods).', '.$clients->id.');return false;\'>'.$salary_method_HTML_suffix.'</a> 
+                </div>
+            </span>
+        </span>';
+        })
+        ->rawColumns(['new_name', 'new_email', 'new_phone', 'actions', 'status', 'payout_method', 'salary_method'])
+        ->make(true);
+    }
+    public function getActiveClients()
+    {
+        $clients = Client::orderByDesc('created_at')->where("active_status","A")->where("status","1")->get();
+        // return $clients;
+        return DataTables::of($clients)
+        ->addColumn('status', function($clients){
+            if($clients->status == 1)
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
+            }
+            else
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
+            }
+        })
+        ->addColumn('new_id', function($clients){
+            return 'KR-C-0'.$clients->id;
+        })
+        ->addColumn('checkbox', function($clients){
+            // return '<input type="checkbox" name="client_checkbox[]" class="client_checkbox" value="'.$clients->id.'">';
+            // return '<label class="kt-checkbox kt-checkbox--brand">
+            //             <input type="checkbox name="client_checkbox[]" class="client_checkbox" value="'.$clients->id.'"">
+            //             <span></span>
+            //         </label>';
+        })
+        ->addColumn('new_name', function($clients){
+            return '<a href="'.route('admin.clients.riders', $clients).'">'.$clients->name.'</a>';
+        })
+        ->addColumn('new_email', function($clients){
+            return '<a href="'.route('admin.clients.riders', $clients).'">'.$clients->email.'</a>';
+        })
+        ->addColumn('new_phone', function($clients){
+            return '<a href="'.route('admin.clients.riders', $clients).'">'.$clients->phone.'</a>';
+        })
+        ->addColumn('payout_method', function($clients){
+            if($clients->setting!=null){
+                $settings = json_decode($clients->setting, true);
+                $pm = $settings['payout_method'];
+                $to_return ='';
+                switch ($pm) {
+                    case 'trip_based':
+                        $to_return .='<p><strong>Payout Method:</strong> Based on Trips and Hours</p>';
+                        $to_return .='<p><strong>Per trip amount:</strong> '.$settings['tb__trip_amount'].'</p>';
+                        $to_return .='<p><strong>Per hour amount:</strong> '.$settings['tb__hour_amount'].'</p>';
+                        break;
+                    case 'fixed_based':
+                        $to_return .='<p><strong>Payout Method:</strong> Based on Fixed Amount</p>';
+                        $to_return .='<p><strong>Amount:</strong> '.$settings['fb__amount'].'</p>';
+                        $to_return .='<p><strong>Workable Hours:</strong> '.$settings['fb__workable_hours'].'</p>';
+                        break;
+                    
+                    default:
+                        
+                        break;
+                }
+                return $to_return;
+            }
+            return 'No Payout Method is set.';
+        })
+        ->addColumn('salary_method', function($clients){
+            if($clients->salary_methods!=null){
+                $settings = json_decode($clients->salary_methods, true);
+                $pm = $settings['salary_method'];
+                $to_return ='';
+                switch ($pm) {
+                    case 'trip_based':
+                        $to_return .='<p><strong>Salary Method:</strong> Based on Trips and Hours</p>';
+                        $to_return .='<p><strong>Per trip amount:</strong> '.$settings['tb_sm__trip_amount'].'</p>';
+                        $to_return .='<p><strong>Per hour amount:</strong> '.$settings['tb_sm__hour_amount'].'</p>';
+                        $to_return .='<p><strong>Bonus trips:</strong> '.$settings['tb_sm__bonus_trips'].'</p>';
+                        $to_return .='<p><strong>Bonus amount:</strong> '.$settings['tb_sm__bonus_amount'].'</p>';
+                        $to_return .='<p><strong>Bonus trips amount:</strong> '.$settings['tb_sm__trips_bonus_amount'].'</p>';
+                        break;
+                    case 'fixed_based':
+                        $to_return .='<p><strong>Salary Method:</strong> Based on Fixed Amount</p>';
+                        $to_return .='<p><strong>Amount:</strong> '.$settings['fb_sm__amount'].'</p>';
+                        $to_return .='<p><strong>Extra Hours Rate:</strong> '.$settings['fb_sm__exrta_hours'].'</p>';
+                        break;
+                    case 'commission_based':
+                        $to_return .='<p><strong>Salary Method:</strong> Based on Commission</p>';
+                        $to_return .='<p><strong>Amount:</strong> '.$settings['cb__amount'];
+                        if($settings['cb__type']=='percent'){
+                            $to_return .='%</p>' ;
+                        }
+                        else {
+                            $to_return .=' AED</p>' ;
+                        }
+                        break;
+                    
+                    default:
+                        
+                        break;
+                }
+                return $to_return;
+            }
+            return 'No Salary Method is set.';
+        })
+        ->addColumn('actions', function($clients){
+            $status_text = $clients->status == 1 ? 'Inactive' : 'Active';
+            $payout_method_HTML_suffix = '<i class="fa fa-plus"></i>Set Payout Method';
+            $salary_method_HTML_suffix = '<i class="fa fa-plus"></i>Set Salary Method';
+            if($clients->setting!=null){
+                $payout_method_HTML_suffix = '<i class="fa fa-edit"></i>Update Payout Method';
+            }
+            if($clients->salary_methods!=null){
+                $salary_method_HTML_suffix = '<i class="fa fa-edit"></i>Update Salary Method';
+            }
+            //<button class="dropdown-item" onclick="deleteClient('.$clients->id.');"><i class="fa fa-trash"></i> Delete</button>
+            return '<span class="dtr-data">
+            <span class="dropdown">
+                <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+                <i class="la la-ellipsis-h"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="'.route('admin.clients.edit', $clients).'"><i class="fa fa-edit"></i> Edit</a>
+                    <button class="dropdown-item" onclick="updateStatus('.$clients->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
+                    <a class="dropdown-item" href="'.route('admin.clients.riders', $clients).'"><i class="fa fa-eye"></i> View Riders</a>
+                    <a class="dropdown-item" href="'.route('admin.clients.assignRiders', $clients).'"><i class="fa fa-edit"></i> Assign Riders</a>
+                    
+                    <a class="dropdown-item" href="'.route('client.profit_sheet_view', $clients).'"><i class="fa fa-edit"></i>View Record Sheet</a>
+                    <a class="dropdown-item" href="'.route('client.client_total_expense', $clients).'"><i class="fa fa-edit"></i>View Record Summary</a>
+                    <a class="dropdown-item" href="'.route('admin.zomato_salary_sheet_export', $clients).'"><i class="fa fa-edit"></i>View Salary Sheet</a> 
                     <a class="dropdown-item" href="" onclick=\'show_payout_modal('.json_encode($clients->setting).', '.$clients->id.');return false;\'>'.$payout_method_HTML_suffix.'</a> 
                     <a class="dropdown-item" href="" onclick=\'show_salary_modal('.json_encode($clients->salary_methods).', '.$clients->id.');return false;\'>'.$salary_method_HTML_suffix.'</a> 
                 </div>
@@ -188,7 +321,7 @@ class AjaxController extends Controller
             }
         })
         ->addColumn('id', function($sim){
-            return '1000'.$sim->id;
+            return $sim->id;
         })
         ->addColumn('checkbox', function($sim){
             // return '<input type="checkbox" name="client_checkbox[]" class="client_checkbox" value="'.$clients->id.'">';
@@ -213,6 +346,7 @@ class AjaxController extends Controller
         })
         ->addColumn('actions', function($sim){
             $status_text = $sim->status == 1 ? 'Inactive' : 'Active';
+            //<button class="dropdown-item" onclick="deleteSim('.$sim->id.');"><i class="fa fa-trash"></i> Delete</button>
             return '<span class="dtr-data">
             <span class="dropdown">
                 <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
@@ -221,7 +355,66 @@ class AjaxController extends Controller
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" href="'.route('Sim.edit_sim_view', $sim).'"><i class="fa fa-edit"></i> View</a>
                     <button class="dropdown-item" onclick="updateStatus('.$sim->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
-                    <button class="dropdown-item" onclick="deleteSim('.$sim->id.');"><i class="fa fa-trash"></i> Delete</button>
+                    
+                    <a class="dropdown-item" href="'.route('Sim.rider.history', $sim->id).'"><i class="fa fa-eye"></i> View Rider history</a>
+                    </div>
+            </span>
+        </span>';
+        })
+        ->rawColumns([ 'sim_company','assigned_to', 'sim_number', 'actions', 'status'])
+        ->make(true);
+    }
+    public function getActiveSims()
+    {
+        $sims = Sim::orderByDesc('created_at')->where('active_status', 'A')->where("status","1")->get();
+        // return $clients;
+        return DataTables::of($sims)
+        ->addColumn('status', function($sim){
+            if($sim->status == 1)
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
+            }
+            else
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
+            }
+        })
+        ->addColumn('id', function($sim){
+            return $sim->id;
+        })
+        ->addColumn('checkbox', function($sim){
+            // return '<input type="checkbox" name="client_checkbox[]" class="client_checkbox" value="'.$clients->id.'">';
+            // return '<label class="kt-checkbox kt-checkbox--brand">
+            //             <input type="checkbox name="client_checkbox[]" class="client_checkbox" value="'.$clients->id.'"">
+            //             <span></span>
+            //         </label>';
+        })
+        ->addColumn('sim_number', function($sim){
+            return $sim->sim_number;
+        })
+        ->addColumn('sim_company', function($sim){
+            return $sim->sim_company;
+        })
+        ->addColumn('assigned_to', function($sim){
+            $sim_history = $sim->Sim_history()->where('status', 'active')->get()->first();
+            if(isset($sim_history)){
+                $rider = $sim_history->Rider;
+                return '<a href="'.route('admin.rider.profile', $rider->id).'">'.$rider->name.'</a>';
+            }
+            return 'This SIM is not assigned to any rider';
+        })
+        ->addColumn('actions', function($sim){
+            $status_text = $sim->status == 1 ? 'Inactive' : 'Active';
+            //<button class="dropdown-item" onclick="deleteSim('.$sim->id.');"><i class="fa fa-trash"></i> Delete</button>
+            return '<span class="dtr-data">
+            <span class="dropdown">
+                <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+                <i class="la la-ellipsis-h"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="'.route('Sim.edit_sim_view', $sim).'"><i class="fa fa-edit"></i> View</a>
+                    <button class="dropdown-item" onclick="updateStatus('.$sim->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
+                    
                     <a class="dropdown-item" href="'.route('Sim.rider.history', $sim->id).'"><i class="fa fa-eye"></i> View Rider history</a>
                     </div>
             </span>
@@ -436,7 +629,97 @@ class AjaxController extends Controller
             }
         })
         ->addColumn('id', function($bike){
-            return '1000'.$bike->id;
+            return $bike->id;
+        })
+        ->addColumn('owner_type', function($bike){
+           return '<strong>'.$bike->owner.'</strong>';
+        })
+        ->addColumn('assigned_to', function($bike){
+            // $bike_id = $bike->id;
+            $assign_bike=\App\Assign_bike::where('bike_id', $bike->id)->where('status','active')->get()->first();
+       
+            if($assign_bike){
+                
+                $rider=Rider::find($assign_bike->rider_id);
+            $rider_profile='<a href="'.route('admin.rider.profile', $rider->id).'">'.$rider->name.'</a>';
+                return $rider_profile;
+            }
+            else{
+                return "Bike is free to assign";
+            }
+       
+      
+        })
+        ->addColumn('checkbox', function($bike){
+            // return '<input type="checkbox" name="client_checkbox[]" class="client_checkbox" value="'.$clients->id.'">';
+            // return '<label class="kt-checkbox kt-checkbox--brand">
+            //             <input type="checkbox name="client_checkbox[]" class="client_checkbox" value="'.$clients->id.'"">
+            //             <span></span>
+            //         </label>';
+        }) 
+        ->addColumn('models', function($bike){
+            return $bike->model;
+        })
+        ->addColumn('brand', function($bike){
+            return $bike->brand;
+        })
+        ->addColumn('rent', function($bike){
+            if ($bike->rider_id==null) {
+                return $bike->rent_amount;
+            } else {
+                return $bike->bike_allowns;
+            }
+        })
+        ->addColumn('bike_no', function($bike){
+            return '<a href="'.route('bike.bike_assigned', $bike).'">'.$bike->bike_number.'</a>';
+        })
+        
+        ->addColumn('availability', function($bike){
+            $status_text = $bike->status == 1 ? 'Inactive' : 'Active';
+            $assign_bike_to_kingriders='';
+            if ($bike->is_given=='1') {
+                $assign_bike_to_kingriders='<a class="dropdown-item" href="'.route('bike.give_bike_to_company', $bike->id).'"><i class="fa fa-eye"></i>Give Bike To Comapany</a>';
+            }
+            //<button class="dropdown-item" onclick="deleteBike('.$bike->id.');"><i class="fa fa-trash"></i> Delete</button>
+            return '<span class="dtr-data">
+            <span class="dropdown">
+                <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+                <i class="la la-ellipsis-h"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="'.route('Bike.bike_edit_view', $bike).'"><i class="fa fa-edit"></i>View</a>
+                    <button class="dropdown-item" onclick="updateStatus('.$bike->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
+                    
+                    <a class="dropdown-item" href="'.route('bike.rider_history', $bike).'"><i class="fa fa-eye"></i> View Rider history</a>
+                    <a class="dropdown-item" href="'.route('bike.bike_salik', $bike->id).'"><i class="fa fa-eye"></i> View Salik</a>
+                    '.$assign_bike_to_kingriders.'
+                    </div>
+            </span>
+        </span>';
+        })
+        // <a class="dropdown-item" href="'.route('bike.bike_assigned', $bike).'"><i class="fa fa-eye"></i> View Bikes</a>
+        // <a class="dropdown-item" href="'.route('bike.bike_assignRiders', $bike).'"><i class="fa fa-edit"></i> Assign Bikes</a>
+                    
+        ->rawColumns(['models','rent','owner_type','brand','chassis_number', 'bike_no', 'detail', 'assigned_to','availability', 'status'])
+        ->make(true);
+    }
+    public function getActiveBikes()
+    {
+        $bike = bike::orderByDesc('created_at')->where('active_status', 'A')->where("status","1")->get();
+        // return $clients;
+        return DataTables::of($bike)
+        ->addColumn('status', function($bike){
+            if($bike->status == 1)
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
+            }
+            else
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
+            }
+        })
+        ->addColumn('id', function($bike){
+            return $bike->id;
         })
         ->addColumn('owner', function($bike){
            return '<strong>'.$bike->owner.'</strong>';
@@ -487,6 +770,7 @@ class AjaxController extends Controller
             if ($bike->is_given=='1') {
                 $assign_bike_to_kingriders='<a class="dropdown-item" href="'.route('bike.give_bike_to_company', $bike->id).'"><i class="fa fa-eye"></i>Give Bike To Comapany</a>';
             }
+            //<button class="dropdown-item" onclick="deleteBike('.$bike->id.');"><i class="fa fa-trash"></i> Delete</button>
             return '<span class="dtr-data">
             <span class="dropdown">
                 <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
@@ -495,7 +779,7 @@ class AjaxController extends Controller
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" href="'.route('Bike.edit_bike', $bike).'"><i class="fa fa-edit"></i> Edit</a>
                     <button class="dropdown-item" onclick="updateStatus('.$bike->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
-                    <button class="dropdown-item" onclick="deleteBike('.$bike->id.');"><i class="fa fa-trash"></i> Delete</button>
+                    
                     <a class="dropdown-item" href="'.route('bike.rider_history', $bike).'"><i class="fa fa-eye"></i> View Rider history</a>
                     <a class="dropdown-item" href="'.route('bike.bike_salik', $bike->id).'"><i class="fa fa-eye"></i> View Salik</a>
                     '.$assign_bike_to_kingriders.'
@@ -843,6 +1127,7 @@ class AjaxController extends Controller
         })
         ->addColumn('actions', function($mobile){
             $status_text = $mobile->status == 1 ? 'Inactive' : 'Active';
+            //<button class="dropdown-item" onclick="deletemobile('.$mobile->id.')"><i class="fa fa-trash"></i> Delete</button>
             return '<span class="dtr-data">
             <span class="dropdown">
                 <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
@@ -852,7 +1137,7 @@ class AjaxController extends Controller
                     <button class="dropdown-item" onclick="updateStatus('.$mobile->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
                     
                     <a class="dropdown-item" href="'.route('mobile.edit_view', $mobile).'"><i class="fa fa-edit"></i> View</a>
-                    <button class="dropdown-item" onclick="deletemobile('.$mobile->id.')"><i class="fa fa-trash"></i> Delete</button>
+                    
                     
                     </div>
             </span>
@@ -870,7 +1155,10 @@ class AjaxController extends Controller
         })
         ->addColumn('mobile', function($installment){
             $mobile=Mobile::find($installment->mobile_id);
-            return $mobile->model;
+            if (isset($mobile)) {
+                return $mobile->model;
+            }
+           
         })
         ->addColumn('rider_name', function($installment){
             $mobile=Mobile::find($installment->mobile_id);

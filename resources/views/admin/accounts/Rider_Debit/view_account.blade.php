@@ -163,7 +163,7 @@
             </div>
             <div class="kt-portlet__head-toolbar"> 
                 <div class="kt-portlet__head-wrapper">
-                    <div class="kt-portlet__head-actions">
+                    <div class="kt-portlet__head-actions" style="display:contents !important;">
                          {{-- <a href="" class="btn btn-primary btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_modal" >
                             <i class="la la-money"></i>
                              Bike Rent
@@ -174,6 +174,12 @@
                              Mobile Charges
                         </a>
                         &nbsp; --}}
+                        <a href="" data-ajax="{{ route('MobileInstallment.create') }}" class=" btn btn-success btn-elevate btn-icon-sm">
+                            <i class="fa fa-mobile-alt"></i>
+                            Mobile Installment
+                        </a>
+                        
+                        &nbsp;
                         <a href="" class="btn btn-info btn-elevate btn-icon-sm" data-toggle="modal" data-target="#mics_charges" >
                             <i class="la la-money"></i>
                              MICS Charges
@@ -269,7 +275,7 @@
                             @endif
                         </div> --}}
                         <div class="kt-form__actions kt-form__actions--right">
-                            <button type="submit" class="btn btn-primary">Pay Visa Charges</button>
+                            <button type="submit" class="btn btn-primary button_disabled">Pay Visa Charges</button>
                         </div>
                     </div>
                 </form>
@@ -532,6 +538,7 @@
                 <form class="kt-form" enctype="multipart/form-data" id="remaining_salary">
                     <div class="modal-body">
                         <input type="hidden" name="account_id" value="">
+                        <input type="hidden" name="statement_id" value="">
                         {{-- <div class="form-group">
                             <label>Rider Date Paid:</label>
                             <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month_paid_rider')) invalid-field @endif" name="month_paid_rider" placeholder="Enter Month" value="">
@@ -721,12 +728,19 @@
                         <th>Debit To Company Account</th>
                         <th>Cash Paid</th> 
                         <th>Running Balance</th>
-                        {{-- <th>Action</th> --}}
+                        <th>Action</th>
                     </tr>
                 </thead>
             </table>
             <!--end: Datatable -->
+            
+            <tfoot>
             <div>
+                <div class="_for_view_upload_salary_slip">
+                    <button style="float:left;margin-right: 10px;" data-image="0" class="btn btn-success btn-elevate btn-icon-sm" id="view-upload-slip" type="button">
+                        Upload Salary Slip
+                    </button>
+                </div>
                 <div>
                     <button style="float:right;margin-right: 10px;" class="btn btn-warning btn-elevate btn-icon-sm" id="for_print" type="button" onclick="printJS('print_slip_for_rider', 'html')">
                         Print Company Slip
@@ -753,6 +767,23 @@
                     </button>
                 </div>
             </div>
+        </tfoot>
+        <div class="row">
+            <div class="col">
+                <div class="h1 text-center mt-5">Bill Account</div>
+                <table class="table table-striped- table-hover table-checkable table-condensed" id="table-bills">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Bill</th>
+                            <th>Amount</th>
+                            <th>Payment Status</th>
+                            <th>Action</th> 
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
         </div>
     </div>
 </div>
@@ -792,7 +823,7 @@
             </div> --}}
         </div>
         <div class="kt-portlet__body">
-            <div class="attendance__msg-container" style="display:none">
+            <div class="attendance__msg-container" style="">
                 <div class="attendance__msg"></div>
                 <div class="attendance__sync-data">
                     <div class="row">
@@ -932,7 +963,7 @@
                 <td style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:left;">BONES</td>
+                <td style="width:50%;text-align:left;">BONUS</td>
                 <td contenteditable='true' class="bones" style="width:25%;text-align:end;"></td>
                 <td style="width:25%;text-align:end;"></td>
             </tr>
@@ -962,7 +993,7 @@
                 <td contenteditable='true' class="zomato" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:left;">DC DEDUCTION</td>
+                <td style="width:50%;text-align:left;">CASH DELIVERY</td>
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="dc" style="width:25%;text-align:end;"></td>
             </tr>
@@ -1012,9 +1043,13 @@
                 <td style="width:50%;text-align:center;"></td>
                 <td class="net_pay" style="width:50%;text-align:center;background-color:#73acac69;"></td>
             </tr>
+            <tr>
+                <td style="width:50%;">SALARY PAID</td>
+                <td class="paid_salary" style="width:50%;text-align:center;background-color:#73acac69;"></td>
+            </tr>
         </table>
     <div style=""> 
-        <p style="font-size:12px;line-height: 14px;"><strong>Note: </strong>MR <span id="rider_id_1"></span> received <span id="total_net_pay"></span> from King Riders Delivery Services LLC, and MR <span id="rider_id_2"></span> no is not valid for any kind of Gratuity, yearly tickets or any other expenses other than the salary.
+        <p style="font-size:12px;line-height: 14px;"><strong>Note: </strong>MR <span id="rider_id_1"></span> received <span class="paid_salary"></span> from King Riders Delivery Services LLC, and MR <span id="rider_id_2"></span> no is not valid for any kind of Gratuity, yearly tickets or any other expenses other than the salary.
         </p>
     </div>
     <div style=" margin-top: 1px;">  
@@ -1098,7 +1133,7 @@
                 <td style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:left;">BONES</td>
+                <td style="width:50%;text-align:left;">BONUS</td>
                 <td contenteditable='true' class="bones" style="width:25%;text-align:end;"></td>
                 <td style="width:25%;text-align:end;"></td>
             </tr>
@@ -1128,7 +1163,7 @@
                 <td contenteditable='true' class="zomato" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:left;">DC DEDUCTION</td>
+                <td style="width:50%;text-align:left;">CASH DELIVERY</td>
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="dc" style="width:25%;text-align:end;"></td>
             </tr>
@@ -1178,9 +1213,13 @@
                 <td style="width:50%;text-align:center;"></td>
                 <td class="net_pay" style="width:50%;text-align:center;background-color:#73acac69;"></td>
             </tr>
+            <tr>
+                <td style="width:50%;">SALARY PAID</td>
+                <td class="paid_salary" style="width:50%;text-align:center;background-color:#73acac69;"></td>
+            </tr>
         </table>
         <div style=""> 
-            <p style="font-size:12px;line-height: 14px;"><strong>Note: </strong>MR <span id="rider_id_1"></span> received <span id="total_net_pay"></span> from King Riders Delivery Services LLC, and MR <span id="rider_id_2"></span> no is not valid for any kind of Gratuity, yearly tickets or any other expenses other than the salary.
+            <p style="font-size:12px;line-height: 14px;"><strong>Note: </strong>MR <span id="rider_id_1"></span> received <span class="paid_salary"></span> from King Riders Delivery Services LLC, and MR <span id="rider_id_2"></span> no is not valid for any kind of Gratuity, yearly tickets or any other expenses other than the salary.
             </p>
         </div>
    <div id="rider_attendance_detail">
@@ -1196,6 +1235,101 @@
 <input type="hidden" name="weekly_off">
 <input type="hidden" name="weekly_off_day">
 <input type="hidden" name="extra_day">
+<div class="modal fade" id="quick_view" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header border-bottom-0">
+            <h5 class="modal-title"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+
+        </div>
+    </div>
+    </div>
+</div>
+<div class="modal fade" id="edit_row_model" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header border-bottom-0">
+            <h5 class="modal-title">Edit Rider Account</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form class="kt-form" enctype="multipart/form-data">
+                <input type="hidden" name="statement_id">
+                <div class="form-group">
+                    <label>Description:</label>
+                    <textarea readonly class="form-control" name="source" placeholder="Enter Description"></textarea>
+                    <span class="form-text text-muted">Please enter Description</span>
+                </div>
+                <div class="form-group">
+                    <label>Amount:</label>
+                    <input type="number" step="0.01" required class="form-control" name="amount" placeholder="Enter Amount" value="0">
+                    <span class="form-text text-muted">Please enter Amount</span>
+                </div>
+
+                <div class="kt-form__actions kt-form__actions--right">
+                    <button type="submit" class="btn btn-success">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    </div>
+</div>
+<div class="modal fade" id="view_upload_slip" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title">VIEW OR UPLOAD SLIP</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="kt-form" enctype="multipart/form-data" id="upload_slip_view">
+                <div class="modal-body">
+                    <div class="show_salary_slip_image" style="display:none; text-align:center;"></div>
+                    <div class="form-group select_salary_slip" style="margin-top:10px;">
+                        <div class="custom-file">
+                            <div class="custom-file" style="">
+                                <input type="file" name="slip_image" class="custom-file-input" id="slip_image">
+                                <label class="custom-file-label" for="slip_image">Choose Slip Picture</label>
+                                <span class="form-text text-muted">Select Rider Salary Slip</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kt-form__actions kt-form__actions--right">
+                        <button type="submit" class="btn btn-primary">Upload Slip</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="bills_image_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">  
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title" id="title_rider_expense">Sim Bills Image</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="kt-form" enctype="multipart/form-data" id="sim_image">
+                <div class="modal-body">
+                  <div class="sim_bills" style="display:grid;"></div>
+                    {{-- <div class="kt-form__actions kt-form__actions--right">
+                        <button type="submit" class="btn btn-danger">Add Fine</button>
+                    </div> --}}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 @section('foot')
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
@@ -1215,6 +1349,71 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script src="{{ asset('js/dataTables.cellEdit.js') }}" type="text/javascript"></script>
 <script>
+    $(document).on("click","#view-upload-slip",function(){
+        $("#view_upload_slip").modal("show");
+        $(".show_salary_slip_image").html("");
+        var _attr_image=$("#view-upload-slip").attr("data-image");
+        var _showImage=' <img class="profile-logo img img-thumbnail" src="'+_attr_image+'" alt="image"><div></div>'
+        if (_attr_image!=0) {
+            $(".show_salary_slip_image").show();
+           $(".show_salary_slip_image").html(_showImage);
+           $('form#upload_slip_view').find('[type="submit"]').html("Update Salary Slip");
+        }
+    });
+    $(".update_salary_slip_button").on("click",function(){
+        alert("aloo Bukhara ki chatni");
+    });
+    $('form#upload_slip_view').on('submit', function(e){
+            var _self = $(this);
+            var rider_id=biketrack.getUrlParameter("rider_id");
+            var month=biketrack.getUrlParameter("r1d1");
+            _self.find('[type="submit"]').prop('disabled',true);
+            e.preventDefault();
+            var _form = $(this);
+            var _Url = "{{url('admin/view/upload/salary_slip')}}"+"/"+month+"/"+rider_id;
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url : _Url,
+                type : 'POST',
+                data:new FormData(_form[0]),
+                contentType: false,
+                cache: false,
+                processData:false,
+                success: function(data){
+                    $('#view_upload_slip').modal('hide');
+                    _self.find('[type="submit"]').prop('disabled',false);
+                    // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
+                    swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Record updated successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    table.ajax.reload(null, false);
+                },
+                error: function(error){
+                    _self.find('[type="submit"]').prop('disabled',false);
+                    // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Unable to update.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+        });
+
+
+
+
   var basic_alert= '   <div><div class="alert fade show" role="alert">  '  + 
  '                                   <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div>  '  + 
  '                                       <div class="alert-text">A simple danger alert—check it out!</div>  '  + 
@@ -1354,7 +1553,7 @@
             biketrack.refresh_global()
         }
     });
-    $("#mics_charges").on('shown.bs.modal', function(){
+    $("#mics_charges").on('shown.bs.modal', function(){ 
         var rider_id=biketrack.getUrlParameter('rider_id');
         $('#visa_charges [name="visa_rider_id"]').val(rider_id);
         var month=biketrack.getUrlParameter('r1d1');
@@ -1417,8 +1616,10 @@
                 success: function(data){
                     var _data=data.data;
                     console.log(_data);
-                    $('.attendance__msg-container').hide();
-                    if(!_data) return; 
+                    $('.attendance__msg').hide();
+                    $(".rider_days_detail tbody").html(""); 
+                    $(".rider_days_detail tfoot").html(""); 
+                    if(!_data) {return; }
                     if(_data.error!=null){
                         var _err = JSON.parse(_data.error);
                         var _errCode=parseInt(_err.error_code);
@@ -1430,8 +1631,8 @@
                             _msg.find('.alert-text').html(msg);
                             _msg.find('.alert').addClass('alert-outline-danger');
                             $('.attendance__sync-data').show();
-                            $('.attendance__msg').html(_msg.html());
-                            $('#resync__attendace_data').html(JSON.stringify(_data));
+                            $('.attendance__msg').html(_msg.html()).show();
+                            // $('#resync__attendace_data').html(JSON.stringify(_data));
                             // return;
                         }
                         if(_errCode==1){
@@ -1445,6 +1646,7 @@
                         }
 
                     }
+                    $('#resync__attendace_data').html(JSON.stringify(_data));
                     var time_sheet=_data.time_sheet;
                     var  rows='';
                     var calculated_trips=0;
@@ -1452,6 +1654,12 @@
                     
                     var total_absents=_data.absents_count;
                     var extra_day=_data.extra_day;
+
+                    var absent_hours=total_absents*11;
+                    var work_hours_days=_data.working_days*11;
+                    time_sheet.sort(function(a,b){
+                        return a.date<b.date?-1:1;
+                    });
                     time_sheet.forEach(function(item,j){
                         var trips=parseFloat(item.trips)||0;
                         var login_hours=parseFloat(item.login_hours)||0;
@@ -1486,11 +1694,14 @@
                         calculated_hours+=login_hours;
                        rows+='<tr><td style=" width: 25%;">'+date+'</td><td style=" width: 25%;text-align: center;">'+trips+'</td><td style=" width: 25%;text-align: center;">'+login_hours+'</td> <td class="absents" style=" width: 25%;text-align: center;">'+status+'</td></tr>';
                     });
+                    var less_time=work_hours_days - calculated_hours;
+                    var actual_hours=286 - less_time - absent_hours;
                     $("[name='absent_days']").val(total_absents);
                     $('[name="extra_day"]').val(extra_day);
                     $(".rider_days_detail tbody").html(rows); 
-                    $(".rider_days_detail tfoot").html('<tr><th>Total</th><th>'+calculated_trips.toFixed(2)+'</th><th>'+calculated_hours.toFixed(2)+'</th><th></th></tr>');
-                  var _name =  $('[name="rider_id"]:eq(0) option:selected').text().trim();
+                    var tr='<tr><th>Total</th><th>'+calculated_trips.toFixed(2)+'</th><th>'+calculated_hours.toFixed(2)+'</th><th></th></tr><tr><th>Actual Hours</th><th></th><th colspan="2">(Total: 286)-(Off: '+absent_hours+')-(Less time: '+less_time.toFixed(2)+')= '+actual_hours.toFixed(2)+'</th></tr>';
+                    $(".rider_days_detail tfoot").html(tr);
+                  var _name =  $('[name="rider_id"]:eq(0) option:selected').text().trim(); 
                   $('.custom_rider_id').text('Rider id: '+_data.rider_id);
                   $('.custom_rider_name').text('Rider name: '+_name);
 
@@ -1552,6 +1763,8 @@
             $(".days_payout").hide();
         });
         $('form#visa_charges').on('submit', function(e){
+            var _self = $(this);
+            _self.find('[type="submit"]').prop('disabled',true);
             e.preventDefault();
             var _form = $(this);
             var url = '{{route('admin.mics_charges')}}';
@@ -1566,6 +1779,7 @@
                 data: _form.serializeArray(),
                 success: function(data){
                     $('#mics_charges').modal('hide');
+                    _self.find('[type="submit"]').prop('disabled',false);
                     // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
                     swal.fire({
                         position: 'center',
@@ -1577,6 +1791,7 @@
                     table.ajax.reload(null, false);
                 },
                 error: function(error){
+                    _self.find('[type="submit"]').prop('disabled',false);
                     // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
                     swal.fire({
                         position: 'center',
@@ -1591,6 +1806,8 @@
         });
         $('form#advance_paid').on('submit', function(e){
             e.preventDefault();
+            var _self = $(this);
+            _self.find('[type="submit"]').prop('disabled',true);
             var _form = $(this);
             var url = '{{route('admin.AR_store')}}';
             $.ajaxSetup({
@@ -1604,6 +1821,7 @@
                 data: _form.serializeArray(),
                 success: function(data){
                     $('#advance').modal('hide');
+                    _self.find('[type="submit"]').prop('disabled',false);
                     // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
                     swal.fire({
                         position: 'center',
@@ -1615,6 +1833,7 @@
                     table.ajax.reload(null, false);
                 },
                 error: function(error){
+                    _self.find('[type="submit"]').prop('disabled',false);
                     // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
                     swal.fire({
                         position: 'center',
@@ -1630,6 +1849,8 @@
         $('form#cash_paid').on('submit', function(e){
             e.preventDefault();
             var _form = $(this);
+            var _self = $(this);
+            _self.find('[type="submit"]').prop('disabled',true);
             // var _cta = _form.find('[type="submit"]');
             // _cta.prop('disabled', true).addClass('btn-icon').html('<i class="fa flaticon2-refresh fa-spin"></i>');
             var url = '{{route('admin.cash_paid')}}';
@@ -1644,6 +1865,7 @@
                 data: _form.serializeArray(),
                 success: function(data){
                     $('#cash_paid').modal('hide');
+                    _self.find('[type="submit"]').prop('disabled',false);
                     // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
                     swal.fire({
                         position: 'center',
@@ -1655,6 +1877,7 @@
                     table.ajax.reload(null, false);
                 },
                 error: function(error){
+                    _self.find('[type="submit"]').prop('disabled',false);
                     // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
                     swal.fire({
                         position: 'center',
@@ -1670,6 +1893,8 @@
         $('form#cash_pay_cr').on('submit', function(e){
             e.preventDefault();
             var _form = $(this);
+            var _self = $(this);
+            _self.find('[type="submit"]').prop('disabled',true);
             // var _cta = _form.find('[type="submit"]');
             // _cta.prop('disabled', true).addClass('btn-icon').html('<i class="fa flaticon2-refresh fa-spin"></i>');
             var url = '{{route('admin.cash_credit_rider')}}';
@@ -1683,6 +1908,7 @@
                 type : 'POST',
                 data: _form.serializeArray(),
                 success: function(data){
+                    _self.find('[type="submit"]').prop('disabled',false)
                     $('#cash_pay_credit').modal('hide');
                     // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
                     swal.fire({
@@ -1695,6 +1921,7 @@
                     table.ajax.reload(null, false);
                 },
                 error: function(error){
+                    _self.find('[type="submit"]').prop('disabled',false)
                     // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
                     swal.fire({
                         position: 'center',
@@ -1710,6 +1937,8 @@
         $('form#cash_pay_dr').on('submit', function(e){
             e.preventDefault();
             var _form = $(this);
+            var _self = $(this);
+            _self.find('[type="submit"]').prop('disabled',true);
             // var _cta = _form.find('[type="submit"]');
             // _cta.prop('disabled', true).addClass('btn-icon').html('<i class="fa flaticon2-refresh fa-spin"></i>');
             var url = '{{route('admin.cash_debit_rider')}}';
@@ -1723,6 +1952,7 @@
                 type : 'POST',
                 data: _form.serializeArray(),
                 success: function(data){
+                    _self.find('[type="submit"]').prop('disabled',false)
                     $('#cash_pay_debit').modal('hide');
                     // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
                     swal.fire({
@@ -1735,6 +1965,7 @@
                     table.ajax.reload(null, false);
                 },
                 error: function(error){
+                    _self.find('[type="submit"]').prop('disabled',false)
                     // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
                     swal.fire({
                         position: 'center',
@@ -1765,6 +1996,95 @@
     });
     var table;
     $(function(){
+        $('[data-ajax]').on('click', function(e){
+            e.preventDefault();
+            var _ajaxUrl = $(this).attr('data-ajax');
+            console.log(_ajaxUrl);
+            var _self = $(this);
+            _self.find('[type="submit"]').prop('disabled',true);
+            var loading_html = '<div class="d-flex justify-content-center modal_loading"><i class="la la-spinner fa-spin display-3"></i></div>';
+            var _quickViewModal = $('#quick_view');
+            var selected_month=new Date(biketrack.getUrlParameter("r1d1")).format('mmmm yyyy');
+            console.log(selected_month);
+            _quickViewModal.find('.modal-body').html(loading_html);
+            _quickViewModal.modal('show');
+            $.ajax({
+                url : _ajaxUrl,
+                type : 'GET',
+                dataType: 'html',
+                success: function(data){
+                    console.log($(data));
+                    
+                    var _targetForm = $(data).find('form').wrap('<p/>').parent().html();
+                    
+                    
+                    _quickViewModal.find('.modal-title').text(_self.text().trim());
+                   
+                    _quickViewModal.find('.modal-body').html(_targetForm);
+                    _quickViewModal.find('[name="month"]').attr('data-month',selected_month);
+                    _quickViewModal.find('[name="month_year"]').attr('data-month',selected_month);
+                    $('script[data-ajax]').remove();
+                    console.warn($(data).find('[data-ajax]'));
+                    var $ajax_script = $(data).find('[data-ajax]');
+                    if($ajax_script.length==0) $ajax_script = $(data).filter('[data-ajax]');
+
+                    if($ajax_script.length==0) alert('Cannot find ajax script in this form');
+                    $('body').append('<script data-ajax>'+$ajax_script.eq(0).html()+'<\/script>');
+
+                    var rider_id = $('#gb_rider_id').val();
+                    if(_quickViewModal.find('[name="rider_id"]').length){
+                        _quickViewModal.find('[name="rider_id"]').val(rider_id).trigger('change.select2');
+                    }
+                        biketrack.refresh_global();
+                    //add event handler to submit form in modal
+                    _quickViewModal.find('form').off('submit').on('submit', function(e){
+                        e.preventDefault();
+                        _quickViewModal.modal('hide');
+                        var _form = $(this);
+                        var _url = _form.attr('action');
+                        $.ajax({
+                            url : _url,
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            type : 'POST',
+                            data: _form.serialize(),
+                            success: function(data){
+                                console.log(data);
+                                _self.find('[type="submit"]').prop('disabled',true);
+                                
+                                swal.fire({
+                                    position: 'center',
+                                    type: 'success',
+                                    title: 'Record updated successfully.',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                                table.ajax.reload(null, false);
+                                table_bills.ajax.reload(null, false);
+                            },
+                            error: function(error){
+                                _self.find('[type="submit"]').prop('disabled',true);
+                                swal.fire({
+                                    position: 'center',
+                                    type: 'error',
+                                    title: 'Oops...',
+                                    text: 'Unable to update.',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                            }
+                        });
+                    });
+
+                    biketrack.refresh_global();
+                },
+                error: function(error){
+                    console.log(error);
+                }
+            });
+            
+        });
         
         $('.kt-select2').select2({
             placeholder: "Select a rider",
@@ -1855,7 +2175,7 @@
             
             console.log(data);
             biketrack.updateURL(data);
-            var url = "{{ url('admin/accounts/rider/account/') }}"+"/"+JSON.stringify(_data) ;
+            var url =JSON.stringify(_data);
             getData(url);
         });
 
@@ -1891,7 +2211,7 @@
             
             console.log(data);
             biketrack.updateURL(data);
-            var url = "{{ url('admin/accounts/rider/account/') }}"+"/"+JSON.stringify(_data) ;
+            var url = JSON.stringify(_data);
             getData(url);
             // var _Url = "{{url('/company/debits/get_salary_deduction/')}}"+"/"+_riderId+''
         });
@@ -1921,7 +2241,7 @@
             
             console.log(data);
             biketrack.updateURL(data);
-            var url = "{{ url('admin/accounts/rider/account/') }}"+"/"+JSON.stringify(_data) ;
+            var url =JSON.stringify(_data) ;
             getData(url);
         });
                 
@@ -1969,10 +2289,11 @@
         
 
 
-        var getData = function(url){
+        var getData = function(ranges){
             var rider_id=biketrack.getUrlParameter('rider_id');
             $('[name="rider_id"], [name="rider_id_num"]').val(rider_id).trigger("change.select2");
-            console.warn(url)
+            console.warn(ranges)
+            var url="{{ url('admin/accounts/rider/account/') }}"+"/"+ranges;
             table = $('#data-table').DataTable({
                 lengthMenu: [[-1], ["All"]],
                 destroy: true,
@@ -1987,6 +2308,19 @@
                     console.log(data);
                     var response = table.ajax.json();
                     console.log(response);
+                    console.log(response.salary_paid+"response");
+                        $('form#upload_slip_view').find('[type="submit"]').prop('disabled',false);
+                        $('form#upload_slip_view').find('[type="submit"]').html("Upload Slip");
+                    if (response.salary_paid==0) {
+                        $('form#upload_slip_view').find('[type="submit"]').prop('disabled',true);
+                        $('form#upload_slip_view').find('[type="submit"]').html("Salary is not Paid"); 
+                    }
+                    $("#view-upload-slip").attr("data-image",response.salary_slip);
+                    $("#view-upload-slip").html("Upload Salary Slip")
+                    if(response.salary_slip!=0){
+                        $("#view-upload-slip").html("View Salary Slip");
+                    }
+                   
                     var _ClosingBalance = 0;
                     if(response && typeof response.closing_balance !== "undefined")_ClosingBalance = response.closing_balance;
                     $('.previous_balance').text(response.closing_balance_prev);
@@ -2003,7 +2337,6 @@
                     $('.bike_allowns').html(response.bike_allowns);
                     $('.tip').html(response.tip);
                     $('.bones').html(response.bones);
-
 
                     $('.bike_fine').html(response.bike_fine);
                     $('.advance').html(response.advance);
@@ -2027,11 +2360,20 @@
                     $('.total_dr').html(total_dr);
                     $('.net_pay').html(net_pay);
                     $('#total_net_pay').html(net_pay);
+                    $('.paid_salary').html(response.salary_paid);
                     $('#rider_id_1').html(response.rider);
                     $('#rider_id_2').html(response.rider);
-                   var onclick_event_of_pay=$("#getting_val").attr('onclick')||"";
-                    if (onclick_event_of_pay!=="") {
+                    var is_salary_generated=$("#getting_val").length>0;
+                   var is_update=$("#getting_val").attr('data-update');
+                   is_update=typeof is_update!=="undefined" && is_update!==false;
+
+                    if (is_salary_generated) {
                         $("#to_pay").show();
+                        $("#to_pay").html('<i class="fa fa-dollar-sign"></i> Pay Salary');
+                        if(is_update){
+                            //update salary
+                            $("#to_pay").html('<i class="fa fa-dollar-sign"></i> Update Salary');
+                        }
                         $("#to_pay").attr("onclick",$("#getting_val").attr('onclick'));
                         $("#to_pay").attr("data-target",$("#getting_val").attr('data-target'));
                     }
@@ -2039,7 +2381,7 @@
                         $("#to_pay").hide();
                     }
                     
-                    
+                    $("#for_days_payouts").trigger("click");
                 },
                 ajax: url,
                 columns: [
@@ -2049,35 +2391,74 @@
                     { data: 'dr', name: 'dr' },
                     { data: 'cash_paid', name: 'cash_paid' },
                     { data: 'balance', name: 'balance' },
-                    // { data: 'action', name: 'action' },
+                    { data: 'action', name: 'action' },
                     
                 ],
                 responsive:true,
                 order: [0, 'asc'],
             });
-
-            table.MakeCellsEditable("destroy"); 
-            table.MakeCellsEditable({
-                "onUpdate": InlineEdit_CallBack,
-                "onValidate": function(updatedCell, updatedRow, newValue){
-                    var __data = updatedRow.data();
-                    console.warn('__data', __data);
-                    return true;
+            var url = "{{ url('admin/accounts/company/bills/') }}"+"/"+ranges;
+            table_bills = $('#table-bills').DataTable({
+                lengthMenu: [[-1], ["All"]],
+                dom: 't',
+                destroy: true,
+                processing: true,
+                ordering: false,
+                serverSide: true,
+                'language': { 
+                    'loadingRecords': '&nbsp;',
+                    'processing': $('.loading').show()
                 },
-                "allowNulls": {
-                    "errorClass": 'error'
-                },
-                "columns": [1,2,3,4],
-                "inputCss":'form-control',
-                "dont_apply_if_null": "action", // check the field, if null, then will not make the cell editable (custom work - on public\js\dataTables.cellEdit.js)
-                "inputTypes": [
-                    {
-                        "column":2, 
-                        "type":"number-confirm", 
-                        "options":null 
+                drawCallback:function(data){
+                    console.log(data);
+                    $('#btnSend_profit').text('').fadeOut('fast'); 
+                    var response = table.ajax.json();
+                    console.log(response);
+                    
+                    if(typeof response == "undefined") return;
+                    var _ClosingBalance = response.closing_balance;
+                    var _Month = response.last_month;
+                    var _Running_Balance = response.running_static_balance;
+                    $('#closing_balance').text(_ClosingBalance);
+                    var running_closing_balance = _Running_Balance;
+                    if(running_closing_balance > 0){
+                        $('#btnSend_profit').text('Send '+parseFloat(_Running_Balance).toFixed(2)+' to Company Profit').attr('data-month', _Month).attr('data-profit', _Running_Balance).fadeIn('fast'); 
                     }
-                ]
+                    
+                },
+                ajax: url,
+                columns: [
+                    { data: 'date', name: 'date' },            
+                    { data: 'bill', name: 'bill' },
+                    { data: 'amount', name: 'amount' },
+                    { data: 'payment_status', name: 'payment_status' },
+                    { data: 'action', name: 'action' },
+                   
+                ],
+                responsive:true,
             });
+            // table.MakeCellsEditable("destroy"); 
+            // table.MakeCellsEditable({
+            //     "onUpdate": InlineEdit_CallBack,
+            //     "onValidate": function(updatedCell, updatedRow, newValue){
+            //         var __data = updatedRow.data();
+            //         console.warn('__data', __data);
+            //         return true;
+            //     },
+            //     "allowNulls": {
+            //         "errorClass": 'error'
+            //     },
+            //     "columns": [1,2,3,4],
+            //     "inputCss":'form-control',
+            //     "dont_apply_if_null": "action", // check the field, if null, then will not make the cell editable (custom work - on public\js\dataTables.cellEdit.js)
+            //     "inputTypes": [
+            //         {
+            //             "column":2, 
+            //             "type":"number-confirm", 
+            //             "options":null 
+            //         }
+            //     ]
+            // });
         }
 
         function InlineEdit_CallBack (updatedCell, updatedRow, oldValue) {
@@ -2145,20 +2526,23 @@
         }
         init_table();
     })
-    function remaining_pay($rider_id, account_id){
+    function remaining_pay($rider_id, account_id,statement_id=""){
         var r1d1=biketrack.getUrlParameter('r1d1');
         $('#remaining_salary [name="month_paid_rider"]').fdatepicker('update', new Date(r1d1));
+        var is_update=statement_id!="";
         _month = new Date(r1d1).format('yyyy-mm-dd');
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }, 
                 url:"{{url('admin/accounts/company/debits/get_salary_deduction/')}}"+'/'+_month+'/'+$rider_id,
-                method: "GET"
+                method: "GET",
+                data:{update:is_update}
             })
             .done(function(data) {  
                 console.log(data);
                 $('#remaining_salary [name="account_id"]').val(account_id);
+                $('#remaining_salary [name="statement_id"]').val(statement_id);
                 $('#remaining_salary [name="recieved_salary"]').off('change input').on('change input', function(){
                     var _gross_salary = parseFloat($('#remaining_salary [name="gross_salary"]').val().trim());
                     var _recieved_salary = parseFloat($(this).val().trim());
@@ -2171,11 +2555,11 @@
                 $('#remaining_salary [name="total_salary"]').val(data.total_salary);
                 $('#remaining_salary [name="total_bonus"]').val(data.total_bonus); 
                 var is_paid=data.is_paid; 
-                if (is_paid) {
-                    $('#remaining_salary [type="submit"]').html("The Rider has already paid").prop("disabled",true);
-                }else{
-                    $('#remaining_salary [type="submit"]').html("Submit").prop("disabled",false);
-                }
+                // if (is_paid) {
+                //     $('#remaining_salary [type="submit"]').html("The Rider has already paid").prop("disabled",true);
+                // }else{
+                //     $('#remaining_salary [type="submit"]').html("Submit").prop("disabled",false);
+                // }
                 
 
             });
@@ -2194,6 +2578,57 @@
         // $('#remaining_salary [name="recieved_salary"]').val(total_G);
        
     }
+        function updateStatusBills(rider_id,month,type)
+{
+    var url = "{{ url('admin/bill/payment') }}" + "/" + rider_id + "/updateStatus" + "/" + month + "/" + type;
+    console.log(url,true);
+    swal.fire({
+        title: 'Are you sure?',
+        text: "You want to Pay Bill!",
+        type: 'warning', 
+        showCancelButton: true,
+        confirmButtonText: 'Yes!'
+    }).then(function(result) {
+        if (result.value) {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url : url,
+                type : 'PUT',
+                beforeSend: function() {            
+                    $('.loading').show();
+                },
+                complete: function(){
+                    $('.loading').hide();
+                },
+                success: function(data){
+                    swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Record updated successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    table.ajax.reload(null, false);
+                    table_bills.ajax.reload(null, false);
+                },
+                error: function(error){
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Unable to update.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+        }
+    });
+}
     
     function updateStatus(id)
 {
@@ -2302,7 +2737,63 @@
 $('#print_slip_for_rider2 [contenteditable]').on('change input', function(){
 	change_edit_prints_inputs('#print_slip_for_rider2');
 })
-function deleteCompanyRows(id,model_class,model_id,rider_id,string,month){
+function editRows($this,id,model_class,model_id,rider_id,string,month){
+    console.log(id);
+    var _tr = $($this).parents('tr');
+    var _row = table.row(_tr).data();
+    var _model = $('#edit_row_model');
+    _model.find('[name="source"]').val(_row.source);
+    _model.find('[name="amount"]').val(_row.amount);
+    _model.find('[name="statement_id"]').val(_row.id);
+    
+    _model.modal('show');
+
+    _model.find('form').off('submit').on('submit', function(e){
+        e.preventDefault();
+        var url = "{{route('admin.accounts.edit_rider')}}";
+        var _form = $(this);
+        var _submitBtn = _form.find('[type="submit"]');
+        $.ajax({
+            url : url,
+            type : 'PUT',
+            data:_form.serializeArray(),
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            beforeSend: function() {            
+                // $('.loading').show();
+                _submitBtn.prop('disabled', true);
+            },
+            complete: function(){
+                // $('.loading').hide();
+                _submitBtn.prop('disabled', false);
+                _model.modal('hide');
+            },
+            success: function(data){
+                swal.fire({
+                    position: 'center',
+                    type: 'success',
+                    title: 'Record updated successfully.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                table.ajax.reload(null, false);
+            },
+            error: function(error){
+                swal.fire({
+                    position: 'center',
+                    type: 'error',
+                    title: 'Oops...',
+                    text: 'Unable to update.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        });
+    });
+
+}
+function deleteRows(id,model_class,model_id,rider_id,string,month){
     var url = "{{ url('admin/delete/accounts/rows') }}";
     console.log(url);
     swal.fire({
@@ -2417,6 +2908,46 @@ $('#rider_attendance_detail').find('.custom_rider_name').hide()
 
 printJS('print_slip_for_rider2', 'html');
 },1000)
+}
+
+function SimBillsImage(rider_id,month,type){
+    var url = "{{ url('admin/sim/bill/image') }}" + "/" + rider_id + "/" + month + "/" + type ;
+    console.log(url,true);
+    $("#bills_image_model").modal("show");
+    $(".sim_bills").html("");
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        url : url,
+        type : 'GET',
+        success: function(data){
+            console.log(data);
+            data.sim_trans_id.forEach(function(i,j){
+                console.log(i);
+                var image='<div style="text-align: center;margin: 2px 0px 20px 0px;"><img class="profile-logo img img-thumbnail" src="'+i+'" alt="image"></div>'
+                if (i!=null&&i!='') {
+                    $(".sim_bills").append(image);   
+                }
+            });
+            
+            table.ajax.reload(null, false);
+            table_bills.ajax.reload(null, false);
+        },
+        error: function(error){
+            swal.fire({
+                position: 'center',
+                type: 'error',
+                title: 'Oops...',
+                text: 'Unable to Show.',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+    });
+
 }
 </script>
 @endsection

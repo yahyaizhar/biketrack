@@ -462,39 +462,32 @@ class SalikController extends Controller
 
     /* ===Get sim according to rider and rider according to sim=== */
     public function get_active_sims_ajax_salik($_id, $date,$according_to){
-        $sim_history = Sim_history::all();
+        $sim_history = Sim_History::with('Rider')->with('Sim')->get()->toArray();;
         $sim_histories = null;
-        $history_found = Arr::first($sim_history, function ($item, $key) use ($_id, $date,$according_to) {
-            $start_created_at =Carbon::parse($item->given_date)->startOfMonth()->format('Y-m-d');
+        $history_found = Arr::where($sim_history, function ($item, $key) use ($_id, $date,$according_to) {
+            $start_created_at =Carbon::parse($item['given_date'])->startOfMonth()->format('Y-m-d');
             $created_at =Carbon::parse($start_created_at);
 
-            $start_updated_at =Carbon::parse($item->return_date)->endOfMonth()->format('Y-m-d');
+            $start_updated_at =Carbon::parse($item['return_date'])->endOfMonth()->format('Y-m-d');
             $updated_at =Carbon::parse($start_updated_at);
             $req_date =Carbon::parse($date);
             
-            if($item->status=='active'){
-                if($according_to=='bike'){
-                    return $item->bike_id==$_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+            if($item['status']=='active'){
+                if($according_to=='sim'){
+                    return $item['sim_id']==$_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
                 }
                 return $item['rider_id']==$_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
             }
-            if($according_to=='bike'){
-                return $item->bike_id==$_id &&
+            if($according_to=='sim'){
+                return $item['sim_id']==$_id &&
                 ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
             }
-            return $item->rider_id==$_id &&
+            return $item['rider_id']==$_id &&
                 ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
         });
 
         if(isset($history_found)){
             $sim_histories = $history_found;
-        }else {
-            $to_find = $according_to=='sim'?'sim_id':'rider_id';
-            $sim_history = Sim_history::where($to_find, $_id)
-            ->where('status', 'active')->get()->first();
-            if(isset($sim_history)){
-               $sim_histories = $sim_history;
-            }
         }
         return response()->json([
             'sim_histories' => $sim_histories,

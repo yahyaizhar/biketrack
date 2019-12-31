@@ -15,14 +15,14 @@
                 </div>
 
                 <!--begin::Form-->
-                
-                @include('admin.includes.message')
-                <form class="kt-form" action="{{ route('Sim.store_sim') }}" method="POST" enctype="multipart/form-data">
+                {{-- @include('admin.includes.message') --}}
+                <form class="kt-form" action="{{ route('Sim.store_sim') }}" method="POST" enctype="multipart/form-data" id="sim">
                     {{ csrf_field() }}
                     <div class="kt-portlet__body">
                             <div class="form-group">
                                     <label>Sim Number:</label>
                                     <input type="text" class="form-control @if($errors->has('sim_number')) invalid-field @endif" name="sim_number" placeholder="Enter Sim Number" value="{{ old('sim_number') }}">
+                                    <span class="input_error form-text text-danger"></span>
                                     @if ($errors->has('sim_number'))
                                         <span class="invalid-response" role="alert">
                                             <strong>
@@ -46,12 +46,12 @@
                                             </span>
                                         @endif
                                     </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label>Status:</label>
                             <div>
                                 <input data-switch="true" name="status" id="status" type="checkbox" checked="checked" data-on-text="Enabled" data-handle-width="70" data-off-text="Disabled" data-on-color="brand">
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="kt-portlet__foot">
                         <div class="kt-form__actions kt-form__actions--right">
@@ -65,4 +65,13 @@
 @endsection
 @section('foot')
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/bootstrap-switch.js') }}" type="text/javascript"></script>
+<script>
+    $(document).ready(function(){
+        $('#sim [name="sim_number"]').on('input change', function(){
+            var _val= $(this).val();
+            var validated_val = _val.match( /[ ]{0,1}[\d]/g ).join([]);
+            $(this).val(validated_val);
+        });
+    });
+</script>
 @endsection

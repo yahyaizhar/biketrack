@@ -121,7 +121,7 @@ class AccountsController extends Controller
         $ra->source=str_replace('_',' ',ucfirst($r->type))." Charges";
         $ra->id_charge_id=$id_charge->id;
         $ra->save();
-        return redirect(route('admin.accounts.id_charges_view'));
+        return redirect(route('admin.id_charges_edit_view',$id_charge->id));
     }
     public function delete_id_charges($id)
     {
@@ -198,7 +198,7 @@ class AccountsController extends Controller
         $workshop->update();
 
         
-        return redirect(route('admin.accounts.workshop_view'));
+        return redirect(route('admin.workshop_edit_view',$workshop->id));
     }
     public function delete_workshop($id)
     {
@@ -284,7 +284,7 @@ class AccountsController extends Controller
         $ca->amount=$r->amount;
         $ca->save();
 
-        return redirect(route('admin.accounts.edirham_view'));
+        return redirect(route('admin.edirham_edit_view',$edirham->id));
     }
     public function delete_edirham($id)
     {
@@ -492,7 +492,7 @@ class AccountsController extends Controller
             $maintenance->status = 0;
         $maintenance->update();
         
-        $assign_bike=where('bike_id', $maintenance->bike_id)
+        $assign_bike=Assign_bike::where('bike_id', $maintenance->bike_id)
         ->whereDate('created_at','<=',Carbon::parse($r->month)->format('Y-m-d'))
         ->get()
         ->last();
@@ -626,7 +626,7 @@ class AccountsController extends Controller
         }
         
         
-        return redirect(route('admin.accounts.maintenance_view'));
+        return redirect(route('admin.maintenance_edit_view',$maintenance->id));
     }
     public function delete_maintenance($id)
     {
@@ -784,11 +784,22 @@ class AccountsController extends Controller
                         
         return view('admin.accounts.Rider_Debit.view_account',compact('closing_balance','rider', 'rider_statements', 'opening_balance')); 
     }
-    public function get_salary_deduction($month, $rider_id){   
+    public function get_salary_deduction(Request $r,$month, $rider_id){   
         // before tthat check if rider is zomato's
         $startMonth = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
         $month = Carbon::parse($month)->format('Y-m-d');
         $onlyMonth = Carbon::parse($month)->format('m');
+
+        $is_update = $r->update;
+        if($is_update==true || $is_update=='true'){
+            $is_update=true;
+        }
+        else {
+            $is_update=false;
+        }
+        // return response()->json([
+        //     'a'=>$is_update
+        // ]);
         
         $rider = Rider::find($rider_id);
 
@@ -807,7 +818,7 @@ class AccountsController extends Controller
         })
         ->whereDate('month', '<',$startMonth)
         ->sum('amount');
-        $closing_balance_prev = $rider_debits_cr_prev_payable - $rider_debits_dr_prev_payable;
+        $closing_balance_prev = round($rider_debits_cr_prev_payable - $rider_debits_dr_prev_payable,2);
         //ends prev payables
 
         $ra_payable=Rider_Account::where("rider_id",$rider_id)
@@ -817,6 +828,18 @@ class AccountsController extends Controller
             ->orWhere('type', 'dr');
         })
         ->sum('amount'); 
+        if($is_update)
+        {
+            //we skip paid salary
+            $ra_payable=Rider_Account::where("rider_id",$rider_id)
+            ->whereMonth("month",$onlyMonth)
+            ->where(function($q) {
+                $q->where('type', "cr_payable")
+                ->orWhere('type', 'dr');
+            })
+            ->where("source",'!=',"salary_paid")
+            ->sum('amount');
+        }
 
 
         $ra_cr=Rider_Account::where("rider_id",$rider_id)
@@ -895,7 +918,7 @@ class AccountsController extends Controller
                 $zomato_trips = $ra_zomatos->trips_payable;
 
                 $hours=$calculated_hours;
-                $hours_payable=$hours*$_s_hoursFormula;
+                // $hours_payable=$hours*$_s_hoursFormula;
 
                 $trips = $calculated_trips > $_s_maxTrips?$_s_maxTrips:$calculated_trips;
                 $trips_payable = $trips * $_s_tripsFormula;
@@ -905,8 +928,9 @@ class AccountsController extends Controller
 
                 // $trips_payable+=$trips_EXTRA_payable;
 
-                $payable_hours=$_s_monthlyHours - $absent_hours - $less_time;
+                $payable_hours=round($_s_monthlyHours - $absent_hours - $less_time,2);
 
+                $hours_payable=$payable_hours*$_s_hoursFormula;
                 if($calculated_trips > $_s_maxTrips){
                     $bonus=50;
                 }
@@ -965,7 +989,7 @@ class AccountsController extends Controller
             'total_deduction'=>round($ra_payable,2),
             'total_salary'=>round($total_salary_amt,2),
             'closing_balance_prev'=>$closing_balance_prev,
-            'is_paid'=>$is_paid,
+            'is_paid'=>$is_paid_salary,
             'is_generated'=>$is_generated_salary,
             'absent_count'=>$absent_count,
             'weekly_off'=>$weekly_off,
@@ -1215,7 +1239,7 @@ class AccountsController extends Controller
         // } 
        
     // }
-        return redirect(route('account.developer_salary'));
+        return redirect(route('admin.accounts.company_account'));
     }
 
     // end add new salary
@@ -1563,7 +1587,7 @@ elseif($fuel_expense->type=="cash"){
     // $ra->save();
     
 }
-    return redirect(route('admin.fuel_expense_view'));
+    return redirect(route('admin.edit_fuel_expense_view',$fuel_expense->id));
 }
 
 
@@ -1815,12 +1839,16 @@ public function income_zomato_import(Request $r){
             $bonus_amount = 50;  // bonus amount
             $extra_msg = "";
             if( $obj['feid'] == $top_rider_1_FEID){
-                $bonus_amount = 100;
+                $bonus_amount = 100 + 50;
                 $extra_msg = " + 1st Position Bonus";
             } 
             if( $obj['feid'] == $top_rider_2_FEID){
-                $bonus_amount = 75;
+                $bonus_amount = 75 + 50;
                 $extra_msg = " + 2nd Position Bonus";
+            }
+            if( $obj['feid'] == $top_rider_3_FEID){
+                $bonus_amount = 50 + 50;
+                $extra_msg = " + 3rd Position Bonus";
             } 
 
             $ca_obj = [];
@@ -2082,7 +2110,7 @@ public function client_income_update(Request $request,$id){
     $ca->amount=$update_income->amount;
     $ca->save();
    
-        return redirect(route('admin.client_income_view'));
+        return redirect(route('admin.client_income_edit_view',$update_income->id));
 }
 // end Client_income
 
@@ -2154,9 +2182,18 @@ public function client_income_update(Request $request,$id){
     public function rider_remaining_salary_add(Request $r){
         $ra=Rider_Account::find($r->account_id);
         $salary = Rider_salary::find($ra->salary_id);
-
         //adding cash
-        $new_ra=new Rider_Account;
+        $statement_id=$r->statement_id;
+        if(isset($statement_id) && $statement_id!=""){
+            //update salary
+            $new_ra=Rider_Account::find($statement_id);
+        }
+        else {
+            $new_ra=new Rider_Account;
+        }
+        // return response()->json([
+        //     'a'=>$new_ra
+        // ]);
         $new_ra->type="dr";
         $new_ra->amount=$r->recieved_salary;
         $new_ra->source="salary_paid";
@@ -2250,8 +2287,9 @@ public function client_income_update(Request $request,$id){
     ]);
 
 }
-    public function zomato_salary_sheet_export(){
-        return view('admin.accounts.Income.zomato_salary_sheet');
+    public function zomato_salary_sheet_export($client_id){
+        $client=Client::find($client_id);
+        return view('admin.accounts.Income.zomato_salary_sheet', compact('client'));
     }
     public function salary_slip(){
         return view('salary_slip_month');
@@ -2454,7 +2492,17 @@ public function client_income_update(Request $request,$id){
                     $obj['weekly_off']=$weekly_off;
                     $obj['extra_day']=$extra_day;
                     $obj['working_days']=$working_days;
+
+                    $workable_days = $working_days * 11;
+                    $absent_hours = $absents_count * 11;
+
+                    $less_time = $workable_days - $calculated_hours;
+
+                    $payable_hours = 286 - $absent_hours - $less_time;
+
+                    $obj['actual_hours']=$payable_hours;
                     $obj['calculated_hours']=$calculated_hours;
+
                     $obj['calculated_trips']=$calculated_trips;
                     if($is_error==true){
                         $err=[];
@@ -2573,4 +2621,27 @@ public function client_income_update(Request $request,$id){
             'income_zomato'=>$income_zomato,
         ]);
     }
+    public function edit_company_account(Request $r){
+       $statement_id=$r->statement_id;
+       $source=$r->source;
+       $amount = $r->amount;
+       $company_statement = Company_account::find($statement_id);
+       $company_statement->amount=$amount;
+       $company_statement->save();
+        return response()->json([
+            'status'=>1
+        ]);
+    }
+    public function edit_rider_account(Request $r){
+        $statement_id=$r->statement_id;
+        $source=$r->source;
+        $amount = $r->amount;
+        $company_statement = Rider_account::find($statement_id);
+        $company_statement->amount=$amount;
+        $company_statement->save();
+         return response()->json([
+             'status'=>1
+         ]);
+     }
+    
 }

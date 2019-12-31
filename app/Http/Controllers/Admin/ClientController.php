@@ -39,6 +39,11 @@ class ClientController extends Controller
         $clients_count=Client::where("active_status","A")->get()->count();
         return view('admin.client.clients',compact('clients_count'));
     }
+    public function get_active_clients()
+    {
+        $clients_count=Client::where("active_status","A")->get()->count();
+        return view('admin.client.clients_active',compact('clients_count'));
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -373,7 +378,7 @@ public function bike_assigned_show($id){
     
     $bikes->save();
 // return $assign_bikes; 
-return redirect()->route('bike.bike_assigned', ['id'=>$rider->id]) ;
+return redirect(route('Bike.assignedToRiders_History', $rider->id))->with('message', 'Bike assigned successfully.');;
 }
   public function mutlipleDeleteBike(Request $request)
   {

@@ -26,7 +26,7 @@
                 <!--begin::Form-->
                 
                 @include('admin.includes.message')
-                <form class="kt-form" action="{{ route('bike.bike_create') }}" method="POST" enctype="multipart/form-data">
+                <form class="kt-form" action="{{ route('bike.bike_create') }}" method="POST" enctype="multipart/form-data" id="add_bikeForm">
                     {{ csrf_field() }}
                     <div class="kt-portlet__body">
                         <div class="form-group">
@@ -283,6 +283,12 @@
         });
       $(document).on("change input",'.select2-search__field',function(){
          var  selected_option=$(this).val();
+        });
+
+        $('#add_bikeForm [name="bike_number"]').on('input change', function(){
+            var _val= $(this).val();
+            var validated_val = _val.match( /[ ]{0,1}[\d]/g ).join([]);
+            $(this).val(validated_val);
         });
   });
 

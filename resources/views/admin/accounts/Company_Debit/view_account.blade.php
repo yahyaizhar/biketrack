@@ -148,14 +148,14 @@
                     <div class="kt-portlet__head-toolbar col-md-12">
                         <div class="kt-portlet__head-wrapper">
                             <div class="kt-portlet__head-actions">
-                                <a href="" data-ajax="{{ route('MobileInstallment.create') }}" class=" btn btn-success btn-elevate btn-icon-sm">
+                                {{-- <a href="" data-ajax="{{ route('MobileInstallment.create') }}" class=" btn btn-success btn-elevate btn-icon-sm">
                                     <i class="fa fa-mobile-alt"></i>
                                     Mobile Installment
                                 </a>
                                 
-                                &nbsp;
+                                &nbsp; --}}
                                 
-                                <a href="" data-ajax="{{ route('admin.fuel_expense_create') }}" class=" btn btn-danger btn-elevate btn-icon-sm">
+                                <a href="" data-ajax="{{ route('admin.fuel_expense_create') }}" class=" btn btn-success btn-elevate btn-icon-sm">
                                     <i class="fa fa-gas-pump"></i>
                                     Fuel
                                 </a>
@@ -275,6 +275,37 @@
         </div>
         <div class="modal-body">
 
+        </div>
+    </div>
+    </div>
+</div>
+<div class="modal fade" id="edit_row_model" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header border-bottom-0">
+            <h5 class="modal-title">Edit Company Account</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form class="kt-form" enctype="multipart/form-data">
+                <input type="hidden" name="statement_id">
+                <div class="form-group">
+                    <label>Description:</label>
+                    <textarea readonly class="form-control" name="source" placeholder="Enter Description"></textarea>
+                    <span class="form-text text-muted">Please enter Description</span>
+                </div>
+                <div class="form-group">
+                    <label>Amount:</label>
+                    <input type="number" step="0.01" required class="form-control" name="amount" placeholder="Enter Amount" value="0">
+                    <span class="form-text text-muted">Please enter Amount</span>
+                </div>
+
+                <div class="kt-form__actions kt-form__actions--right">
+                    <button type="submit" class="btn btn-success">Save</button>
+                </div>
+            </form>
         </div>
     </div>
     </div>
@@ -437,6 +468,27 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="bills_image_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">  
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title" id="title_rider_expense">Sim Bills Image</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="kt-form" enctype="multipart/form-data" id="sim_image">
+                <div class="modal-body">
+                  <div class="sim_bills" style="display:grid;"></div>
+                    {{-- <div class="kt-form__actions kt-form__actions--right">
+                        <button type="submit" class="btn btn-danger">Add Fine</button>
+                    </div> --}}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 @section('foot')
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
@@ -510,6 +562,7 @@
         $('form#discipline').on('submit', function(e){
             e.preventDefault();
             var _form = $(this);
+            _form.find('[type="submit"]').prop('disabled',true);
             var _modal = _form.parents('.modal');
             var url ="{{ url('admin/rider/expense/discipline/') }}";
             $.ajaxSetup({
@@ -522,6 +575,7 @@
                 type : 'GET',
                 data: _form.serializeArray(),
                 success: function(data){
+                    _form.find('[type="submit"]').prop('disabled',false);
                     _modal.modal('hide');
                     swal.fire({
                         position: 'center',
@@ -534,6 +588,7 @@
                     table.ajax.reload(null, false);
                 },
                 error: function(error){
+                    _form.find('[type="submit"]').prop('disabled',false);
                     // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
                     _modal.modal('hide');
                     swal.fire({
@@ -646,7 +701,10 @@
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                             },
                             type : 'POST',
-                            data: _form.serialize(),
+                            data: new FormData(_form[0]),
+                            contentType: false,
+                            cache: false,
+                            processData:false,
                             success: function(data){
                                 console.log(data);
                                 
@@ -1008,7 +1066,7 @@ function FineBike(rider_id,bike_fine_id,amount,month){
             });
 }
 
-    function updateStatus(rider_id,month,type)
+    function updateStatusBills(rider_id,month,type)
 {
     var url = "{{ url('admin/bill/payment') }}" + "/" + rider_id + "/updateStatus" + "/" + month + "/" + type;
     console.log(url,true);
@@ -1060,8 +1118,64 @@ function FineBike(rider_id,bike_fine_id,amount,month){
     });
 }
 
+function editRows($this,id,model_class,model_id,rider_id,string,month){
+    console.log(id);
+    var _tr = $($this).parents('tr');
+    var _row = table.row(_tr).data();
+    var _model = $('#edit_row_model');
+    _model.find('[name="source"]').val(_row.source);
+    _model.find('[name="amount"]').val(_row.amount);
+    _model.find('[name="statement_id"]').val(_row.id);
+    
+    _model.modal('show');
 
-function deleteCompanyRows(id,model_class,model_id,rider_id,string,month){
+    _model.find('form').off('submit').on('submit', function(e){
+        e.preventDefault();
+        var url = "{{route('admin.accounts.edit_company')}}";
+        var _form = $(this);
+        var _submitBtn = _form.find('[type="submit"]');
+        $.ajax({
+            url : url,
+            type : 'PUT',
+            data:_form.serializeArray(),
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            beforeSend: function() {            
+                // $('.loading').show();
+                _submitBtn.prop('disabled', true);
+            },
+            complete: function(){
+                // $('.loading').hide();
+                _submitBtn.prop('disabled', false);
+                _model.modal('hide');
+            },
+            success: function(data){
+                swal.fire({
+                    position: 'center',
+                    type: 'success',
+                    title: 'Record updated successfully.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                table.ajax.reload(null, false);
+                table_bills.ajax.reload(null, false);
+            },
+            error: function(error){
+                swal.fire({
+                    position: 'center',
+                    type: 'error',
+                    title: 'Oops...',
+                    text: 'Unable to update.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        });
+    });
+
+}
+function deleteRows(id,model_class,model_id,rider_id,string,month){
     var url = "{{ url('admin/delete/accounts/rows') }}";
     console.log(url);
     swal.fire({
@@ -1120,6 +1234,45 @@ function deleteCompanyRows(id,model_class,model_id,rider_id,string,month){
         }
     });
     
+}
+function SimBillsImage(rider_id,month,type){
+    var url = "{{ url('admin/sim/bill/image') }}" + "/" + rider_id + "/" + month + "/" + type ;
+    console.log(url,true);
+    $("#bills_image_model").modal("show");
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url : url,
+                type : 'GET',
+                success: function(data){
+                    console.log(data);
+                    $(".sim_bills").html("");
+                    data.sim_trans_id.forEach(function(i,j){
+                        console.log(i);
+                       var image='<div style="text-align: center;margin: 2px 0px 20px 0px;"><img class="profile-logo img img-thumbnail" src="'+i+'" alt="image"></div>'
+                        if (i!=null&&i!='') {
+                         $(".sim_bills").append(image);   
+                        }
+                    });
+                    
+                    table.ajax.reload(null, false);
+                    table_bills.ajax.reload(null, false);
+                },
+                error: function(error){
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Unable to Show.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+
 }
 </script> 
 @endsection

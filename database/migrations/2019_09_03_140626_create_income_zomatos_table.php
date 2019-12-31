@@ -23,6 +23,7 @@ class CreateIncomeZomatosTable extends Migration
             $table->string('trips_payable')->nullable();
             $table->integer('calculated_trips')->nullable();
             $table->integer('calculated_hours')->nullable();
+            $table->integer('actual_hours')->nullable();
             $table->string('total_to_be_paid_out')->nullable();
             $table->string('amount_for_login_hours')->nullable();
             $table->string('amount_to_be_paid_against_orders_completed')->nullable();

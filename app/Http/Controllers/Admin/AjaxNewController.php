@@ -365,9 +365,24 @@ class AjaxNewController extends Controller
                     $rider_id=$bill->rider_id;
                     $type=$bill->source;
                     $month_given=$bill->given_date;
-                    return '<div>Pending <button type="button" onclick="updateStatus('.$rider_id.',\''.$month.'\',\''.$type.'\',\''.$month_given.'\')" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
+                    if ($type=="Sim Transaction") {
+                        $sim_transaction_id=$bill->sim_transaction_id;
+                        return '<div>Pending <button style="margin-right: 5px;" type="button" onclick="updateStatusBills('.$rider_id.',\''.$month.'\',\''.$type.'\',\''.$month_given.'\')" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button><button class="btn btn-sm btn-success" type="button" onclick="SimBillsImage('.$rider_id.',\''.$month.'\',\''.$type.'\')">View Sim Bill Image</button></div>';
+                    }
+                    return '<div>Pending <button type="button" onclick="updateStatusBills('.$rider_id.',\''.$month.'\',\''.$type.'\',\''.$month_given.'\')" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
+                    
                 }
-                
+                if($bill->payment_status == 'paid'){
+                    //enable pay
+                    $month=$bill->month;
+                    $rider_id=$bill->rider_id;
+                    $type=$bill->source;
+                    $month_given=$bill->given_date;
+                    if ($type=="Sim Transaction") {
+                        $sim_transaction_id=$bill->sim_transaction_id;
+                        return ucfirst($bill->payment_status).' <i class="flaticon2-correct text-success h5"></i><button class="btn btn-sm btn-success" type="button" onclick="SimBillsImage('.$rider_id.',\''.$month.'\',\''.$type.'\')">View Sim Bill Image</button>';
+                    }
+                }
                 return ucfirst($bill->payment_status).' <i class="flaticon2-correct text-success h5"></i>';
             
             }
@@ -401,6 +416,8 @@ class AjaxNewController extends Controller
         // rider name
         $rider='';
         $date='';
+        $hours=0;
+        $salary_slip=0;
         $rider_name=Rider::find($ranges['rider_id']);
         if (isset($rider_name)) {
             $rider=$rider_name->name;
@@ -416,11 +433,37 @@ class AjaxNewController extends Controller
         ->where('source','salary')
         ->where('payment_status','pending')
         ->sum('amount');
-        $hours=Income_zomato::where("rider_id",$ranges['rider_id'])
+        $salary_paid_status=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','salary_paid')
+        ->get()
+        ->first();
+        if (isset($salary_paid_status)) {
+           $rider_salary_slip=Rider_salary::where("id",$salary_paid_status->salary_id)->get()->first();
+           $salary_slip=asset(Storage::url($rider_salary_slip->salary_slip_image));
+           if ($rider_salary_slip->salary_slip_image==null) {
+            $salary_slip='';
+           }
+        }
+        $hour=Income_zomato::where("rider_id",$ranges['rider_id'])
         ->whereDate('date', '>=',$from)
         ->whereDate('date', '<=',$to)
-        ->sum('calculated_hours');
-        if($hours > 286) $hours = 286;
+        ->first();
+        if (isset($hour)) {
+            $absent_days=$hour->absents_count;
+            $absent_hours=$absent_days*11;
+            
+            $work_days=$hour->working_days;
+            $workable_hours=$work_days*11;
+
+            $calculate_hour=$hour->calculated_hours;
+            
+            $total_hours=$workable_hours -  $calculate_hour;
+
+            $hours=286 - $absent_hours - $total_hours; 
+        }
+
         $trips=Income_zomato::where("rider_id",$ranges['rider_id'])
         ->whereDate('date', '>=',$from)
         ->whereDate('date', '<=',$to)
@@ -481,6 +524,7 @@ class AjaxNewController extends Controller
         ->where("source","!=","advance")
         ->where("source","!=","salary_paid")
         ->where("source","!=","Visa Charges")
+        ->where("source","!=","Mobile Installment")
         ->sum('amount');
         $salik=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
@@ -497,10 +541,21 @@ class AjaxNewController extends Controller
         ->whereDate('month', '<=',$to)
         ->where('source','DC Deductions')
         ->sum('amount');
+        $salary_paid=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','salary_paid')
+        ->where('payment_status','paid')
+        ->sum('amount');
         $macdonald=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
         ->where('source','Mcdonalds Deductions')
+        ->sum('amount');
+        $dicipline=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','Discipline Fine')
         ->sum('amount');
         $rta=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
@@ -510,7 +565,7 @@ class AjaxNewController extends Controller
         $mobile=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
-        ->where('source','Mobile Charges')
+        ->where('source','Mobile Installment')
         ->sum('amount');
         $denial_penalty=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
@@ -548,8 +603,8 @@ class AjaxNewController extends Controller
         ->sum('amount');
 
         $closing_balance = $rider_debits_cr_payable - $rider_debits_dr_payable;
-        $closing_balance_prev = $rider_debits_cr_prev_payable - $rider_debits_dr_prev_payable;
-        $running_balance =$closing_balance_prev;
+        $closing_balance_prev = round($rider_debits_cr_prev_payable - $rider_debits_dr_prev_payable,2);
+        $running_balance =round($closing_balance_prev,2);
         $cash_paid =0;
 
         $flag = new \App\Model\Accounts\Rider_Account;
@@ -587,12 +642,12 @@ class AjaxNewController extends Controller
                     $salary_paid=Rider_salary::find($rider_statement->salary_id);
                     $total=$salary_paid->total_salary;
                     $gross=$salary_paid->gross_salary;
-                    $rider_id=$rider_statement->rider_id;
+                    $rider_id=$rider_statement->rider_id; 
                     //not found, can pay
-                    return '<div>Salary Recieved from Kingriders <button style="display:none;" type="button" id="getting_val" onclick="remaining_pay('.$rider_id.','.$rider_statement->id.')" data-toggle="modal" data-target="#remaining_pay_modal" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
+                    return '<div>Salary Recieved from Kingriders <button style="display:none;" type="button" id="getting_val" onclick="remaining_pay('.$rider_id.', '.$rider_statement->id.')" data-toggle="modal" data-target="#remaining_pay_modal" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
                 }
                 // updateStatus('.$rider_statement->id.')
-                return "Salary Recieved from Kingriders";
+                return '<div>Salary Recieved from Kingriders <button style="display:none;" type="button" id="getting_val" data-update onclick="remaining_pay('.$rider_statement->rider_id.','.$rider_statement->id.','.$ra_found['id'].')" data-toggle="modal" data-target="#remaining_pay_modal" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
             }
             if($rider_statement->source == 'salary_paid'){
                 return "Salary Paid";
@@ -622,66 +677,200 @@ class AjaxNewController extends Controller
         })
         ->addColumn('balance', function($rider_statement) use (&$running_balance){
             if($rider_statement->type=='dr' || $rider_statement->type=='dr_payable' || $rider_statement->type=='cr_payable'){
-                $running_balance -= $rider_statement->amount;
+                $running_balance -= round($rider_statement->amount,2);
             }
             else{
-                $running_balance += $rider_statement->amount; 
+                $running_balance += round($rider_statement->amount,2); 
             }
             if($rider_statement->type=='skip') return '<strong >'.round($running_balance,2).'</strong>';
             return round($running_balance,2);
         })
-        // ->addColumn('action', function($rider_statement) use (&$running_balance){
-        //     $model="";
-        //     $model_id="";
-        //     $rider_id="";
-        //     $month="";
-        //     $string="";
-        //     if($rider_statement->sim_transaction_id!=null){
-        //         $model_id=$rider_statement->sim_transaction_id;
-        //         $rider_id=$rider_statement->rider_id;
-        //         $string="sim_transaction_id";
-        //         $month=Carbon::parse($rider_statement->month)->format('m');
-        //         $sim_transaction=new Sim_Transaction();
-        //         $model=get_class($sim_transaction);
+        ->addColumn('action', function($rider_statement) use (&$running_balance){
+            if($rider_statement->type=='skip') return '';
+            $model="";
+            $model_id="";
+            $rider_id="";
+            $month="";
+            $string="";
+            // foreach ($rider_statement as $key => $value) {
+            //     if(strpos($key, "_id") && $key!='rider_id'){
+            //         //check if some columns ends with _id postfix
+            //         if($value!=null && $value!=''){
+            //             $model_id=$value;
+            //             $rider_id=$rider_statement->rider_id;
+            //             $string=$key;
+            //             $month=Carbon::parse($rider_statement->month)->format('m');
+            //             $sim_transaction=new Sim_Transaction();
+            //             switch ($key) {
+            //                 case 'bike_rent_id':
+            //                     # code...
+            //                     break;
+                            
+            //                 default:
+            //                     # code...
+            //                     break;
+            //             }
+            //             $model=get_class($sim_transaction);
+            //         }
+            //     }
+            // }
+            if($rider_statement->bike_fine!=null){
+                $model_id=$rider_statement->bike_fine;
+                $rider_id=$rider_statement->rider_id;
+                $string="bike_fine";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $modelObj=new Bike_Fine();
+                $model=get_class($modelObj);
+            }
+            if($rider_statement->bike_rent_id!=null){
+                $model_id=$rider_statement->bike_rent_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="bike_rent_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $modelObj=null;
+                $model=null;
+            }
+            if($rider_statement->salary_id!=null){
+                $model_id=$rider_statement->salary_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="salary_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $modelObj=new Rider_salary();
+                $model=get_class($modelObj);
+            }
+            if($rider_statement->client_income_id!=null){
+                $model_id=$rider_statement->client_income_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="client_income_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $modelObj=new Client_Income();
+                $model=get_class($modelObj);
+            }
+            if($rider_statement->investment_id!=null){
+                $model_id=$rider_statement->investment_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="investment_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $modelObj=new Company_investment();
+                $model=get_class($modelObj);
+            }
+            if($rider_statement->income_zomato_id!=null){
+                $model_id=$rider_statement->source;
+                $rider_id=$rider_statement->rider_id;
+                $string="source";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $modelObj=null;
+                $model=null;
+            }
+            if($rider_statement->advance_return_id!=null){
+                $model_id=$rider_statement->advance_return_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="advance_return_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $modelObj=new AdvanceReturn();
+                $model=get_class($modelObj);
+            }
+            if($rider_statement->id_charge_id!=null){
+                $model_id=$rider_statement->id_charge_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="id_charge_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $modelObj=new Id_charge();
+                $model=get_class($modelObj);
+            }
+            if($rider_statement->fuel_expense_id!=null){
+                $model_id=$rider_statement->fuel_expense_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="fuel_expense_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $fuel=new Fuel_Expense();
+                $model=get_class($fuel);
+            }	
+            if($rider_statement->maintenance_id!=null){
+                $model_id=$rider_statement->maintenance_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="maintenance_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $modelObj=new Maintenance();
+                $model=get_class($modelObj);
+            }
+            if($rider_statement->mobile_installment_id!=null){
+                $model_id=$rider_statement->mobile_installment_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="mobile_installment_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $mobile_installment=new Mobile_installment();
+                $model=get_class($mobile_installment);
+            }
+            if($rider_statement->edirham_id!=null){
+                $model_id=$rider_statement->edirham_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="edirham_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $model_obj=new Edirham();
+                $model=get_class($model_obj);
+            }
+            if($rider_statement->company_expense_id!=null){
+                $model_id=$rider_statement->company_expense_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="company_expense_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $model_obj=new Company_Expense();
+                $model=get_class($model_obj);
+            }
+            if($rider_statement->salik_id!=null){
+                $model_id=$rider_statement->salik_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="salik_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $model_obj=new Salik();
+                $model=get_class($model_obj);
+            }
+            if($rider_statement->sim_transaction_id!=null){
+                $model_id=$rider_statement->sim_transaction_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="sim_transaction_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $sim_transaction=new Sim_Transaction();
+                $model=get_class($sim_transaction);
                 
-        //     }
-        //     if($rider_statement->fuel_expense_id!=null){
-        //         $model_id=$rider_statement->fuel_expense_id;
-        //         $rider_id=$rider_statement->rider_id;
-        //         $string="fuel_expense_id";
-        //         $month=Carbon::parse($rider_statement->month)->format('m');
-        //         $fuel=new Fuel_Expense();
-        //         $model=get_class($fuel);
-        //     }	
-        //     if($rider_statement->advance_return_id!=null){
-        //         $model_id=$rider_statement->advance_return_id;
-        //         $rider_id=$rider_statement->rider_id;
-        //         $string="advance_return_id";
-        //         $month=Carbon::parse($rider_statement->month)->format('m');
-        //         $advance=new AdvanceReturn();
-        //         $model=get_class($advance);
-        //     }
-        //     if($rider_statement->id_charge_id!=null){
-        //         $model_id=$rider_statement->id_charge_id;
-        //         $rider_id=$rider_statement->rider_id;
-        //         $string="id_charge_id";
-        //         $month=Carbon::parse($rider_statement->month)->format('m');
-        //         $id_charges=new Id_charge();
-        //         $model=get_class($id_charges);
-        //     }
-        //     if($rider_statement->mobile_installment_id!=null){
-        //         $model_id=$rider_statement->mobile_installment_id;
-        //         $rider_id=$rider_statement->rider_id;
-        //         $string="mobile_installment_id";
-        //         $month=Carbon::parse($rider_statement->month)->format('m');
-        //         $mobile_installment=new Mobile_installment();
-        //         $model=get_class($mobile_installment);
-        //     }
-        //     if ($model_id!=null) {
-        //         $model = addslashes($model);
-        //         return '<i class="fa fa-trash-alt"  onclick="deleteCompanyRows('.$rider_statement->id.',\''.$model.'\','.$model_id.','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
-        //     }
-        // })
+            }
+            if($rider_statement->mobile_installment_id!=null){
+                $model_id=$rider_statement->mobile_installment_id;
+                $rider_id=$rider_statement->rider_id;
+                $string="mobile_installment_id";
+                $month=Carbon::parse($rider_statement->month)->format('m');
+                $mobile_installment=new Mobile_installment();
+                $model=get_class($mobile_installment);
+            }
+
+            
+            
+            // if ($model_id!=null) {
+            //     $model = addslashes($model);
+            //     return '<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
+            // }
+            // else {
+                // no id was found, lets just match the source, rider_id and month
+            $model_id=$rider_statement->source;
+            $rider_id=$rider_statement->rider_id;
+            $string="source";
+            $month=Carbon::parse($rider_statement->month)->format('m');
+            $modelObj=null;
+            $model=null;
+            $editHTML = '<i class="fa fa-edit tr-edit" onclick="editRows(this,'.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
+        
+            /**
+             * Skip
+             * -Salary row
+             */
+            if($rider_statement->salary_id!=null){
+                //skip edit
+                $editHTML='';
+            }
+            return $editHTML.'<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
+            // }
+        })
         ->addColumn('cash_paid', function($rider_statement) use (&$cash_paid){
             if($rider_statement->payment_status=='paid'){
                 // if($rider_statement->type=='dr' || $rider_statement->type=='dr_payable' || $rider_statement->type=='cr_payable'){
@@ -721,10 +910,12 @@ class AjaxNewController extends Controller
             'macdonald'=>$macdonald,
             'rta'=>$rta,
             'mobile'=>$mobile,
-            'dicipline'=>0,
+            'dicipline'=>$dicipline,
             'denial_penalty'=>$denial_penalty,
             'mics'=>$mics,
             'cash_paid'=>$cash_paid_in_advance,
+            'salary_paid'=>$salary_paid,
+            'salary_slip'=>$salary_slip,
         ])
     
         ->rawColumns(['action','closing_balance','cash_paid','desc','date','cr','dr','balance'])
@@ -1002,6 +1193,7 @@ class AjaxNewController extends Controller
             return round($running_balance,2);
         })
         ->addColumn('action', function($company_statements) use (&$running_balance){
+            if($company_statements->type=='skip') return '';
             $model="";
             $model_id="";
             $rider_id="";
@@ -1047,11 +1239,32 @@ class AjaxNewController extends Controller
                 $mobile_installment=new Mobile_installment();
                 $model=get_class($mobile_installment);
             }
+
+            
            
-            if ($model_id!=null) {
-                $model = addslashes($model);
-                return '<i class="fa fa-trash-alt"  onclick="deleteCompanyRows('.$company_statements->id.',\''.$model.'\','.$model_id.','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
-            } 
+            // if ($model_id!=null) {
+            //     $model = addslashes($model);
+            //     return '<i class="fa fa-trash-alt"  onclick="deleteCompanyRows('.$company_statements->id.',\''.$model.'\','.$model_id.','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
+            // } 
+            $model_id=$company_statements->source;
+            $rider_id=$company_statements->rider_id;
+            $string="source";
+            $month=Carbon::parse($company_statements->month)->format('m');
+            $modelObj=null;
+            $model=null;
+
+            $editHTML = '<i class="fa fa-edit tr-edit" onclick="editRows(this,'.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
+            
+            /**
+             * Skip
+             * -Salary row
+             */
+            if($company_statements->salary_id!=null){
+                //skip edit
+                $editHTML='';
+            }
+            return $editHTML.'<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
+
         })
         
         ->with([
@@ -1871,18 +2084,41 @@ class AjaxNewController extends Controller
         ->rawColumns(['id','actions','description','month'])
         ->make(true);
     }
-    public function zomato_salary_export($month)
+    public function zomato_salary_export($month, $client_id)
     {
-        $zomato=Client::where("name","Zomato Food Delivery")->get()->first();
-        // $client_riders=$zomato->riders();
-        $client_riders=Client_Rider::where('client_id', $zomato->id)->get();
+        $client=Client::find($client_id);
+        $client_riders=$client->riders()->where(['active_status'=>'A'])->get();
+        // $client_riders=Client_Rider::where('client_id', $zomato->id)->get();
+        
         return DataTables::of($client_riders)
         ->addColumn('rider_name', function($rider) {
-            $riderFound = Rider::find($rider->rider_id);
-            return $riderFound->name;
+            $riderFound = Rider::find($rider->id);
+            return 'KR'.$riderFound->id.' - '.$riderFound->name;
+        }) 
+        ->addColumn('feid', function($rider) use ($month) {
+            $riderFound = Rider::find($rider->id);
+            $client_history = Client_History::all();
+            $rider_id=$rider->id;
+            $month = '01-'.$month.'-'.Carbon::now()->format('Y');
+            $history_found = Arr::first($client_history, function ($item, $key) use ($rider_id, $month) {
+                $start_created_at =Carbon::parse($item->assign_date)->startOfMonth()->format('Y-m-d');
+                $created_at =Carbon::parse($start_created_at);
+
+                $start_updated_at =Carbon::parse($item->deassign_date)->endOfMonth()->format('Y-m-d');
+                $updated_at =Carbon::parse($start_updated_at);
+                $req_date =Carbon::parse($month);
+
+                return $item->rider_id==$rider_id &&
+                    ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+            });
+            $feid=null;
+            if (isset($history_found)) {
+                $feid=$history_found->client_rider_id;
+            }
+            return $feid;
         }) 
         ->addColumn('bike_number', function($rider) {
-              $assign_bike=Assign_bike::where("rider_id",$rider->rider_id)->where("status","active")->get()->first();             
+              $assign_bike=Assign_bike::where("rider_id",$rider->id)->where("status","active")->get()->first();             
             if (isset($assign_bike)) {
                 $bike=bike::find($assign_bike->bike_id);
                 return $bike->bike_number;
@@ -1890,7 +2126,7 @@ class AjaxNewController extends Controller
               return 'No Bike is assigned';
         }) 
         ->addColumn('advance', function($rider) use ($month) {
-            $advance_sum=Rider_Account::where('rider_id',$rider->rider_id)
+            $advance_sum=Rider_Account::where('rider_id',$rider->id)
             ->whereNotNull('advance_return_id')
             ->whereMonth('month',$month)
             ->get()
@@ -1899,7 +2135,7 @@ class AjaxNewController extends Controller
         }) 
         ->addColumn('poor_performance', function($rider) use ($month) {
             $poor_performance_sum=Rider_Account::where('source',"Denials Penalty")
-            ->where('rider_id',$rider->rider_id)
+            ->where('rider_id',$rider->id)
             ->whereNotNull('income_zomato_id')
             ->whereMonth('month',$month)
             ->get()
@@ -1908,7 +2144,7 @@ class AjaxNewController extends Controller
         }) 
         ->addColumn('visa', function($rider) use ($month) {
             $visa_sum=Rider_Account::where('source',"Visa Charges")
-            ->where('rider_id',$rider->rider_id)
+            ->where('rider_id',$rider->id)
             ->whereNotNull('id_charge_id')
             ->whereMonth('month',$month)
             ->get()
@@ -1917,23 +2153,22 @@ class AjaxNewController extends Controller
         }) 
         ->addColumn('mobile_charges', function($rider) use ($month) {
             $mobile_charges=Rider_Account::where('source',"Mobile Charges")
-            ->where('rider_id',$rider->rider_id)
+            ->where('rider_id',$rider->id)
             ->whereMonth('month',$month)
             ->sum('amount');
                 return $mobile_charges;
         }) 
         ->addColumn('mobile', function($rider) use ($month) {
-            $mobile_sum=Rider_Account::where('source',"Mobile Installment")
-            ->where('rider_id',$rider->rider_id)
+            $mobile_sum=Rider_Account::where('rider_id',$rider->id)
             ->whereNotNull('mobile_installment_id')
             ->whereMonth('month',$month)
             ->get()
             ->sum('amount');
-                return $mobile_sum;
+            return $mobile_sum;
         }) 
         ->addColumn('bike_allowns', function($rider) use ($month) {
             $bike_allowns=Rider_Account::where('source',"Bike Allowns")
-            ->where('rider_id',$rider->rider_id)
+            ->where('rider_id',$rider->id)
             ->whereMonth('month',$month)
             ->get()
             ->sum('amount');
@@ -1941,70 +2176,124 @@ class AjaxNewController extends Controller
         }) 
         ->addColumn('bonus', function($rider) use ($month) {
             $bonus=Rider_Account::where('source',"400 Trips Acheivement Bonus")
-            ->where('rider_id',$rider->rider_id)
+            ->where('rider_id',$rider->id)
             ->whereMonth('month',$month)
             ->get()
             ->sum('amount');
-                return $bonus;
+            return $bonus;
         }) 
         ->addColumn('number_of_hours', function($rider) use ($month) {
-            $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            $income_zomato=Income_zomato::where('rider_id',$rider->id)
             ->whereMonth('date',$month)
             ->get()
-            ->sum('log_in_hours_payable');
-            if($number_of_hours_sum > 286) $number_of_hours_sum = 286;
-                return $number_of_hours_sum; 
+            ->first();
+            if(isset($income_zomato)){
+                $absent_count = $income_zomato->absents_count;
+                $working_days = $income_zomato->working_days;
+                $calculated_hours = $income_zomato->calculated_hours;
+
+                $working_hours = $working_days*11;
+                $absent_hours = $absent_count*11;
+
+                $less_time = $working_hours - $calculated_hours;
+                $payable_hours = round(286 - $absent_hours - $less_time,2);
+                return round($payable_hours,2); 
+            }
+            return 0;
         }) 
         ->addColumn('number_of_trips', function($rider) use ($month) {
-            $number_of_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            $income_zomato=Income_zomato::where('rider_id',$rider->id)
             ->whereMonth('date',$month)
             ->get()
-            ->sum('trips_payable');
-            if ( $number_of_trips_sum > 400) $number_of_trips_sum=400; 
-                return $number_of_trips_sum; 
+            ->first();
+            if(isset($income_zomato)){
+                $trips =$income_zomato->calculated_trips; 
+                if ( $trips > 400) $trips=400;
+                return round($trips,2);
+            }
+            return 0;
         }) 
-        ->addColumn('aed_trips', function($rider) use ($month) {
-            $aed_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
+        ->addColumn('aed_hours', function($rider) use ($month) {
+            $income_zomato=Income_zomato::where('rider_id',$rider->id)
             ->whereMonth('date',$month)
             ->get()
-            ->sum('trips_payable');
-            if ( $aed_trips_sum > 400) $aed_trips_sum=400; 
-                return $aed_trips_sum*2; 
+            ->first();
+            if(isset($income_zomato)){
+                $absent_count = $income_zomato->absents_count;
+                $working_days = $income_zomato->working_days;
+                $calculated_hours = $income_zomato->calculated_hours;
+
+                $working_hours = $working_days*11;
+                $absent_hours = $absent_count*11;
+
+                $less_time = $working_hours - $calculated_hours;
+                $payable_hours = round(286 - $absent_hours - $less_time,2);
+                return round($payable_hours*7.87,2); 
+            }
+            return 0;
+        })
+        ->addColumn('aed_trips', function($rider) use ($month) {
+            $income_zomato=Income_zomato::where('rider_id',$rider->id)
+            ->whereMonth('date',$month)
+            ->get()
+            ->first();
+            if(isset($income_zomato)){
+                $trips =$income_zomato->calculated_trips;
+                if ( $trips > 400) $trips=400;
+                return round($trips*2,2);
+            }
+            return 0; 
         }) 
         ->addColumn('extra_trips', function($rider) use ($month) {
-            $number_of__extra_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            $income_zomato=Income_zomato::where('rider_id',$rider->id)
             ->whereMonth('date',$month)
             ->get()
-            ->sum('trips_payable');
-            if ( $number_of__extra_trips_sum > 400){; 
-                return $number_of__extra_trips_sum-400; 
+            ->first();
+            if(isset($income_zomato)){
+                $trips =$income_zomato->calculated_trips; 
+                if ( $trips > 400) $trips=$trips-400;
+                else $trips=0;
+                return round($trips,2);
             }
+            return 0;
         }) 
         ->addColumn('aed_extra_trips', function($rider) use ($month) {
-            $aed_extra_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            $income_zomato=Income_zomato::where('rider_id',$rider->id)
             ->whereMonth('date',$month)
             ->get()
-            ->sum('trips_payable');
-            if ( $aed_extra_trips_sum > 400){; 
-                return ($aed_extra_trips_sum-400)*4; 
+            ->first();
+            if(isset($income_zomato)){
+                $trips =$income_zomato->calculated_trips; 
+                if ( $trips > 400) $trips=$trips-400;
+                else $trips=0;
+                return round($trips*4,2);
             }
+            return 0;
         }) 
         ->addColumn('ncw', function($rider) use ($month) {
-            $ncw_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            $income_zomato=Income_zomato::where('rider_id',$rider->id)
             ->whereMonth('date',$month)
             ->get()
-            ->sum('ncw_incentives');
-                return $ncw_sum; 
+            ->first();
+            if(isset($income_zomato)){
+                $ncw = $income_zomato->ncw_incentives;
+                return round($ncw,2);
+            }
+            return 0;
         }) 
         ->addColumn('tips', function($rider) use ($month) {
-            $tips_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            $income_zomato=Income_zomato::where('rider_id',$rider->id)
             ->whereMonth('date',$month)
             ->get()
-            ->sum('tips_payouts');
-                return $tips_sum; 
+            ->first();
+            if(isset($income_zomato)){
+                $tips_payouts = $income_zomato->tips_payouts;
+                return round($tips_payouts,2);
+            }
+            return 0;
         }) 
         ->addColumn('salik', function($rider) use ($month) {
-            $salik_amount=Rider_Account::where('rider_id',$rider->rider_id)
+            $salik_amount=Rider_Account::where('rider_id',$rider->id)
             ->whereNotNull('salik_id')
             ->whereMonth('month', $month)
             ->get()
@@ -2012,7 +2301,7 @@ class AjaxNewController extends Controller
             return $salik_amount;
         }) 
         ->addColumn('fuel', function($rider) use ($month) {
-            $fuel_amount=Company_Account::where('rider_id',$rider->rider_id)
+            $fuel_amount=Company_Account::where('rider_id',$rider->id)
             ->whereNotNull('fuel_expense_id')
             ->whereMonth('month', $month)
             ->get()
@@ -2020,7 +2309,7 @@ class AjaxNewController extends Controller
             return $fuel_amount;
         }) 
         ->addColumn('sim_charges', function($rider) use ($month) {
-            $sim_charges=Rider_Account::where('rider_id',$rider->rider_id)
+            $sim_charges=Company_Account::where('rider_id',$rider->id)
             ->whereNotNull('sim_transaction_id')
             ->whereMonth('month', $month)
             ->get()
@@ -2028,7 +2317,7 @@ class AjaxNewController extends Controller
             return $sim_charges;
         }) 
         ->addColumn('sim_extra_charges', function($rider) use ($month) {
-            $sim_extra_charges=Rider_Account::where('rider_id',$rider->rider_id)
+            $sim_extra_charges=Rider_Account::where('rider_id',$rider->id)
             ->whereNotNull('sim_transaction_id')
             ->whereMonth('month', $month)
             ->get()
@@ -2036,7 +2325,7 @@ class AjaxNewController extends Controller
             return $sim_extra_charges;
         }) 
         ->addColumn('cod', function($rider) use ($month) {
-            $cod=Rider_Account::where('rider_id',$rider->rider_id)
+            $cod=Rider_Account::where('rider_id',$rider->id)
             ->whereNotNull('income_zomato_id')
             ->whereMonth('month', $month)
             ->where('source',"Mcdonalds Deductions")
@@ -2045,7 +2334,7 @@ class AjaxNewController extends Controller
             return $cod;
         }) 
         ->addColumn('dc', function($rider) use ($month) {
-            $dc=Rider_Account::where('rider_id',$rider->rider_id)
+            $dc=Rider_Account::where('rider_id',$rider->id)
             ->whereNotNull('income_zomato_id')
             ->where('source',"DC Deductions")
             ->whereMonth('month', $month)
@@ -2054,7 +2343,7 @@ class AjaxNewController extends Controller
             return $dc;
         }) 
         ->addColumn('rta_fine', function($rider) use ($month) {
-            $rta_fine=Rider_Account::where('rider_id',$rider->rider_id)
+            $rta_fine=Rider_Account::where('rider_id',$rider->id)
             ->whereNotNull('id_charge_id')
             ->whereMonth('month', $month)
             ->get()
@@ -2065,56 +2354,79 @@ class AjaxNewController extends Controller
             return '0';
         }) 
         ->addColumn('total_deduction', function($rider) use ($month) {
-            $total_deduction=Rider_Account::where('rider_id',$rider->rider_id)
+            $month = '01-'.$month.'-'.Carbon::now()->format('Y');
+            $rider_id = $rider->id;
+
+            $startMonth = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
+            $month = Carbon::parse($month)->format('Y-m-d');
+            $onlyMonth = Carbon::parse($month)->format('m');
+            //prev payables
+            $rider_debits_cr_prev_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+            ->where(function($q) {
+                $q->where('type', "cr");
+            })
+            ->whereDate('month', '<',$startMonth)
+            ->sum('amount');
+            
+            $rider_debits_dr_prev_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
             ->where(function($q) {
                 $q->where('type', "cr_payable")
-                  ->orWhere('type', 'dr');
+                ->orWhere('type', 'dr');
             })
-            ->where('payment_status','pending')
-            ->whereMonth('month', $month)
+            ->whereDate('month', '<',$startMonth)
+            ->sum('amount');
+            $closing_balance_prev = round($rider_debits_cr_prev_payable - $rider_debits_dr_prev_payable,2);
+            //ends prev payables
+            $total_deduction=Rider_Account::where('rider_id',$rider_id)
+            ->where(function($q) {
+                $q->where('type', "cr_payable")
+                ->orWhere('type', 'dr');
+            })
+            ->whereMonth('month', $onlyMonth)
             ->get()
             ->sum('amount');
+            if($closing_balance_prev < 0){ //deduct
+                $total_deduction += abs($closing_balance_prev);
+            }
             return $total_deduction;
         }) 
-        ->addColumn('aed_hours', function($rider) use ($month) {
-            $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
+        ->addColumn('total_salary', function($rider) use ($month) {
+            $income_zomato=Income_zomato::where('rider_id',$rider->id)
             ->whereMonth('date',$month)
             ->get()
-            ->sum('log_in_hours_payable');
-            if ($number_of_hours_sum > 286) {
-                $number_of_hours_sum=286;
-                return $number_of_hours_sum * 7.87;
-            }
+            ->first();
+            if(isset($income_zomato)){
+                $absent_count = $income_zomato->absents_count;
+                $working_days = $income_zomato->working_days;
+                $calculated_hours = $income_zomato->calculated_hours;
+                $calculated_trips = $income_zomato->calculated_trips;
 
-            return $number_of_hours_sum * 7.87;
-        })
-        ->addColumn('total_salary', function($rider) use ($month) {
-            $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$month)
-            ->sum('log_in_hours_payable');
-            if($number_of_hours_sum > 286) $number_of_hours_sum = 286;
-            $number_of_hours_sum = $number_of_hours_sum * 7.87;
-            
-            $aed_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$month)
-            ->sum('trips_payable');
-            if ($aed_trips_sum > 400) {
-                $aed_extra_trips=($aed_trips_sum - 400)*4;
-                $aed_trips = 400 * 2;
-                $aed_total=$aed_trips + $aed_extra_trips;
+                $working_hours = $working_days*11;
+                $absent_hours = $absent_count*11;
+
+                $less_time = $working_hours - $calculated_hours;
+                $payable_hours = round(286 - $absent_hours - $less_time,2);
+
+                $hours_payable=$payable_hours*7.87;
+
+                $trips = $calculated_trips > 400?400:$calculated_trips;
+                $trips_payable = $trips * 2;
+
+                $trips_EXTRA = $calculated_trips > 400?$calculated_trips-400:0;
+                $trips_EXTRA_payable = $trips_EXTRA * 4;
+
+                $salary_hours=round($hours_payable,2);
+                $salary_trips=$trips_payable+$trips_EXTRA_payable;
+
+                $total_salary_amt = round($salary_hours+$salary_trips,2);
+                // return 'salary_hours: '.$salary_hours.' salary_trips:'.$salary_trips.' payable_hours:'.$payable_hours.' absent_hours:'.$absent_count;
+                return $total_salary_amt; 
             }
-            if($aed_trips_sum <= 400){
-                $aed_extra_trips=0;
-                $aed_trips_sum = $aed_trips_sum * 2;
-                $aed_total=$aed_trips_sum + $aed_extra_trips;
-            }
-            
-            $total_salary =$number_of_hours_sum + $aed_total;
-            return $total_salary;
+            return 0;
         })
         ->addColumn('net_salary', function($rider) use ($month) {
             $month = '01-'.$month.'-'.Carbon::now()->format('Y');
-            $rider_id = $rider->rider_id;
+            $rider_id = $rider->id;
 
             $startMonth = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
             $month = Carbon::parse($month)->format('Y-m-d');
@@ -2140,60 +2452,60 @@ class AjaxNewController extends Controller
 
             $ra_cr=Rider_Account::where("rider_id",$rider_id)
             ->whereMonth("month",$onlyMonth)
+            ->where("payment_status","pending")
             ->where("type","cr")
-            ->where('source', '!=', 'salary')
-            ->sum('amount');  
+            ->where("source",'!=',"salary")
+            ->sum('amount');   
             if($closing_balance_prev > 0){
                 // add
                 $ra_cr += abs($closing_balance_prev);
             }
 
             //total salary
-            $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            $total_salary_amt = 0;
+            $ra_salary=0;
+            $income_zomato=Income_zomato::where('rider_id',$rider_id)
             ->whereMonth('date',$onlyMonth)
             ->get()
-            ->sum('log_in_hours_payable');
-            if($number_of_hours_sum > 286) $number_of_hours_sum = 286;
-            $number_of_hours_sum = $number_of_hours_sum * 7.87;
-            
-            $aed_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$onlyMonth)
-            ->get()
-            ->sum('trips_payable');
-            if ($aed_trips_sum > 400) {
-                $aed_extra_trips=($aed_trips_sum - 400)*4;
-                $aed_trips = 400 * 2;
-                $aed_total=$aed_trips + $aed_extra_trips;
+            ->first();
+            if(isset($income_zomato)){
+                $absent_count = $income_zomato->absents_count;
+                $working_days = $income_zomato->working_days;
+                $calculated_hours = $income_zomato->calculated_hours;
+                $calculated_trips = $income_zomato->calculated_trips;
+
+                $working_hours = $working_days*11;
+                $absent_hours = $absent_count*11;
+
+                $less_time = $working_hours - $calculated_hours;
+                $payable_hours = round(286 - $absent_hours - $less_time,2);
+
+                $hours_payable=$payable_hours*7.87;
+
+                $trips = $calculated_trips > 400?400:$calculated_trips;
+                $trips_payable = $trips * 2;
+
+                $trips_EXTRA = $calculated_trips > 400?$calculated_trips-400:0;
+                $trips_EXTRA_payable = $trips_EXTRA * 4;
+
+                $salary_hours=round($hours_payable,2);
+                $salary_trips=$trips_payable+$trips_EXTRA_payable;
+
+                $total_salary_amt = round($salary_hours+$salary_trips,2);
+                
+                $salary_credits=round($ra_cr,2);
+                $ra_salary=$salary_hours +$salary_trips  +$salary_credits ;
             }
-            if($aed_trips_sum <= 400){
-                $aed_extra_trips=0;
-                $aed_trips_sum = $aed_trips_sum * 2;
-                $aed_total=$aed_trips_sum + $aed_extra_trips;
+            else {
+                $fixed_salary = $rider->Rider_Detail->salary;
+                $fixed_salary = isset($fixed_salary)?$fixed_salary:0;
+                $ra_salary= $fixed_salary + $ra_cr;
             }
-            
-            $total_salary =$number_of_hours_sum + $aed_total;
-
-            $bonus=Rider_Account::where('source',"400 Trips Acheivement Bonus")
-            ->where('rider_id',$rider->rider_id)
-            ->whereMonth('month',$month)
-            ->get()
-            ->sum('amount');
-
-            $bike_allowns=Rider_Account::where('source',"Bike Allowns")
-            ->where('rider_id',$rider->rider_id)
-            ->whereMonth('month',$month)
-            ->get()
-            ->sum('amount');
-
-            $ra_salary=$total_salary + $ra_cr + $bonus +$bike_allowns;
-
             return round($ra_salary,2);
-
-
         })
         ->addColumn('gross_salary', function($rider) use ($month) {
             $month = '01-'.$month.'-'.Carbon::now()->format('Y');
-            $rider_id = $rider->rider_id;
+            $rider_id = $rider->id;
 
             $startMonth = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
             $month = Carbon::parse($month)->format('Y-m-d');
@@ -2219,7 +2531,6 @@ class AjaxNewController extends Controller
 
             $ra_payable=Rider_Account::where("rider_id",$rider_id)
             ->whereMonth("month",$onlyMonth)
-            ->where("payment_status","pending")
             ->where(function($q) {
                 $q->where('type', "cr_payable")
                 ->orWhere('type', 'dr');
@@ -2228,9 +2539,10 @@ class AjaxNewController extends Controller
 
             $ra_cr=Rider_Account::where("rider_id",$rider_id)
             ->whereMonth("month",$onlyMonth)
+            ->where("payment_status","pending")
             ->where("type","cr")
-            ->where('source', '!=', 'salary')
-            ->sum('amount');  
+            ->where("source",'!=',"salary")
+            ->sum('amount');   
             if($closing_balance_prev < 0){ //deduct
                 $ra_payable += abs($closing_balance_prev);
             }
@@ -2240,33 +2552,58 @@ class AjaxNewController extends Controller
             }
 
             //total salary
-            $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            $total_salary_amt = 0;
+            $ra_recieved=0;
+            $income_zomato=Income_zomato::where('rider_id',$rider_id)
             ->whereMonth('date',$onlyMonth)
             ->get()
-            ->sum('log_in_hours_payable');
-            if($number_of_hours_sum > 286) $number_of_hours_sum = 286;
-            $number_of_hours_sum = $number_of_hours_sum * 7.87;
-            
-            $aed_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$onlyMonth)
+            ->first();
+            if(isset($income_zomato)){
+                $absent_count = $income_zomato->absents_count;
+                $working_days = $income_zomato->working_days;
+                $calculated_hours = $income_zomato->calculated_hours;
+                $calculated_trips = $income_zomato->calculated_trips;
+
+                $working_hours = $working_days*11;
+                $absent_hours = $absent_count*11;
+
+                $less_time = $working_hours - $calculated_hours;
+                $payable_hours = round(286 - $absent_hours - $less_time,2);
+
+                $hours_payable=$payable_hours*7.87;
+
+                $trips = $calculated_trips > 400?400:$calculated_trips;
+                $trips_payable = $trips * 2;
+
+                $trips_EXTRA = $calculated_trips > 400?$calculated_trips-400:0;
+                $trips_EXTRA_payable = $trips_EXTRA * 4;
+
+                $salary_hours=round($hours_payable,2);
+                $salary_trips=$trips_payable+$trips_EXTRA_payable;
+
+                $total_salary_amt = round($salary_hours+$salary_trips,2);
+                
+                $salary_credits=round($ra_cr,2);
+                $ra_salary=$salary_hours +$salary_trips  +$salary_credits ;
+                $ra_recieved=$ra_salary - $ra_payable;
+            }
+            else {
+                $fixed_salary = $rider->Rider_Detail->salary;
+                $fixed_salary = isset($fixed_salary)?$fixed_salary:0;
+                $ra_salary= $fixed_salary + $ra_cr;
+                $ra_recieved=$ra_salary - $ra_payable;
+
+                $total_salary_amt = $fixed_salary;
+            }
+            $salary_paid=Rider_Account::where("rider_id",$rider_id)
+            ->whereMonth("month",$onlyMonth)
+            ->where("source","salary_paid")
+            ->where("payment_status","paid")
             ->get()
-            ->sum('trips_payable');
-            if ($aed_trips_sum > 400) {
-                $aed_extra_trips=($aed_trips_sum - 400)*4;
-                $aed_trips = 400 * 2;
-                $aed_total=$aed_trips + $aed_extra_trips;
+            ->first();
+            if(isset($salary_paid)){
+                return '<div>'.round($ra_recieved,2).' <i class="flaticon2-correct" style="color: green;"></i></div>';
             }
-            if($aed_trips_sum <= 400){
-                $aed_extra_trips=0;
-                $aed_trips_sum = $aed_trips_sum * 2;
-                $aed_total=$aed_trips_sum + $aed_extra_trips;
-            }
-            
-            $total_salary =$number_of_hours_sum + $aed_total;
-
-            $ra_salary=$total_salary + $ra_cr;
-            $ra_recieved=$ra_salary - $ra_payable;
-
             return round($ra_recieved,2);
         })
         ->rawColumns(['sim_extra_charges','fuel','mobile_charges','bonus','bike_allowns','aed_extra_trips','extra_trips','net_salary','gross_salary','rider_name','bike_number','advance','poor_performance', 'salik', 'sim_charges', 'dc', 'cod', 'rta_fine', 'total_deduction', 'aed_hours', 'total_salary','visa','mobile','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
@@ -2286,7 +2623,7 @@ class AjaxNewController extends Controller
         ->addColumn('bike_number', function($rider) {
               $assign_bike=Assign_bike::where("rider_id",$rider->rider_id)->where("status","active")->get()->first();             
             if (isset($assign_bike)) {
-                $bike=bike::find($assign_bike->bike_id);
+                $bike=bike::find($assign_bike->bike_id);    
                 return $bike->bike_number;
             }
               return 'No Bike is assigned';

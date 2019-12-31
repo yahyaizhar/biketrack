@@ -120,17 +120,36 @@ class KRController extends Controller
         $bf->given_date=Carbon::parse($r->given_date)->format('Y-m-d');
         $bf->update();
 
-        $ca =Company_Account::firstOrCreate([
-                'bike_fine'=>$bf->id
-            ]);
-            $ca->type='dr';
-            $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
-            $ca->given_date=Carbon::parse($r->given_date)->format('Y-m-d');
-            $ca->amount=$r->amount;
-            $ca->source='Bike Fine';
-            $ca->bike_fine=$bf->id;
-            $ca->update();
-        return redirect(route('admin.BF_view'));
+        $ca=Company_Account::where('bike_fine',$bf->id)->get();
+        foreach ($ca as $value) {
+            if ($value->source=='Bike Fine') {
+                $value->type='dr';
+                $value->source='Bike Fine';
+            }if($value->source=='Bike Fine Paid'){
+                $value->type='cr';
+                $value->source='Bike Fine Paid';
+            }
+            $value->month = Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+            $value->given_date=Carbon::parse($r->given_date)->format('Y-m-d');
+            $value->amount=$r->amount;
+            $value->bike_fine=$bf->id;
+            $value->rider_id=$r->rider_id;
+            $value->update();
+        }
+        $ra =Rider_Account::firstOrCreate([
+            'bike_fine'=>$bf->id
+        ]);
+        $ra->type='dr';
+        $ra->month = Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+        $ra->given_date=Carbon::parse($r->given_date)->format('Y-m-d');
+        $ra->amount=$r->amount;
+        $ra->rider_id=$r->rider_id;
+        $ra->source='Bike Fine Paid';
+        $ra->bike_fine=$bf->id;
+        $ra->payment_status='pending';
+        $ra->save();
+            
+        return redirect(route('admin.BF_edit_view',$bf->id));
     }
     public function paid_fine_by_rider($amount,$rider_id,$bike_fine_id,$month){
         $ca = new Company_Account();

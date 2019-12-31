@@ -92,12 +92,12 @@
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
                         <div style="float:left;" class="filter_invoices_status">
-                        <select class="form-control">
-                            <option selected disabled>Select invoice status</option>
-                            <option value="Due">Due</option>
-                            <option value="Overdue">Over Due</option>
-                            <option value="Paid">Paid</option>
-                        </select>
+                            <select class="form-control">
+                                <option selected disabled>Select invoice status</option>
+                                <option value="Due">Due</option>
+                                <option value="Overdue">Over Due</option>
+                                <option value="Paid">Paid</option>
+                            </select>
                         </div>
                         &nbsp;
                         <a href="" data-ajax="{{ route('tax.add_invoice') }}" class="btn btn-brand btn-elevate btn-icon-sm" id="add_invoice_ajax">

@@ -149,5 +149,27 @@ input[type="radio"] h6{
     justify-content: space-between;
     width: 100%;
 }
-.route_data{display: grid;
+.route_data{display: grid;}
+
+td.details-control {
+    background: url('../../../../details_open.png') no-repeat center center !important; 
+    cursor: pointer;
+}
+tr.shown td.details-control {
+    background: url('../../../../details_close.png') no-repeat center center !important;
+}
+.tr-remove:hover {
+    color: #fd1361;
+}
+.tr-remove {
+    color: #bd0744;
+    cursor: pointer;
+}
+.tr-edit {
+    color: #3758ff;
+    cursor: pointer;
+    padding-right: 4px;
+}
+.tr-edit:hover {
+    color: #1e3296;
 }

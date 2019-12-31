@@ -113,7 +113,7 @@ margin-left: 10px;
                         
                   </div>
                 </form>
-                <button class="btn btn-danger"  onclick="delete_lastImport();return false;"><i class="fa fa-trash"></i> Delete Last Import</button>
+                {{-- <button class="btn btn-danger"  onclick="delete_lastImport();return false;"><i class="fa fa-trash"></i> Delete Last Import</button> --}}
               </div>
             </div>
           </div>
@@ -240,46 +240,107 @@ uppy.use(Uppy.DragDrop, {
                     
                 });
                 console.log(import_data);
-                $.ajax({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    url : "{{route('import.zomato')}}",
-                    type : 'POST',
-                    data: {data: import_data},
-                    beforeSend: function() {            
-                        $('.loading').show();
-                    },
-                    complete: function(){
-                        $('.loading').hide();
-                    },
-                    success: function(data){
-                        // console.log(data);
-                        swal.fire({
-                            position: 'center',
-                            type: 'success',
-                            title: 'Record imported successfully.',
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                        performance_table.ajax.reload(null, false);
-                    },
-                    error: function(error){
-                        swal.fire({
-                            position: 'center',
-                            type: 'error',
-                            title: 'Oops...',
-                            text: 'Unable to update.',
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                    }
-                });
+                save_data(import_data,400);
+                // $.ajax({
+                //     headers: {
+                //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                //     },
+                //     url : "{{route('import.zomato')}}",
+                //     type : 'POST',
+                //     data: {data: import_data},
+                //     beforeSend: function() {            
+                //         $('.loading').show();
+                //     },
+                //     complete: function(){
+                //         $('.loading').hide();
+                //     },
+                //     success: function(data){
+                //         // console.log(data);
+                //         swal.fire({
+                //             position: 'center',
+                //             type: 'success',
+                //             title: 'Record imported successfully.',
+                //             showConfirmButton: false,
+                //             timer: 1500
+                //         });
+                //         performance_table.ajax.reload(null, false);
+                //     },
+                //     error: function(error){
+                //         swal.fire({
+                //             position: 'center',
+                //             type: 'error',
+                //             title: 'Oops...',
+                //             text: 'Unable to update.',
+                //             showConfirmButton: false,
+                //             timer: 1500
+                //         });
+                //     }
+                // });
             }
         });
         // uppy.upload()
     });
-
+    var save_data=function(arr, chunks_size){
+    var chunked_arr=biketrack.chunk_array(arr, chunks_size); 
+    moveAlong(chunked_arr);
+}
+var moveAlong=function(queue){
+	if(queue.length>0){
+		var _chunk = queue.pop();
+		$.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url : "{{route('import.zomato')}}",
+            type : 'POST',
+            data: {data: _chunk},
+            beforeSend: function() {            
+                // $('.bk_loading').show();
+            },
+            complete: function(){
+                // $('.bk_loading').hide();
+                performance_table.ajax.reload(null, false);
+            },
+            success: function(data){
+                console.warn(data);
+                if(data.status==0){
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: data.message,
+                        showConfirmButton: true  
+                    });
+                    return;
+                }
+				moveAlong(queue);
+            },
+            error: function(error){
+                $('.bk_loading').hide();
+                swal.fire({
+                    position: 'center',
+                    type: 'error',
+                    title: 'Oops...',
+                    text: 'Unable to update.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        });
+	}
+	else{
+		//all data is sended
+        $('.bk_loading').hide();
+		swal.fire({
+            position: 'center',
+            type: 'success',
+            title: 'Record imported successfully.',
+            showConfirmButton: false,
+            timer: 1500
+        });
+        performance_table.ajax.reload(null, false);
+	}
+}
 // table accordian start
 
 var performance_table;
