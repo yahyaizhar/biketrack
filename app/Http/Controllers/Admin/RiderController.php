@@ -571,9 +571,9 @@ class RiderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($rider_id)
+    public function destroy(Rider $rider)
     {
-        $rider=Rider::find($rider_id);
+        $rider_id=$rider->id;
         $client_id=$rider->clients()->get()->first();
         $client_history=Client_History::where('rider_id', $rider_id)
         ->where('client_id', $client_id->id)
@@ -584,14 +584,8 @@ class RiderController extends Controller
         $client_history->deassign_date=Carbon::now()->format("Y-m-d");
         
         $client_history->save();
-        $rider=Rider::find($rider_id);
-        $rider->delete();
-
-        $rider_detail=$rider->Rider_detail;
-        $rider_detail->delete();
         
         $clients = $rider->clients()->detach();
-       
 
         $assign_bike=$rider->Assign_bike()->where('status','active')->get()->first();
         if(isset($assign_bike)){
@@ -608,6 +602,13 @@ class RiderController extends Controller
             $sim_history->return_date=Carbon::now()->format("Y-m-d");
             $sim_history->update();
         }
+
+        $rider->active_status='D';
+        $rider->update();
+
+        $rider_detail=$rider->Rider_detail;
+        $rider_detail->active_status='D';
+        $rider_detail->update();
         return redirect(url('admin/riders'))->with('message', 'Record Deleted Successfully.');
     }
     // public function showMessages(Rider $rider)

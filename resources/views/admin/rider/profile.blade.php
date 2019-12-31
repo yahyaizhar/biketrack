@@ -578,7 +578,7 @@
 
 <script>
     function deleteRiderprofile(id){ 
-    var url = "{{ url('admin/delete/Rider') }}"+ "/" + id;
+    var url = "{{ url('admin/riders') }}"+ "/" + id;
     sendDeleteRequest(url, false, "{{url('admin/riders')}}", null);
 }
 $(document).ready(function(){
