@@ -17,6 +17,7 @@ use App\Model\Mobile\Mobile;
 use App\Model\Rider\Rider_Online_Time;
 use App\Model\Bikes\bike;
 use Carbon\Carbon;
+use App\WebRoute;
 use App\Model\Accounts\Company_Account;
 use App\Model\Accounts\Rider_Account;
 
@@ -171,45 +172,35 @@ class HomeController extends Controller
     public function request403(){
         return view("403");
     }
-    public function cash_paid_to_rider($id){
-        $rider_profile=Rider::find($id);
-        $rider_profile->profile_picture=asset(Storage::url($rider_profile->profile_picture));
-        $payable_to_rider=0;
-       if (isset( $rider_profile->id)) {
-        $payable_to_rider_cr=Rider_Account::where('rider_id',$rider_profile->id)
-        ->where(function($q) {
-            $q->where('type','cr')
-            ->orWhere('type','dr_receivable');
-        })
-        ->sum('amount');
-
-        $payable_to_rider_dr=Rider_Account::where('rider_id',$rider_profile->id)
-        ->where(function($q) {
-            $q->where('type','dr')
-            ->orWhere('type','cr_payable');
-        })
-        ->sum('amount');
-
-        $payable_to_rider=$payable_to_rider_cr-$payable_to_rider_dr;
-       }
-        
-        return response()->json([
-            'riders_data' => $rider_profile,
-            'closing_balance'=> $payable_to_rider,
-        ]);
+    public function show_add_routes(){
+        return view('admin.addroutes');
     }
-    public function cash_paid_rider(Request $r, $id){
-        $rider=Rider::find($id);
-        $ra = new \App\Model\Accounts\Rider_Account;
-        $ra->type='dr';
-        $ra->amount=$r->amount;
-        $ra->month=Carbon::parse($r->get('month'))->format('Y-m-d');
-        $ra->rider_id = $rider->id;
-        $ra->source=$r->description;
-        $ra->payment_status="paid";
-        $ra->save();
-        return response()->json([
-            'a' =>$ra,
-        ]);
+    public function edit_routes($id){
+        $webroute = WebRoute::find($id);
+        return view('admin.editroute',compact('webroute'));
+    }
+    public function view_add_routes(){
+        return view('admin.show_routes');
+    }
+    public function insert_add_routes(Request $request){ 
+        $webroutes= new WebRoute();
+        $webroutes->category=$request->category;
+        $webroutes->label=$request->label;
+        $webroutes->type=$request->type;
+        $webroutes->route_name=$request->route_name;
+        $webroutes->route_description=$request->route_description;
+        $webroutes->save();
+        return redirect(route('admin.add_routes'))->with('message', 'Route added successfully.');
+    }
+    public function update_add_routes(Request $request){ 
+        // return $request; 
+        $webroutes= WebRoute::find($request->id);
+        $webroutes->category=$request->category;
+        $webroutes->label=$request->label;
+        $webroutes->type=$request->type;
+        $webroutes->route_name=$request->route_name;
+        $webroutes->route_description=$request->route_description;
+        $webroutes->save();
+        return redirect(route('admin.view_routes'))->with('message', 'Route updated successfully.'); 
     }
 }

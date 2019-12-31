@@ -107,9 +107,6 @@
             <li class="nav-item">
                 <a class="nav-link active" data-toggle="tab" href="#kt_tabs_4_1">Upcoming Expiries</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#kt_tabs_4_2">Pay Cash to Rider</a>
-            </li>
         </ul>                    
 
         <div class="tab-content">
@@ -445,23 +442,6 @@
                     
                         </div>
             </div>
-            <div class="tab-pane" id="kt_tabs_4_2" role="tabpanel">
-                <div class="col-md-4">  
-                    <div class="my-2 mx-4">
-                        <label>Select Rider:</label>
-                        <select class="form-control kt-select2" name="rider_id" id="rider_id">
-                                @foreach ($all_riders as $rider)
-                            <option value="{{ $rider->id }}">
-                                {{ $rider->name }}
-                            </option>     
-                            @endforeach 
-                        </select>
-                    </div>
-                </div>
-                <div class="container-fluid">
-                    <div class="append col-md-8"></div>
-                </div>
-            </div>
         </div>      
     </div>
     <div>
@@ -514,94 +494,4 @@
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
 
-<script>
-  $(document).ready(function(){
-    $('#month').fdatepicker({format: 'dd-mm-yyyy'}); 
-$('[name="rider_id"]').on("change",function(){
-    var rider_id=$(this).val();
-    var url = "{{url('/admin/cash/paid/to/rider/')}}"+"/"+rider_id+'';
-    $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-        $.ajax({
-            url : url,
-            type : 'GET',
-            processData: false,
-            contentType: false,
-            success: function(data){
-                var closing_balance=data.closing_balance;
-                var profile_picture=data.riders_data["profile_picture"];
-                if (profile_picture!=null) {
-                    var result_append='<img class="profile-logo img img-thumbnail" style="height:auto; width:100%;" src="'+profile_picture+'" alt="image">';
-                } else {
-                    var result_append=' <img class="profile-logo img img-thumbnail" style="height:auto; width:100%;" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />';
-                } 
-                var overall_result='<div class="row"><div class="col-md-4">'+result_append+'</div><div class="col-md-8"><h2>'+data.riders_data["name"]+'</h2><h6><strong>Closing Balance: </strong>'+ closing_balance+'</h6><div><button class="btn btn-success" id="cash_paid">Paid Cash</button></div></div></div>';
-                $(".append").html(overall_result);
-                $(".append").css("border","2px solid gray");
-                swal.fire({
-                    position: 'center',
-                    type: 'success',
-                    title: 'Record updated successfully.',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-                // table.ajax.reload(null, false);
-                $("#cash_paid").click(function(){
-                    $("#pay_cash").modal("show");
-                });
-                $('form#pay_cash_rider').on("submit",function(e){
-                        e.preventDefault();
-                        var _form = $(this);
-                        var _modal = _form.parents('.modal');
-                        var url = "{{url('/admin/cash/paid/rider/')}}"+"/"+rider_id+'';
-                        $.ajaxSetup({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            }
-                        });
-                        $.ajax({
-                                url : url,
-                                type : 'POST',
-                                data: _form.serializeArray(),
-                            success: function(data){
-                            _modal.modal('hide');
-                            swal.fire({ 
-                            position: 'center',
-                            type: 'success',
-                            title: 'Record updated successfully.',
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                        },
-                        error: function(error){
-                            _modal.modal('hide');
-                            swal.fire({
-                                position: 'center',
-                                type: 'error',
-                                title: 'Oops...',
-                                text: 'Unable to update.',
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                        }
-                    });
-                    });
-            },
-            error: function(error){
-                swal.fire({
-                    position: 'center',
-                    type: 'error',
-                    title: 'Oops...',
-                    text: 'Unable to update.',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }
-        });
-});
-  });
-</script>
 @endsection

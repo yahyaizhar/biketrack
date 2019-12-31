@@ -346,9 +346,12 @@ class RiderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Rider $rider,Request $request,Rider_detail $rider_detail)
+    public function edit(Rider $rider,Request $request,Rider_detail $rider_detail,$id)
     {    
-        $rider_detail=$rider->Rider_detail()->get()->first();
+        $rider=Rider::find($id);
+        if(isset($rider)){
+            $rider_detail=$rider->Rider_detail()->get()->first();
+        }        
         $sim_date=$rider->Sim_History()->where('status','active')->get()->first();
         $sim_number=null;
         if(isset($sim_date)){
@@ -748,11 +751,6 @@ class RiderController extends Controller
     public function rider_details(){
         return view('admin.rider.Rider_detail');
     }
-public function destroyer(Rider $rider,$id){
-    $rider=Rider::find($id);
-
-    return $rider_detail->id;
-}
   
    public function RiderPerformance(){
         $performance_count=Rider_Performance_Zomato::all()->count();

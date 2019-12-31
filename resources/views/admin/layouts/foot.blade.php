@@ -439,7 +439,11 @@ setInputFilter(document.getElementById("hexTextBox"), function(value) {
 
 
   */
-
+  $( document ).ajaxComplete(function( event, xhr, settings ) {
+if(xhr.status ==403){
+    iziToast.error({title: 'Error 403', message: 'Permission denied.'});
+}
+});
 
 biketrack.send_ajax=function(type,url,data, table, fire_swal=true){
     if(type=="") return;

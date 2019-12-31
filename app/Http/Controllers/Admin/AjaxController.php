@@ -30,6 +30,7 @@ use App\Model\Sim\Sim_History;
 use App\Model\Mobile\Mobile_installment;
 use App\Model\Rider\Rider_Performance_Zomato;
 use App\Assign_bike;
+use App\WebRoute;
 use App\Model\Rider\Trip_Detail;
 use App\Model\Accounts\Company_Account;
 use App\Model\Accounts\Rider_Account;
@@ -1480,7 +1481,39 @@ class AjaxController extends Controller
         ->rawColumns(['newcommer_image','full_name','nationality','phone_number','national_id_card_number','whatsapp_number','education','license_check','license_number','licence_issue_date','license_image', 'experiance','passport_status', 'passport_number','passport_image', 'current_residence','current_residence_countries', 'status','source','overall_remarks','actions'])
         ->make(true);
     }
-   
+    public function getWebRoutes()
+    {
+        $webroutes = WebRoute::orderByDesc('created_at')->get();
+        // return $clients;
+        return DataTables::of($webroutes)
+        ->addColumn('id', function($webroute){
+            return $webroute->id;
+        })
+        ->addColumn('category', function($webroute){
+            return $webroute->category;
+        })
+        ->addColumn('label', function($webroute){
+            return $webroute->label;
+        })
+        ->addColumn('type', function($webroute){
+            return $webroute->type;
+        })
+        ->addColumn('route_name', function($webroute){
+            return $webroute->route_name;
+        })
+        ->addColumn('description', function($webroute){
+            return $webroute->route_description;
+        })
+        ->addColumn('actions', function($webroute){
+                 return '<a href="'.route('admin.edit_route', $webroute->id).'"><span class="show_waiting_comer">
+                     <i class="flaticon-eye"></i>    
+                       </span></a>';
+           
+        })
+
+        ->rawColumns(['category','label','type','route_name','description','actions'])
+        ->make(true);
+    }
        public function getRiderPerformance()
        {
            $performance =Rider_Performance_Zomato::orderByDesc('created_at')->get();
