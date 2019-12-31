@@ -1239,7 +1239,7 @@ class AccountsController extends Controller
         // } 
        
     // }
-        return redirect(route('account.developer_salary'));
+        return redirect(route('admin.accounts.company_account'));
     }
 
     // end add new salary

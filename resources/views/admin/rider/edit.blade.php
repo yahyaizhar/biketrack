@@ -44,7 +44,7 @@
             <!--begin::Form-->
             
             @include('admin.includes.message')
-            <form class="kt-form" action="{{ route('admin.riders.update', $rider->id) }}" method="POST" enctype="multipart/form-data">
+            <form class="kt-form" action="{{ route('admin.riders.update', $rider) }}" method="POST" enctype="multipart/form-data">
                 {{ method_field('PUT') }}
                 {{ csrf_field() }}
                 <div class="kt-portlet__body">

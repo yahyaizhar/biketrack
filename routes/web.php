@@ -612,7 +612,7 @@ Route::group([
     Route::get('/login', 'Auth\LoginController@showLoginForm')->name('admin.login');
     Route::post('/login', 'Auth\LoginController@login')->name('admin.login');
     Route::get('/logout', 'Auth\LoginController@logout')->name('admin.logout');
-    
+    Route::get('/NewComer/add','GuestController@newComer_view')->name('guest.newComer_view');
 });
 // end for Admin global
  
