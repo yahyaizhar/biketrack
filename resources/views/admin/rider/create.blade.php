@@ -221,7 +221,7 @@
                                     <label>Passport Image:</label>
                                     <div class="custom-file">
                                         <input type="file" name="passport_document_image" class="custom-file-input" id="passport_document_image">
-                                        <label class="custom-file-label" for="passport_document_image">Choose Passport Image</label>
+                                        <label class="custom-file-label" for="passport_document_image">Choose Referral Passport Image</label>
                                     </div>
                                 </div>
                             </div>
