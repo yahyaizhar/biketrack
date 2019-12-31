@@ -34,6 +34,7 @@
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
                         {{-- <button class="btn btn-danger btn-elevate btn-icon-sm" id="bulk_delete">Delete Selected</button> --}}
+                        <input class="btn btn-success" type="button" onclick="export_data()" value="Export Client Data">
                         &nbsp;
                         <a href="{{ route('admin.clients.create') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
@@ -216,7 +217,20 @@
 <!--end::Page Scripts -->
 <script>
 var clients_table;
-
+function export_data(){
+    var export_details=[];
+    var _data=clients_table.ajax.json().data;
+    console.log(_data);
+    _data.forEach(function(item,index) {
+        export_details.push({
+        "ID":item.id,
+        "Name":item.name,
+        "Phone":item.phone,
+        });
+    });
+        var export_data = new CSVExport(export_details);
+    return false;
+}
 function show_salary_modal(salary_method, client_id){
     salary_method = JSON.parse(salary_method);
     console.log(salary_method);

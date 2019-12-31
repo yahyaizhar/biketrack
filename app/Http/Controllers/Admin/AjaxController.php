@@ -630,7 +630,7 @@ class AjaxController extends Controller
         ->addColumn('id', function($bike){
             return $bike->id;
         })
-        ->addColumn('owner', function($bike){
+        ->addColumn('owner_type', function($bike){
            return '<strong>'.$bike->owner.'</strong>';
         })
         ->addColumn('assigned_to', function($bike){
@@ -656,7 +656,7 @@ class AjaxController extends Controller
             //             <span></span>
             //         </label>';
         }) 
-        ->addColumn('model', function($bike){
+        ->addColumn('models', function($bike){
             return $bike->model;
         })
         ->addColumn('brand', function($bike){
@@ -669,7 +669,7 @@ class AjaxController extends Controller
                 return $bike->bike_allowns;
             }
         })
-        ->addColumn('Bike_number', function($bike){
+        ->addColumn('bike_no', function($bike){
             return '<a href="'.route('bike.bike_assigned', $bike).'">'.$bike->bike_number.'</a>';
         })
         
@@ -699,7 +699,7 @@ class AjaxController extends Controller
         // <a class="dropdown-item" href="'.route('bike.bike_assigned', $bike).'"><i class="fa fa-eye"></i> View Bikes</a>
         // <a class="dropdown-item" href="'.route('bike.bike_assignRiders', $bike).'"><i class="fa fa-edit"></i> Assign Bikes</a>
                     
-        ->rawColumns(['model','rent','owner','brand','chassis_number', 'Bike_number', 'detail', 'assigned_to','availability', 'status'])
+        ->rawColumns(['models','rent','owner_type','brand','chassis_number', 'bike_no', 'detail', 'assigned_to','availability', 'status'])
         ->make(true);
     }
     public function getActiveBikes()
