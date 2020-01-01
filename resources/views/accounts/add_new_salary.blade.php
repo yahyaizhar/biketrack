@@ -19,10 +19,16 @@
                 
                 
                 @include('admin.includes.message')
+                
                 <form class="kt-form" action="{{ route('account.added_salary')}}" method="post" id="salary" enctype="multipart/form-data">
                     {{ csrf_field() }}
                      
                     <div class="kt-portlet__body">
+                        <div class="col-md-12">
+                            <div class="err__messages">
+        
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label>Select Rider:</label>
                             <select class="form-control kt-select2" id="kt_select2_3" name="rider_id" >
@@ -85,117 +91,71 @@
                                 <span class="form-text text-muted">Please enter Given Date</span>
                             @endif
                         </div>
-                        <div class="not_visible">
-                        <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
-                            <input type="text" required readonly class="form-control col-md-6" placeholder="Enter Monthly Hours" value="Monthly Hours" >
-                            <input type="text" required readonly class="form-control col-md-6" name="monthly_hours_val" placeholder="Enter Monthly Hours" value="" >
+                        <div class="trips_based_salary-wrapper salary__wrapper">
+                            <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
+                                <input type="text" required readonly class="form-control col-md-6" placeholder="Enter Monthly Hours" value="Monthly Hours" >
+                                <input type="text" required readonly class="form-control col-md-6" name="monthly_hours_val" placeholder="Enter Monthly Hours" value="" >
+                            </div>
+                            <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
+                                <input type="text" required readonly class="form-control col-md-3"  placeholder="Enter Absent Day" value="Absent Days" >
+                                <input type="text" required readonly class="form-control col-md-3" name="absent_day_val" placeholder="Enter Absent Day" value="" >
+                                <input type="text" required readonly class="form-control col-md-3"  placeholder="Enter Absent Hours" value="Absent Hours" >
+                                <input type="text" required readonly class="form-control col-md-3" name="absent_hours_val" placeholder="Enter Absent Hours" value="" >
+                            </div>
+                            <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
+                                <input type="text" required readonly class="form-control col-md-3"  placeholder="Enter Workable Days" value="Workable Days" >
+                                <input type="text" required readonly class="form-control col-md-3" name="workable_days" placeholder="Enter Workable Days" value="" >
+                                <input type="text" required readonly class="form-control col-md-3"  placeholder="Enter Workable Days Based On Available Days" value="Workable Days Based On Available Days" >
+                                <input type="text" required readonly class="form-control col-md-3" name="workable_hours_based_on_available_days" placeholder="Enter Workable Days Based On Available Days" value="" >
+                            </div>
+                            <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
+                                <input type="text" required readonly class="form-control col-md-6" value="Working Zomato hours during available days" >
+                                <input type="text" required readonly class="form-control col-md-6" name="working_zomato_hours" placeholder="Enter Working hours during available days" value="" >
+                            </div>
+                            <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
+                                <input type="text" required readonly class="form-control col-md-6" value="Working hours during available days" >
+                                <input type="text" required readonly class="form-control col-md-6" name="working_hours_during_available_days" placeholder="Enter Working hours during available days" value="" >
+                            </div>
+                            <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
+                                <input type="text" required readonly class="form-control col-md-6" value="Less time calculated" >
+                                <input type="text" required readonly class="form-control col-md-6" name="Less time calculated" placeholder="Enter Less time calculated" value="" >
+                            </div>
+                            <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
+                                <input type="text" required readonly class="form-control col-md-3"  value="Payable Time" >
+                                <input type="text" required readonly class="form-control col-md-3" name="finals_hours" value="" >
+                                <input type="text" required readonly class="form-control col-md-3" name="hours_multiply_with"  value="" >
+                                <input type="text" required readonly class="form-control col-md-3" name="hours_amount" value="" >
+                            </div>
+                            <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
+                                <input type="text" required readonly class="form-control col-md-3"  value="Trips" >
+                                <input type="text" required readonly class="form-control col-md-3" name="trips" value="" >
+                                <input type="text" required readonly class="form-control col-md-3" name="trips_multiply_with"  value="" >
+                                <input type="text" required readonly class="form-control col-md-3" name="trips_amount" value="" >
+                            </div>
+                            <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
+                                <input type="text" required readonly class="form-control col-md-3"  value="Extra Trips" >
+                                <input type="text" required readonly class="form-control col-md-3" name="extra_trips" value="" >
+                                <input type="text" required readonly class="form-control col-md-3" name="extra_trips_multiply_with"  value="" >
+                                <input type="text" required readonly class="form-control col-md-3" name="extra_trips_amount" value="" >
+                            </div>
+                            <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
+                                <input type="text" required readonly class="form-control col-md-6" value="Final Salary" >
+                                <input type="text" required readonly class="form-control col-md-6" name="final_salary" value="" >
+                            </div>
+                            <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
+                                <input type="text" required readonly class="form-control col-md-6" value="400 Trips Aceivement Bonus" >
+                                <input type="text" required readonly class="form-control col-md-6" name="bonus" value="" >
+                            </div>
                         </div>
-                        <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
-                            <input type="text" required readonly class="form-control col-md-3"  placeholder="Enter Absent Day" value="Absent Days" >
-                            <input type="text" required readonly class="form-control col-md-3" name="absent_day_val" placeholder="Enter Absent Day" value="" >
-                            <input type="text" required readonly class="form-control col-md-3"  placeholder="Enter Absent Hours" value="Absent Hours" >
-                            <input type="text" required readonly class="form-control col-md-3" name="absent_hours_val" placeholder="Enter Absent Hours" value="" >
+                        <div class="fixed_based_salary-wrapper salary__wrapper">
+                            <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
+                                <input type="text" required readonly class="form-control col-md-6" value="Final Salary" >
+                                <input type="text" required readonly class="form-control col-md-6" name="final_salary" value="" >
+                            </div>
                         </div>
-                        <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
-                            <input type="text" required readonly class="form-control col-md-3"  placeholder="Enter Workable Days" value="Workable Days" >
-                            <input type="text" required readonly class="form-control col-md-3" name="workable_days" placeholder="Enter Workable Days" value="" >
-                            <input type="text" required readonly class="form-control col-md-3"  placeholder="Enter Workable Days Based On Available Days" value="Workable Days Based On Available Days" >
-                            <input type="text" required readonly class="form-control col-md-3" name="workable_hours_based_on_available_days" placeholder="Enter Workable Days Based On Available Days" value="" >
-                        </div>
-                        <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
-                            <input type="text" required readonly class="form-control col-md-6" value="Working Zomato hours during available days" >
-                            <input type="text" required readonly class="form-control col-md-6" name="working_zomato_hours" placeholder="Enter Working hours during available days" value="" >
-                        </div>
-                        <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
-                            <input type="text" required readonly class="form-control col-md-6" value="Working hours during available days" >
-                            <input type="text" required readonly class="form-control col-md-6" name="working_hours_during_available_days" placeholder="Enter Working hours during available days" value="" >
-                        </div>
-                        <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
-                            <input type="text" required readonly class="form-control col-md-6" value="Less time calculated" >
-                            <input type="text" required readonly class="form-control col-md-6" name="Less time calculated" placeholder="Enter Less time calculated" value="" >
-                        </div>
-                        <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
-                            <input type="text" required readonly class="form-control col-md-3"  value="Payable Time" >
-                            <input type="text" required readonly class="form-control col-md-3" name="finals_hours" value="" >
-                            <input type="text" required readonly class="form-control col-md-3" name="hours_multiply_with"  value="" >
-                            <input type="text" required readonly class="form-control col-md-3" name="hours_amount" value="" >
-                        </div>
-                        <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
-                            <input type="text" required readonly class="form-control col-md-3"  value="Trips" >
-                            <input type="text" required readonly class="form-control col-md-3" name="trips" value="" >
-                            <input type="text" required readonly class="form-control col-md-3" name="trips_multiply_with"  value="" >
-                            <input type="text" required readonly class="form-control col-md-3" name="trips_amount" value="" >
-                        </div>
-                        <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
-                            <input type="text" required readonly class="form-control col-md-3"  value="Extra Trips" >
-                            <input type="text" required readonly class="form-control col-md-3" name="extra_trips" value="" >
-                            <input type="text" required readonly class="form-control col-md-3" name="extra_trips_multiply_with"  value="" >
-                            <input type="text" required readonly class="form-control col-md-3" name="extra_trips_amount" value="" >
-                        </div>
-                        <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
-                            <input type="text" required readonly class="form-control col-md-6" value="Final Salary" >
-                            <input type="text" required readonly class="form-control col-md-6" name="final_salary" value="" >
-                        </div>
-                        <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
-                            <input type="text" required readonly class="form-control col-md-6" value="400 Trips Aceivement Bonus" >
-                            <input type="text" required readonly class="form-control col-md-6" name="bonus" value="" >
-                        </div>
-                        </div>
-                        <div class="form-group">
-                            <input readonly type="hidden" class="form-control @if($errors->has('net_salary')) invalid-field @endif" name="net_salary" value="">
-                         </div>
-                        <div class="form-group">
-                        <input readonly type="hidden" class="form-control @if($errors->has('gross_salary')) invalid-field @endif" name="gross_salary" value="">
-                        </div>
-                        {{-- <div class="form-group">
-                            <label>Salary Paid to Rider:</label>
-                            <input type="text" class="form-control @if($errors->has('recieved_salary')) invalid-field @endif" name="recieved_salary" value="">
-                            @if ($errors->has('recieved_salary'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{ $errors->first('recieved_salary') }}
-                                    </strong>
-                                </span>
-                            @else
-                                <span class="form-text text-muted">Recieved salary</span>
-                            @endif
-                                
-                        </div> --}}
-                        {{-- <div class="form-group">
-                            <label>Salary Remaining:</label>
-                            <input type="text" class="form-control @if($errors->has('remaining_salary')) invalid-field @endif" name="remaining_salary" value="">
-                            @if ($errors->has('remaining_salary'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{ $errors->first('remaining_salary') }}
-                                    </strong>
-                                </span>
-                            @else
-                                <span class="form-text text-muted">Remaining salary</span>
-                            @endif
-                                
-                        </div> --}}
-                        {{-- <div class="form-group">
-                                <label>Payment status:</label>
-                                <div class="kt-radio-inline">
-                                    <label class="kt-radio">
-                                        <input type="radio" name="payment_status" value="paid"> Paid
-                                        <span></span>
-                                    </label>
-                                    <label class="kt-radio">
-                                            <input type="radio" name="payment_status" value="pending"> Pending
-                                        <span></span>
-                                    </label>
-                                </div>
-                        </div> --}}
-                       
-                        {{-- <div>
-                            <input type="hidden" name="setting"> --}}
-                            <input type="hidden"  name="total_salary" >
-                            {{-- <input type="hidden"  name="total_bonus" >
-                            <input type="hidden"  name="total_deduction" >
-                            <input type="hidden"  name="payment_status" value="pending" >
-                        </div> --}}
+                        <input type="hidden"  name="total_salary" >
+                        <input type="hidden"  name="net_salary" >
+                        <input type="hidden"  name="gross_salary" >
                     </div>
                     <div class="kt-portlet__foot">
                         <div class="kt-form__actions kt-form__actions--right">
@@ -223,6 +183,15 @@
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
 <script data-ajax>
+    var basic_alert= '   <div><div class="alert alert-outline-danger fade show" role="alert">  '  + 
+ '                                   <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div>  '  + 
+ '                                       <div class="alert-text">A simple danger alert—check it out!</div>  '  + 
+ '                                       <div class="alert-close">  '  + 
+ '                                       <button type="button" class="close" data-dismiss="alert" aria-label="Close">  '  + 
+ '                                           <span aria-hidden="true"><i class="la la-close"></i></span>  '  + 
+ '                                       </button>  '  + 
+ '                                   </div>  '  + 
+ '                              </div> </div>  ' ; 
     $(function(){
         $('.kt-select2').select2({
             placeholder: "Select an rider",
@@ -234,7 +203,7 @@
             minView:3,
             maxView:4
         });
-        $(".not_visible").hide();
+        $(".salary__wrapper").hide();
         $('#salary [name="recieved_salary"]').on('change input', function(){
             var _gross_salary = parseFloat($('#salary [name="gross_salary"]').val().trim());
             var _recieved_salary = parseFloat($(this).val().trim());
@@ -243,7 +212,7 @@
         $('#salary [name="rider_id"],#salary [name="month"]').on('change', function(){
             var _riderid = $('#salary [name="rider_id"]').val();
             var _month = $('#salary [name="month"]').val();
-            $(".not_visible").show();
+            $(".salary__wrapper").hide();
             if(_riderid==''||_month=='')return;
             _month = new Date(_month).format('yyyy-mm-dd');
             $.ajax({
@@ -255,28 +224,22 @@
             })
             .done(function(data) {  
                 console.log(data);
-                var extra_trips=0;
-                var bonus=0;
-                var absent_days=data.absent_count;
-                var absent_hours=absent_days*11;
-                var working_days=data.working_days;
-                var working_days_hours=working_days*11;
-                var monthly_hours=286;
-                var working_zomato_hours=data.zomato_hours;
-                var hours=data.hours;
-                var less_time_calculated=working_days_hours-hours;
-                var final_hours_payout=monthly_hours-(absent_hours+less_time_calculated);
-                var hours_amount=final_hours_payout*7.87;
-                var trips=data.trips;
-                if (trips>400) {
-                    trips=400;
-                    extra_trips=(data.trips)-400;
-                    bonus=50;
+                $('.err__messages').html('');
+                if(data.status==0){ 
+                    //error --show it
+                    var _msg = $(basic_alert);
+                    _msg.find('.alert-text').html(data.msg);
+                    $('.err__messages').html(_msg.html());
+                    return;
                 }
-                var trips_amount=trips*2;
-                var extra_trips_amount=data.trips_EXTRA_payable;
-                var final_salary=trips_amount+hours_amount+extra_trips_amount;
-                console.log("gdsjhdsghaj"+final_salary); 
+                var salary_method=data.salary_method;
+                if(salary_method=='trip_based'){
+                    $('.trips_based_salary-wrapper').show();
+                }
+                else if(salary_method=='fixed_based'){
+                    $('.fixed_based_salary-wrapper').show();
+                }
+                
                 $('#salary [name="monthly_hours_val"]').val(data._s_monthlyHours);
                 $('#salary [name="absent_day_val"]').val(data.absent_count);
                 $('#salary [name="absent_hours_val"]').val((data.absent_count*data._s_maxHours).toFixed(2));
@@ -296,8 +259,8 @@
                 $('#salary [name="extra_trips_amount"]').val(data.trips_EXTRA_payable);
                 
                 $('#salary [name="bonus"]').val(data.bonus);
-                $('#salary [name="final_salary"]').val((final_salary).toFixed(2));
-                $('#salary [name="total_salary"]').val((final_salary).toFixed(2));
+                $('#salary [name="final_salary"]').val((data.total_salary).toFixed(2));
+                $('#salary [name="total_salary"]').val((data.total_salary).toFixed(2));
                 
 
                 $('#salary [name="is_paid"]').val(data.is_paid);
