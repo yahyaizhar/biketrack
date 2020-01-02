@@ -17,6 +17,8 @@ class Admin_Role
      */
     public function handle($request, Closure $next)
     {
+        $route_name = $request->route()->getName();
+        // dd($route_name);
         $admin_gaurd = $request->user();
         // if($admin_gaurd->Active_status != "A"){
         //     Auth::guard('admin')->logout();
