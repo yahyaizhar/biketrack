@@ -67,8 +67,9 @@ class EmployeeController extends Controller
         $employee->save();
        
         $roles = $request->get('action_name');
-            $user_roles=[];
-        foreach ($roles  as $role) {
+        $user_roles=[];
+        if(isset($roles)){
+        foreach ($roles  as $role) { 
         $obj=[];
         $obj['admin_id']=$employee->id;
         $obj['action_name']=$role;
@@ -76,6 +77,7 @@ class EmployeeController extends Controller
         $obj['updated_at']=Carbon::now();
         array_push($user_roles, $obj);
         }
+     }
         DB::table('roles')->insert($user_roles);        
         return redirect(url('/admin/show/employee'));
     }
@@ -116,6 +118,7 @@ class EmployeeController extends Controller
         ////Make new roles for current employe
         $roles = $request->get('action_name');
         $user_roles=[];
+        if(isset($roles)){
         foreach ($roles  as $role) {
         $obj=[];
         $obj['admin_id']=$user->id;
@@ -124,6 +127,7 @@ class EmployeeController extends Controller
         $obj['updated_at']=Carbon::now();
         array_push($user_roles, $obj);
         }
+    }
         DB::table('roles')->insert($user_roles);
         
         

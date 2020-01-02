@@ -208,8 +208,8 @@ Route::group([
     /*[bike - view all bike]*/Route::get('/bike_view','bikeController@bike_view')->name('bike.bike_view');
 	/*[bike - view active bike]*/Route::get('/active/bike_view','bikeController@bike_view_active')->name('bike.bike_view_active');
     Route::get('/bike/{bike}/assigned', 'ClientController@bike_assigned_show')->name('bike.bike_assigned'); //not_using
-    /*[bike - assign bike]*/Route::get('/bike/{id}/assignRider', 'ClientController@bike_assigned_toRider')->name('bike.bike_assignRiders');
-    /*[bike - assign bike]*/Route::put('/bike/{rider}/assignRider', 'ClientController@updateAssignedBike')->name('bike.bike_assignRiders');
+    /*[rider - assign bike]*/Route::get('/bike/{id}/assignRider', 'ClientController@bike_assigned_toRider')->name('bike.bike_assignRiders');
+    /*[rider - assign bike]*/Route::put('/bike/{rider}/assignRider', 'ClientController@updateAssignedBike')->name('bike.bike_assignRiders');
     /*[bike - Active/Inactive]*/Route::post('/bike/{bike}/updateStatus', 'ClientController@updateStatusbike')->name('bike.updateStatusbike');
     Route::delete('/bike/{bike_id}', 'ClientController@mutlipleDeleteBike')->name('bike.mutlipleDeleteBike');//not_using
     /*[bike - edit bike]*/Route::get('/bike/Edit/{id}','bikeController@bike_edit')->name('Bike.edit_bike');
@@ -226,7 +226,8 @@ Route::group([
     /*[bike - give rental bike to company]*/Route::get('/assigned/company/{bike}', 'bikeController@give_bike_to_company')->name('bike.give_bike_to_company'); 
     /*[bike - give rental bike to company]*/Route::post('/is/given/bike/to/company/{bike_id}','bikeController@is_given_bike_status')->name('bike.is_given_bike_status');
     /*[rider - unassign bike]*/Route::get('/bike/deactive/{rider_id}/date/{bike_id}','bikeController@deactive_date')->name('admin.deactive_date'); ////ok
-// salik 
+    /*[Bike - View bike]*/Route::get('/bike/Edit/{id}/view','bikeController@bike_edit_view')->name('Bike.bike_edit_view');
+    // salik 
     /*[bike - View salik]*/Route::get("/salik","SalikController@import_salik_data")->name("admin.salik");
     /*[bike - Import Salik]*/Route::post('/import/salik','SalikController@import_Salik')->name('import.salik');
     /*[bike - salik Delete last import]*/Route::delete('/delete/last/import/salik','SalikController@delete_lastImportSalik')->name('delete.import_salik');

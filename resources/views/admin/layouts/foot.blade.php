@@ -440,9 +440,15 @@ setInputFilter(document.getElementById("hexTextBox"), function(value) {
 
   */
   $( document ).ajaxComplete(function( event, xhr, settings ) {
-if(xhr.status ==403){
-    iziToast.error({title: 'Error 403', message: 'Permission denied.'});
-}
+      console.log(xhr)
+        if(xhr.status ==403){
+            if(typeof xhr.responseJSON !=="undefined"){
+                iziToast.error({title: 'Error 403', message: 'Permission denied for '+xhr.responseJSON.message});
+            }
+            else{
+                iziToast.error({title: 'Error 403', message: 'Permission denied'});
+            }
+        }   
 });
 
 biketrack.send_ajax=function(type,url,data, table, fire_swal=true){
@@ -532,6 +538,26 @@ _search_recursion(6);
 
 });
 
+///// if no sub_child them remove child
+$('ul.kt-menu__subnav li.kt-menu__item.kt-menu__item--submenu').each(function(){
+if($(this).find('.kt-menu__subnav li:not(li.kt-menu__item--parent)').length <= 0){
+$(this).remove();
+}
+else{
+    $(this).css('display','block');
+}
+})
+
+///// if no child them remove parent
+$('.kt-menu__nav li.kt-menu__item.kt-menu__item--submenu').each(function(){
+console.log($(this).find('.kt-menu__subnav li').length);
+if($(this).find('.kt-menu__subnav li:not(li.kt-menu__item--parent)').length <= 0){
+$(this).remove();
+}
+else{
+    $(this).css('display','block');
+}
+})
 
 /////on search input change update the url
 $(document).on('keyup','input[type="search"]',function(){

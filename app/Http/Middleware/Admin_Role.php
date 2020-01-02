@@ -1,11 +1,11 @@
 <?php
 
 namespace App\Http\Middleware;
-
 use Closure;
 use App\Model\Admin\Role;
 use Auth;
 use Arr;
+use \App\WebRoute;
 class Admin_Role
 {
     /**
@@ -29,8 +29,15 @@ class Admin_Role
             if (isset($users)) {
                 return $next($request);   
             }
+            $web_route=WebRoute::where("route_name",$route_name)->get()->first();
+            ///if route is not defined
+            if(!isset($web_route)){
+                return redirect(route('request.403'));
+            }
+            //end
+            $web_route_name = $web_route->label;
             if($request->ajax()){
-                return abort(403);
+                return abort(403,$web_route_name);
             }
             return redirect(route('request.403'));
         }
