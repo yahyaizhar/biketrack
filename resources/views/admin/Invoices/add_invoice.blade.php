@@ -793,8 +793,8 @@ $(document).ready(function () {
     var print_invoice=function(invoice){
         var invoice = _invoices.invoice;
         console.log(invoice);
-        
-        if(invoice){
+
+        let generate_invoice_HTML=function(invoice){
             var company__details=$('[data-name="company_details"]').val().replace(/(\r\n|\n)/g, "<br/>");
             $('.company__details').html(company__details);
             $('.invoice_slip__client_address').text(invoice.client.address);
@@ -806,20 +806,19 @@ $(document).ready(function () {
             $('.invc_no').text(invoice.id)
             $('.invoice_month').text(new Date(invoice.month).format('mmmm yyyy'));
             $('.invoice_slip__invoice_items').html('');
-            $('.custm_subtotal').text('AED '+invoice.invoice_total)
+            $('.custm_subtotal').text('AED '+invoice.invoice_subtotal)
             if(invoice.taxable_amount == null){
-                        invoice.taxable_amount = '0.00'
-                    }
+                invoice.taxable_amount = '0.00'
+            }
             if(invoice.discount_amount == null){
-                $('.invoice_without_discount_total').hide()
+                $('.invoice_without_discount_total').hide();
             }
             else{
-                $('.invoice_without_discount_total').show()
-            }        
+                $('.invoice_without_discount_total').show();
+            }
             $('.custm_tax').text('AED '+invoice.taxable_amount);
             $('.custm_totl').text('AED '+invoice.invoice_subtotal);
-            $('.custm_total_price').text('AED '+ Math.round(invoice.invoice_total));
-            $('.custm_message_on_invoice').text()
+            $('.custm_total_price').text('AED '+Math.round(invoice.invoice_total));
             $('.custm_message_on_invoice').html(invoice.message_on_invoice);
             $('.invoice_id').text(invoice.id)
             $('.invoice_date').text(invoice.invoice_date)
@@ -835,16 +834,14 @@ $(document).ready(function () {
                     else{
                         _txt_amount ='0.00';
                     }
-                    var _inclusive_of_vat = parseFloat(item.subtotal)+parseFloat(_txt_amount);
-                    _inclusive_of_vat = _inclusive_of_vat.toFixed(2);
+                    var _inclusive_of_vat = (parseFloat(item.subtotal)).toFixed(2);
                     if(item.deductable == 0){
-                        _total_inclusive_of_vat =parseFloat(_total_inclusive_of_vat)+parseFloat( _inclusive_of_vat);
-                        _total_inclusive_of_vat = _total_inclusive_of_vat.toFixed(2);
+                        _total_inclusive_of_vat += parseFloat(_inclusive_of_vat);
                         // console.log(_total_inclusive_of_vat);
                     }
                     var _itemRate=item.item_rate,
                         _itemQty=item.item_qty,
-                        _itemSubtotal=item.subtotal;
+                        _itemSubtotal=item.item_amount;
                     if(item.deductable == 1){ 
                         _itemRate ='';
                         _itemQty ='';
@@ -871,7 +868,7 @@ $(document).ready(function () {
                                 _addrow=false;
                             }
                         }
-        
+
                         var item_row = '    <tr>'+
                                 '     <td style="border:1px solid #dddd;width:50%;text-align:left;">'+item.item_desc+'</td>'+
                                 '     <td style="border:1px solid #dddd;width:10%;text-align:left;">'+_itemRate+'</td>'+
@@ -885,95 +882,15 @@ $(document).ready(function () {
 
             printJS('invoice_slip', 'html');
         }
+        
+        if(invoice){
+            generate_invoice_HTML(invoice);
+        }
         else{
             var _form = $('#invoices');
             if(validate_invoice(_form)){
                 save_invoice(_form, "drafted", function(invoice){
-                    // $('.invoice_slip__number').text('Invoice #'+(invoice.id));
-                    $('.invoice_slip__client_address').html(invoice.client.address);
-                    $('.invoice_slip__client_email').text(invoice.client.email);
-                    $('.invoice_slip__client_no').text(invoice.client.phone);
-                    $('.invoice_slip__client_name').text(invoice.client.name);
-                    $('.invoice_slip__total_amount').text('AED '+Math.round(invoice.invoice_total));
-                    $('.invoice_date').text(invoice.invoice_date)
-                    $('.invc_no').text(invoice.id)
-                    $('.invoice_month').text(new Date(invoice.month).format('mmmm yyyy'));
-                    $('.custm_subtotal').text('AED '+invoice.invoice_total)
-                    if(invoice.taxable_amount == null){
-                        invoice.taxable_amount = '0.00'
-                    }
-                    if(invoice.discount_amount == null){
-                      $('.invoice_without_discount_total').hide(); 
-                    } 
-                    else{
-                        $('.invoice_without_discount_total').show();
-                    }
-                    $('.custm_tax').text('AED '+invoice.taxable_amount);
-                    $('.custm_totl').text('AED '+invoice.invoice_subtotal);
-                    $('.custm_total_price').text('AED '+Math.round(invoice.invoice_total));
-                    $('.custm_message_on_invoice').html(invoice.message_on_invoice);
-                    $('.invoice_id').text(invoice.id)
-                    $('.invoice_date').text(invoice.invoice_date)
-                    $('.invoice_due').text(invoice.invoice_due)
-                    var _addrow=true;
-                    var _total_inclusive_of_vat = 0;
-                    invoice.invoice_items.forEach(function(item, i){
-                        var _txt_amount=0;
-                        if(item.taxable_amount >0){
-                            _txt_amount =item.taxable_amount ; 
-                        }
-                        else{
-                            _txt_amount ='0.00';
-                        }
-                        var _inclusive_of_vat = parseFloat(item.subtotal)+parseFloat(_txt_amount);
-                        _inclusive_of_vat = _inclusive_of_vat.toFixed(2);
-                        if(item.deductable == 0){
-                        _total_inclusive_of_vat =parseFloat(_total_inclusive_of_vat)+parseFloat( _inclusive_of_vat);
-                        _total_inclusive_of_vat = _total_inclusive_of_vat.toFixed(2);
-                        // console.log(_total_inclusive_of_vat);
-                        }
-                        var _itemRate=item.item_rate,
-                        _itemQty=item.item_qty,
-                        _itemSubtotal=item.subtotal;
-                    if(item.deductable == 1){ 
-                        _itemRate ='';
-                        _itemQty ='';
-                        _itemSubtotal ='';
-                        _txt_amount='';
-                        if(_addrow){
-                        var _newrow  =  '   <tr>  '  + 
-                                '   	<td style="border:1px solid #dddd;width:50%;text-align:left;padding: 9px;"> </td>  '  + 
-                                '   	<td style="border:1px solid #dddd;width:10%;text-align:left;"> </td>  '  + 
-                                '   	<td style="border:1px solid #dddd;width:10%;text-align:left;"> </td>  '  + 
-                                '   	<td style="border:1px solid #dddd;width:10%;text-align:left;"> </td>  '  + 
-                                '   	<td style="border:1px solid #dddd;width:10%;text-align:left;"> </td>  '  + 
-                                '   	<td style="border:1px solid #dddd;width:10%;text-align:left;"> </td>  '  + 
-                                '   </tr>  '  + 
-                                '   <tr style="display:none;">  '  + 
-                                '   	<td style="border:1px solid #dddd;width:50%;text-align:left;"> </td>  '  + 
-                                '   	<td style="border:1px solid #dddd;width:10%;text-align:left;"> </td>  '  + 
-                                '   	<td style="border:1px solid #dddd;width:10%;text-align:left;"> </td>  '  + 
-                                '   	<td style="border:1px solid #dddd;width:10%;text-align:left;">Total</td>  '  + 
-                                '   	<td style="border:1px solid #dddd;width:10%;text-align:left;"> </td>  '  + 
-                                '   	<td style="border:1px solid #dddd;width:10%;text-align:left;">'+_total_inclusive_of_vat+'</td>  '  + 
-                                '  </tr>  ' ;    
-                          $('.invoice_slip__invoice_items').append(_newrow);
-                    _addrow=false;  
-                        }
-                    }
-
-                     var item_row = '    <tr>'+
-                                '     <td style="border:1px solid #dddd;width:50%;text-align:left;">'+item.item_desc+'</td>'+
-                                '     <td style="border:1px solid #dddd;width:10%;text-align:left;">'+_itemRate+'</td>'+
-                                '     <td style="border:1px solid #dddd;width:10%;text-align:left;">'+_itemQty+'</td>'+
-                                '     <td style="border:1px solid #dddd;width:10%;text-align:left;">'+_itemSubtotal+'</td>'+
-                                '     <td style="border:1px solid #dddd;width:10%;text-align:left;">'+_txt_amount+'</td>'+
-                                '     <td style="border:1px solid #dddd;width:10%;text-align:left;">'+_inclusive_of_vat+'</td>'+
-                                '    </tr>';
-                        $('.invoice_slip__invoice_items').append(item_row);
-                    });
-
-                    printJS('invoice_slip', 'html')
+                    generate_invoice_HTML(invoice);
                 });
             }
         }
@@ -1093,7 +1010,7 @@ function subtotal() {
     total_amount = 0;
     taxable_amount = 0;
     var non_tax_amount = 0;
-    var res_of_tax;
+    var res_of_tax=0;
     var tax_rate = parseFloat($('[data-name="tax_rate"]').val()) || 0;
     var tax_type=$('[data-name="tax_rate"] :selected').attr('data-type')||"";
     var tax_value=parseFloat($('[data-name="tax_rate"] :selected').attr('data-value'))||0;
@@ -1122,7 +1039,7 @@ function subtotal() {
             total_amount += amount;
             non_tax_amount += amount;
         //}
-        
+        // debugger;
         if ($(this).find('[data-name="tax"]').is(":checked") && !is_deductable) {
             taxable_amount += amount;
             if (tax_rate > 0) {
@@ -1135,7 +1052,8 @@ function subtotal() {
                 }
                 
                 amount += tax_amount;
-                $(this).find('[data-name="tax_amount"]').val(Math.round(tax_amount));
+                res_of_tax+=tax_amount;
+                $(this).find('[data-name="tax_amount"]').val((tax_amount).toFixed(2));
             }
         }
         $(this).find('[data-name="amount"]').val(Math.round(amount));
@@ -1146,12 +1064,6 @@ function subtotal() {
     if (tax_rate > 0) {
         var vat_val = parseFloat(tax_rate);
         if (taxable_amount > 0) {
-            if(tax_type=="percentage"){
-                res_of_tax = (taxable_amount * tax_value) / 100;
-            }
-            else{
-                res_of_tax = tax_value;
-            }
             $('[data-name="tax_value"]').val(Math.round(res_of_tax));
             total_amount += res_of_tax;
         }

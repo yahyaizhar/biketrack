@@ -50,7 +50,7 @@
                         <label>Show result of:</label>
                         <div class="kt-radio-inline">
                             <label class="kt-radio">
-                            <input type="radio" data-start="{{Carbon\Carbon::now()->subMonths(1)->startOfMonth()->format('Y-m-d')}}" data-end="{{Carbon\Carbon::now()->subMonths(1)->endOfMonth()->format('Y-m-d')}}" name="sort_by" value="last_month" >{{carbon\carbon::now()->subMonths(1)->format('F')}}
+                            <input type="radio" data-start="{{Carbon\Carbon::now()->startOfMonth()->subMonths(1)->format('Y-m-d')}}" data-end="{{Carbon\Carbon::now()->startOfMonth()->subMonths(1)->endOfMonth()->format('Y-m-d')}}" name="sort_by" value="last_month" >{{carbon\carbon::now()->startOfMonth()->subMonths(1)->format('F')}}
                                 <span></span>
                             </label>
                             <label class="kt-radio">
@@ -80,7 +80,7 @@
                             <div class="kt-portlet__head-actions" id="select_month_custom" style="display:none">
                                 <label for="dr1">Select month</label>
                                 <select class="form-control bk-select2" name="custom_select_month" value="select month">
-                                    <option >Select Month</option>
+                                    {{-- <option >Select Month</option> --}}
                                     <option value="{{Carbon\Carbon::now()->format('Y')}}-01-01">January</option>   
                                     <option value="{{Carbon\Carbon::now()->format('Y')}}-02-01">Febuary</option>   
                                     <option value="{{Carbon\Carbon::now()->format('Y')}}-03-01">March</option>   
@@ -801,6 +801,7 @@
             }
             if(_SortBy=='select_month'){
                 $('#select_month_custom').fadeIn('fast');
+                $("[name='custom_select_month']").trigger("change");
                 return;
             }
             var _data = {

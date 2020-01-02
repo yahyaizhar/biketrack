@@ -130,8 +130,11 @@ function updateDates(rider_id,assign_sim_id,created,updated){
                             </div>
         
                             <div class="kt-widget__subhead">
-                                <a onclick="updateAllowedBalance({{$history->allowed_balance}},{{$rider->id}},{{$hasSim['id']}},this)"><i class="flaticon2-calendar-3"></i>Allowed Balance:&nbsp;<span class="balance_allowed">{{$history->allowed_balance}}</span></a>
-                                {{-- <a><i class="flaticon2-calendar-3"></i>{{ $bike1['availability'] }} </a> --}}
+                                <a onclick="updateAllowedBalance({{$history->allowed_balance}},{{$rider->id}},{{$hasSim['id']}},this)"><i class="flaticon-coins"></i>Allowed Balance:&nbsp;<span class="balance_allowed">{{$history->allowed_balance}}</span></a>
+                                <a>
+                                    <i class="flaticon2-calendar-3"></i>
+                                    Sim Id: <strong>{{$hasSim['id']}}</strong>
+                                </a>
                                 {{-- <a><i class="fa fa-motorcycle"></i>{{ $bike1['bike_number'] }}</a> --}}
                                 @php
                                 $mytimestamp = strtotime($history['given_date']);
@@ -228,6 +231,10 @@ function updateDates(rider_id,assign_sim_id,created,updated){
                                 
                                 <a><i class="flaticon2-calendar-3"></i>Allowed Balance:&nbsp;{{$history->allowed_balance}} </a>
                                 {{-- <a><i class="fa fa-motorcycle"></i>{{ $bike1['bike_number'] }}</a> --}}
+                                <a>
+                                    <i class="flaticon2-calendar-3"></i>
+                                    Sim Id: <strong>{{$hasSim['id']}}</strong>
+                                </a>
                                 @php
                                 $mytimestamp = strtotime($history['given_date']);
                                 $timestampupdated=strtotime($history['return_date']);

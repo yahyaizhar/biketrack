@@ -872,9 +872,23 @@ class AccountsController extends Controller
         });
 
         $feid=null;
+        $client=null;
+        $client_setting=[];
+        $pm='';
         if (isset($history_found)) {
             $feid=$history_found->client_rider_id;
+            $client=Client::find($history_found->client_id);
+            if($client->salary_methods==null){
+                # no salary method was found against this client
+                return response()->json([
+                    'status'=>0,
+                    'msg'=>'No salary method is found under client '.$client->name
+                ]);
+            }
+            $client_setting = json_decode($client->salary_methods, true);
+            $pm = $client_setting['salary_method'];
         }
+
         $zomato_hours =0;
         $zomato_trips = 0;
 
@@ -886,6 +900,7 @@ class AccountsController extends Controller
         $working_hours=0;
         $less_time=0;
         $bonus=0;
+
 
         //some static_data
         $_s_maxTrips=400;
@@ -935,22 +950,43 @@ class AccountsController extends Controller
                 if($calculated_trips > $_s_maxTrips){
                     $bonus=50;
                 }
-            }
-            
-            $salary_hours=round($hours_payable,2);
-            $salary_trips=$trips_payable+$trips_EXTRA_payable;
-            $salary_credits=round($ra_cr,2);
-            $ra_salary=$salary_hours +$salary_trips  +$salary_credits ;
-            $ra_recieved=$ra_salary - $ra_payable;
+                $salary_hours=round($hours_payable,2);
+                $salary_trips=$trips_payable+$trips_EXTRA_payable;
+                $salary_credits=round($ra_cr,2);
+                $ra_salary=$salary_hours +$salary_trips  +$salary_credits ;
+                $ra_recieved=$ra_salary - $ra_payable;
 
-            $total_salary_amt = round($hours_payable+$trips_payable+$trips_EXTRA_payable,2);
+                $total_salary_amt = round($hours_payable+$trips_payable+$trips_EXTRA_payable,2);
+            }
+            else { 
+                # no record found in income zomato table --generate error
+                return response()->json([
+                    'status'=>0,
+                    'msg'=>'No record found on Zomato Income against this rider.'
+                ]);
+            }
         }
         else { // other clients
-            $fixed_salary = $rider->Rider_Detail->salary;
+            if($pm=='fixed_based'){
+                $fixed_salary=isset($client_setting['fb_sm__amount'])?$client_setting['fb_sm__amount']:0;
+            }
+            if($pm=='trip_based'){
+                # no FEID found and FEID is cumpulsory for trip based rider
+                return response()->json([
+                    'status'=>0,
+                    'msg'=>'No FEID found against this rider.'
+                ]);
+            }
+            if($pm==''){
+                # no client was found undr this rider
+                return response()->json([
+                    'status'=>0,
+                    'msg'=>'No client assigned to this rider.'
+                ]);
+            }
             $fixed_salary = isset($fixed_salary)?$fixed_salary:0;
             $ra_salary= $fixed_salary + $ra_cr;
             $ra_recieved=$ra_salary - $ra_payable;
-
             $total_salary_amt = $fixed_salary;
         }
 
@@ -972,12 +1008,29 @@ class AccountsController extends Controller
        ->get()
        ->first();
        if (isset($is_paid)) {
-           $is_paid_salary=true;
+            $is_paid_salary=true;
        }else{
             $is_paid_salary=false;
        }
+
+       $salary_hours=isset($salary_hours)?$salary_hours:0;
+       $salary_trips=isset($salary_trips)?$salary_trips:0;
+       $salary_credits=isset($salary_credits)?$salary_credits:0;
+       $weekly_off=isset($weekly_off)?$weekly_off:0;
+       $extra_day=isset($extra_day)?$extra_day:0;
+       $trips=isset($trips)?$trips:0;
+       $hours=isset($hours)?$hours:0;
+       $hours_payable=isset($hours_payable)?$hours_payable:0;
+       $trips_payable=isset($trips_payable)?$trips_payable:0;
+       $trips_EXTRA=isset($trips_EXTRA)?$trips_EXTRA:0;
+       $trips_EXTRA_payable=isset($trips_EXTRA_payable)?$trips_EXTRA_payable:0;
+       $less_time=isset($less_time)?$less_time:0;
+       $payable_hours=isset($payable_hours)?$payable_hours:0;
         return response()->json([
+            'status'=>1,
+            'salary_method'=>$pm,
             'ra_salary'=>$ra_salary,
+            'client'=>$client,
             
             'salary_hours'=>$salary_hours,
             'salary_trips'=>$salary_trips,

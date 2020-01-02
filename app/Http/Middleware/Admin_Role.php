@@ -17,7 +17,6 @@ class Admin_Role
      */
     public function handle($request, Closure $next)
     {
-        $route_name = $request->route()->getName();
         $admin_gaurd = $request->user();
         // if($admin_gaurd->Active_status != "A"){
         //     Auth::guard('admin')->logout();
@@ -39,7 +38,6 @@ class Admin_Role
             if($request->ajax()){
                 return abort(403,$web_route_name);
             }
-            return redirect(route('request.403'));
         }
         return $next($request); 
      
