@@ -520,9 +520,23 @@ jQuery(function($) {
 
     /////on hover add class to sidebar
 
-$('ul.kt-menu__nav li.kt-menu__item,.kt-menu__submenu ').hover(function(){$(this).addClass('kt-menu__item--hover')})
-$('ul.kt-menu__nav li.kt-menu__item,.kt-menu__submenu ').mouseleave(function(){$(this).removeClass('kt-menu__item--hover')})
+$('ul.kt-menu__nav li.kt-menu__item,.kt-menu__submenu ').hover(function(){
+        $(this).addClass('kt-menu__item--hover');
+            })
+$('ul.kt-menu__nav li.kt-menu__item,.kt-menu__submenu ').mouseleave(function(){
+        $(this).removeClass('kt-menu__item--hover') 
+    })
 
+///// on refresh if all child select then check parent employe profile edit
+$('ul.nav .nav-item').each(function(){
+    var _check = true;
+    var _input = $(this).find(".route_data input").length ;
+    var check_input = $(this).find(".route_data input:checked").length;
+    if(_input == check_input && check_input !="0"){
+        console.log(_input+' - '+check_input)
+        $(this).find('label.kt-checkbox input').prop('checked',true);
+    }
+})
 
 //// get url search value and search it
 function _search_recursion(times){

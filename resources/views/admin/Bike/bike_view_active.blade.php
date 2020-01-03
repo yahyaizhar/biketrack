@@ -80,7 +80,7 @@ $(function() {
     bike_table = $('#bike-table').DataTable({
         lengthMenu: [[-1], ["All"]],
         processing: true,
-        serverSide: true,
+        serverSide: false,
         'language': { 
             'loadingRecords': '&nbsp;',
             'processing': $('.loading').show()

@@ -67,7 +67,7 @@ var invoice_payment_table;
 $(function() {
     invoice_payment_table = $('#invoice_payment-table').DataTable({
         processing: true,
-        serverSide: true,
+        serverSide: false,
         lengthMenu: [[-1], ["All"]],
         'language': { 
             'loadingRecords': '&nbsp;',

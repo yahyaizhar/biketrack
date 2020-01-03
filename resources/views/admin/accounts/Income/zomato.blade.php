@@ -362,7 +362,7 @@ $(function() {
 
     // performance_table = $('').DataTable({
         var _settings={   processing: true,
-        serverSide: true,
+        serverSide: false   ,
         lengthMenu: [[-1], ["All"]],
         'language': {
             'loadingRecords': '&nbsp;',
@@ -442,7 +442,12 @@ $(function() {
         ];
      
     }
-    var mark_table = function(){
+    var mark_table = function(){}
+    performance_table = $('#trip_details').DataTable(_settings);
+    performance_table.on( 'search.dt', function () {
+        mark_table();
+    });
+    mark_table = function(){
         var _val = performance_table.search();
         if(_val===''){
             $("#trip_details tbody").unmark();
@@ -481,10 +486,6 @@ $(function() {
         }); 
         
     }
-    performance_table = $('#trip_details').DataTable(_settings);
-    performance_table.on( 'search.dt', function () {
-        mark_table();
-    });
     if(window.outerWidth>=521){
         $('#trip_details tbody').on('click', 'td.details-control', function () {
             var tr = $(this).closest('tr');

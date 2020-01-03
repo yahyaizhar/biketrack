@@ -386,7 +386,7 @@ var getData = function(url){
         "lengthMenu": [[-1], ["All"]],
         destroy: true,
         processing: true,
-        serverSide: true,
+        serverSide: false,
         
         'language': { 
             'loadingRecords': '&nbsp;',

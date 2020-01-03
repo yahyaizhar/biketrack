@@ -38,7 +38,7 @@ class Admin_Role
             //end
             $web_route_name = $web_route->label;
             if($request->ajax()){
-                return abort(403,$web_route_name);
+                return abort(403,$web_route_name); 
             }
         }
         return $next($request); 

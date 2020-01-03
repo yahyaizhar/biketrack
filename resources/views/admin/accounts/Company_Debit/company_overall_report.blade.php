@@ -265,7 +265,7 @@ $('[name="sort_by"]').on('change', function(){
                 // "dom": 'rft',
                 processing: true,
                 ordering: false,
-                serverSide: true,
+                serverSide: false,
                 'language': { 
                     'loadingRecords': '&nbsp;',
                     'processing': $('.loading').show()

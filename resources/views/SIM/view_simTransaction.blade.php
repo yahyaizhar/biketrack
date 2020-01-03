@@ -107,7 +107,7 @@ $(function() {
             processing: true,
             lengthMenu: [[-1], ["All"]],
             destroy:true,
-            serverSide: true,
+            serverSide: false,
             'language': {
                 'loadingRecords': '&nbsp;',
                 'processing': $('.loading').show()

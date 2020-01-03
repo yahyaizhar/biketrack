@@ -554,6 +554,7 @@ Route::get('/show/employee','Auth\EmployeeController@viewEmployee')->name('Emplo
 Route::get('/show/employee/ajax','Auth\EmployeeController@getEmployee')->name('Employee.getEmployee'); ///only for admin
 Route::delete('/delete/employee/{employee_id}','Auth\EmployeeController@deleteEmployee')->name('Employee.deleteEmployee'); ///only for admin
 Route::get('/edit/employee/{employee_id}','Auth\EmployeeController@edit_employee')->name('Employee.edit_employee'); ///only for admin
+Route::get('/view/employee/{employee_id}','Auth\EmployeeController@view_employee')->name('Employee.view_employee'); ///only for admin
 Route::post('/update/employee/{employee_id}','Auth\EmployeeController@update_employee')->name('Employee.update_employee'); ///only for admin
 });
 // end for Admin

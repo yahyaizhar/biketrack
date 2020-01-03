@@ -87,7 +87,7 @@ $(function() {
     bike_fine = $('#Bike_fine').DataTable({
         lengthMenu: [[-1], ["All"]],
         processing: true,
-        serverSide: true,
+        serverSide: false,
         'language': { 
             'loadingRecords': '&nbsp;',
             'processing': $('.loading').show()

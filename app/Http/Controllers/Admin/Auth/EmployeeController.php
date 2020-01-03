@@ -40,6 +40,13 @@ class EmployeeController extends Controller
         $users=$edit_employee->Role()->get()->toArray();
         return view('admin.auth.employee_edit',compact('users','edit_employee','webroutes','dublicate_route'));
     }
+    public function view_employee($employee_id){
+        $edit_employee=Admin::find($employee_id); 
+        $webroutes = WebRoute::all();
+        $dublicate_route = WebRoute::groupBy('category')->having(DB::raw('count(*)'), ">", "1")->select('category')->get();
+        $users=$edit_employee->Role()->get()->toArray();
+        return view('admin.auth.employe_view',compact('users','edit_employee','webroutes','dublicate_route'));
+    }
     public function deleteEmployee($employee_id){
         $delete_users=Auth::user()->find($employee_id);
         $delete_users->active_status="D";
@@ -131,7 +138,7 @@ class EmployeeController extends Controller
         DB::table('roles')->insert($user_roles);
         
         
-        return redirect(url('/admin/show/employee'));
+        return redirect(url('/admin/view/employee/'.$id));
     }
     public function getEmployee()
     {
@@ -158,6 +165,7 @@ class EmployeeController extends Controller
                 <i class="la la-ellipsis-h"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="'.route('Employee.view_employee', $users).'"><i class="fa fa-eye"></i> View</a>
                     <a class="dropdown-item" href="'.route('Employee.edit_employee', $users).'"><i class="fa fa-edit"></i> Edit</a>
                     <button class="dropdown-item" onclick="deleteEmployee('.$users->id.');"><i class="fa fa-trash"></i> Delete</button>
                     </div>

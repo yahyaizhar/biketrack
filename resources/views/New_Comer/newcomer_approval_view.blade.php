@@ -281,7 +281,7 @@ $(function() {
     var _settings =  {
         processing: true,
         lengthMenu: [[-1], ["All"]],
-        serverSide: true,
+        serverSide: false,
         'language': {
             'loadingRecords': '&nbsp;',
             'processing': $('.loading').show()
@@ -373,8 +373,10 @@ $(function() {
         ];
      
     }
+    var mark_table = function(){}
+
     newcomer_table = $('#newComer-table').DataTable(_settings);
-    var mark_table = function(){
+     mark_table = function(){
         var _val = newcomer_table.search(); 
         if(_val===''){
             $("#newComer-table tbody").unmark();
