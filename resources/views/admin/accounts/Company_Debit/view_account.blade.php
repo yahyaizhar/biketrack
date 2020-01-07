@@ -659,7 +659,7 @@
                 url : _ajaxUrl,
                 type : 'GET',
                 dataType: 'html',
-                success: function(data){
+                success: function(data,textStatus,xhr){
                     console.log($(data));
                     
                     var _targetForm = $(data).find('form').wrap('<p/>').parent().html();
@@ -727,8 +727,9 @@
 
                     biketrack.refresh_global();
                 },
-                error: function(error){
+                error: function(error,a,xhr){
                     console.log(error);
+                    _quickViewModal.modal('hide');
                 }
             });
             

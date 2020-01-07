@@ -346,9 +346,9 @@ class RiderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Rider $rider,Request $request,Rider_detail $rider_detail)
-    {    
-        $rider_detail=$rider->Rider_detail()->get()->first();
+    public function edit(Rider $rider,Request $request)
+    {
+        $rider_detail=$rider->Rider_detail;
         $sim_date=$rider->Sim_History()->where('status','active')->get()->first();
         $sim_number=null;
         if(isset($sim_date)){
@@ -575,18 +575,17 @@ class RiderController extends Controller
     {
         $rider_id=$rider->id;
         $client_id=$rider->clients()->get()->first();
-        $client_history=Client_History::where('rider_id', $rider_id)
-        ->where('client_id', $client_id->id)
-        ->where("status","active")
-        ->get()
-        ->first();
-        $client_history->status="deactive";
-        $client_history->deassign_date=Carbon::now()->format("Y-m-d");
-        
-        $client_history->save();
-        
-        $clients = $rider->clients()->detach();
-
+        if(isset($client_id)){
+            $client_history=Client_History::where('rider_id', $rider_id)
+            ->where('client_id', $client_id->id)
+            ->where("status","active")
+            ->get()
+            ->first();
+            $client_history->status="deactive";
+            $client_history->deassign_date=Carbon::now()->format("Y-m-d");
+            $client_history->save();
+            $clients = $rider->clients()->detach();
+        }
         $assign_bike=$rider->Assign_bike()->where('status','active')->get()->first();
         if(isset($assign_bike)){
             $assign_bike->status='deactive';
@@ -749,11 +748,6 @@ class RiderController extends Controller
     public function rider_details(){
         return view('admin.rider.Rider_detail');
     }
-public function destroyer(Rider $rider,$id){
-    $rider=Rider::find($id);
-
-    return $rider_detail->id;
-}
   
    public function RiderPerformance(){
         $performance_count=Rider_Performance_Zomato::all()->count();

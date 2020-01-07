@@ -105,6 +105,7 @@ class AccountsController extends Controller
         $id_charge->update();
 
         $ca =\App\Model\Accounts\Company_Account::where("id_charge_id",$id_charge->id)->get()->first();
+        if(isset($ca)){
         $ca->type='dr_receivable';
         $ca->rider_id=$r->rider_id;
         $ca->amount=$r->amount;
@@ -112,7 +113,7 @@ class AccountsController extends Controller
         $ca->source=str_replace('_',' ',ucfirst($r->type))." Charges";
         $ca->id_charge_id=$id_charge->id;
         $ca->update();
-
+    }
         $ra =\App\Model\Accounts\Rider_Account::where("id_charge_id",$id_charge->id)->get()->first();
         $ra->type='cr_payable';
         $ra->month=Carbon::parse($r->get('month'))->format('Y-m-d');

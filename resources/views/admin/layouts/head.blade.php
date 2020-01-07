@@ -162,6 +162,23 @@
 		{{-- <link rel="shortcut icon" href="{{ asset('dashboard/assets/media/logos/dorbean-favicon.png') }}" /> --}}
 		<link rel="shortcut icon" href="{{ asset('dashboard/assets/media/logos/company-logo.png') }}" />
 		<link href="{{ asset('dashboard/assets/css/custom/custom.css') }}" rel="stylesheet" type="text/css" />
+		<link href="https://unpkg.com/izitoast/dist/css/iziToast.min.css" rel="stylesheet" type="text/css" />
+		<script src="https://unpkg.com/izitoast/dist/js/iziToast.min.js"></script>
+		<script>
+		iziToast.settings({
+			timeout: 5000, // default timeout
+			resetOnHover: true,
+			transitionIn: 'flipInX',
+			transitionOut: 'flipOutX',
+			position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
+			onOpen: function () {
+			console.log('callback abriu!');
+			},
+			onClose: function () {
+			console.log("callback fechou!");
+			}
+		});
+		</script>
 	</head>
 	@section('head')
 		

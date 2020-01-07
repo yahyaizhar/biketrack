@@ -149,6 +149,7 @@ input[type="radio"] h6{
     justify-content: space-between;
     width: 100%;
 }
+.route_data{display: grid;}
 
 td.details-control {
     background: url('../../../../details_open.png') no-repeat center center !important; 

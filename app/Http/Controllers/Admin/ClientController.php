@@ -65,7 +65,6 @@ class ClientController extends Controller
     public function store(Request $request)
     {
         //
-        // return $request;
         $this->validate($request, [
             'name' => 'required | string | max:255',
             'email' => 'required | email | unique:clients',
@@ -187,10 +186,6 @@ class ClientController extends Controller
     public function destroy(Client $client)
     {
         //
-        // if($client->logo)
-        // {
-        //     Storage::delete($client->logo);
-        // }
         $client->active_status="D";
         $client->status=0;
         $client->update();

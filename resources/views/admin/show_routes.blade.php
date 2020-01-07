@@ -27,7 +27,7 @@
                     <i class="kt-font-brand fa fa-hotel"></i>
                 </span>
                 <h3 class="kt-portlet__head-title">
-                    Bike Fine
+                    Routes
                 </h3>
             </div>
             <div class="kt-portlet__head-toolbar">
@@ -35,7 +35,7 @@
                     <div class="kt-portlet__head-actions">
                         {{-- <button class="btn btn-danger btn-elevate btn-icon-sm" id="bulk_delete">Delete Selected</button> --}}
                         &nbsp;
-                        <a href="{{ route('admin.BF_index') }}" class="btn btn-brand btn-elevate btn-icon-sm">
+                        <a href="{{ route('bike.bike_login') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
                             New Record
                         </a>
@@ -44,50 +44,35 @@
             </div>
         </div>
         <div class="kt-portlet__body">
-
-            <!--begin: Datatable -->
-            <table class="table table-striped- table-hover table-checkable table-condensed" id="Bike_fine">
+            <table class="table table-striped- table-hover table-checkable table-condensed" id="bike-table">
                 <thead>
                     <tr>
-                        {{-- <th>
-                            <input type="checkbox" id="select_all" >
-                        </th> --}}
                         <th>ID</th>
-                        <th>KR ID</th>
-                        <th>Rider</th>
-                        <th>Month</th>
-                        <th>Bike_id</th>
+                        <th>Category</th>
+                        <th>Label</th>
+                        <th>Type</th>
+                        <th>Route name</th>
                         <th>Description</th>
-                        <th>Amount</th>
                         <th>Actions</th>                        
                     </tr>
                 </thead>
             </table>
-
-            <!--end: Datatable -->
         </div>
     </div>
 </div>
-
-<!-- end:: Content -->
 @endsection
 @section('foot')
-<!--begin::Page Vendors(used by this page) -->
 <script src="{{ asset('dashboard/assets/vendors/custom/datatables/datatables.bundle.js') }}" type="text/javascript"></script>
 
-<!--end::Page Vendors -->
-
-<!--begin::Page Scripts(used by this page) -->
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/datatables/basic/basic.js') }}" type="text/javascript"></script>
 
-<!--end::Page Scripts -->
 <script>
-var bike_fine;
+var bike_table;   
 $(function() {
-    bike_fine = $('#Bike_fine').DataTable({
+    bike_table = $('#bike-table').DataTable({
         lengthMenu: [[-1], ["All"]],
         processing: true,
-        serverSide: false,
+        serverSide: true,
         'language': { 
             'loadingRecords': '&nbsp;',
             'processing': $('.loading').show()
@@ -95,30 +80,20 @@ $(function() {
         drawCallback:function(data){
         $('.total_entries').remove();
         $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
-    },
-        ajax: "{!! route('admin.accounts.getBikeFine') !!}",
+      },
+        ajax: "{!! route('admin.view_routes_ajax') !!}",
         columns: [
-            //  { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
             { data: 'id', name: 'id' },
-            { data: 'rider_id_id', name: 'rider_id_id' },
-            { data: 'rider_id', name: 'rider_id' },
-            { data: 'date', name: 'date' },
-            { data: 'bike_id', name: 'bike_id' },            
-            { data: 'desc', name: 'desc' },
-            { data: 'amount', name: 'amount' },
-            { data: 'actions', name: 'actions' },
+            { data: 'category', name: 'category' }, 
+            { data: 'label', name: 'label' },    
+            { data: 'type', name: 'type' },              
+            { data: 'route_name', name: 'route_name' },
+            { data: 'description', name: 'description' },
+            { data: 'actions', name: 'actions' }
         ],
         responsive:true,
         order:[0,'desc'],
     });
 });
-function deleteBikeFine(id)
-{
-    var url = "{{ url('admin/accounts/BF/delete') }}"+ "/" + id  ;
-    console.log(url,true);
-    sendDeleteRequest(url, false, null, bike_fine);
-}
-
-
 </script>
 @endsection

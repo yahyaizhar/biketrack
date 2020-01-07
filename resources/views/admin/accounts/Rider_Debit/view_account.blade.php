@@ -1702,14 +1702,7 @@
 
                 },
                 error: function(error){
-                    swal.fire({
-                        position: 'center',
-                        type: 'error',
-                        title: 'Oops...',
-                        text: 'Unable to update.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
+                    console.log(error);
                 }
             });
         });

@@ -450,7 +450,17 @@ setInputFilter(document.getElementById("hexTextBox"), function(value) {
 
 
   */
-
+  $( document ).ajaxComplete(function( event, xhr, settings ) {
+      console.log(xhr)
+        if(xhr.status ==403){
+            if(typeof xhr.responseJSON !=="undefined"){
+                iziToast.error({title: 'Error 403', message: 'Permission denied for '+xhr.responseJSON.message});
+            }
+            else{
+                iziToast.error({title: 'Error 403', message: 'Permission denied'});
+            }
+        }   
+});
 
 biketrack.send_ajax=function(type,url,data, table, fire_swal=true){
     if(type=="") return;
@@ -521,9 +531,23 @@ jQuery(function($) {
 
     /////on hover add class to sidebar
 
-$('ul.kt-menu__nav li.kt-menu__item,.kt-menu__submenu ').hover(function(){$(this).addClass('kt-menu__item--hover')})
-$('ul.kt-menu__nav li.kt-menu__item,.kt-menu__submenu ').mouseleave(function(){$(this).removeClass('kt-menu__item--hover')})
+$('ul.kt-menu__nav li.kt-menu__item,.kt-menu__submenu ').hover(function(){
+        $(this).addClass('kt-menu__item--hover');
+            })
+$('ul.kt-menu__nav li.kt-menu__item,.kt-menu__submenu ').mouseleave(function(){
+        $(this).removeClass('kt-menu__item--hover') 
+    })
 
+///// on refresh if all child select then check parent employe profile edit
+$('ul.nav .nav-item').each(function(){
+    var _check = true;
+    var _input = $(this).find(".route_data input").length ;
+    var check_input = $(this).find(".route_data input:checked").length;
+    if(_input == check_input && check_input !="0"){
+        console.log(_input+' - '+check_input)
+        $(this).find('label.kt-checkbox input').prop('checked',true);
+    }
+})
 
 //// get url search value and search it
 function _search_recursion(times){
@@ -539,6 +563,26 @@ _search_recursion(6);
 
 });
 
+///// if no sub_child them remove child
+$('ul.kt-menu__subnav li.kt-menu__item.kt-menu__item--submenu').each(function(){
+if($(this).find('.kt-menu__subnav li:not(li.kt-menu__item--parent)').length <= 0){
+$(this).remove();
+}
+else{
+    $(this).css('display','block');
+}
+})
+
+///// if no child them remove parent
+$('.kt-menu__nav li.kt-menu__item.kt-menu__item--submenu').each(function(){
+console.log($(this).find('.kt-menu__subnav li').length);
+if($(this).find('.kt-menu__subnav li:not(li.kt-menu__item--parent)').length <= 0){
+$(this).remove();
+}
+else{
+    $(this).css('display','block');
+}
+})
 
 /////on search input change update the url
 $(document).on('keyup','input[type="search"]',function(){

@@ -23,6 +23,9 @@
 .kt-menu__ver-arrow{
 color: #5d78ff !important;
 }
+.kt-menu__nav li.kt-menu__item.kt-menu__item--submenu{
+    display:none;
+}
 
 </style>     
 <button class="kt-aside-close " id="kt_aside_close_btn"><i class="la la-close"></i></button>
@@ -54,69 +57,15 @@ color: #5d78ff !important;
                         </g>
                     </svg></span>
             </button>
-
-            <!--
-<button class="kt-aside__brand-aside-toggler kt-aside__brand-aside-toggler--left" id="kt_aside_toggler"><span></span></button>
--->
         </div>
     </div>
 @php
+   $admin_type = Auth::user()->type;
+   $is_admin = false;
+   if($admin_type == "su"){
+       $is_admin = true;
+   }
    $users=Auth::user()->Role()->get()->toArray();
-    
-    $isDashboard_array = Arr::first($users, function ($item) {
-           return $item['action_name']=='dashboard';   });
-      
-
-    $isRiders_array = Arr::first($users, function ($item) {
-           return $item['action_name']=='riders';   });
-   
-
-    $isClients_array = Arr::first($users, function ($item) {
-           return $item['action_name']=='clients';   });
-      
-
-    $isBikes_array = Arr::first($users, function ($item) {
-           return $item['action_name']=='bikes';   });
-    
-
-    $isSim_array = Arr::first($users, function ($item) {
-           return $item['action_name']=='sim';   });
-   
-
-    $isMobile_array = Arr::first($users, function ($item) {
-           return $item['action_name']=='mobile';   });
-      
-
-    $isNewComer_array = Arr::first($users, function ($item) {
-           return $item['action_name']=='new_comer';   });
-   
-
-    $isAccounts_array = Arr::first($users, function ($item) {
-           return $item['action_name']=='accounts';   });
-    
-
-    $isExpense_array = Arr::first($users, function ($item) {
-           return $item['action_name']=='expense';   });
-  
-
-    $isSalik_array = Arr::first($users, function ($item) {
-           return $item['action_name']=='salik';   });
-     
-
-if (Auth::user()->type=="su") {
-    $isDashboard_array='1';
-    $isRiders_array='1';
-    $isClients_array='1';
-    $isBikes_array='1';
-    $isSim_array='1';
-    $isMobile_array='1';
-    $isNewComer_array='1';
-    $isAccounts_array='1';
-    $isExpense_array='1';
-    $isSalik_array='1';
-    $livemap='1';
-    $supportemail='1';
-}
 @endphp 
 <div class="kt-aside-menu-wrapper kt-grid__item kt-grid__item--fluid" id="kt_aside_menu_wrapper">
         <div id="kt_aside_menu" class="kt-aside-menu kt-aside-menu--dropdown" data-ktmenu-vertical="1" data-ktmenu-dropdown-timeout="500">
@@ -131,32 +80,81 @@ if (Auth::user()->type=="su") {
                             </div>
                         </div>
                     </li>
+                    @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.home';   }); @endphp
+                    @if($is_in_array || $is_admin)
                 <li class="kt-menu__item  @if(substr(Request::url(), -6) == "/admin") kt-menu__item--active @endif " aria-haspopup="true"><a href="{{ route('admin.home') }}" class="kt-menu__link "><span class="kt-menu__link-icon"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" class="kt-svg-icon">
                     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                         <polygon id="Bound" points="0 0 24 0 24 24 0 24" />
                         <path d="M12.9336061,16.072447 L19.36,10.9564761 L19.5181585,10.8312381 C20.1676248,10.3169571 20.2772143,9.3735535 19.7629333,8.72408713 C19.6917232,8.63415859 19.6104327,8.55269514 19.5206557,8.48129411 L12.9336854,3.24257445 C12.3871201,2.80788259 11.6128799,2.80788259 11.0663146,3.24257445 L4.47482784,8.48488609 C3.82645598,9.00054628 3.71887192,9.94418071 4.23453211,10.5925526 C4.30500305,10.6811601 4.38527899,10.7615046 4.47382636,10.8320511 L4.63,10.9564761 L11.0659024,16.0730648 C11.6126744,16.5077525 12.3871218,16.5074963 12.9336061,16.072447 Z" id="Shape" fill="#000000" fill-rule="nonzero" />
                         <path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" id="Path" fill="#000000" opacity="0.3" />
                     </g>
-                </svg></span><span class="kt-menu__link-text">Dashboard</span></a></li>
+                </svg></span><span class="kt-menu__link-text">Dashboard</span>
+                     </a>
+               </li>
+               @endif
+               
+                @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.livemap';   }); @endphp
+                @if($is_in_array || $is_admin)
                 <li class="kt-menu__item @if(strpos(Request::url(), "admin/livemap") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.livemap') }}" class="kt-menu__link "><span class="kt-menu__link-icon">
                 <i class="fa fa-map-marker-alt"></i>
-            </span><span class="kt-menu__link-text">Live Map</span></a></li>
+                </span><span class="kt-menu__link-text">Live Map</span>
+                 </a>
+                </li>
+                @endif
                 <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "admin/active_riders") !== false || strpos(Request::url(), "admin/rider/complete/detail/view") !== false || strpos(Request::url(), "admin/Salary/accounts/rider/account") !== false || strpos(Request::url(), "admin/Salary/accounts/rider/expense") !== false) kt-menu__item--active kt-menu__item--open @endif @if(strpos(Request::url(), "admin/rider") !== false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle">
                     <span class="kt-menu__link-icon"><i class="fa fa-users"></i>    
                 </span><span class="kt-menu__link-text">Riders</span><i class="kt-menu__ver-arrow la la-angle-right"></i></a>
                     <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
                         <ul class="kt-menu__subnav">
                             <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text">Riders</span></span></li>
-                            <li class="kt-menu__item @if(strpos(Request::url(), "admin/riders/create") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.riders.create') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">New Rider</span></a></li>
-                            <li class="kt-menu__item @if(strpos(Request::url(), "admin/active_riders") !== false && strpos(Request::url(), "admin/riders/create") == false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.riders.active') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Active Riders</span></a></li>
-                            <li class="kt-menu__item @if(strpos(Request::url(), "admin/rider") !== false && strpos(Request::url(), "admin/riders/create") == false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.riders.index') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">All Riders</span></a></li>
-                            <li class="kt-menu__item @if(strpos(Request::url(), "/Salary/accounts") !== false && strpos(Request::url(), "admin/Salary/accounts/rider/account") != false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.accounts.rider_account') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Riders Account</span></a></li>
-                            <li class="kt-menu__item @if(strpos(Request::url(), "/Salary/accounts/rider/expense") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.accounts.rider_expense_get') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add Rider Expense</span></a></li>
-                            <li class="kt-menu__item @if(strpos(Request::url(), "/rider/complete/detail/view") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('rider.view_detail') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Rider Detailed View</span></a></li>
-                            {{-- <li class="kt-menu__item @if(strpos(Request::url(), "admin/rider/assign-area") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.assignArea') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Rider Area</span></a></li> --}}
-                            {{-- <li class="kt-menu__item @if(strpos(Request::url(), "admin/rider/detail") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.Rider_details') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Rider Detail</span></a></li> --}}
-                            {{-- <li class="kt-menu__item " aria-haspopup="true"><a href="{{ route('') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Riders List</span></a></li> --}}
-                        </ul>
+                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.riders.create';   }); @endphp
+                            @if($is_in_array || $is_admin)
+                            <li class="kt-menu__item @if(strpos(Request::url(), "admin/riders/create") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                <a href="{{ route('admin.riders.create') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">New Rider</span>
+                                </a>
+                            </li>
+                            @endif
+
+                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.riders.active';   }); @endphp
+                            @if($is_in_array || $is_admin)
+                            <li class="kt-menu__item @if(strpos(Request::url(), "admin/active_riders") !== false && strpos(Request::url(), "admin/riders/create") == false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                <a route_status="{{$is_in_array['action_name']}}" href="{{ route('admin.riders.active') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Active Riders</span>
+                                </a>
+                            </li>
+                            @endif
+                            
+                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.riders.index';   }); @endphp
+                            @if($is_in_array || $is_admin)
+                            <li class="kt-menu__item @if(strpos(Request::url(), "admin/rider") !== false && strpos(Request::url(), "admin/riders/create") == false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                <a route_status="{{$is_in_array['action_name']}}" href="{{ route('admin.riders.index') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">All Riders</span>
+                                </a>
+                            </li>
+                            @endif
+                           
+                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.accounts.rider_account';   }); @endphp
+                            @if($is_in_array || $is_admin)
+                            <li class="kt-menu__item @if(strpos(Request::url(), "/Salary/accounts") !== false && strpos(Request::url(), "admin/Salary/accounts/rider/account") != false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                <a route_status="{{$is_in_array['action_name']}}" href="{{ route('admin.accounts.rider_account') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Riders Account</span>
+                                </a>
+                            </li>
+                            @endif
+                            
+                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.accounts.rider_expense_get';   }); @endphp
+                            @if($is_in_array || $is_admin)
+                            <li class="kt-menu__item @if(strpos(Request::url(), "/Salary/accounts/rider/expense") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                <a route_status="{{$is_in_array['action_name']}}" href="{{ route('admin.accounts.rider_expense_get') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add Rider Expense</span>
+                                </a>
+                            </li>
+                            @endif
+                            
+                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.view_detail';   }); @endphp
+                            @if($is_in_array || $is_admin)
+                            <li class="kt-menu__item @if(strpos(Request::url(), "/rider/complete/detail/view") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                <a route_status="{{$is_in_array['action_name']}}" href="{{ route('rider.view_detail') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Rider Detailed View</span>
+                                </a>
+                            </li>
+                            @endif
+                         </ul>
                     </div>
                 </li>
                 <li class="kt-menu__item  kt-menu__item--submenu @if((strpos(Request::url(), "admin/client") !== false || strpos(Request::url(), "client_income") !== false) && strpos(Request::url(), "admin/client/ranges") === false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle"><span class="kt-menu__link-icon">
@@ -165,9 +163,31 @@ if (Auth::user()->type=="su") {
                     <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
                         <ul class="kt-menu__subnav">
                             <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text">Clients</span></span></li>
-                            <li class="kt-menu__item @if(strpos(Request::url(), "admin/clients/create") !== false) kt-menu__item--active @endif " aria-haspopup="true"><a href="{{ route('admin.clients.create') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">New Client</span></a></li>
-                            <li class="kt-menu__item @if(strpos(Request::url(), "admin/client") !== false && strpos(Request::url(), "admin/clients/create") == false && strpos(Request::url(), "client_income") == false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.clients.index') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Clients</span></a></li>
-                            <li class="kt-menu__item @if(strpos(Request::url(), "active/client") !== false && strpos(Request::url(), "admin/clients/create") == false && strpos(Request::url(), "client_income") == false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.get_active_clients') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Active Clients</span></a></li>
+                            
+                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.clients.create';   }); @endphp
+                            @if($is_in_array || $is_admin)
+                            <li class="kt-menu__item @if(strpos(Request::url(), "admin/clients/create") !== false) kt-menu__item--active @endif " aria-haspopup="true">
+                                <a href="{{ route('admin.clients.create') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">New Client</span>
+                                </a>
+                            </li>
+                            @endif
+
+                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.clients.index';   }); @endphp
+                            @if($is_in_array || $is_admin)
+                            <li class="kt-menu__item @if(strpos(Request::url(), "admin/client") !== false && strpos(Request::url(), "admin/clients/create") == false && strpos(Request::url(), "client_income") == false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                <a href="{{ route('admin.clients.index') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Clients</span>
+                                </a>
+                            </li>
+                            @endif
+                            
+                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.get_active_clients';   }); @endphp
+                            @if($is_in_array || $is_admin)
+                            <li class="kt-menu__item @if(strpos(Request::url(), "active/client") !== false && strpos(Request::url(), "admin/clients/create") == false && strpos(Request::url(), "client_income") == false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                <a href="{{ route('admin.get_active_clients') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Active Clients</span>
+                                </a>
+                            </li>
+                            @endif
+                            
                             <li class="kt-menu__item kt-menu__item--submenu @if(strpos(Request::url(), "client_income") !== false) kt-menu__item--active kt-menu__item--open @endif "  aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
                                 <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
                                     <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
@@ -179,18 +199,26 @@ if (Auth::user()->type=="su") {
                                 <div class="kt-menu__submenu " kt-hidden-height="160" @if(strpos(Request::url(), "client_income") === false)style="display: none; overflow: hidden;"@endif><span class="kt-menu__arrow"></span>
                                     <ul class="kt-menu__subnav">
                                         <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text"></span></span></li>
+                                       
+                                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.client_income_index';   }); @endphp
+                                        @if($is_in_array || $is_admin)
                                         <li class="kt-menu__item @if(strpos(Request::url(), "client_income/index") !== false) kt-menu__item--active @endif" aria-haspopup="true">
                                             <a href="{{ route('admin.client_income_index') }}" class="kt-menu__link ">
                                                 <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                 <span class="kt-menu__link-text">Add Client Income</span>
                                             </a>
                                         </li>
+                                        @endif
+
+                                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.client_income_view';   }); @endphp
+                                        @if($is_in_array || $is_admin)
                                         <li class="kt-menu__item @if(strpos(Request::url(), "client_income/view") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
                                             <a href="{{ route('admin.client_income_view') }}" class="kt-menu__link ">
                                                 <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                 <span class="kt-menu__link-text">View Client Income</span>
                                             </a>
                                         </li>
+                                        @endif
                                     </ul>
                                 </div>
                             </li>
@@ -202,12 +230,46 @@ if (Auth::user()->type=="su") {
                 </span><span class="kt-menu__link-text">Bikes</span><i class="kt-menu__ver-arrow la la-angle-right"></i></a>
                     <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
                         <ul class="kt-menu__subnav">
-                            <li class="kt-menu__item @if(strpos(Request::url(), "/bike_login") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('bike.bike_login') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">New Bike</span></a></li>
-                            <li class="kt-menu__item @if(strpos(Request::url(), "/bike_view") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('bike.bike_view') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Bikes</span></a></li>
-                            <li class="kt-menu__item @if(strpos(Request::url(), "/active/bike_view") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('bike.bike_view_active') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Active Bikes</span></a></li>
-                            <li class="kt-menu__item @if(strpos(Request::url(), "/bike/rent/view") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.create_bike_rent') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add Bike Rent</span></a></li>
-                            <li class="kt-menu__item @if(strpos(Request::url(), "/Salary/accounts/bike/account") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.accounts.bike_account') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Bike Accounts</span></a></li>
-                            {{-- <li class="kt-menu__item @if(strpos(Request::url(), "/bike_assigned") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('bike.bike_assigned') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Bike List</span></a></li> --}}
+                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='bike.bike_login';   }); @endphp
+                            @if($is_in_array || $is_admin)
+                            <li class="kt-menu__item @if(strpos(Request::url(), "/bike_login") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                <a href="{{ route('bike.bike_login') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">New Bike</span>
+                                </a>
+                            </li>
+                            @endif
+                            
+                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='bike.bike_view';   }); @endphp
+                            @if($is_in_array || $is_admin)
+                            <li class="kt-menu__item @if(strpos(Request::url(), "/bike_view") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                <a href="{{ route('bike.bike_view') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Bikes</span>
+                                </a>
+                            </li>
+                            @endif
+                           
+                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='bike.bike_view_active';   }); @endphp
+                            @if($is_in_array || $is_admin)
+                            <li class="kt-menu__item @if(strpos(Request::url(), "/active/bike_view") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                <a href="{{ route('bike.bike_view_active') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Active Bikes</span>
+                                </a>
+                            </li>
+                            @endif
+                            
+                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.create_bike_rent';   }); @endphp
+                            @if($is_in_array || $is_admin)
+                            <li class="kt-menu__item @if(strpos(Request::url(), "/bike/rent/view") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                <a href="{{ route('admin.create_bike_rent') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add Bike Rent</span>
+                                </a>
+                            </li>
+                            @endif
+                            
+                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.accounts.bike_account';   }); @endphp
+                            @if($is_in_array || $is_admin)
+                            <li class="kt-menu__item @if(strpos(Request::url(), "/Salary/accounts/bike/account") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                <a href="{{ route('admin.accounts.bike_account') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Bike Accounts</span>
+                                </a>
+                            </li>
+                            @endif
+
                             <li class="kt-menu__item kt-menu__item--submenu @if(strpos(Request::url(), "/accounts/workshop") !== false) kt-menu__item--active kt-menu__item--open @endif "  aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
                                 <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
                                     <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
@@ -219,18 +281,27 @@ if (Auth::user()->type=="su") {
                                 <div class="kt-menu__submenu " kt-hidden-height="160" @if(strpos(Request::url(), "/accounts/workshop") === false)style="display: none; overflow: hidden;"@endif><span class="kt-menu__arrow"></span>
                                     <ul class="kt-menu__subnav">
                                         <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text"></span></span></li>
+                                       
+                                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.accounts.workshop_index';   }); @endphp
+                                        @if($is_in_array || $is_admin)
                                         <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/workshop/add") !== false) kt-menu__item--active @endif" aria-haspopup="true">
                                             <a href="{{ route('admin.accounts.workshop_index') }}" class="kt-menu__link ">
                                                 <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                 <span class="kt-menu__link-text">Add Workshop</span>
                                             </a>
                                         </li>
+                                        @endif
+
+                                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.accounts.workshop_view';   }); @endphp
+                                        @if($is_in_array || $is_admin)
                                         <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/workshop/view") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
                                             <a href="{{ route('admin.accounts.workshop_view') }}" class="kt-menu__link ">
                                                 <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                 <span class="kt-menu__link-text">View Workshop</span>
                                             </a>
                                         </li>
+                                        @endif
+
                                     </ul>
                                 </div>
                             </li>
@@ -246,18 +317,27 @@ if (Auth::user()->type=="su") {
                                 <div class="kt-menu__submenu " kt-hidden-height="160" @if(strpos(Request::url(), "/accounts/maintenance") === false)style="display: none; overflow: hidden;"@endif><span class="kt-menu__arrow"></span>
                                     <ul class="kt-menu__subnav">
                                         <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text"></span></span></li>
+                                        
+                                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.accounts.maintenance_index';   }); @endphp
+                                        @if($is_in_array || $is_admin)
                                         <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/maintenance/add") !== false) kt-menu__item--active @endif" aria-haspopup="true">
                                             <a href="{{ route('admin.accounts.maintenance_index') }}" class="kt-menu__link ">
                                                 <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                 <span class="kt-menu__link-text">Add Maintenance</span>
                                             </a>
                                         </li>
+                                        @endif
+
+                                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.accounts.maintenance_view';   }); @endphp
+                                        @if($is_in_array || $is_admin)
                                         <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/maintenance/view") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
                                             <a href="{{ route('admin.accounts.maintenance_view') }}" class="kt-menu__link ">
                                                 <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                 <span class="kt-menu__link-text">View Maintenance</span>
                                             </a>
                                         </li>
+                                        @endif
+
                                     </ul>
                                 </div>
                             </li>
@@ -265,17 +345,6 @@ if (Auth::user()->type=="su") {
                          </ul>
                     </div> 
                 </li>
-                {{-- <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "admin/kr-bikes") !== false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle"><span class="kt-menu__link-icon">
-                    <i class="fa fa-hotel"></i>    
-                    </span><span class="kt-menu__link-text">KR Bikes</span><i class="kt-menu__ver-arrow la la-angle-right"></i></a>
-                        <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
-                            <ul class="kt-menu__subnav">
-                                <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text">KR Bikes</span></span></li>
-                                <li class="kt-menu__item @if(strpos(Request::url(), "kr-account") !== false) kt-menu__item--active @endif " aria-haspopup="true"><a href="{{ route('admin.KR_Bikes.account_view') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">KR Accounts</span></a></li>
-                                
-                            </ul>
-                        </div>
-                    </li> --}}
                 <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "zomato") !== false || strpos(Request::url(), "adt") !== false || strpos(Request::url(), "performance") !== false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
                     <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
                         <span class="kt-menu__link-icon">
@@ -285,12 +354,40 @@ if (Auth::user()->type=="su") {
                         <i class="kt-menu__ver-arrow la la-angle-right"></i>
                     </a>
                     <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
-                        <ul class="kt-menu__subnav">
-                            <li class="kt-menu__item @if(strpos(Request::url(), "/client/rider/performance") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.riderPerformance') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Rider Performance</span></a></li>
-                            <li class="kt-menu__item @if(strpos(Request::url(), "/client/ranges/adt") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.ranges.adt') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Rider ADT Performance</span></a></li>
-                            <li class="kt-menu__item @if(strpos(Request::url(), "/Salary/accounts/income/zomato/index") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.accounts.income_zomato_index') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Income</span></a></li>
-                            <li class="kt-menu__item @if(strpos(Request::url(), "/zomato/riders/payout/by/days") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('zomato.view_riders_payouts_days') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Riders Payouts by Days</span></a></li>
-                        </ul>
+                    <ul class="kt-menu__subnav">
+                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.riderPerformance';   }); @endphp
+                            @if($is_in_array || $is_admin)
+                        <li class="kt-menu__item @if(strpos(Request::url(), "/client/rider/performance") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                            <a href="{{ route('admin.riderPerformance') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Rider Performance</span>
+                            </a>
+                        </li>
+                        @endif
+
+                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.ranges.adt';   }); @endphp
+                        @if($is_in_array || $is_admin)
+                        <li class="kt-menu__item @if(strpos(Request::url(), "/client/ranges/adt") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                            <a href="{{ route('admin.ranges.adt') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Rider ADT Performance</span>
+                            </a>
+                        </li>
+                        @endif
+
+                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.accounts.income_zomato_index';   }); @endphp
+                        @if($is_in_array || $is_admin)
+                        <li class="kt-menu__item @if(strpos(Request::url(), "/Salary/accounts/income/zomato/index") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                            <a href="{{ route('admin.accounts.income_zomato_index') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Income</span>
+                            </a>
+                        </li>
+                        @endif
+
+                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='zomato.view_riders_payouts_days';   }); @endphp
+                        @if($is_in_array || $is_admin)
+                        <li class="kt-menu__item @if(strpos(Request::url(), "/zomato/riders/payout/by/days") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                            <a href="{{ route('zomato.view_riders_payouts_days') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Riders Payouts by Days</span>
+                            </a>
+                        </li>
+                        @endif
+
+                    </ul>
                     </div>
                 </li>
                 <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "CE") !== false || strpos(Request::url(), "company") !== false || strpos(Request::url(), "kr_investment") !== false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
@@ -303,11 +400,37 @@ if (Auth::user()->type=="su") {
                     </a>
                     <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
                         <ul class="kt-menu__subnav">
-                            <li class="kt-menu__item @if(strpos(Request::url(), "/Salary/accounts") !== false && strpos(Request::url(), "admin/generated/month/bills") != false&& strpos(Request::url(), "admin/Salary/accounts/company") != false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.accounts.company_account') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Company-Rider Account</span></a></li>
-                            <li class="kt-menu__item @if(strpos(Request::url(), "/company") !== false && strpos(Request::url(), "admin/company/overall/report") != false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.accounts.company_overall_report') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">View Company Overall Reports</span></a></li>
-                            {{-- <li class="kt-menu__item @if(strpos(Request::url(), "/company") !== false && strpos(Request::url(), "admin/zomato/profit/sheet") != false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('account.profit_sheet_view') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">View Company Profit</span></a></li> --}}
-                            <li class="kt-menu__item @if(strpos(Request::url(), "/generated/month/bills") !== false && strpos(Request::url(), "admin/generated/month/bills") != false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('bills.rider_generated_bills') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Bills Details</span></a></li>
-                            <li class="kt-menu__item @if(strpos(Request::url(), "/companyinfo") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('invoice.company_info') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add Company Info</span></a></li>
+                                @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.accounts.company_account';   }); @endphp
+                                @if($is_in_array || $is_admin)
+                            <li class="kt-menu__item @if(strpos(Request::url(), "/Salary/accounts") !== false && strpos(Request::url(), "admin/generated/month/bills") != false&& strpos(Request::url(), "admin/Salary/accounts/company") != false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                <a href="{{ route('admin.accounts.company_account') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Company-Rider Account</span>
+                                </a>
+                            </li>
+                            @endif
+
+                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.accounts.company_overall_report';   }); @endphp
+                            @if($is_in_array || $is_admin)
+                            <li class="kt-menu__item @if(strpos(Request::url(), "/company") !== false && strpos(Request::url(), "admin/company/overall/report") != false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                <a href="{{ route('admin.accounts.company_overall_report') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">View Company Overall Reports</span>
+                                </a>
+                            </li>
+                            @endif
+
+                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='bills.rider_generated_bills';   }); @endphp
+                            @if($is_in_array || $is_admin)
+                            <li class="kt-menu__item @if(strpos(Request::url(), "/generated/month/bills") !== false && strpos(Request::url(), "admin/generated/month/bills") != false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                <a href="{{ route('bills.rider_generated_bills') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Bills Details</span>
+                                </a>
+                            </li>
+                            @endif
+
+                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='invoice.company_info';   }); @endphp
+                            @if($is_in_array || $is_admin)
+                            <li class="kt-menu__item @if(strpos(Request::url(), "/companyinfo") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                <a href="{{ route('invoice.company_info') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add Company Info</span>
+                                </a>
+                            </li>
+                            @endif
 
 
                             <li class="kt-menu__item kt-menu__item--submenu @if(strpos(Request::url(), "/kr_investment") !== false) kt-menu__item--active kt-menu__item--open @endif "  aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
@@ -321,18 +444,26 @@ if (Auth::user()->type=="su") {
                                 <div class="kt-menu__submenu " kt-hidden-height="160" @if(strpos(Request::url(), "/kr_investment") === false)style="display: none; overflow: hidden;"@endif><span class="kt-menu__arrow"></span>
                                     <ul class="kt-menu__subnav">
                                         <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text"></span></span></li>
+                                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.accounts.kr_investment_index';   }); @endphp
+                                        @if($is_in_array || $is_admin)
                                         <li class="kt-menu__item @if(strpos(Request::url(), "/kr_investment/add") !== false) kt-menu__item--active @endif" aria-haspopup="true">
                                             <a href="{{ route('admin.accounts.kr_investment_index') }}" class="kt-menu__link ">
                                                 <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                 <span class="kt-menu__link-text">Add Company Investment</span>
                                             </a>
                                         </li>
+                                        @endif
+
+                                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.accounts.kr_investment_view';   }); @endphp
+                                        @if($is_in_array || $is_admin)
                                         <li class="kt-menu__item @if(strpos(Request::url(), "/kr_investment/view") !== false) kt-menu__item--active @endif" aria-haspopup="true">
                                             <a href="{{ route('admin.accounts.kr_investment_view') }}" class="kt-menu__link ">
                                                 <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                 <span class="kt-menu__link-text">View Company Investment</span>
                                             </a>
                                         </li>
+                                        @endif
+
                                     </ul>
                                 </div>
                             </li>
@@ -348,24 +479,35 @@ if (Auth::user()->type=="su") {
                                 <div class="kt-menu__submenu " kt-hidden-height="160" @if(strpos(Request::url(), "/accounts/CE") === false)style="display: none; overflow: hidden;"@endif><span class="kt-menu__arrow"></span>
                                     <ul class="kt-menu__subnav">
                                         <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text"></span></span></li>
+                                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.CE_index';   }); @endphp
+                                        @if($is_in_array || $is_admin)
                                         <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/CE/index") !== false) kt-menu__item--active @endif" aria-haspopup="true">
                                             <a href="{{ route('admin.CE_index') }}" class="kt-menu__link ">
                                                 <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                 <span class="kt-menu__link-text">Add Company Expense</span>
                                             </a>
                                         </li>
+                                        @endif
+
+                                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.CE_view';   }); @endphp
+                                        @if($is_in_array || $is_admin)
                                         <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/CE/view") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
                                             <a href="{{ route('admin.CE_view') }}" class="kt-menu__link ">
                                                 <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                 <span class="kt-menu__link-text">View Company Expense</span>
                                             </a>
                                         </li>
+                                        @endif
+
+                                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.CE_report';   }); @endphp
+                                        @if($is_in_array || $is_admin)
                                         <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/CE/report") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
                                             <a href="{{ route('admin.CE_report') }}" class="kt-menu__link ">
                                                 <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                 <span class="kt-menu__link-text">View Company Expense Report</span>
                                             </a>
                                         </li>
+                                        @endif
                                     </ul>
                                 </div>
                             </li>
@@ -383,25 +525,35 @@ if (Auth::user()->type=="su") {
                     <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
                         <ul class="kt-menu__subnav">
                             <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text"></span></span></li>
+                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='account.new_salary';   }); @endphp
+                            @if($is_in_array || $is_admin)
                             <li class="kt-menu__item @if(strpos(Request::url(), "/Add/Salary") !== false) kt-menu__item--active @endif" aria-haspopup="true">
                                 <a href="{{ route('account.new_salary') }}" class="kt-menu__link ">
                                     <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                     <span class="kt-menu__link-text">Create Salary</span>
                                 </a>
                             </li>
+                            @endif
+
+                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='account.month_salary';   }); @endphp
+                            @if($is_in_array || $is_admin)
                             <li class="kt-menu__item @if(strpos(Request::url(), "/Month/Salary") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
                                 <a href="{{ route('account.month_salary') }}" class="kt-menu__link ">
                                     <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                     <span class="kt-menu__link-text">View Salary By Month</span>
                                 </a>
                             </li>
+                            @endif
+
+                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='account.developer_salary';   }); @endphp
+                            @if($is_in_array || $is_admin)
                             <li class="kt-menu__item @if(strpos(Request::url(), "/Developer/Salary") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
                                 <a href="{{ route('account.developer_salary') }}" class="kt-menu__link ">
                                     <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                     <span class="kt-menu__link-text">View Salary By Rider</span>
                                 </a>
                             </li>
-                        
+                        @endif
                             
                         </ul> 
                     </div>
@@ -427,18 +579,25 @@ if (Auth::user()->type=="su") {
                                     <div class="kt-menu__submenu " kt-hidden-height="160" @if(strpos(Request::url(), "/accounts/id-charges") === false)style="display: none; overflow: hidden;"@endif><span class="kt-menu__arrow"></span>
                                         <ul class="kt-menu__subnav">
                                             <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text"></span></span></li>
+                                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.accounts.id_charges_index';   }); @endphp
+                                            @if($is_in_array || $is_admin)
                                             <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/id-charges") !== false) kt-menu__item--active @endif" aria-haspopup="true">
                                                 <a href="{{ route('admin.accounts.id_charges_index') }}" class="kt-menu__link ">
                                                     <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                     <span class="kt-menu__link-text">Add Charges</span>
                                                 </a>
                                             </li>
+                                            @endif
+
+                                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.accounts.id_charges_view';   }); @endphp
+                                            @if($is_in_array || $is_admin)
                                             <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/id-charges/view") !== false) kt-menu__item--active @endif" aria-haspopup="true">
                                                 <a href="{{ route('admin.accounts.id_charges_view') }}" class="kt-menu__link ">
                                                     <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                     <span class="kt-menu__link-text">View Charges</span>
                                                 </a>
                                             </li>
+                                            @endif
                                         </ul>
                                     </div>
                                 </li>
@@ -456,18 +615,25 @@ if (Auth::user()->type=="su") {
                                     <div class="kt-menu__submenu " kt-hidden-height="160" @if(strpos(Request::url(), "/accounts/edirham") === false)style="display: none; overflow: hidden;"@endif><span class="kt-menu__arrow"></span>
                                         <ul class="kt-menu__subnav">
                                             <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text"></span></span></li>
+                                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.accounts.edirham_index';   }); @endphp
+                                            @if($is_in_array || $is_admin)
                                             <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/edirham/add") !== false) kt-menu__item--active @endif" aria-haspopup="true">
                                                 <a href="{{ route('admin.accounts.edirham_index') }}" class="kt-menu__link ">
                                                     <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                     <span class="kt-menu__link-text">Add Edirham</span>
                                                 </a>
                                             </li>
+                                            @endif
+
+                                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.accounts.edirham_view';   }); @endphp
+                                            @if($is_in_array || $is_admin)
                                             <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/edirham/view") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
                                                 <a href="{{ route('admin.accounts.edirham_view') }}" class="kt-menu__link ">
                                                     <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                     <span class="kt-menu__link-text">View Edirham</span>
                                                 </a>
                                             </li>
+                                            @endif
                                         </ul>
                                     </div>
                                 </li>
@@ -485,18 +651,26 @@ if (Auth::user()->type=="su") {
                                     <div class="kt-menu__submenu " kt-hidden-height="160" @if(strpos(Request::url(), "/accounts/wps") === false)style="display: none; overflow: hidden;"@endif><span class="kt-menu__arrow"></span>
                                         <ul class="kt-menu__subnav">
                                             <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text"></span></span></li>
+                                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.wps_index';   }); @endphp
+                                            @if($is_in_array || $is_admin)
                                             <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/wps/index") !== false) kt-menu__item--active @endif" aria-haspopup="true">
                                                 <a href="{{ route('admin.wps_index') }}" class="kt-menu__link ">
                                                     <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                     <span class="kt-menu__link-text">Add WPS</span>
                                                 </a>
                                             </li>
+                                            @endif
+
+                                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.wps_view';   }); @endphp
+                                            @if($is_in_array || $is_admin)
                                             <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/wps/view") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
                                                 <a href="{{ route('admin.wps_view') }}" class="kt-menu__link ">
                                                     <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                     <span class="kt-menu__link-text">View WPS</span>
                                                 </a>
                                             </li>
+                                            @endif
+
                                         </ul>
                                     </div>
                                 </li>
@@ -512,18 +686,27 @@ if (Auth::user()->type=="su") {
                                     <div class="kt-menu__submenu " kt-hidden-height="160" @if(strpos(Request::url(), "/accounts/AR") === false)style="display: none; overflow: hidden;"@endif><span class="kt-menu__arrow"></span>
                                         <ul class="kt-menu__subnav">
                                             <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text"></span></span></li>
+                                            
+                                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.AR_index';   }); @endphp
+                                            @if($is_in_array || $is_admin)
                                             <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/AR/index") !== false) kt-menu__item--active @endif" aria-haspopup="true">
                                                 <a href="{{ route('admin.AR_index') }}" class="kt-menu__link ">
                                                     <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                     <span class="kt-menu__link-text">Add Advance & Return</span>
                                                 </a>
                                             </li>
+                                            @endif
+
+                                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.AR_view';   }); @endphp
+                                            @if($is_in_array || $is_admin)
                                             <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/AR/view") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
                                                 <a href="{{ route('admin.AR_view') }}" class="kt-menu__link ">
                                                     <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                     <span class="kt-menu__link-text">View Advance & Return</span>
                                                 </a>
                                             </li>
+                                            @endif
+
                                         </ul>
                                     </div>
                                 </li>
@@ -538,18 +721,26 @@ if (Auth::user()->type=="su") {
                                         <div class="kt-menu__submenu " kt-hidden-height="160" @if(strpos(Request::url(), "salik") === false)style="display: none; overflow: hidden;"@endif><span class="kt-menu__arrow"></span>
                                             <ul class="kt-menu__subnav">
                                                 <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text"></span></span></li>
+                                                @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='salik.add_salik';   }); @endphp
+                                                @if($is_in_array || $is_admin)
                                                 <li class="kt-menu__item @if(strpos(Request::url(), "admin/add/salik") !== false) kt-menu__item--active @endif" aria-haspopup="true">
                                                     <a href="{{ route('salik.add_salik') }}" class="kt-menu__link ">
                                                         <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                         <span class="kt-menu__link-text">Add Salik</span>
                                                     </a>
                                                 </li>
+                                                @endif
+
+                                                @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.salik';   }); @endphp
+                                                @if($is_in_array || $is_admin)
                                                 <li class="kt-menu__item @if(strpos(Request::url(), "admin/salik") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
                                                     <a href="{{ route('admin.salik') }}" class="kt-menu__link ">
                                                         <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                         <span class="kt-menu__link-text">View Salik</span>
                                                     </a>
                                                 </li>
+                                                @endif
+
                                             </ul>
                                         </div>
                                     </li>
@@ -564,18 +755,27 @@ if (Auth::user()->type=="su") {
                                         <div class="kt-menu__submenu " kt-hidden-height="160" @if(strpos(Request::url(), "/accounts/fuel_expense") === false)style="display: none; overflow: hidden;"@endif><span class="kt-menu__arrow"></span>
                                             <ul class="kt-menu__subnav">
                                                 <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text"></span></span></li>
+                                                
+                                                @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.fuel_expense_create';   }); @endphp
+                                                @if($is_in_array || $is_admin)
                                                 <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/fuel_expense/create") !== false) kt-menu__item--active @endif" aria-haspopup="true">
                                                     <a href="{{ route('admin.fuel_expense_create') }}" class="kt-menu__link ">
                                                         <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                         <span class="kt-menu__link-text">Add Fuel Expense</span>
                                                     </a>
                                                 </li>
+                                                @endif
+                                               
+                                                @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.fuel_expense_view';   }); @endphp
+                                                @if($is_in_array || $is_admin)
                                                 <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/fuel_expense/view") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
                                                     <a href="{{ route('admin.fuel_expense_view') }}" class="kt-menu__link ">
                                                         <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                         <span class="kt-menu__link-text">View Fuel Expense</span>
                                                     </a>
                                                 </li>
+                                                @endif
+
                                             </ul>
                                         </div>
                                     </li>
@@ -590,18 +790,27 @@ if (Auth::user()->type=="su") {
                                     <div class="kt-menu__submenu " kt-hidden-height="160" @if(strpos(Request::url(), "/accounts/BF/index") === false)style="display: none; overflow: hidden;"@endif><span class="kt-menu__arrow"></span>
                                         <ul class="kt-menu__subnav">
                                             <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text"></span></span></li>
+                                            
+                                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.BF_index';   }); @endphp
+                                            @if($is_in_array || $is_admin)
                                             <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/BF/index") !== false) kt-menu__item--active @endif" aria-haspopup="true">
                                                 <a href="{{ route('admin.BF_index') }}" class="kt-menu__link ">
                                                     <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                     <span class="kt-menu__link-text">Add Bike Fine</span>
                                                 </a>
                                             </li>
+                                            @endif
+
+                                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.BF_view';   }); @endphp
+                                            @if($is_in_array || $is_admin)
                                             <li class="kt-menu__item @if(strpos(Request::url(), "/accounts/BF/view") !== false) kt-menu__item--active @endif   " aria-haspopup="true">
                                                 <a href="{{ route('admin.BF_view') }}" class="kt-menu__link ">
                                                     <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                                     <span class="kt-menu__link-text">View Bike Fine</span>
                                                 </a>
                                             </li>
+                                            @endif
+
                                         </ul>
                                     </div>
                                 </li>
@@ -614,9 +823,29 @@ if (Auth::user()->type=="su") {
                         <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
                             <ul class="kt-menu__subnav">
                                 <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text">New Comer</span></span></li>
-                                <li class="kt-menu__item @if(strpos(Request::url(), "admin/newComer/add") !== false) kt-menu__item--active @endif " aria-haspopup="true"><a href="{{ route('NewComer.form') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">New Comer</span></a></li>
-                                <li class="kt-menu__item @if(strpos(Request::url(), "admin/newComer/approval") !== false && strpos(Request::url(), "admin/newComer/approval") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('NewComer.approval') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Approval Pending Comer</span></a></li>
-                                <li class="kt-menu__item @if(strpos(Request::url(), "admin/newComer/view") !== false && strpos(Request::url(), "admin/newComer/view") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('NewComer.view') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">NewComer Table</span></a></li>
+                                @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='NewComer.form';   }); @endphp
+                                @if($is_in_array || $is_admin)
+                                <li class="kt-menu__item @if(strpos(Request::url(), "admin/newComer/add") !== false) kt-menu__item--active @endif " aria-haspopup="true">
+                                    <a href="{{ route('NewComer.form') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">New Comer</span>
+                                    </a>
+                                </li>
+                                @endif
+                               
+                                @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='NewComer.approval';   }); @endphp
+                                @if($is_in_array || $is_admin)
+                                <li class="kt-menu__item @if(strpos(Request::url(), "admin/newComer/approval") !== false && strpos(Request::url(), "admin/newComer/approval") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                    <a href="{{ route('NewComer.approval') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Approval Pending Comer</span>
+                                    </a>
+                                </li>
+                                @endif
+                                
+                                @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='NewComer.view';   }); @endphp
+                                @if($is_in_array || $is_admin)
+                                <li class="kt-menu__item @if(strpos(Request::url(), "admin/newComer/view") !== false && strpos(Request::url(), "admin/newComer/view") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                    <a href="{{ route('NewComer.view') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">NewComer Table</span>
+                                    </a>
+                                </li>
+                                @endif
                             </ul>
                         </div>
                     </li>
@@ -626,11 +855,45 @@ if (Auth::user()->type=="su") {
                             <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
                                 <ul class="kt-menu__subnav">
                                     <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text">Sims</span></span></li>
-                                    <li class="kt-menu__item @if(strpos(Request::url(), "/create/Sim") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('Sim.new_sim') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add New Sim</span></a></li>
-                                    <li class="kt-menu__item @if(strpos(Request::url(), "/view/records/Sim") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('Sim.view_records') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Sim List</span></a></li>
-                                    <li class="kt-menu__item @if(strpos(Request::url(), "/view/records/Sim/active") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('Sim.view_records_sim_active') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Active Sim List</span></a></li>
-                                    <li class="kt-menu__item @if(strpos(Request::url(), "/create/Transaction/Sim") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('SimTransaction.create_sim') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add Sim Transaction</span></a></li>
-                                    <li class="kt-menu__item @if(strpos(Request::url(), "/view/Transaction/Sim") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('SimTransaction.view_records') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">View Transaction Records</span></a></li>
+                                    @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='Sim.new_sim';   }); @endphp
+                                     @if($is_in_array || $is_admin)
+                                    <li class="kt-menu__item @if(strpos(Request::url(), "/create/Sim") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                        <a href="{{ route('Sim.new_sim') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add New Sim</span>
+                                        </a>
+                                    </li>
+                                    @endif
+
+                                    @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='Sim.view_records';   }); @endphp
+                                    @if($is_in_array || $is_admin)
+                                    <li class="kt-menu__item @if(strpos(Request::url(), "/view/records/Sim") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                        <a href="{{ route('Sim.view_records') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Sim List</span>
+                                        </a>
+                                    </li>
+                                    @endif
+
+                                    @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='Sim.view_records_sim_active';   }); @endphp
+                                    @if($is_in_array || $is_admin)
+                                    <li class="kt-menu__item @if(strpos(Request::url(), "/view/records/Sim/active") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                        <a href="{{ route('Sim.view_records_sim_active') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Active Sim List</span>
+                                        </a>
+                                    </li>
+                                    @endif
+
+                                    @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='SimTransaction.create_sim';   }); @endphp
+                                    @if($is_in_array || $is_admin)
+                                    <li class="kt-menu__item @if(strpos(Request::url(), "/create/Transaction/Sim") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                        <a href="{{ route('SimTransaction.create_sim') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add Sim Transaction</span>
+                                        </a>
+                                    </li>
+                                    @endif
+
+                                    @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='SimTransaction.view_records';   }); @endphp
+                                    @if($is_in_array || $is_admin)
+                                    <li class="kt-menu__item @if(strpos(Request::url(), "/view/Transaction/Sim") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                        <a href="{{ route('SimTransaction.view_records') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">View Transaction Records</span>
+                                        </a>
+                                    </li>
+                                    @endif
                                     
                                  </ul>
                             </div>
@@ -641,18 +904,51 @@ if (Auth::user()->type=="su") {
                                 <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
                                     <ul class="kt-menu__subnav">
                                         <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text">Sims</span></span></li>
-                                        <li class="kt-menu__item @if(strpos(Request::url(), "/mobile/create") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('mobile.create_mobile_GET') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add New Mobile</span></a></li>
-                                        <li class="kt-menu__item @if(strpos(Request::url(), "/mobiles") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('mobile.show') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Mobiles List</span></a></li>
-                                        <li class="kt-menu__item @if(strpos(Request::url(), "/mobile/transaction/view") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('Mobile.transaction_view') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Mobiles Transaction Records</span></a></li>
-                                        <li class="kt-menu__item @if(strpos(Request::url(), "/mobile/installment/create") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('MobileInstallment.create') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Installment</span></a></li>
-                                        <li class="kt-menu__item @if(strpos(Request::url(), "/mobile/installment/show") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('MobileInstallment.show') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">View Installments</span></a></li>
+                                        
+                                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='mobile.create_mobile_GET';   }); @endphp
+                                        @if($is_in_array || $is_admin)
+                                        <li class="kt-menu__item @if(strpos(Request::url(), "/mobile/create") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                            <a href="{{ route('mobile.create_mobile_GET') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add New Mobile</span>
+                                            </a>
+                                        </li>
+                                        @endif
+
+                                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='mobile.show';   }); @endphp
+                                        @if($is_in_array || $is_admin)
+                                        <li class="kt-menu__item @if(strpos(Request::url(), "/mobiles") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                            <a href="{{ route('mobile.show') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Mobiles List</span>
+                                            </a>
+                                        </li>
+                                        @endif
+                                        
+                                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='Mobile.transaction_view';   }); @endphp
+                                        @if($is_in_array || $is_admin)
+                                        <li class="kt-menu__item @if(strpos(Request::url(), "/mobile/transaction/view") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                            <a href="{{ route('Mobile.transaction_view') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Mobiles Transaction Records</span>
+                                            </a>
+                                        </li>
+                                        @endif
+                                       
+                                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='MobileInstallment.create';   }); @endphp
+                                        @if($is_in_array || $is_admin)
+                                        <li class="kt-menu__item @if(strpos(Request::url(), "/mobile/installment/create") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                            <a href="{{ route('MobileInstallment.create') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Installment</span>
+                                            </a>
+                                        </li>
+                                        @endif
+                                       
+                                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='MobileInstallment.show';   }); @endphp
+                                        @if($is_in_array || $is_admin)
+                                        <li class="kt-menu__item @if(strpos(Request::url(), "/mobile/installment/show") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                            <a href="{{ route('MobileInstallment.show') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">View Installments</span>
+                                            </a>
+                                        </li>
+                                        @endif
                                         
                                      </ul>
                                 </div>
                             </li>
-                {{-- <li class="kt-menu__item @if(strpos(Request::url(), "admin/tax") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.gov_tax') }}" class="kt-menu__link "><span class="kt-menu__link-icon">
-                    <i class="fa fa-file-invoice"></i>
-                </span><span class="kt-menu__link-text">Tax View</span></a></li> --}}
+
                 <li class="kt-menu__item  kt-menu__item--submenu @if(strpos(Request::url(), "tax") !== false || strpos(Request::url(), "invoice") !== false) kt-menu__item--active kt-menu__item--open @endif " aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
                         <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
                             <span class="kt-menu__link-icon">
@@ -663,12 +959,38 @@ if (Auth::user()->type=="su") {
                         </a>
                         <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
                             <ul class="kt-menu__subnav">
-                                {{-- <li class="kt-menu__item @if(strpos(Request::url(), "/add/invoice/tax") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('tax.add_invoice') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add Invoice</span></a></li> --}}
-                                <li class="kt-menu__item @if(strpos(Request::url(), "/invoice/view") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('tax.view_invoices') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Invoices</span></a></li>
-                                <li class="kt-menu__item @if(strpos(Request::url(), "/invoice/tax_method/add") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('invoice.add_tax_method') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add Tax Method</span></a></li>
-                                <li class="kt-menu__item @if(strpos(Request::url(), "/invoice/bank_account/add") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('invoice.add_bank_account') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Bank Account</span></a></li>
-                                <li class="kt-menu__item @if(strpos(Request::url(), "/invoice/payments/view") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('invoice.invoive_payments') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Invoice Payments</span></a></li>
-                                {{-- <li class="kt-menu__item @if(strpos(Request::url(), "/Salary/accounts/income/zomato/index") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.accounts.income_zomato_index') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Income</span></a></li> --}}
+
+                                @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='tax.view_invoices';   }); @endphp
+                                @if($is_in_array || $is_admin)
+                                <li class="kt-menu__item @if(strpos(Request::url(), "/invoice/view") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                    <a href="{{ route('tax.view_invoices') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Invoices</span>
+                                    </a>
+                                </li>
+                                @endif
+                                @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='invoice.add_tax_method';   }); @endphp
+                                @if($is_in_array || $is_admin)
+                                <li class="kt-menu__item @if(strpos(Request::url(), "/invoice/tax_method/add") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                    <a href="{{ route('invoice.add_tax_method') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add Tax Method</span>
+                                    </a>
+                                </li>
+                                @endif
+
+                                @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='invoice.add_bank_account';   }); @endphp
+                                @if($is_in_array || $is_admin)
+                                <li class="kt-menu__item @if(strpos(Request::url(), "/invoice/bank_account/add") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                    <a href="{{ route('invoice.add_bank_account') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Bank Account</span>
+                                    </a>
+                                </li>
+                                @endif
+
+                                @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='invoice.invoive_payments';   }); @endphp
+                                @if($is_in_array || $is_admin)
+                                <li class="kt-menu__item @if(strpos(Request::url(), "/invoice/payments/view") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                    <a href="{{ route('invoice.invoive_payments') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Invoice Payments</span>
+                                    </a>
+                                </li>
+                                @endif
+
                             </ul> 
                         </div>
                     </li>
@@ -682,20 +1004,34 @@ if (Auth::user()->type=="su") {
                         </a>
                         <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
                             <ul class="kt-menu__subnav">
-                                <li class="kt-menu__item @if(strpos(Request::url(), "/employee/salary_generate") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('employee.salary_generated') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Employees Accounts</span></a></li>
-                                {{-- <li class="kt-menu__item @if(strpos(Request::url(), "/invoice/view") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('tax.view_invoices') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">View Invoices</span></a></li> --}}
-                                {{-- <li class="kt-menu__item @if(strpos(Request::url(), "/invoice/tax_method/add") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('invoice.add_tax_method') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add Tax Method</span></a></li> --}}
-                                {{-- <li class="kt-menu__item @if(strpos(Request::url(), "/invoice/bank_account/add") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('invoice.add_bank_account') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Bank Account</span></a></li> --}}
-                                {{-- <li class="kt-menu__item @if(strpos(Request::url(), "/Salary/accounts/income/zomato/index") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.accounts.income_zomato_index') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Income</span></a></li> --}}
+                                @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='employee.salary_generated';   }); @endphp
+                                @if($is_in_array || $is_admin)
+                                <li class="kt-menu__item @if(strpos(Request::url(), "/employee/salary_generate") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                    <a href="{{ route('employee.salary_generated') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Employees Accounts</span>
+                                    </a>
+                                </li>
+                                @endif
                             </ul> 
                         </div>
                     </li>
+                    @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.emails.index';   }); @endphp
+                    @if($is_in_array || $is_admin)
                     <li class="kt-menu__item @if(strpos(Request::url(), "admin/emails") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.emails.index') }}" class="kt-menu__link "><span class="kt-menu__link-icon">
                             <i class="fa fa-envelope"></i>
-                        </span><span class="kt-menu__link-text">Support Emails</span></a></li>
+                        </span><span class="kt-menu__link-text">Support Emails</span>
+                      </a>
+                    </li>
+                        @endif
+
+                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.activity.view';   }); @endphp
+                        @if($is_in_array || $is_admin)
                         <li class="kt-menu__item @if(strpos(Request::url(), "admin/activity") !== false) kt-menu__item--active @endif  " aria-haspopup="true"><a href="{{ route('admin.activity.view') }}" class="kt-menu__link "><span class="kt-menu__link-icon">
                             <i class="fa fa-file-invoice"></i>
-                        </span><span class="kt-menu__link-text">Activity Log View</span></a></li>
+                        </span><span class="kt-menu__link-text">Activity Log View</span>
+                           </a>
+                       </li>
+                        @endif
+
             </ul>
         </div>
     </div>

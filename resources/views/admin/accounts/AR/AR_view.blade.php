@@ -87,7 +87,7 @@ $(function() {
     ar_table = $('#AR-table').DataTable({
         processing: true,
         lengthMenu: [[-1], ["All"]],
-        serverSide: true,
+        serverSide: false,
         'language': { 
             'loadingRecords': '&nbsp;',
             'processing': $('.loading').show()
