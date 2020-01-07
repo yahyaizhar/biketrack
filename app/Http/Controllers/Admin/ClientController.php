@@ -82,7 +82,7 @@ class ClientController extends Controller
         $client->email = $request->email;
         $client->phone = $request->phone;
         $client->password = Hash::make($request->password);
-        // $client->about = $request->about;
+        $client->trn_no = $request->trn_no;
         $client->address = $request->address;
         $client->latitude = $request->latitude;
         $client->longitude = $request->longitude;
@@ -153,7 +153,7 @@ class ClientController extends Controller
         $client->name = $request->name;
         $client->email = $request->email;
         $client->phone = $request->phone;
-        // $client->about = $request->about;
+        $client->trn_no = $request->trn_no;
         $client->address = $request->address;
         $client->latitude = $request->latitude;
         $client->longitude = $request->longitude;
@@ -467,7 +467,7 @@ public function profit_client($id){
 
 public function add_payout_method(Request $r){
 
-    $method = $r->payout_method;
+    $method = $r->payout_method; 
     $client = Client::find($r->client_id);
     $settings=[];
     $settings['payout_method']=$method;
@@ -478,7 +478,8 @@ public function add_payout_method(Request $r){
             break;
         case 'fixed_based':
             $settings['fb__amount']=$r->fb__amount;
-            $settings['fb__workable_hours']=$r->fb__workable_hours;
+            $settings['fb__working_days']=$r->fb__working_days;
+            $settings['fb__perdayHours']=$r->fb__perdayHours;
             break;
         
         default:

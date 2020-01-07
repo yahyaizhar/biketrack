@@ -1684,7 +1684,22 @@ public function income_zomato_import(Request $r){
     
 
     /*======================Finding top 3 riders===================*/
+    // $expected_month = isset($data[0]['onboarding_date'])?Carbon::createFromFormat('d/m/Y',$data[0]['onboarding_date'])->format('m'):null;
+    // if($expected_month==null){
+    //     //throw unexpencted error
+    //     return response()->json([
+    //         'status'=>0,
+    //         'msg'=>'Invalid date. Check the sheet again.'
+    //     ]);
+    // }
+    // $prev_zi = Income_zomato::whereMonth('date', $expected_month)
+    // ->get()
+    // ->toArray();
+    
+    // $merged_data=array_merge($data, $prev_zi);
+    // $top_riders = $merged_data;
     $top_riders = $data;
+    
     
     
     usort($top_riders, function($a, $b){
@@ -1710,6 +1725,11 @@ public function income_zomato_import(Request $r){
     $top_rider_2_FEID = isset($top_riders[1]['feid'])?$top_riders[1]['feid']:null;
     $top_rider_3_FEID = isset($top_riders[2]['feid'])?$top_riders[2]['feid']:null;
     /*======================/Finding top 3 riders===================*/
+    // return response()->json([
+    //     'data'=>$top_riders,
+    //     'expected_month'=>$expected_month
+    // ]);
+    
     $cr_warnings=[];
     foreach ($data as $item) {
         $i++;
@@ -2048,6 +2068,7 @@ public function income_zomato_import(Request $r){
     // $tax->save();
 
     return response()->json([
+        'status'=>1,
         'cr_warning'=>$cr_warnings,
         'data'=>$zomato_obj,
         'iz_deletes'=>$iz_deletes,
@@ -2068,12 +2089,27 @@ public function client_income_index(){
    $riders=Rider::where("active_status","A")->get();
     return view('accounts.Client_income.add_income',compact("clients", 'riders'));
 }
-public function client_income_getRiders($client_id){
+public function client_income_getRiders($client_id, $month){ 
     $clients=Client::find($client_id);
-    $riders=$clients->riders;
-     return response()->json([
-         'riders' => $riders
-     ]);
+    $onlymonth=Carbon::parse($month)->format('m');
+    $startMonth=Carbon::parse($month)->startOfMonth()->format('Y-m-d');
+    //$riders=$clients->riders;
+
+    $client_history = Client_History::with('rider')->with('Client')->get()->toArray(); 
+    $riders = Arr::where($client_history, function ($item, $key) use ($client_id, $startMonth) {
+        $start_created_at =Carbon::parse($item['assign_date'])->startOfMonth()->format('Y-m-d');
+        $created_at =Carbon::parse($start_created_at);
+
+        $start_updated_at =Carbon::parse($item['deassign_date'])->endOfMonth()->format('Y-m-d');
+        $updated_at =Carbon::parse($start_updated_at);
+        $req_date =Carbon::parse($startMonth);
+
+        return $item['client_id']==$client_id &&
+            ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+    });
+    return response()->json([
+        'data' => $riders
+    ]);
  }
 
 public function client_income_view(){
@@ -2116,28 +2152,34 @@ public function client_income_edit_view($id){
 }
 public function client_income_store(Request $request){
     $client = Client::find($request->client_id);
-    $client_income=new Client_Income();
-    $client_income->amount=$request->amount;
-    $client_income->month=Carbon::parse($request->get('month'))->format('Y-m-d');
-    $client_income->client_id=$request->client_id;
-    $client_income->rider_id=$request->rider_id;
-    if($request->status)
-        $client_income->status = 1;
-    else
-        $client_income->status = 0;
-    $client_income->save();
+    $incomes = $request->incomes;
+    foreach ($incomes as $income) {
+        $client_income=new Client_Income();
+        $client_income->client_id=$income['client_id'];
+        $client_income->rider_id=$income['rider_id'];
+        $client_income->month=Carbon::parse($request->get('month'))->format('Y-m-d');
+        $client_income->given_date=Carbon::parse($request->get('date'))->format('Y-m-d');
+        $client_income->perday_hours=$income['perday_hours'];
+        $client_income->working_days=$income['working_days'];
+        $client_income->total_hours=$income['total_hours'];
+        $client_income->extra_hours=$income['extra_hours'];
+        $client_income->total=$income['total'];
+        $client_income->total_payout=$income['total_payout'];
+        $client_income->status=1;
+        $client_income->save();
 
-    $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
-        'client_income_id'=>$client_income->id
-    ]);
-    $ca->client_income_id =$client_income->id;
-    $ca->type='cr';
-    $ca->rider_id=$client_income->rider_id;
-    $ca->month = Carbon::parse($request->get('month'))->format('Y-m-d');
-    $ca->source=$client->name." Income"; 
-    $ca->amount=$client_income->amount;
-    $ca->save();
-
+        $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+            'client_income_id'=>$client_income->id
+        ]);
+        $ca->client_income_id =$client_income->id;
+        $ca->type='cr';
+        $ca->rider_id=$client_income->rider_id;
+        $ca->month = Carbon::parse($request->get('month'))->format('Y-m-d');
+        $ca->given_date = Carbon::parse($request->get('date'))->format('Y-m-d');
+        $ca->source=$client->name." Payout"; 
+        $ca->amount=$client_income->total_payout;
+        $ca->save();
+    }
     return redirect(route('admin.client_income_view'));
 }
 public function client_income_update(Request $request,$id){

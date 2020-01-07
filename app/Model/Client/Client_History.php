@@ -69,6 +69,10 @@ self::updating(function ($updated_model) {
     protected $table = 'client__histories';
     public function rider()
     {
-        return $this->belongsToMany(Rider::class, 'client__histories', 'client_id', 'rider_id')->withPivot('client_id', 'rider_id', 'created_at', 'updated_at', 'client_rider_id');
+        return $this->belongsTo('App\Model\Rider\Rider');
+    }
+    public function Client()
+    {
+        return $this->belongsTo('App\Model\Client\Client');
     }
 }

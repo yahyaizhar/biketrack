@@ -1786,7 +1786,7 @@ class AjaxNewController extends Controller
             return '1000'.$client_income->id;
         })
         ->addColumn('amount', function($client_income){
-            return $client_income->amount;
+            return $client_income->total_payout;
         })
         ->addColumn('rider_id', function($client_income){
             $rider=Rider::find($client_income->rider_id);

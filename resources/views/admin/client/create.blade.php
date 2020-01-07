@@ -64,6 +64,19 @@
                             @endif
                         </div>
                         <div class="form-group">
+                            <label>Transaction No:</label>
+                            <input type="text" class="form-control @if($errors->has('trn_no')) invalid-field @endif" name="trn_no" placeholder="Enter transaction number" value="{{ old('trn_no') }}">
+                            @if ($errors->has('trn_no'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('trn_no') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter your transaction number</span>
+                            @endif
+                        </div>
+                        <div class="form-group">
                             <label>Password:</label>
                             <input type="password" class="form-control @if($errors->has('passsword')) invalid-field @endif" name="password" placeholder="Enter password">
                             @if ($errors->has('password'))

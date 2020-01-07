@@ -56,6 +56,7 @@
                         <th>ID</th>
                         <th>Name</th>
                         <th>Phone</th>
+                        <th>TRN No</th>
                         <th>Payout Method</th>
                         <th>Salary Method</th>
                         <th>Actions</th>
@@ -89,7 +90,7 @@
                         </select>
                     </div>
 
-                    <div class="d-none" data-payout-types data-show="trip_based">
+                    <div class="d-none" data-payout-types data-show="trip_based"> 
                         <div class="form-group">
                             <label>Amount per Trip:</label>
                             <input type="text" autocomplete="off" class="form-control" name="tb__trip_amount" placeholder="Enter per trip amount" />
@@ -106,8 +107,12 @@
                             <input type="text" autocomplete="off" class="form-control" name="fb__amount" placeholder="Enter fixed amount" />
                         </div>
                         <div class="form-group">
-                            <label>Workable Hours:</label>
-                            <input type="text" autocomplete="off" class="form-control" name="fb__workable_hours" placeholder="Enter workable hours" />
+                            <label>Perday Hours:</label>
+                            <input type="text" autocomplete="off" class="form-control" name="fb__perdayHours" placeholder="Enter estimated hours in one day" />
+                        </div>
+                        <div class="form-group">
+                            <label>Working Days:</label>
+                            <input type="text" autocomplete="off" class="form-control" name="fb__working_days" placeholder="Enter estimated working days" />
                         </div>
                     </div>
 
@@ -390,6 +395,7 @@ $(function() {
             { data: 'new_id', name: 'new_id' },
             { data: 'new_name', name: 'name' },
             { data: 'new_phone', name: 'phone' },
+            { data: 'trn_no', name: 'trn_no' },
             { data: 'payout_method', name: 'payout_method' },
             { data: 'salary_method', name: 'salary_method' },
             { data: 'actions', name: 'actions', orderable: false, searchable: false }
