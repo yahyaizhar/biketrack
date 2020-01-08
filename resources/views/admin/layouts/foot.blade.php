@@ -227,6 +227,17 @@
 String.prototype.toDate = function (format) {
     return toDate(this,format);
 };
+String.prototype.toRound=function(decimal_val){
+    var _num = this;
+    if(/^(\d*[.]{0,1}\d+)$/.test(_num)){
+        return parseFloat((parseFloat(_num)).toFixed(decimal_val));
+    }
+    throw new Error( "Invalid Number");
+}
+Number.prototype.toRound=function(decimal_val){
+    var _num = this;
+    return parseFloat((parseFloat(_num)).toFixed(decimal_val));
+}
 
 var time_conversion= function(){
     document.querySelectorAll('[data-utc-to-local]').forEach(function(elem){

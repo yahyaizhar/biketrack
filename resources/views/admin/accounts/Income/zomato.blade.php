@@ -319,6 +319,18 @@ var export_details=[];
                         $('.loading').hide();
                     },
                     success: function(data){
+                        if(data.status==0){
+                            swal.fire({
+                                position: 'center',
+                                type: 'error',
+                                title: 'Oops...',
+                                text: data.msg,
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                            performance_table.ajax.reload(null, false);
+                            return;
+                        }
                         $('#report_data').modal('hide');
                         // console.log(data);
                         var _warns='';

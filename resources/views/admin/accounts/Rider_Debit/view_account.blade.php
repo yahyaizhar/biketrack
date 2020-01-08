@@ -96,18 +96,12 @@
                                 <label for="dr1">Select month</label>
                                 <select class="form-control bk-select2" name="custom_select_month" value="select month">
                                     {{-- <option >Select Month</option> --}}
-                                    <option value="{{Carbon\Carbon::now()->format('Y')}}-01-01">January</option>   
-                                    <option value="{{Carbon\Carbon::now()->format('Y')}}-02-01">Febuary</option>   
-                                    <option value="{{Carbon\Carbon::now()->format('Y')}}-03-01">March</option>   
-                                    <option value="{{Carbon\Carbon::now()->format('Y')}}-04-01">April</option>   
-                                    <option value="{{Carbon\Carbon::now()->format('Y')}}-05-01">May</option>   
-                                    <option value="{{Carbon\Carbon::now()->format('Y')}}-06-01">June</option>   
-                                    <option value="{{Carbon\Carbon::now()->format('Y')}}-07-01">July</option>   
-                                    <option value="{{Carbon\Carbon::now()->format('Y')}}-08-01">August</option>   
-                                    <option value="{{Carbon\Carbon::now()->format('Y')}}-09-01">September</option>   
-                                    <option value="{{Carbon\Carbon::now()->format('Y')}}-10-01">October</option>   
-                                    <option value="{{Carbon\Carbon::now()->format('Y')}}-11-01">November</option>   
-                                    <option value="{{Carbon\Carbon::now()->format('Y')}}-12-01">December</option>    
+                                    @for ($i = 0; $i <= 12; $i++)
+                                        @php
+                                            $_m =Carbon\Carbon::now()->startOfMonth()->addMonth(-$i);
+                                        @endphp
+                                        <option value="{{$_m->format('Y-m-d')}}">{{$_m->format('F-Y')}}</option>
+                                    @endfor   
                                 </select> 
                             </div>
                         </div>

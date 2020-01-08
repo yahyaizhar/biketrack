@@ -32,6 +32,7 @@ class CreateUsersTable extends Migration
             $table->string('phone')->nullable();
             $table->text('about')->nullable();
             $table->text('address')->nullable();
+            $table->string('trn_no')->nullable();
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
             $table->string('logo')->nullable();
