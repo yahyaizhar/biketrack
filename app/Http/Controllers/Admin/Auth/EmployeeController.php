@@ -45,7 +45,7 @@ class EmployeeController extends Controller
         $webroutes = WebRoute::all();
         $dublicate_route = WebRoute::groupBy('category')->having(DB::raw('count(*)'), ">", "1")->select('category')->get();
         $users=$edit_employee->Role()->get()->toArray();
-        return view('admin.employe_view2',compact('users','edit_employee','webroutes','dublicate_route'));
+        return view('admin.auth.employe_view2',compact('users','edit_employee','webroutes','dublicate_route'));
     }
     public function deleteEmployee($employee_id){
         $delete_users=Auth::user()->find($employee_id);
