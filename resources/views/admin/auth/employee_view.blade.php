@@ -27,7 +27,7 @@
                     <i class="kt-font-brand fa fa-hotel"></i>
                 </span>
                 <h3 class="kt-portlet__head-title">
-                    View Employee  dd
+                    View Employee
                 </h3>
             </div>
             <div class="kt-portlet__head-toolbar">
