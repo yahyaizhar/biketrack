@@ -23,7 +23,7 @@
                         <div class="hidde_status_form" style="display:none;">
                        <form method="POST" enctype="multipart/form-data">
                        <div class="form-group">
-                           <label>National id card number</label>
+                           <label>Emirates i'd:</label>
                            <input class="form-control" name="national_id_card_no" id="national_id_card_no" type="text">
                            <button name="submit" type="submit" class="btn btn-success" style="margin-top: 10px;">Submit</button>
                        </div>
@@ -336,7 +336,7 @@
                             @endif
                         </div>
                         <div class="form-group">
-                            <label>National id card number:</label>
+                            <label>Emirates i'd:</label>
                             <input type="text" class="form-control" name="national_id_card_number" id="national_id_card_number" placeholder="Enter National id card number" required> 
                         </div>
                         <div class="form-group">
@@ -369,18 +369,19 @@
                         </div>
                         <div class="form-group">
                                 <label>Visa status:</label>
-                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="visa_status" name="visa_status" style="width: 2% !important;" value="employment" required=""><h6 style="margin-top:10px;margin-left:10px;">Employment</h6></div>
-                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="visa_status" name="visa_status" style="width: 2% !important;" value="visit" required=""><h6 style="margin-top:10px;margin-left:10px;">Visit</h6></div>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="visa_status" name="visa_status" style="width: 13px !important;" value="employment" required=""><h6 style="margin-top:10px;margin-left:10px;">Employment</h6></div>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="visa_status" name="visa_status" style="width: 13px !important;" value="cancellation" required=""><h6 style="margin-top:10px;margin-left:10px;">Cancellation</h6></div>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="visa_status" name="visa_status" style="width: 13px !important;" value="visit" required=""><h6 style="margin-top:10px;margin-left:10px;">Visit</h6></div>
                         </div>
                         <div class="form-group noc_status" style="display:none;">
-                                <label>Noc status:</label>
-                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="noc_status" name="noc_status" style="width: 2% !important;" value="yes" required=""><h6 style="margin-top:10px;margin-left:10px;">Yes</h6></div>
-                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="noc_status" name="noc_status" style="width: 2% !important;" value="no" required=""><h6 style="margin-top:10px;margin-left:10px;">No</h6></div>
+                                <label>Do you have Noc:</label>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control "  name="noc_status" style="width: 13px !important;" value="yes"><h6 style="margin-top:10px;margin-left:10px;">Yes</h6></div>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control "  name="noc_status" style="width: 13px !important;" value="no"><h6 style="margin-top:10px;margin-left:10px;">No</h6></div>
                         </div>
                         <div class="form-group">
                                 <label>Do you have license:</label>
-                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="license_true" name="license_check" style="width: 2% !important;" value="yes" required=""><h6 style="margin-top:10px;margin-left:10px;">Yes</h6></div>
-                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="license_false" name="license_check" style="width: 2% !important;" value="no" required=""><h6 style="margin-top:10px;margin-left:10px;">No</h6></div>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="license_true" name="license_check" style="width: 13px !important;" value="yes" required=""><h6 style="margin-top:10px;margin-left:10px;">Yes</h6></div>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="license_false" name="license_check" style="width: 13px !important;" value="no" required=""><h6 style="margin-top:10px;margin-left:10px;">No</h6></div>
 
                         </div>
                         <div class="form-group license_number" style="display:none">
@@ -405,16 +406,16 @@
                         </div>  
                         <div class="form-group">
                             <label for="experience">How much do you have riding experience in UAE:</label>
-                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('experiance')) invalid-field @endif" id="experiance" name="experiance" style="width: 2% !important;" value="Fresh" required /><h6 style="margin-top:10px;margin-left:10px;">Fresh</h6></div>
-                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('experiance')) invalid-field @endif" id="experiance" name="experiance" style="width: 2% !important;" value="6 months"  required /><h6 style="margin-top:10px;margin-left:10px;">6 months</h6></div>
-                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('experiance')) invalid-field @endif" id="experiance" name="experiance" style="width: 2% !important;" value="1 Year"  required /><h6 style="margin-top:10px;margin-left:10px;">1 Year</h6></div>
-                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('experiance')) invalid-field @endif" id="experiance" name="experiance" style="width: 2% !important;" value="2 Year"  required /><h6 style="margin-top:10px;margin-left:10px;">2 Year</h6></div>
-                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('experiance')) invalid-field @endif" id="experiance" name="experiance" style="width: 2% !important;" value="More Than 2 Year"  required /><h6 style="margin-top:10px;margin-left:10px;">More Than 2 Year</h6></div>
+                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('experiance')) invalid-field @endif" id="experiance" name="experiance" style="width: 13px !important;" value="Fresh" required /><h6 style="margin-top:10px;margin-left:10px;">Fresh</h6></div>
+                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('experiance')) invalid-field @endif" id="experiance" name="experiance" style="width: 13px !important;" value="6 months"  required /><h6 style="margin-top:10px;margin-left:10px;">6 months</h6></div>
+                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('experiance')) invalid-field @endif" id="experiance" name="experiance" style="width: 13px !important;" value="1 Year"  required /><h6 style="margin-top:10px;margin-left:10px;">1 Year</h6></div>
+                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('experiance')) invalid-field @endif" id="experiance" name="experiance" style="width: 13px !important;" value="2 Year"  required /><h6 style="margin-top:10px;margin-left:10px;">2 Year</h6></div>
+                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('experiance')) invalid-field @endif" id="experiance" name="experiance" style="width: 13px !important;" value="More Than 2 Year"  required /><h6 style="margin-top:10px;margin-left:10px;">More Than 2 Year</h6></div>
                         </div>  
                         <div class="form-group">
                             <label for="passport_status">Do you have passport?</label>
-                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('passport_status')) invalid-field @endif" id="passport_status" name="passport_status" style="width: 2% !important;" value="yes"  required/><h6 style="margin-top:10px;margin-left:10px;">Yes</h6></div>
-                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('passport_status')) invalid-field @endif" id="passport_status" name="passport_status" style="width: 2% !important;" value="no"  required /><h6 style="margin-top:10px;margin-left:10px;">No</h6></div>
+                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('passport_status')) invalid-field @endif" id="passport_status" name="passport_status" style="width: 13px !important;" value="yes"  required/><h6 style="margin-top:10px;margin-left:10px;">Yes</h6></div>
+                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('passport_status')) invalid-field @endif" id="passport_status" name="passport_status" style="width: 13px !important;" value="no"  required /><h6 style="margin-top:10px;margin-left:10px;">No</h6></div>
                           
                            <label for="passport_number" class="passport_number_label" style="display:none;">Enter Passport Number:</label>
                            <input type="text"  id="passport_number" style="display:none;" autocomplete="off"class="form-control @if($errors->has('passport_number')) invalid-field @endif" name="passport_number" placeholder="Passport Number" value="{{ old('passport_number') }}"> 
@@ -424,8 +425,8 @@
                        </div>
                        <div class="form-group">
                             <label for="current_residence">Your current residence:</label>
-                            <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('current_residence')) invalid-field @endif" id="current_residence" name="current_residence" style="width: 2% !important;" value="uae"  required/><h6 style="margin-top:10px;margin-left:10px;">United Arab Emirates</h6></div>
-                            <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('current_residence')) invalid-field @endif" id="current_residence" name="current_residence" style="width: 2% !important;" value="other"  required/><h6 style="margin-top:10px;margin-left:10px;">Other</h6></div>
+                            <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('current_residence')) invalid-field @endif" id="current_residence" name="current_residence" style="width: 13px !important;" value="uae"  required/><h6 style="margin-top:10px;margin-left:10px;">United Arab Emirates</h6></div>
+                            <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('current_residence')) invalid-field @endif" id="current_residence" name="current_residence" style="width: 13px !important;" value="other"  required/><h6 style="margin-top:10px;margin-left:10px;">Other</h6></div>
                        <div class="current_residence_countries" style="display:none;">
                             <select id="current_residence_countries" class="form-control" name="current_residence_countries" placeholder="Select your country" value="{{ old('current_residence_countries') }}" required>
                                     <option value="Afganistan">Afghanistan</option>
@@ -679,9 +680,9 @@
                        </div>
                         <div class="form-group">
                                 <label>From which source do you know KingRiders Company:</label>
-                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('source')) invalid-field @endif" id="source" name="source" style="width: 2% !important;" value="Friends" required /><h6 style="margin-top:10px;margin-left:10px;">Friends</h6></div>
-                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('source')) invalid-field @endif" id="source" name="source" style="width: 2% !important;" value="social" required /><h6 style="margin-top:10px;margin-left:10px;">Social media</h6></div>
-                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('source')) invalid-field @endif" id="source" name="source" style="width: 2% !important;" value="Ads" required /><h6 style="margin-top:10px;margin-left:10px;">Ads</h6></div>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('source')) invalid-field @endif" id="source" name="source" style="width: 13px !important;" value="Friends" required /><h6 style="margin-top:10px;margin-left:10px;">Friends</h6></div>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('source')) invalid-field @endif" id="source" name="source" style="width: 13px !important;" value="social" required /><h6 style="margin-top:10px;margin-left:10px;">Social media</h6></div>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('source')) invalid-field @endif" id="source" name="source" style="width: 13px !important;" value="Ads" required /><h6 style="margin-top:10px;margin-left:10px;">Ads</h6></div>
 
                         </div>
                         <div class="form-group">

@@ -2345,6 +2345,10 @@ public function client_income_update(Request $request,$id){
         $client=Client::find($client_id);
         return view('admin.accounts.Income.zomato_salary_sheet', compact('client'));
     }
+    public function all_clients_salary_sheet_export(){
+        $client=Client::all(); 
+        return view('admin.accounts.Income.all_clients_salary_sheet', compact('client'));
+    }
     public function salary_slip(){
         return view('salary_slip_month');
     }

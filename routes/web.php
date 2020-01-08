@@ -79,6 +79,8 @@ Route::group([
 																													   
     Route::get("/accounts/kr_investment/view/data","AjaxNewController@getCompanyInvestment")->name("admin.getCompanyInvestment");
     Route::get("/zomato/salary/sheet/export/ajax/{month_name}/{client_id}","AjaxNewController@zomato_salary_export")->name("admin.zomato_salary_export");
+    Route::get("/clients/salary/sheet/export/ajax/{month_name}","AjaxNewController@client_salary_export")->name("admin.client_salary_export");
+    
     Route::get("/zomato/profit/sheet/export/ajax/{month_name}/{client_id}","AjaxNewController@zomato_profit_export")->name("admin.zomato_profit_export");
     Route::get('/ajax/generated/rider/bill/status/{month}/{client_id}','AjaxNewController@getGeneratedBillStatus')->name('ajax.getGeneratedBillStatus');
     Route::GET('/get/invoices','AjaxNewController@getInvoices')->name('invoice.get_invoices'); 
@@ -186,6 +188,8 @@ Route::group([
     /*[clients- Zomato import rider performance]*/Route::post('/import/zomato','RiderController@import_zomato')->name('import.zomato');
     /*[clients- performance delete last import]*/Route::delete('/delete/last/import','RiderController@delete_lastImport')->name('delete.import_data');
     /*[clients- View salary sheet]*/Route::get("/client/{cleint_id}/salarysheet","AccountsController@zomato_salary_sheet_export")->name("admin.zomato_salary_sheet_export");
+    /*[clients- View all clients salary sheet]*/Route::get("/all_clients/salarysheet","AccountsController@all_clients_salary_sheet_export")->name("admin.all_clients_salary_sheet_export");
+    
     /*[rider- View attendance data]*/Route::get('/zomato/riders/payout/by/days','AccountsController@view_riders_payouts_days')->name('zomato.view_riders_payouts_days');
     /*[rider- Import attendance data]*/Route::post('/import/riders/payouts/days','AccountsController@import_rider_daysPayouts')->name('import.import_rider_daysPayouts');
     /*[rider- view attendance]*/Route::get("/rider/hours/trips/details/{month}/{rider_id}","AccountsController@hours_trips_details")->name('attendance.get_attendance_ajax');

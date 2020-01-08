@@ -564,7 +564,6 @@ else{
 
 ///// if no child them remove parent
 $('.kt-menu__nav li.kt-menu__item.kt-menu__item--submenu').each(function(){
-console.log($(this).find('.kt-menu__subnav li').length);
 if($(this).find('.kt-menu__subnav li:not(li.kt-menu__item--parent)').length <= 0){
 $(this).remove();
 }
