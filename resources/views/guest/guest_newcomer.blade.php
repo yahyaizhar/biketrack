@@ -18,7 +18,7 @@
                 <!--begin::Form-->
                 
                 @include('admin.includes.message') 
-                <div class="alreay_registred" style="padding: 10px 25px;">
+                <div class="alreay_registred" style="padding: 10px 25px;"> 
                                   <button class="btn btn-info custm_hidden_btn float-right" style=" margin-bottom: 10px;">Track your application</button>
                         <div class="hidde_status_form" style="display:none;">
                        <form method="POST" enctype="multipart/form-data">
