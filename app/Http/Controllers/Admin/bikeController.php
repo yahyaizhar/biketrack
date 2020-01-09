@@ -230,7 +230,12 @@ class bikeController extends Controller
       // return $r->all();
       foreach ($data as $item) {
         $type=$item['type'];
+        if(isset($item['bike_id'])){
         $bike_id=$item['bike_id'];
+      }
+      else{
+        $bike_id = $r->bike_id;
+      }
         $work_days_count=$item['work_days_count'];
         $total_days=$item['total_days'];
         $amount_given_by_days=$item['amount_given_by_days'];
@@ -238,7 +243,12 @@ class bikeController extends Controller
         $bike_own=$item['owner'];
         if($type=='bike'){
           $rider_id=$r->rider_id;
-          $bike_id=$item['bike_id'];
+          if(isset($item['bike_id'])){
+            $bike_id=$item['bike_id'];
+          }
+          else{
+            $bike_id = $r->bike_id;
+          }
         }
         else {
           $rider_id=$item['rider_id'];

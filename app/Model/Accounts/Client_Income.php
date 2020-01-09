@@ -71,4 +71,10 @@ self::updating(function ($updated_model) {
     protected $fillable = [
         'client_id', 'month', 'amount', 'status','active_status','rider_id'
     ];
+    public function Rider(){
+        return $this->belongsTo('App\Model\Rider\Rider');
+    }
+    public function Client(){
+        return $this->belongsTo('App\Model\Client\Client');
+    }
 }

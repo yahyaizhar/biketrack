@@ -348,7 +348,7 @@ var riders_data = JSON.parse(JSON.stringify(_perData));
 $(function() {
     // performance_table = $('').DataTable({
         var _settings={   processing: true,
-        serverSide: true,
+        serverSide: false,
         lengthMenu: [[100,-1], [100,"All"]],
         'language': {
             'loadingRecords': '&nbsp;',
@@ -430,8 +430,9 @@ $(function() {
         ];
      
     }
+    var mark_table = function(){}
     performance_table = $('#ridePerformance-table').DataTable(_settings);
-    var mark_table = function(){
+     mark_table = function(){
         var _val = performance_table.search();
         if(_val===''){
             $("#ridePerformance-table tbody").unmark();

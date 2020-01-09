@@ -35,7 +35,7 @@
                     <div class="kt-portlet__head-actions">
                         {{-- <button class="btn btn-danger btn-elevate btn-icon-sm" id="bulk_delete">Delete Selected</button> --}}
                         &nbsp;
-                        <a href="{{ route('admin.client_income_index') }}" class="btn btn-brand btn-elevate btn-icon-sm">
+                        <a href="" data-ajax="{{ route('admin.client_income_index') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
                             New Record
                         </a>
@@ -67,10 +67,29 @@
         </div>
     </div>
 </div>
+<div class="modal fade bk-modal-lg" id="quick_view" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header border-bottom-0">
+            <h5 class="modal-title"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body bk-scroll">
+
+        </div>
+    </div>
+    </div>
+</div>
 
 <!-- end:: Content -->
 @endsection
 @section('foot')
+
+<!--begin::Page Scripts(used by this page) -->
+<link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>  
 <!--begin::Page Vendors(used by this page) -->
 <script src="{{ asset('dashboard/assets/vendors/custom/datatables/datatables.bundle.js') }}" type="text/javascript"></script>
 
@@ -78,6 +97,8 @@
 
 <!--begin::Page Scripts(used by this page) -->
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/datatables/basic/basic.js') }}" type="text/javascript"></script>
+<script src=" https://printjs-4de6.kxcdn.com/print.min.js" type="text/javascript"></script>
+<link href=" https://printjs-4de6.kxcdn.com/print.min.css" rel="stylesheet">
 
 <!--end::Page Scripts -->
 <script>
@@ -108,6 +129,88 @@ $(function() {
         ],
         responsive:true,
         order:[0,'desc'],
+    });
+
+    $('[data-ajax]').on('click', function (e, parem) {
+        e.preventDefault();
+        if(!(parem && parem.reseturl==false)){
+            var url_data = {    
+                edit:0
+            }
+            biketrack.updateURL(url_data);
+        }
+        var _ajaxUrl = $(this).attr('data-ajax');
+        console.log(_ajaxUrl);
+        var _self = $(this);
+        var loading_html = '<div class="d-flex justify-content-center modal_loading"><i class="la la-spinner fa-spin display-3"></i></div>';
+        var _quickViewModal = $('#quick_view');
+        _quickViewModal.find('.modal-body').html(loading_html);
+        _quickViewModal.modal('show');
+        $.ajax({
+            url: _ajaxUrl,
+            type: 'GET',
+            dataType: 'html',
+            success: function (data) {
+                var _d = $(data).wrapAll('<div class="new__ajax__testing">');
+                // console.log( $(data).filter('[data-ajax]')  );
+
+                var _targetForm = $(data).find('form').wrap('<p/>').parent().html();
+
+
+                _quickViewModal.find('.modal-title').html($(data).find('.page__title').html());
+
+                _quickViewModal.find('.modal-body').html(_targetForm);
+                $('script[data-ajax],style[data-ajax]').remove();
+
+                $('body').append('<script data-ajax>' + $(data).filter('script[data-ajax]').eq(0).html() + '<\/script>');
+                $('body').append('<style data-ajax>' + $(data).find('style[data-ajax]').eq(0).html() + '<\/style>');
+                //add event handler to submit form in modal
+                _quickViewModal.find('form').off('submit').on('submit', function(e){
+                    e.preventDefault();
+                    _quickViewModal.modal('hide');
+                    var _form = $(this);
+                    var _url = _form.attr('action');
+                    $.ajax({
+                        url : _url,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        type : 'POST',
+                        data: new FormData(_form[0]),
+                        contentType: false,
+                        cache: false,
+                        processData:false,
+                        success: function(data){
+                            console.log(data);
+                            
+                            swal.fire({
+                                position: 'center',
+                                type: 'success',
+                                title: 'Record updated successfully.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                            client_income_table.ajax.reload(null, false);
+                        },
+                        error: function(error){
+                            swal.fire({
+                                position: 'center',
+                                type: 'error',
+                                title: 'Oops...',
+                                text: 'Unable to update.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        }
+                    });
+                });
+                biketrack.refresh_global();
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+
     });
 });
 function deleteRow(id)

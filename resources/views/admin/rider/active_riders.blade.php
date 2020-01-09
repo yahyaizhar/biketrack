@@ -170,7 +170,7 @@ $(function() {
     var _settings = {
         lengthMenu: [[-1], ["All"]],
         processing: true,
-        serverSide: true,
+        serverSide: false,
         'language': {
             'loadingRecords': '&nbsp;',
             'processing': $('.loading').show()
@@ -252,8 +252,10 @@ $(function() {
         ];
      
     }
+
+    var mark_table = function(){}
     riders_table = $('#riders-table').DataTable(_settings);
-    var mark_table = function(){
+    mark_table = function(){
         var _val = riders_table.search();
         if(_val===''){
             $("#riders-table tbody").unmark();

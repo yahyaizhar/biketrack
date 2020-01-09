@@ -794,7 +794,7 @@
                 "dom": 'rft',
                 processing: true,
                 ordering: false,
-                serverSide: true,
+                serverSide: false,
                 'language': { 
                     'loadingRecords': '&nbsp;',
                     'processing': $('.loading').show()

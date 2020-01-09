@@ -23,6 +23,49 @@ margin-left: 10px;
 <!-- begin:: Content -->
 @include('admin.includes.message')
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="kt-portlet">
+                <div class="kt-portlet__head">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title">
+                        Salary Sheet for month
+                        </h3>
+                    </div>
+                </div>
+ @include('client.includes.message')
+                 <div class="kt-portlet__body">
+                            <div>
+                                 <select class="form-control bk-select2" id="kt_select2_3_5" name="month_id" >
+                                <option >Select Month</option>
+                                @for ($i = 0; $i <= 12; $i++)
+                                        @php
+                                            $_m =Carbon\Carbon::now()->startOfMonth()->addMonth(-$i);
+                                        @endphp
+                                        <option value="{{$_m->format('Y-m-d')}}">{{$_m->format('F-Y')}}</option>
+                                    @endfor 
+                                {{-- <option value="01">January</option>   
+                                <option value="02">Febuary</option>   
+                                <option value="03">March</option>   
+                                <option value="04">April</option>   
+                                <option value="05">May</option>   
+                                <option value="06">June</option>   
+                                <option value="07">July</option>   
+                                <option value="08">August</option>   
+                                <option value="09">September</option>   
+                                <option value="10">October</option>   
+                                <option value="11">November</option>   
+                                <option value="12">December</option>     --}}
+                               </select> 
+                                </div>
+                            
+                      
+                    </div>
+            </div>
+    </div>
+</div>
+</div>
+<div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content-b">
     <div class="kt-portlet kt-portlet--mobile">
         <div class="kt-portlet__head kt-portlet__head--lg">
             <div class="kt-portlet__head-label">
@@ -30,7 +73,7 @@ margin-left: 10px;
                     <i class="kt-font-brand fa fa-hotel"></i>
                 </span>
                 <h3 class="kt-portlet__head-title">
-                   Zomato Income
+                   Salary Sheet
                 </h3>
             </div>
             <div class="kt-portlet__head-toolbar">
@@ -46,8 +89,8 @@ margin-left: 10px;
                         </div>
                         &nbsp;
                         
-                        <a style="padding:8.45px 13px;" href="" data-toggle="modal" data-target="#import_data"  class="btn btn-label-success btn-sm btn-upper">Import Zomato Income</a>&nbsp;
-                        <input class="btn btn-primary" type="button" onclick="export_data();" value="Export Zomato Income">
+                        {{-- <a style="padding:8.45px 13px;" href="" data-toggle="modal" data-target="#import_data"  class="btn btn-label-success btn-sm btn-upper">Import Zomato Income</a>&nbsp; --}}
+                        <input class="btn btn-primary" type="button" onclick="export_data();" value="Export Zomato Salary Sheet">
                         
                         {{-- <a href="{{ route('Sim.new_sim') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
@@ -57,25 +100,43 @@ margin-left: 10px;
                 </div>
             </div>
         </div>
-        <div class="kt-portlet__body">
-
+        
             <!--begin: Datatable -->
-            <table class="table table-striped- table-hover table-checkable table-condensed" id="trip_details">
+            <table class="table table-striped- table-hover table-checkable table-condensed" id="zomato_salary_sheet">
                 <thead>
                     <tr>
                         {{-- <th>
                             <input type="checkbox" id="select_all" >
                         </th> --}}
+                        <th>Client Name</th>
                         <th>Rider Name</th>
-                        <th>Total Payout</th>
-                        <th>Login Hours Amount</th> 
-                        <th>Order Completed Amount</th>
-                        <th>NCW Incentives</th>
-                        <th>Tips Payouts</th>
-
-                        <th class="d-none">h1</th>
-                        <th class="d-none">h2</th>
-                        {{-- <th>Actions</th> --}}
+                        <th>Bike Number</th>
+                        <th>AED Trips</th>
+                        <th>AED Hours</th>
+                        <th>Total</th>
+                        <th>Net Salary</th>
+                        <th>Gross Salary</th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
+                        <th class="d-none"></th>
                     </tr>
                 </thead>
             </table>
@@ -113,111 +174,58 @@ margin-left: 10px;
             </div>
           </div>
        </div>
- 
        {{-- import data --}}
-       <div>
-            <div class="modal fade" id="report_data" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header border-bottom-0">
-                          <h5 class="modal-title" id="exampleModalLabel">Income Statement</h5>
-                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                          </button>
-                        </div>
-                        <form class="kt-form" id="form_tax"  enctype="multipart/form-data">
-                        <div class="container">
-                            <div class="form-group">
-                                <div class="row">
-                                    <label class="col-md-6">Total To Be Paid Out(Without VAT):</label>
-                                    <input disabled type="text" class="form-control col-md-5" name="total_to_be_paid_out">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <label class="col-md-6">Login Hours Payable:</label>
-                                    <input disabled type="text" class="form-control col-md-5" name="log_in_hours_payable">
-                                </div>
-                            </div>
-                            <div class="form-group ">
-                                <div class="row">
-                                    <label class="col-md-6">Trips Payable:</label>
-                                    <input disabled type="text" class="form-control col-md-5" name="trips_payable">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <label class="col-md-6">Amount For Login Hours:</label>
-                                    <input disabled type="text" class="form-control col-md-5" name="amount_for_login_hours">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <label class="col-md-6">Amount To Be Paid Against Orders Completed:</label>
-                                    <input disabled type="text" class="form-control col-md-5" name="amount_to_be_paid_against_orders_completed">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <label class="col-md-6">Total To Be Paid Out(With VAT):</label>
-                                    <input disabled type="text" class="form-control col-md-5" name="total_to_be_paid_out_with_tax">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <label class="col-md-6">Tax Amount Of VAT:</label>
-                                    <input type="text" class="form-control col-md-5" name="taxable_amount">
-                                </div>
-                            </div>
-                            <div class="modal-footer border-top-0 d-flex justify-content-center">
-                                <button class="upload-button btn btn-success">Import</button>
-                          </div>
-                        </div>
-                        </form>
-                       </div>
-                    </div>
-                  </div>
-               </div>
 @endsection
 @section('foot')
-<!--begin::Page Vendors(used by this page) -->
 <link href="https://transloadit.edgly.net/releases/uppy/v1.3.0/uppy.min.css" rel="stylesheet">
 <script src="{{ asset('dashboard/assets/vendors/custom/datatables/datatables.bundle.js') }}" type="text/javascript"></script>
-
-<!--end::Page Vendors -->
 <script src="{{ asset('https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js') }}" type="text/javascript"></script>
-
-
-<!--end::Page Vendors -->
-
-
-<!--begin::Page Scripts(used by this page) -->
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/datatables/basic/basic.js') }}" type="text/javascript"></script>
 <script src="https://transloadit.edgly.net/releases/uppy/v1.3.0/uppy.min.js"></script>
 <script src="{{ asset('js/papaparse.js') }}" type="text/javascript"></script>
-
-<!--end::Page Scripts -->
 @php
     $client_riders=App\Model\Client\Client_Rider::all();
 @endphp
 <script>
-    console.log(riders_data);
         function export_data(){
-var export_details=[];
+        var export_details=[];
+        console.log(riders_data);
         riders_data.forEach(function(item,index) {
            export_details.push({
-            "FEID":item.feid,
-            "Onboarding Date": item.date,
-            "Total to be paid out":item.total_to_be_paid_out,
-            "Amount for login hours":item.amount_for_login_hours,
-            "Amount to be paid against orders completed":item.amount_to_be_paid_against_orders_completed,
-            "NCW Incentives":item.ncw_incentives,
-            "Tips Payouts":item.tips_payouts,
-            "DC Deductions":item.dc_deductions,
-            "Mcdonalds Deductions":item.mcdonalds_deductions,
+            "KR-ID":'KR-'+item.id, 
+            "FEID":item.feid, 
+            "Name":item.name,
+            "Bike No": item.bike_number,
+            "Fuel Expense": item.fuel,
+            "Advance":item.advance,
+            "Salik":item.salik,
+            "Sim Charges":item.sim_charges,
+            "POOR PERFORMANCE":item.poor_performance,
+            "DC":item.dc,
+            "COD ":item.cod,
+            "Visa Charges":item.visa,
+            "RTA Fine":item.rta_fine,
+            "mobile charges":item.mobile,
+            "Disipline Fine":"",
+            "Total deduction":item.total_deduction,
+            "No of Hours ":item.number_of_hours,
+            "No of Trips ":item.number_of_trips,
+            "AED hours":item.aed_hours,
+            "AED TRIP":item.aed_trips,
+            "Extra Trips":item.extra_trips,
+            "Extra Trips Amount":item.extra_trips*4,
+            "Total":item.total_salary,
+            "NCW":item.ncw,
+            "Tips":item.tips,
+            "Bonus":item.bonus,
+            "Bike allowns":item.bike_allowns,
+            "Net Salary ":item.net_salary,
+            "Gross Salary":item.gross_salary,
+            "Cash Paid":"",
+            "Remaining Salary":"",
            });
         });
-        var export_data = new CSVExport(export_details);
+        var export_data = new CSVExport(export_details, 'Zomato Salary Sheet '+$('[name="month_id"] option:selected').text());
         return false;
     }  
     
@@ -319,28 +327,8 @@ var export_details=[];
                         $('.loading').hide();
                     },
                     success: function(data){
-                        if(data.status==0){
-                            swal.fire({
-                                position: 'center',
-                                type: 'error',
-                                title: 'Oops...',
-                                text: data.msg,
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                            performance_table.ajax.reload(null, false);
-                            return;
-                        }
                         $('#report_data').modal('hide');
                         // console.log(data);
-                        var _warns='';
-                         if(data.cr_warning.length){
-                            data.cr_warning.forEach(function(warning,i){
-                                _warns+=warning.warning+'<br/>'; 
-                            })
-                            alert(_warns);
-                         }
-                        console.warn('Warnings: ',data.cr_warning);
                         swal.fire({
                             position: 'center',
                             type: 'success',
@@ -348,7 +336,7 @@ var export_details=[];
                             showConfirmButton: false,
                             timer: 1500
                         });
-                        performance_table.ajax.reload(null, false);
+                        salary_sheet.ajax.reload(null, false);
                     },
                     error: function(error){
                         swal.fire({
@@ -367,14 +355,14 @@ var export_details=[];
     });
 
 // table accordian start
-
-var performance_table;
+var salary_sheet;
 var riders_data = [];
-$(function() {
-
-    // performance_table = $('').DataTable({
-        var _settings={   processing: true,
-        serverSide: false   ,
+$('#kt_content-b').hide(); 
+var init_table=function(month){
+    var _settings={   
+        processing: true,
+        serverSide: true,
+        destroy:true,
         lengthMenu: [[-1], ["All"]],
         'language': {
             'loadingRecords': '&nbsp;',
@@ -391,18 +379,19 @@ $(function() {
             $('.total_entries').remove();
             $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
             mark_table();
-             
+            
         },
-        ajax: '{!! route('admin.accounts.income_zomato_ajax') !!}',
+        // ajax: '{!! route('admin.accounts.income_zomato_ajax') !!}',
+        ajax: "{{url('admin/clients/salary/sheet/export/ajax')}}"+"/"+month,
         columns:null,
         responsive:true,
         
         order:[0,'desc'],
     };
 
-        if(window.outerWidth>=521){
+    if(window.outerWidth>=521){
         //visa_expiry
-        $('#trip_details thead tr').prepend('<th></th>');
+        $('#zomato_salary_sheet thead tr').prepend('<th id="remove_head"></th>');
         _settings.columns=[
             {
             "className":      'details-control',
@@ -410,62 +399,95 @@ $(function() {
             "data":           null,
             "defaultContent": ''
             },
+
+            { "data": 'client_name', "name": 'client_name' },
             { "data": 'rider_name', "name": 'rider_name' },
-            { "data": 'total_to_be_paid_out', "name": 'total_to_be_paid_out' },
-            { "data": 'amount_for_login_hours', "name": 'amount_for_login_hours' },
-            { "data": 'amount_to_be_paid_against_orders_completed', "name": 'amount_to_be_paid_against_orders_completed' },
-            { "data": 'ncw_incentives', "name": 'ncw_incentives' },
-            // { "data": 'actions', "name": 'actions' }
-            { "data": 'tips_payouts', "name": 'tips_payouts' },
-            { "data": 'mcdonalds_deductions', "name": 'mcdonalds_deductions' },
-            { "data": 'dc_deductions', "name": 'dc_deductions' },
-            { "data": 'date', "name": 'date' },
-            { "data": 'feid', "name": 'feid' },
+            { "data": 'bike_number', "name": 'bike_number' },
+            { "data": 'aed_trips', "name": 'aed_trips' },
+            { "data": 'aed_hours', "name": 'aed_hours' },
+            { "data": 'total_salary', "name": 'total_salary' },
+            { "data": 'net_salary', "name": 'net_salary' },
+            { "data": 'gross_salary', "name": 'gross_salary' },
+            
+            { "data": 'fuel', "name": 'fuel' },
+            { "data": 'advance', "name": 'advance' },
+            { "data": 'salik', "name": 'salik' },
+            { "data": 'sim_charges', "name": 'sim_charges' },
+            { "data": 'dc', "name": 'dc' },
+            { "data": 'cod', "name": 'cod' },
+            { "data": 'rta_fine', "name": 'rta_fine' },
+            { "data": 'dicipline_fine', "name": 'dicipline_fine' },
+            { "data": 'total_deduction', "name": 'total_deduction' },
+            { "data": 'poor_performance', "name": 'poor_performance' },
+            { "data": 'visa', "name": 'visa' },
+            { "data": 'mobile', "name": 'mobile' },
+            {"data": 'number_of_hours', "name": 'number_of_hours'},
+            { "data": 'number_of_trips', "name": 'number_of_trips' },
+            { "data": 'ncw', "name": 'ncw' },
+            { "data": 'tips', "name": 'tips' },
+            { "data": 'extra_trips', "name": 'extra_trips' },
+            { "data": 'aed_extra_trips', "name": 'aed_extra_trips' },
+            { "data": 'bike_allowns', "name": 'bike_allowns' },
+            { "data": 'bonus', "name": 'bonus' },
+            { "data": 'mobile_charges', "name": 'mobile_charges' },
+            
+            
         ];
         _settings.columnDefs=[
             {
-                "targets": [ 7,8,9, 10 ],
+                "targets": [9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29],
                 "visible": false,
-                searchable: true,
+                searchable: true, 
             },
         ],
         
         _settings.responsive=false;
     }
     else{
-        
-        
-        $('#trip_details thead tr th').eq(6).before('<th>Trip Date:</th>');
-        $('#trip_details thead tr th').eq(7).before('<th>Trip Time:</th>');
-        $('#trip_details thead tr th').eq(8).before('<th>Transaction Post Date:</th>');
+        $('#zomato_salary_sheet thead tr th').eq(6).before('<th>Trip Date:</th>');
+        $('#zomato_salary_sheet thead tr th').eq(7).before('<th>Trip Time:</th>');
+        $('#zomato_salary_sheet thead tr th').eq(8).before('<th>Transaction Post Date:</th>');
         _settings.columns=[
             { "data": 'rider_name', "name": 'rider_name' },
-            { "data": 'total_to_be_paid_out', "name": 'total_to_be_paid_out' },
-            { "data": 'amount_for_login_hours', "name": 'amount_for_login_hours' },
-            { "data": 'amount_to_be_paid_against_orders_completed', "name": 'amount_to_be_paid_against_orders_completed' },
-            { "data": 'ncw_incentives', "name": 'ncw_incentives' },
-            // { "data": 'actions', "name": 'actions' }
-            { "data": 'tips_payouts', "name": 'tips_payouts' },
-            { "data": 'mcdonalds_deductions', "name": 'mcdonalds_deductions' },
-            { "data": 'dc_deductions', "name": 'dc_deductions' },
-            { "data": 'date', "name": 'date' },
-            { "data": 'feid', "name": 'feid' },
+            { "data": 'bike_number', "name": 'bike_number' },
+            { "data": 'aed_trips', "name": 'aed_trips' },
+            { "data": 'aed_hours', "name": 'aed_hours' },
+            { "data": 'total_salary', "name": 'total_salary' },
+            { "data": 'net_salary', "name": 'net_salary' },
+            { "data": 'gross_salary', "name": 'gross_salary' },
+
+            { "data": 'fuel', "name": 'fuel' },
+            { "data": 'advance', "name": 'advance' },
+            { "data": 'salik', "name": 'salik' },
+            { "data": 'sim_charges', "name": 'sim_charges' },
+            { "data": 'dc', "name": 'dc' },
+            { "data": 'cod', "name": 'cod' },
+            { "data": 'rta_fine', "name": 'rta_fine' },
+            { "data": 'dicipline_fine', "name": 'dicipline_fine' },
+            { "data": 'total_deduction', "name": 'total_deduction' },
+            { "data": 'poor_performance', "name": 'poor_performance' },
+            { "data": 'visa', "name": 'visa' },
+            { "data": 'mobile', "name": 'mobile' },
+            {"data": 'number_of_hours', "name": 'number_of_hours'},
+            { "data": 'number_of_trips', "name": 'number_of_trips' },
+            { "data": 'ncw', "name": 'ncw' },
+            { "data": 'tips', "name": 'tips' },
+            { "data": 'extra_trips', "name": 'extra_trips' },
+            { "data": 'aed_extra_trips', "name": 'aed_extra_trips' },
+            { "data": 'bike_allowns', "name": 'bike_allowns' },
+            { "data": 'bonus', "name": 'bonus' },
+            { "data": 'mobile_charges', "name": 'mobile_charges' },
             
         ];
      
     }
-    var mark_table = function(){}
-    performance_table = $('#trip_details').DataTable(_settings);
-    performance_table.on( 'search.dt', function () {
-        mark_table();
-    });
-    mark_table = function(){
-        var _val = performance_table.search();
+    var mark_table = function(){
+        var _val = salary_sheet.search();
         if(_val===''){
-            $("#trip_details tbody").unmark();
-            $("#trip_details tbody > tr:visible").each(function() {
+            $("#zomato_salary_sheet tbody").unmark();
+            $("#zomato_salary_sheet tbody > tr:visible").each(function() {
                 var tr = $(this);
-                var row = performance_table.row( tr );
+                var row = salary_sheet.row( tr );
                 if ( row.child.isShown() ) {
                     // This row is already open - close it
                     row.child.remove();
@@ -474,9 +496,9 @@ $(function() {
             });
             return;
         }
-        $('#trip_details tbody > tr[role="row"]:visible').each(function() {
+        $('#zomato_salary_sheet tbody > tr[role="row"]:visible').each(function() {
             var tr = $(this);
-            var row = performance_table.row( tr );
+            var row = salary_sheet.row( tr );
             // console.warn("isShon: ",row.child.isShown());
             if ( row.child.isShown() ) {
                 // This row is already open - close it
@@ -488,9 +510,9 @@ $(function() {
                 _arow.show();
                 tr.addClass('shown');
         });
-        $("#trip_details tbody").unmark({
+        $("#zomato_salary_sheet tbody").unmark({
             done: function() {
-                $("#trip_details tbody").mark(_val, {
+                $("#zomato_salary_sheet tbody").mark(_val, {
                     "element": "span",
                     "className": "highlighted" 
                 });
@@ -498,10 +520,15 @@ $(function() {
         }); 
         
     }
+    salary_sheet = $('#zomato_salary_sheet').DataTable(_settings);
+    salary_sheet.on( 'search.dt', function () {
+        mark_table();
+    });
     if(window.outerWidth>=521){
-        $('#trip_details tbody').on('click', 'td.details-control', function () {
-            var tr = $(this).closest('tr');
-            var row = performance_table.row( tr );
+        $(document).unbind().on('click', '.details-control', function () {
+            console.log('--------------------------------');
+            var tr = $(this).parents('tr');
+            var row = salary_sheet.row( tr );
             if ( row.child.isShown() ) {
                 // This row is already open - close it
                 row.child.hide();
@@ -515,22 +542,24 @@ $(function() {
             }
         });
     }
-
-    function format ( data ) {
-    // `d` is the original data object for the row
-    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
-            '<tr>'+
-            '<td colspan="1"; style="font-weight:900;">DC Deductions:</td>'+
-            '<td colspan="2";>'+data.dc_deductions+'</td>'+
-            '<td colspan="1"; style="font-weight:900;" >Mcdonalds Deductions:</td>'+
-            '<td colspan="2";>'+data.mcdonalds_deductions+'</td>'+
-            '<td colspan="1"; style="font-weight:900;" >Date:</td>'+
-            '<td colspan="2";>'+data.date+'</td>'+
-            '</tr>'+
-            
-        '</table>';
 }
 
+
+$(function() {
+    $("#kt_select2_3_5").change(function(){
+        $('th#remove_head').remove();
+        $('#kt_content-b').show(); 
+        var month=$(this).val();
+        var push_state={
+            month: month
+        }
+        biketrack.updateURL(push_state);
+        init_table(month)
+    });
+    var query_month = biketrack.getUrlParameter('month');
+    if(query_month!=""){
+        $("#kt_select2_3_5").val(query_month).trigger('change')
+    }
     if(window.outerWidth>=521){
         $("#check_id").change(function(){
 
@@ -568,152 +597,66 @@ $(function() {
             }
         });
     }
+
 });
 
 
-
-    
-
-
-
-// table accordian end
-function delete_lastImport()
-{
-    var url = "{{ url('admin/delete/last/import/salik') }}";
-    console.log(url);
-    swal.fire({
-        title: 'Are you sure?',
-        text: "You want delete last record!",
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes!'
-    }).then(function(result) {
-        if (result.value) {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                url : url,
-                type : 'delete',
-                beforeSend: function() {            
-                    $('.loading').show();
-                },
-                complete: function(){
-                    $('.loading').hide();
-                },
-                success: function(data){
-                    swal.fire({
-                        position: 'center',
-                        type: 'success',
-                        title: 'Record deleted successfully.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                    performance_table.ajax.reload(null, false);
-                },
-                error: function(error){
-                    swal.fire({
-                        position: 'center',
-                        type: 'error',
-                        title: 'Oops...',
-                        text: 'Unable to delete.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                }
-            });
-        }
-    });
-}
-function feid_rider(p_id,feid,rider_id){
-    var url = "{{ url('admin/assign/client/rider_id') }}" + "/" + p_id + "/"+ feid + "/" +rider_id;
-    $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                url : url,
-                type : 'GET',
-                beforeSend: function() {            
-                    $('.loading').show();
-                },
-                complete: function(){
-                    $('.loading').hide();
-                },
-                success: function(data){
-                    swal.fire({
-                        position: 'center',
-                        type: 'success',
-                        title: 'Record updated successfully.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                    performance_table.ajax.reload(null, false);
-                },
-                error: function(error){
-                    swal.fire({
-                        position: 'center',
-                        type: 'error',
-                        title: 'Oops...',
-                        text: 'Unable to update.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                }
-            });
-
-}
-function updateStatus(sim_id)
-{
-    var url = "{{ url('admin/sim') }}" + "/" + sim_id + "/updateStatus";
-    swal.fire({
-        title: 'Are you sure?',
-        text: "You want update status!",
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes!'
-    }).then(function(result) {
-        if (result.value) {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                url : url,
-                type : 'POST',
-                beforeSend: function() {            
-                    $('.loading').show();
-                },
-                complete: function(){
-                    $('.loading').hide();
-                },
-                success: function(data){
-                    swal.fire({
-                        position: 'center',
-                        type: 'success',
-                        title: 'Record updated successfully.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                    performance_table.ajax.reload(null, false);
-                },
-                error: function(error){
-                    swal.fire({
-                        position: 'center',
-                        type: 'error',
-                        title: 'Oops...',
-                        text: 'Unable to update.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                }
-            });
-        }
-    });
+function format ( data ) {
+    // `d` is the original data object for the row
+    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+            '<tr>'+
+            '<td colspan="1"; style="font-weight:900;">Fuel :</td>'+
+            '<td colspan="2";>'+data.fuel+'</td>'+
+            '<td colspan="1"; style="font-weight:900;">Advance :</td>'+
+            '<td colspan="2";>'+data.advance+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Salik:</td>'+
+            '<td colspan="2";>'+data.salik+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Sim Charges:</td>'+
+            '<td colspan="2";>'+data.sim_charges+'</td>'+
+            '<td colspan="1"; style="font-weight:900;">DC :</td>'+
+            '<td colspan="2";>'+data.dc+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >COD:</td>'+
+            '<td colspan="2";>'+data.cod+'</td>'+
+            '</tr>'+
+            '<tr>'+
+            '<td colspan="1"; style="font-weight:900;" >Poor Performance:</td>'+
+            '<td colspan="2";>'+data.poor_performance+'</td>'+
+            '<td colspan="1"; style="font-weight:900;">Visa :</td>'+
+            '<td colspan="2";>'+data.visa+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >RTA Fine:</td>'+
+            '<td colspan="2";>'+data.rta_fine+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Mobile:</td>'+
+            '<td colspan="2";>'+data.mobile+'</td>'+
+            '<td colspan="1"; style="font-weight:900;">Dicipline Fine :</td>'+
+            '<td colspan="2";>'+data.dicipline_fine+'</td>'+
+            '</tr>'+
+           
+            '<tr>'+
+            '<td colspan="1"; style="font-weight:900;" >Total Deduction:</td>'+
+            '<td colspan="2";>'+data.total_deduction+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Number of Hours:</td>'+
+            '<td colspan="2";>'+data.number_of_hours+'</td>'+
+            '<td colspan="1"; style="font-weight:900;">Number Of trips :</td>'+
+            '<td colspan="2";>'+data.number_of_trips+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >NCW:</td>'+
+            '<td colspan="2";>'+data.ncw+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Tips:</td>'+
+            '<td colspan="2";>'+data.tips+'</td>'+
+            '</tr>'+
+            '<tr>'+
+            '<td colspan="1"; style="font-weight:900;" >Extra Trip:</td>'+
+            '<td colspan="2";>'+data.extra_trips+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >AED Extra Trip:</td>'+
+            '<td colspan="2";>'+data.aed_extra_trips+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Bike Allowns:</td>'+
+            '<td colspan="2";>'+data.bike_allowns+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Bonus:</td>'+
+            '<td colspan="2";>'+data.bonus+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Mobile Charges:</td>'+
+            '<td colspan="2";>'+data.mobile_charges+'</td>'+
+            '</tr>'+
+            
+        '</table>';
 }
 
 </script>

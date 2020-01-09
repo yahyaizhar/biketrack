@@ -30,6 +30,7 @@ use App\Model\Sim\Sim_History;
 use App\Model\Mobile\Mobile_installment;
 use App\Model\Rider\Rider_Performance_Zomato;
 use App\Assign_bike;
+use App\WebRoute;
 use App\Model\Rider\Trip_Detail;
 use App\Model\Accounts\Company_Account;
 use App\Model\Accounts\Rider_Account;
@@ -77,21 +78,30 @@ class AjaxController extends Controller
         ->addColumn('new_phone', function($clients){
             return '<a href="'.route('admin.clients.riders', $clients).'">'.$clients->phone.'</a>';
         })
+        ->addColumn('trn_no', function($clients){
+            return $clients->trn_no;
+        })
         ->addColumn('payout_method', function($clients){
             if($clients->setting!=null){
                 $settings = json_decode($clients->setting, true);
                 $pm = $settings['payout_method'];
                 $to_return ='';
                 switch ($pm) {
-                    case 'trip_based':
+                    case 'trip_based': 
                         $to_return .='<p><strong>Payout Method:</strong> Based on Trips and Hours</p>';
-                        $to_return .='<p><strong>Per trip amount:</strong> '.$settings['tb__trip_amount'].'</p>';
-                        $to_return .='<p><strong>Per hour amount:</strong> '.$settings['tb__hour_amount'].'</p>';
+                        $temp_var = isset($settings['tb__trip_amount'])?$settings['tb__trip_amount']:'Unspecified';
+                        $to_return .='<p><strong>Per trip amount:</strong> '.$temp_var.'</p>';
+                        $temp_var = isset($settings['tb__hour_amount'])?$settings['tb__hour_amount']:'Unspecified';
+                        $to_return .='<p><strong>Per hour amount:</strong> '.$temp_var.'</p>';
                         break;
                     case 'fixed_based':
                         $to_return .='<p><strong>Payout Method:</strong> Based on Fixed Amount</p>';
-                        $to_return .='<p><strong>Amount:</strong> '.$settings['fb__amount'].'</p>';
-                        $to_return .='<p><strong>Workable Hours:</strong> '.$settings['fb__workable_hours'].'</p>';
+                        $temp_var = isset($settings['fb__amount'])?$settings['fb__amount']:'Unspecified';
+                        $to_return .='<p><strong>Amount:</strong> '.$temp_var.'</p>';
+                        $temp_var = isset($settings['fb__perdayHours'])?$settings['fb__perdayHours']:'Unspecified';
+                        $to_return .='<p><strong>Estimated perday hours:</strong> '.$temp_var.'</p>';
+                        $temp_var = isset($settings['fb__working_days'])?$settings['fb__working_days']:'Unspecified';
+                        $to_return .='<p><strong>Estimated Working Days:</strong> '.$temp_var.'</p>';
                         break;
                     
                     default:
@@ -171,7 +181,7 @@ class AjaxController extends Controller
             </span>
         </span>';
         })
-        ->rawColumns(['new_name', 'new_email', 'new_phone', 'actions', 'status', 'payout_method', 'salary_method'])
+        ->rawColumns(['new_name', 'new_email', 'new_phone', 'trn_no', 'actions', 'status', 'payout_method', 'salary_method'])
         ->make(true);
     }
     public function getActiveClients()
@@ -1817,7 +1827,39 @@ class AjaxController extends Controller
         ->rawColumns(['newcommer_image','full_name','nationality','phone_number','national_id_card_number','whatsapp_number','education','license_check','license_number','licence_issue_date','license_image', 'experiance','passport_status', 'passport_number','passport_image', 'current_residence','current_residence_countries', 'status','source','overall_remarks','actions'])
         ->make(true);
     }
-   
+    public function getWebRoutes()
+    {
+        $webroutes = WebRoute::orderByDesc('created_at')->get();
+        // return $clients;
+        return DataTables::of($webroutes)
+        ->addColumn('id', function($webroute){
+            return $webroute->id;
+        })
+        ->addColumn('category', function($webroute){
+            return $webroute->category;
+        })
+        ->addColumn('label', function($webroute){
+            return $webroute->label;
+        })
+        ->addColumn('type', function($webroute){
+            return $webroute->type;
+        })
+        ->addColumn('route_name', function($webroute){
+            return $webroute->route_name;
+        })
+        ->addColumn('description', function($webroute){
+            return $webroute->route_description;
+        })
+        ->addColumn('actions', function($webroute){
+                 return '<a href="'.route('admin.edit_route', $webroute->id).'"><span class="show_waiting_comer">
+                     <i class="flaticon-eye"></i>    
+                       </span></a>';
+           
+        })
+
+        ->rawColumns(['category','label','type','route_name','description','actions'])
+        ->make(true);
+    }
        public function getRiderPerformance()
        {
            $performance =Rider_Performance_Zomato::orderByDesc('created_at')->get();

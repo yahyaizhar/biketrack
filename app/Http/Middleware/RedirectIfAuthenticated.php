@@ -19,7 +19,6 @@ class RedirectIfAuthenticated
     {
         // 
         if (Auth::guard($guard)->check()) {
-            dd($guard);
             switch($guard){
                 case 'admin':
                     return redirect()->intended(route('admin.home'));

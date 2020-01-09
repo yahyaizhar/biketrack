@@ -8,6 +8,7 @@ use carbon\carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Model\Client\Client;
+use App\Model\Accounts\Client_Income;
 use App\Model\Client\Client_History;
 use App\Model\Invoice\Invoice;
 use App\Model\Invoice\Invoice_Payment;
@@ -491,18 +492,28 @@ class InvoiceController extends Controller
                 break;
             case 'fixed_based':
                 $riders_count = count($client_riders);
-                $fixed_amount = $client_settings['fb__amount'];
-                $total_payable = $fixed_amount * $riders_count;
-                $invoice_items_data=[
-                    [
-                       'desc'=>'Fixed Amount',
-                       'amount'=> $total_payable,
-                       'rate'=>  round($fixed_amount,2),
-                       'qty'=> $riders_count,
-                       'is_taxable'=> true,
-                       'is_deductable'=> false
-                    ]
-                ];
+
+                $client_incomes=Client_Income::with('Client')->with('Rider')->whereMonth('month',$month)
+                ->get();
+                if (count($client_incomes) == 0) {
+                    //client payout sheet isnot imported
+                    return response()->json([
+                        'status'=>0,
+                        'message'=>'Customer\'s Payout for '.Carbon::parse($formatted_month)->format('M Y').' is not added yet.'
+                    ]);
+                }
+                $invoice_items_data=[];
+                foreach ($client_incomes as $client_income) {
+                    $obj=[
+                        'desc'=>$client_income->Rider->name.' Payout',
+                        'amount'=> $client_income->total_payout,
+                        'rate'=> $client_income->total_payout,
+                        'qty'=> 1,
+                        'is_taxable'=> true,
+                        'is_deductable'=> false
+                    ];
+                    array_push($invoice_items_data,$obj);
+                }
                 return response()->json([
                     'status'=>1,
                     'billing_address' => $billing_address,
