@@ -905,26 +905,11 @@ color: #5d78ff !important;
                                     <ul class="kt-menu__subnav">
                                         <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text">Sims</span></span></li>
                                         
-                                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='mobile.create_mobile_GET';   }); @endphp
-                                        @if($is_in_array || $is_admin)
-                                        <li class="kt-menu__item @if(strpos(Request::url(), "/mobile/create") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
-                                            <a href="{{ route('mobile.create_mobile_GET') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add New Mobile</span>
-                                            </a>
-                                        </li>
-                                        @endif
 
                                         @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='mobile.show';   }); @endphp
                                         @if($is_in_array || $is_admin)
                                         <li class="kt-menu__item @if(strpos(Request::url(), "/mobiles") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
                                             <a href="{{ route('mobile.show') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Mobiles List</span>
-                                            </a>
-                                        </li>
-                                        @endif
-                                        
-                                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='Mobile.transaction_view';   }); @endphp
-                                        @if($is_in_array || $is_admin)
-                                        <li class="kt-menu__item @if(strpos(Request::url(), "/mobile/transaction/view") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
-                                            <a href="{{ route('Mobile.transaction_view') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Mobiles Transaction Records</span>
                                             </a>
                                         </li>
                                         @endif
@@ -936,14 +921,23 @@ color: #5d78ff !important;
                                             </a>
                                         </li>
                                         @endif
-                                       
-                                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='MobileInstallment.show';   }); @endphp
+
+                                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='mobile.sellers_view';   }); @endphp
                                         @if($is_in_array || $is_admin)
-                                        <li class="kt-menu__item @if(strpos(Request::url(), "/mobile/installment/show") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
-                                            <a href="{{ route('MobileInstallment.show') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">View Installments</span>
+                                        <li class="kt-menu__item @if(strpos(Request::url(), "/mobile/sellers/view") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                            <a href="{{ route('mobile.sellers_view') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">View Sellers</span>
                                             </a>
                                         </li>
                                         @endif
+
+                                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='mobile.accessory_view';   }); @endphp
+                                        @if($is_in_array || $is_admin)
+                                        <li class="kt-menu__item @if(strpos(Request::url(), "/mobile/accessory/view") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                            <a href="{{ route('mobile.accessory_view') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">View Accessory</span>
+                                            </a>
+                                        </li>
+                                        @endif
+                                       
                                         
                                      </ul>
                                 </div>
