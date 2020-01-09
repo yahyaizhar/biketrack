@@ -64,6 +64,7 @@ Route::group([
     Route::get('/mobile/data','AjaxController@getMobiles')->name('mobile.getMobiles');
     Route::get("/Mobile/ajax/sellers/view","AjaxNewController@getSellers")->name("Mobile.getSellers");
     Route::get("/Mobile/ajax/accessories/view","AjaxNewController@getAccessory")->name("Mobile.getAccessory");
+    Route::get("/Mobile/ajax/profit_loss/view","AjaxNewController@getMobileProfitLoss")->name("Mobile.getMobileProfitLoss");
     Route::get("/client_income/view/data","AjaxNewController@getclient_income")->name("admin.getclient_income");
     Route::get("/accounts/fuel_expense/view/data","AjaxNewController@getFuelExpense")->name("admin.accounts.ajax_fuelExpense");
     Route::get("/accounts/bike_fine/view/ajax","AjaxNewController@getBikeFine")->name("admin.accounts.getBikeFine");
@@ -499,6 +500,8 @@ Route::group([
     Route::get('/mobile/accessory/view','MobileController@accessory_view')->name('mobile.accessory_view');
     Route::get('/mobile/accessory/edit/{accessory_id}','MobileController@accessory_edit')->name('mobile.accessory_edit');
     Route::post('/mobile/accessory/update/{accessory_id}','MobileController@accessory_update')->name('mobile.accessory_update');
+
+    Route::get('/mobile/profit_loss/sheet','MobileController@profit_loss_view')->name('Mobile.profit_loss_view');
 
 // end mobile 
 			 		  
