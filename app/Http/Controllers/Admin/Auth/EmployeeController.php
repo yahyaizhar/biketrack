@@ -28,7 +28,9 @@ class EmployeeController extends Controller
     }
     public function showloginform()
     {
-        return view('admin.auth.employee_login');    
+        $webroutes = WebRoute::all();
+        $dublicate_route = WebRoute::groupBy('category')->having(DB::raw('count(*)'), ">", "1")->select('category')->get();
+        return view('admin.auth.employee_login',compact('webroutes','dublicate_route'));    
     }
     public function viewEmployee(){
         return view('admin.auth.employee_view');
@@ -67,7 +69,6 @@ class EmployeeController extends Controller
         {
             $filename = $request->logo->getClientOriginalName();
             $filesize = $request->logo->getClientSize();
-            // $filepath = $request->logo->storeAs('public/uploads/clients/logos', $filename);
             $filepath = Storage::putfile('public/uploads/employee/logos', $request->file('logo'));
             $employee->logo = $filepath;
         }
