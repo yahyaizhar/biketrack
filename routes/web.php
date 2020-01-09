@@ -62,6 +62,8 @@ Route::group([
     Route::get('/get/ajax/Transaction/Mobile/{month}','AjaxNewController@getMobileTransaction')->name('Transaction.getMobileTransaction');
     Route::get('/mobile/installment/data','AjaxController@getMobileInstallment')->name('MobileInstallment.getinstallments');
     Route::get('/mobile/data','AjaxController@getMobiles')->name('mobile.getMobiles');
+    Route::get("/Mobile/ajax/sellers/view","AjaxNewController@getSellers")->name("Mobile.getSellers");
+    Route::get("/Mobile/ajax/accessories/view","AjaxNewController@getAccessory")->name("Mobile.getAccessory");
     Route::get("/client_income/view/data","AjaxNewController@getclient_income")->name("admin.getclient_income");
     Route::get("/accounts/fuel_expense/view/data","AjaxNewController@getFuelExpense")->name("admin.accounts.ajax_fuelExpense");
     Route::get("/accounts/bike_fine/view/ajax","AjaxNewController@getBikeFine")->name("admin.accounts.getBikeFine");
@@ -471,33 +473,34 @@ Route::group([
 
 // End Sim
 
-// mobile  ************ Complete not in use
+// mobile 
 
  //Mobiles   
+    Route::get('/add/purchased_invoices','MobileController@add_purchased_invoices')->name('mobile.add_purchased_invoices');
+    Route::post('/insert/purchased_invoices','MobileController@submit_purchased_invoices')->name('mobile.submit_purchased_invoices');
+    
     Route::get('/mobile/create','MobileController@create_mobile_GET')->name('mobile.create_mobile_GET');
-    Route::post('/mobile/create','MobileController@create_mobile_POST')->name('mobile.create_mobile_POST');
+    Route::post('/mobile/create/add','MobileController@create_mobile_POST')->name('mobile.create_mobile_POST');
     Route::get('/mobiles','MobileController@mobiles')->name('mobile.show');
     Route::get('/mobile/{mobile}/edit','MobileController@update_mobile_GET')->name('mobile.edit');
-    Route::get('/mobile/{mobile}/edit/view','MobileController@update_mobile_GET_view')->name('mobile.edit_view');//not in use
-    Route::delete('/mobile/delete/{mobile_id}','MobileController@delete_mobile')->name('Mobile.delete_mobile');
-    Route::post('/mobile/{id}/updateStatus','MobileController@updateStatusMobile')->name('Mobile.updatetatus');  //ok [Mobile: update status]
+    Route::get('/mobile/invoices/profile/{mobile_id}','MobileController@Mobile_view_ivoice_profile')->name('Mobile.Mobile_view_ivoice_profile');
     Route::post('/mobile/{id}/update','MobileController@update_mobile')->name('Mobile.update');
-//end Mobiles
-// mobile installement
-    Route::get('/mobile/installment/create','MobileController@create_mobileInstallment')->name('MobileInstallment.create'); //ok [Mobile: create installment]
-    Route::post('/mobile/installment/insert','MobileController@store_mobileInstallment')->name('MobileInstallment.store'); //ok [Mobile: create installment]
-    Route::get('/mobile/installment/show','MobileController@show_mobileInstallmenet')->name('MobileInstallment.show');    //ok [Mobile: view all installment]
-    Route::get('/mobile/installment/{mobile}/edit','MobileController@edit_mobileInstallment')->name('MobileInstallment.edit'); //ok [Mobile: update instalment]
-    Route::post('/mobile/installment/{id}/update','MobileController@update_mobileInstallment')->name('MobileInstallment.update'); //ok [Mobile: update instalment]
-    Route::delete('/mobile/installment/delete/{mobile_id}','MobileController@delete_mobileInstallment')->name('MobileInstallment.delete');   //ok [Mobile: delete instalment]
-// end mobile installement
-// transaction Records
-    Route::get('/mobile/transaction/view','MobileController@transaction_view')->name('Mobile.transaction_view'); //ok [Mobile: transaction view]
-    Route::post('/mobile/transaction/inline_edit','MobileController@edit_inline_MobileTransaction')->name('Transaction.edit_inline_MobileTransaction');   ///ok  [Mobile: inline update]
+    Route::post('/add/seller/details/','MobileController@addSellerDeatil')->name("Mobile.addSellerDeatil");
+    Route::get('/mobile/installment/create','MobileController@create_mobileInstallment')->name('MobileInstallment.create');
+    Route::post('/mobile/installment/insert','MobileController@store_mobileInstallment')->name('MobileInstallment.store');
+    Route::get('/mobile/assign_to_rider/{rider_id}',"MobileController@mobile_assign_to_rider")->name('Mobile.mobile_assign_to_rider');
+    Route::post('/mobile/assignedMobile_to_rider/{rider_id}','MobileController@mobile_is_assigned_to_rider')->name('Mobile.mobile_is_assigned_to_rider');
+    Route::get('/mobile/rider_history/{rider_id}','MobileController@mobile_rider_history')->name('Mobile.mobile_rider_history');
+    Route::get('/mobile/change_given_date/history/{rider_id}/{mobile_history_id}','MobileController@change_Mobile_given_date')->name('Mobile.change_Mobile_given_date');
     Route::get('/mobile/ajax/data/{mobile_id}/{month}','MobileController@consumption_mobile_records')->name('Mobile.consumption_mobile_records');
-    Route::post('/mobile/insert/data/consumption','MobileController@consumption_mobile_records_insert')->name('Mobile.consumption_mobile_records_insert');
-// end transaction Records
-// end mobile  ******************** complete not in use
+    Route::get('/mobile/sellers/view','MobileController@sellers_view')->name('mobile.sellers_view');
+    Route::get('/mobile/sellers/edit/{seller_id}','MobileController@sellers_edit')->name('mobile.sellers_edit');
+    Route::post('/mobile/sellers/update/{seller_id}','MobileController@sellers_update')->name('mobile.sellers_update');
+    Route::get('/mobile/accessory/view','MobileController@accessory_view')->name('mobile.accessory_view');
+    Route::get('/mobile/accessory/edit/{accessory_id}','MobileController@accessory_edit')->name('mobile.accessory_edit');
+    Route::post('/mobile/accessory/update/{accessory_id}','MobileController@accessory_update')->name('mobile.accessory_update');
+
+// end mobile 
 			 		  
 //zomato income
     Route::get("/assign/client/rider_id/{p_id}/{feid}/{rider_id}","AccountsController@assign_client_rider_id")->name("income.assign_client_rider_id"); //ok - update FEID (onclick) when no feid is found on income zomato table 
