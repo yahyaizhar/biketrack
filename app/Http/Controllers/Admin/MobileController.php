@@ -15,6 +15,7 @@ use App\Model\Rider\Rider_Message;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Model\Sim\Sim;
+use App\PurchasedInvoice;
 use App\Model\Sim\Sim_Transaction;
 use App\Model\Sim\Sim_History;
 use App\Model\Mobile\Mobile;
@@ -31,6 +32,25 @@ class MobileController extends Controller
     {
         $this->middleware('auth:admin');
     } 
+    public function add_purchased_invoices(){
+        return view('admin.rider.add_purchased_invoices');
+    }
+    public function submit_purchased_invoices(Request $request){
+        $data = new PurchasedInvoice;
+        $data->invoice_purchase_id = $request->invoice_purchase_id;
+        $data->invoice_amount = $request->invoice_amount;
+        $data->purchasing_date = $request->purchasing_date;
+        if($request->hasFile('invoice_picture'))
+        {
+            $filename = $request->invoice_picture->getClientOriginalName();
+            $filesize = $request->invoice_picture->getClientSize();
+            $filepath = Storage::putfile('public/uploads/riders/profile_pics', $request->file('invoice_picture'));
+            $data->invoice_picture = $filepath;
+        }
+        $data->tex_amount = $request->tex_amount;
+        $data->save();
+        return redirect()->back()->with('message', 'Record Added Successfully.');;
+    }
     // start mobile section
     public function update_mobile_GET($id){
         $mobile_edit=Mobile::find($id);
