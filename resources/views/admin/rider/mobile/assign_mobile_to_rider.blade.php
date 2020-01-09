@@ -46,7 +46,7 @@
                     <div class="row" id="installment_process">
                         <div class="form-group col-md-4">
                             <label>Installment Amount:</label>
-                            <input type="number" class="form-control" name="installment_amount" placeholder="Enter Installment Amount">
+                            <input type="number" id="installment_amount" class="form-control"  placeholder="Enter Installment Amount">
                         </div>
                         <div class="form-group col-md-4">
                             <label>Installment Starting Date:</label>
@@ -59,7 +59,7 @@
                     </div>
                     <div class="form-group" id="cash_process">
                         <label>Cash Amount:</label>
-                        <input readonly type="number" class="form-control" id="cash_paid_amount" name="installment_amount" placeholder="Enter Cash Amount">
+                        <input readonly type="number"  class="form-control" id="cash_paid_amount"  placeholder="Enter Cash Amount">
                     </div>
                 </div>
                 
@@ -100,12 +100,17 @@
         $("#assign_mobile [name='payment_type']").on("change",function(){
             var _this=$(this).val();
             if (_this=="installment") {
+                name="installment_amount"
+                $("#installment_amount").attr("name","installment_amount");
+                $("#cash_paid_amount").attr("name","");
                 $("#installment_process").show();
                 $("#cash_process").hide();
             }
             if (_this=="cash") {
                 $("#installment_process").hide();
                 $("#cash_process").show();
+                $("#installment_amount").attr("name","");
+                $("#cash_paid_amount").attr("name","installment_amount");
                 var sale_price=$('#assign_mobile [name="sale_price"]').val();
                 $("#cash_paid_amount").val(sale_price);
             }
