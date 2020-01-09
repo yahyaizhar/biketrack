@@ -57,7 +57,7 @@ Route::group([
     Route::get('/newComer/view/ajax', 'AjaxController@getNewComer')->name('NewComer.view_ajax');
     Route::get('get/ajax/Sim','AjaxController@getSims')->name('Sim.ajax_sim');
 	Route::get('get/ajax/Sim/active','AjaxController@getActiveSims')->name('Sim.ajax_sim.active');
-    Route::get('/map/testing/{id}','AjaxController@client_name');
+    Route::get('/map/testing/{id}','AjaxController@client_name'); 
     Route::get('/get/ajax/Transaction/Sim/{month}','AjaxController@getSimTransaction')->name('SimTransaction.ajax_simTransaction');
     Route::get('/get/ajax/Transaction/Mobile/{month}','AjaxNewController@getMobileTransaction')->name('Transaction.getMobileTransaction');
     Route::get('/mobile/installment/data','AjaxController@getMobileInstallment')->name('MobileInstallment.getinstallments');
