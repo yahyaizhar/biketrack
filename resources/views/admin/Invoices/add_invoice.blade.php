@@ -937,7 +937,7 @@ $(document).ready(function () {
             var _dis_amount = $('#invoices  h4.discount_amount').text().replace('AED','').trim().toRound(2);
             _dis_amount=_dis_amount==0?null:_dis_amount;
             var tax_subtotal = $('#invoices  h6.taxable_subtotal').text().replace('AED','').trim();
-            var _month  = new Date($('#invoices [name="month"]').attr('data-month')).format('yyyy-mm-dd');
+            var _month  = new Date($('#invoices [name="month"]').val()).format('yyyy-mm-dd');
             var _subtotal = $('#invoices  span.balance_due').text().replace('AED','').trim();
             var _s_total = $('#invoices  h4.subtotal_value').text().replace('AED','').trim();
             var _arr=[];
