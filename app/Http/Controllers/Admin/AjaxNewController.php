@@ -58,6 +58,7 @@ use App\Model\Accounts\EmployeeAccounts;
 use Str;
 use App\Model\Mobile\Accessory;
 use App\Model\Mobile\Seller;
+use App\Model\Mobile\MobileHistory;
 
 class AjaxNewController extends Controller
 {
@@ -4409,6 +4410,38 @@ class AjaxNewController extends Controller
             return '<a class="dropdown-item" href="'.route('mobile.accessory_edit', $accessory->id).'"><i class="fa fa-eye"></i></a>';
         })
         ->rawColumns(['id', 'amount','date', 'description', 'actions', 'seller_id'])
+        ->make(true);
+    }
+
+    public function getMobileProfitLoss()
+    {
+        $mobile = Mobile::all();
+        return DataTables::of($mobile)
+        ->addColumn('id', function($mobile){
+            return $mobile->id;
+        })
+        ->addColumn('model', function($mobile){
+            return $mobile->model." ".$mobile->brand;
+        })
+        ->addColumn('date', function($mobile){
+            return carbon::parse($mobile->purchasing_date)->format('F Y');
+        })
+        ->addColumn('sale_price', function($mobile){
+            return $mobile->sale_price;
+        })
+        ->addColumn('received', function($mobile){
+            return $mobile->amount_received;
+        })
+        ->addColumn('loss', function($mobile){
+            return '<div class="text-danger">'.$mobile->remaining_amount.'</div>';
+        })
+        // ->addColumn('profit', function($mobile){
+        //     $sale_price=$mobile->sale_price;
+        //     $reived_amount=$mobile->amount_received;
+        //     $remaining_amount=$mobile->remaining_amount;
+        //     return $mobile->remaining_amount;
+        // })
+        ->rawColumns(['id','date','sale_price','loss','profit','model'])
         ->make(true);
     }
 }

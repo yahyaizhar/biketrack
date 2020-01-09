@@ -517,7 +517,7 @@ var init_table=function(month){
         mark_table();
     });
     if(window.outerWidth>=521){
-        $('#zomato_salary_sheet tbody').on('click', 'td.details-control', function () {
+        $('#zomato_salary_sheet tbody').unbind().on('click', 'td.details-control', function () {
             var tr = $(this).closest('tr');
             var row = salary_sheet.row( tr );
             if ( row.child.isShown() ) {

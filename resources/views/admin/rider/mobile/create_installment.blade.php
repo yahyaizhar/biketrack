@@ -87,7 +87,7 @@
         $('.dp__custom').fdatepicker({ format: 'MM yyyy',startView:3,minView:3,maxView:4});
         
         $('#mobile_intallment [name="mobile_id"]').on("change",function(){
-            var mobile_id=$(this).val();
+            var mobile_id=$('#mobile_intallment [name="mobile_id"]').val();
             var _month=new Date($('#mobile_intallment [name="month_year"]').val()).format('yyyy-mm-dd');
             $.ajax({
                     headers: {
@@ -116,6 +116,13 @@
                     $('#mobile_intallment [name="remaining_amount"]').val(data.remaining_amount).attr("data-remaining",data.remaining_amount);
                     $('#mobile_intallment [name="per_month_installment_amount"]').attr("min",1);
                     $('#mobile_intallment [name="per_month_installment_amount"]').attr("max",data.remaining_amount);
+                    if (data.mobile_history!=null) {
+                        $('#mobile_intallment [name="rider_id"]').val(data._id_rider).trigger("change.select2");
+                    }
+                    else{
+                        $('#mobile_intallment [name="rider_id"]').val("").trigger("change.select2");
+                    }
+                    
                     
 
                 });

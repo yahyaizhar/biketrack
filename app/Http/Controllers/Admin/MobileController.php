@@ -25,7 +25,8 @@ use carbon\carbon;
 use App\Model\Mobile\Accessory;
 use App\Model\Mobile\Seller;
 use App\Model\Mobile\MobileHistory;
-
+use Arr;
+use Batch;
 class MobileController extends Controller
 {
     public function __construct()
@@ -187,17 +188,33 @@ class MobileController extends Controller
     }
 
     public function consumption_mobile_records($mobile_id,$month){
+
+        $startMonth = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
+        $month = Carbon::parse($month)->format('Y-m-d');
+        $onlyMonth = Carbon::parse($month)->format('m');
+
         $mobile=Mobile::where('id',$mobile_id)->get()->first();
-            $sale_price=$mobile->sale_price;
-            $remaining_amount=$mobile->remaining_amount;
-            $amount_received=$mobile->amount_received;
-            $mobile_history=MobileHistory::where('mobile_id',$mobile_id)->get()->first();
-            $rider_id_mh=null;
-            $payment_type_mh=null;
-            if (isset($mobile_history)) {
-               $rider_id_mh=$mobile_history->rider_id;
-               $payment_type_mh=$mobile_history->payment_type; 
-            }
+        $sale_price=$mobile->sale_price;
+        $remaining_amount=$mobile->remaining_amount;
+        $amount_received=$mobile->amount_received;
+        $mobile_history=MobileHistory::where('mobile_id',$mobile_id)->get()->first();
+        $rider_id_mh=null;
+        $rider_id=null;
+        $payment_type_mh=null;
+        if (isset($mobile_history)) {
+            $rider_id=$mobile_history->rider_id;
+            $rider_id_mh=$mobile_history->rider_id;
+            $payment_type_mh=$mobile_history->payment_type; 
+        }
+
+        $mobile_history = MobileHistory::where("mobile_id",$mobile_id)->get()->first();
+        $_id_rider=null;
+        $_id_mobile=null;
+        if (isset($mobile_history)) {
+            $_id_rider=$mobile_history->rider_id;
+            $_id_mobile=$mobile_history->mobile_id;
+            
+        }
         return response()->json([
             'data' => true,
             'sale_price'=>$sale_price,
@@ -205,6 +222,9 @@ class MobileController extends Controller
             'amount_received'=>$amount_received,
             'rider_id'=>$rider_id_mh,
             'payment_type'=>$payment_type_mh,
+            'mobile_history'=>$mobile_history,
+            '_id_rider'=>$_id_rider,
+            '_id_mobile'=>$_id_mobile,
         ]); 
     }
     public function addSellerDeatil(Request $r){
@@ -342,6 +362,9 @@ class MobileController extends Controller
         $accessory->purchasing_date=carbon::parse($request->purchasing_date)->format('Y-m-d');
         $accessory->update();
         return redirect(route('mobile.accessory_view'));
+    }
+    public function profit_loss_view(){
+        return view ("admin.rider.mobile.profit_loss_sheet");
     }
 }
 
