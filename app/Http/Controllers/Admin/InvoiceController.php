@@ -283,6 +283,20 @@ class InvoiceController extends Controller
         ]);
 
     }
+    public function get_invoice_by_id($invoice_id){
+        $invoice = Invoice::where('invoice_id', $invoice_id)
+        ->get()
+        ->first();
+        if(isset($invoice)){
+            return response()->json([
+                'status'=>1,
+                'invoice'=>$invoice
+            ]);
+        }
+        return response()->json([
+            'status'=>0
+        ]);
+    }
     public function get_ajax_client_details($client_id, $formatted_month){
         $client=Client::find($client_id);
         $client_riders=Client_History::where('client_id', $client->id)->get();
@@ -473,7 +487,7 @@ class InvoiceController extends Controller
                         'amount'=> round($panalties,2),
                         'rate'=> round($panalties,2),
                         'qty'=> 1,
-                        'is_taxable'=> false,
+                        'is_taxable'=> true,
                         'is_deductable'=> true
                     ],
                     [
@@ -481,7 +495,7 @@ class InvoiceController extends Controller
                         'amount'=> round($dc_deduction,2)+round($mcdonald_deduction,2),
                         'rate'=> round($dc_deduction,2)+round($mcdonald_deduction,2),
                         'qty'=> 1,
-                        'is_taxable'=> false,
+                        'is_taxable'=> true,
                         'is_deductable'=> true
                     ]
                 ];

@@ -530,6 +530,7 @@ Route::group([
    Route::get('/add/invoice/tax','InvoiceController@add_invoice')->name('tax.add_invoice');  //ok [Invoice: add invoice]
    Route::POST('/add/invoice','InvoiceController@add_invoice_post')->name('tax.add_invoice_post'); //ok [Invoice: add invoice]
    Route::get('/invoice/tax/ajax/get_clients_details/{client_id}/{month}','InvoiceController@get_ajax_client_details')->name('tax.get_ajax_client_details'); //ok [Invoice: add invoice]
+   Route::get('/invoice/get_invoice_by_id/{invoice_id}','InvoiceController@get_invoice_by_id')->name('invoice.get_invoice_by_id'); //ok [Invoice:add invoice]***
    Route::get('/invoice/view','InvoiceController@view_invoices')->name('tax.view_invoices'); //ok [Invoice: view invoices]
    Route::get('/invoice/tax_method/add','InvoiceController@add_tax_method')->name('invoice.add_tax_method');//ok [Invoice: add view detail]
    Route::post('/invoice/tax_method/store','InvoiceController@store_tax_method')->name('invoice.store_tax_method'); //ok [Invoice: save tax detail]
