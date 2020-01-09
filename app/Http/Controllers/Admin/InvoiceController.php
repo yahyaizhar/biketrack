@@ -23,6 +23,7 @@ use App\Model\Client\Client_Rider;
 use App\Model\Admin\Company_info;
 use App\Model\Admin\Admin;  
 use Arr;
+use DB;
 
 class InvoiceController extends Controller
 {
@@ -48,6 +49,7 @@ class InvoiceController extends Controller
         
         $invoice->client_id=$client_id;
         $invoice->month=$month;
+        $invoice->invoice_id=$r->invoice_id;
 
         $invoice->invoice_total=$r->invoice_total;
         $invoice->invoice_subtotal=$r->invoice_subtotal;
@@ -320,6 +322,8 @@ class InvoiceController extends Controller
             $genrated_by=Admin::find($open_invoice->generated_by);
             $open_invoice->generated_by=$genrated_by;
             $open_invoice->client=$client;
+
+            $next_invoice_id=$open_invoice->invoice_id;
             return response()->json([
                 'status'=>1,
                 'billing_address' => $billing_address,
@@ -327,6 +331,7 @@ class InvoiceController extends Controller
                 'items'=>$invoice_items_data,
                 'invoice'=>$open_invoice,
                 'is_edit'=>true,
+                'next_id'=>$next_invoice_id
             ]);
         }
         
@@ -480,6 +485,7 @@ class InvoiceController extends Controller
                         'is_deductable'=> true
                     ]
                 ];
+                $next_invoice_id=DB::select("SHOW TABLE STATUS LIKE 'invoices'");
                 return response()->json([
                     'status'=>1,
                     'billing_address' => $billing_address,
@@ -488,6 +494,7 @@ class InvoiceController extends Controller
                     'is_edit'=>false,
                     'aed_trips'=>round($aed_trips,2),
                     'aed_hours'=>round($aed_hours,2),
+                    'next_id'=>$next_invoice_id[0]->Auto_increment
                 ]);
                 break;
             case 'fixed_based':
@@ -514,12 +521,14 @@ class InvoiceController extends Controller
                     ];
                     array_push($invoice_items_data,$obj);
                 }
+                $next_invoice_id=DB::select("SHOW TABLE STATUS LIKE 'invoices'");
                 return response()->json([
                     'status'=>1,
                     'billing_address' => $billing_address,
                     'payment_method'=>$payment_method,
                     'items'=>$invoice_items_data,
                     'is_edit'=>false,
+                    'next_id'=>$next_invoice_id[0]->Auto_increment
                 ]);
                 break;
             case 'commission_based':

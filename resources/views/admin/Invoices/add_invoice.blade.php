@@ -172,11 +172,15 @@
                                 <label>Billing Adress:</label>
                                 <textarea type="text" cols="20" rows="5" class="form-control" data-name="billing_address" name="billing_address" placeholder="Enter Your Adress"></textarea>
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-2">
+                                <label>Invoice id:</label>
+                                <input required type="text" data-input-type="int" class="form-control @if($errors->has('invoice_id')) invalid-field @endif" data-name="invoice_id" name="invoice_id" placeholder="Enter Invoice Id" >
+                            </div>
+                            <div class="form-group col-md-3">
                                 <label>Invoice Date:</label>
                                 <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}"  readonly class="month_picker form-control @if($errors->has('invoice_date')) invalid-field @endif" data-name="invoice_date" name="invoice_date" placeholder="Enter Month" >
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label>Due Date:</label>
                                 <input type="text" data-month="{{Carbon\Carbon::now()->addDays(6)->format('M d, Y')}}"  readonly class="month_picker form-control @if($errors->has('due_date')) invalid-field @endif" data-name="due_date" name="due_date" placeholder="Enter Month" >
                             </div>
@@ -582,6 +586,7 @@ $(document).ready(function () {
                     _invoices.remove_msg();
                     invoiceObj=null;
                     _invoices.invoice=null;
+                    $('#invoices [data-name="invoice_id"]').val(resp.next_id);
                     $('#invoices [data-name="billing_address"]').val(resp.billing_address);
                     // $('[data-name="tax_rate"]').val(5);
                     var row_data = resp.items;
@@ -804,7 +809,7 @@ $(document).ready(function () {
             $('.invoice_slip__client_trn').text(invoice.client.trn_no);
             $('.invoice_slip__total_amount').text('AED '+(invoice.invoice_total).toRound(2));
             $('.invoice_date').text(invoice.invoice_date)
-            $('.invc_no').text(invoice.id)
+            $('.invc_no').text(invoice.invoice_id)
             $('.invoice_month').text(new Date(invoice.month).format('mmmm yyyy'));
             $('.invoice_slip__invoice_items').html('');
             $('.custm_subtotal').text('AED '+(invoice.invoice_subtotal).toRound(2))
@@ -821,7 +826,7 @@ $(document).ready(function () {
             $('.custm_totl').text('AED '+invoice.invoice_subtotal);
             $('.custm_total_price').text('AED '+(invoice.invoice_total).toRound(2));
             $('.custm_message_on_invoice').html(invoice.message_on_invoice);
-            $('.invoice_id').text(invoice.id);
+            $('.invoice_id').text(invoice.invoice_id);
             $('.invoice_date').text(invoice.invoice_date)
             $('.invoice_due').text(invoice.invoice_due)
             var _addrow=true;

@@ -222,7 +222,7 @@
  		return now;
 	}
     else 
-		return "Invalid Format";
+		return "Invalid Format"; 
 }
 String.prototype.toDate = function (format) {
     return toDate(this,format);
