@@ -861,7 +861,7 @@ $(document).ready(function () {
             var _invoiceItems = invoice.invoice_item||invoice.invoice_items;
             _invoiceItems.forEach(function(item, i){
                     var _txt_amount=0;
-                    item.taxable_amount=item.taxable_amount.toRound(2);
+                    item.taxable_amount=item.taxable_amount!=null?item.taxable_amount.toRound(2):0;
                     _txt_amount =item.taxable_amount ; 
                     
                     var _inclusive_of_vat = (item.subtotal).toRound(2);
