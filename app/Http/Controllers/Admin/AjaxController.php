@@ -36,6 +36,7 @@ use App\Model\Accounts\Rider_Account;
 use App\Model\Admin\Admin;
 use Arr;
 use App\Model\Zomato\Riders_Payouts_By_Days;
+use App\Model\Mobile\MobileHistory;
 
 
 
@@ -1081,68 +1082,116 @@ class AjaxController extends Controller
         ->make(true);
     }
     public function getMobiles(){
-        $mobile=Mobile::orderByDesc('created_at')->where("active_status","A")->get();
+        $mobile=Mobile::orderByDesc('created_at')->get();
         
         return DataTables::of($mobile)
+        ->addColumn('id', function($mobile){
+            return $mobile->id;
+        })
+        ->addColumn('invoice_id', function($mobile){
+            return $mobile->purchased_invoice_id;
+        })
         ->addColumn('model', function($mobile){
-            return $mobile->model;
+            return $mobile->brand.'-'.$mobile->model;
         })
-        ->addColumn('rider_id', function($mobile){
-            $rider=Rider::find($mobile->rider_id);
-            if (isset($rider)) {
-                $a='<a href="#">'.$rider->name.'</a>';
-                return $a;
-            }
-            return "No Rider is assigned";
+        ->addColumn('imei_1', function($mobile){
+            return  $mobile->imei_1;
         })
-        ->addColumn('imei', function($mobile){
-            return $mobile->imei;
+        ->addColumn('imei_2', function($mobile){
+            return $mobile->imei_2;
         })
-        ->addColumn('purchase_price', function($mobile){
-            return $mobile->purchase_price;
-        })
-        ->addColumn('sale_price', function($mobile){
-            return $mobile->sale_price;
-        })
-        ->addColumn('payment_type', function($mobile){
-            if ($mobile->payment_type=="installment"){
-                $type=$mobile->payment_type.'<br>';
-                $remaining_installment=($mobile->sale_price)-($mobile->amount_received).'<br>';
-                $intallment_per_month=$mobile->per_month_installment_amount;
-            return  $type;
-        }else{
-            return $mobile->payment_type;
-        }
+        ->addColumn('month', function($mobile){
+            return carbon::parse($mobile->purchasing_date)->format('M d, Y');
         })
         ->addColumn('status', function($mobile){
-            if($mobile->status == 1)
-            {
-                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
+            $mobile_history=MobileHistory::where("active_status","A")->where("mobile_id",$mobile->id)->get()->first();
+            if (isset($mobile_history)) {
+                if ($mobile_history->payment_type=="cash") {
+                    $status_text='<div class="text-success">Invoice cleared</div>';
+                }
+                if ($mobile_history->payment_type=="installment") {
+                    $mobile=Mobile::find($mobile_history->mobile_id);
+                    if (isset($mobile)) {
+                        $status=$mobile->payment_status;
+                        if ($status=="pending") {
+                            $status_text='<div class="text-danger">Invoice not cleared with pending balance</div>';
+                        }
+                        if ($status=="paid") {
+                            $status_text='<div class="text-success">Invoice paid</div>';
+                        }
+                    }
+                    
+                }
             }
-            else
-            {
-                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
+            else{
+                $status_text='<div class="text-warning">Available</div>';
             }
+            
+            $html = '<a href="" class="statusText__container" onclick="show_installments(this);return false;">
+            '.$status_text.'
+            </a>';
+            return $html;
         })
         ->addColumn('actions', function($mobile){
-            $status_text = $mobile->status == 1 ? 'Inactive' : 'Active';
-            //<button class="dropdown-item" onclick="deletemobile('.$mobile->id.')"><i class="fa fa-trash"></i> Delete</button>
-            return '<span class="dtr-data">
-            <span class="dropdown">
-                <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
-                <i class="la la-ellipsis-h"></i>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <button class="dropdown-item" onclick="updateStatus('.$mobile->id.')"><i class="fa fa-toggle-on"></i> '.$status_text.'</button>
-                    
-                    <a class="dropdown-item" href="'.route('mobile.edit_view', $mobile).'"><i class="fa fa-edit"></i> View</a>
-                    
-                    
-                    </div>
-            </span>
-        </span>';
+            $mobile_history=MobileHistory::where("mobile_id",$mobile->id)->get()->first();
+            if (isset($mobile_history)) {
+                if ($mobile_history->payment_type=="installment") {
+                    $mobile=Mobile::find($mobile_history->mobile_id);
+                    if (isset($mobile)) {
+                        $status=$mobile->payment_status;
+                        if ($status=="pending") {
+                            $html='<a class="text-warning" href="" data-ajax2="'.route("MobileInstallment.create").'">Add Installment</a>';
+                        }
+                        if ($status=="paid") {
+                            $html='<div class="text-success">All Installments are paid</div>';
+                        }
+                    }
+                }
+                if ($mobile_history->payment_type=="cash") {
+                    $html='<div class="text-success">Sold</div>';
+                }
+            }
+            else{
+                $html='<div><a  class="text-danger" href="'.url("/admin/riders").'">Not assigned to rider</a></div>'; 
+            }
+            return $html;
         })
-        ->rawColumns(['model','rider_id','imei','purchase_price','sale_price','payment_type','actions', 'status'])
+        ->addColumn('installments', function($mobile){
+            $pur_price='<div class="mobile_sale-purchase"><span style="font-weight: bolder;">Purchase Price: </span>'.$mobile->purchase_price.' AED</div>';
+            $vat_paid='<div class="mobile_sale-purchase"><span style="font-weight: bolder;">VAT Paid: </span>'.$mobile->vat_paid.' AED</div>';
+            $sale_price='<div class="mobile_sale-purchase"><span style="font-weight: bolder;">Sale Price: </span>'.$mobile->sale_price.' AED</div>';  
+            $mobile_history=MobileHistory::where("active_status","A")->where("mobile_id",$mobile->id)->get()->first();
+            if (isset($mobile_history)) {
+                if ($mobile_history->payment_type=="cash") {
+                    $status_text='<div class="text-white" style="text-align: center;">Invoice is cleared. Payment is all paid through Cash</div>';
+                    $bg='bg-success';
+                }
+                if ($mobile_history->payment_type=="installment") {
+                    $payments_list=Mobile_installment::where("mobile_id",$mobile->id)->get();
+                    if (isset($payments_list)) {
+                        $classes='text-white';
+                        $payments_lis='';
+                        foreach ($payments_list as $list) {
+                            $payments_lis.='<li>
+                                Payment on '.Carbon::parse($list->month_year)->format('d/m/Y').'. Payment: <strong>AED '.round($list->per_month_installment_amount, 2).'</strong>
+                            </li>';
+                        }
+                    }
+                    $status_text='<ul class="invoice__details-payments '.$classes.'">'.$payments_lis.'</ul>';
+                    $bg='bg-success';
+                }
+            }
+            else{
+                $status_text='<div class="text-white" style="text-align: center;">Mobile is available to assigned.</div>';
+                $bg='bg-warning';
+            }
+            $html='<div class="invoice__details-wrapper">
+            <div class="invoice__details-inner">'.$pur_price.''.$vat_paid.''.$sale_price.'</div>
+            <div class="invoice__details-inner-lower '.$bg.'">'.$status_text.'</div>
+            </div>';
+        return $html;
+        })
+        ->rawColumns(['model','installments','imei_1','imei_2','id','invoice_id','actions', 'status','month'])
         ->make(true);
     }
 

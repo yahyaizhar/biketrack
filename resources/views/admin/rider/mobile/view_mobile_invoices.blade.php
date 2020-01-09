@@ -27,51 +27,57 @@
             <div class="kt-portlet">
                 <div class="kt-portlet__head">
                     <div class="kt-portlet__head-label">
-                        <h3 class="kt-portlet__head-title page__title">
-                            Create Mobile
+                        <h3 class="kt-portlet__head-title page__title" id="head_title">
+                            View Mobile
                         </h3>
                     </div>
                 </div>
                 @include('admin.includes.message')
                 <div class="mobile__wrapper">
-                <form class="kt-form" action="{{route('mobile.create_mobile_POST')}}" method="POST" enctype="multipart/form-data" id="mobile">
+                <form class="kt-form" action="{{route('Mobile.update',$mobile->id)}}" method="POST" enctype="multipart/form-data" id="mobile">
                         {{ csrf_field() }}
                         <div class="kt-portlet__body">
                             <div class="row">
                                 <div class="col-md-4"></div>
-                                <div class="col-md-4"></div>
                                 <div class="form-group col-md-4">
-                                    <label>Purchasing Invoice Id:</label>
-                                    <input type="number" class="form-control" data-name="invoice_purchase_id" name="invoice_purchase_id" placeholder="Enter Invoice Purchasing ID" >
+                                    <label class="image_selector">Invoice Image:</label>
+                                    <div class="custom-file image_selector">
+                                        <input type="file" name="invoice_picture" class="custom-file-input" id="invoice_picture">
+                                        <label class="custom-file-label" for="invoice_picture">Choose Invoice Image</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    @if($mobile->invoice_picture)
+                                        <img class="profile-logo img img-thumbnail" style="display:block;margin-left:50px;" src="{{ asset(Storage::url($mobile->invoice_picture)) }}" alt="image">
+                                    @else
+                                        <img class="profile-logo img img-thumbnail" style="display:block;margin-left:50px;" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                                    @endif
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-group col-md-4">
                                     <label>Seller Detail:</label>
-                                    <select class="form-control bk-select2 kt-select2" id="seller_detail" data-non-readonly data-name="seller_id" name="seller_detail" required>
+                                    <select class="form-control bk-select2 kt-select2" data-seller="seller_detail" id="seller_detail" data-non-readonly data-name="seller_id" name="seller_detail" required>
                                     @foreach ($sellers as $seller)
-                                        <option value="{{ $seller->id }}">
+                                        <option value="{{ $seller->id }}" @if ($mobile->seller_id==$seller->id) selected @endif>
                                             {{ $seller->name }}
                                         </option>     
                                     @endforeach 
                                     </select> 
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label>Invoice Image:</label>
-                                    <div class="custom-file">
-                                        <input type="file" name="invoice_picture" class="custom-file-input" id="invoice_picture">
-                                        <label class="custom-file-label" for="invoice_picture">Choose Invoice Image</label>
-                                    </div>
+                                    <label>Purchasing Date:</label>
+                                    <input type="text" data-month="{{Carbon\Carbon::parse($mobile->purchasing_date)->format('M d, Y')}}"  readonly class="month_picker form-control" name="purchasing_date" placeholder="Enter Month" >
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label>Purchasing Date:</label>
-                                    <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}"  readonly class="month_picker form-control" name="purchasing_date" placeholder="Enter Month" >
+                                    <label>Purchasing Invoice Id:</label>
+                                    <input type="number" class="form-control" value="{{$mobile->purchased_invoice_id}}" data-name="invoice_purchase_id" name="invoice_purchase_id" placeholder="Enter Invoice Purchasing ID" >
                                 </div>
                             </div>
                             <table class="table table-striped- table-hover table-checkable table-condensed" id="mobile-table">
                                 <thead>
                                     <tr>
-                                        <th class="mobile-cell-sr">SR #</th>
+                                        <th class="mobile-cell-sr">ID</th>
                                         <th class="mobile-cell-model">Model</th>
                                         <th class="mobile-cell-brand">Brand</th>
                                         <th class="mobile-cell-imei1">IMEI No 1</th>
@@ -80,39 +86,15 @@
                                         <th class="mobile-cell-tax_paid">Tax Paid</th> 
                                         <th class="mobile-cell-sale_price">Sale Price</th>                 
                                     </tr>
-                                        <tbody>
-                                        </tbody>
-                                </thead>
-                            </table>
-                        
-                        </div>
-                        <div class="kt-portlet__foot">
-                            <div class="kt-form__actions kt-form__actions--right">
-                                <button style="float:left;padding: 5px;" class="btn btn-primary btn--addnewrow" onclick="append_row();return false">Add Mobile</button> <span style="float:left;padding: 5px;">With</span>
-                                <div class="kt-checkbox-list" style="display:flex;padding:4px;"><label class="kt-checkbox"> <input name="check_accessory" type="checkbox" value="0"><span></span> Accessories </label></div>
-                            </div>
-                        </div>
-                        <div class="">
-                            <table class="table table-striped- table-hover table-checkable table-condensed" id="accessory-table">
-                                <thead>
-                                    <tr>
-                                        <th class="mobile-cell-sr">SR #</th>
-                                        <th class="mobile-cell-model">Description</th>
-                                        <th class="mobile-cell-brand">Amount</th>               
-                                    </tr>
-                                <tbody>
-                                </tbody>
+                                    <tbody>
+                                    </tbody>
                                 </thead>
                             </table>
                         </div>
-                        <div class="kt-portlet__foot append_for_accesory">
-                            <div class="kt-form__actions kt-form__actions--right">
-                                <button style="float:left;padding: 5px;" class="btn btn-primary btn--addnewrow" onclick="append_row_accessory();return false">Add Accessry</button>
-                            </div>
-                        </div>
                         <div class="kt-portlet__foot">
-                            <div class="kt-form__actions kt-form__actions--right">
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                            <div class="kt-form__actions kt-form__actions--right" style="margin-top:50px;">
+                                <button type="submit" class="btn btn-primary update_submit_mobile">Update Mobile</button>
+                                <a class="btn btn-warning edit_submit_mobile">Edit Mobile</a>
                             </div>
                         </div>
                     </form>
@@ -177,21 +159,6 @@ $(document).ready(function () {
         $(this).parents('tr').find("[data-name='vat_paid']").val(vat_amt);
     });
 
-    $("#accessory-table").hide();
-    $(".append_for_accesory").hide();
-    $('[name="check_accessory"]').on("change",function(){
-        var _this=$(this);
-        if (_this.prop("checked")==true) {
-            $("#accessory-table").show();
-            $(".append_for_accesory").show();
-            _this.val("1");
-        }
-        if (_this.prop("checked")==false) {
-            $("#accessory-table").hide();
-            $(".append_for_accesory").hide();
-            _this.val("0");
-        }
-    });
     $(document).on("keyup",'.select2-search__field',function(event){
          var  selected_option=$('.select2-search__field').val();
          var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -233,67 +200,56 @@ $(document).ready(function () {
 
 
 
+
 function append_row($row_data = null) {
+
+    
     var markup = '';
     var total_rows = parseFloat($("#mobile-table tbody tr").length);
     markup = '' +
         '   <tr>  ' +
-        '       <td class="mobile__table-row_cell-sr"> <span class="flaticon2-trash mobile__remove" onclick="delete_row(this);"></span>' + (total_rows + 1) + ' </td>  ' +
-'               <td><input required type="text" class="form-control" data-name="model" name="mobiles['+total_rows+'][model]" placeholder="Model"> </td>  '  + 
+        '       <td class="mobile__table-row_cell-sr"></span>' + (total_rows + 1) + ' </td>  ' +
+'               <td><input required type="text" class="form-control" data-name="model" value="{{$mobile->model}}" name="mobiles['+total_rows+'][model]" placeholder="Model"> </td>  '  + 
 '                <td style="width: 14%;">  '  + 
 '                   <select class="form-control kt-select2" data-name="brand" id="brand_select" name="mobiles['+total_rows+'][brand]" >  '  + 
-'                        <option value="Samsung">Samsung</option>  '  + 
-'                        <option value="huawei">Huawei</option>  '  + 
-'                        <option value="Google">Google</option>  '  + 
-'                        <option value="Sony">Sony</option>  '  + 
-'                        <option value="Nokia">Nokia</option>  '  + 
-'                        <option value="LG">LG</option>  '  + 
-'                        <option value="OnePlus">OnePlus</option>  '  + 
-'                        <option value="Doro">Doro</option>  '  + 
-'                        <option value="Motorola">Motorola</option>  '  + 
-'                        <option value="BlackBerry">BlackBerry</option>  '  + 
-'                        <option value="Xiaomi">Xiaomi</option>  '  + 
-'                        <option value="Acer">Acer</option>  '  + 
-'                        <option value="Oppo">Oppo</option>  '  + 
+'                        <option value="Samsung" @if ($mobile->brand=="Samsung") selected @endif>Samsung</option>  '  + 
+'                        <option value="huawei" @if ($mobile->brand=="huawei") selected @endif>Huawei</option>  '  + 
+'                        <option value="Google" @if ($mobile->brand=="Google") selected @endif>Google</option>  '  + 
+'                        <option value="Sony" @if ($mobile->brand=="Sony") selected @endif>Sony</option>  '  + 
+'                        <option value="Nokia" @if ($mobile->brand=="Nokia") selected @endif>Nokia</option>  '  + 
+'                        <option value="LG" @if ($mobile->brand=="LG") selected @endif>LG</option>  '  + 
+'                        <option value="OnePlus" @if ($mobile->brand=="OnePlus") selected @endif>OnePlus</option>  '  + 
+'                        <option value="Doro" @if ($mobile->brand=="Doro") selected @endif>Doro</option>  '  + 
+'                        <option value="Motorola" @if ($mobile->brand=="Motorola") selected @endif>Motorola</option>  '  + 
+'                        <option value="BlackBerry" @if ($mobile->brand=="BlackBerry") selected @endif>BlackBerry</option>  '  + 
+'                        <option value="Xiaomi" @if ($mobile->brand=="Xiaomi") selected @endif>Xiaomi</option>  '  + 
+'                        <option value="Acer" @if ($mobile->brand=="Acer") selected @endif>Acer</option>  '  + 
+'                        <option value="Oppo" @if ($mobile->brand=="Oppo") selected @endif>Oppo</option>  '  + 
 '                     </select>  '  + 
 '                  </td>  '  + 
-'                  <td><input required type="text" data-name="imei1" class="form-control" name="mobiles['+total_rows+'][imei_1]" placeholder="IMEI 1st number"></td>  '  + 
-'                  <td><input required type="text" data-name="imei2" class="form-control" name="mobiles['+total_rows+'][imei_2]" placeholder="IMEI 2nd number"></td>  '  + 
-'                  <td style="width: 12%;"><input data-name="purchase_price" required type="number" class="form-control" name="mobiles['+total_rows+'][purchase_price]" placeholder="Purchase price"></td>  '  + 
-'                  <td style="width: 10%;"><input data-name="vat_paid" type="number" class="form-control" name="mobiles['+total_rows+'][vat_paid]" placeholder="VAT Paid"></td>  '  + 
-'                  <td style="width: 10%;"><input data-name="sale_price" required type="number" class="form-control" name="mobiles['+total_rows+'][sale_price]" placeholder="sale price"></td>  ' +
+'                  <td><input required type="text" data-name="imei1" class="form-control" value="{{$mobile->imei_1}}" name="mobiles['+total_rows+'][imei_1]" placeholder="IMEI 1st number"></td>  '  + 
+'                  <td><input required type="text" data-name="imei2" class="form-control" value="{{$mobile->imei_2}}" name="mobiles['+total_rows+'][imei_2]" placeholder="IMEI 2nd number"></td>  '  + 
+'                  <td style="width: 12%;"><input data-name="purchase_price" required value="{{$mobile->purchase_price}}" type="number" class="form-control" name="mobiles['+total_rows+'][purchase_price]" placeholder="Purchase price"></td>  '  + 
+'                  <td style="width: 10%;"><input data-name="vat_paid" step="0.01" type="number" value="{{$mobile->vat_paid}}" class="form-control" name="mobiles['+total_rows+'][vat_paid]" placeholder="VAT Paid"></td>  '  + 
+'                  <td style="width: 10%;"><input data-name="sale_price" required value="{{$mobile->sale_price}}" type="number" class="form-control" name="mobiles['+total_rows+'][sale_price]" placeholder="sale price"></td>  ' +
 '  </tr>  ';
     $("#mobile-table tbody").append(markup);
     // biketrack.refresh_global();
 }
-
-function append_row_accessory($row_data = null) {
-    var markup = '';
-    var total_rows = parseFloat($("#accessory-table tbody tr").length);
-    markup = '' +
-        '   <tr>  ' +
-        '       <td  style="text-align:center;" class="accessory__table-row_cell-sr"> <span class="flaticon2-trash accessory__remove" onclick="delete_row_accessory(this);"></span>' + (total_rows + 1) + ' </td>  ' +
-        '       <td><input type="text" class="form-control" data-name="model" name="accessory['+total_rows+'][description]" placeholder="Description"> </td>  '  + 
-        '       <td style="width: 12%;"><input type="number" class="form-control" name="accessory['+total_rows+'][amount]" placeholder="Amount"></td>  '  + 
-        '   </tr>  ';
-    $("#accessory-table tbody").append(markup);
-    // biketrack.refresh_global();
-}
-
-function delete_row(ctl) {
-    $(ctl).parents("tr").remove();
-    console.info("====================================================3");
-    subtotal();
-    typeof receive_payment !=="undefined" && (receive_payment.modal_confirmation_required=true);
-}
-
-function delete_row_accessory(ctl) {
-    $(ctl).parents("tr").remove();
-    console.info("====================================================3");
-    subtotal();
-    typeof receive_payment !=="undefined" && (receive_payment.modal_confirmation_required=true);
-}
-
+append_row();
+$(document).ready(function(){
+    $('[type="text"] ,[type="number"] ,[data-name="brand"],[data-seller="seller_detail"]').prop("disabled", true);
+    $('.image_selector').hide();
+    $('.view_submit_mobile , .update_submit_mobile').hide();
+    $("#head_title").html("View Mobile");
+    $('.edit_submit_mobile').on("click",function(){
+        $("#head_title").html("Edit Mobile");
+        $(this).hide();
+        $('.image_selector').show();
+        $('[type="text"] ,[type="number"] ,[data-name="brand"],[data-seller="seller_detail"]').prop("disabled", false);
+        $('.view_submit_mobile , .update_submit_mobile').show();
+    });
+});
 </script>
 @endsection
 

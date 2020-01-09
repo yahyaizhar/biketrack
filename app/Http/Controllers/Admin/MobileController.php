@@ -8,6 +8,7 @@ use App\Model\Bikes\bike_detail;
 use App\Model\Client\Client;
 use Illuminate\Support\Facades\Hash;
 use App\Model\Rider\Rider;
+use App\Model\Admin\Company_info;
 use App\Model\Client\Client_Rider;
 use Illuminate\Support\Facades\Storage;
 use App\Model\Rider\Rider_Message;
@@ -20,6 +21,9 @@ use App\Model\Mobile\Mobile;
 use App\Model\Mobile\Mobile_installment;
 use App\Model\Mobile\Mobile_Transaction;
 use carbon\carbon;
+use App\Model\Mobile\Accessory;
+use App\Model\Mobile\Seller;
+use App\Model\Mobile\MobileHistory;
 
 class MobileController extends Controller
 {
@@ -33,335 +37,291 @@ class MobileController extends Controller
         return view('admin.rider.mobile.edit', compact('mobile_edit'));
     }
 
-    public function update_mobile(Request $request,$id){
-        $mobile_update=Mobile::find($id); 
-        $this->validate($request, [
-            'model' => 'required | string | max:255',
-            'imei' => 'required | numeric',
-            'purchase_price' => 'required | numeric',
-            'sale_price' => 'required | numeric',
-            'payment_type' => 'required',
-            'amount_received' => 'required | numeric',
-            'per_month_installment_amount' => 'required | numeric',
-        ]);
-        $mobile_update->model=$request->brand.' '.$request->model;
-        $mobile_update->imei=$request->imei;
-        $mobile_update->purchase_price=$request->purchase_price;
-        $mobile_update->sale_price=$request->sale_price;
-        $mobile_update->payment_type=$request->payment_type;
-        $mobile_update->amount_received=$request->amount_received;
-        $mobile_update->installment_starting_month=$request->installment_starting_month;
-        $mobile_update->installment_ending_month=$request->installment_ending_month;
-        $mobile_update->per_month_installment_amount=$request->per_month_installment_amount;
-        $mobile_update->update();
+    public function update_mobile(Request $r,$id){
+        $data=$r->mobiles;
+        if (isset($r->mobiles)) {
+            foreach ($data as $item) {
+                $mobile_update=Mobile::find($id); 
+                $mobile_update->model=$item['model'];
+                $mobile_update->brand=$item['brand'];
+                $mobile_update->imei_1=$item['imei_1'];
+                $mobile_update->imei_2=$item['imei_2'];
+                $mobile_update->purchase_price=$item['purchase_price'];
+                $mobile_update->vat_paid=$item['vat_paid'];
+                $mobile_update->sale_price=$item['sale_price'];
+                $mobile_update->remaining_amount=($item['sale_price'])-($mobile_update->amount_received);
+                $mobile_update->payment_status="pending";
+                if ($mobile_update->remaining_amount<=0) {
+                    $mobile_update->payment_status="paid";
+                }
+                $mobile_update->purchased_invoice_id=$r->invoice_purchase_id;
+                $mobile_update->seller_id=$r->seller_detail;
+                $mobile_update->purchasing_date=carbon::parse($r->purchasing_date)->format("Y-m-d");
+                if($r->hasFile('invoice_picture'))
+                {
+                    if($mobile_update->invoice_picture)
+                    {
+                        Storage::delete($mobile_update->invoice_picture);
+                    }
+                    $filename = $r->invoice_picture->getClientOriginalName();
+                    $filesize = $r->invoice_picture->getClientSize();
+                    $filepath = Storage::putfile('public/uploads/riders/invoice_picture', $r->file('invoice_picture'));
+                    $mobile_update->invoice_picture = $filepath;
+                }
+                
+                $mobile_update->update();
+            }
+        }
         return redirect(route('mobile.show'))->with('message', 'Record Updated Successfully.');
 
     }
 
-    public function updateStatusMobile(Request $request,$id)
-    {   
-        
-        $mobile=Mobile::find($id);
-        if($mobile->status == 1)
-        {
-            $mobile->status = 0;
-        }
-        else
-        {
-            $mobile->status = 1;
-        }
-        
-        $mobile->update();
-        return response()->json([
-            'status' => true
-        ]);
-    }
-    public function create_mobile_GET()
-    {
-        $riders=Rider::where("active_status","A")->get();
-        return view('admin.rider.mobile.create',compact("riders"));
+    public function create_mobile_GET(){
+        $sellers=Seller::where("active_status","A")->get(); 
+        return view('admin.rider.mobile.create',compact('sellers'));
     }
     public function create_mobile_POST(Request $r)
     {
-        $this->validate($r, [
-            'model' => 'required | string | max:255',
-            'imei' => 'required | numeric',
-            'purchase_price' => 'required | numeric',
-            'sale_price' => 'required | numeric',
-            'payment_type' => 'required',
-        ]);
-        $mobile = new Mobile;
-        $mobile->model=$r->brand.' '.$r->model;
-        $mobile->imei=$r->imei;
-        $mobile->rider_id=$r->rider_id;
-        $mobile->purchase_price=$r->purchase_price;
-        $mobile->sale_price=$r->sale_price;
-        $mobile->payment_type=$r->payment_type;
-        $mobile->amount_received=$r->amount_received;
-        $mobile->installment_starting_month=$r->installment_starting_month;
-        $mobile->installment_ending_month=$r->installment_ending_month;
-        $mobile->per_month_installment_amount=$r->per_month_installment_amount;
-        $mobile->save();
-
-        
-
-        $mobile_installment=new Mobile_installment;
-        $mobile_installment->installment_amount=$r->amount_received;
-        $mobile_installment->mobile_id=$mobile->id;
-        $mobile_installment->installment_month=Carbon::parse($r->filterMonth)->format('Y-m-d');
-        $mobile_installment->save();
-
-        // $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
-        //     'mobile_installment_id'=>$mobile_installment->id
-        // ]);
-        // $ca->mobile_installment_id =$mobile_installment->id;
-        // $ca->type='dr';
-        // $ca->rider_id=$r->rider_id;
-        // $ca->month = Carbon::parse($mobile_installment->installment_month)->startOfMonth()->format('Y-m-d');
-        // $ca->given_date = Carbon::parse($mobile_installment->given_date)->format('Y-m-d');
-        // $ca->source="Mobile Purchase";
-        // $ca->amount=$r->purchase_price;
-        // $ca->save();
-
-        $recevied_amt = $r->amount_received;
-        if($recevied_amt > 0){
-            // $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
-            //     'mobile_installment_id'=>$mobile_installment->id
-            // ]);
-            // $ca->mobile_installment_id =$mobile_installment->id;
-            // $ca->type='cr';
-            // $ca->rider_id=$r->rider_id;
-            // $ca->month = Carbon::parse($mobile_installment->installment_month)->startOfMonth()->format('Y-m-d');
-            // $ca->given_date = Carbon::parse($mobile_installment->given_date)->format('Y-m-d');
-            // $ca->source="Mobile Installment";
-            // $ca->amount=$recevied_amt;
-            // $ca->save();
-
-            $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
-                'mobile_installment_id'=>$mobile_installment->id
-            ]);
-            $ra->mobile_installment_id =$mobile_installment->id;
-            $ra->type='cr_payable';
-            $ra->rider_id=$r->rider_id;
-            $ra->month = Carbon::parse($mobile_installment->installment_month)->startOfMonth()->format('Y-m-d');
-            $ra->given_date = Carbon::parse($mobile_installment->given_date)->format('Y-m-d');
-            $ra->source="Mobile Installment";
-            $ra->amount=$recevied_amt;
-            $ra->payment_status="paid";
-            $ra->save();
+        $data=$r->mobiles;
+        if (isset($r->mobiles)) {
+            foreach ($data as $item) {
+                $mobile = new Mobile;
+                $mobile->model=$item['model'];
+                $mobile->brand=$item['brand'];
+                $mobile->imei_1=$item['imei_1'];
+                $mobile->imei_2=$item['imei_2'];
+                $mobile->purchase_price=$item['purchase_price'];
+                $mobile->vat_paid=$item['vat_paid'];
+                $mobile->sale_price=$item['sale_price'];
+                $mobile->remaining_amount=$item['sale_price'];
+                $mobile->amount_received="0";
+                $mobile->purchased_invoice_id=$r->invoice_purchase_id;
+                $mobile->seller_id=$r->seller_detail;
+                $mobile->purchasing_date=carbon::parse($r->purchasing_date)->format("Y-m-d");
+                if($r->hasFile('invoice_picture'))
+                {
+                    $filename = $r->invoice_picture->getClientOriginalName();
+                    $filesize = $r->invoice_picture->getClientSize();
+                    $filepath = Storage::putfile('public/uploads/riders/invoice_picture', $r->file('invoice_picture'));
+                    $mobile->invoice_picture = $filepath;
+                }
+                $mobile->save();
+            }
         }
-
-        return redirect(route('mobile.show'))->with('message', 'Record Added Successfully.');
-        
+        if ($r->check_accessory==1) {
+            $data_accessory=$r->accessory;
+            if (isset($r->accessory)) {
+                foreach ($data_accessory as $value) {
+                    $accessory= new Accessory;
+                    $accessory->description=$value['description'];
+                    $accessory->amount=$value['amount'];
+                    $accessory->seller_id=$r->seller_detail;
+                    $accessory->purchasing_date=carbon::parse($r->purchasing_date)->format("Y-m-d");
+                    $accessory->save();
+                }
+            }
+        }
     }
     public function mobiles(){
         $mobiles=Mobile::all();
         $mobile_count=$mobiles->count();
         return view('admin.rider.mobile.mobiles', compact('mobiles','mobile_count'));
     }
-    public function delete_mobile(Request $request,$id){
-        $mobile_delete=Mobile::find($id);
-        $mobile_delete->active_status="D";
-        $mobile_delete->update();
-        
-            return response()->json([
-                'status' => true
-            ]);
-
-    }
-    // end mobile section
-    // mobile installment
     public function create_mobileInstallment(){
-        $mobiles=Mobile::where("active_status","A")->get();
-        return view('admin.rider.mobile.create_installment',compact('mobiles'));
+        $mobiles=Mobile::all();
+        $riders=Rider::where("active_status","A")->get();
+        return view('admin.rider.mobile.create_installment',compact('mobiles','riders'));
     }
     public function store_mobileInstallment(Request $request){
         $installment=new Mobile_installment();
-        $installment->installment_month=$request->installment_month;
-        $installment->installment_amount=$request->installment_amount;
+        $installment->mobile_id=$request->mobile_id;
+        $installment->month_year=carbon::parse($request->month_year)->startOfMonth()->format("Y-m-d");
+        $installment->given_date=carbon::parse($request->given_date)->format("Y-m-d");
+        $installment->per_month_installment_amount=$request->per_month_installment_amount;
         $installment->save();
-        return redirect(route('MobileInstallment.show'))->with('message', 'Record created Successfully.');
-    }
 
-    public function show_mobileInstallmenet(){
-        $installment_count=Mobile_installment::all()->count();
-        return view('admin.rider.mobile.view_installment',compact('installment_count'));
-    }
-    public function edit_mobileInstallment($id){
-        $installment=Mobile_installment::find($id);
-        return view('admin.rider.mobile.edit_installment',compact('installment'));
-
-    }
-    public function update_mobileInstallment(Request $request,$id){
-        $installment_update=Mobile_installment::find($id); 
-        $installment_update->installment_month=$request->installment_month;
-        $installment_update->installment_amount=$request->installment_amount;
-        $installment_update->update();
-        return redirect(route('MobileInstallment.show'))->with('message', 'Record Updated Successfully.');
-   
-    }
-    public function delete_mobileInstallment($id){
-        $installment_delete=Mobile_installment::find($id);
-        $installment_delete->active_status="D";
-        $installment_delete->update();
-        
-            return response()->json([
-                'status' => true
-            ]);
-    }
-
-
-    // End mobile installment
-    // transaction Records
-    public function transaction_view(){
-        return view('admin.rider.mobile.transaction_records.transaction_view');
-    }
-    public function edit_inline_MobileTransaction(Request $r){
-        $action = $r->action;
-        $id = $r->data['id'];
-        if($action=="edit"){
-            $mobile=Mobile::find($id);
-            $sp=$mobile->sale_price;
-
-            $mob_installment=$mobile->Mobile_installment()->sum("installment_amount");
-            $RA=$sp-$mob_installment;
-
-            if($RA!==0){
-                $data=$r->data;
-                $mobile_trans = Mobile::firstOrCreate([
-                    'id'=>$id
-                ]);
-                $mobile_trans->model=$data['model'];
-                $mobile_trans->sale_price=$data['sale_price'];
-                $cash_recieved = $data['amount_received'] + $data['per_month_installment_amount'] ;
-            
-                $mobile_trans->amount_received=$cash_recieved;
-                $mobile_trans->save();
-                
-                // $mobile_transaction=new Mobile_Transaction;
-                // $mobile_transaction->mobile_id=$data['id'];
-                // $mobile_transaction->sale_price=$data['sale_price'];
-                // $mobile_transaction->amount_received=$cash_recieved;
-                // $mobile_transaction->remaining_amount=$data['sale_price']-$cash_recieved;
-                // $mobile_transaction->per_month_installment_amount=$data['per_month_installment_amount'];
-                
-                // $a=$data['sale_price']-$cash_recieved;
-                // if($a<=0){
-                // $mobile_transaction->bill_status='paid';
-                // }
-                // // $mobile_transaction->bill_status=$a;
-                // $mobile_transaction->month=Carbon::parse($data['filterMonth'])->format('Y-m-d');
-                // $mobile_transaction->save();
-
-
-
-                $mobile_installment=new Mobile_installment;
-                $mobile_installment->installment_amount=$data['per_month_installment_amount'];
-                $mobile_installment->mobile_id=$data['id'];
-                $mobile_installment->installment_month=Carbon::parse($data['filterMonth'])->format('Y-m-d');
-                $mobile_installment->save();
-
-                
-                $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
-                    'mobile_installment_id'=>$mobile_installment->id
-                ]);
-                $ca->mobile_installment_id =$mobile_installment->id;
-                $ca->type='cr';
-                $ca->rider_id=$mobile_trans->rider_id;
-                $ca->month = $mobile_installment->installment_month;
-                $ca->source="Mobile Installment";
-                $ca->amount=$data['per_month_installment_amount'];
-                $ca->save();
-    
-                $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
-                    'mobile_installment_id'=>$mobile_installment->id
-                ]);
-                $ra->mobile_installment_id =$mobile_installment->id;
-                $ra->type='cr_payable';
-                $ra->rider_id=$mobile_trans->rider_id;
-                $ra->month = $mobile_installment->installment_month;
-                $ra->source="Mobile Installment";
-                $ra->amount=$data['per_month_installment_amount'];
-                $ra->save();
-                        
-            }
+        $mobile=Mobile::where("id",$request->mobile_id)->get()->first();
+        $mobile->remaining_amount=$request->remaining_amount;
+        $mobile->amount_received=$request->amount_received;
+        if ($mobile->remaining_amount=="0") {
+            $mobile->payment_status="paid";
         }
-       
+        $mobile->save();
+        $rider_id=0;
+        $mobile_history=MobileHistory::where("mobile_id",$request->mobile_id)->get()->first();
+        if (isset($mobile_history)) {
+            $rider_id=$mobile_history->rider_id;
+        }
 
-        return response()->json([
-            'status' => true,
-            'ss'=>$RA
-        ]);
+        $ra =new \App\Model\Accounts\Rider_Account;
+        $ra->mobile_installment_id =$installment->id;
+        $ra->type='cr_payable';
+        $ra->rider_id=$rider_id;
+        $ra->month =carbon::parse($request->month_year)->startOfMonth()->format("Y-m-d");
+        $ra->source="Mobile Installment";
+        $ra->amount=$request->per_month_installment_amount;
+        $ra->given_date=carbon::parse($request->given_date)->format("Y-m-d");
+        $ra->payment_status="paid";
+        $ra->save();
+        return redirect(route('mobile.show'));
     }
-    // end transaction Records
 
     public function consumption_mobile_records($mobile_id,$month){
-        $mobile=Mobile::where("active_status","A")->where('id',$mobile_id)->get()->first();
-            $amount_received=$mobile->amount_received;
+        $mobile=Mobile::where('id',$mobile_id)->get()->first();
             $sale_price=$mobile->sale_price;
-            $remaining_amount=$sale_price-$amount_received;
+            $remaining_amount=$mobile->remaining_amount;
+            $amount_received=$mobile->amount_received;
+            $mobile_history=MobileHistory::where('mobile_id',$mobile_id)->get()->first();
+            $rider_id_mh=null;
+            $payment_type_mh=null;
+            if (isset($mobile_history)) {
+               $rider_id_mh=$mobile_history->rider_id;
+               $payment_type_mh=$mobile_history->payment_type; 
+            }
         return response()->json([
             'data' => true,
-            'amount_received'=>$amount_received,
             'sale_price'=>$sale_price,
             'remaining_amount'=>$remaining_amount,
-            'installment_amount'=>0,
+            'amount_received'=>$amount_received,
+            'rider_id'=>$rider_id_mh,
+            'payment_type'=>$payment_type_mh,
         ]); 
     }
-
-    public function consumption_mobile_records_insert(Request $r){
-            $id = $r->brand; 
-            if ($r->per_month_installment_amount<=0) {
-                return redirect(url('/admin/mobiles'));
-            }
-
-            $mobile=Mobile::find($id);
-            $sp= $mobile->sale_price;
-            $ar=$mobile->amount_received;
-            $RA=$sp-$ar;
-            $mobile->amount_received=$r->amount_received;
-            $mobile->sale_price=$r->sale_price;
-                if($RA<=0){
-                    return redirect(url('/admin/mobiles'));
-                }
-                else{
-                    $mobile_trans= Mobile::firstOrCreate([
-                        'id'=>$id
-                    ]);
-                    $mobile_trans->amount_received=$r->amount_received;
-                    $mobile_trans->update();
-
-                    $mobile_installment=new Mobile_installment;
-                    $mobile_installment->installment_amount=$r->per_month_installment_amount;
-                    $mobile_installment->mobile_id=$r->brand;
-                    $mobile_installment->installment_month=Carbon::parse($r->month_year)->format('Y-m-d');
-                    $mobile_installment->save();
+    public function addSellerDeatil(Request $r){
     
-                    // $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
-                    //     'mobile_installment_id'=>$mobile_installment->id
-                    // ]);
-                    // $ca->mobile_installment_id =$mobile_installment->id;
-                    // $ca->type='cr';
-                    // $ca->rider_id=$mobile_trans->rider_id;
-                    // $ca->month = $mobile_installment->installment_month;
-                    // $ca->source="Mobile Installment";
-                    // $ca->amount=$mobile_installment->installment_amount;
-                    // $ca->save();
+    $seller=new Seller;
+    $seller->name=$r->name;
+    $seller->address=$r->address;
+    $seller->phone_number=$r->phone_number;
+    $seller->save();
+    $seller_all=Seller::all();
+        return response()->json([
+        'seller_id'=>$seller->id,
+        'seller_all'=>$seller_all,
+        ]);
+
+    }
+    public function mobile_assign_to_rider($id){
+    $rider=Rider::find($id);
+    $mobiles=Mobile::where("active_status","A")->get();
+
+    $mobile_histories=$rider->MobileHistory()->get();
+    $mobile_history_count=$mobile_histories->count();
+    return view('admin.rider.mobile.assign_mobile_to_rider',compact('rider','mobiles','mobile_history_count'));
+    }
+    public function mobile_is_assigned_to_rider(Request $request,$rider_id){
+    $assign_mobile=new MobileHistory;
+    $assign_mobile->mobile_id=$request->mobile_id;
+    $assign_mobile->rider_id=$rider_id;
+    $assign_mobile->mobile_assign_date=carbon::parse($request->mobile_assign_date)->format('Y-m-d');
+    $assign_mobile->mobile_unassign_date=carbon::parse($request->mobile_assign_date)->format('Y-m-d');
+    $assign_mobile->payment_type=$request->payment_type;
+    if ($request->payment_type=="installment") {
+        $assign_mobile->installment_amount=$request->installment_amount;
+        $assign_mobile->installment_starting_date=carbon::parse($request->installment_starting_date)->format('Y-m-d');
+        $assign_mobile->installment_ending_date=carbon::parse($request->installment_ending_date)->format('Y-m-d');
+
+        $installment=new Mobile_installment();
+        $installment->mobile_id=$request->mobile_id;
+        $installment->month_year=carbon::parse($request->mobile_assign_date)->startOfMonth()->format("Y-m-d");
+        $installment->given_date=carbon::parse($request->mobile_assign_date)->format("Y-m-d");
+        $installment->per_month_installment_amount=$request->installment_amount;
+        $installment->save();
+
+        $ra =new \App\Model\Accounts\Rider_Account;
+        $ra->mobile_installment_id =$installment->id;
+        $ra->type='cr_payable';
+        $ra->rider_id=$rider_id;
+        $ra->month =carbon::parse($request->installment_starting_date)->startOfMonth()->format('Y-m-d');
+        $ra->source="Mobile Installment";
+        $ra->amount=$request->installment_amount;
+        $ra->given_date=carbon::parse($request->installment_starting_date)->startOfMonth()->format('Y-m-d');
+        $ra->payment_status="paid";
+        $ra->save();
+    }
         
-                    $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
-                        'mobile_installment_id'=>$mobile_installment->id
-                    ]);
-                    $ra->mobile_installment_id =$mobile_installment->id;
-                    $ra->type='cr_payable';
-                    $ra->rider_id=$mobile_trans->rider_id;
-                    $ra->month = $mobile_installment->installment_month;
-                    $ra->source="Mobile Installment";
-                    $ra->amount=$mobile_installment->installment_amount;
-                    $ra->given_date=carbon::parse($mobile_installment->given_date)->format('Y-m-d');
-                    $ra->payment_status="paid";
-                    $ra->save();   
-                    return redirect(url('/admin/mobile/installment/show'));
-                }
-             }
-         }
+    $assign_mobile->save();
+
+    $mobile_sale=Mobile::find($request->mobile_id);
+    $mobile_sale->sale_price=$request->sale_price;
+    $mobile_sale->remaining_amount=$request->sale_price;
+    $mobile_sale->save();
+
+    $mobile=Mobile::find($request->mobile_id);
+    $sale_price=$mobile->sale_price;
+    if ($request->payment_type=="installment") {
+        $mobile->amount_received=$request->installment_amount;
+        $mobile->remaining_amount=$sale_price-($request->installment_amount);
+    }
+    if ($mobile->remaining_amount==0) {
+        $mobile->payment_status="paid";
+    }
+    if ($request->payment_type=="cash") {
+        $mobile->remaining_amount=0;
+        $mobile->amount_received=$sale_price;
+        $mobile->payment_status="paid";
+    }
+    $mobile->active_status="D";
+    $mobile->save();
+    
+
+    return redirect(url('/admin/mobile/rider_history',$rider_id));
+    
+    }
+    public function mobile_rider_history($rider_id){
+    $rider=Rider::find($rider_id);
+    $mobile_histories=$rider->MobileHistory()->get();
+    $mobile_history_count=$mobile_histories->count();
+    return view('admin.rider.mobile.mobile_history',compact('rider','mobile_histories','mobile_history_count')); 
+    }
+    public function change_Mobile_given_date(Request $request,$rider_id,$mobile_history_id){
+    $mobile_history=MobileHistory::find($mobile_history_id);
+    $mobile_history->mobile_assign_date=carbon::parse($request->mobile_assign_date)->format('Y-m-d');
+    $mobile_history->mobile_unassign_date=carbon::parse($request->mobile_assign_date)->format('Y-m-d');
+    $mobile_history->save();
+
+    return response()->json([
+        'mobile_history'=>$mobile_history,
+        'rider_id'=>$rider_id,
+        'mobile_history_id'=>$mobile_history_id,
+    ]);
+    }
+
+    public function Mobile_view_ivoice_profile($mobile_id){
+        $sellers=Seller::all();
+        $mobile=Mobile::find($mobile_id);
+        return view('admin.rider.mobile.view_mobile_invoices',compact('sellers','mobile'));
+    }
+
+    public function sellers_view(){
+        return view('admin.rider.mobile.Sellers.view_sellers');
+    }
+    public function sellers_edit($seller_id){
+        $seller=Seller::find($seller_id);
+        return view ("admin.rider.mobile.Sellers.edit_seller",compact('seller'));
+    }
+    public function sellers_update(Request $request,$seller_id){
+        $seller=Seller::find($seller_id);
+        $seller->name=$request->name;
+        $seller->address=$request->address;
+        $seller->phone_number=$request->phone_number;
+        $seller->update();
+        return redirect(route('mobile.sellers_view'));
+    }
+    public function accessory_view(){
+        return view('admin.rider.mobile.Accessory.view_accessory'); 
+    }
+    public function accessory_edit($accessory_id){
+        $accessory=Accessory::find($accessory_id);
+        return view ("admin.rider.mobile.Accessory.edit_accessory",compact('accessory'));
+    }
+    public function accessory_update(Request $request,$accessory_id){
+        $accessory=Accessory::find($accessory_id);
+        $accessory->description=$request->description;
+        $accessory->amount=$request->amount;
+        $accessory->purchasing_date=carbon::parse($request->purchasing_date)->format('Y-m-d');
+        $accessory->update();
+        return redirect(route('mobile.accessory_view'));
+    }
+}
 

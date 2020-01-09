@@ -517,6 +517,7 @@
                         <div class="kt-form__actions kt-form__actions--right"> 
                             <a class="btn btn-primary btn-sm btn-upper" href="{{route('Sim.simHistory', $rider->id)}}"><i class="fa fa-eye"></i>Sim History</a>
                             <a class="btn btn-primary btn-sm btn-upper" href="{{route('Bike.assignedToRiders_History', $rider->id)}}"><i class="fa fa-eye"></i>Bikes History</a>
+                            <a class="btn btn-primary btn-sm btn-upper" href="{{route('Mobile.mobile_rider_history', $rider->id)}}"><i class="fa fa-eye"></i>Mobile History</a>
                             <a class="btn btn-primary btn-sm btn-upper" href="{{route('Client.client_history', $rider->id)}}"><i class="fa fa-eye"></i>Client History</a>
                             <a class="btn btn-primary btn-sm btn-upper" href="{{route('Rider.spell_time', $rider->id)}}"><i class="fa fa-eye"></i> Rider Duration Time</a>
                            @if (isset($bike_html))
@@ -530,6 +531,11 @@
                            @endif
                            
                           </div>
+                    </div>
+                    <div class="kt-portlet__foot">
+                        <div class="kt-form__actions kt-form__actions--right"> 
+                            <a href="{{ route('Mobile.mobile_assign_to_rider', $rider->id) }}" class="btn btn-primary btn-sm btn-upper">Assign Mobile</a>&nbsp;
+                        </div>
                     </div>
                 </div>
                 </form>

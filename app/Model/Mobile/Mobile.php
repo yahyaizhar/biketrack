@@ -66,12 +66,25 @@ class Mobile extends Authenticatable
     }
     // ends logging
     /**
-     * The attributes that are mass assignable.
+     * The attributes that are mass assignable. 
      *
      * @var array
      */
     protected $fillable = [
-        'model', 'imei', 'purchase_price', 'sale_price', 'payment_type', 'amount_received', 'installment_starting_month', 'installment_ending_month', 'per_month_installment_amount',
+        'model',
+        'imei_1',
+        'imei_2', 
+        'brand', 
+        'purchase_price', 
+        'vat_paid', 
+        'sale_price', 
+        'amount_received',
+        'remaining_amount',
+        'purchased_invoice_id', 
+        'seller_detail',
+        'purchasing_date',
+        'invoice_picture',
+        'payment_status',
     ];
     public function Mobile_Transaction(){ 
         return $this->hasMany('App\Model\Mobile\Mobile_Transaction','mobile_id');
@@ -81,4 +94,7 @@ class Mobile extends Authenticatable
         return $this->hasMany('App\Model\Mobile\Mobile_installment','mobile_id');
   
       }
+      public function MobileHistory(){
+        return $this->hasMany('App\Model\Mobile\MobileHistory');
+    }
 }

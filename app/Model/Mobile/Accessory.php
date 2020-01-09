@@ -6,9 +6,10 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Auth;
-class Mobile_Transaction extends Authenticatable
+
+class Accessory extends Authenticatable
 {
-        /**
+           /**
      * Start logging.
      *
      * @return void
@@ -28,8 +29,8 @@ class Mobile_Transaction extends Authenticatable
             $activity_model->save();
         });
 
-       // auto-sets values on creation
-       self::updating(function ($updated_model) {
+     // auto-sets values on creation
+     self::updating(function ($updated_model) {
         try {
            $subject_class=get_class($updated_model);
            $subject_id=$updated_model->id;
@@ -65,8 +66,23 @@ class Mobile_Transaction extends Authenticatable
    });
     }
     // ends logging
-
+    /**
+     * The attributes that are mass assignable. 
+     *
+     * @var array
+     */
     protected $fillable = [
-       'mobile_id','month','sale_price','amount_recieved','bill_status','remaining_amount','per_month_installment_amount','status'
+        'description',
+        'amount',
+        'seller_id',
+        'purchasing_date',
     ];
+    public function Mobile_Transaction(){ 
+        return $this->hasMany('App\Model\Mobile\Mobile_Transaction','mobile_id');
+  
+      }
+      public function Mobile_installment(){ 
+        return $this->hasMany('App\Model\Mobile\Mobile_installment','mobile_id');
+  
+      }
 }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMobileInstallmentsTable extends Migration
+class CreateSellersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateMobileInstallmentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('mobile_installments', function (Blueprint $table) {
+        Schema::create('sellers', function (Blueprint $table) {
             $table->increments('id');
-            $table->bigInteger('mobile_id')->unsigned()->index()->nullable();
-            $table->string('month_year')->nullable();
-            $table->string('given_date')->nullable();
-            $table->integer('per_month_installment_amount')->nullable();
+            $table->string('name')->nullable();
+            $table->string('address')->nullable();
+            $table->string('phone_number')->nullable();
             $table->string('active_status')->default("A");
+            $table->string('status')->default("1");
             $table->timestamps();
         });
     }
@@ -31,6 +31,6 @@ class CreateMobileInstallmentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('mobile_installments');
+        Schema::dropIfExists('sellers');
     }
 }

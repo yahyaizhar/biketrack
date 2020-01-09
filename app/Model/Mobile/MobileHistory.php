@@ -6,9 +6,9 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Auth;
-class Mobile_installment extends Authenticatable
+class MobileHistory extends Authenticatable
 {
-        /**
+     /**
      * Start logging.
      *
      * @return void
@@ -28,8 +28,8 @@ class Mobile_installment extends Authenticatable
             $activity_model->save();
         });
 
-       // auto-sets values on creation
-       self::updating(function ($updated_model) {
+     // auto-sets values on creation
+     self::updating(function ($updated_model) {
         try {
            $subject_class=get_class($updated_model);
            $subject_id=$updated_model->id;
@@ -65,11 +65,26 @@ class Mobile_installment extends Authenticatable
    });
     }
     // ends logging
-
+    /**
+     * The attributes that are mass assignable. 
+     *
+     * @var array
+     */
     protected $fillable = [
+        'rider_id',
         'mobile_id',
-        'month_year',
-        'given_date',
-        'per_month_installment_amount', 
+        'mobile_assign_date', 
+        'mobile_unassign_date', 
+        'payment_type', 
+        'installment_amount', 
+        'installment_starting_date', 
+        'installment_ending_date', 
     ];
+    public function Rider(){
+        return $this->belongsTo(Rider::class);
+    }
+    public function Mobile(){
+        return $this->belongsTo(Mobile::class);
+    }
+   
 }

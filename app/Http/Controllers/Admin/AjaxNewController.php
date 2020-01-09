@@ -56,6 +56,8 @@ use App\Model\Invoice\Invoice_item;
 use App\Model\Invoice\Invoice_Payment;
 use App\Model\Accounts\EmployeeAccounts;
 use Str;
+use App\Model\Mobile\Accessory;
+use App\Model\Mobile\Seller;
 
 class AjaxNewController extends Controller
 {
@@ -1854,73 +1856,6 @@ class AjaxNewController extends Controller
         ->make(true);
     }
 
-    
- 
-
-    public function getMobileTransaction($month) 
-    {
-        $all_mobiles =Mobile::where("payment_type","installment")->orderByDesc('created_at')->get();
-        $mob_trans=Mobile_Transaction::all();
-        return DataTables::of($all_mobiles)
-        ->addColumn('model', function($mobile) use ($month,$mob_trans){
-            // $zp_found = Arr::first($mob_trans, function ($item_zp, $key) use ($month) {
-            //     return $item_zp->month == Carbon::parse($month)->format('Y-m-d');
-            // });
-                   return $mobile->model;
-               
-              
-        })
-        ->addColumn('sale_price', function($all_mobiles) use ($month,$mob_trans){
-            
-                return $all_mobiles->sale_price;
-               
-        })
-        ->addColumn('rider_id', function($all_mobiles) use ($month,$mob_trans){
-            $riders=Rider::find($all_mobiles->rider_id);
-            if (isset($riders)) {
-                return $riders->name;
-            }
-            return 'No Assigned Rider';
-           
-        })
-        ->addColumn('amount_received', function($all_mobiles) use ($month,$mob_trans){
-                return $all_mobiles->amount_received;
-              
-        })
-        ->addColumn('remaining_amount', function($all_mobiles) use ($month,$mob_trans){
-          
-                $RA=$all_mobiles->amount_received;
-                $SP=$all_mobiles->sale_price;
-                $remaining_amount=$SP-$RA;
-                return $remaining_amount;
-               
-        })
-        ->addColumn('per_month_installment_amount', function($all_mobiles) use ($month,$mob_trans){
-            return '0';
-        })
-        ->addColumn('month', function($all_mobiles) use ($month,$mob_trans) {
-            // $mob_tran =Mobile_Transaction::find($all_mobiles->id)->whereMonth('month', Carbon::parse($month)->format('m'))->get()->first();
-            // if(isset($mob_tran)){
-            //     return Carbon::parse($mob_tran->month)->format('F Y');
-            // }
-            return Carbon::now()->format('F Y');
-        })
-        ->addColumn('bill_status', function($all_mobiles) use ($month,$mob_trans){
-            $RA=$all_mobiles->amount_received;
-            $SP=$all_mobiles->sale_price;
-            $remaining_amount=$SP-$RA;
-          
-            if ($remaining_amount<=0) {
-                return 'paid' ;
-            }
-           
-            return "pending" ;
-        
-        })
-        
-        ->rawColumns(['model','rider_id','month','sale_price','amount_received','bill_status','remaining_amount','per_month_installment_amount', 'status'])
-        ->make(true);
-    }
     public function getKR_bikes($ranges) 
     {
         $ranges = json_decode($ranges, true);
@@ -3884,6 +3819,57 @@ class AjaxNewController extends Controller
        
        
         ->rawColumns([ 'id','payment_date', 'original_amount', 'payment', 'due_balance','payment_method','payment_received_by'])
+        ->make(true);
+    }
+    public function getSellers()
+    {
+        $sellers =Seller::orderByDesc('created_at')->where('active_status', 'A')->get();
+        return DataTables::of($sellers)
+        ->addColumn('id', function($sellers){
+            return $sellers->id;
+        })
+        ->addColumn('name', function($sellers){
+            return $sellers->name;
+        })
+        ->addColumn('address', function($sellers){
+            return $sellers->address;
+        })
+        ->addColumn('phone_number', function($sellers){
+            return $sellers->phone_number;
+        })
+        ->addColumn('actions', function($sellers){
+            return '<a class="dropdown-item" href="'.route('mobile.sellers_edit', $sellers->id).'"><i class="fa fa-eye"></i></a>';
+        })
+        ->rawColumns([ 'name','address', 'phone_number', 'actions', 'id'])
+        ->make(true);
+    }
+    public function getAccessory()
+    {
+        $accessory = Accessory::all();
+        return DataTables::of($accessory)
+        ->addColumn('id', function($accessory){
+            return $accessory->id;
+        })
+        ->addColumn('seller_id', function($accessory){
+            $seller=Seller::find($accessory->seller_id);
+            if (isset($seller)) {
+                $seller_name=$seller->name;
+            }
+            return $seller_name;
+        })
+        ->addColumn('description', function($accessory){
+            return $accessory->description;
+        })
+        ->addColumn('date', function($accessory){
+            return $accessory->purchasing_date;
+        })
+        ->addColumn('amount', function($accessory){
+            return $accessory->amount;
+        })
+        ->addColumn('actions', function($accessory){
+            return '<a class="dropdown-item" href="'.route('mobile.accessory_edit', $accessory->id).'"><i class="fa fa-eye"></i></a>';
+        })
+        ->rawColumns(['id', 'amount','date', 'description', 'actions', 'seller_id'])
         ->make(true);
     }
 }

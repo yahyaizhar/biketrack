@@ -157,4 +157,7 @@ self::updating(function ($updated_model) {
       public function Sim_History(){
         return $this->hasMany('App\Model\Sim\Sim_History');
     }
+    public function MobileHistory(){
+        return $this->hasMany('App\Model\Mobile\MobileHistory');
+    }
 }

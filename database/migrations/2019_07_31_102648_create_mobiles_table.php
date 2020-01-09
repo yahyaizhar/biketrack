@@ -16,16 +16,20 @@ class CreateMobilesTable extends Migration
         Schema::create('mobiles', function (Blueprint $table) {
             $table->increments('id');
             $table->string('model')->nullable();
-            $table->bigInteger('imei')->nullable();
-            $table->string('rider_id')->nullable();
+            $table->string('brand')->nullable();
+            $table->bigInteger('imei_1')->nullable();
+            $table->bigInteger('imei_2')->nullable();
             $table->string('purchase_price')->nullable();
+            $table->string('vat_paid')->nullable();
             $table->string('sale_price')->nullable();
-            $table->string('payment_type')->nullable();
-            $table->integer('amount_received')->nullable();
-            $table->string('installment_starting_month')->nullable();
-            $table->string('installment_ending_month')->nullable();
-            $table->integer('per_month_installment_amount')->nullable();
+            $table->string('amount_received')->nullable();
+            $table->string('remaining_amount')->nullable();
+            $table->integer('purchased_invoice_id')->nullable();
+            $table->string('seller_detail')->nullable();
+            $table->string('purchasing_date')->nullable();
+            $table->string('invoice_picture')->nullable();
             $table->integer('status')->default('1');
+            $table->string('payment_status')->default('pending');
             $table->string('active_status')->default("A");
             $table->timestamps();
         });
