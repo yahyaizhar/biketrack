@@ -425,7 +425,7 @@ uppy.use(Uppy.DragDrop, {
                         //     'time_sheet':time_sheet_data
                         // ];
                         console.log('import_data', import_data);
-                        save_data(import_data,140); //******************// parem1: data to send, parem2: number of chunks
+                        save_data(import_data,130); //******************// parem1: data to send, parem2: number of chunks
                     }); 
                 },200);
             }

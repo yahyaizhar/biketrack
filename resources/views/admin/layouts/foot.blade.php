@@ -229,7 +229,7 @@ String.prototype.toDate = function (format) {
 };
 String.prototype.toRound=function(decimal_val){
     var _num = this;
-    if(/^(\d*[.]{0,1}\d+)$/.test(_num)){
+    if(/^([-]{0,1}\d*[.]{0,1}\d+)$/.test(_num)){
         return parseFloat((parseFloat(_num)).toFixed(decimal_val));
     }
     throw new Error( "Invalid Number");
