@@ -257,8 +257,8 @@ function append_row($row_data = null) {
 '                        <option value="Oppo">Oppo</option>  '  + 
 '                     </select>  '  + 
 '                  </td>  '  + 
-'                  <td><input required type="text" data-name="imei1" class="form-control" name="mobiles['+total_rows+'][imei_1]" placeholder="IMEI 1st number"></td>  '  + 
-'                  <td><input required type="text" data-name="imei2" class="form-control" name="mobiles['+total_rows+'][imei_2]" placeholder="IMEI 2nd number"></td>  '  + 
+'                  <td><input required type="number" data-name="imei1" class="form-control" name="mobiles['+total_rows+'][imei_1]" placeholder="IMEI 1st number"></td>  '  + 
+'                  <td><input required type="number" data-name="imei2" class="form-control" name="mobiles['+total_rows+'][imei_2]" placeholder="IMEI 2nd number"></td>  '  + 
 '                  <td style="width: 12%;"><input data-name="purchase_price" required type="number" class="form-control" name="mobiles['+total_rows+'][purchase_price]" placeholder="Purchase price"></td>  '  + 
 '                  <td style="width: 10%;"><input data-name="vat_paid" type="number" class="form-control" name="mobiles['+total_rows+'][vat_paid]" placeholder="VAT Paid"></td>  '  + 
 '                  <td style="width: 10%;"><input data-name="sale_price" required type="number" class="form-control" name="mobiles['+total_rows+'][sale_price]" placeholder="sale price"></td>  ' +

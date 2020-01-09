@@ -1635,7 +1635,7 @@
                             var _msg = $(basic_alert);
                             _msg.find('.alert-text').html(msg);
                             _msg.find('.alert').addClass('alert-outline-warning');
-                            $('.attendance__sync-data').hide();
+                            $('.attendance__sync-data').show();
                             $('.attendance__msg').html(_msg.html());
                         }
 
