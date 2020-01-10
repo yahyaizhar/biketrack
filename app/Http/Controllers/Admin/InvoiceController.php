@@ -495,7 +495,7 @@ class InvoiceController extends Controller
                         'amount'=> round($dc_deduction,2)+round($mcdonald_deduction,2),
                         'rate'=> round($dc_deduction,2)+round($mcdonald_deduction,2),
                         'qty'=> 1,
-                        'is_taxable'=> true,
+                        'is_taxable'=> false,
                         'is_deductable'=> true
                     ]
                 ];

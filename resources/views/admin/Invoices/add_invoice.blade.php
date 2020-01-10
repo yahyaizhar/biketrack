@@ -862,7 +862,7 @@ $(document).ready(function () {
             _invoiceItems.forEach(function(item, i){
                     var _txt_amount=0;
                     item.taxable_amount=item.taxable_amount!=null?item.taxable_amount.toRound(2):0;
-                    _txt_amount =item.taxable_amount ; 
+                    _txt_amount =item.taxable_amount ;
                     
                     var _inclusive_of_vat = (item.subtotal).toRound(2);
                     if(item.deductable == 0){
@@ -875,8 +875,11 @@ $(document).ready(function () {
                     if(item.deductable == 1){ 
                         _itemRate ='';
                         _itemQty ='';
-                        // _itemSubtotal ='';
-                        // _txt_amount='';
+                        if(item.taxable_amount==0){ //no taxable and deductable
+                            _itemSubtotal ='';
+                            _txt_amount='';
+                        }
+                        
                         if(_addrow){
                             var _newrow  =  '   <tr>  '  + 
                                 '   	<td style="border:1px solid #dddd;width:50%;text-align:left;padding: 9px;"> </td>  '  + 
@@ -934,7 +937,7 @@ $(document).ready(function () {
             var _dis_amount = $('#invoices  h4.discount_amount').text().replace('AED','').trim().toRound(2);
             _dis_amount=_dis_amount==0?null:_dis_amount;
             var tax_subtotal = $('#invoices  h6.taxable_subtotal').text().replace('AED','').trim();
-            var _month  = new Date($('#invoices [name="month"]').attr('data-month')).format('yyyy-mm-dd');
+            var _month  = new Date($('#invoices [name="month"]').val()).format('yyyy-mm-dd');
             var _subtotal = $('#invoices  span.balance_due').text().replace('AED','').trim();
             var _s_total = $('#invoices  h4.subtotal_value').text().replace('AED','').trim();
             var _arr=[];
