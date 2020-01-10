@@ -1706,6 +1706,50 @@
                 }
             });
         });
+        // $(document).on("click",".absents",function(){
+        //     var status=$(this).text();
+        //     if(status=="Absent"){
+        //     var option= '    <select class="form-control bk-select2" name="option_status">  '  + 
+        //     '               	<option value="approved">Approved</option>  '  + 
+        //     '               	<option value="unapproved">Unapproved</option>  '  + 
+        //     '               </select>  ' ; 
+        //     $(this).html(option);
+        //     }
+        // });
+        // $(document).on("change",'[name="option_status"]',function(){
+        //     var _this=$(this).val();
+        //     alert(_this);
+        //     var _Url = "{{url('admin/rider/week/days/off/status')}}"+"/"+month+"/"+rider_id+"/"+_day;
+        //     $.ajaxSetup({
+        //         headers: {
+        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //         }
+        //     });
+        //     $.ajax({
+        //         url : _Url,
+        //         type : 'GET',
+        //         success: function(data){
+        //             swal.fire({
+        //                 position: 'center',
+        //                 type: 'success',
+        //                 title: 'Record Entered successfully.',
+        //                 showConfirmButton: false,
+        //                 timer: 1500
+        //             });
+        //             table.ajax.reload(null, false);
+        //         },
+        //         error: function(error){
+        //             swal.fire({
+        //                 position: 'center',
+        //                 type: 'error',
+        //                 title: 'Oops...',
+        //                 text: 'Unable to update.',
+        //                 showConfirmButton: false,
+        //                 timer: 1500
+        //             });
+        //         }
+        //     });
+        // });
         $('[name="custom_select_Day"]').on("change",function(){
             var _day=$(this).val();
             console.log(_day);
@@ -1749,6 +1793,7 @@
             $('.print_slip_editable').show();
             $(".days_payout").hide();
         });
+
         $('form#visa_charges').on('submit', function(e){
             var _self = $(this);
             _self.find('[type="submit"]').prop('disabled',true);
@@ -2935,7 +2980,7 @@ function SimBillsImage(rider_id,month,type){
             });
         }
     });
-
+ 
 }
 </script>
 @endsection

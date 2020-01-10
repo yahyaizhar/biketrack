@@ -174,7 +174,7 @@
                             </div>
                             <div class="form-group col-md-2">
                                 <label>Invoice id:</label>
-                                <input required type="text" data-input-type="int" class="form-control @if($errors->has('invoice_id')) invalid-field @endif" data-name="invoice_id" name="invoice_id" placeholder="Enter Invoice Id" >
+                                <input required type="text" class="form-control @if($errors->has('invoice_id')) invalid-field @endif" data-name="invoice_id" name="invoice_id" placeholder="Enter Invoice Id" >
                             </div>
                             <div class="form-group col-md-3">
                                 <label>Invoice Date:</label>
