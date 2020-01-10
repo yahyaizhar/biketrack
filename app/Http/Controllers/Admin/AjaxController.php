@@ -2626,28 +2626,32 @@ class AjaxController extends Controller
            $days_payouts =Riders_Payouts_By_Days::orderByDesc('created_at')->get();
            return DataTables::of($days_payouts)
             ->addColumn('feid', function($days_payouts){
-                return 123;
+                return $days_payouts->feid;
             })
             ->addColumn('rider_name', function($days_payouts){
-            return 123;
+                $rider=Rider::find($days_payouts->rider_id);
+                if (isset($rider)) {
+                    return '<a href="'.route('admin.rider.profile', $rider->id).'">'.$rider->name.'</a>';
+                }
+                return '<a class="text-danger" href="'.route('admin.riders.index').'">No Rider is assigned</a>';
             })
             ->addColumn('date', function($days_payouts){
-                return 123;
+                return carbon::parse($days_payouts->date)->format('d M Y');
             })
             ->addColumn('login_hours', function($days_payouts){
-                return 123;
+                return round($days_payouts->login_hours,2);
             })
             ->addColumn('trips', function($days_payouts){
-                return 123;
+                return round($days_payouts->trips,2);
             })
             ->addColumn('payout_for_login_hours', function($days_payouts){
-                return 123;
+                return round($days_payouts->payout_for_login_hours,2);
             })
             ->addColumn('payout_for_trips', function($days_payouts){
-                return 123;
+                return round($days_payouts->payout_for_trips,2);
             })
             ->addColumn('grand_total', function($days_payouts){
-                return 123;
+                return round($days_payouts->grand_total,2);
             })
            ->rawColumns([ 'rider_name','login_hours','feid','grand_total','payout_for_trips','payout_for_login_hours','date','trips',])
            ->make(true);
