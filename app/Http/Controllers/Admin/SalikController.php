@@ -309,6 +309,7 @@ class SalikController extends Controller
             'salik'=>$deletes,
             'ca'=>$ca_deletes,
             'ra'=>$ra_deletes,
+            'import_id'=>$import_id
         ]);
 
     }
