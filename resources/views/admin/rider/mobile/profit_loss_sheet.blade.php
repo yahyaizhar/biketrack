@@ -42,10 +42,9 @@
                         <th>ID</th> 
                         <th>Model</th> 
                         <th>Purchased Month</th> 
-                        <th>Sale Price</th> 
+                        <th>Purchased Price</th> 
                         <th>Received Amount</th>
-                        <th>Loss</th> 
-                        {{-- <th>Profit</th>                       --}}
+                        <th>Profit & Loss</th>
                     </tr>
                 </thead>
             </table>
@@ -76,10 +75,9 @@ $(function() {
             { data: 'id', name: 'id' },
             { data: 'model', name: 'model' },
             { data: 'date', name: 'date' },
-            { data: 'sale_price', name: 'sale_price' },
+            { data: 'purchase_price', name: 'purchase_price' },
             { data: 'received', name: 'received' },
-            { data: 'loss', name: 'loss' },
-            // { data: 'profit', name: 'profit' },
+            { data: 'profit_loss', name: 'profit_loss' },
         ],
         responsive:true,
         order:[0,'asc'],

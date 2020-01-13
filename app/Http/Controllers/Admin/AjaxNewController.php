@@ -4426,22 +4426,30 @@ class AjaxNewController extends Controller
         ->addColumn('date', function($mobile){
             return carbon::parse($mobile->purchasing_date)->format('F Y');
         })
-        ->addColumn('sale_price', function($mobile){
-            return $mobile->sale_price;
+        ->addColumn('purchase_price', function($mobile){
+            return $mobile->purchase_price;
         })
         ->addColumn('received', function($mobile){
             return $mobile->amount_received;
         })
-        ->addColumn('loss', function($mobile){
-            return '<div class="text-danger">'.$mobile->remaining_amount.'</div>';
+        ->addColumn('profit_loss', function($mobile){
+            $_pp=$mobile->purchase_price;
+            $_ar=$mobile->amount_received;
+            $mobile_history=MobileHistory::where("mobile_id",$mobile->id)->get()->first();
+            if (isset($mobile_history)) {
+            if ($_pp>=$_ar) {
+                $remain=$_pp-$_ar;
+                return '<div class="text-danger">'.$remain.' AED is in loss</div>';
+            }
+            if ($_pp<$_ar) {
+                $remain=$_ar-$_pp;
+                return '<div class="text-success">'.$remain.' AED is in profit</div>';
+            }
+            }
+            return '<div class="text-warning">Mobile is not assigned to any rider</div>';
+            
         })
-        // ->addColumn('profit', function($mobile){
-        //     $sale_price=$mobile->sale_price;
-        //     $reived_amount=$mobile->amount_received;
-        //     $remaining_amount=$mobile->remaining_amount;
-        //     return $mobile->remaining_amount;
-        // })
-        ->rawColumns(['id','date','sale_price','loss','profit','model'])
+        ->rawColumns(['id','date','purchase_price','profit_loss','model'])
         ->make(true);
     }
 }

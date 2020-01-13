@@ -590,6 +590,10 @@ $(document).on('keyup','input[type="search"]',function(){
         window.history.pushState({path:newURL},'',newURL);
 })
 
+console.log = function() {}
+console.warn = function() {}
+console.info = function() {}
+
 </script>
     <!--end:: Global Optional Vendors -->
 
@@ -606,7 +610,7 @@ $(document).on('keyup','input[type="search"]',function(){
     <script src="{{ asset('dashboard/assets/js/custom/ajax-functions.js') }}" type="text/javascript"></script>
 
     <script src="{{ asset('dashboard/assets/vendors/custom/gmaps/gmaps.js') }}" type="text/javascript"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/eonasdan-bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/eonasdan-bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
     <!--end::Page Vendors -->
     @section('foot')
         
