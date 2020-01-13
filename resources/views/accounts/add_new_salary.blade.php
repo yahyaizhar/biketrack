@@ -149,6 +149,20 @@
                         </div>
                         <div class="fixed_based_salary-wrapper salary__wrapper">
                             <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
+                                <input type="text" required readonly class="form-control col-md-6" value="Basic Salary" >
+                                <input type="text" required readonly class="form-control col-md-6" name="fb__basic_salary" value="" >
+                            </div>
+                            <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
+                                <input type="text" required readonly class="form-control col-md-6" value="Working Hours" >
+                                <input type="text" required readonly class="form-control col-md-6" name="fb__working_hours" value="" >
+                            </div>
+                            <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
+                                <input type="text" required readonly class="form-control col-md-3"  value="Extra Hours" >
+                                <input type="text" required readonly class="form-control col-md-3" name="fb__extra_hours" value="" >
+                                <input type="text" required readonly class="form-control col-md-3" name="fb__per_hour_salary"  value="" >
+                                <input type="text" required readonly class="form-control col-md-3" name="fb__extra_hours_amount" value="" >
+                            </div>
+                            <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
                                 <input type="text" required readonly class="form-control col-md-6" value="Final Salary" >
                                 <input type="text" required readonly class="form-control col-md-6" name="final_salary" value="" >
                             </div>
@@ -235,30 +249,37 @@
                 var salary_method=data.salary_method;
                 if(salary_method=='trip_based'){
                     $('.trips_based_salary-wrapper').show();
+                    $('#salary [name="monthly_hours_val"]').val(data._s_monthlyHours);
+                    $('#salary [name="absent_day_val"]').val(data.absent_count);
+                    $('#salary [name="absent_hours_val"]').val((data.absent_count*data._s_maxHours).toFixed(2));
+                    $('#salary [name="workable_days"]').val(data.working_days);
+                    $('#salary [name="workable_hours_based_on_available_days"]').val((data.working_hours).toFixed(2));
+                    $('#salary [name="working_hours_during_available_days"]').val((data.hours).toFixed(2));
+                    $('#salary [name="working_zomato_hours"]').val((data.zomato_hours).toFixed(2));
+                    $('#salary [name="Less time calculated"]').val((data.less_time).toFixed(2));
+                    $('#salary [name="finals_hours"]').val((data.payable_hours).toFixed(2));
+                    $('#salary [name="hours_multiply_with"]').val(data._s_hoursFormula);
+                    $('#salary [name="hours_amount"]').val((data.payable_hours*data._s_hoursFormula).toFixed(2));
+                    $('#salary [name="trips"]').val(data.trips);
+                    $('#salary [name="trips_multiply_with"]').val(data._s_tripsFormula);
+                    $('#salary [name="trips_amount"]').val(data.trips_payable);
+                    $('#salary [name="extra_trips"]').val(data.trips_EXTRA);
+                    $('#salary [name="extra_trips_multiply_with"]').val(data._s_maxTripsFormula);
+                    $('#salary [name="extra_trips_amount"]').val(data.trips_EXTRA_payable);
+                    
+                    $('#salary [name="bonus"]').val(data.bonus);
                 }
                 else if(salary_method=='fixed_based'){
                     $('.fixed_based_salary-wrapper').show();
+                    $('#salary [name="fb__basic_salary"]').val(data.basic_salary);
+                    $('#salary [name="fb__working_hours"]').val(data.fb__working_hours);
+                    $('#salary [name="fb__per_hour_salary"]').val(data.fb__perHourSalary);
+                    $('#salary [name="fb__extra_hours"]').val(data.fb__extra_hours);
+
+                    $('#salary [name="fb__extra_hours_amount"]').val(data.fb__extra_hours*data.fb__perHourSalary);
                 }
                 
-                $('#salary [name="monthly_hours_val"]').val(data._s_monthlyHours);
-                $('#salary [name="absent_day_val"]').val(data.absent_count);
-                $('#salary [name="absent_hours_val"]').val((data.absent_count*data._s_maxHours).toFixed(2));
-                $('#salary [name="workable_days"]').val(data.working_days);
-                $('#salary [name="workable_hours_based_on_available_days"]').val((data.working_hours).toFixed(2));
-                $('#salary [name="working_hours_during_available_days"]').val((data.hours).toFixed(2));
-                $('#salary [name="working_zomato_hours"]').val((data.zomato_hours).toFixed(2));
-                $('#salary [name="Less time calculated"]').val((data.less_time).toFixed(2));
-                $('#salary [name="finals_hours"]').val((data.payable_hours).toFixed(2));
-                $('#salary [name="hours_multiply_with"]').val(data._s_hoursFormula);
-                $('#salary [name="hours_amount"]').val((data.payable_hours*data._s_hoursFormula).toFixed(2));
-                $('#salary [name="trips"]').val(data.trips);
-                $('#salary [name="trips_multiply_with"]').val(data._s_tripsFormula);
-                $('#salary [name="trips_amount"]').val(data.trips_payable);
-                $('#salary [name="extra_trips"]').val(data.trips_EXTRA);
-                $('#salary [name="extra_trips_multiply_with"]').val(data._s_maxTripsFormula);
-                $('#salary [name="extra_trips_amount"]').val(data.trips_EXTRA_payable);
                 
-                $('#salary [name="bonus"]').val(data.bonus);
                 $('#salary [name="final_salary"]').val((data.total_salary).toFixed(2));
                 $('#salary [name="total_salary"]').val((data.total_salary).toFixed(2));
                 

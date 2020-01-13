@@ -790,6 +790,7 @@ class AccountsController extends Controller
         $startMonth = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
         $month = Carbon::parse($month)->format('Y-m-d');
         $onlyMonth = Carbon::parse($month)->format('m');
+        $onlyYear = Carbon::parse($month)->format('Y');
 
         $is_update = $r->update;
         if($is_update==true || $is_update=='true'){
@@ -967,8 +968,40 @@ class AccountsController extends Controller
             }
         }
         else { // other clients
+            if($pm==''){
+                # no client was found undr this rider
+                return response()->json([
+                    'status'=>0,
+                    'msg'=>'No client assigned to this rider.'
+                ]);
+            }
             if($pm=='fixed_based'){
-                $fixed_salary=isset($client_setting['fb_sm__amount'])?$client_setting['fb_sm__amount']:0;
+                $basic_salary=isset($client_setting['fb_sm__amount'])?$client_setting['fb_sm__amount']:0;
+                $client_income=Client_Income::where("rider_id",$rider_id)
+                ->whereMonth("month",$onlyMonth)
+                ->whereYear("month",$onlyYear)
+                ->get()->first(); 
+                if(isset($client_income)){
+                    $basic_salary = isset($basic_salary)?$basic_salary:0;
+                    $fb__working_hours = $client_income->total_hours;
+                    $fb__extra_hours = $client_income->extra_hours;
+
+                    $fb__perHourSalary = $basic_salary/$fb__working_hours;
+                    $extra_salary = $fb__perHourSalary * $fb__extra_hours;
+
+                    $fixed_salary = $basic_salary + $extra_salary;
+                    $ra_salary= $fixed_salary + $ra_cr;
+                    $ra_recieved=$ra_salary - $ra_payable;
+                    $total_salary_amt = $fixed_salary;
+                }
+                else {
+                    # no record found in income zomato table --generate error
+                    return response()->json([
+                        'status'=>0,
+                        'msg'=>'No Payout found against this rider.'
+                    ]);
+                }
+                 
             }
             if($pm=='trip_based'){
                 # no FEID found and FEID is cumpulsory for trip based rider
@@ -977,17 +1010,8 @@ class AccountsController extends Controller
                     'msg'=>'No FEID found against this rider.'
                 ]);
             }
-            if($pm==''){
-                # no client was found undr this rider
-                return response()->json([
-                    'status'=>0,
-                    'msg'=>'No client assigned to this rider.'
-                ]);
-            }
-            $fixed_salary = isset($fixed_salary)?$fixed_salary:0;
-            $ra_salary= $fixed_salary + $ra_cr;
-            $ra_recieved=$ra_salary - $ra_payable;
-            $total_salary_amt = $fixed_salary;
+            
+            
         }
 
         $is_generated= Rider_salary::where('rider_id',$rider_id)
@@ -1012,6 +1036,13 @@ class AccountsController extends Controller
        }else{
             $is_paid_salary=false;
        }
+
+       //fixed based client
+       $basic_salary=isset($basic_salary)?$basic_salary:0;
+       $fb__working_hours=isset($fb__working_hours)?$fb__working_hours:0;
+       $fb__extra_hours=isset($fb__extra_hours)?$fb__extra_hours:0;
+       $fb__perHourSalary=isset($fb__perHourSalary)?$fb__perHourSalary:0;
+       //end fixed based client
 
        $salary_hours=isset($salary_hours)?$salary_hours:0;
        $salary_trips=isset($salary_trips)?$salary_trips:0;
@@ -1061,6 +1092,11 @@ class AccountsController extends Controller
             'trips_EXTRA_payable'=>round($trips_EXTRA_payable,2),
             'less_time'=>round($less_time,2),
             'payable_hours'=>round($payable_hours,2),
+
+            'basic_salary'=>round($basic_salary,2),
+            'fb__working_hours'=>round($fb__working_hours,2),
+            'fb__extra_hours'=>round($fb__extra_hours,2),
+            'fb__perHourSalary'=>round($fb__perHourSalary,2),
 
             '_s_maxTrips'=>round($_s_maxTrips,2),
             '_s_tripsFormula'=>round($_s_tripsFormula,2),
