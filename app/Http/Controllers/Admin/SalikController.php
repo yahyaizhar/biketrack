@@ -108,7 +108,7 @@ class SalikController extends Controller
             if(trim($item['transaction_id']) == '') continue;
             $bike_plate = $item['plate'];
             $bike_found = Arr::first($bike, function ($item_zp, $key) use ($item) {
-                return $item_zp->bike_number == $item['plate'];
+                return $item_zp->bike_number == $item['plate'] && $item_zp->active_status=='A';
             }); 
             $rider_id = null;
             if(isset($bike_found)){
@@ -270,7 +270,9 @@ class SalikController extends Controller
         return response()->json([
             'data'=>$distinct_data,
             'ra'=>$ra_objects,
-            'ca'=>$ca_objects
+            'ca'=>$ca_objects,
+
+            'test'=>$distincts_data_more
         ]);
 
     }
