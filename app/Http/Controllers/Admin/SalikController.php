@@ -295,16 +295,16 @@ class SalikController extends Controller
             $objDelete['salik_id']=$performance->transaction_id; 
             array_push($ra_deletes, $objDelete);
         }
-        $salik_deletes = DB::table('trip__details')
-                    ->whereIn('id', $deletes)
-                    ->delete();
+        // $salik_deletes = DB::table('trip__details')
+        //             ->whereIn('id', $deletes)
+        //             ->delete();
 
-        $ca_delete_data = DB::table('company__accounts')
-                        ->whereIn('salik_id', $ca_deletes)
-                        ->delete();
-        $ra_delete_data = DB::table('rider__accounts')
-                        ->whereIn('salik_id', $ra_deletes)
-                        ->delete();
+        // $ca_delete_data = DB::table('company__accounts')
+        //                 ->whereIn('salik_id', $ca_deletes)
+        //                 ->delete();
+        // $ra_delete_data = DB::table('rider__accounts')
+        //                 ->whereIn('salik_id', $ra_deletes)
+        //                 ->delete();
         return response()->json([
             'salik'=>$deletes,
             'ca'=>$ca_deletes,
