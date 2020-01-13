@@ -187,7 +187,15 @@ color: #5d78ff !important;
                                 </a>
                             </li>
                             @endif
-                            
+
+                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.all_clients_salary_sheet_export';   }); @endphp
+                            @if($is_in_array || $is_admin)
+                            <li class="kt-menu__item @if(strpos(Request::url(), "active/client") !== false && strpos(Request::url(), "admin/clients/create") == false && strpos(Request::url(), "client_income") == false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                <a href="{{ route('admin.all_clients_salary_sheet_export') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">View salary sheet</span>
+                                </a>
+                            </li>
+                            @endif
+
                             <li class="kt-menu__item kt-menu__item--submenu @if(strpos(Request::url(), "client_income") !== false) kt-menu__item--active kt-menu__item--open @endif "  aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
                                 <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
                                     <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">

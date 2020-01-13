@@ -2035,7 +2035,6 @@ class AjaxNewController extends Controller
             $riderFound = Rider::find($rider->id);
             $client_history = Client_History::all();
             $rider_id=$rider->id;
-            $month = '01-'.$month.'-'.Carbon::now()->format('Y');
             $history_found = Arr::first($client_history, function ($item, $key) use ($rider_id, $month) {
                 $start_created_at =Carbon::parse($item->assign_date)->startOfMonth()->format('Y-m-d');
                 $created_at =Carbon::parse($start_created_at);
@@ -2290,7 +2289,6 @@ class AjaxNewController extends Controller
             return '0';
         }) 
         ->addColumn('total_deduction', function($rider) use ($month) {
-            $month = '01-'.$month.'-'.Carbon::now()->format('Y');
             $rider_id = $rider->id;
 
             $startMonth = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
@@ -2361,7 +2359,6 @@ class AjaxNewController extends Controller
             return 0;
         })
         ->addColumn('net_salary', function($rider) use ($month) {
-            $month = '01-'.$month.'-'.Carbon::now()->format('Y');
             $rider_id = $rider->id;
 
             $startMonth = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
@@ -2440,7 +2437,6 @@ class AjaxNewController extends Controller
             return round($ra_salary,2);
         })
         ->addColumn('gross_salary', function($rider) use ($month) {
-            $month = '01-'.$month.'-'.Carbon::now()->format('Y');
             $rider_id = $rider->id;
 
             $startMonth = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
@@ -2621,7 +2617,6 @@ class AjaxNewController extends Controller
             return $poor_performance_sum;
         }) 
         ->addColumn('visa', function($rider) use ($month) {
-            $month = '01-'.$month.'-'.Carbon::now()->format('Y');
             $visa_sum=Rider_Account::where('source',"Visa Charges")
             ->where('rider_id',$rider->id)
             ->whereNotNull('id_charge_id')
