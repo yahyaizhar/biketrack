@@ -114,11 +114,11 @@ class SalikController extends Controller
             if(isset($bike_found)){
                 $bike_id = $bike_found['id'];
                 $date = $item['trip_date'];
-                $history_found = Arr::first($assign_bike, function ($item, $key) use ($bike_id, $date) {
-                    $created_at =Carbon::parse($item->created_at)->format('Y-m-d');
+                $history_found = Arr::first($assign_bike, function ($item, $key) use ($bike_id, $date) { 
+                    $created_at =Carbon::parse($item->bike_assign_date)->format('Y-m-d');
                     $created_at =Carbon::parse($created_at);
         
-                    $updated_at =Carbon::parse($item->updated_at)->format('Y-m-d');
+                    $updated_at =Carbon::parse($item->bike_unassign_date)->format('Y-m-d');
                     $updated_at =Carbon::parse($updated_at);
                     $req_date =Carbon::parse($date);
                     if($item->status=="active"){ 
