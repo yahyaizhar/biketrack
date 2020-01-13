@@ -11,6 +11,48 @@
 |
 */
 
+Route::get('/clear-cache', function() {
+    $exitCode = Artisan::call('cache:clear');
+    return '<h1>Cache facade value cleared</h1>';
+});
+
+//Reoptimized class loader:
+Route::get('/optimize', function() {
+    $exitCode = Artisan::call('optimize');
+    return '<h1>Reoptimized class loader</h1>';
+});
+
+//Route cache:
+Route::get('/route-cache', function() {
+    $exitCode = Artisan::call('route:cache');
+    return '<h1>Routes cached</h1>';
+});
+
+//Clear Route cache:
+Route::get('/route-clear', function() {
+    $exitCode = Artisan::call('route:clear');
+    return '<h1>Route cache cleared</h1>';
+});
+
+//Clear View cache:
+Route::get('/view-clear', function() {
+    $exitCode = Artisan::call('view:clear');
+    return '<h1>View cache cleared</h1>';
+});
+
+//Clear Config cache:
+Route::get('/config-cache', function() {
+    $exitCode = Artisan::call('config:cache');
+    return '<h1>Clear Config cleared</h1>';
+});
+
+//Clear Config cache:
+Route::get('/migrate', function() {
+    $exitCode = Artisan::call('migrate');
+    return '<h1>Migrated</h1>';
+});
+
+
 Route::get('/', function () {
     return redirect(route('admin.home'));
 });
@@ -512,7 +554,7 @@ Route::group([
 //zomato income 
 // Client_income
     Route::get('/client_income/index','AccountsController@client_income_index')->name('admin.client_income_index'); //ok [Income: add client income]
-    Route::get('/client_income/{client_id}/getRiders','AccountsController@client_income_getRiders')->name('admin.client_income_getRiders'); //ok [Income: add client income]
+    Route::get('/client_income/{client_id}/getRiders/month/{month}','AccountsController@client_income_getRiders')->name('admin.client_income_getRiders'); //ok [Income: add client income]
     Route::get('/client_income/view','AccountsController@client_income_view')->name('admin.client_income_view'); //ok [Income: view all clients income]
     Route::post('/client_income/insert','AccountsController@client_income_store')->name('admin.client_income_store'); //ok [Income: add client income]
     Route::post('/client_income/{id}/update','AccountsController@client_income_update')->name('admin.client_income_update');  //ok [Income: update client income]
