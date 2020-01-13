@@ -51,6 +51,7 @@ class SalikController extends Controller
         $company_accounts=[];
         $i=0;
         $unique_id=uniqid().'-'.time();
+
         foreach ($data as $item) {
             $i++;
             $zp_found = Arr::first($zp, function ($item_zp, $key) use ($item) {
@@ -257,14 +258,14 @@ class SalikController extends Controller
         }
 
        
-        DB::table('trip__details')->insert($trip_objects); //r2
-        $data=Batch::update(new Trip_Detail, $update_data, 'id'); //r3  
+        // DB::table('trip__details')->insert($trip_objects); //r2
+        // $data=Batch::update(new Trip_Detail, $update_data, 'id'); //r3  
 
-        DB::table('company__accounts')->insert($ca_objects); //r4
-        $data_ca=Batch::update(new Company_Account, $ca_objects_updates, 'salik_id'); //r5  
+        // DB::table('company__accounts')->insert($ca_objects); //r4
+        // $data_ca=Batch::update(new Company_Account, $ca_objects_updates, 'salik_id'); //r5  
 
-        DB::table('rider__accounts')->insert($ra_objects); //r4
-        $data_ra=Batch::update(new Rider_Account, $ra_objects_updates, 'salik_id'); //r5  
+        // DB::table('rider__accounts')->insert($ra_objects); //r4
+        // $data_ra=Batch::update(new Rider_Account, $ra_objects_updates, 'salik_id'); //r5  
 
         return response()->json([
             'data'=>$distinct_data,
@@ -277,22 +278,37 @@ class SalikController extends Controller
         $import_id=Trip_Detail::all()->last()->import_id;
         $performances=Trip_Detail::where('import_id',$import_id)->get();
         $ca_deletes=[];
+        $ra_deletes=[];
         $deletes = [];
         foreach($performances as $performance)
         {
-            $ca_obj = [];
-            $ca_obj['salik_id']=$performance->transaction_id;
-            $ca_obj['active_status']='D';
-            $ca_obj['source']='salik';
-            $ca_obj['amount']=$performance->amount_aed;
-            $ca_obj['type']='dr';
-            array_push($ca_deletes, $ca_obj);
-            $performance->active_status = 'D';
-            $performance->update();
+            //salik
+            $objDelete = [];
+            $objDelete['id']=$performance->id;
+            array_push($deletes, $objDelete);
+            //ca
+            $objDelete = [];
+            $objDelete['salik_id']=$performance->transaction_id;
+            array_push($ca_deletes, $objDelete);
+            //ra
+            $objDelete = [];
+            $objDelete['salik_id']=$performance->transaction_id; 
+            array_push($ra_deletes, $objDelete);
         }
-        $data_ca=Batch::update(new Company_Account, $ca_deletes, 'salik_id'); //r
+        $salik_deletes = DB::table('trip__details')
+                    ->whereIn('id', $deletes)
+                    ->delete();
+
+        $ca_delete_data = DB::table('company__accounts')
+                        ->whereIn('salik_id', $ca_deletes)
+                        ->delete();
+        $ra_delete_data = DB::table('rider__accounts')
+                        ->whereIn('salik_id', $ra_deletes)
+                        ->delete();
         return response()->json([
-            'a'=>$performances,
+            'salik'=>$deletes,
+            'ca'=>$ca_deletes,
+            'ra'=>$ra_deletes,
         ]);
 
     }
