@@ -204,7 +204,7 @@ Route::group([
 															  
     /*[others-livemap]*/Route::get('/livemap', 'HomeController@livemap')->name('admin.livemap');   ///not added
 // end rider further details
-    Route::delete('/rider/{rider_id}/removeBike/{bike_id}','ClientController@deletebikeprofile')->name('admin.delete_bike_profile'); //trash
+    /*[bike-unassign bike]*/ Route::delete('/rider/{rider_id}/removeBike/{bike_id}','ClientController@deletebikeprofile')->name('admin.delete_bike_profile'); 
     /*[rider-detail view]*/Route::get('/rider/complete/detail/view','RiderDetailController@view_detail')->name('rider.view_detail');////ok
     /*[rider-detail view]*/Route::get('/rider/detail/ajax/{id}/{moPnth}/{according_to}','RiderDetailController@get_data_ajax_detail')->name('ajax.get_data_ajax_detail');//ajax_route ////ok
 
@@ -265,8 +265,8 @@ Route::group([
     /*[bike - edit bike]*/Route::post('/bike/update/{id}','bikeController@bike_update')->name('Bike.bike_update');
     /*[rider - bike history]*/Route::get('/riders/{rider}/history','ClientController@Bike_assigned_to_riders_history')->name('Bike.assignedToRiders_History');
     /*[bike - rider history]*/Route::get('/bike/{bike_id}/history','ClientController@rider_history')->name('bike.rider_history');
-    /*[bike - change assign/unassign dates]*/Route::get('/change/{rider_id}/history/{bike_id}','ClientController@change_dates_history')->name('admin.change_dates_history');
-    Route::get('/bike/{bike_id}/profile/{rider_id}','ClientController@bike_profile')->name('bike.bike_profile'); ///not_using
+    /*[bike - change assign/unassign dates]*/ Route::get('/change/{rider_id}/history/{bike_id}','ClientController@change_dates_history')->name('admin.change_dates_history');
+    /*[bike - View rider bike profile]*/ Route::get('/bike/{bike_id}/profile/{rider_id}','ClientController@bike_profile')->name('bike.bike_profile'); 
     /*[bike - view salik]*/Route::get('view/bike/salik/{id}','SalikController@bike_salik')->name('bike.bike_salik');
     /*[rider - view salik]*/Route::get('view/rider/salik/{id}','SalikController@rider_salik')->name('rider.rider_salik');
     /*[bike - add bike rent]*/Route::get('/bike/rent/view','bikeController@create_bike_rent')->name('admin.create_bike_rent');
