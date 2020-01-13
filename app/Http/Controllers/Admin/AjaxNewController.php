@@ -1249,7 +1249,7 @@ class AjaxNewController extends Controller
             //     $model = addslashes($model);
             //     return '<i class="fa fa-trash-alt"  onclick="deleteCompanyRows('.$company_statements->id.',\''.$model.'\','.$model_id.','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
             // } 
-            $model_id=$company_statements->source;
+            $model_id=addslashes($company_statements->source);
             $rider_id=$company_statements->rider_id;
             $string="source";
             $month=Carbon::parse($company_statements->month)->format('m');
