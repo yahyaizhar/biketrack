@@ -257,14 +257,14 @@ class SalikController extends Controller
         }
 
        
-        // DB::table('trip__details')->insert($trip_objects); //r2
-        // $data=Batch::update(new Trip_Detail, $update_data, 'id'); //r3  
+        DB::table('trip__details')->insert($trip_objects); //r2
+        $data=Batch::update(new Trip_Detail, $update_data, 'id'); //r3  
 
-        // DB::table('company__accounts')->insert($ca_objects); //r4
-        // $data_ca=Batch::update(new Company_Account, $ca_objects_updates, 'salik_id'); //r5  
+        DB::table('company__accounts')->insert($ca_objects); //r4
+        $data_ca=Batch::update(new Company_Account, $ca_objects_updates, 'salik_id'); //r5  
 
-        // DB::table('rider__accounts')->insert($ra_objects); //r4
-        // $data_ra=Batch::update(new Rider_Account, $ra_objects_updates, 'salik_id'); //r5  
+        DB::table('rider__accounts')->insert($ra_objects); //r4
+        $data_ra=Batch::update(new Rider_Account, $ra_objects_updates, 'salik_id'); //r5  
 
         return response()->json([
             'data'=>$distinct_data,
