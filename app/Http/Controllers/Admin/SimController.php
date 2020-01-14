@@ -18,6 +18,7 @@ use App\Model\Sim\Sim;
 use App\Model\Sim\Sim_Transaction;
 use App\Model\Sim\Sim_History;
 use Carbon\Carbon;
+use App\Model\Accounts\Company_Expense;
 use Arr;
 use \App\Model\Accounts\Company_Account;
 
@@ -253,6 +254,8 @@ public function get_sim_ajax($sim_id, $month,$rider_id){
 
 public function store_simTransaction(Request $request){
     $data=$request->data;
+    $splitted_amount=0;
+    $total_amount=$request->amount;
     foreach ($data as $value) {
         $sim_trans=new Sim_Transaction();
         $sim_trans->month_year=Carbon::parse($request->month_year)->startOfMonth()->format('Y-m-d');
@@ -330,6 +333,18 @@ public function store_simTransaction(Request $request){
             $ca->amount=round($extra,2);
             $ca->save();
         }
+        $splitted_amount+=$value['bill_amount_given_by_days'];
+    }
+    $remaining_amount=$total_amount-$splitted_amount;
+
+    if($remaining_amount>0){
+        //add this as company expense
+        $ce=new Company_Expense();
+        $ce->amount=round($remaining_amount,2);
+        // $ce->rider_id=$r->rider_id;
+        $ce->month = Carbon::parse($request->get('month'))->format('Y-m-d');
+        $ce->description="Sim Bill remaining amount";
+        $ce->save();
     }
     return redirect(route('SimTransaction.view_records'))->with('message', 'Sim Transaction is completed successfully.');
     return response()->json([
