@@ -3909,7 +3909,8 @@ class AjaxNewController extends Controller
         $invoices = Invoice::with('Invoice_item')->orderByDesc('created_at')->get();
         return DataTables::of($invoices)
         ->addColumn('invoice', function($invoice){
-            return $invoice->id;
+            if($invoice->invoice_id != null) return $invoice->invoice_id;
+            return 'No Invoice id';
         })
         ->addColumn('client_name', function($invoice){
             $client=Client::find($invoice->client_id);
