@@ -590,7 +590,7 @@ $(document).on('keyup','input[type="search"]',function(){
         window.history.pushState({path:newURL},'',newURL);
 })
 
-console.log = function() {}
+// console.log = function() {}
 console.warn = function() {}
 console.info = function() {}
 

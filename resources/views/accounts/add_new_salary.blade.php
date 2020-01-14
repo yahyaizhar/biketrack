@@ -139,6 +139,12 @@
                                 <input type="text" required readonly class="form-control col-md-3" name="extra_trips_amount" value="" >
                             </div>
                             <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
+                                <input type="text" required readonly class="form-control col-md-3"  value="Approve Absents Hours" >
+                                <input type="text" required readonly class="form-control col-md-3" name="absent_hours" value="" >
+                                <input type="text" required readonly class="form-control col-md-3" name="absent_hours_multiply_with"  value="" >
+                                <input type="text" required readonly class="form-control col-md-3" name="absent_hours_amount" value="" >
+                            </div>
+                            <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
                                 <input type="text" required readonly class="form-control col-md-6" value="Final Salary" >
                                 <input type="text" required readonly class="form-control col-md-6" name="final_salary" value="" >
                             </div>
@@ -257,6 +263,10 @@
                 $('#salary [name="extra_trips"]').val(data.trips_EXTRA);
                 $('#salary [name="extra_trips_multiply_with"]').val(data._s_maxTripsFormula);
                 $('#salary [name="extra_trips_amount"]').val(data.trips_EXTRA_payable);
+
+                // $('#salary [name="absent_hours"]').val(data.absent_approve_hours);
+                // $('#salary [name="absent_hours_multiply_with"]').val(data._s_hoursFormula);
+                // $('#salary [name="absent_hours_amount"]').val(data.calculated_absent_hours);
                 
                 $('#salary [name="bonus"]').val(data.bonus);
                 $('#salary [name="final_salary"]').val((data.total_salary).toFixed(2));

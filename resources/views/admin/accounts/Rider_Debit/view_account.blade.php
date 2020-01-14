@@ -1661,6 +1661,25 @@
                         if (login_hours>11) {
                             login_hours=11;
                         }
+
+                        var absent__status=item.absent_status;
+                        
+                        var absent_stat='';
+                        var absent_color='';
+                        switch (absent__status) {
+                            case 'Approved':
+                                absent_stat='- Approved ';
+                                absent_color='green';
+                                break;
+                            case 'Rejected':
+                                absent_stat='- Rejected';
+                                absent_color='red';
+                                break;
+                            default:
+                                absent_stat=' (Pending)';
+                                absent_color='red';
+                                break;
+                        }
                         
                         
                         var off__status=item.off_days_status;
@@ -1671,7 +1690,7 @@
                                 status='<div style="color:green;">Weekly Off</div>';
                                 break;
                             case 'absent':
-                                status='<div style="color:red;">Absent</div>';
+                                status='<div style="color:'+absent_color+';" class="absents">Absent'+absent_stat+'</div>';
                                 break;
                             case 'extraday':
                                 login_hours=0;
@@ -1686,7 +1705,7 @@
                         }
                         calculated_trips+=trips;
                         calculated_hours+=login_hours;
-                       rows+='<tr><td style=" width: 25%;">'+date+'</td><td style=" width: 25%;text-align: center;">'+trips+'</td><td style=" width: 25%;text-align: center;">'+login_hours+'</td> <td class="absents" style=" width: 25%;text-align: center;">'+status+'</td></tr>';
+                       rows+='<tr><td style=" width: 25%;">'+date+'</td><td style=" width: 25%;text-align: center;">'+trips+'</td><td style=" width: 25%;text-align: center;">'+login_hours+'</td> <td style=" width: 25%;text-align: center;">'+status+'</td></tr>';
                     });
                     var less_time=work_hours_days - calculated_hours;
                     var actual_hours=286 - less_time - absent_hours;
@@ -1706,50 +1725,23 @@
                 }
             });
         });
-        // $(document).on("click",".absents",function(){
-        //     var status=$(this).text();
-        //     if(status=="Absent"){
-        //     var option= '    <select class="form-control bk-select2" name="option_status">  '  + 
-        //     '               	<option value="approved">Approved</option>  '  + 
-        //     '               	<option value="unapproved">Unapproved</option>  '  + 
-        //     '               </select>  ' ; 
-        //     $(this).html(option);
-        //     }
-        // });
-        // $(document).on("change",'[name="option_status"]',function(){
-        //     var _this=$(this).val();
-        //     alert(_this);
-        //     var _Url = "{{url('admin/rider/week/days/off/status')}}"+"/"+month+"/"+rider_id+"/"+_day;
-        //     $.ajaxSetup({
-        //         headers: {
-        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //         }
-        //     });
-        //     $.ajax({
-        //         url : _Url,
-        //         type : 'GET',
-        //         success: function(data){
-        //             swal.fire({
-        //                 position: 'center',
-        //                 type: 'success',
-        //                 title: 'Record Entered successfully.',
-        //                 showConfirmButton: false,
-        //                 timer: 1500
-        //             });
-        //             table.ajax.reload(null, false);
-        //         },
-        //         error: function(error){
-        //             swal.fire({
-        //                 position: 'center',
-        //                 type: 'error',
-        //                 title: 'Oops...',
-        //                 text: 'Unable to update.',
-        //                 showConfirmButton: false,
-        //                 timer: 1500
-        //             });
-        //         }
-        //     });
-        // });
+
+            $(document).on("click",".rider_days_detail .absents",function(){
+            var a=$(this).parents("tr").find("td:eq(0)").text();
+            var month=biketrack.getUrlParameter('r1d1');
+            var rider_id=biketrack.getUrlParameter('rider_id');
+            var _year=new Date(month).format("yyyy");
+            var day=a.split(_year).pop("");
+            var date=a.replace(day, '');
+            var rider_payout_days_date=new Date(date).format("yyyy-mm-dd");
+            var rejected='rejected';
+            var approved='approved';
+            var option="Absent "+
+            "<button class='btn-btn-danger' id='absent_rejected' onclick='approved_rejected_status("+rider_id+",\""+month+"\",\""+rider_payout_days_date+"\",\""+rejected+"\")' style='float:right;color: red;font-size: 10px;'>Reject</button>"+
+            " <button class='btn-btn-success' onclick='approved_rejected_status("+rider_id+",\""+month+"\",\""+rider_payout_days_date+"\",\""+approved+"\")' id='absent_approved' style='float:right;color: green;font-size: 10px;'>Approve</button>";
+            $(this).html(option);
+            });
+
         $('[name="custom_select_Day"]').on("change",function(){
             var _day=$(this).val();
             console.log(_day);
@@ -2980,7 +2972,40 @@ function SimBillsImage(rider_id,month,type){
             });
         }
     });
- 
+}
+
+function approved_rejected_status(rider_id,month,rider_payout_date,status){
+            var _Url = "{{url('admin/rider/rider_account/ajax/absents_status')}}"+"/"+rider_id+"/"+month+"/"+rider_payout_date+"/"+status;
+            console.log(_Url);
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url : _Url,
+                type : 'GET',
+                success: function(data){
+                    swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Record Entered successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    table.ajax.reload(null, false);
+                },
+                error: function(error){
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Unable to update.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
 }
 </script>
 @endsection

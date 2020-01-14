@@ -79,6 +79,8 @@ self::updating(function ($updated_model) {
         'payout_for_login_hours',
         'payout_for_trips',
         'grand_total',
+        'off_days_status',
+        'absent_status',
        ];
        public function income_zomato(){
         return $this->belongTo('App\Model\Accounts\Income_zomato','id');

@@ -24,6 +24,8 @@ class CreateRidersPayoutsByDaysTable extends Migration
             $table->string('payout_for_login_hours')->nullable();
             $table->string('payout_for_trips')->nullable();
             $table->string('grand_total')->nullable();
+            $table->string('off_days_status')->nullable();
+            $table->string('absent_status')->nullable();
             $table->timestamps();
         });
     }
