@@ -51,6 +51,7 @@ class SalikController extends Controller
         $company_accounts=[];
         $i=0;
         $unique_id=uniqid().'-'.time();
+
         foreach ($data as $item) {
             $i++;
             $zp_found = Arr::first($zp, function ($item_zp, $key) use ($item) {
@@ -102,45 +103,45 @@ class SalikController extends Controller
             }
         }
 
+        //fetching rider id against each plate
         foreach ($data as $item) {
             if(trim($item['transaction_id']) == '') continue;
             $bike_plate = $item['plate'];
-                $bike_found = Arr::first($bike, function ($item_zp, $key) use ($item) {
-                    return $item_zp->bike_number == $item['plate'];
-                }); 
-                $rider_id = null;
-                if(isset($bike_found)){
-                    $bike_id = $bike_found['id'];
-                    $date = $item['trip_date'];
-                    $history_found = Arr::first($assign_bike, function ($item, $key) use ($bike_id, $date) {
-                        $created_at =Carbon::parse($item->created_at)->format('Y-m-d');
-                        $created_at =Carbon::parse($created_at);
-            
-                        $updated_at =Carbon::parse($item->updated_at)->format('Y-m-d');
-                        $updated_at =Carbon::parse($updated_at);
-                        $req_date =Carbon::parse($date);
-                        if($item->status=="active"){ 
-                            // mean its still active, we need to match only created at
-                            return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at);
-                        }
-                        
-                        return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
-                    });
-                    if (isset($history_found)) {
-                        $rider_id=$history_found->rider_id;
+            $bike_found = Arr::first($bike, function ($item_zp, $key) use ($item) {
+                return $item_zp->bike_number == $item['plate'] && $item_zp->active_status=='A';
+            }); 
+            $rider_id = null;
+            if(isset($bike_found)){
+                $bike_id = $bike_found['id'];
+                $date = $item['trip_date'];
+                $history_found = Arr::first($assign_bike, function ($item, $key) use ($bike_id, $date) { 
+                    $created_at =Carbon::parse($item->bike_assign_date)->format('Y-m-d');
+                    $created_at =Carbon::parse($created_at);
+        
+                    $updated_at =Carbon::parse($item->bike_unassign_date)->format('Y-m-d');
+                    $updated_at =Carbon::parse($updated_at);
+                    $req_date =Carbon::parse($date);
+                    if($item->status=="active"){ 
+                        // mean its still active, we need to match only created at
+                        return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at);
                     }
+                    
+                    return $item->bike_id == $bike_id && $req_date->greaterThanOrEqualTo($created_at) && $req_date->lessThanOrEqualTo($updated_at);
+                });
+                if (isset($history_found)) {
+                    $rider_id=$history_found->rider_id;
                 }
-                $obj = [];
-                $obj['plate'] = $item['plate'];
-                $obj['transaction_id'] = $item['transaction_id'];
-                $obj['trip_date'] = $item['trip_date'];
-                $obj['rider_id'] = $rider_id;
-                $obj['amount_aed'] = $item['amount_aed'];
-                array_push($distincts_data_more, $obj);
             }
- 
-
-
+            $obj = [];
+            $obj['plate'] = $item['plate'];
+            $obj['transaction_id'] = $item['transaction_id'];
+            $obj['trip_date'] = isset($item['trip_date'])?Carbon::parse($item['trip_date'])->format('Y-m-d'):null;
+            $obj['rider_id'] = $rider_id;
+            $obj['amount_aed'] = $item['amount_aed'];
+            array_push($distincts_data_more, $obj);
+        }
+        
+        //adding amount to same plate and rider id (sum amount)
         foreach ($distincts_data_more as $item) {
             if(trim($item['transaction_id']) == '') continue;
             $key_found = '';
@@ -165,6 +166,7 @@ class SalikController extends Controller
  
         }
 
+        //adding data to CR and Rider account
         foreach ($distinct_data as $distinct_item) {
             if ($distinct_item['rider_id']==null) {
                 continue;
@@ -185,7 +187,8 @@ class SalikController extends Controller
                 $ca_obj['amount']=$amount;
                 $ca_obj['rider_id']=$distinct_item['rider_id'];
                 $ca_obj['type']='dr';
-                $ca_obj['month']=Carbon::parse($distinct_item['trip_date'])->format("Y-m-d");
+                $ca_obj['month']=Carbon::parse($distinct_item['trip_date'])->startOfMonth()->format("Y-m-d");
+                $ca_obj['given_date']=Carbon::now()->format("Y-m-d");
                 $ca_obj['created_at']=Carbon::now();
                 $ca_obj['updated_at']=Carbon::now();
                 array_push($ca_objects, $ca_obj);
@@ -196,7 +199,8 @@ class SalikController extends Controller
                 $ra_obj['amount']=$amount-$max_salik;
                 $ra_obj['rider_id']=$distinct_item['rider_id'];
                 $ra_obj['type']='cr_payable';
-                $ra_obj['month']=Carbon::parse($distinct_item['trip_date'])->format("Y-m-d");
+                $ra_obj['month']=Carbon::parse($distinct_item['trip_date'])->startOfMonth()->format("Y-m-d");
+                $ra_obj['given_date']=Carbon::now()->format("Y-m-d");
                 $ra_obj['created_at']=Carbon::now();
                 $ra_obj['updated_at']=Carbon::now();
                 array_push($ra_objects, $ra_obj);
@@ -207,7 +211,8 @@ class SalikController extends Controller
                 $ca_obj['amount']=$amount-$max_salik;
                 $ca_obj['rider_id']=$distinct_item['rider_id'];
                 $ca_obj['type']='cr';
-                $ca_obj['month']=Carbon::parse($distinct_item['trip_date'])->format("Y-m-d");
+                $ca_obj['month']=Carbon::parse($distinct_item['trip_date'])->startOfMonth()->format("Y-m-d");
+                $ca_obj['given_date']=Carbon::now()->format("Y-m-d");
                 $ca_obj['created_at']=Carbon::now();
                 $ca_obj['updated_at']=Carbon::now();
                 array_push($ca_objects, $ca_obj);
@@ -220,7 +225,8 @@ class SalikController extends Controller
                 $ca_obj['amount']=$amount;
                 $ca_obj['rider_id']=$distinct_item['rider_id'];
                 $ca_obj['type']='dr';
-                $ca_obj['month']=Carbon::parse($distinct_item['trip_date'])->format("Y-m-d");
+                $ca_obj['month']=Carbon::parse($distinct_item['trip_date'])->startOfMonth()->format("Y-m-d");
+                $ca_obj['given_date']=Carbon::now()->format("Y-m-d");
                 $ca_obj['created_at']=Carbon::now();
                 $ca_obj['updated_at']=Carbon::now();
                 array_push($ca_objects, $ca_obj);
@@ -264,7 +270,9 @@ class SalikController extends Controller
         return response()->json([
             'data'=>$distinct_data,
             'ra'=>$ra_objects,
-            'ca'=>$ca_objects
+            'ca'=>$ca_objects,
+
+            'test'=>$distincts_data_more
         ]);
 
     }
@@ -272,22 +280,41 @@ class SalikController extends Controller
         $import_id=Trip_Detail::all()->last()->import_id;
         $performances=Trip_Detail::where('import_id',$import_id)->get();
         $ca_deletes=[];
+        $ra_deletes=[];
         $deletes = [];
         foreach($performances as $performance)
         {
-            $ca_obj = [];
-            $ca_obj['salik_id']=$performance->transaction_id;
-            $ca_obj['active_status']='D';
-            $ca_obj['source']='salik';
-            $ca_obj['amount']=$performance->amount_aed;
-            $ca_obj['type']='dr';
-            array_push($ca_deletes, $ca_obj);
-            $performance->active_status = 'D';
-            $performance->update();
+            //salik
+            $objDelete = [];
+            $objDelete['id']=$performance->id;
+            array_push($deletes, $objDelete);
+            //ca
+            $objDelete = [];
+            $objDelete['salik_id']=$performance->transaction_id;
+            array_push($ca_deletes, $objDelete);
+            //ra
+            $objDelete = [];
+            $objDelete['salik_id']=$performance->transaction_id; 
+            array_push($ra_deletes, $objDelete);
         }
-        $data_ca=Batch::update(new Company_Account, $ca_deletes, 'salik_id'); //r
+        $salik_deletes = DB::table('trip__details')
+                    ->whereIn('id', $deletes)
+                    ->delete();
+
+        $ca_delete_data = DB::table('company__accounts')
+                        ->whereIn('salik_id', $ca_deletes)
+                        ->delete();
+        $ra_delete_data = DB::table('rider__accounts')
+                        ->whereIn('salik_id', $ra_deletes)
+                        ->delete();
         return response()->json([
-            'a'=>$performances,
+            'salik'=>$deletes,
+            'ca'=>$ca_deletes,
+            'ra'=>$ra_deletes,
+            'import_id'=>$import_id,
+            'salik_count'=>$salik_deletes,
+            'ca_count'=>$ca_delete_data,
+            'ra_count'=>$ra_delete_data
         ]);
 
     }

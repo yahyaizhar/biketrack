@@ -1249,7 +1249,7 @@ class AjaxNewController extends Controller
             //     $model = addslashes($model);
             //     return '<i class="fa fa-trash-alt"  onclick="deleteCompanyRows('.$company_statements->id.',\''.$model.'\','.$model_id.','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
             // } 
-            $model_id=$company_statements->source;
+            $model_id=addslashes($company_statements->source);
             $rider_id=$company_statements->rider_id;
             $string="source";
             $month=Carbon::parse($company_statements->month)->format('m');
@@ -2035,7 +2035,6 @@ class AjaxNewController extends Controller
             $riderFound = Rider::find($rider->id);
             $client_history = Client_History::all();
             $rider_id=$rider->id;
-            $month = '01-'.$month.'-'.Carbon::now()->format('Y');
             $history_found = Arr::first($client_history, function ($item, $key) use ($rider_id, $month) {
                 $start_created_at =Carbon::parse($item->assign_date)->startOfMonth()->format('Y-m-d');
                 $created_at =Carbon::parse($start_created_at);
@@ -2290,7 +2289,6 @@ class AjaxNewController extends Controller
             return '0';
         }) 
         ->addColumn('total_deduction', function($rider) use ($month) {
-            $month = '01-'.$month.'-'.Carbon::now()->format('Y');
             $rider_id = $rider->id;
 
             $startMonth = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
@@ -2361,7 +2359,6 @@ class AjaxNewController extends Controller
             return 0;
         })
         ->addColumn('net_salary', function($rider) use ($month) {
-            $month = '01-'.$month.'-'.Carbon::now()->format('Y');
             $rider_id = $rider->id;
 
             $startMonth = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
@@ -2440,7 +2437,6 @@ class AjaxNewController extends Controller
             return round($ra_salary,2);
         })
         ->addColumn('gross_salary', function($rider) use ($month) {
-            $month = '01-'.$month.'-'.Carbon::now()->format('Y');
             $rider_id = $rider->id;
 
             $startMonth = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
@@ -2621,7 +2617,6 @@ class AjaxNewController extends Controller
             return $poor_performance_sum;
         }) 
         ->addColumn('visa', function($rider) use ($month) {
-            $month = '01-'.$month.'-'.Carbon::now()->format('Y');
             $visa_sum=Rider_Account::where('source',"Visa Charges")
             ->where('rider_id',$rider->id)
             ->whereNotNull('id_charge_id')
@@ -3705,8 +3700,11 @@ class AjaxNewController extends Controller
         })
         ->addColumn('sim_bill', function($bills) use ($month){
             $rider_id=$bills->rider_id;
+            $only_month = Carbon::parse($month)->format('m');
+            $only_year = Carbon::parse($month)->format('Y');
             $sim_balance_allowed=Company_Account::where("rider_id",$rider_id)
-            ->whereMonth("month",$month)
+            ->whereMonth("month",$only_month)
+            ->whereYear("month",$only_year)
             ->where("source","Sim Transaction")
             ->get();
             $sim=0;
@@ -3721,7 +3719,8 @@ class AjaxNewController extends Controller
             
             $tempextra="";
             $sim_extra_usage=Company_Account::where("rider_id",$rider_id)
-            ->whereMonth("month",$month)
+            ->whereMonth("month",$only_month)
+            ->whereYear("month",$only_year)
             ->where("source","Sim extra usage")
             ->get();
             foreach ($sim_extra_usage as $value) {
@@ -3747,8 +3746,11 @@ class AjaxNewController extends Controller
         ->addColumn('bike_rent', function($bills) use ($month){
             $rider_id=$bills->rider_id;
             $rent=0;
+            $only_month = Carbon::parse($month)->format('m');
+            $only_year = Carbon::parse($month)->format('Y');
             $bike_rent=Company_Account::where("rider_id",$rider_id)
-            ->whereMonth("month",$month)
+            ->whereMonth("month",$only_month)
+            ->whereYear("month",$only_year)
             ->where("source","Bike Rent")
             ->get();
            foreach ($bike_rent as $item) {
@@ -3771,12 +3773,16 @@ class AjaxNewController extends Controller
         // })
         ->addColumn('bike_fine', function($bills) use ($month){
             $rider_id=$bills->rider_id;
+            $only_month = Carbon::parse($month)->format('m');
+            $only_year = Carbon::parse($month)->format('Y');
             $_bike_fine=Company_Account::where("rider_id",$rider_id)
-            ->whereMonth("month",$month)
+            ->whereMonth("month",$only_month)
+            ->whereYear("month",$only_year)
             ->where("source","Bike Fine")
             ->get();
             $_bike_fine_paid=Company_Account::where("rider_id",$rider_id)
-            ->whereMonth("month",$month)
+            ->whereMonth("month",$only_month)
+            ->whereYear("month",$only_year)
             ->where("source","Bike Fine Paid")
             ->get();
             $bike_fine=0;
@@ -3806,8 +3812,11 @@ class AjaxNewController extends Controller
         })
         ->addColumn('fuel', function($bills) use ($month){
             $rider_id=$bills->rider_id;
+            $only_month = Carbon::parse($month)->format('m');
+            $only_year = Carbon::parse($month)->format('Y');
             $fuel_expense_val=Company_Account::where("rider_id",$rider_id)
-            ->whereMonth("month",$month)
+            ->whereMonth("month",$only_month)
+            ->whereYear("month",$only_year)
             ->whereNotNull("fuel_expense_id")
             ->get();
             $fuel=0;
@@ -3836,8 +3845,11 @@ class AjaxNewController extends Controller
         })
         ->addColumn('salik', function($bills) use ($month){
             $rider_id=$bills->rider_id;
+            $only_month = Carbon::parse($month)->format('m');
+            $only_year = Carbon::parse($month)->format('Y');
             $_salik=Company_Account::where("rider_id",$rider_id)
-            ->whereMonth("month",$month)
+            ->whereMonth("month",$only_month)
+            ->whereYear("month",$only_year)
             ->where("source","Salik")
             ->get();
             $salik=0;
@@ -3848,7 +3860,8 @@ class AjaxNewController extends Controller
                 $status=$value->payment_status;
             }
             $_salik_extra=Company_Account::where("rider_id",$rider_id)
-            ->whereMonth("month",$month)
+            ->whereMonth("month",$only_month)
+            ->whereYear("month",$only_year)
             ->where("source","Salik Extra")
             ->get();
             foreach ($_salik_extra as $value) {
@@ -3870,8 +3883,11 @@ class AjaxNewController extends Controller
         })
         ->addColumn('salary', function($bills) use ($month){
             $rider_id=$bills->rider_id;
+            $only_month = Carbon::parse($month)->format('m');
+            $only_year = Carbon::parse($month)->format('Y');
             $salary=Rider_Account::where("rider_id",$rider_id)
-            ->whereMonth("month",$month)
+            ->whereMonth("month",$only_month)
+            ->whereYear("month",$only_year)
             ->where("source","salary")
             ->get()
             ->first();
@@ -3893,7 +3909,8 @@ class AjaxNewController extends Controller
         $invoices = Invoice::with('Invoice_item')->orderByDesc('created_at')->get();
         return DataTables::of($invoices)
         ->addColumn('invoice', function($invoice){
-            return $invoice->id;
+            if($invoice->invoice_id != null) return $invoice->invoice_id;
+            return 'No Invoice id';
         })
         ->addColumn('client_name', function($invoice){
             $client=Client::find($invoice->client_id);

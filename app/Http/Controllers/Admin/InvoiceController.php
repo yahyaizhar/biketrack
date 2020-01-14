@@ -515,6 +515,7 @@ class InvoiceController extends Controller
                 $riders_count = count($client_riders);
 
                 $client_incomes=Client_Income::with('Client')->with('Rider')->whereMonth('month',$month)
+                ->where('client_id', $client_id)
                 ->get();
                 if (count($client_incomes) == 0) {
                     //client payout sheet isnot imported

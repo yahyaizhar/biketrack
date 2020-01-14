@@ -253,7 +253,7 @@ $(function() {
     // performance_table = $('').DataTable({
         var _settings={   
             processing: true,
-            lengthMenu: [[-1], ["All"]],
+            lengthMenu: [[50,-1], [50,"All"]],
             serverSide: false,
         'language': {
             'loadingRecords': '&nbsp;',
