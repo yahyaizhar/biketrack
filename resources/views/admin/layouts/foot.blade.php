@@ -603,6 +603,7 @@ console.log = function() {
 		old_log.apply(this, arguments);
 	} 
 }
+// console.log = function() {}
 console.warn = function() {}
 console.info = function() {}
 

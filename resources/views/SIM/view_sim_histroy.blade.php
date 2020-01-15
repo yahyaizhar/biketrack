@@ -130,7 +130,7 @@ function updateDates(rider_id,assign_sim_id,created,updated){
                             </div>
         
                             <div class="kt-widget__subhead">
-                                <a onclick="updateAllowedBalance({{$history->allowed_balance}},{{$rider->id}},{{$hasSim['id']}},this)"><i class="flaticon-coins"></i>Allowed Balance:&nbsp;<span class="balance_allowed">{{$history->allowed_balance}}</span></a>
+                                <a onclick="updateAllowedBalance({{$history->allowed_balance}},{{$rider->id}},{{$history->id}},this)"><i class="flaticon-coins"></i>Allowed Balance:&nbsp;<span class="balance_allowed">{{$history->allowed_balance}}</span></a>
                                 <a>
                                     <i class="flaticon2-calendar-3"></i>
                                     Sim Id: <strong>{{$hasSim['id']}}</strong>
@@ -229,7 +229,7 @@ function updateDates(rider_id,assign_sim_id,created,updated){
         
                             <div class="kt-widget__subhead">
                                 
-                                <a><i class="flaticon2-calendar-3"></i>Allowed Balance:&nbsp;{{$history->allowed_balance}} </a>
+                                <a onclick="updateAllowedBalance({{$history->allowed_balance}},{{$rider->id}},{{$history->id}},this)"><i class="flaticon2-calendar-3"></i>Allowed Balance:&nbsp;{{$history->allowed_balance}} </a>
                                 {{-- <a><i class="fa fa-motorcycle"></i>{{ $bike1['bike_number'] }}</a> --}}
                                 <a>
                                     <i class="flaticon2-calendar-3"></i>
@@ -327,7 +327,7 @@ function updateDates(rider_id,assign_sim_id,created,updated){
                             <input type="hidden" name="assign_sim_id" id="assign_sim_id">
                             <div class="form-group">
                                 <label>Allowed Balance:</label>
-                                <input  type="number" required class="form-control" name="allowed_balance" placeholder="Enter Balance" value="">
+                                <input  type="number" step="0.01" required class="form-control" name="allowed_balance" placeholder="Enter Balance" value="">
                             </div>
                             <div class="modal-footer border-top-0 d-flex justify-content-center">
                                 <button class="upload-button btn btn-success">Save</button>
@@ -345,7 +345,7 @@ function updateDates(rider_id,assign_sim_id,created,updated){
 <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
 
 <script>
-    function updateAllowedBalance(allowed_balance,rider_id,sim_id,_this){
+    function updateAllowedBalance(allowed_balance,rider_id,sim_history_id,_this){
         $("#allowed_balance").modal("show");
         $('[name="allowed_balance"]').val(allowed_balance);
         console.log(_this);
@@ -353,7 +353,7 @@ function updateDates(rider_id,assign_sim_id,created,updated){
         e.preventDefault();
         var _form = $(this);
         var _modal = _form.parents('.modal');
-        var url = "{{ url('admin/sim/allowed/balance') }}" + "/" + rider_id + "/update" + "/" + sim_id;
+        var url = "{{ url('admin/sim/allowed/balance') }}" + "/" + rider_id + "/update" + "/" + sim_history_id;
         swal.fire({
             title: 'Are you sure?',
             text: "You want update Allowed Balance!",

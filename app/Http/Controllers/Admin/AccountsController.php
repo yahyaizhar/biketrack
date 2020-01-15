@@ -790,6 +790,7 @@ class AccountsController extends Controller
         $startMonth = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
         $month = Carbon::parse($month)->format('Y-m-d');
         $onlyMonth = Carbon::parse($month)->format('m');
+        $onlyYear = Carbon::parse($month)->format('Y');
 
         $is_update = $r->update;
         if($is_update==true || $is_update=='true'){
@@ -900,6 +901,7 @@ class AccountsController extends Controller
         $working_hours=0;
         $less_time=0;
         $bonus=0;
+        $absent_app=0;
 
 
         //some static_data
@@ -915,7 +917,11 @@ class AccountsController extends Controller
             ->get()->first();  
             
             if(isset($ra_zomatos)){
-
+                
+                $absent_app=$ra_zomatos->approve_absents;
+                $absent_approve_hours=$absent_app*$_s_maxHours;
+                $calculated_absent_hours=$absent_approve_hours*$_s_hoursFormula;
+                
                 $absent_count=$ra_zomatos->absents_count;
                 $working_count=$ra_zomatos->working_days;
 
@@ -967,8 +973,40 @@ class AccountsController extends Controller
             }
         }
         else { // other clients
+            if($pm==''){
+                # no client was found undr this rider
+                return response()->json([
+                    'status'=>0,
+                    'msg'=>'No client assigned to this rider.'
+                ]);
+            }
             if($pm=='fixed_based'){
-                $fixed_salary=isset($client_setting['fb_sm__amount'])?$client_setting['fb_sm__amount']:0;
+                $basic_salary=isset($client_setting['fb_sm__amount'])?$client_setting['fb_sm__amount']:0;
+                $client_income=Client_Income::where("rider_id",$rider_id)
+                ->whereMonth("month",$onlyMonth)
+                ->whereYear("month",$onlyYear)
+                ->get()->first(); 
+                if(isset($client_income)){
+                    $basic_salary = isset($basic_salary)?$basic_salary:0;
+                    $fb__working_hours = $client_income->total_hours;
+                    $fb__extra_hours = $client_income->extra_hours;
+
+                    $fb__perHourSalary = $basic_salary/$fb__working_hours;
+                    $extra_salary = $fb__perHourSalary * $fb__extra_hours;
+
+                    $fixed_salary = $basic_salary + $extra_salary;
+                    $ra_salary= $fixed_salary + $ra_cr;
+                    $ra_recieved=$ra_salary - $ra_payable;
+                    $total_salary_amt = $fixed_salary;
+                }
+                else {
+                    # no record found in income zomato table --generate error
+                    return response()->json([
+                        'status'=>0,
+                        'msg'=>'No Payout found against this rider.'
+                    ]);
+                }
+                 
             }
             if($pm=='trip_based'){
                 # no FEID found and FEID is cumpulsory for trip based rider
@@ -977,17 +1015,8 @@ class AccountsController extends Controller
                     'msg'=>'No FEID found against this rider.'
                 ]);
             }
-            if($pm==''){
-                # no client was found undr this rider
-                return response()->json([
-                    'status'=>0,
-                    'msg'=>'No client assigned to this rider.'
-                ]);
-            }
-            $fixed_salary = isset($fixed_salary)?$fixed_salary:0;
-            $ra_salary= $fixed_salary + $ra_cr;
-            $ra_recieved=$ra_salary - $ra_payable;
-            $total_salary_amt = $fixed_salary;
+            
+            
         }
 
         $is_generated= Rider_salary::where('rider_id',$rider_id)
@@ -1013,6 +1042,13 @@ class AccountsController extends Controller
             $is_paid_salary=false;
        }
 
+       //fixed based client
+       $basic_salary=isset($basic_salary)?$basic_salary:0;
+       $fb__working_hours=isset($fb__working_hours)?$fb__working_hours:0;
+       $fb__extra_hours=isset($fb__extra_hours)?$fb__extra_hours:0;
+       $fb__perHourSalary=isset($fb__perHourSalary)?$fb__perHourSalary:0;
+       //end fixed based client
+
        $salary_hours=isset($salary_hours)?$salary_hours:0;
        $salary_trips=isset($salary_trips)?$salary_trips:0;
        $salary_credits=isset($salary_credits)?$salary_credits:0;
@@ -1022,6 +1058,7 @@ class AccountsController extends Controller
        $hours=isset($hours)?$hours:0;
        $hours_payable=isset($hours_payable)?$hours_payable:0;
        $trips_payable=isset($trips_payable)?$trips_payable:0;
+       $calculated_absent_hours=isset($calculated_absent_hours)?$calculated_absent_hours:0;
        $trips_EXTRA=isset($trips_EXTRA)?$trips_EXTRA:0;
        $trips_EXTRA_payable=isset($trips_EXTRA_payable)?$trips_EXTRA_payable:0;
        $less_time=isset($less_time)?$less_time:0;
@@ -1054,6 +1091,8 @@ class AccountsController extends Controller
             'trips'=>round($trips,2),
             'hours'=>round($hours,2),
             'bonus'=>$bonus,
+            'absent_approve_hours'=>$absent_approve_hours,
+            'calculated_absent_hours'=>round($calculated_absent_hours,2),
             
             'hours_payable'=>round($hours_payable,2),
             'trips_payable'=>round($trips_payable,2),
@@ -1061,6 +1100,11 @@ class AccountsController extends Controller
             'trips_EXTRA_payable'=>round($trips_EXTRA_payable,2),
             'less_time'=>round($less_time,2),
             'payable_hours'=>round($payable_hours,2),
+
+            'basic_salary'=>round($basic_salary,2),
+            'fb__working_hours'=>round($fb__working_hours,2),
+            'fb__extra_hours'=>round($fb__extra_hours,2),
+            'fb__perHourSalary'=>round($fb__perHourSalary,2),
 
             '_s_maxTrips'=>round($_s_maxTrips,2),
             '_s_tripsFormula'=>round($_s_tripsFormula,2),
@@ -2742,6 +2786,52 @@ public function client_income_update(Request $request,$id){
          return response()->json([
              'status'=>1
          ]);
+     }
+     public function absents_status($rider_id,$month,$rider_payout_date,$status){
+         $absent_rider_payout=Riders_Payouts_By_Days::where("date",$rider_payout_date)
+         ->where("rider_id",$rider_id)
+         ->get()
+         ->first();
+         if (isset($absent_rider_payout)) {
+            if ($absent_rider_payout->absent_status=="Rejected" || $absent_rider_payout->absent_status==null) {
+             if ($status=="approved") {
+                $absent_rider_payout->absent_status="Approved";
+                $zomato_id=$absent_rider_payout->zomato_income_id;
+                $income_zomato=Income_zomato::find($zomato_id);
+                if(isset($income_zomato)){
+                    $income_zomato->absents_count=($income_zomato->absents_count)-1;
+                    $income_zomato->approve_absents+=1;
+                    $income_zomato->save();
+                } 
+             }
+             if ($status=="rejected") {
+                $absent_rider_payout->absent_status="Rejected";
+             }
+             $absent_rider_payout->save();
+            }
+            else{
+                if ($status=="approved") {
+                    $absent_rider_payout->absent_status="Approved";
+                 }
+                 if ($status=="rejected") {
+                    $absent_rider_payout->absent_status="Rejected";
+                    $zomato_id=$absent_rider_payout->zomato_income_id;
+                    $income_zomato=Income_zomato::find($zomato_id);
+                    if(isset($income_zomato)){
+                        $income_zomato->absents_count=($income_zomato->absents_count)+1;
+                        $income_zomato->approve_absents-=1;
+                        $income_zomato->save();
+                    } 
+                 }
+                 $absent_rider_payout->save();
+            }
+         }
+         return response()->json([
+            'rider_id'=>$rider_id,
+            'month'=>$month,
+            'rider_payout_date'=>$rider_payout_date,
+            'status'=>$status,
+        ]);
      }
     
 }

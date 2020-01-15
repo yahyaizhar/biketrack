@@ -321,7 +321,7 @@ class bikeController extends Controller
         $ce->rider_id=$r->rider_id;
         $ce->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ce->description="Bike rent remaining amount";
-        $ce->save();
+        // $ce->save();
       }
       return redirect(route('bike.bike_view'));
       
