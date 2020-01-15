@@ -139,12 +139,6 @@
                                 <input type="text" required readonly class="form-control col-md-3" name="extra_trips_amount" value="" >
                             </div>
                             <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
-                                <input type="text" required readonly class="form-control col-md-3"  value="Approve Absents Hours" >
-                                <input type="text" required readonly class="form-control col-md-3" name="absent_hours" value="" >
-                                <input type="text" required readonly class="form-control col-md-3" name="absent_hours_multiply_with"  value="" >
-                                <input type="text" required readonly class="form-control col-md-3" name="absent_hours_amount" value="" >
-                            </div>
-                            <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
                                 <input type="text" required readonly class="form-control col-md-6" value="Final Salary" >
                                 <input type="text" required readonly class="form-control col-md-6" name="final_salary" value="" >
                             </div>
