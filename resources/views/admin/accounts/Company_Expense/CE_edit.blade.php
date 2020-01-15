@@ -69,7 +69,7 @@
                             </div>
                             <div class="form-group">
                                     <label>Amount:</label> 
-                                    <input disabled type="text" class="form-control @if($errors->has('amount')) invalid-field @endif"  name="amount" placeholder="Enter Amount" value="{{$edit_expense->amount}}">
+                                    <input disabled type="text" step="0.01" class="form-control @if($errors->has('amount')) invalid-field @endif"  name="amount" placeholder="Enter Amount" value="{{$edit_expense->amount}}">
                                         @if ($errors->has('amount'))
                                             <span class="invalid-response" role="alert">
                                                 <strong>
@@ -190,7 +190,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Amount:</label>
-                                <input required type="number" class="form-control @if($errors->has('amount')) invalid-field @endif" name="amount" placeholder="Enter Amount" value="{{$edit_expense->amount}}">
+                                <input required type="number" step="0.01" class="form-control @if($errors->has('amount')) invalid-field @endif" name="amount" placeholder="Enter Amount" value="{{$edit_expense->amount}}">
                                 @if ($errors->has('amount'))
                                     <span class="invalid-response" role="alert">
                                         <strong>

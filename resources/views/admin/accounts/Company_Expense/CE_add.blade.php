@@ -77,7 +77,7 @@
                         
                         <div class="form-group">
                             <label>Amount:</label>
-                            <input required type="number" class="form-control @if($errors->has('amount')) invalid-field @endif" name="amount" placeholder="Enter Amount" value="0">
+                            <input required type="number" step="0.01" class="form-control @if($errors->has('amount')) invalid-field @endif" name="amount" placeholder="Enter Amount" value="0">
                             @if ($errors->has('amount'))
                                 <span class="invalid-response" role="alert">
                                     <strong>
