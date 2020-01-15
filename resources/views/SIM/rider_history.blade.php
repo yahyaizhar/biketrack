@@ -65,8 +65,8 @@
                                             <div class="kt-widget__desc">
                                                 {{ $rider->address }}
                                                 @php
-                                                    $mytimestamp = strtotime($history['created_at']);
-                                                    $timestampupdated=strtotime($history['updated_at']);
+                                                    $mytimestamp = strtotime($history['given_date']);
+                                                    $timestampupdated=strtotime($history['return_date']);
                                                 @endphp
                                                 @if($history->status=='active')
                                                     <h6 style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}}</h6>
@@ -134,8 +134,8 @@
                                         <div class="kt-widget__desc">
                                             {{ $rider->address }}
                                             @php
-                                                $mytimestamp = strtotime($history['created_at']);
-                                                $timestampupdated=strtotime($history['updated_at']);
+                                                $mytimestamp = strtotime($history['given_date']);
+                                                $timestampupdated=strtotime($history['return_date']);
                                             @endphp
                                             @if($history->status=='active')
                                                 <h6 style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}}</h6>
