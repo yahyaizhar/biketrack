@@ -26,9 +26,22 @@
                     {{ csrf_field() }}
                     <div class="kt-portlet__body">
                         <div class="form-group">
+                            <label>Given date:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="">
+                            @if ($errors->has('given_date'))
+                                <span class="invalid-response" role="alert">
+                                    <strong>
+                                        {{ $errors->first('given_date') }}
+                                    </strong>
+                                </span>
+                            @else
+                                <span class="form-text text-muted">Please enter Given Month</span>
+                            @endif
+                        </div>
+                        <div class="form-group">
                             <label>Month:</label>
-                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
-                            @if ($errors->has('month'))
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M , Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                            @if ($errors->has('month')) 
                                 <span class="invalid-response" role="alert">
                                     <strong>
                                         {{ $errors->first('month') }}
@@ -37,6 +50,17 @@
                             @else
                                 <span class="form-text text-muted">Please enter Month</span>
                             @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Type:</label>
+                         <select class="form-control" id="type" name="type">
+                             <option selected disabled>Please Select Any Type</option>
+                             @if($CompanyExpenseType)
+                             @foreach($CompanyExpenseType as $type)
+                             <option value="{{$type->type_name}}">{{$type->type_name}}</option>
+                             @endforeach
+                             @endif
+                         </select>
                         </div>
 
                         <div class="form-group">
@@ -50,19 +74,6 @@
                                 </span>
                             @endif
                         </div>
-
-                        {{-- <div class="form-group">
-                            <label>Select Rider:</label>
-                            <select class="form-control kt-select2" id="kt_select2_3" name="rider_id" >
-                                <option value="">No rider<option>
-                                @foreach ($riders as $rider)
-                                    <option value="{{ $rider->id }}">
-                                        {{ $rider->name }}
-                                    </option>     
-                                @endforeach 
-                           </select> 
-                       </div> --}}
-                      
                         
                         <div class="form-group">
                             <label>Amount:</label>
@@ -75,7 +86,22 @@
                                 </span>
                             @endif
                         </div>
-                    <div class="form-group kt-checkbox-list" id="check_hide">
+                        <div class="form-group">
+                                <label>Paid by:</label>
+                            <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " name="paid_by" style="width: 13px !important;" value="cash" required=""><h6 class="title" style="margin-top: 10px; margin-left: 10px; cursor: pointer;">Cash</h6></div>
+                            <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " name="paid_by" style="width: 13px !important;" value="bank" required=""><h6 class="title" style="margin-top: 10px; margin-left: 10px; cursor: pointer;">Bank</h6></div>
+                        
+                        </div>
+                        <div class="form-group account_namecheck" style="display:none;">
+                            <label for="account_no">Account name</label>
+                            <select class="form-control" id="account-no" name="account_no">
+                            <option selected disabled>please select account name</option>
+                            @foreach($banks as $bank)
+                            <option>{{$bank->name}}</option>
+                            @endforeach
+                            <select>
+                        </div>
+                    <div class="form-group kt-checkbox-list" id="check_hide" style="display:none;">
                         <label class="kt-checkbox" id="investment_amount" >
                                 <input type="checkbox" name="investment_amount">
                                 <input type="hidden" name="checkbox_amount">
@@ -149,7 +175,7 @@ $(document).ready(function(){
                 var _res_available_balance=avilable_balance-amount;
                  $('#available_balance').text(_res_available_balance);
                  if (_res>_res_available_balance) {
-                    $("#check_hide").show(); 
+                    // $("#check_hide").show(); 
                     $('#investment_amount')[0].childNodes[2].textContent = 'Add '+_res+' AED amount as Company Investment By Admin'; 
                     $('#CE [name="checkbox_amount"]').val(_res);
                  }else{
@@ -159,6 +185,28 @@ $(document).ready(function(){
         });
     });
     $('#CE [name="month"]').trigger("change");
+
+    $("#type").select2({
+        tags: true,
+        selectOnBlur: true
+    });
+
+    ///on title click, check its siblings input
+    $('h6.title').click(function(){
+    $(this).siblings('input').prop('checked',true).change();
+    })
+
+    ///check payment method
+        $('[name="paid_by"]').change(function(){
+        if($(this).val()=="bank"){
+            $('.account_namecheck').show();
+            $("#account-no").select2({
+            });
+            }else{
+            $('.account_namecheck').hide();
+            }
+        })
+    
 });
 
 </script>

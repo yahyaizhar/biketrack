@@ -155,6 +155,7 @@
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/datatables/basic/basic.js') }}" type="text/javascript"></script>
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/select2.js') }}" type="text/javascript"></script>
 <script>
+    var table;
     var month=null;
     var rider=null;
 $(document).ready(function(){
@@ -258,7 +259,7 @@ $('[name="sort_by"]').on('change', function(){
 
         var getData = function(ranges){
             var url = "{{ url('admin/accounts/company/overall/account/') }}"+"/"+ranges;
-            console.warn(url)
+            console.log(url)
             table = $('#CO_report').DataTable({
                 lengthMenu: [[-1], ["All"]],
                 destroy: true,
@@ -271,7 +272,13 @@ $('[name="sort_by"]').on('change', function(){
                     'processing': $('.loading').show()
                 },
                 drawCallback:function(data){
-                    var response = table.ajax.json(); 
+                    var api = this.api();
+                    var _data = api.data();
+                    console.log(_data,'datadatadata');
+                    var response = _data.ajax.json(); 
+                     if(typeof response=="undefined"){
+                         return;
+                     }
                     var _overall_balnce = response.overall_balnce;
                     var _total_profit = response.total_profit;
                     var _overall_balnce_monthly = response.overall_balnce_monthly;

@@ -15,14 +15,15 @@ class CreateCompanyExpensesTable extends Migration
     {
         Schema::create('company__expenses', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('rider_id')->nullable();
+            $table->string('given_date')->nullable();
+            $table->string('month')->nullable();
+            $table->string('type')->nullable();
             $table->string('description')->nullable();
             $table->string('amount')->nullable();
-            $table->string('month')->nullable();
+            $table->string('paid_by')->nullable();
             $table->string('bill_picture')->nullable();
-            $table->string('status')->nullable();
+            $table->string('account_no')->nullable();
             $table->string('active_status')->default("A");
-            $table->string('setting')->nullable();
             $table->timestamps();
         });
     }

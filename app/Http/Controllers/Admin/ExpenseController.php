@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Model\Expence\Company_CD;
-use carbon\carbon;
+use carbon\carbon; 
 use App\Model\Accounts\Company_Expense;
+use App\Model\Accounts\CompanyExpenseType;
 use App\Model\Accounts\Company_Account;
 use App\Model\Accounts\Rider_Account;
 use App\Model\Rider\Rider;
+use App\Model\Bank\Bank_account;
 use App\Model\Accounts\WPS;
 use App\Model\Accounts\AdvanceReturn;
 use App\Company_investment;
@@ -25,93 +27,62 @@ class ExpenseController extends Controller
     }
     // Company Expense
     public function CE_index(){
+        $banks = Bank_account::where("active_status","A")->get();
+        $CompanyExpenseType = CompanyExpenseType::where("status","A")->get();
         $riders=Rider::where("active_status","A")->get();
         $available_balance=Company_Account::where("type","pl")->sum("amount");
-        return view('admin.accounts.Company_Expense.CE_add', compact('riders','available_balance'));
+        return view('admin.accounts.Company_Expense.CE_add', compact('riders','available_balance','banks','CompanyExpenseType'));
     }
     public function CE_store(Request $r){
         $ce=new Company_Expense();
+        $t=new CompanyExpenseType();
         $ce->amount=$r->amount;
-        $ce->rider_id=$r->rider_id;
-        $ce->month = Carbon::parse($r->get('month'))->format('Y-m-d');
+        $t->type_name=$r->type;
+        $ce->type=$r->type;
         $ce->description=$r->description;
-        $ce->status = 1;
+        $ce->paid_by=$r->paid_by;
+        $ce->account_no=$r->account_no;
+        $ce->given_date = Carbon::parse($r->get('given_date'))->format('Y-m-d');
+        $ce->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         if($r->hasFile('bill_picture'))
         {
-            // return 'yes';
             $filename = $r->bill_picture->getClientOriginalName();
             $filesize = $r->bill_picture->getClientSize();
-            // $filepath = $request->profile_picture->storeAs('public/uploads/riders/profile_pics', $filename);
             $filepath = Storage::putfile('public/uploads/riders/bill_picture', $r->file('bill_picture'));
             $ce->bill_picture = $filepath;
         }
         $ce->save();
-        
-        $rider_id = null;
-        if(isset($ce->rider_id) && $ce->rider_id!=""){
-            $rider_id = $ce->rider_id;
+        if(CompanyExpenseType::where("type_name",$r->type)->count() <= 0){
+            $t->save();
         }
-        $ca = new Company_Account();
-        $ca->type='dr';
-        $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
-        $ca->amount=$r->amount;
-        $ca->rider_id=$rider_id;
-        $ca->source=$ce->description;
-        $ca->company_expense_id=$ce->id;
-        $ca->save();
-        
-        $checked=$r->investment_amount;
-        $amount=$r->amount;
-        $ca_credit=Company_Account::where("type","cr")->whereMonth('month',Carbon::parse($r->get('month'))->format('m'))->sum('amount');
-        $ca_debit=Company_Account::where("type","dr")->whereMonth('month',Carbon::parse($r->get('month'))->format('m'))->sum('amount');
-        $available_balance=$ca_credit-$ca_debit;
-        if ($amount>$available_balance) {
-            if($checked=="on"){
-                $kr_investment = Company_investment::create([
-                    'investor_id'=>Auth::user()->id,
-                    'amount'=>$r->checkbox_amount,
-                    'notes'=>$r->description,
-                    'month' => Carbon::parse($r->get('month'))->format('Y-m-d'),
-                    'status'=>$r->status=='on'?1:0,
-                ]);
-
-                $ca_inv = new Company_Account();
-                $ca_inv->type='cr';
-                $ca_inv->month = Carbon::parse($r->get('month'))->format('Y-m-d');
-                $ca_inv->amount=$r->checkbox_amount;
-                $ca_inv->source="Investment";
-                $ca_inv->investment_id= $kr_investment->id;
-                $ca_inv->payment_status='paid';
-                $ca_inv->save();
-         }
-        }
-        
-        
         return redirect(route('admin.CE_view'));
     }
     public function CE_view(){
         return view('admin.accounts.Company_Expense.CE_view');
     }
     public function CE_update(Request $r,$id){
+        // return $r;
         $ce=Company_Expense::find($id);
-        $ce->amount=$r->amount;
+        $t=new CompanyExpenseType();
+        $t->type_name=$r->type;
+        $ce->type=$r->type;
+        $ce->given_date = Carbon::parse($r->get('given_date'))->format('Y-m-d');
         $ce->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ce->description=$r->description;
-        if($r->status)
-                $ce->status = 1;
-            else
-                $ce->status = 0;
+        $ce->amount=$r->amount;
+        $ce->paid_by=$r->paid_by;
+        if(isset($r->account_no)){
+        $ce->account_no=$r->account_no;
+        }
+        if($r->hasFile('bill_picture'))
+        {
+            $filepath = Storage::putfile('public/uploads/riders/bill_picture', $r->file('bill_picture'));
+            $ce->bill_picture = $filepath;
+        }
         $ce->update();
-        
-        $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
-            'company_expense_id'=>$ce->id
-        ]);
-        $ca->type='dr';
-        $ca->month = Carbon::parse($r->get('month'))->format('Y-m-d');
-        $ca->amount=$r->amount;
-        $ca->source='company_expense';
-        $ca->company_expense_id=$ce->id;
-        $ca->update();
+        if(CompanyExpenseType::where("type_name",$r->type)->count() <= 0){
+            $t->save();
+        }
         return redirect(route('admin.CE_edit_view',$ce->id));
     }
     public function CE_delete($id)
@@ -146,9 +117,11 @@ class ExpenseController extends Controller
 public function CE_edit($id){
     $readonly=false;
     $riders=Rider::where('active_status','A')->get();
+    $CompanyExpenseType = CompanyExpenseType::where("status","A")->get();
     $edit_expense=Company_Expense::find($id);
+    $banks = Bank_account::where("active_status","A")->get();
     $available_balance=Company_Account::where("type","pl")->sum("amount");
-    return view('admin.accounts.Company_Expense.CE_edit',compact('riders','readonly','edit_expense','available_balance'));
+    return view('admin.accounts.Company_Expense.CE_edit',compact('riders','readonly','edit_expense','available_balance','banks','CompanyExpenseType'));
 }
 public function CE_edit_view($id){
     $readonly=true;

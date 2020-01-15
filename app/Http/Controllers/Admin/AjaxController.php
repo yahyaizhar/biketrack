@@ -31,6 +31,7 @@ use App\Model\Mobile\Mobile_installment;
 use App\Model\Rider\Rider_Performance_Zomato;
 use App\Assign_bike;
 use App\WebRoute;
+use App\Model\Bank\Bank_account;
 use App\Model\Rider\Trip_Detail;
 use App\Model\Accounts\Company_Account;
 use App\Model\Accounts\Rider_Account;
@@ -622,7 +623,23 @@ class AjaxController extends Controller
         ->make(true);
     }
 
-
+    public function getBanks()
+    {
+        $bank = Bank_account::orderByDesc('created_at')->where('active_status', 'A')->get();
+        // return $clients;
+        return DataTables::of($bank)
+        ->addColumn('id', function($bank){
+            return $bank->id;
+        })
+        ->addColumn('name', function($bank){
+           return $bank->name;
+        })
+        ->addColumn('account_no', function($bike){
+            return $bike->account_number;
+        })          
+        ->rawColumns(['id','name','account_no'])
+        ->make(true);
+    }
     public function getBikes()
     {
         $bike = bike::orderByDesc('created_at')->where('active_status', 'A')->get();

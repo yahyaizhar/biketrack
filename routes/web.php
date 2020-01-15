@@ -81,6 +81,8 @@ Route::group([
     Route::get('get/ajax/rider/performance','AjaxController@getRiderPerformance')->name('admin.ajax_performance');
     Route::get('get/ajax/rider/payouts/days','AjaxController@getRiderPayoutsByDays')->name('admin.getRiderPayoutsByDays');
     Route::get('/range/ajax/adt/{data}','AjaxController@getRiderRangesADT')->name('ajax.adt'); 
+    Route::get('/bankdata','AjaxController@getBanks')->name('bank.bank_show');
+
     Route::get('/bike_getData','AjaxController@getBikes')->name('bike.bike_show');
     Route::get('/bike_getData/active','AjaxController@getActiveBikes')->name('bike.bike_show.active');
     Route::get('/get/salik/bike/ajax/{id}','AjaxController@getSalik_Bike')->name('bike.ajax_salik_bike');
@@ -580,6 +582,8 @@ Route::group([
    Route::get('/invoice/tax_method/add','InvoiceController@add_tax_method')->name('invoice.add_tax_method');//ok [Invoice: add view detail]
    Route::post('/invoice/tax_method/store','InvoiceController@store_tax_method')->name('invoice.store_tax_method'); //ok [Invoice: save tax detail]
    Route::get('/invoice/bank_account/add','InvoiceController@add_bank_account')->name('invoice.add_bank_account'); //ok [Invoice: view bank detail]
+   Route::get('/invoice/bank_account/view','InvoiceController@view_bank_account')->name('invoice.view_bank_account'); //ok [Invoice: view bank detail]
+   
    Route::post('/invoice/bank_account/store','InvoiceController@store_bank_account')->name('invoice.store_bank_account'); //ok [Invoice: save bank detail]
    Route::get('/invoice/get/open/{client_id}','InvoiceController@getOpenIvoices')->name('invoice.getOpenIvoices'); //ok [Invoice:save invoice payment]
    Route::post('/invoice/payment/save','InvoiceController@save_payment')->name('invoice.save_payment'); //ok [Invoice:save invoice payment]

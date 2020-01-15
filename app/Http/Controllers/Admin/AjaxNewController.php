@@ -1587,6 +1587,9 @@ class AjaxNewController extends Controller
         ->addColumn('amount', function($expense){
             return $expense->amount;
         })
+        ->addColumn('type', function($expense){
+            return $expense->type;
+        })
         ->addColumn('description', function($expense){
             return $expense->description;
         })

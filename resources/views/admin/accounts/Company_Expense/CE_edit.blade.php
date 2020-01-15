@@ -19,10 +19,22 @@
                     
                     @include('admin.includes.message')
                         <div class="kt-portlet__body">
-                                
-                            <div class="form-group">
+                                <div class="form-group">
+                                        <label>Given date:</label>
+                                        <input readonly disabled type="text" data-month="{{Carbon\Carbon::parse($edit_expense->given_date)->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Month" value="">
+                                        @if($errors->has('given_date'))
+                                            <span class="invalid-response" role="alert">
+                                                <strong>
+                                                    {{ $errors->first('given_date') }}
+                                                </strong>
+                                            </span>
+                                        @else
+                                            {{-- <span class="form-text text-muted">Please enter Month</span> --}}
+                                        @endif
+                                    </div>
+                              <div class="form-group">
                                 <label>Month:</label>
-                                <input readonly type="text" data-month="{{Carbon\Carbon::parse($edit_expense->month)->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                                <input readonly disabled type="text" data-month="{{Carbon\Carbon::parse($edit_expense->month)->format('M d, Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
                                 @if ($errors->has('month'))
                                     <span class="invalid-response" role="alert">
                                         <strong>
@@ -30,8 +42,19 @@
                                         </strong>
                                     </span>
                                 @else
-                                    <span class="form-text text-muted">Please enter Month</span>
+                                    {{-- <span class="form-text text-muted">Please enter Month</span> --}}
                                 @endif
+                            </div>
+                            <div class="form-group">
+                                <label>Type:</label> 
+                                <input disabled type="text" class="form-control @if($errors->has('type')) invalid-field @endif"  name="typew" placeholder="Enter Type" value="{{$edit_expense->type}}">
+                                    @if ($errors->has('type'))
+                                        <span class="invalid-response" role="alert">
+                                            <strong>
+                                                {{$errors->first('type')}}
+                                            </strong>
+                                        </span>
+                                    @endif
                             </div>
                             <div class="form-group">
                                 <label>Description:</label> 
@@ -44,29 +67,28 @@
                                     </span>
                                 @endif
                             </div>
-    
-                            {{-- <div class="form-group">
-                                <label>Select Rider:</label>
-                                <select disabled class="form-control kt-select2" id="kt_select2_3" name="rider_id" >
-                                    <option value="">No rider<option>
-                                    @foreach ($riders as $rider)
-                                        <option @if($edit_expense->rider_id==$rider->id) selected @endif value="{{ $rider->id }}">
-                                            {{ $rider->name }}
-                                        </option>     
-                                    @endforeach 
-                                </select> 
-                            </div> --}}
                             <div class="form-group">
-                                <label>Amount:</label>
-                                <input disabled type="number" class="form-control @if($errors->has('amount')) invalid-field @endif" name="amount" placeholder="Enter Amount" value="{{$edit_expense->amount}}">
-                                @if ($errors->has('amount'))
-                                    <span class="invalid-response" role="alert">
-                                        <strong>
-                                            {{$errors->first('amount')}}
-                                        </strong>
-                                    </span>
-                                @endif
-                            </div>
+                                    <label>Amount:</label> 
+                                    <input disabled type="text" class="form-control @if($errors->has('amount')) invalid-field @endif"  name="amount" placeholder="Enter Amount" value="{{$edit_expense->amount}}">
+                                        @if ($errors->has('amount'))
+                                            <span class="invalid-response" role="alert">
+                                                <strong>
+                                                    {{$errors->first('amount')}}
+                                                </strong>
+                                            </span>
+                                        @endif
+                                </div>
+                                <div class="form-group">
+                                        <label>Paid by:</label> 
+                                <input disabled type="text" class="form-control @if($errors->has('amount')) invalid-field @endif"  name="paid_by" placeholder="Enter Amount" value="{{$edit_expense->paid_by}} @if($edit_expense->paid_by == 'bank') ({{$edit_expense->account_no}})@endif">
+                                            @if ($errors->has('paid_by'))
+                                                <span class="invalid-response" role="alert">
+                                                    <strong>
+                                                        {{$errors->first('paid_by')}}
+                                                    </strong>
+                                                </span>
+                                            @endif
+                                    </div>
                             <div class="col-lg-4 col-md-4 col-sm-12">
                                 @if($edit_expense->bill_picture)
                                     <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($edit_expense->bill_picture)) }}" alt="image">
@@ -108,9 +130,23 @@
                     <form class="kt-form" id="CE" action="{{ route('admin.CE_update',$edit_expense->id) }}" method="POST" enctype="multipart/form-data">
                         {{ csrf_field() }}
                         <div class="kt-portlet__body">
+                                <div class="form-group">
+                                        <label>Given date:</label>
+                                <input type="text" data-month="{{Carbon\Carbon::parse($edit_expense->given_date)->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Given Date" value="{{$edit_expense->given_date}}">
+                                        @if ($errors->has('given_date'))
+                                            <span class="invalid-response" role="alert">
+                                                <strong>
+                                                    {{ $errors->first('given_date') }}
+                                                </strong>
+                                            </span>
+                                        @else
+                                            {{-- <span class="form-text text-muted">Please enter Month</span> --}}
+                                        @endif
+                                    </div>
+
                             <div class="form-group">
                                 <label>Month:</label>
-                                <input type="text" data-month="{{Carbon\Carbon::parse($edit_expense->month)->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
+                                <input type="text" data-month="{{Carbon\Carbon::parse($edit_expense->month)->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="{{$edit_expense->month}}">
                                 @if ($errors->has('month'))
                                     <span class="invalid-response" role="alert">
                                         <strong>
@@ -118,13 +154,32 @@
                                         </strong>
                                     </span>
                                 @else
-                                    <span class="form-text text-muted">Please enter Month</span>
+                                    {{-- <span class="form-text text-muted">Please enter Month</span> --}}
                                 @endif
                             </div>
-                                
+                            <div class="form-group">
+                                    <label>Type:</label>
+                                    <select class="form-control select_typ" name="type">
+                                    @if($CompanyExpenseType)
+                                    @foreach($CompanyExpenseType as $type)
+                                    <option @if($edit_expense->type==$type->type_name) selected @endif value="{{$type->type_name}}">{{$type->type_name}}</option>
+                                    @endforeach
+                                    @endif
+                                    </select>
+                                    @if ($errors->has('type'))
+                                        <span class="invalid-response" role="alert">
+                                            <strong>
+                                                {{ $errors->first('type') }}
+                                            </strong>
+                                        </span>
+                                    @else
+                                        {{-- <span class="form-text text-muted">Please enter Month</span> --}}
+                                    @endif
+                                </div>
+                        
                             <div class="form-group">
                                 <label>Description:</label> 
-                            <textarea required type="text" class="form-control @if($errors->has('description')) invalid-field @endif" rows="5" cols="12" name="description" placeholder="Enter Description">{{$edit_expense->description}}</textarea>
+                                <textarea required type="text" class="form-control @if($errors->has('description')) invalid-field @endif" rows="5" cols="12" name="description" placeholder="Enter Description">{{$edit_expense->description}}</textarea>
                                 @if ($errors->has('description'))
                                     <span class="invalid-response" role="alert">
                                         <strong>
@@ -133,18 +188,6 @@
                                     </span>
                                 @endif
                             </div>
-    
-                            {{-- <div class="form-group">
-                                <label>Select Rider:</label>
-                                <select class="form-control kt-select2" id="kt_select2_3" name="rider_id" >
-                                    <option value="">No rider<option>
-                                    @foreach ($riders as $rider)
-                                        <option @if($edit_expense->rider_id==$rider->id) selected @endif value="{{ $rider->id }}">
-                                            {{ $rider->name }}
-                                        </option>     
-                                    @endforeach 
-                                </select> 
-                            </div> --}}
                             <div class="form-group">
                                 <label>Amount:</label>
                                 <input required type="number" class="form-control @if($errors->has('amount')) invalid-field @endif" name="amount" placeholder="Enter Amount" value="{{$edit_expense->amount}}">
@@ -156,13 +199,29 @@
                                     </span>
                                 @endif
                             </div>
-                            <div class="form-group kt-checkbox-list" id="check_hide">
+
+                            <div class="form-group editcheck">
+                                    <label>Paid by:</label>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " @if($edit_expense->paid_by=="cash") checked @endif name="paid_by" style="width: 13px !important;" value="cash" required=""><h6 class="title" style="margin-top: 10px; margin-left: 10px; cursor: pointer;">Cash</h6></div>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio"  class="form-control " @if($edit_expense->paid_by=="bank") checked @endif name="paid_by" style="width: 13px !important;" value="bank" required=""><h6 class="title" style="margin-top: 10px; margin-left: 10px; cursor: pointer;">Bank</h6></div>
+                            
+                            </div>
+                            <div class="form-group account_name">
+                                    <label>Account name:</label>
+                              <select class="form-control" name="account_no" id="account_no">
+                                  @foreach($banks as $bank)
+                              <option @if($bank->name == $edit_expense->account_no) selected @endif>{{$bank->name}}</option>
+                                  @endforeach
+                              </select>
+                            </div>
+
+                            {{-- <div class="form-group kt-checkbox-list" id="check_hide">
                                 <label class="kt-checkbox" id="investment_amount" >
                                         <input type="checkbox" name="investment_amount">
                                         <input type="hidden" name="checkbox_amount">
                                         <span></span>
                                 </label>
-                            </div>
+                            </div> --}}
                             <div class="col-lg-12 col-md-12 col-sm-12">
                                 <div class="form-group col-md-8 pull-right mtr-15">
                                     <div class="custom-file">
@@ -249,6 +308,31 @@
                 });
             });
             $('#CE [name="month"]').trigger("change");
+        ///on title click, check its siblings input
+             $('h6.title').click(function(){
+             $(this).siblings('input').prop('checked',true).change();
+            })
+            $("[name='account_no']").select2({
+            });
+            
+            $(".select_typ").select2({
+            tags: true,
+            selectOnBlur: true
+            });
+            ///on refresh check which paymont method is selected
+            var _paidval = $('.editcheck [name="paid_by"]:checked').val();
+            if(_paidval == "cash"){
+            $('.account_name').hide()
+            }
+            $('.editcheck [name="paid_by"]').change(function(){
+            if($(this).val() == "cash"){
+            $('.account_name').hide()
+            }else{
+                $('.account_name').show()
+                $("[name='account_no']").select2({
+            });
+            }
+            })
         });
         
         </script>

@@ -56,6 +56,7 @@
                         <th>Date</th>
                         <th>Description</th>
                         <th>Amount</th>
+                        <th>Type</th>
                         <th>Actions</th>                        
                     </tr>
                 </thead>
@@ -100,6 +101,7 @@ $(function() {
             { data: 'month', name: 'month' },
             { data: 'description', name: 'description' },            
             { data: 'amount', name: 'amount' },
+            { data: 'type', name: 'type' },
             { data: 'actions', name: 'actions' },
         ],
         responsive:true,

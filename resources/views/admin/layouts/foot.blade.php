@@ -584,13 +584,25 @@ else{
 })
 
 /////on search input change update the url
+// biketrack.show_logs
 $(document).on('keyup','input[type="search"]',function(){
         var _val = $('input[type="search"]').val();
         var newURL = biketrack.updateURLParameter2(window.location.href, 'search', _val);
         window.history.pushState({path:newURL},'',newURL);
 })
 
-console.log = function() {}
+biketrack.show_logs=false;
+if(sessionStorage.getItem("show_logs") == true || sessionStorage.getItem("show_logs") == "true"){
+    biketrack.show_logs= true;
+}
+
+console.log(biketrack.show_logs,'_shoelogs')
+var old_log = console.log;
+console.log = function() {
+	if(biketrack.show_logs) {
+		old_log.apply(this, arguments);
+	} 
+}
 console.warn = function() {}
 console.info = function() {}
 

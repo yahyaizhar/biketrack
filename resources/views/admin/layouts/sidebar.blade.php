@@ -992,6 +992,14 @@ color: #5d78ff !important;
                                     </a>
                                 </li>
                                 @endif
+                                
+                                @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='invoice.view_bank_account';   }); @endphp
+                                @if($is_in_array || $is_admin)
+                                <li class="kt-menu__item @if(strpos(Request::url(), "/invoice/bank_account/add") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                    <a href="{{ route('invoice.view_bank_account') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">View Bank Accounts</span>
+                                    </a>
+                                </li>
+                                @endif
 
                                 @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='invoice.invoive_payments';   }); @endphp
                                 @if($is_in_array || $is_admin)

@@ -585,6 +585,9 @@ class InvoiceController extends Controller
     public function add_bank_account(){
         return view('admin.Invoices.bank_accounts');
     }
+    public function view_bank_account(){
+        return view('admin.Invoices.view_bank_accounts');
+    }
     public function store_bank_account(Request $request){
         $BA = new Bank_account();
         $BA->name=$request->name;
