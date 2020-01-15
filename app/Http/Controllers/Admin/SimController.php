@@ -636,8 +636,8 @@ public function removeSim($rider_id,$sim_id){
         'status' => $deactive_sim,
     ]);
   }
-  public function update_allowed_abalance(Request $request,$rider_id,$sim_id){
-    $allowed_balance=Sim_History::where('sim_id', $sim_id)->where('rider_id', $rider_id)->get()->first();
+  public function update_allowed_abalance(Request $request,$rider_id,$sim_history_id){
+    $allowed_balance=Sim_History::find($sim_history_id);
     $allowed_balance->allowed_balance=$request->allowed_balance;
     $allowed_balance->update();
         return response()->json([
