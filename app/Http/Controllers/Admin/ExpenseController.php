@@ -88,7 +88,7 @@ class ExpenseController extends Controller
     public function CE_delete($id)
 { 
     $delete_expense=Company_Expense::find($id);
-    $delete_expense->status=0;
+    // $delete_expense->status=0;
     $delete_expense->active_status="D";
     $delete_expense->update();
 
