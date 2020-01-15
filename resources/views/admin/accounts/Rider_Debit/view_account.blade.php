@@ -1347,16 +1347,25 @@
         $("#view_upload_slip").modal("show");
         $(".show_salary_slip_image").html("");
         var _attr_image=$("#view-upload-slip").attr("data-image");
-        var _showImage=' <img class="profile-logo img img-thumbnail" src="'+_attr_image+'" alt="image"><div></div>'
+        var _showImage=' <img class="profile-logo img img-thumbnail" data-featherlight="'+_attr_image+'" src="'+_attr_image+'" alt="image"><div></div>'
         if (_attr_image!=0) {
             $(".show_salary_slip_image").show();
            $(".show_salary_slip_image").html(_showImage);
            $('form#upload_slip_view').find('[type="submit"]').html("Update Salary Slip");
+           $('[data-featherlight]').off('click').on('click', function(){
+                var imgURL = $(this).attr('data-featherlight');
+                setTimeout(function(){
+                    $('.featherlight .featherlight-image').wrap('<div />').parent().zoom({
+                        url: this.src,
+                        magnify:1
+                        });
+                },500);
+            });
         }
     });
-    $(".update_salary_slip_button").on("click",function(){
-        alert("aloo Bukhara ki chatni");
-    });
+
+    
+    
     $('form#upload_slip_view').on('submit', function(e){
             var _self = $(this);
             var rider_id=biketrack.getUrlParameter("rider_id");
