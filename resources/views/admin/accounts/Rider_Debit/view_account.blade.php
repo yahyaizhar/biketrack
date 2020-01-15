@@ -1352,15 +1352,15 @@
             $(".show_salary_slip_image").show();
            $(".show_salary_slip_image").html(_showImage);
            $('form#upload_slip_view').find('[type="submit"]').html("Update Salary Slip");
-           $('[data-featherlight]').off('click').on('click', function(){
-                var imgURL = $(this).attr('data-featherlight');
-                setTimeout(function(){
-                    $('.featherlight .featherlight-image').wrap('<div />').parent().zoom({
-                        url: this.src,
-                        magnify:1
-                        });
-                },500);
-            });
+        //    $('[data-featherlight]').off('click').on('click', function(){
+        //         var imgURL = $(this).attr('data-featherlight');
+        //         setTimeout(function(){
+        //             $('.featherlight .featherlight-image').wrap('<div />').parent().zoom({
+        //                 url: this.src,
+        //                 magnify:0.3
+        //                 });
+        //         },500);
+        //     });
         }
     });
 
