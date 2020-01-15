@@ -42,6 +42,7 @@ class CreateIncomeZomatosTable extends Migration
             $table->integer('extra_day')->nullable();
             $table->integer('working_days')->nullable();
             $table->integer('error')->nullable();
+            $table->integer('approve_absents')->nullable();
             $table->timestamps();
         });
     }

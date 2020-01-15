@@ -314,7 +314,7 @@ Route::group([
     
     /*[accounts - bike account]*/Route::get("/Salary/accounts/bike/account","AccountsController@bike_account")->name("admin.accounts.bike_account");
     Route::get('/rider/accounts/{id}/updateStatus','AccountsController@updatePaymentStatus')->name('Rider.updatePaymentStatus');//not_using
-
+    Route::get("/rider/rider_account/ajax/absents_status/{rider_id}/{month}/{rider_payout_date}/{status}","AccountsController@absents_status")->name("Rider.absents_status");
     
     
     /*[accounts - add rider expense]*/Route::get("/Salary/accounts/rider/expense","AccountsController@rider_expense_get")->name("admin.accounts.rider_expense_get");

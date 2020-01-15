@@ -901,6 +901,7 @@ class AccountsController extends Controller
         $working_hours=0;
         $less_time=0;
         $bonus=0;
+        $absent_app=0;
 
 
         //some static_data
@@ -916,7 +917,11 @@ class AccountsController extends Controller
             ->get()->first();  
             
             if(isset($ra_zomatos)){
-
+                
+                $absent_app=$ra_zomatos->approve_absents;
+                $absent_approve_hours=$absent_app*$_s_maxHours;
+                $calculated_absent_hours=$absent_approve_hours*$_s_hoursFormula;
+                
                 $absent_count=$ra_zomatos->absents_count;
                 $working_count=$ra_zomatos->working_days;
 
@@ -1053,6 +1058,7 @@ class AccountsController extends Controller
        $hours=isset($hours)?$hours:0;
        $hours_payable=isset($hours_payable)?$hours_payable:0;
        $trips_payable=isset($trips_payable)?$trips_payable:0;
+       $calculated_absent_hours=isset($calculated_absent_hours)?$calculated_absent_hours:0;
        $trips_EXTRA=isset($trips_EXTRA)?$trips_EXTRA:0;
        $trips_EXTRA_payable=isset($trips_EXTRA_payable)?$trips_EXTRA_payable:0;
        $less_time=isset($less_time)?$less_time:0;
@@ -1085,6 +1091,8 @@ class AccountsController extends Controller
             'trips'=>round($trips,2),
             'hours'=>round($hours,2),
             'bonus'=>$bonus,
+            'absent_approve_hours'=>$absent_approve_hours,
+            'calculated_absent_hours'=>round($calculated_absent_hours,2),
             
             'hours_payable'=>round($hours_payable,2),
             'trips_payable'=>round($trips_payable,2),
@@ -2778,6 +2786,52 @@ public function client_income_update(Request $request,$id){
          return response()->json([
              'status'=>1
          ]);
+     }
+     public function absents_status($rider_id,$month,$rider_payout_date,$status){
+         $absent_rider_payout=Riders_Payouts_By_Days::where("date",$rider_payout_date)
+         ->where("rider_id",$rider_id)
+         ->get()
+         ->first();
+         if (isset($absent_rider_payout)) {
+            if ($absent_rider_payout->absent_status=="Rejected" || $absent_rider_payout->absent_status==null) {
+             if ($status=="approved") {
+                $absent_rider_payout->absent_status="Approved";
+                $zomato_id=$absent_rider_payout->zomato_income_id;
+                $income_zomato=Income_zomato::find($zomato_id);
+                if(isset($income_zomato)){
+                    $income_zomato->absents_count=($income_zomato->absents_count)-1;
+                    $income_zomato->approve_absents+=1;
+                    $income_zomato->save();
+                } 
+             }
+             if ($status=="rejected") {
+                $absent_rider_payout->absent_status="Rejected";
+             }
+             $absent_rider_payout->save();
+            }
+            else{
+                if ($status=="approved") {
+                    $absent_rider_payout->absent_status="Approved";
+                 }
+                 if ($status=="rejected") {
+                    $absent_rider_payout->absent_status="Rejected";
+                    $zomato_id=$absent_rider_payout->zomato_income_id;
+                    $income_zomato=Income_zomato::find($zomato_id);
+                    if(isset($income_zomato)){
+                        $income_zomato->absents_count=($income_zomato->absents_count)+1;
+                        $income_zomato->approve_absents-=1;
+                        $income_zomato->save();
+                    } 
+                 }
+                 $absent_rider_payout->save();
+            }
+         }
+         return response()->json([
+            'rider_id'=>$rider_id,
+            'month'=>$month,
+            'rider_payout_date'=>$rider_payout_date,
+            'status'=>$status,
+        ]);
      }
     
 }
