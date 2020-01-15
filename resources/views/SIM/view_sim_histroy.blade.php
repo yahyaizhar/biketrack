@@ -229,7 +229,7 @@ function updateDates(rider_id,assign_sim_id,created,updated){
         
                             <div class="kt-widget__subhead">
                                 
-                                <a><i class="flaticon2-calendar-3"></i>Allowed Balance:&nbsp;{{$history->allowed_balance}} </a>
+                                <a onclick="updateAllowedBalance({{$history->allowed_balance}},{{$rider->id}},{{$hasSim['id']}},this)"><i class="flaticon2-calendar-3"></i>Allowed Balance:&nbsp;{{$history->allowed_balance}} </a>
                                 {{-- <a><i class="fa fa-motorcycle"></i>{{ $bike1['bike_number'] }}</a> --}}
                                 <a>
                                     <i class="flaticon2-calendar-3"></i>
@@ -327,7 +327,7 @@ function updateDates(rider_id,assign_sim_id,created,updated){
                             <input type="hidden" name="assign_sim_id" id="assign_sim_id">
                             <div class="form-group">
                                 <label>Allowed Balance:</label>
-                                <input  type="number" required class="form-control" name="allowed_balance" placeholder="Enter Balance" value="">
+                                <input  type="number" step="0.01" required class="form-control" name="allowed_balance" placeholder="Enter Balance" value="">
                             </div>
                             <div class="modal-footer border-top-0 d-flex justify-content-center">
                                 <button class="upload-button btn btn-success">Save</button>
