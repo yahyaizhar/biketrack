@@ -231,7 +231,7 @@ Route::group([
     ]);
     /*[clients- ADT update additional data]*/Route::get('update/extra/fields/adt/performance/{feid}/{start_date}/{end_date}','RiderController@update_extra_adt')->name('admin.update_extra_adt');//ajax_route ////ok
     /*[clients-ADT]*/Route::get('/client/ranges/adt','RiderController@Rider_Range_ADT')->name('admin.ranges.adt'); 
-//import Zomato
+//import Zomato 
     /*[clients- Zomato import rider performance]*/Route::post('/import/zomato','RiderController@import_zomato')->name('import.zomato');
     /*[clients- performance delete last import]*/Route::delete('/delete/last/import','RiderController@delete_lastImport')->name('delete.import_data');
     /*[clients- View salary sheet]*/Route::get("/client/{cleint_id}/salarysheet","AccountsController@zomato_salary_sheet_export")->name("admin.zomato_salary_sheet_export");

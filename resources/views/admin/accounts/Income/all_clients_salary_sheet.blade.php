@@ -140,7 +140,9 @@ margin-left: 10px;
                     </tr>
                 </thead>
             </table>
-
+            <div style=" padding-left: 15px; "><h6 style="font-size: 15px;display: inline-block;text-transform: capitalize;color: #555252;"> paid salaries:</h6>  <span style=" font-size: 15px; color: #c84e4e; font-weight: 500;" class="totl_paid_salry"></span></div>
+            <div style=" padding-left: 15px; "><h6 style="font-size: 15px;display: inline-block;text-transform: capitalize;color: #555252;">Total salaries:</h6>  <span style=" font-size: 15px; color: #c84e4e; font-weight: 500; " class="totl_gros_salry"></span></div>
+        
             <!--end: Datatable -->
         </div>
     </div>
@@ -658,7 +660,15 @@ function format ( data ) {
             
         '</table>';
 }
-
+function _rec(times){
+    if (times<=0)return false;
+    $('.totl_gros_salry').text($('#zomato_salary_sheet tr:last').find('td div').attr('totlgros'));
+    $('.totl_paid_salry').text($('[totl_paid]').length);
+    setTimeout(function(){
+        _rec(--times)
+    },1000)
+}
+_rec(6)
 </script>
 <style>
     td.details-control {
