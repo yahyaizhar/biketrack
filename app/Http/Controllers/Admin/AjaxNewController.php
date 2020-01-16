@@ -1988,7 +1988,9 @@ class AjaxNewController extends Controller
             switch ($subjectClassName) {
                 case 'Company_Expense':
                     $subObj = $subject::find($subject_id);
-                    $view_url = '<a class="dropdown-item" href="'.route('admin.CE_edit_view', $subObj).'"><i class="fa fa-edit"></i> View</a>';
+                    if(isset($subObj)) {
+                        $view_url = '<a class="dropdown-item" href="'.route('admin.CE_edit_view', $subObj).'"><i class="fa fa-edit"></i> View</a>';
+                    }
                     break;
                     case 'Rider':
                     $subObj = $subject::find($subject_id);
