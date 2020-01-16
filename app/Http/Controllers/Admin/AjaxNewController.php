@@ -2093,8 +2093,7 @@ class AjaxNewController extends Controller
        $onlyYear=Carbon::parse($month)->format('Y');
         $visa_sum=Rider_Account::where('source',"Visa Charges")
         ->where('rider_id',$rider->id)
-        ->whereNotNull('id_charge_id')
-               ->whereMonth('month',$onlyMonth)
+        ->whereMonth('month',$onlyMonth)
         ->whereYear('month',$onlyYear)
         ->get()
         ->sum('amount');
@@ -2711,7 +2710,6 @@ class AjaxNewController extends Controller
        $onlyYear=Carbon::parse($month)->format('Y');
         $visa_sum=Rider_Account::where('source',"Visa Charges")
         ->where('rider_id',$rider->id)
-        ->whereNotNull('id_charge_id')
         ->whereMonth('month',$onlyMonth)
         ->whereYear('month',$onlyYear)
         ->get()
