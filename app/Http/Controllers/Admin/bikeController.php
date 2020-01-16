@@ -364,4 +364,41 @@ class bikeController extends Controller
       $insurance_co_name->insurance_co_name=$request->data;
       $insurance_co_name->save();
     }
+    public function History_matching_dates($rider_id,$bike_id,$date){
+
+      $bike_history = Assign_bike::all();
+      $history_found = Arr::first($bike_history, function ($item, $key) use ($rider_id, $date) {
+          $start_created_at =Carbon::parse($item->bike_assign_date)->format('Y-m-d');
+          $created_at =Carbon::parse($start_created_at);
+
+          $start_updated_at =Carbon::parse($item->bike_unassign_date)->format('Y-m-d');
+          $updated_at =Carbon::parse($start_updated_at);
+          $req_date =Carbon::parse($date);
+          if ($item->status=="active") {
+            return $item->rider_id==$rider_id && ( $req_date->greaterThanOrEqualTo($created_at));
+          }
+          return $item->rider_id==$rider_id && ( $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->lessThan($updated_at));
+      });
+      $history_found2 = Arr::first($bike_history, function ($item, $key) use ($bike_id, $date) {
+        $start_created_at =Carbon::parse($item->bike_assign_date)->format('Y-m-d');
+        $created_at =Carbon::parse($start_created_at);
+
+        $start_updated_at =Carbon::parse($item->bike_unassign_date)->format('Y-m-d');
+        $updated_at =Carbon::parse($start_updated_at);
+        $req_date =Carbon::parse($date);
+        if ($item->status=="active") {
+          return $item->bike_id==$bike_id &&  ( $req_date->greaterThanOrEqualTo($created_at));
+        }
+        return $item->bike_id==$bike_id && ( $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->lessThan($updated_at));
+    });
+      $error=0;
+      if (isset($history_found) || isset($history_found2)) {
+        $error=1;
+      }
+      return response()->json([
+        'history_found'=>$history_found,
+        'history_found2'=>$history_found2,
+        'error'=>$error,
+      ]);
+    }
 }

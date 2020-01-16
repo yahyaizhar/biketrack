@@ -286,6 +286,8 @@ Route::group([
     /*[bike - add salik]*/Route::get('/add/salik','SalikController@add_salik')->name("salik.add_salik");
     /*[bike - add salik]*/Route::get('/store/salik/{rider_id}','SalikController@store_salik')->name("salik.store_salik");
     /*[bike - add salik]*/Route::post('/insert/salik','SalikController@insert_salik')->name('Saik.insert_salik');
+
+    Route::get('/bike/assign_bike/match_dates/{rider_id}/{bike_id}/{date}','bikeController@History_matching_dates')->name('Bike.History_matching_dates');
     
 // end salik   
    
@@ -515,7 +517,8 @@ Route::group([
     Route::get('/sim/deactive/{rider_id}/date/{sim_id}','SimController@sim_deactive_date')->name('admin.sim_deactive_date'); //ok [Rider: unassign sim]
     Route::get('/sim/allowed/balance/{rider_id}/update/{sim_id}','SimController@update_allowed_abalance')->name('Sim.update_allowed_abalance'); //ok [Rider: update allow balance]
 // end Sim history section 
-
+    Route::get('/sim/assign_sim/match_dates/{rider_id}/{sim_id}/{date}','SimController@History_Sim_matching_dates')->name('Sim.History_Sim_matching_dates');
+    
 // End Sim
 
 // mobile 
