@@ -557,6 +557,7 @@ $(function() {
         }
         biketrack.updateURL(push_state);
         init_table(month)
+        _rec(5)
     });
     var query_month = biketrack.getUrlParameter('month');
     if(query_month!=""){
@@ -668,7 +669,7 @@ function _rec(times){
         _rec(--times)
     },1000)
 }
-_rec(6)
+_rec(10)
 </script>
 <style>
     td.details-control {
