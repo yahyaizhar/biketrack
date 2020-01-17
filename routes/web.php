@@ -625,6 +625,9 @@ Route::group([
     Route::get('/profile', 'HomeController@profile')->name('admin.profile');   ///ok [Admin:view profile]
     Route::put('/profile', 'HomeController@updateProfile')->name('admin.profile.update');  ///ok [Admin:update profile]
     Route::get('/403','HomeController@request403')->name('request.403'); ///ok
+    Route::get('/add_manual_client_history','HomeController@add_manual_client_history')->name('request.add_manual_client_history'); ///ok
+    Route::post('/submit_manual_client_history','HomeController@submit_manual_client_history')->name('request.submit_manual_client_history'); ///ok
+
 });
 																				 
    
