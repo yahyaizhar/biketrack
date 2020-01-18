@@ -138,6 +138,14 @@ color: #5d78ff !important;
                                 </a>
                             </li>
                             @endif
+
+                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.accounts.rider_account';   }); @endphp
+                            @if($is_in_array || $is_admin)
+                            <li class="kt-menu__item @if(strpos(Request::url(), "/rider/manage-salaryslips") !== false && strpos(Request::url(), "admin/rider/manage-salaryslips") != false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                <a route_status="{{$is_in_array['action_name']}}" href="{{ route('admin.accounts.manage_salaryslips') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Manage Salary Slips</span>
+                                </a>
+                            </li>
+                            @endif
                             
                             @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.accounts.rider_expense_get';   }); @endphp
                             @if($is_in_array || $is_admin)

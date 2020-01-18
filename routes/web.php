@@ -600,7 +600,7 @@ Route::group([
    Route::put('accounts/rider/edit', 'AccountsController@edit_rider_account')->name('admin.accounts.edit_rider'); //[Accounts - Edit rider account]
    Route::get('/sim/bill/image/{rider_id}/{month}/{type}','SimController@SimBIllImage')->name('Sim.SimBIllImage');//[Accounts-Sim Bill Image] .
    
-   Route::get('/rider/manage-salaryslips','AccountsController@manage_salaryslips')->name('admin.accounts.manage_salaryslips');//[Accounts-Manage Salary slips]***
+   Route::get('/rider/manage-salaryslips','AccountsController@manage_salaryslips')->name('admin.accounts.manage_salaryslips');//[Accounts-Manage Salary slips]
    Route::put('/rider/update_salaryslips/{rider_id}/{checked}/{month?}/{expiry?}','AccountsController@update_salaryslips')->name('admin.accounts.update_salaryslips');
 //end admin routs only
 
