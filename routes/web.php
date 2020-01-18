@@ -577,7 +577,7 @@ Route::group([
    Route::get('/add/invoice/tax','InvoiceController@add_invoice')->name('tax.add_invoice');  //ok [Invoice: add invoice]
    Route::POST('/add/invoice','InvoiceController@add_invoice_post')->name('tax.add_invoice_post'); //ok [Invoice: add invoice]
    Route::get('/invoice/tax/ajax/get_clients_details/{client_id}/{month}','InvoiceController@get_ajax_client_details')->name('tax.get_ajax_client_details'); //ok [Invoice: add invoice]
-   Route::get('/invoice/get_invoice_by_id/{invoice_id}','InvoiceController@get_invoice_by_id')->name('invoice.get_invoice_by_id'); //ok [Invoice:add invoice]***
+   Route::get('/invoice/get_invoice_by_id/{invoice_id}','InvoiceController@get_invoice_by_id')->name('invoice.get_invoice_by_id'); //ok [Invoice:add invoice]
    Route::get('/invoice/view','InvoiceController@view_invoices')->name('tax.view_invoices'); //ok [Invoice: view invoices]
    Route::get('/invoice/tax_method/add','InvoiceController@add_tax_method')->name('invoice.add_tax_method');//ok [Invoice: add view detail]
    Route::post('/invoice/tax_method/store','InvoiceController@store_tax_method')->name('invoice.store_tax_method'); //ok [Invoice: save tax detail]
@@ -596,6 +596,9 @@ Route::group([
    Route::put('accounts/company/edit', 'AccountsController@edit_company_account')->name('admin.accounts.edit_company'); //[Accounts - Edit company account]
    Route::put('accounts/rider/edit', 'AccountsController@edit_rider_account')->name('admin.accounts.edit_rider'); //[Accounts - Edit rider account]
    Route::get('/sim/bill/image/{rider_id}/{month}/{type}','SimController@SimBIllImage')->name('Sim.SimBIllImage');//[Accounts-Sim Bill Image] .
+   
+   Route::get('/rider/manage-salaryslips','AccountsController@manage_salaryslips')->name('admin.accounts.manage_salaryslips');//[Accounts-Manage Salary slips]***
+   Route::put('/rider/update_salaryslips/{rider_id}/{checked}/{month?}/{expiry?}','AccountsController@update_salaryslips')->name('admin.accounts.update_salaryslips');
 //end admin routs only
 
 
@@ -613,6 +616,7 @@ Route::delete('/delete/employee/{employee_id}','Auth\EmployeeController@deleteEm
 Route::get('/edit/employee/{employee_id}','Auth\EmployeeController@edit_employee')->name('Employee.edit_employee'); ///only for admin
 Route::get('/view/employee/{employee_id}','Auth\EmployeeController@view_employee')->name('Employee.view_employee'); ///only for admin
 Route::post('/update/employee/{employee_id}','Auth\EmployeeController@update_employee')->name('Employee.update_employee'); ///only for admin
+
 });
 // end for Admin
 

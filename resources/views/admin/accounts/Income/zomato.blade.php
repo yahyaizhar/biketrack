@@ -58,6 +58,7 @@ margin-left: 10px;
             </div>
         </div>
         <div class="kt-portlet__body">
+            <div class="err_msgs"></div>
 
             <!--begin: Datatable -->
             <table class="table table-striped- table-hover table-checkable table-condensed" id="trip_details">
@@ -201,6 +202,15 @@ margin-left: 10px;
     $client_riders=App\Model\Client\Client_Rider::all();
 @endphp
 <script>
+    var basic_alert= '   <div><div class="alert alert-outline-danger fade show" role="alert">  '  + 
+ '                                   <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div>  '  + 
+ '                                       <div class="alert-text">A simple danger alert—check it out!</div>  '  + 
+ '                                       <div class="alert-close">  '  + 
+ '                                       <button type="button" class="close" data-dismiss="alert" aria-label="Close">  '  + 
+ '                                           <span aria-hidden="true"><i class="la la-close"></i></span>  '  + 
+ '                                       </button>  '  + 
+ '                                   </div>  '  + 
+ '                              </div> </div>  ' ; 
     console.log(riders_data);
         function export_data(){
 var export_details=[];
@@ -319,6 +329,7 @@ var export_details=[];
                         $('.loading').hide();
                     },
                     success: function(data){
+                        $('.err_msgs').html('');
                         if(data.status==0){
                             swal.fire({
                                 position: 'center',
@@ -335,10 +346,13 @@ var export_details=[];
                         // console.log(data);
                         var _warns='';
                          if(data.cr_warning.length){
-                            data.cr_warning.forEach(function(warning,i){
-                                _warns+=warning.warning+'<br/>'; 
-                            })
-                            alert(_warns);
+                            var _msg = $(basic_alert);
+                            _msg.find('.alert-text').html('<ul></ul>');
+                            data.cr_warning.forEach(function(item,i){
+                                var msg = item.warning;
+                                _msg.find('.alert-text ul').append('<li>'+msg+'</li>');
+                            });
+                            $('.err_msgs').html(_msg);
                          }
                         console.warn('Warnings: ',data.cr_warning);
                         swal.fire({
@@ -517,6 +531,8 @@ $(function() {
     }
 
     function format ( data ) {
+        console.log(data);
+        
     // `d` is the original data object for the row
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
             '<tr>'+
