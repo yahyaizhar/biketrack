@@ -123,7 +123,7 @@ Route::group([
     Route::get('/get/ajax/activity/log','AjaxNewController@getActivityLog')->name('admin.getActivityLog');
     Route::get("/accounts/company/bills/{range}","AjaxNewController@getCompanyAccountsBills")->name("admin.accounts.get_company_account_bills");
     Route::get("/accounts/bike/bills/{range}","AjaxNewController@getBikeAccountsBills")->name("admin.accounts.get_bike_account_bills");
-																													   
+																				 									   
     Route::get("/accounts/kr_investment/view/data","AjaxNewController@getCompanyInvestment")->name("admin.getCompanyInvestment");
     Route::get("/zomato/salary/sheet/export/ajax/{month_name}/{client_id}","AjaxNewController@zomato_salary_export")->name("admin.zomato_salary_export");
     Route::get("/clients/salary/sheet/export/ajax/{month_name}","AjaxNewController@client_salary_export")->name("admin.client_salary_export");
@@ -231,7 +231,7 @@ Route::group([
     ]);
     /*[clients- ADT update additional data]*/Route::get('update/extra/fields/adt/performance/{feid}/{start_date}/{end_date}','RiderController@update_extra_adt')->name('admin.update_extra_adt');//ajax_route ////ok
     /*[clients-ADT]*/Route::get('/client/ranges/adt','RiderController@Rider_Range_ADT')->name('admin.ranges.adt'); 
-//import Zomato
+//import Zomato 
     /*[clients- Zomato import rider performance]*/Route::post('/import/zomato','RiderController@import_zomato')->name('import.zomato');
     /*[clients- performance delete last import]*/Route::delete('/delete/last/import','RiderController@delete_lastImport')->name('delete.import_data');
     /*[clients- View salary sheet]*/Route::get("/client/{cleint_id}/salarysheet","AccountsController@zomato_salary_sheet_export")->name("admin.zomato_salary_sheet_export");
@@ -628,6 +628,9 @@ Route::group([
     Route::get('/profile', 'HomeController@profile')->name('admin.profile');   ///ok [Admin:view profile]
     Route::put('/profile', 'HomeController@updateProfile')->name('admin.profile.update');  ///ok [Admin:update profile]
     Route::get('/403','HomeController@request403')->name('request.403'); ///ok
+    Route::get('/add_manual_client_history','HomeController@add_manual_client_history')->name('request.add_manual_client_history'); ///ok
+    Route::post('/submit_manual_client_history','HomeController@submit_manual_client_history')->name('request.submit_manual_client_history'); ///ok
+
 });
 																				 
    
