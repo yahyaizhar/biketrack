@@ -23,7 +23,7 @@
                         <div class="row">
                             <div class="form-group col-md-9">
                                 <label>Emirate's ID:</label>
-                                <input type="text" class="form-control" name="emirate_id" placeholder="Enter Emirate's ID">
+                                <input type="text" autocomplete="off" class="form-control" name="emirate_id" placeholder="Enter Emirate's ID">
                             </div>
                             {{-- <div class="form-group">
                                 <label>Passport No':</label>
