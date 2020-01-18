@@ -1007,10 +1007,18 @@ color: #5d78ff !important;
                         </a>
                         <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
                             <ul class="kt-menu__subnav">
-                                @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='employee.salary_generated';   }); @endphp
+                                @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='employee.viewCompanyEmployeeAccount';   }); @endphp
                                 @if($is_in_array || $is_admin)
-                                <li class="kt-menu__item @if(strpos(Request::url(), "/employee/salary_generate") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
-                                    <a href="{{ route('employee.salary_generated') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Employees Accounts</span>
+                                <li class="kt-menu__item @if(strpos(Request::url(), "/employee/company_account") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                    <a href="{{ route('employee.viewCompanyEmployeeAccount') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Company-Employee Account</span>
+                                    </a>
+                                </li>
+                                @endif
+
+                                @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='employee.viewEmployeeAccount';   }); @endphp
+                                @if($is_in_array || $is_admin)
+                                <li class="kt-menu__item @if(strpos(Request::url(), "/employee/employee_account") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                    <a href="{{ route('employee.viewEmployeeAccount') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Employee Account</span>
                                     </a>
                                 </li>
                                 @endif

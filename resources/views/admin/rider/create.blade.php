@@ -359,6 +359,10 @@
             <label>Other Details:</label>
             <textarea type="text"  rows="8" autocomplete="off" class="form-control @if($errors->has('other_details')) invalid-field @endif" name="other_details" placeholder="Enter Further Details" ></textarea>
         </div>
+        <label class="kt-checkbox">
+            <input  name="rider_type" type="checkbox" value="Employee"> Is He Employee?
+            <span></span>
+        </label>
         {{-- <div class="form-group">
                 <label>Status:</label>
                 <div>
@@ -392,6 +396,7 @@
 <script>
     $(document).ready(function(){
 
+        
         $("[name='password']").after('<div class="icon_change_password" data-target="password"><i class="fa fa-eye for_password"></i></div>');
         $(".icon_change_password ").parent().addClass("position-relative");
         $(".icon_change_password").on("click",function(){

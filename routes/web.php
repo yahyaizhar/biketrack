@@ -131,8 +131,6 @@ Route::group([
     Route::get("/zomato/profit/sheet/export/ajax/{month_name}/{client_id}","AjaxNewController@zomato_profit_export")->name("admin.zomato_profit_export");
     Route::get('/ajax/generated/rider/bill/status/{month}/{client_id}','AjaxNewController@getGeneratedBillStatus')->name('ajax.getGeneratedBillStatus');
     Route::GET('/get/invoices','AjaxNewController@getInvoices')->name('invoice.get_invoices'); 
-    Route::get("/accounts/employee/account/{range}","AjaxNewController@getEmployeeAccounts")->name("admin.accounts.getEmployeeAccounts");
-    Route::get("/accounts/employee/bills/{range}","AjaxNewController@getEmployeeAccountsBills")->name("admin.accounts.getEmployeeAccountsBills");
     Route::get("/invoice/ajax/payments/view","AjaxNewController@getInvoicePayments")->name("admin.getInvoicePayments");
     Route::get('/newApprovalComer/view/ajax/{id}', 'AjaxController@getApprovalComer')->name('NewComer.view_approval_ajax');
     Route::get('ajax/view_routes','AjaxController@getWebRoutes')->name('admin.view_routes_ajax'); //ok [for developer]
@@ -352,10 +350,6 @@ Route::group([
 // Expense
 
     Route::get("/kr-bikes/kr-account","KRController@account_view")->name("admin.KR_Bikes.account_view");//not_using
-
-    /*[employee - view accounts]*/Route::get("/employee/salary_generate","EmployeeController@salary_generated")->name("employee.salary_generated");
-    /*[employee - add bonus]*/Route::get("/employee/bonus","EmployeeController@employee_bonus");
-    /*[employee - add fine]*/Route::get("/employee/fine","EmployeeController@employee_fine");
 // Expense  
 
 // fuel_expense
@@ -657,4 +651,13 @@ Route::group([
 ], function(){
     Route::get('/salaryslip','GuestController@show_salary_slips')->name('guest.riders.show_salary_slips');
     Route::get('/show_slip/attendence','GuestController@get_slip_attendence')->name('guest.get_slip_attendence');
+});
+
+Route::group([
+    'prefix' => 'admin',
+    'namespace' => 'Admin',
+										 
+], function(){
+    Route::get('/employee/company_account','EmployeeController@viewCompanyEmployeeAccount')->name('employee.viewCompanyEmployeeAccount');
+    Route::get('/employee/employee_account','EmployeeController@viewEmployeeAccount')->name('employee.viewEmployeeAccount');
 });
