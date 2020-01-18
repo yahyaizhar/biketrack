@@ -146,7 +146,7 @@ class GuestController extends Controller
         if($show_salaryslip==0){
           return response()->json([
             'status'=>0,
-            'msg'=> 'nh dkhana tje, :3'
+            'msg'=> 'No data found against this Emirate ID '
           ]);
         }
         $rider_id=$rider_detail->rider_id;

@@ -30,9 +30,11 @@
                                 <input type="text" class="form-control" name="amount" placeholder="Enter Passport No'">
                             </div> --}}
                             <div class="kt-form__actions kt-form__actions--right col-md-3" style="margin-top: 1.9rem !important;">
-                                <span class="error_msg"></span>
                                 <button type="submit" id="show_salary_slip" class="btn btn-primary">Search</button>
                             </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12"> <span class="error_msg"></span></div>
                         </div>
                     </div>
                       
