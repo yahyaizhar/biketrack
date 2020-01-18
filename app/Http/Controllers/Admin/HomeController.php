@@ -8,6 +8,7 @@ use App\Model\Client\Client;
 use App\Model\Rider\Rider;
 use Yajra\DataTables\DataTables;
 use App\Model\Client\Client_Rider;
+use App\Model\Client\Client_History;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Model\Rider\Rider_area;
@@ -112,7 +113,6 @@ class HomeController extends Controller
         $user = Auth::user();
         return view('admin.profile.edit', compact('user'));
     }
-    
    
     public function updateProfile(Request $request)
     {
@@ -171,6 +171,24 @@ class HomeController extends Controller
     }
     public function request403(){
         return view("403");
+    }
+    public function add_manual_client_history(){
+        $clients = Client::all();
+        $riders = Rider::all();
+        return view("admin.add_client_history",compact('clients','riders'));
+    }
+    public function submit_manual_client_history(Request $r){
+        // return Carbon::parse($r->assign_date)->format('Y-m-d');
+        $rec = new Client_History;
+        $rec->client_id = $r->client_id;
+        $rec->rider_id = $r->rider_id;
+        $rec->assign_date = Carbon::parse($r->assign_date)->format('Y-m-d');
+        $rec->deassign_date = Carbon::parse($r->deassign_date)->format('Y-m-d');
+        $rec->client_rider_id = $r->client_rider_id;
+        $rec->status = 'deactive';
+        $rec->save();
+        return redirect(route('request.add_manual_client_history'))->with('message', 'Record added successfully.');
+
     }
     public function show_add_routes(){
         return view('admin.addroutes');

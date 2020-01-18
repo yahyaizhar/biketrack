@@ -902,6 +902,7 @@ class AccountsController extends Controller
         $less_time=0;
         $bonus=0;
         $absent_app=0;
+        $positions=0;
 
 
         //some static_data
@@ -912,9 +913,21 @@ class AccountsController extends Controller
         $_s_hoursFormula=7.87;
         $_s_maxHours=11;
         if(isset($feid) && $feid!=null){ // rider belongs to zomato
+
             $ra_zomatos=Income_zomato::where("rider_id",$rider_id)
             ->whereMonth("date",$onlyMonth)
             ->get()->first();  
+
+            if ($pm=='trip_based') {
+                
+                $_s_maxTrips=$client_setting['tb_sm__bonus_trips'];
+                $_s_tripsFormula=$client_setting['tb_sm__trip_amount'];
+                $_s_maxTripsFormula=$client_setting['tb_sm__trips_bonus_amount'];
+                $_s_monthlyHours=286;
+                $_s_hoursFormula=$client_setting['tb_sm__hour_amount'];
+                $_s_maxHours=11; 
+            }
+           
             
             if(isset($ra_zomatos)){
                 
@@ -955,6 +968,19 @@ class AccountsController extends Controller
                 $hours_payable=$payable_hours*$_s_hoursFormula;
                 if($calculated_trips > $_s_maxTrips){
                     $bonus=50;
+                    if ($ra_zomatos->setting!="") {
+                        $position_setting = json_decode($ra_zomatos->setting, true);
+                        $positions = $position_setting['top_position'];
+                        if ($positions=="1") {
+                            $bonus=150;
+                        }
+                        if ($positions=="2") {
+                            $bonus=125;
+                        }
+                        if ($positions=="3") {
+                            $bonus=100;
+                        } 
+                    }
                 }
                 $salary_hours=round($hours_payable,2);
                 $salary_trips=$trips_payable+$trips_EXTRA_payable;
@@ -965,7 +991,7 @@ class AccountsController extends Controller
                 $total_salary_amt = round($hours_payable+$trips_payable+$trips_EXTRA_payable,2);
             }
             else { 
-                # no record found in income zomato table --generate error
+                # no record found in income zomato table --generate error 
                 return response()->json([
                     'status'=>0,
                     'msg'=>'No record found on Zomato Income against this rider.'
@@ -1111,7 +1137,11 @@ class AccountsController extends Controller
             '_s_maxTripsFormula'=>round($_s_maxTripsFormula,2),
             '_s_monthlyHours'=>round($_s_monthlyHours,2),
             '_s_hoursFormula'=>round($_s_hoursFormula,2),
-            '_s_maxHours'=>$_s_maxHours
+            '_s_maxHours'=>$_s_maxHours,
+
+            'pm'=>$pm,
+            'client_setting'=>$client_setting,
+            'position'=>$positions,
         ]);
     }
     public function new_salary_added(Request $request){

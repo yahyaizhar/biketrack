@@ -2027,6 +2027,8 @@ class AjaxNewController extends Controller
     }
     public function zomato_salary_export($month, $client_id)
     {
+    $total_gross=0;
+    $totlpaid=0;
     $client=Client::find($client_id);
     $client_riders=$client->riders()->where(['active_status'=>'A'])->get();
     // $client_riders=Client_Rider::where('client_id', $zomato->id)->get();
@@ -2095,8 +2097,7 @@ class AjaxNewController extends Controller
        $onlyYear=Carbon::parse($month)->format('Y');
         $visa_sum=Rider_Account::where('source',"Visa Charges")
         ->where('rider_id',$rider->id)
-        ->whereNotNull('id_charge_id')
-               ->whereMonth('month',$onlyMonth)
+        ->whereMonth('month',$onlyMonth)
         ->whereYear('month',$onlyYear)
         ->get()
         ->sum('amount');
@@ -2518,7 +2519,7 @@ class AjaxNewController extends Controller
         }
         return round($ra_salary,2);
     })
-    ->addColumn('gross_salary', function($rider) use ($month){
+    ->addColumn('gross_salary', function($rider) use ($month, &$total_gross, &$totlpaid){
        $onlyMonth=Carbon::parse($month)->format('m');
        $onlyYear=Carbon::parse($month)->format('Y');
         $rider_id = $rider->id;
@@ -2617,16 +2618,22 @@ class AjaxNewController extends Controller
         ->where("payment_status","paid")
         ->get()
         ->first();
+        $total_gross += $ra_recieved;
+
         if(isset($salary_paid)){
-            return '<div>'.round($ra_recieved,2).' <i class="flaticon2-correct" style="color: green;"></i></div>';
+            $totlpaid++;
+            return '<div totlgros="'.$total_gross.'" totl_paid="'.$totlpaid.'">'.round($ra_recieved,2).' <i class="flaticon2-correct" style="color: green;"></i></div>';
         }
-        return round($ra_recieved,2);
+        return '<div totlgros="'.$total_gross.'">'.round($ra_recieved,2).'</div>';
     })
     ->rawColumns(['sim_extra_charges','fuel','mobile_charges','bonus','bike_allowns','aed_extra_trips','extra_trips','net_salary','gross_salary','rider_name','bike_number','advance','poor_performance', 'salik', 'sim_charges', 'dc', 'cod', 'rta_fine', 'total_deduction', 'aed_hours', 'total_salary','visa','mobile','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
     ->make(true);
     }
     public function client_salary_export($month)
     {
+    $total_gross=0;
+    $totlpaid=0;
+
     $riders=Rider::all();
     return DataTables::of($riders)
     ->addColumn('client_name', function($rider) use($month) {
@@ -2713,7 +2720,6 @@ class AjaxNewController extends Controller
        $onlyYear=Carbon::parse($month)->format('Y');
         $visa_sum=Rider_Account::where('source',"Visa Charges")
         ->where('rider_id',$rider->id)
-        ->whereNotNull('id_charge_id')
         ->whereMonth('month',$onlyMonth)
         ->whereYear('month',$onlyYear)
         ->get()
@@ -3135,7 +3141,7 @@ class AjaxNewController extends Controller
         }
         return round($ra_salary,2);
     })
-    ->addColumn('gross_salary', function($rider) use ($month){
+    ->addColumn('gross_salary', function($rider) use ($month, &$total_gross, &$totlpaid){
        $onlyMonth=Carbon::parse($month)->format('m');
        $onlyYear=Carbon::parse($month)->format('Y');
         $rider_id = $rider->id;
@@ -3234,10 +3240,12 @@ class AjaxNewController extends Controller
         ->where("payment_status","paid")
         ->get()
         ->first();
+        $total_gross +=$ra_recieved;
         if(isset($salary_paid)){
-            return '<div>'.round($ra_recieved,2).' <i class="flaticon2-correct" style="color: green;"></i></div>';
+            $totlpaid++;
+            return '<div totlgros="'.$total_gross.'" totl_paid="'.$totlpaid.'">'.round($ra_recieved,2).' <i class="flaticon2-correct" style="color: green;"></i></div>';
         }
-        return round($ra_recieved,2);
+        return '<div totlgros="'.$total_gross.'">'.round($ra_recieved,2).'</div>';
     })
     ->rawColumns(['client_name','sim_extra_charges','fuel','mobile_charges','bonus','bike_allowns','aed_extra_trips','extra_trips','net_salary','gross_salary','rider_name','bike_number','advance','poor_performance', 'salik', 'sim_charges', 'dc', 'cod', 'rta_fine', 'total_deduction', 'aed_hours', 'total_salary','visa','mobile','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
     ->make(true);

@@ -231,7 +231,7 @@ Route::group([
     ]);
     /*[clients- ADT update additional data]*/Route::get('update/extra/fields/adt/performance/{feid}/{start_date}/{end_date}','RiderController@update_extra_adt')->name('admin.update_extra_adt');//ajax_route ////ok
     /*[clients-ADT]*/Route::get('/client/ranges/adt','RiderController@Rider_Range_ADT')->name('admin.ranges.adt'); 
-//import Zomato
+//import Zomato 
     /*[clients- Zomato import rider performance]*/Route::post('/import/zomato','RiderController@import_zomato')->name('import.zomato');
     /*[clients- performance delete last import]*/Route::delete('/delete/last/import','RiderController@delete_lastImport')->name('delete.import_data');
     /*[clients- View salary sheet]*/Route::get("/client/{cleint_id}/salarysheet","AccountsController@zomato_salary_sheet_export")->name("admin.zomato_salary_sheet_export");
@@ -286,6 +286,8 @@ Route::group([
     /*[bike - add salik]*/Route::get('/add/salik','SalikController@add_salik')->name("salik.add_salik");
     /*[bike - add salik]*/Route::get('/store/salik/{rider_id}','SalikController@store_salik')->name("salik.store_salik");
     /*[bike - add salik]*/Route::post('/insert/salik','SalikController@insert_salik')->name('Saik.insert_salik');
+
+    Route::get('/bike/assign_bike/match_dates/{rider_id}/{bike_id}/{date}','bikeController@History_matching_dates')->name('Bike.History_matching_dates');
     
 // end salik   
    
@@ -515,7 +517,8 @@ Route::group([
     Route::get('/sim/deactive/{rider_id}/date/{sim_id}','SimController@sim_deactive_date')->name('admin.sim_deactive_date'); //ok [Rider: unassign sim]
     Route::get('/sim/allowed/balance/{rider_id}/update/{sim_id}','SimController@update_allowed_abalance')->name('Sim.update_allowed_abalance'); //ok [Rider: update allow balance]
 // end Sim history section 
-
+    Route::get('/sim/assign_sim/match_dates/{rider_id}/{sim_id}/{date}','SimController@History_Sim_matching_dates')->name('Sim.History_Sim_matching_dates');
+    
 // End Sim
 
 // mobile 
@@ -629,6 +632,9 @@ Route::group([
     Route::get('/profile', 'HomeController@profile')->name('admin.profile');   ///ok [Admin:view profile]
     Route::put('/profile', 'HomeController@updateProfile')->name('admin.profile.update');  ///ok [Admin:update profile]
     Route::get('/403','HomeController@request403')->name('request.403'); ///ok
+    Route::get('/add_manual_client_history','HomeController@add_manual_client_history')->name('request.add_manual_client_history'); ///ok
+    Route::post('/submit_manual_client_history','HomeController@submit_manual_client_history')->name('request.submit_manual_client_history'); ///ok
+
 });
 																				 
    
@@ -642,6 +648,13 @@ Route::group([
     Route::get('/newcomer/add','GuestController@newComer_view')->name('guest.newComer_view');   //ok
     Route::post('/newcomer/store','GuestController@newComer_add')->name('guest.newComer_add');  //ok
     Route::post('/newcomer/status_check','GuestController@newComer_status')->name('guest.newComer_status');  //ok
+    
     // end Guest routes
 });
- ///end for guest
+
+Route::group([
+    'prefix' => 'rider',
+], function(){
+    Route::get('/salaryslip','GuestController@show_salary_slips')->name('guest.riders.show_salary_slips');
+    Route::get('/show_slip/attendence','GuestController@get_slip_attendence')->name('guest.get_slip_attendence');
+});

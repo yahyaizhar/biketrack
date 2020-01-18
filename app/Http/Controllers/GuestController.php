@@ -5,6 +5,12 @@ use DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\GuestNewComer;
+use App\Model\Rider\Rider_detail;
+use App\Model\Rider\Rider;
+use Illuminate\Support\Arr;
+use Batch;
+use Carbon\Carbon;
+use App\Model\Accounts\Income_zomato;
 
 class GuestController extends Controller
 {
@@ -81,5 +87,259 @@ class GuestController extends Controller
         return 'error';
       }
     }
-    
+    public function show_salary_slips(){
+      return view('guest.rider_salary_slips');
+    }
+    public function get_slip_attendence(Request $request){
+      $rider_id=null;
+      $rider_name=null;
+      $date_of_joining=null;
+      $ncw=0;
+      $tip=0;
+      $bike_allowns=0;
+      $bonus=0;
+      $bike_fine=0;
+      $advance=0;
+      $salik=0;
+      $sim=0;
+      $denial_penalty=0;
+      $dc=0;
+      $macdonald=0;
+      $rta=0;
+      $mobile=0;
+      $dicipline=0;
+      $mics=0;
+      $cash_paid_in_advance=0;
+      $salary=0;
+      $trips=0;
+      $hours=0;
+      $extra_trips=0;
+      $salary_paid=0;
+      $show_salaryslip=0;
+      $month_salaryslip=0;
+      $isshow=true;
+      $month=0;
+      $TimeSheet=null;
+      $expiry_month="";
+
+      
+
+      $rider_detail=Rider_detail::where("emirate_id",$request->emirate_id)->get()->first();
+      if (!isset($rider_detail)) {
+        return response()->json([
+          'status'=>0,
+          'msg'=> 'No Rider found against this Emirate ID'
+        ]);
+      }
+      if (isset($rider_detail)) {
+        $is_show_salaryslip=$rider_detail->show_salaryslip;
+        $dmy="2019-11-01";
+        if ($is_show_salaryslip=='1') {
+          $show_salaryslip=1;
+          $dmy=$rider_detail->salaryslip_month;
+          $expiry_month=Carbon::parse($rider_detail->salaryslip_expiry);
+          $current_date=Carbon::parse(Carbon::now()->format("Y-m-d"));
+          if ($current_date->greaterThan($expiry_month)) {
+            $show_salaryslip=0;
+          }
+        }
+        if($show_salaryslip==0){
+          return response()->json([
+            'status'=>0,
+            'msg'=> 'nh dkhana tje, :3'
+          ]);
+        }
+        $rider_id=$rider_detail->rider_id;
+        $rider=Rider::find($rider_id);
+        $rider_name=$rider->name;
+        $date_of_joining=$rider_detail->date_of_joining;
+
+        $month=Carbon::parse($dmy)->format("Y-m-d");
+        $from =Carbon::parse($month)->startOfMonth()->format("Y-m-d");
+        $to =Carbon::parse($month)->endOfMonth()->format("Y-m-d");
+
+        $salary=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','salary')
+        ->where('payment_status','pending')
+        ->sum('amount');
+        $hour=Income_zomato::where("rider_id",$rider_id)
+        ->whereDate('date', '>=',$from)
+        ->whereDate('date', '<=',$to)
+        ->first();
+        if (isset($hour)) {
+            $absent_days=$hour->absents_count;
+            $absent_hours=$absent_days*11;
+            
+            $work_days=$hour->working_days;
+            $workable_hours=$work_days*11;
+
+            $calculate_hour=$hour->calculated_hours;
+            
+            $total_hours=$workable_hours -  $calculate_hour;
+
+            $hours=286 - $absent_hours - $total_hours; 
+        }
+
+        $trips=Income_zomato::where("rider_id",$rider_id)
+        ->whereDate('date', '>=',$from)
+        ->whereDate('date', '<=',$to)
+        ->sum('trips_payable');
+        if ( $trips > 400) $trips=400; 
+        $extra_trips=Income_zomato::where("rider_id",$rider_id)
+        ->whereDate('date', '>=',$from)
+        ->whereDate('date', '<=',$to)
+        ->sum('trips_payable');
+        if ( $extra_trips > 400){
+            $extra_trips=$extra_trips-400; 
+        }
+        else{
+            $extra_trips=0;
+        }
+
+        $ncw=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','NCW Incentives')
+        ->sum('amount');
+        $tip=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','Tips Payouts')
+        ->sum('amount');
+        $bike_allowns=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','Bike Allowns')
+        ->sum('amount');
+        $bonus=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','400 Trips Acheivement Bonus')
+        ->sum('amount');
+
+        $bike_fine=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','Bike Fine Paid')
+        ->sum('amount');
+        $advance=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','advance')
+        ->sum('amount');
+        $salik=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','Salik')
+        ->sum('amount');
+        $sim=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','Sim extra usage')
+        ->sum('amount');
+        $denial_penalty=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','Denials Penalty')
+        ->sum('amount');
+        $dc=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','DC Deductions')
+        ->sum('amount');
+        $macdonald=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','Mcdonalds Deductions')
+        ->sum('amount');
+        $rta=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->whereNotNull('id_charge_id')
+        ->sum('amount');
+        $mobile=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','Mobile Installment')
+        ->sum('amount');
+        $dicipline=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','Discipline Fine')
+        ->sum('amount');
+        $mics=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','Visa Charges')
+        ->where("payment_status","paid")
+        ->sum('amount');
+        $cash_paid_in_advance=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('type','dr')
+        ->where("payment_status","paid")
+        ->where("source","!=","advance")
+        ->where("source","!=","salary_paid")
+        ->where("source","!=","Visa Charges")
+        ->where("source","!=","Mobile Installment")
+        ->sum('amount');
+
+
+        $salary_paid=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        ->whereDate('month', '>=',$from)
+        ->whereDate('month', '<=',$to)
+        ->where('source','salary_paid')
+        ->where('payment_status','paid')
+        ->sum('amount');
+
+        $TimeSheet=Income_Zomato::with('Time_sheet')->where('rider_id',$rider_id)
+        ->whereDate('date', '>=',$from)
+        ->whereDate('date', '<=',$to)
+        ->get()
+        ->first();
+
+      }
+      return response()->json([
+        'status'=>1,
+        'rider_id'=>$rider_id,
+        'rider_name'=>$rider_name,
+        'month'=>$month,
+        'date_of_joining'=>$date_of_joining,
+
+        'salary'=>$salary,
+        'trips'=>$trips,
+        'hours'=>$hours,
+        'extra_trips'=>$extra_trips,
+        'ncw'=>$ncw,
+        'tip'=>$tip,
+        'bike_allowns'=>$bike_allowns,
+        'bonus'=>$bonus,
+
+        'bike_fine'=>$bike_fine,
+        'advance'=>$advance,
+        'salik'=>$salik,
+        'sim'=>$sim,
+        'denial_penalty'=>$denial_penalty,
+        'dc'=>$dc,
+        'macdonald'=>$macdonald,
+        'rta'=>$rta,
+        'mobile'=>$mobile,
+        'dicipline'=>$dicipline,
+        'mics'=>$mics,
+        'cash_paid_in_advance'=>$cash_paid_in_advance,
+
+        'salary_paid'=>$salary_paid,
+
+        'income_zomato'=>$TimeSheet,
+
+        'show_salaryslip'=>$show_salaryslip,
+        
+
+        'payment_date'=>carbon::now()->format("M d,Y"),
+        'expiry_month'=>$expiry_month,
+        'current_date'=>$current_date,
+      ]);
+    }
 }
