@@ -641,6 +641,13 @@ Route::group([
     Route::get('/newcomer/add','GuestController@newComer_view')->name('guest.newComer_view');   //ok
     Route::post('/newcomer/store','GuestController@newComer_add')->name('guest.newComer_add');  //ok
     Route::post('/newcomer/status_check','GuestController@newComer_status')->name('guest.newComer_status');  //ok
+    
     // end Guest routes
 });
- ///end for guest
+
+Route::group([
+    'prefix' => 'rider',
+], function(){
+    Route::get('/salaryslip','GuestController@show_salary_slips')->name('guest.riders.show_salary_slips');
+    Route::get('/show_slip/attendence','GuestController@get_slip_attendence')->name('guest.get_slip_attendence');
+});
