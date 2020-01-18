@@ -120,16 +120,34 @@ class GuestController extends Controller
       $isshow=true;
       $month=0;
       $TimeSheet=null;
+      $expiry_month="";
 
       
 
       $rider_detail=Rider_detail::where("emirate_id",$request->emirate_id)->get()->first();
+      if (!isset($rider_detail)) {
+        return response()->json([
+          'status'=>0,
+          'msg'=> 'No Rider found against this Emirate ID'
+        ]);
+      }
       if (isset($rider_detail)) {
-        $show_salaryslip=$rider_detail->show_salaryslip;
+        $is_show_salaryslip=$rider_detail->show_salaryslip;
         $dmy="2019-11-01";
-        if ($show_salaryslip!=null || $show_salaryslip!=0) {
+        if ($is_show_salaryslip=='1') {
           $show_salaryslip=1;
           $dmy=$rider_detail->salaryslip_month;
+          $expiry_month=Carbon::parse($rider_detail->salaryslip_expiry);
+          $current_date=Carbon::parse(Carbon::now()->format("Y-m-d"));
+          if ($current_date->greaterThan($expiry_month)) {
+            $show_salaryslip=0;
+          }
+        }
+        if($show_salaryslip==0){
+          return response()->json([
+            'status'=>0,
+            'msg'=> 'nh dkhana tje, :3'
+          ]);
         }
         $rider_id=$rider_detail->rider_id;
         $rider=Rider::find($rider_id);
@@ -284,7 +302,7 @@ class GuestController extends Controller
 
       }
       return response()->json([
-        'status'=>$request->emirate_id,
+        'status'=>1,
         'rider_id'=>$rider_id,
         'rider_name'=>$rider_name,
         'month'=>$month,
@@ -320,6 +338,8 @@ class GuestController extends Controller
         
 
         'payment_date'=>carbon::now()->format("M d,Y"),
+        'expiry_month'=>$expiry_month,
+        'current_date'=>$current_date,
       ]);
     }
 }

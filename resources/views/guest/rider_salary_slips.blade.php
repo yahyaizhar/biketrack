@@ -324,18 +324,19 @@
                     $('.error_msg').html('');
                     $("#rider_name").html("Rider");
                     $("#Tabs_for_slips_attendence").hide();
-                    if (data.rider_id==null) {
+                    if (data.status==0) {
                         var _msg = $(basic_alert);
-                        _msg.find('.alert-text').html("No Rider found against this Emirate's ID");
+                        _msg.find('.alert-text').html(data.msg);
                         $('.error_msg').html(_msg.html());
                         return;
                     } else {
                         $("#Tabs_for_slips_attendence").show();
                         $("#Attendence_sheet").show();
                         $("#print_slip_for_rider2").show();
-                        if (data.show_salaryslip==0 || data.show_salaryslip==null) {
+                        if (data.show_salaryslip!="1") {
                             $("#Attendence_sheet").hide();
                             $("#print_slip_for_rider2").hide();
+                            $('.rider_days_detail tr td:not(:nth-child(1))').text('');
                         }
                         $('.month_year').html(new Date(data.month).format("mmm,yyyy"));
                         $("#rider_name , .rider_name , #rider_id_1").html(data.rider_name);
