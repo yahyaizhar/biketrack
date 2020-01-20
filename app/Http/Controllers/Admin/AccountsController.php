@@ -2974,10 +2974,20 @@ public function client_income_update(Request $request,$id){
          ]);
      }
      public function absents_status($rider_id,$month,$rider_payout_date,$status){
-         $absent_rider_payout=Riders_Payouts_By_Days::where("date",$rider_payout_date)
-         ->where("rider_id",$rider_id)
-         ->get()
-         ->first();
+        $onlyMonth = Carbon::parse($month)->format('m');
+        $onlyYear = Carbon::parse($month)->format('Y');
+        $zi=Income_zomato::with('Time_sheet')
+        ->whereMonth("date",$onlyMonth)
+        ->whereYear("date",$onlyYear)
+        ->where("rider_id",$rider_id)
+        ->get()
+        ->first();
+        if (isset($zi)) {
+            $absent_rider_payout=$zi->Time_sheet()->whereDate("date",$rider_payout_date)
+            ->get()
+            ->first();	
+        }
+
          if (isset($absent_rider_payout)) {
             if ($absent_rider_payout->absent_status=="Rejected" || $absent_rider_payout->absent_status==null){
              if ($status=="approved") {
