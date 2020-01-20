@@ -18,7 +18,7 @@ use App\Model\Rider\Rider_detail;
 use App\Model\Bikes\bike;
 use App\Model\Sim\Sim;
 use App\Model\Sim\Sim_Transaction;
-use App\Model\Sim\Sim_History;
+use App\Model\Sim\Sim_History; 
 use App\Model\Client\Client_Rider;
 use App\Model\Client\Client;
 use Illuminate\Support\Arr;
@@ -795,7 +795,7 @@ class RiderController extends Controller
       $zomato->comments=$request->comments;
       $zomato->save();
     return response()->json([
-        'status' => $zomato,
+        'status' => $zomato, 
     ]);
    }
    public function getRider_active(){

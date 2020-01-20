@@ -824,6 +824,14 @@ color: #5d78ff !important;
                                 </li>
                                 @endif
                                
+                                @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='guest.newComer_view';   }); @endphp
+                                @if($is_in_array || $is_admin)
+                                <li class="kt-menu__item @if(strpos(Request::url(), "admin/newComer/approval") !== false && strpos(Request::url(), "admin/newComer/approval") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                    <a href="{{ route('guest.newComer_view') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">New Comers guest</span>
+                                    </a>
+                                </li>
+                                @endif
+                                
                                 @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='NewComer.approval';   }); @endphp
                                 @if($is_in_array || $is_admin)
                                 <li class="kt-menu__item @if(strpos(Request::url(), "admin/newComer/approval") !== false && strpos(Request::url(), "admin/newComer/approval") !== false) kt-menu__item--active @endif  " aria-haspopup="true">

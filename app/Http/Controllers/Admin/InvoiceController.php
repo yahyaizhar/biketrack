@@ -391,6 +391,8 @@ class InvoiceController extends Controller
                         $remain_trips=$_trips*2;
                         $aed_trips+=$remain_trips;
                     }
+                    $_hours=$hours;
+                    
 
                     $settlements=Income_zomato::whereMonth('date',$month)
                     ->where("rider_id",$riders->rider_id)
@@ -422,6 +424,11 @@ class InvoiceController extends Controller
 
                     $total_trips+=$_trips;
                     $total_hours+=$hours;
+
+                    if ($_hours>286) {
+                        $_hours=286;
+                    }
+                    $aed_hours+=$_hours*7.87;
 
                 }
                 if ($total_hours == 0) {
@@ -499,6 +506,8 @@ class InvoiceController extends Controller
                     'payment_method'=>$payment_method,
                     'items'=>$invoice_items_data,
                     'is_edit'=>false,
+                    'aed_trips'=>round($aed_trips,2),
+                    'aed_hours'=>round($aed_hours,2),
                     'next_id'=>$next_invoice_id[0]->Auto_increment
                 ]);
                 break;

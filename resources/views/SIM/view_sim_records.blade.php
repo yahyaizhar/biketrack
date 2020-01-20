@@ -10,7 +10,7 @@
         display: inline-block;
         margin-left: 10px;
         }
-        .dataTables_info{
+        .dataTables_info{ 
             display:none;
         }
         </style>

@@ -1076,6 +1076,7 @@ class AccountsController extends Controller
        //end fixed based client
 
        $salary_hours=isset($salary_hours)?$salary_hours:0;
+       $absent_approve_hours=isset($absent_approve_hours)?$absent_approve_hours:0;
        $salary_trips=isset($salary_trips)?$salary_trips:0;
        $salary_credits=isset($salary_credits)?$salary_credits:0;
        $weekly_off=isset($weekly_off)?$weekly_off:0;

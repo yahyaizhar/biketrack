@@ -39,7 +39,7 @@ margin-left: 10px;
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
-                       
+                        <input class="btn btn-success" type="button" onclick="export_data()" value="Export Riders Data">
                         &nbsp;
                         <div class="checkbox checkbox-danger btn btn-default btn-elevate btn-icon-sm">
                             <input id="check_id" class="checkbox checkbox-danger" type="checkbox">
@@ -166,6 +166,27 @@ margin-left: 10px;
 
 var riders_table;
 var riders_data = [];
+function export_data(){
+    var export_details=[];
+    var _data=riders_table.ajax.json().data;
+    console.log(_data);
+    _data.forEach(function(item,index) {
+        export_details.push({
+        "ID":item.id,
+        "Name":item.name,
+        "Date Of Joining":item.date_of_joining,
+        "Emirate Id":item.emirate_id,
+        "Email":item.email,
+        "Passport Expiry":item.passport_expiry,
+        "Visa Expiry":item.visa_expiry,
+        "Licence Expiry":item.licence_expiry,
+        "Mulkiya Expiry":item.mulkiya_expiry,
+        
+        });
+    });
+        var export_data = new CSVExport(export_details);
+    return false;
+}
 $(function() {
     var _settings = {
         lengthMenu: [[-1], ["All"]],
