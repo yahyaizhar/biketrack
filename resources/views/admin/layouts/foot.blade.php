@@ -596,7 +596,7 @@ if(sessionStorage.getItem("show_logs") == true || sessionStorage.getItem("show_l
     biketrack.show_logs= true;
 }
 
-console.log(biketrack.show_logs,'_shoelogs')
+console.log(biketrack.show_logs,'[use sessionStorage.show_logs=true to show logs]')
 var old_log = console.log;
 console.log = function() {
 	if(biketrack.show_logs) {

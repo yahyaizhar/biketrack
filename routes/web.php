@@ -131,8 +131,6 @@ Route::group([
     Route::get("/zomato/profit/sheet/export/ajax/{month_name}/{client_id}","AjaxNewController@zomato_profit_export")->name("admin.zomato_profit_export");
     Route::get('/ajax/generated/rider/bill/status/{month}/{client_id}','AjaxNewController@getGeneratedBillStatus')->name('ajax.getGeneratedBillStatus');
     Route::GET('/get/invoices','AjaxNewController@getInvoices')->name('invoice.get_invoices'); 
-    Route::get("/accounts/employee/account/{range}","AjaxNewController@getEmployeeAccounts")->name("admin.accounts.getEmployeeAccounts");
-    Route::get("/accounts/employee/bills/{range}","AjaxNewController@getEmployeeAccountsBills")->name("admin.accounts.getEmployeeAccountsBills");
     Route::get("/invoice/ajax/payments/view","AjaxNewController@getInvoicePayments")->name("admin.getInvoicePayments");
     Route::get('/newApprovalComer/view/ajax/{id}', 'AjaxController@getApprovalComer')->name('NewComer.view_approval_ajax');
     Route::get('ajax/view_routes','AjaxController@getWebRoutes')->name('admin.view_routes_ajax'); //ok [for developer]
@@ -286,6 +284,8 @@ Route::group([
     /*[bike - add salik]*/Route::get('/add/salik','SalikController@add_salik')->name("salik.add_salik");
     /*[bike - add salik]*/Route::get('/store/salik/{rider_id}','SalikController@store_salik')->name("salik.store_salik");
     /*[bike - add salik]*/Route::post('/insert/salik','SalikController@insert_salik')->name('Saik.insert_salik');
+
+    Route::get('/bike/assign_bike/match_dates/{rider_id}/{bike_id}/{date}','bikeController@History_matching_dates')->name('Bike.History_matching_dates');
     
 // end salik   
    
@@ -350,10 +350,6 @@ Route::group([
 // Expense
 
     Route::get("/kr-bikes/kr-account","KRController@account_view")->name("admin.KR_Bikes.account_view");//not_using
-
-    /*[employee - view accounts]*/Route::get("/employee/salary_generate","EmployeeController@salary_generated")->name("employee.salary_generated");
-    /*[employee - add bonus]*/Route::get("/employee/bonus","EmployeeController@employee_bonus");
-    /*[employee - add fine]*/Route::get("/employee/fine","EmployeeController@employee_fine");
 // Expense  
 
 // fuel_expense
@@ -515,7 +511,8 @@ Route::group([
     Route::get('/sim/deactive/{rider_id}/date/{sim_id}','SimController@sim_deactive_date')->name('admin.sim_deactive_date'); //ok [Rider: unassign sim]
     Route::get('/sim/allowed/balance/{rider_id}/update/{sim_id}','SimController@update_allowed_abalance')->name('Sim.update_allowed_abalance'); //ok [Rider: update allow balance]
 // end Sim history section 
-
+    Route::get('/sim/assign_sim/match_dates/{rider_id}/{sim_id}/{date}','SimController@History_Sim_matching_dates')->name('Sim.History_Sim_matching_dates');
+    
 // End Sim
 
 // mobile 
@@ -577,7 +574,7 @@ Route::group([
    Route::get('/add/invoice/tax','InvoiceController@add_invoice')->name('tax.add_invoice');  //ok [Invoice: add invoice]
    Route::POST('/add/invoice','InvoiceController@add_invoice_post')->name('tax.add_invoice_post'); //ok [Invoice: add invoice]
    Route::get('/invoice/tax/ajax/get_clients_details/{client_id}/{month}','InvoiceController@get_ajax_client_details')->name('tax.get_ajax_client_details'); //ok [Invoice: add invoice]
-   Route::get('/invoice/get_invoice_by_id/{invoice_id}','InvoiceController@get_invoice_by_id')->name('invoice.get_invoice_by_id'); //ok [Invoice:add invoice]***
+   Route::get('/invoice/get_invoice_by_id/{invoice_id}','InvoiceController@get_invoice_by_id')->name('invoice.get_invoice_by_id'); //ok [Invoice:add invoice]
    Route::get('/invoice/view','InvoiceController@view_invoices')->name('tax.view_invoices'); //ok [Invoice: view invoices]
    Route::get('/invoice/tax_method/add','InvoiceController@add_tax_method')->name('invoice.add_tax_method');//ok [Invoice: add view detail]
    Route::post('/invoice/tax_method/store','InvoiceController@store_tax_method')->name('invoice.store_tax_method'); //ok [Invoice: save tax detail]
@@ -596,6 +593,9 @@ Route::group([
    Route::put('accounts/company/edit', 'AccountsController@edit_company_account')->name('admin.accounts.edit_company'); //[Accounts - Edit company account]
    Route::put('accounts/rider/edit', 'AccountsController@edit_rider_account')->name('admin.accounts.edit_rider'); //[Accounts - Edit rider account]
    Route::get('/sim/bill/image/{rider_id}/{month}/{type}','SimController@SimBIllImage')->name('Sim.SimBIllImage');//[Accounts-Sim Bill Image] .
+   
+   Route::get('/rider/manage-salaryslips','AccountsController@manage_salaryslips')->name('admin.accounts.manage_salaryslips');//[Accounts-Manage Salary slips]
+   Route::put('/rider/update_salaryslips/{rider_id}/{checked}/{month?}/{expiry?}','AccountsController@update_salaryslips')->name('admin.accounts.update_salaryslips');
 //end admin routs only
 
 
@@ -613,6 +613,7 @@ Route::delete('/delete/employee/{employee_id}','Auth\EmployeeController@deleteEm
 Route::get('/edit/employee/{employee_id}','Auth\EmployeeController@edit_employee')->name('Employee.edit_employee'); ///only for admin
 Route::get('/view/employee/{employee_id}','Auth\EmployeeController@view_employee')->name('Employee.view_employee'); ///only for admin
 Route::post('/update/employee/{employee_id}','Auth\EmployeeController@update_employee')->name('Employee.update_employee'); ///only for admin
+
 });
 // end for Admin
 
@@ -641,6 +642,22 @@ Route::group([
     Route::get('/newcomer/add','GuestController@newComer_view')->name('guest.newComer_view');   //ok
     Route::post('/newcomer/store','GuestController@newComer_add')->name('guest.newComer_add');  //ok
     Route::post('/newcomer/status_check','GuestController@newComer_status')->name('guest.newComer_status');  //ok
+    
     // end Guest routes
 });
- ///end for guest
+
+Route::group([
+    'prefix' => 'rider',
+], function(){
+    Route::get('/salaryslip','GuestController@show_salary_slips')->name('guest.riders.show_salary_slips');
+    Route::get('/show_slip/attendence','GuestController@get_slip_attendence')->name('guest.get_slip_attendence');
+});
+
+Route::group([
+    'prefix' => 'admin',
+    'namespace' => 'Admin',
+										 
+], function(){
+    Route::get('/employee/company_account','EmployeeController@viewCompanyEmployeeAccount')->name('employee.viewCompanyEmployeeAccount');
+    Route::get('/employee/employee_account','EmployeeController@viewEmployeeAccount')->name('employee.viewEmployeeAccount');
+});

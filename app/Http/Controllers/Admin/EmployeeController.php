@@ -28,31 +28,12 @@ class EmployeeController extends Controller
     {
         $this->middleware('auth:admin');
     }
-    public function salary_generated(){
-        $employees=Admin::where("type","normal")->get();
-        $sims=Sim::where("active_status","A")->get();
-        return view("admin.Employee.view_accounts",compact("employees","sims"));
+
+    public function viewCompanyEmployeeAccount(){
+        return view('admin.Employee.company_employee_account');
     }
-    public function employee_bonus(Request $request){
-        $bonus=new EmployeeAccounts();
-        $bonus->type="cr";
-        $bonus->amount=$request->amount;
-        $bonus->month=Carbon::parse($request->month)->startOfMonth()->format("Y-m-d");
-        $bonus->given_date=Carbon::parse($request->given_date)->format("Y-m-d"); 
-        $bonus->source="Bonus";
-        $bonus->payment_status="paid";
-        $bonus->employee_id=$request->employee_id;
-        $bonus->save();
-    }
-    public function employee_fine(Request $request){
-        $fine=new EmployeeAccounts();
-        $fine->type="dr";
-        $fine->amount=$request->amount;
-        $fine->month=Carbon::parse($request->month)->startOfMonth()->format("Y-m-d");
-        $fine->given_date=Carbon::parse($request->given_date)->format("Y-m-d"); 
-        $fine->source=$request->source;
-        $fine->payment_status="paid";
-        $fine->employee_id=$request->employee_id;
-        $fine->save();
+
+    public function viewEmployeeAccount(){
+        return view('admin.Employee.employee_account');
     }
 }

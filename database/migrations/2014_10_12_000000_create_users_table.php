@@ -66,6 +66,7 @@ class CreateUsersTable extends Migration
             $table->boolean('online')->nullable();
             $table->boolean('status')->nullable();
             $table->string('active_status')->default("A");
+            $table->string('rider_type')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

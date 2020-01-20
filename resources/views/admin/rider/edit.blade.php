@@ -50,7 +50,6 @@
                 <div class="kt-portlet__body">
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-12">
-                            
                             <div class="form-group">
                                 <label>Full Name: <span class="streric">*</span></label>
                                 <input type="text" class="form-control @if($errors->has('name')) invalid-field @endif" name="name" placeholder="Enter full name" value="{{ $rider->name }}">
@@ -465,9 +464,13 @@
                                             
                         
                                         <div class="form-group"style="margin-top:25px;">
-                                                <label>Other Details:</label>
-                                                <textarea type="text" rows="8"  autocomplete="off" class="form-control @if($errors->has('other_details')) invalid-field @endif" name="other_details" placeholder="Enter Further Details" >{{ $rider_detail->other_details }}</textarea>
-                                            </div>
+                                            <label>Other Details:</label>
+                                        <textarea type="text" rows="8"  autocomplete="off" class="form-control @if($errors->has('other_details')) invalid-field @endif" name="other_details" placeholder="Enter Further Details" >{{ $rider_detail->other_details }}</textarea>
+                                        </div>
+                                        <label class="kt-checkbox">
+                                            <input  name="rider_type" type="checkbox"  @if ($rider->rider_type=='Employee') checked @endif value="Employee"> Is He Employee?
+                                            <span></span>
+                                        </label>
                                             {{-- <div class="form-group">
                                                     <label>Status:</label>
                                                     <div>

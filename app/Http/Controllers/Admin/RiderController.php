@@ -77,7 +77,7 @@ class RiderController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    { 
         
         $this->validate($request, [
             'name' => 'required | string | max:255',
@@ -99,6 +99,10 @@ class RiderController extends Controller
         $rider->break_end_time = $request->break_end_time;
         $rider->active_month = Carbon::parse($request->active_month)->format('Y-m-d');
         $rider->status = 1;
+        $rider->rider_type="Rider";
+        if ($request->rider_type=="Employee") {
+            $rider->rider_type="Employee";
+        }
         $ca=json_decode($rider->spell_time,true);
         if (!isset($ca)) {
             $ca=[];
@@ -391,6 +395,10 @@ class RiderController extends Controller
         $rider->break_start_time = $request->break_start_time;
         $rider->break_end_time = $request->break_end_time;
         $rider->active_month = Carbon::parse($request->active_month)->format('Y-m-d');
+        $rider->rider_type="Rider";
+        if ($request->rider_type=="Employee") {
+            $rider->rider_type="Employee";
+        }
         // if($request->status){
         //     $rider->status = 1;
         //     }

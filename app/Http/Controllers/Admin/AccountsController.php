@@ -902,6 +902,7 @@ class AccountsController extends Controller
         $less_time=0;
         $bonus=0;
         $absent_app=0;
+        $positions=0;
 
 
         //some static_data
@@ -912,9 +913,21 @@ class AccountsController extends Controller
         $_s_hoursFormula=7.87;
         $_s_maxHours=11;
         if(isset($feid) && $feid!=null){ // rider belongs to zomato
+
             $ra_zomatos=Income_zomato::where("rider_id",$rider_id)
             ->whereMonth("date",$onlyMonth)
             ->get()->first();  
+
+            if ($pm=='trip_based') {
+                
+                $_s_maxTrips=$client_setting['tb_sm__bonus_trips'];
+                $_s_tripsFormula=$client_setting['tb_sm__trip_amount'];
+                $_s_maxTripsFormula=$client_setting['tb_sm__trips_bonus_amount'];
+                $_s_monthlyHours=286;
+                $_s_hoursFormula=$client_setting['tb_sm__hour_amount'];
+                $_s_maxHours=11; 
+            }
+           
             
             if(isset($ra_zomatos)){
                 
@@ -955,6 +968,19 @@ class AccountsController extends Controller
                 $hours_payable=$payable_hours*$_s_hoursFormula;
                 if($calculated_trips > $_s_maxTrips){
                     $bonus=50;
+                    if ($ra_zomatos->setting!="") {
+                        $position_setting = json_decode($ra_zomatos->setting, true);
+                        $positions = $position_setting['top_position'];
+                        if ($positions=="1") {
+                            $bonus=150;
+                        }
+                        if ($positions=="2") {
+                            $bonus=125;
+                        }
+                        if ($positions=="3") {
+                            $bonus=100;
+                        } 
+                    }
                 }
                 $salary_hours=round($hours_payable,2);
                 $salary_trips=$trips_payable+$trips_EXTRA_payable;
@@ -965,7 +991,7 @@ class AccountsController extends Controller
                 $total_salary_amt = round($hours_payable+$trips_payable+$trips_EXTRA_payable,2);
             }
             else { 
-                # no record found in income zomato table --generate error
+                # no record found in income zomato table --generate error 
                 return response()->json([
                     'status'=>0,
                     'msg'=>'No record found on Zomato Income against this rider.'
@@ -1050,6 +1076,7 @@ class AccountsController extends Controller
        //end fixed based client
 
        $salary_hours=isset($salary_hours)?$salary_hours:0;
+       $absent_approve_hours=isset($absent_approve_hours)?$absent_approve_hours:0;
        $salary_trips=isset($salary_trips)?$salary_trips:0;
        $salary_credits=isset($salary_credits)?$salary_credits:0;
        $weekly_off=isset($weekly_off)?$weekly_off:0;
@@ -1111,7 +1138,11 @@ class AccountsController extends Controller
             '_s_maxTripsFormula'=>round($_s_maxTripsFormula,2),
             '_s_monthlyHours'=>round($_s_monthlyHours,2),
             '_s_hoursFormula'=>round($_s_hoursFormula,2),
-            '_s_maxHours'=>$_s_maxHours
+            '_s_maxHours'=>$_s_maxHours,
+
+            'pm'=>$pm,
+            'client_setting'=>$client_setting,
+            'position'=>$positions,
         ]);
     }
     public function new_salary_added(Request $request){
@@ -1729,24 +1760,47 @@ public function income_zomato_import(Request $r){
     
 
     /*======================Finding top 3 riders===================*/
-    // $expected_month = isset($data[0]['onboarding_date'])?Carbon::createFromFormat('d/m/Y',$data[0]['onboarding_date'])->format('m'):null;
-    // if($expected_month==null){
-    //     //throw unexpencted error
-    //     return response()->json([
-    //         'status'=>0,
-    //         'msg'=>'Invalid date. Check the sheet again.'
-    //     ]);
-    // }
-    // $prev_zi = Income_zomato::whereMonth('date', $expected_month)
-    // ->get()
-    // ->toArray();
+    $expected_month = isset($data[0]['onboarding_date'])?Carbon::createFromFormat('d/m/Y',$data[0]['onboarding_date'])->format('Y-m-y'):null;
+    if($expected_month==null){
+        //throw unexpencted error
+        return response()->json([
+            'status'=>0,
+            'msg'=>'Invalid date. Check the sheet again.'
+        ]);
+    }
+    $expected_month_monly = Carbon::parse($expected_month)->format('m');
+    $expected_year_yonly = Carbon::parse($expected_month)->format('Y');
+    $prev_zi = Income_zomato::whereMonth('date', $expected_month_monly)
+    ->whereYear('date', $expected_year_yonly)
+    ->get()
+    ->toArray();
+
+    $prev_ca = \App\Model\Accounts\Company_Account::whereMonth('month', $expected_month_monly)
+    ->whereYear('month', $expected_year_yonly)
+    ->get()
+    ->toArray();
+
+    $prev_ra = \App\Model\Accounts\Rider_Account::whereMonth('month', $expected_month_monly)
+    ->whereYear('month', $expected_year_yonly)
+    ->get()
+    ->toArray();
+
     
-    // $merged_data=array_merge($data, $prev_zi);
-    // $top_riders = $merged_data;
-    $top_riders = $data;
-    
-    
-    
+    $merged_data=array_merge($data, $prev_zi);
+    //filter data against same feid
+    $filtered_arr = [];
+    foreach ($merged_data as $top_rider) {
+        $feid = $top_rider['feid'];
+        $tempp = Arr::first($filtered_arr, function ($item, $key) use ($feid) {
+            return $item['feid'] == $feid;
+        });
+        if(!isset($tempp)){
+            array_push($filtered_arr,$top_rider);
+        }
+    }
+    $top_riders = $filtered_arr;
+    // $top_riders = $data;
+
     usort($top_riders, function($a, $b){
         $tripsA = isset($a['trips_payable'])?$a['trips_payable']:0;
         $hoursA = isset($a['log_in_hours_payable'])?$a['log_in_hours_payable']:0;
@@ -1769,9 +1823,141 @@ public function income_zomato_import(Request $r){
     $top_rider_1_FEID = $top_riders[0]['feid'];
     $top_rider_2_FEID = isset($top_riders[1]['feid'])?$top_riders[1]['feid']:null;
     $top_rider_3_FEID = isset($top_riders[2]['feid'])?$top_riders[2]['feid']:null;
+
+    $prev__ziUpdatesReset=[];
+    $prev__caUpdatesReset=[];
+    $prev__raUpdatesReset=[];
+    $prev__ziUpdates=[];
+    $prev__caUpdates=[];
+    $prev__raUpdates=[];
+
+    $prev__caAdded=[];
+    $prev__raAdded=[];
+
+    //loop through all top 3 riders
+    for ($i=0; $i < 3; $i++) {
+        $_trFEID = $top_riders[$i]['feid']; 
+        //check if previous zomato income found against this fied 
+        $prev_zi_foundObj = Arr::first($prev_zi, function ($item_zi, $key) use ($_trFEID) {
+            return $item_zi['feid'] == $_trFEID;
+        });
+
+        $prev_zi_topriders = Arr::first($prev_zi, function ($item_zi, $key) use ($_trFEID, $i) {
+            $zi__settings = json_decode($item_zi['setting'], true);
+            $top_rider_index = $i+1;
+            if(isset($zi__settings['top_position']) && $zi__settings['top_position']==$top_rider_index){
+                return true;
+            }
+            return false;
+        });
+        //resetting old top riders bonus
+        if(isset($prev_zi_topriders)){
+            $prev__zi_id = $prev_zi_topriders['p_id'];
+            //zomato income
+            $objUpdate=[];
+            $objUpdate['id']=$prev_zi_topriders['id'];
+            $objUpdate['setting']=null;
+            array_push($prev__ziUpdatesReset, $objUpdate);
+
+            //company account
+            $prev_ca_found = Arr::first($prev_ca, function ($item, $key) use ($prev__zi_id) {
+                return $item['income_zomato_id'] == $prev__zi_id && strpos($item['source'], '400 Trips Acheivement Bonus')!==false;
+            });
+            if (isset($prev_ca_found)) {
+                $objUpdate=[];
+                $objUpdate['id']=$prev_ca_found['id'];
+                $objUpdate['amount']=50;
+                $objUpdate['source']='400 Trips Acheivement Bonus';
+                array_push($prev__caUpdatesReset, $objUpdate);
+            }
+
+            //rider account
+            $prev_ra_found = Arr::first($prev_ra, function ($item, $key) use ($prev__zi_id) {
+                return $item['income_zomato_id'] == $prev__zi_id && strpos($item['source'], '400 Trips Acheivement Bonus')!==false;
+            });
+            if (isset($prev_ra_found)) {
+                $objUpdate=[];
+                $objUpdate['id']=$prev_ra_found['id'];
+                $objUpdate['amount']=50;
+                $objUpdate['source']='400 Trips Acheivement Bonus';
+                array_push($prev__raUpdatesReset, $objUpdate);
+            }
+        }
+
+        //if found - means this top rider belongs to previous sheet, so we need to change positions if needed
+        //if not found - means this top rider belongs to the sheet currently importing, so we need to do nothing because we already handing this when importing current sheet
+        $top_rider_pos = $i+1;
+        $extra_msg='';
+
+        if( $top_rider_pos==1){
+            $bonus_amount = 100 + 50;
+            $extra_msg = " + 1st Position Bonus";
+        } 
+        if( $top_rider_pos==2){
+            $bonus_amount = 75 + 50;
+            $extra_msg = " + 2nd Position Bonus";
+        }
+        if( $top_rider_pos==3){
+            $bonus_amount = 50 + 50;
+            $extra_msg = " + 3rd Position Bonus";
+        } 
+        if(isset($prev_zi_foundObj)){
+            $prev__zi_id = $prev_zi_foundObj['p_id'];
+            
+            //zomato income
+            $objUpdate=[];
+            $objUpdate['id']=$prev_zi_foundObj['id'];
+
+            $settings=[];
+            $settings['top_position']=$top_rider_pos;
+            $objUpdate['setting']=json_encode($settings);
+            array_push($prev__ziUpdates, $objUpdate);
+
+            //company account
+            $prev_ca_found = Arr::first($prev_ca, function ($item, $key) use ($prev__zi_id) {
+                return $item['income_zomato_id'] == $prev__zi_id && strpos($item['source'], '400 Trips Acheivement Bonus')!==false;
+            });
+            if (isset($prev_ca_found)) {
+                $objUpdate=[];
+                $objUpdate['id']=$prev_ca_found['id'];
+                $objUpdate['rider_id']=$prev_ca_found['rider_id'];
+                $objUpdate['amount']=$bonus_amount;
+                $objUpdate['source']='400 Trips Acheivement Bonus'.$extra_msg;
+                array_push($prev__caUpdates, $objUpdate);
+            }
+
+            //rider account
+            $prev_ra_found = Arr::first($prev_ra, function ($item, $key) use ($prev__zi_id) {
+                return $item['income_zomato_id'] == $prev__zi_id && strpos($item['source'], '400 Trips Acheivement Bonus')!==false;
+            });
+            if (isset($prev_ra_found)) {
+                $objUpdate=[];
+                $objUpdate['id']=$prev_ra_found['id'];
+                $objUpdate['rider_id']=$prev_ca_found['rider_id'];
+                $objUpdate['amount']=$bonus_amount;
+                $objUpdate['source']='400 Trips Acheivement Bonus';
+                array_push($prev__raUpdates, $objUpdate);
+            }
+        }
+    }
+
+    //updating record (income_zomatos, company__accounts, rider__accounts)
+    $prev__data_zi=Batch::update(new Income_zomato, $prev__ziUpdatesReset, 'id'); //r5  
+    $prev__data_ca=Batch::update(new \App\Model\Accounts\Company_Account, $prev__caUpdatesReset, 'id'); //r5  
+    $prev__data_ra=Batch::update(new \App\Model\Accounts\Rider_Account, $prev__raUpdatesReset, 'id'); //r5  
+
+    $prev__data_zi=Batch::update(new Income_zomato, $prev__ziUpdates, 'id'); //r5  
+    $prev__data_ca=Batch::update(new \App\Model\Accounts\Company_Account, $prev__caUpdates, 'id'); //r5  
+    $prev__data_ra=Batch::update(new \App\Model\Accounts\Rider_Account, $prev__raUpdates, 'id'); //r5  
     /*======================/Finding top 3 riders===================*/
     // return response()->json([
     //     'data'=>$top_riders,
+    //     'deletes'=>$prev__ziUpdates ,
+    //     'deletesReset'=>$prev__ziUpdatesReset,
+    //     'deletes1'=>$prev__caUpdates,
+    //     'deletes1Reset'=>$prev__caUpdatesReset,
+    //     'deletes2'=>$prev__raUpdates,
+    //     'deletes2Reset'=>$prev__raUpdatesReset,
     //     'expected_month'=>$expected_month
     // ]);
     
@@ -2833,5 +3019,60 @@ public function client_income_update(Request $request,$id){
             'status'=>$status,
         ]);
      }
+    public function manage_salaryslips(){
+        $riders = Rider::with('Rider_detail')->where('active_status', 'A')->get();
+        return view('accounts.manage_salaryslips',compact('riders'));
+    }
+    public function update_salaryslips($rider_id,$checked,$month=null, $expiry=null){ 
+        if($rider_id!='null' && $rider_id!=null){
+            //add show_salaryslip option
+            if($rider_id==0){
+                //add to all riders
+                $rider_details = Rider_detail::all();
+                $rider_details_updates=[];
+                foreach ($rider_details as $rider_detail) {
+                    $obj=[];
+                    $obj['id']=$rider_detail->id;
+                    $obj['salaryslip_month']=$month;
+                    $obj['salaryslip_expiry']=$expiry;
+                    $obj['show_salaryslip']=($checked=='true'?1:0);
+                    array_push($rider_details_updates, $obj);
+                }
+                $update_data=Batch::update(new Rider_detail, $rider_details_updates, 'id'); //r5 
+                return response()->json([
+                    'rider_detail'=>Rider_detail::all(),
+                    'd'=>0
+                ]); 
+            }
+            else {
+                //add against 1 rider only
+                $rider_details = Rider::find($rider_id)->Rider_detail;
+                $rider_details->salaryslip_month=$month;
+                $rider_details->salaryslip_expiry=$expiry;
+                $rider_details->show_salaryslip=($checked=='true'?1:0);
+                $rider_details->update();
+            }
+            return response()->json([
+                'rider_detail'=>Rider_detail::all(),
+                'd'=>1
+            ]);
+        }
+        
+        //add month option to all riders
+        $rider_details = Rider_detail::all();
+        $rider_details_updates=[];
+        foreach ($rider_details as $rider_detail) {
+            $obj=[];
+            $obj['id']=$rider_detail->id;
+            $obj['salaryslip_month']=$month;
+            $obj['salaryslip_expiry']=$expiry;
+            array_push($rider_details_updates, $obj);
+        }
+        $update_data=Batch::update(new Rider_detail, $rider_details_updates, 'id'); //r5  
+        return response()->json([
+            'rider_detail'=>Rider_detail::all(),
+            'd'=>2
+        ]);
+    }
     
 }
