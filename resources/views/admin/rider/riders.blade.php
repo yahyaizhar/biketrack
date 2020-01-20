@@ -7,7 +7,7 @@
     background-color: #FFFF88;
 }
 
-.dataTables_length{
+.dataTables_length{ 
    display: block;   
 }
 .total_entries{
