@@ -2979,35 +2979,74 @@ public function client_income_update(Request $request,$id){
          ->get()
          ->first();
          if (isset($absent_rider_payout)) {
-            if ($absent_rider_payout->absent_status=="Rejected" || $absent_rider_payout->absent_status==null) {
+            if ($absent_rider_payout->absent_status=="Rejected" || $absent_rider_payout->absent_status==null){
              if ($status=="approved") {
                 $absent_rider_payout->absent_status="Approved";
                 $zomato_id=$absent_rider_payout->zomato_income_id;
                 $income_zomato=Income_zomato::find($zomato_id);
                 if(isset($income_zomato)){
-                    $income_zomato->absents_count=($income_zomato->absents_count)-1;
-                    $income_zomato->approve_absents+=1;
-                    $income_zomato->save();
-                } 
+                    if ( $income_zomato->approve_absents>0 ||  $income_zomato->approve_absents!=null) {
+                        $income_zomato->approve_absents-=1;
+                        $income_zomato->save();
+                    }
+                }
+                if(isset($absent_rider_payout->absent_fine_id)){
+                    $ra =Rider_Account::where("kingrider_fine_id",$absent_rider_payout->absent_fine_id)->get()->first();
+                    $ra->delete();
+                }
+                $absent_rider_payout->absent_fine_id=null;
+                $absent_rider_payout->save();
              }
              if ($status=="rejected") {
                 $absent_rider_payout->absent_status="Rejected";
+                $absent_rider_payout->absent_fine_id=$absent_rider_payout->id;
+                $absent_rider_payout->save();
+                $zomato_id=$absent_rider_payout->zomato_income_id;
+                $income_zomato=Income_zomato::find($zomato_id);
+                if(isset($income_zomato)){
+                    $income_zomato->approve_absents+=1;
+                    $income_zomato->save();
+                }
+                $amt=11*7.87;
+                $ra =new Rider_Account;
+                $ra->type='dr';
+                $ra->month = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
+                $ra->given_date=Carbon::parse($rider_payout_date)->format('Y-m-d');
+                $ra->amount=round($amt,2);
+                $ra->rider_id=$rider_id;
+                $ra->source='Absent Fine (on '.$ra->given_date.')';
+                $ra->payment_status='pending';
+                $ra->kingrider_fine_id=$absent_rider_payout->id; 
+                $ra->save();
              }
-             $absent_rider_payout->save();
             }
             else{
                 if ($status=="approved") {
                     $absent_rider_payout->absent_status="Approved";
+                    $absent_rider_payout->absent_fine_id=null;
+                    $absent_rider_payout->save();
                  }
                  if ($status=="rejected") {
                     $absent_rider_payout->absent_status="Rejected";
+                    $absent_rider_payout->absent_fine_id=$absent_rider_payout->id;
+                    $absent_rider_payout->save();
                     $zomato_id=$absent_rider_payout->zomato_income_id;
                     $income_zomato=Income_zomato::find($zomato_id);
                     if(isset($income_zomato)){
-                        $income_zomato->absents_count=($income_zomato->absents_count)+1;
-                        $income_zomato->approve_absents-=1;
+                        $income_zomato->approve_absents+=1;
                         $income_zomato->save();
                     } 
+                    $amt=11*7.87;
+                    $ra =new Rider_Account;
+                    $ra->type='dr';
+                    $ra->month = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
+                    $ra->given_date=Carbon::parse($rider_payout_date)->format('Y-m-d');
+                    $ra->amount=round($amt,2);
+                    $ra->rider_id=$rider_id;
+                    $ra->source='Absent Fine (on '.$ra->given_date.')';
+                    $ra->payment_status='pending';
+                    $ra->kingrider_fine_id=$absent_rider_payout->id; 
+                    $ra->save();
                  }
                  $absent_rider_payout->save();
             }
