@@ -48,13 +48,13 @@
         <div class="kt-portlet__head">
             <div class="kt-portlet__head-toolbar">
                 <ul class="nav nav-tabs nav-tabs-line nav-tabs-line-danger nav-tabs-line-2x nav-tabs-line-right nav-tabs-bold" role="tablist">
-                    <li class="nav-item">
+                    <li class="nav-item" id="salaryslip_tab">
                         <a class="nav-link active" data-toggle="tab" href="#kt_portlet_base_demo_2_1_tab_content" role="tab" aria-selected="false">
                             <i class="la la-money" aria-hidden="true"></i>Salary Slips
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="attendence_sheet" data-toggle="tab" href="#kt_portlet_base_demo_2_2_tab_content" role="tab" aria-selected="false">
+                    <li class="nav-item" id="attendence_sheet_tab">
+                        <a class="nav-link" data-toggle="tab" href="#kt_portlet_base_demo_2_2_tab_content" role="tab" aria-selected="false">
                             <i class=" flaticon2-line-chart" aria-hidden="true"></i>Attendence Sheet
                         </a>
                     </li>
@@ -348,21 +348,27 @@
                         return;
                     } else {
                         $("#Tabs_for_slips_attendence").show();
-                        $("#Attendence_sheet").show();
-                        $("#print_slip_for_rider2").show();
+                        $("#Attendence_sheet,#attendence_sheet_tab,#salaryslip_tab,#print_slip_for_rider2").show();
                         $('.salaryslip_err,.attendance_err').html('');
                         if (data.show_salaryslip!="1") {
                             $("#print_slip_for_rider2").hide();
+                            $('#salaryslip_tab').hide();
                             var _msg = $(basic_alert);
                             _msg.find('.alert-text').html('You do not have permission to view this');
                             $('.salaryslip_err').html(_msg.html());
                         }
                         if (data.show_attendanceslip!="1") {
                             $("#Attendence_sheet").hide();
+                            $('#attendence_sheet_tab').hide();
                             var _msg = $(basic_alert);
                             _msg.find('.alert-text').html('You do not have permission to view this');
                             $('.attendance_err').html(_msg.html());
                         }
+                        $('.nav-tabs .nav-item a').removeClass('active');
+                        $('.tab-content .tab-pane').removeClass('active');
+                        var active__tab=$('.nav-tabs .nav-item:visible').eq(0).find('a');
+                        active__tab.addClass('active');
+                        $(active__tab.attr('href')).addClass('active');
                         $('.month_year').html(new Date(data.month).format("mmm,yyyy"));
                         $("#rider_name , .rider_name , #rider_id_1").html(data.rider_name);
                         $(" .employee_id ").html("KR-"+data.rider_id);
