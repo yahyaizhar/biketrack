@@ -3116,8 +3116,27 @@ public function client_income_update(Request $request,$id){
             array_push($rider_details_updates, $obj);
         }
         $update_data=Batch::update(new Rider_detail, $rider_details_updates, 'id'); //r5  
+        
+        $_data=[];
+        $rider_details = Rider_detail::all();
+        foreach ($rider_details as $rider_detail) {
+            $onlyMonth = Carbon::parse($rider_detail->salaryslip_month)->format('m');
+            $onlyYear = Carbon::parse($rider_detail->salaryslip_month)->format('Y');
+            $salary_generated = Rider_salary::where('rider_id',$rider_detail->rider_id)
+            ->whereMonth("month",$onlyMonth)
+            ->whereYear("month",$onlyYear)
+            ->get()
+            ->first();
+            $is_salary_generated = false;
+            if(isset($salary_generated)) $is_salary_generated = true;
+
+            $obj=[];
+            $obj['rider_detail']=$rider_detail;
+            $obj['salary_generated']=$is_salary_generated;
+            array_push($_data, $obj);
+        }
         return response()->json([
-            'rider_detail'=>Rider_detail::all(),
+            'data'=>$_data,
             'd'=>2
         ]);
     }

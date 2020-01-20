@@ -72,8 +72,21 @@
                         @foreach ($riders as $rider) 
                         @php
                             $show_dates=$rider->Rider_detail->show_salaryslip==1||$rider->Rider_detail->show_attendanceslip==1;
+                            $onlyMonth = Carbon\Carbon::parse($rider->Rider_detail->salaryslip_month)->format('m');
+                            $onlyYear = Carbon\Carbon::parse($rider->Rider_detail->salaryslip_month)->format('Y');
+                            $salary_generated = App\Model\Accounts\Rider_salary::where('rider_id',$rider->id)
+                            ->whereMonth("month",$onlyMonth)
+                            ->whereYear("month",$onlyYear)
+                            ->get()
+                            ->first();
+                            $show__row=false;
                         @endphp
-                        <tr data-riderid="{{$rider->id}}">
+                       @isset($salary_generated)
+                       @php
+                           $show__row=true;
+                       @endphp
+                       @endisset
+                        <tr data-riderid="{{$rider->id}}" @if($show__row==false)style="display:none" @endif>
                                 <td>KRD{{$rider->id}} - {{$rider->name}}</td>
                                 <td data-name="active_month">@if($show_dates){{Carbon\Carbon::parse($rider->Rider_detail->salaryslip_month)->format('F Y')}}@endif</td>
                                 <td data-name="expiry">@if($show_dates){{Carbon\Carbon::parse($rider->Rider_detail->salaryslip_expiry)->format('M d, Y')}}@endif</td>
@@ -90,6 +103,7 @@
                                     </label>
                                 </td>
                             </tr>
+                        
                         @endforeach
                     </tbody>
                 </table>
@@ -161,20 +175,44 @@ function update_data(_this,is_month=false,rider_id=null){
             $('.loading').hide();
         },
         success: function(data){
-            data.rider_detail.forEach(function(item,i){
-                let _month = new Date(item.salaryslip_month).format('mmmm yyyy');
-                let _expiry = new Date(item.salaryslip_expiry).format('mmm dd, yyyy');
-                let show_salaryslip=item.show_salaryslip=='1'?true:false;
-                let show_attendanceslip=item.show_attendanceslip=='1'?true:false;
-                if(!show_salaryslip && !show_attendanceslip){
-                    _month='';
-                    _expiry='';
-                }
-                $('#rider_salaryslips tr[data-riderid="'+item.rider_id+'"]').find('[data-name="active_month"]').text(_month);
-                $('#rider_salaryslips tr[data-riderid="'+item.rider_id+'"]').find('[data-name="expiry"]').text(_expiry);
-                $('#rider_salaryslips tr[data-riderid="'+item.rider_id+'"]').find('[name="show_slip"]').prop('checked', show_salaryslip);
-                $('#rider_salaryslips tr[data-riderid="'+item.rider_id+'"]').find('[name="show_atsh"]').prop('checked', show_attendanceslip);
-            });
+            if(typeof data.rider_detail !=="undefined"){
+                data.rider_detail.forEach(function(item,i){
+                    let _month = new Date(item.salaryslip_month).format('mmmm yyyy');
+                    let _expiry = new Date(item.salaryslip_expiry).format('mmm dd, yyyy');
+                    let show_salaryslip=item.show_salaryslip=='1'?true:false;
+                    let show_attendanceslip=item.show_attendanceslip=='1'?true:false;
+                    if(!show_salaryslip && !show_attendanceslip){
+                        _month='';
+                        _expiry='';
+                    }
+                    $('#rider_salaryslips tr[data-riderid="'+item.rider_id+'"]').find('[data-name="active_month"]').text(_month);
+                    $('#rider_salaryslips tr[data-riderid="'+item.rider_id+'"]').find('[data-name="expiry"]').text(_expiry);
+                    $('#rider_salaryslips tr[data-riderid="'+item.rider_id+'"]').find('[name="show_slip"]').prop('checked', show_salaryslip);
+                    $('#rider_salaryslips tr[data-riderid="'+item.rider_id+'"]').find('[name="show_atsh"]').prop('checked', show_attendanceslip);
+                });
+            }
+            else{
+                data.data.forEach(function(item,i){
+                    var rider_detail = item.rider_detail;
+                    let _month = new Date(rider_detail.salaryslip_month).format('mmmm yyyy');
+                    let _expiry = new Date(rider_detail.salaryslip_expiry).format('mmm dd, yyyy');
+                    let show_salaryslip=rider_detail.show_salaryslip=='1'?true:false;
+                    let show_attendanceslip=rider_detail.show_attendanceslip=='1'?true:false;
+                    if(!show_salaryslip && !show_attendanceslip){
+                        _month='';
+                        _expiry='';
+                    }
+                    var _row = $('#rider_salaryslips tr[data-riderid="'+rider_detail.rider_id+'"]');
+                    _row.show();
+                    if(!item.salary_generated){
+                        _row.hide();
+                    }
+                    _row.find('[data-name="active_month"]').text(_month);
+                    _row.find('[data-name="expiry"]').text(_expiry);
+                    _row.find('[name="show_slip"]').prop('checked', show_salaryslip);
+                    _row.find('[name="show_atsh"]').prop('checked', show_attendanceslip);
+                });
+            }
             $('#rider_salaryslips table thead [name="show_slip"]').prop('checked', $('#rider_salaryslips table tbody [name="show_slip"]:checked').length === $('#rider_salaryslips table tbody [name="show_slip"]').length);
             $('#rider_salaryslips table thead [name="show_atsh"]').prop('checked', $('#rider_salaryslips table tbody [name="show_atsh"]:checked').length === $('#rider_salaryslips table tbody [name="show_atsh"]').length);
         },

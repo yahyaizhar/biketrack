@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\GuestNewComer;
 use App\Model\Rider\Rider_detail;
+use App\Model\Accounts\Rider_salary;
 use App\Model\Rider\Rider;
 use Illuminate\Support\Arr;
 use Batch;
@@ -148,6 +149,19 @@ class GuestController extends Controller
             $show_salaryslip=0;
             $show_attendanceslip=0;
           }
+        }
+        $onlyMonth = Carbon::parse($rider_detail->salaryslip_month)->format('m');
+        $onlyYear = Carbon::parse($rider_detail->salaryslip_month)->format('Y');
+        $salary_generated = Rider_salary::where('rider_id',$rider_detail->rider_id)
+        ->whereMonth("month",$onlyMonth)
+        ->whereYear("month",$onlyYear)
+        ->get()
+        ->first();
+        if(!isset($salary_generated)){
+          return response()->json([
+            'status'=>0,
+            'msg'=> 'Salary is not generated yet'
+          ]);
         }
         if($show_salaryslip==0 && $show_attendanceslip==0){
           return response()->json([
