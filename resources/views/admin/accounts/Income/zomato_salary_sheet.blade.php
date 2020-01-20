@@ -188,7 +188,7 @@ console.log(riders_data);
             "Fuel Expense": item.fuel,
             "Advance":item.advance,
             "Salik":item.salik,
-            "Sim Charges":item.sim_charges,
+            "Sim Charges":item.sim_extra_charges,
             "POOR PERFORMANCE":item.poor_performance,
             "DC":item.dc,
             "COD ":item.cod,
