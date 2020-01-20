@@ -195,7 +195,7 @@ console.log(riders_data);
             "Visa Charges":item.visa,
             "RTA Fine":item.rta_fine,
             "mobile charges":item.mobile,
-            "Disipline Fine":"",
+            "Disipline Fine":item.dicipline_fine, 
             "Total deduction":item.total_deduction,
             "No of Hours ":item.number_of_hours,
             "No of Trips ":item.number_of_trips,
@@ -209,7 +209,7 @@ console.log(riders_data);
             "Bonus":item.bonus,
             "Bike allowns":item.bike_allowns,
             "Net Salary ":item.net_salary,
-            "Gross Salary":item.gross_salary,
+            "Gross Salary":$(item.gross_salary).text(),
             "Cash Paid":"",
             "Remaining Salary":"",
            });

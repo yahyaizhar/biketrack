@@ -2362,7 +2362,17 @@ class AjaxNewController extends Controller
     ->addColumn('dicipline_fine', function($rider) use ($month){
        $onlyMonth=Carbon::parse($month)->format('m');
        $onlyYear=Carbon::parse($month)->format('Y');
-        return '0';
+       $startMonth = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
+       $endMonth = Carbon::parse($month)->endOfMonth()->format('Y-m-d');
+       $dicipline=\App\Model\Accounts\Rider_Account::where("rider_id",$rider->id)
+        ->whereDate('month', '>=',$startMonth)
+        ->whereDate('month', '<=',$endMonth)
+        ->where(function($q) {
+            $q->where('source','Discipline Fine')
+             ->orWhereNotNull('kingrider_fine_id');
+        })
+        ->sum('amount');
+        return $dicipline;
     }) 
     ->addColumn('total_deduction', function($rider) use ($month){
        $onlyMonth=Carbon::parse($month)->format('m');
