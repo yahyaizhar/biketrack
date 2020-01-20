@@ -122,6 +122,7 @@ class GuestController extends Controller
       $month=0;
       $TimeSheet=null;
       $expiry_month="";
+      $closing_balance_prev=0;
 
       
 
@@ -162,6 +163,24 @@ class GuestController extends Controller
         $month=Carbon::parse($dmy)->format("Y-m-d");
         $from =Carbon::parse($month)->startOfMonth()->format("Y-m-d");
         $to =Carbon::parse($month)->endOfMonth()->format("Y-m-d");
+
+         //prev payables
+         $rider_debits_cr_prev_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+         ->where(function($q) {
+             $q->where('type', "cr");
+         })
+         ->whereDate('month', '<',$from)
+         ->sum('amount');
+         
+         $rider_debits_dr_prev_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+         ->where(function($q) {
+             $q->where('type', "cr_payable")
+               ->orWhere('type', 'dr');
+         })
+         ->whereDate('month', '<',$from)
+         ->sum('amount');
+         $closing_balance_prev = round($rider_debits_cr_prev_payable - $rider_debits_dr_prev_payable,2);
+         //ends prev payables
 
         $salary=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
         ->whereDate('month', '>=',$from)
@@ -272,7 +291,10 @@ class GuestController extends Controller
         $dicipline=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
-        ->where('source','Discipline Fine')
+        ->where(function($q) {
+            $q->where('source','Discipline Fine')
+             ->orWhereNotNull('kingrider_fine_id');
+        })
         ->sum('amount');
         $mics=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
         ->whereDate('month', '>=',$from)
@@ -290,7 +312,6 @@ class GuestController extends Controller
         ->where("source","!=","Visa Charges")
         ->where("source","!=","Mobile Installment")
         ->sum('amount');
-
 
         $salary_paid=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
         ->whereDate('month', '>=',$from)
@@ -329,6 +350,7 @@ class GuestController extends Controller
           $hours=0;
           $extra_trips=0;
           $salary_paid=0;
+          $closing_balance_prev=0;
         }
 
       }
@@ -339,6 +361,7 @@ class GuestController extends Controller
         'month'=>$month,
         'date_of_joining'=>$date_of_joining,
 
+        'closing_balance_prev'=>$closing_balance_prev,
         'salary'=>$salary,
         'trips'=>$trips,
         'hours'=>$hours,

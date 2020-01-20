@@ -558,7 +558,10 @@ class AjaxNewController extends Controller
         $dicipline=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
-        ->where('source','Discipline Fine')
+        ->where(function($q) {
+            $q->where('source','Discipline Fine')
+             ->orWhereNotNull('kingrider_fine_id');
+        })
         ->sum('amount');
         $rta=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)

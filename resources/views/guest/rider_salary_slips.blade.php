@@ -108,11 +108,11 @@
                                 <th style="width:50%;text-align:center;">EARNINGS & DEDUCTIONS</th>
                                 {{-- <th style="width:25%;text-align:center;">DEDUCTIONS:</th> --}}
                             </tr>
-                            {{-- <tr>
+                            <tr>
                                 <td style="width:50%;text-align:left;">Previous Balance</td>
                                 <td  class="previous_balance" style="width:25%;text-align:end;"></td> 
-                                <td style="width:25%;text-align:end;"></td>
-                            </tr> --}}
+                                {{-- <td style="width:25%;text-align:end;"></td> --}}
+                            </tr>
                             <tr>
                                 <td style="width:50%;text-align:left;">BASIC SALARY (<strong>Trips:</strong><span class="total_trips"></span>) (<strong>Hours:</strong><span class="total_hours"></span>) (<strong>Extra Trips:</strong><span class="extra_trips"></span>)</td>
                                 <td  class="salary text-success" style="width:25%;text-align:end;"></td> 
@@ -368,6 +368,8 @@
                         $(" .employee_id ").html("KR-"+data.rider_id);
                         $(".today_date").html(new Date(data.date_of_joining).format('mm/dd/yyyy'));
 
+
+                        $('.previous_balance').html(data.closing_balance_prev);
                         $('.salary').html(data.salary);
                         $('.total_trips').html(data.trips);
                         $('.total_hours').html(data.hours);
@@ -392,7 +394,7 @@
 
                         $('.payment_date').html('PAYMENT DATE: '+data.payment_date);
 
-                        var total_cr=parseFloat(data.salary)+parseFloat(data.ncw)+parseFloat(data.bike_allowns)+parseFloat(data.tip)+parseFloat(data.bonus);
+                        var total_cr=parseFloat(data.closing_balance_prev)+parseFloat(data.salary)+parseFloat(data.ncw)+parseFloat(data.bike_allowns)+parseFloat(data.tip)+parseFloat(data.bonus);
                         var total_dr=parseFloat(data.cash_paid_in_advance)+parseFloat(data.bike_fine)+parseFloat(data.mics)+parseFloat(data.denial_penalty)+parseFloat(data.dicipline)+parseFloat(data.mobile)+parseFloat(data.rta)+parseFloat(data.advance)+parseFloat(data.salik)+parseFloat(data.sim)+parseFloat(data.dc)+parseFloat(data.macdonald);
                         var net_pay=(total_cr-total_dr).toFixed(2);
                         $('.total_cr').html(total_cr);
