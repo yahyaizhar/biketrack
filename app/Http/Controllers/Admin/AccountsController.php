@@ -3023,9 +3023,15 @@ public function client_income_update(Request $request,$id){
         $riders = Rider::with('Rider_detail')->where('active_status', 'A')->get();
         return view('accounts.manage_salaryslips',compact('riders'));
     }
-    public function update_salaryslips($rider_id,$checked,$month=null, $expiry=null){ 
+    public function update_salaryslips(Request $r,$rider_id,$checked,$month=null, $expiry=null){
+        // return $r->all();
+        $rider_id = $r->get('rider_id');
+        $checked = $r->get('is_checked');
+        $month = $r->get('month');
+        $expiry = $r->get('expiry_date');
         if($rider_id!='null' && $rider_id!=null){
             //add show_salaryslip option
+            $type=$r->get('type')=='show_atsh'?'show_attendanceslip':'show_salaryslip';
             if($rider_id==0){
                 //add to all riders
                 $rider_details = Rider_detail::all();
@@ -3035,7 +3041,7 @@ public function client_income_update(Request $request,$id){
                     $obj['id']=$rider_detail->id;
                     $obj['salaryslip_month']=$month;
                     $obj['salaryslip_expiry']=$expiry;
-                    $obj['show_salaryslip']=($checked=='true'?1:0);
+                    $obj[$type]=($checked=='true'?1:0);
                     array_push($rider_details_updates, $obj);
                 }
                 $update_data=Batch::update(new Rider_detail, $rider_details_updates, 'id'); //r5 
@@ -3047,9 +3053,9 @@ public function client_income_update(Request $request,$id){
             else {
                 //add against 1 rider only
                 $rider_details = Rider::find($rider_id)->Rider_detail;
-                $rider_details->salaryslip_month=$month;
-                $rider_details->salaryslip_expiry=$expiry;
-                $rider_details->show_salaryslip=($checked=='true'?1:0);
+                $rider_details['salaryslip_month']=$month;
+                $rider_details['salaryslip_expiry']=$expiry;
+                $rider_details[$type]=($checked=='true'?1:0);
                 $rider_details->update();
             }
             return response()->json([

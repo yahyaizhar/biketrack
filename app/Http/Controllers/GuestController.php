@@ -116,6 +116,7 @@ class GuestController extends Controller
       $extra_trips=0;
       $salary_paid=0;
       $show_salaryslip=0;
+      $show_attendanceslip=0;
       $month_salaryslip=0;
       $isshow=true;
       $month=0;
@@ -133,20 +134,24 @@ class GuestController extends Controller
       }
       if (isset($rider_detail)) {
         $is_show_salaryslip=$rider_detail->show_salaryslip;
-        $dmy="2019-11-01";
-        if ($is_show_salaryslip=='1') {
-          $show_salaryslip=1;
+        $is_show_attendanceslip=$rider_detail->show_attendanceslip;
+        $dmy="";
+        if ($is_show_salaryslip=='1' || $is_show_attendanceslip=='1') {
+          if($is_show_salaryslip=='1') $show_salaryslip=1;
+          if($is_show_attendanceslip=='1') $show_attendanceslip=1;
+          
           $dmy=$rider_detail->salaryslip_month;
           $expiry_month=Carbon::parse($rider_detail->salaryslip_expiry);
           $current_date=Carbon::parse(Carbon::now()->format("Y-m-d"));
           if ($current_date->greaterThan($expiry_month)) {
             $show_salaryslip=0;
+            $show_attendanceslip=0;
           }
         }
-        if($show_salaryslip==0){
+        if($show_salaryslip==0 && $show_attendanceslip==0){
           return response()->json([
             'status'=>0,
-            'msg'=> 'No data found against this Emirate ID '
+            'msg'=> 'No data found against this Emirate ID'
           ]);
         }
         $rider_id=$rider_detail->rider_id;
@@ -294,11 +299,37 @@ class GuestController extends Controller
         ->where('payment_status','paid')
         ->sum('amount');
 
-        $TimeSheet=Income_Zomato::with('Time_sheet')->where('rider_id',$rider_id)
-        ->whereDate('date', '>=',$from)
-        ->whereDate('date', '<=',$to)
-        ->get()
-        ->first();
+        if($show_attendanceslip==1){
+          $TimeSheet=Income_Zomato::with('Time_sheet')->where('rider_id',$rider_id)
+          ->whereDate('date', '>=',$from)
+          ->whereDate('date', '<=',$to)
+          ->get()
+          ->first();
+        }
+        if($show_salaryslip==0){
+          $date_of_joining=null;
+          $ncw=0;
+          $tip=0;
+          $bike_allowns=0;
+          $bonus=0;
+          $bike_fine=0;
+          $advance=0;
+          $salik=0;
+          $sim=0;
+          $denial_penalty=0;
+          $dc=0;
+          $macdonald=0;
+          $rta=0;
+          $mobile=0;
+          $dicipline=0;
+          $mics=0;
+          $cash_paid_in_advance=0;
+          $salary=0;
+          $trips=0;
+          $hours=0;
+          $extra_trips=0;
+          $salary_paid=0;
+        }
 
       }
       return response()->json([
@@ -335,7 +366,7 @@ class GuestController extends Controller
         'income_zomato'=>$TimeSheet,
 
         'show_salaryslip'=>$show_salaryslip,
-        
+        'show_attendanceslip'=>$show_attendanceslip,
 
         'payment_date'=>carbon::now()->format("M d,Y"),
         'expiry_month'=>$expiry_month,

@@ -64,6 +64,7 @@
         <div class="kt-portlet__body">
             <div class="tab-content">
                 <div class="tab-pane active" id="kt_portlet_base_demo_2_1_tab_content" role="tabpanel">
+                    <div class="salaryslip_err"></div>
                     <div style="display:grid;padding: 15px 50px 0px 50px;" id="print_slip_for_rider2">
                         <style type="text/css">
                             #print_slip_for_rider2 table {
@@ -225,6 +226,7 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="kt_portlet_base_demo_2_2_tab_content" role="tabpanel">
+                        <div class="attendance_err"></div>
                     <div class="kt-content  kt-grid__item kt-grid__item--fluid days_payout" id="Attendence_sheet">
                         <div class="kt-portlet kt-portlet--mobile">
                             <div class="kt-portlet__head kt-portlet__head--lg">
@@ -319,6 +321,12 @@
                     }, 
                     url:url,
                     method: "GET",
+                    beforeSend: function() {            
+                        $('.loading').show();
+                    },
+                    complete: function(){
+                        $('.loading').hide();
+                    },
                     data:_form.serializeArray(),
                 })
                 .done(function(data) {
@@ -335,10 +343,18 @@
                         $("#Tabs_for_slips_attendence").show();
                         $("#Attendence_sheet").show();
                         $("#print_slip_for_rider2").show();
+                        $('.salaryslip_err,.attendance_err').html('');
                         if (data.show_salaryslip!="1") {
-                            $("#Attendence_sheet").hide();
                             $("#print_slip_for_rider2").hide();
-                            $('.rider_days_detail tr td:not(:nth-child(1))').text('');
+                            var _msg = $(basic_alert);
+                            _msg.find('.alert-text').html('You do not have permission to view this');
+                            $('.salaryslip_err').html(_msg.html());
+                        }
+                        if (data.show_attendanceslip!="1") {
+                            $("#Attendence_sheet").hide();
+                            var _msg = $(basic_alert);
+                            _msg.find('.alert-text').html('You do not have permission to view this');
+                            $('.attendance_err').html(_msg.html());
                         }
                         $('.month_year').html(new Date(data.month).format("mmm,yyyy"));
                         $("#rider_name , .rider_name , #rider_id_1").html(data.rider_name);
@@ -378,9 +394,19 @@
                         $('.paid_salary').html(data.salary_paid);
 
                         var _data=data.income_zomato;
+                        
                         $(".rider_days_detail tbody").html(""); 
                         $(".rider_days_detail tfoot").html(""); 
                     
+                        if(_data==null){
+                            var _msg = $(basic_alert);
+                            _msg.find('.alert-text').html('No record found');
+                            var _html = _msg.html();
+                            var wrapped = '<tr><td colspan="4">'+_html+'</td></tr>';
+                            $('.rider_days_detail tbody').html(wrapped);
+                            return;
+                        }
+                        
                         var time_sheet=_data.time_sheet;
                         var  rows='';
                         var calculated_trips=0;
