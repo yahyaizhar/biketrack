@@ -74,7 +74,7 @@ var bike_table;
 var bikes_data = [];
 console.log(bikes_data);
 function export_data(){
-    var export_details=[];
+    var export_details=[]; 
     var _data=bike_table.ajax.json().data;
     _data.forEach(function(item,index) {
         export_details.push({

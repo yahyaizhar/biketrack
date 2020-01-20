@@ -40,6 +40,7 @@
                                 <option value="free">Free Bikes</option>
                             </select>
                         </div>
+                        <input class="btn btn-success" type="button" onclick="export_data()" value="Export Bike Data">
                         &nbsp;
                         <a href="{{ route('bike.bike_login') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
@@ -76,6 +77,22 @@
 
 <script>
 var bike_table;   
+function export_data(){
+    var export_details=[]; 
+    var _data=bike_table.ajax.json().data;
+    _data.forEach(function(item,index) {
+        export_details.push({
+        "ID":item.id,
+        "Owner":item.owner,
+        "Brand":item.brand,
+        "Model":item.model,
+        "Bike Number":item.bike_number,
+        "Rent":item.rent,
+        });
+    });
+        var export_data = new CSVExport(export_details);
+    return false;
+}
 $(function() {
     bike_table = $('#bike-table').DataTable({
         lengthMenu: [[-1], ["All"]],

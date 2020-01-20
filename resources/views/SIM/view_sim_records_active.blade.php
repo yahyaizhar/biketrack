@@ -40,6 +40,8 @@
                                 <option value="free">Free Sims</option>
                             </select>
                         </div>
+                        <input class="btn btn-success" type="button" onclick="export_data()" value="Export Sim Data">
+
                         &nbsp;
                         <a href="{{ route('Sim.new_sim') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
@@ -87,6 +89,20 @@
 <!--end::Page Scripts -->
 <script>
 var sim_table;
+function export_data(){
+    var export_details=[];
+    var _data=sim_table.ajax.json().data;
+    console.log(_data);
+    _data.forEach(function(item,index) {
+        export_details.push({
+        "ID":item.id,
+        "Sim Number":item.sim_number,
+        "Sim Company":item.sim_company,
+        });
+    });
+        var export_data = new CSVExport(export_details);
+    return false;
+}
 $(function() {
     sim_table = $('#sim-table').DataTable({
         processing: true,

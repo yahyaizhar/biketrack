@@ -153,7 +153,7 @@ Route::group([
 // Client Side
 Route::group([
     'prefix' => 'client',
-    'namespace' => 'Client'
+    'namespace' => 'Client' 
 ], function(){
 Auth::routes(['register' => false]);
     Route::get('/', 'HomeController@index')->name('client.home');
