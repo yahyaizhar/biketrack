@@ -2998,6 +2998,7 @@ public function client_income_update(Request $request,$id){
                 $absent_rider_payout->save();
              }
              if ($status=="rejected") {
+                 if ($absent_rider_payout->absent_status!="Rejected") {
                 $absent_rider_payout->absent_status="Rejected";
                 $absent_rider_payout->absent_fine_id=$absent_rider_payout->id;
                 $absent_rider_payout->save();
@@ -3019,6 +3020,7 @@ public function client_income_update(Request $request,$id){
                 $ra->kingrider_fine_id=$absent_rider_payout->id; 
                 $ra->save();
              }
+            }
             }
             else{
                 if ($status=="approved") {
