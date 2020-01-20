@@ -865,7 +865,8 @@ class AjaxNewController extends Controller
             $modelObj=null;
             $model=null;
             $editHTML = '<i class="fa fa-edit tr-edit" onclick="editRows(this,'.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
-        
+                
+            $deleteHTML='<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
             /**
              * Skip
              * -Salary row
@@ -874,7 +875,11 @@ class AjaxNewController extends Controller
                 //skip edit
                 $editHTML='';
             }
-            return $editHTML.'<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
+            if($rider_statement->kingrider_fine_id!=null){
+                //skip delete
+                $deleteHTML='';
+            }
+            return $editHTML.$deleteHTML;
             // }
         })
         ->addColumn('cash_paid', function($rider_statement) use (&$cash_paid){
