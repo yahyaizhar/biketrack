@@ -3007,7 +3007,7 @@ public function client_income_update(Request $request,$id){
                     $income_zomato->approve_absents+=1;
                     $income_zomato->save();
                 }
-                $amt=11*7.87;
+                $amt=100;
                 $ra =new Rider_Account;
                 $ra->type='dr';
                 $ra->month = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
@@ -3036,7 +3036,7 @@ public function client_income_update(Request $request,$id){
                         $income_zomato->approve_absents+=1;
                         $income_zomato->save();
                     } 
-                    $amt=11*7.87;
+                    $amt=100;
                     $ra =new Rider_Account;
                     $ra->type='dr';
                     $ra->month = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
