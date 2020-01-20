@@ -2998,6 +2998,7 @@ public function client_income_update(Request $request,$id){
                 $absent_rider_payout->save();
              }
              if ($status=="rejected") {
+                 if ($absent_rider_payout->absent_status!="Rejected") {
                 $absent_rider_payout->absent_status="Rejected";
                 $absent_rider_payout->absent_fine_id=$absent_rider_payout->id;
                 $absent_rider_payout->save();
@@ -3007,7 +3008,7 @@ public function client_income_update(Request $request,$id){
                     $income_zomato->approve_absents+=1;
                     $income_zomato->save();
                 }
-                $amt=11*7.87;
+                $amt=100;
                 $ra =new Rider_Account;
                 $ra->type='dr';
                 $ra->month = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
@@ -3019,6 +3020,7 @@ public function client_income_update(Request $request,$id){
                 $ra->kingrider_fine_id=$absent_rider_payout->id; 
                 $ra->save();
              }
+            }
             }
             else{
                 if ($status=="approved") {
@@ -3036,7 +3038,7 @@ public function client_income_update(Request $request,$id){
                         $income_zomato->approve_absents+=1;
                         $income_zomato->save();
                     } 
-                    $amt=11*7.87;
+                    $amt=100;
                     $ra =new Rider_Account;
                     $ra->type='dr';
                     $ra->month = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
