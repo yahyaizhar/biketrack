@@ -23,7 +23,7 @@
                         <div class="row">
                             <div class="form-group col-md-9">
                                 <label>Emirate's ID:</label>
-                                <input type="text" autocomplete="off" class="form-control" name="emirate_id" placeholder="Enter Emirate's ID">
+                                <input type="text" required autocomplete="off" class="form-control" name="emirate_id" placeholder="Enter Emirate's ID">
                             </div>
                             {{-- <div class="form-group">
                                 <label>Passport No':</label>
@@ -43,7 +43,7 @@
         </div>
     </div>
 </div>
-<div class="kt-content  kt-grid__item kt-grid__item--fluid" id="Tabs_for_slips_attendence">
+<div class="kt-content  kt-grid__item kt-grid__item--fluid" id="Tabs_for_slips_attendence" style="display:none">
     <div class="kt-portlet kt-portlet--tabs">
         <div class="kt-portlet__head">
             <div class="kt-portlet__head-toolbar">
@@ -214,7 +214,7 @@
                                 <td style="width:50%;text-align:left;">Net Salary</td>
                                 <td class="net_pay" style="width:50%;text-align:center;background-color:#73acac69;"></td>
                             </tr>
-                            <tr>
+                            <tr style="display:none">
                                 <td style="width:50%;">SALARY PAID</td>
                                 <td class="paid_salary" style="width:50%;text-align:center;background-color:#73acac69;"></td>
                             </tr>
@@ -290,6 +290,7 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link rel="stylesheet" href="/resources/demos/style.css">
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/bindings/inputmask.binding.min.js"></script>
 <script>
     $(document).ready(function(){
         $('#datepicker1').fdatepicker({format: 'dd-mm-yyyy'});
@@ -308,12 +309,18 @@
  '                                           <span aria-hidden="true"><i class="la la-close"></i></span>  '  + 
  '                                       </button>  '  + 
  '                                   </div>  '  + 
- '                              </div> </div>  ' ; 
-
-        $("#Tabs_for_slips_attendence").hide();
+ '                              </div> </div>  ' ;
+        var emirate_mask = [{ "mask": "###-####-#######-#"}];
+        $('[name="emirate_id"]').inputmask({
+            mask: emirate_mask, 
+            greedy: true,
+            showMaskOnFocus:false,
+            definitions: { '#': { validator: "[0-9]", cardinality: 1}} 
+        });
         $("#riders_slip_attendence").on("submit",function(e){
             e.preventDefault();
             var _form=$(this);
+            if($('[name="emirate_id"]').val().trim()=='') return;
             var url="{{url('rider/show_slip/attendence')}}"
             $.ajax({
                     headers: {
