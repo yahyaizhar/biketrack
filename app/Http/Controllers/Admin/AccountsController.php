@@ -3002,7 +3002,11 @@ public function client_income_update(Request $request,$id){
                 }
                 if(isset($absent_rider_payout->absent_fine_id)){
                     $ra =Rider_Account::where("kingrider_fine_id",$absent_rider_payout->absent_fine_id)->get()->first();
-                    $ra->delete();
+                    if(isset($ra)) $ra->delete();
+
+                    $ca =Company_Account::where("kingrider_fine_id",$absent_rider_payout->absent_fine_id)->get()->first();
+                    if (isset($ca)) $ca->delete();
+                    
                 }
                 $absent_rider_payout->absent_fine_id=null;
                 $absent_rider_payout->save();
@@ -3029,6 +3033,17 @@ public function client_income_update(Request $request,$id){
                 $ra->payment_status='pending';
                 $ra->kingrider_fine_id=$absent_rider_payout->id; 
                 $ra->save();
+
+                $ca =new Company_Account;
+                $ca->type='cr';
+                $ca->month = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
+                $ca->given_date=Carbon::parse($rider_payout_date)->format('Y-m-d');
+                $ca->amount=round($amt,2);
+                $ca->rider_id=$rider_id;
+                $ca->source='Absent Fine (on '.$ra->given_date.')';
+                $ca->payment_status='pending';
+                $ca->kingrider_fine_id=$absent_rider_payout->id; 
+                $ca->save();
              }
             }
             }
@@ -3059,6 +3074,17 @@ public function client_income_update(Request $request,$id){
                     $ra->payment_status='pending';
                     $ra->kingrider_fine_id=$absent_rider_payout->id; 
                     $ra->save();
+
+                    $ca =new Company_Account;
+                    $ca->type='cr';
+                    $ca->month = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
+                    $ca->given_date=Carbon::parse($rider_payout_date)->format('Y-m-d');
+                    $ca->amount=round($amt,2);
+                    $ca->rider_id=$rider_id;
+                    $ca->source='Absent Fine (on '.$ra->given_date.')';
+                    $ca->payment_status='pending';
+                    $ca->kingrider_fine_id=$absent_rider_payout->id; 
+                    $ca->save();
                  }
                  $absent_rider_payout->save();
             }
