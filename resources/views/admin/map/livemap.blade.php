@@ -15,7 +15,7 @@
             </div>
         </div>
     </div>
-    <!--Begin::Section-->
+    <!--Begin::Section--> 
     <div class="row">
             <div class="col-sm-12 col-md-12 col-xl-12">
                 <!--begin:: Widgets/Top Locations-->
@@ -95,6 +95,7 @@ async defer></script>
             //     $('.loading').hide();
             // },
             success: function(data){
+                console.log(data,'  datadata');
                 $('#location-not-available').hide();
                 var locations = data.data;
                 var count = 0;
