@@ -3074,7 +3074,7 @@ public function client_income_update(Request $request,$id){
         $riders = Rider::with('Rider_detail')->where('active_status', 'A')->get();
         return view('accounts.manage_salaryslips',compact('riders'));
     }
-    public function update_salaryslips(Request $r,$rider_id,$checked,$month=null, $expiry=null){
+    public function update_salaryslips(Request $r){
         // return $r->all();
         $rider_id = $r->get('rider_id');
         $checked = $r->get('is_checked');

@@ -781,6 +781,25 @@
         </div>
     </div>
 </div>
+<div class="kt-content  kt-grid__item kt-grid__item--fluid">
+    <div class="kt-portlet" style="padding: 10px;">
+        <div class="row" style="padding: 10px;">
+            <label class="kt-checkbox col-md-2">
+                <input name="show_slip" type="checkbox" onchange="show_rider_record(this)"  @if($rider->Rider_detail->show_salaryslip==1)checked @endif> Show Salary Slip
+                <span></span>
+            </label>
+            <label class="kt-checkbox col-md-2">
+                <input name="show_atsh" type="checkbox" onchange="show_rider_record(this)"  @if($rider->Rider_detail->show_attendanceslip==1)checked @endif> Show Attendance
+                <span></span>
+            </label>
+        </div>
+        <div>
+            <label for="expiry_date">Expiry date</label>
+            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" readonly class="month_picker form-control" name="expiry_date" placeholder="Select Expiry" >
+        </div>
+    </div>
+    
+</div>
 {{-- rider payouts by days --}}
 
 <div class="kt-content  kt-grid__item kt-grid__item--fluid days_payout" id="kt_content">
@@ -3015,6 +3034,48 @@ function approved_rejected_status(rider_id,month,rider_payout_date,status){
                     });
                 }
             });
+}
+$(function(){
+    $('[name="expiry_date"]').on('changeDate', function(){
+        $('[name="show_slip"]').trigger('change');
+    });
+});
+function show_rider_record(_this){
+    var month=r1d1=biketrack.getUrlParameter('r1d1');
+    var rider_id=biketrack.getUrlParameter('rider_id');
+    var is_checked=$(_this).prop('checked');
+    var type=$(_this).attr('name');
+    var expiry_date = new Date($('[name="expiry_date"]').val()).format('yyyy-mm-dd');
+    var month = new Date(month).format('yyyy-mm-dd');
+    var url = '{{route('admin.accounts.update_salaryslips')}}';
+    $.ajax({
+        url :url,
+        data:{
+            type:type,
+            rider_id:rider_id,
+            is_checked:is_checked,
+            month:month,
+            expiry_date:expiry_date
+        }, 
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type : 'PUT',
+        success: function(data){
+        
+          
+         },
+        error: function(error){
+            swal.fire({
+                position: 'center',
+                type: 'error',
+                title: 'Oops...',
+                text: 'Unable to update.',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+    });
 }
 </script>
 @endsection
