@@ -646,18 +646,18 @@ Route::group([
     // end Guest routes
 });
 
-Route::group([
+Route::group([     
     'prefix' => 'rider',
-], function(){
+], function(){     
     Route::get('/salaryslip','GuestController@show_salary_slips')->name('guest.riders.show_salary_slips');
     Route::get('/show_slip/attendence','GuestController@get_slip_attendence')->name('guest.get_slip_attendence');
 });
 
-Route::group([
+Route::group([    
     'prefix' => 'admin',
     'namespace' => 'Admin',
 										 
-], function(){
+], function(){    
     Route::get('/employee/company_account','EmployeeController@viewCompanyEmployeeAccount')->name('employee.viewCompanyEmployeeAccount');
     Route::get('/employee/employee_account','EmployeeController@viewEmployeeAccount')->name('employee.viewEmployeeAccount');
 });

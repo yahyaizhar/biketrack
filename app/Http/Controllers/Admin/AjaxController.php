@@ -1357,7 +1357,7 @@ class AjaxController extends Controller
     //     return 'yes';
     // }
     
-    public function loadLocations()
+    public function loadLocations() 
     {
         // $riders = Rider::where('status', 1)->where('online', '!=', 3)->get();
         $riders = Rider::where('status', 1)->get();
