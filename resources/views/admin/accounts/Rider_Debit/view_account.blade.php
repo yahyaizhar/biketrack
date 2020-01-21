@@ -2359,8 +2359,36 @@
                 },
                 drawCallback:function(data){
                     console.log(data);
+                    var api = this.api();
                     var response = table.ajax.json();
-                    console.log(response);
+                    //updating salaryslip data
+                    var resp__data = api.ajax.json();
+                    var _rd = resp__data.rider_detail;
+                    $('[name="show_slip"],[name="show_atsh"]').prop('checked', false);
+                    if(_rd.salaryslip_month!='null' && _rd.salaryslip_month!=null){
+                        var r1d1=biketrack.getUrlParameter('r1d1');
+                        var r1d2=biketrack.getUrlParameter('r1d2');
+                        var compareDate = moment(_rd.salaryslip_month, "YYYY-MM-DD");
+                        var startDate   = moment(r1d1, "YYYY-MM-DD");
+                        var endDate     = moment(r1d2, "YYYY-MM-DD");
+
+                        // omitting the optional third parameter, 'units'
+                        var __isSame=compareDate.isSameOrAfter(startDate)&&compareDate.isSameOrBefore(endDate);
+                        if(__isSame){
+                            if(_rd.show_salaryslip=='1'){
+                                $('[name="show_slip"]').prop('checked', true);
+                            }
+                            if(_rd.show_attendanceslip=='1'){
+                                $('[name="show_atsh"]').prop('checked', true);
+                            }
+                            if(_rd.salaryslip_expiry!='null' && _rd.salaryslip_expiry!=null){
+                                $('[name="expiry_date"]').attr('data-month', new Date(_rd.salaryslip_expiry).format('mmm dd, yyyy'));
+                                biketrack.refresh_global();  
+                            }
+                        }
+                    }
+                    
+
                     console.log(response.salary_paid+"response");
                         $('form#upload_slip_view').find('[type="submit"]').prop('disabled',false);
                         $('form#upload_slip_view').find('[type="submit"]').html("Upload Slip");
