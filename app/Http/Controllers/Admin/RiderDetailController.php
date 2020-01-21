@@ -324,6 +324,7 @@ class RiderDetailController extends Controller
     }
     public function summary_month($month,$client_id){
         $client=Client::where("id",$client_id)->get()->first();
+        $monthOnly=Carbon::parse($month)->format('m');
         $yearOnly=Carbon::parse($month)->format('Y');
         $client_riders=Client_History::where('client_id', $client->id)->get();
         $total_hours_client=0;
@@ -344,27 +345,27 @@ class RiderDetailController extends Controller
         
 
         foreach ($client_riders as $riders) {
-            $total_hours_client+=Income_zomato::whereMonth('date',$month)
+            $total_hours_client+=Income_zomato::whereMonth('date',$monthOnly)
             ->whereYear('date',$yearOnly)
             ->where("rider_id",$riders->rider_id)
             ->sum('log_in_hours_payable');
             $hours_client=$total_hours_client*6;
 
-            $total_trips_client+=Income_zomato::whereMonth('date',$month)
+            $total_trips_client+=Income_zomato::whereMonth('date',$monthOnly)
             ->whereYear('date',$yearOnly)
             ->where("rider_id",$riders->rider_id)
             ->sum('trips_payable');
             $trips_client=$total_trips_client*6.75;
 
-            $trips+=Income_zomato::whereMonth('date',$month)
+            $trips+=Income_zomato::whereMonth('date',$monthOnly)
             ->whereYear('date',$yearOnly)
             ->where("rider_id",$riders->rider_id)
             ->sum('trips_payable');
-            $hours+=Income_zomato::whereMonth('date',$month)
+            $hours+=Income_zomato::whereMonth('date',$monthOnly)
             ->whereYear('date',$yearOnly)
             ->where("rider_id",$riders->rider_id)
             ->sum('log_in_hours_payable');
-            $_trips=Income_zomato::whereMonth('date',$month)
+            $_trips=Income_zomato::whereMonth('date',$monthOnly)
             ->whereYear('date',$yearOnly)
             ->where("rider_id",$riders->rider_id)
             ->sum('trips_payable');
@@ -377,7 +378,7 @@ class RiderDetailController extends Controller
                 $remain_trips=$_trips*2;
                 $aed_trips+=$remain_trips;
             }
-            $_hours=Income_zomato::whereMonth('date',$month)
+            $_hours=Income_zomato::whereMonth('date',$monthOnly)
             ->whereYear('date',$yearOnly)
             ->where("rider_id",$riders->rider_id)
             ->sum('log_in_hours_payable');
@@ -387,7 +388,7 @@ class RiderDetailController extends Controller
             $aed_hours+=$_hours*7.87;
             $bon=Company_Account::where('source',"400 Trips Acheivement Bonus")
             ->where('rider_id',$riders->rider_id)
-            ->whereMonth('month',$month)
+            ->whereMonth('month',$monthOnly)
             ->whereYear('month',$yearOnly)
             ->sum('amount');
             $bonus+=$bon;
@@ -395,17 +396,17 @@ class RiderDetailController extends Controller
             $bike_rent+=Company_Account::where("source",'Bike Rent')
             ->whereYear('month',$yearOnly)
             ->where("rider_id",$riders->rider_id)
-            ->whereMonth('month',$month)
+            ->whereMonth('month',$monthOnly)
             ->sum('amount');
 
             $fuel+=Company_Account::whereNotNull('fuel_expense_id')
             ->where('rider_id',$riders->rider_id)
-            ->whereMonth('month',$month) 
+            ->whereMonth('month',$monthOnly) 
             ->whereYear('month',$yearOnly)
             ->sum('amount');
             $sim_amount=Company_Account::where("source","Sim Transaction")
             ->where('rider_id',$riders->rider_id)
-            ->whereMonth('month',$month)
+            ->whereMonth('month',$monthOnly)
             ->whereYear('month',$yearOnly)
             ->where('type','dr')
             ->whereNotNull('sim_transaction_id')
@@ -413,7 +414,7 @@ class RiderDetailController extends Controller
             $sim+=$sim_amount;
             $sim_extra_amount=Company_Account::where("source","Sim extra usage")
             ->where('rider_id',$riders->rider_id)
-            ->whereMonth('month',$month)
+            ->whereMonth('month',$monthOnly)
             ->whereYear('month',$yearOnly)
             ->whereNotNull('sim_transaction_id')
             ->sum('amount');
@@ -421,14 +422,14 @@ class RiderDetailController extends Controller
            
             $salik_amount=Company_Account::where("source","Salik")
             ->where('rider_id',$riders->rider_id)
-            ->whereMonth('month',$month)
+            ->whereMonth('month',$monthOnly)
             ->whereYear('month',$yearOnly)
             ->whereNotNull('salik_id')
             ->sum('amount');
             $salik+=$salik_amount;
             $salik_extra_amount=Company_Account::where("source","Salik Extra")
             ->where('rider_id',$riders->rider_id)
-            ->whereMonth('month',$month)
+            ->whereMonth('month',$monthOnly)
             ->whereYear('month',$yearOnly)
             ->whereNotNull('salik_id')
             ->sum('amount');
