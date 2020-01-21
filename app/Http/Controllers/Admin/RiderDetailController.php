@@ -457,7 +457,7 @@ class RiderDetailController extends Controller
             'salik'=>$salik,
             'salik_extra'=>$salik-$salik_extra,
             'sim'=>$sim,
-            'sim_extra'=>$sim-$sim_extra,
+            'sim_extra'=>round($sim-$sim_extra,2),
             'sum_3'=>$bike_rent+$fuel+$total_salik+$total_sim,
             
         ]);
