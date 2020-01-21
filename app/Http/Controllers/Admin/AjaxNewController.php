@@ -422,6 +422,7 @@ class AjaxNewController extends Controller
         $hours=0;
         $salary_slip=0;
         $rider_name=Rider::find($ranges['rider_id']);
+        $rider__detail=$rider_name->Rider_detail;
         if (isset($rider_name)) {
             $rider=$rider_name->name;
         }
@@ -901,6 +902,7 @@ class AjaxNewController extends Controller
             'rider_debits_cr_prev_payable'=>$rider_debits_cr_prev_payable,
             'rider_debits_dr_prev_payable'=>$rider_debits_dr_prev_payable,
             'rider'=>$rider,
+            'rider_detail'=>$rider__detail,
             'month_year'=>Carbon::parse($from)->format('M, Y'),
             'today_date'=>Carbon::parse($date)->format('m/d/Y'),
             'employee_id'=>$ranges['rider_id'],
