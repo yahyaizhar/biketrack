@@ -3026,7 +3026,7 @@ public function client_income_update(Request $request,$id){
                 $ra =new Rider_Account;
                 $ra->type='dr';
                 $ra->month = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
-                $ra->given_date=Carbon::parse($rider_payout_date)->format('Y-m-d');
+                $ra->given_date=Carbon::now()->format('Y-m-d');
                 $ra->amount=round($amt,2);
                 $ra->rider_id=$rider_id;
                 $ra->source='Absent Fine (on '.$ra->given_date.')';
@@ -3037,7 +3037,7 @@ public function client_income_update(Request $request,$id){
                 $ca =new Company_Account;
                 $ca->type='cr';
                 $ca->month = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
-                $ca->given_date=Carbon::parse($rider_payout_date)->format('Y-m-d');
+                $ca->given_date=Carbon::now()->format('Y-m-d');
                 $ca->amount=round($amt,2);
                 $ca->rider_id=$rider_id;
                 $ca->source='Absent Fine (on '.$ra->given_date.')';
@@ -3067,7 +3067,7 @@ public function client_income_update(Request $request,$id){
                     $ra =new Rider_Account;
                     $ra->type='dr';
                     $ra->month = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
-                    $ra->given_date=Carbon::parse($rider_payout_date)->format('Y-m-d');
+                    $ra->given_date=Carbon::now()->format('Y-m-d');
                     $ra->amount=round($amt,2);
                     $ra->rider_id=$rider_id;
                     $ra->source='Absent Fine (on '.$ra->given_date.')';
@@ -3078,7 +3078,7 @@ public function client_income_update(Request $request,$id){
                     $ca =new Company_Account;
                     $ca->type='cr';
                     $ca->month = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
-                    $ca->given_date=Carbon::parse($rider_payout_date)->format('Y-m-d');
+                    $ca->given_date=Carbon::now()->format('Y-m-d');
                     $ca->amount=round($amt,2);
                     $ca->rider_id=$rider_id;
                     $ca->source='Absent Fine (on '.$ra->given_date.')';
