@@ -3029,7 +3029,7 @@ public function client_income_update(Request $request,$id){
                 $ra->given_date=Carbon::now()->format('Y-m-d');
                 $ra->amount=round($amt,2);
                 $ra->rider_id=$rider_id;
-                $ra->source='Absent Fine (on '.$ra->given_date.')';
+                $ra->source='Absent Fine (on '.Carbon::parse($rider_payout_date)->format('Y-m-d').')';
                 $ra->payment_status='pending';
                 $ra->kingrider_fine_id=$absent_rider_payout->id; 
                 $ra->save();
@@ -3040,7 +3040,7 @@ public function client_income_update(Request $request,$id){
                 $ca->given_date=Carbon::now()->format('Y-m-d');
                 $ca->amount=round($amt,2);
                 $ca->rider_id=$rider_id;
-                $ca->source='Absent Fine (on '.$ra->given_date.')';
+                $ca->source='Absent Fine (on '.Carbon::parse($rider_payout_date)->format('Y-m-d').')';
                 $ca->payment_status='pending';
                 $ca->kingrider_fine_id=$absent_rider_payout->id; 
                 $ca->save();
@@ -3070,7 +3070,7 @@ public function client_income_update(Request $request,$id){
                     $ra->given_date=Carbon::now()->format('Y-m-d');
                     $ra->amount=round($amt,2);
                     $ra->rider_id=$rider_id;
-                    $ra->source='Absent Fine (on '.$ra->given_date.')';
+                    $ra->source='Absent Fine (on '.Carbon::parse($rider_payout_date)->format('Y-m-d').')';
                     $ra->payment_status='pending';
                     $ra->kingrider_fine_id=$absent_rider_payout->id; 
                     $ra->save();
@@ -3081,7 +3081,7 @@ public function client_income_update(Request $request,$id){
                     $ca->given_date=Carbon::now()->format('Y-m-d');
                     $ca->amount=round($amt,2);
                     $ca->rider_id=$rider_id;
-                    $ca->source='Absent Fine (on '.$ra->given_date.')';
+                    $ca->source='Absent Fine (on '.Carbon::parse($rider_payout_date)->format('Y-m-d').')';
                     $ca->payment_status='pending';
                     $ca->kingrider_fine_id=$absent_rider_payout->id; 
                     $ca->save();
