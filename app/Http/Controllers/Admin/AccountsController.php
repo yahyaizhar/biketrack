@@ -2974,40 +2974,91 @@ public function client_income_update(Request $request,$id){
          ]);
      }
      public function absents_status($rider_id,$month,$rider_payout_date,$status){
-         $absent_rider_payout=Riders_Payouts_By_Days::where("date",$rider_payout_date)
-         ->where("rider_id",$rider_id)
-         ->get()
-         ->first();
+        $onlyMonth = Carbon::parse($month)->format('m');
+        $onlyYear = Carbon::parse($month)->format('Y');
+        $zi=Income_zomato::with('Time_sheet')
+        ->whereMonth("date",$onlyMonth)
+        ->whereYear("date",$onlyYear)
+        ->where("rider_id",$rider_id)
+        ->get()
+        ->first();
+        if (isset($zi)) {
+            $absent_rider_payout=$zi->Time_sheet()->whereDate("date",$rider_payout_date)
+            ->get()
+            ->first();	
+        }
+
          if (isset($absent_rider_payout)) {
-            if ($absent_rider_payout->absent_status=="Rejected" || $absent_rider_payout->absent_status==null) {
+            if ($absent_rider_payout->absent_status=="Rejected" || $absent_rider_payout->absent_status==null){
              if ($status=="approved") {
                 $absent_rider_payout->absent_status="Approved";
                 $zomato_id=$absent_rider_payout->zomato_income_id;
                 $income_zomato=Income_zomato::find($zomato_id);
                 if(isset($income_zomato)){
-                    $income_zomato->absents_count=($income_zomato->absents_count)-1;
-                    $income_zomato->approve_absents+=1;
-                    $income_zomato->save();
-                } 
+                    if ( $income_zomato->approve_absents>0 ||  $income_zomato->approve_absents!=null) {
+                        $income_zomato->approve_absents-=1;
+                        $income_zomato->save();
+                    }
+                }
+                if(isset($absent_rider_payout->absent_fine_id)){
+                    $ra =Rider_Account::where("kingrider_fine_id",$absent_rider_payout->absent_fine_id)->get()->first();
+                    $ra->delete();
+                }
+                $absent_rider_payout->absent_fine_id=null;
+                $absent_rider_payout->save();
              }
              if ($status=="rejected") {
+                 if ($absent_rider_payout->absent_status!="Rejected") {
                 $absent_rider_payout->absent_status="Rejected";
+                $absent_rider_payout->absent_fine_id=$absent_rider_payout->id;
+                $absent_rider_payout->save();
+                $zomato_id=$absent_rider_payout->zomato_income_id;
+                $income_zomato=Income_zomato::find($zomato_id);
+                if(isset($income_zomato)){
+                    $income_zomato->approve_absents+=1;
+                    $income_zomato->save();
+                }
+                $amt=100;
+                $ra =new Rider_Account;
+                $ra->type='dr';
+                $ra->month = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
+                $ra->given_date=Carbon::parse($rider_payout_date)->format('Y-m-d');
+                $ra->amount=round($amt,2);
+                $ra->rider_id=$rider_id;
+                $ra->source='Absent Fine (on '.$ra->given_date.')';
+                $ra->payment_status='pending';
+                $ra->kingrider_fine_id=$absent_rider_payout->id; 
+                $ra->save();
              }
-             $absent_rider_payout->save();
+            }
             }
             else{
                 if ($status=="approved") {
                     $absent_rider_payout->absent_status="Approved";
+                    $absent_rider_payout->absent_fine_id=null;
+                    $absent_rider_payout->save();
                  }
                  if ($status=="rejected") {
                     $absent_rider_payout->absent_status="Rejected";
+                    $absent_rider_payout->absent_fine_id=$absent_rider_payout->id;
+                    $absent_rider_payout->save();
                     $zomato_id=$absent_rider_payout->zomato_income_id;
                     $income_zomato=Income_zomato::find($zomato_id);
                     if(isset($income_zomato)){
-                        $income_zomato->absents_count=($income_zomato->absents_count)+1;
-                        $income_zomato->approve_absents-=1;
+                        $income_zomato->approve_absents+=1;
                         $income_zomato->save();
                     } 
+                    $amt=100;
+                    $ra =new Rider_Account;
+                    $ra->type='dr';
+                    $ra->month = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
+                    $ra->given_date=Carbon::parse($rider_payout_date)->format('Y-m-d');
+                    $ra->amount=round($amt,2);
+                    $ra->rider_id=$rider_id;
+                    $ra->source='Absent Fine (on '.$ra->given_date.')';
+                    $ra->payment_status='pending';
+                    $ra->kingrider_fine_id=$absent_rider_payout->id; 
+                    $ra->save();
                  }
                  $absent_rider_payout->save();
             }
@@ -3023,9 +3074,15 @@ public function client_income_update(Request $request,$id){
         $riders = Rider::with('Rider_detail')->where('active_status', 'A')->get();
         return view('accounts.manage_salaryslips',compact('riders'));
     }
-    public function update_salaryslips($rider_id,$checked,$month=null, $expiry=null){ 
+    public function update_salaryslips(Request $r,$rider_id,$checked,$month=null, $expiry=null){
+        // return $r->all();
+        $rider_id = $r->get('rider_id');
+        $checked = $r->get('is_checked');
+        $month = $r->get('month');
+        $expiry = $r->get('expiry_date');
         if($rider_id!='null' && $rider_id!=null){
             //add show_salaryslip option
+            $type=$r->get('type')=='show_atsh'?'show_attendanceslip':'show_salaryslip';
             if($rider_id==0){
                 //add to all riders
                 $rider_details = Rider_detail::all();
@@ -3035,7 +3092,7 @@ public function client_income_update(Request $request,$id){
                     $obj['id']=$rider_detail->id;
                     $obj['salaryslip_month']=$month;
                     $obj['salaryslip_expiry']=$expiry;
-                    $obj['show_salaryslip']=($checked=='true'?1:0);
+                    $obj[$type]=($checked=='true'?1:0);
                     array_push($rider_details_updates, $obj);
                 }
                 $update_data=Batch::update(new Rider_detail, $rider_details_updates, 'id'); //r5 
@@ -3047,9 +3104,9 @@ public function client_income_update(Request $request,$id){
             else {
                 //add against 1 rider only
                 $rider_details = Rider::find($rider_id)->Rider_detail;
-                $rider_details->salaryslip_month=$month;
-                $rider_details->salaryslip_expiry=$expiry;
-                $rider_details->show_salaryslip=($checked=='true'?1:0);
+                $rider_details['salaryslip_month']=$month;
+                $rider_details['salaryslip_expiry']=$expiry;
+                $rider_details[$type]=($checked=='true'?1:0);
                 $rider_details->update();
             }
             return response()->json([
@@ -3069,8 +3126,27 @@ public function client_income_update(Request $request,$id){
             array_push($rider_details_updates, $obj);
         }
         $update_data=Batch::update(new Rider_detail, $rider_details_updates, 'id'); //r5  
+        
+        $_data=[];
+        $rider_details = Rider_detail::all();
+        foreach ($rider_details as $rider_detail) {
+            $onlyMonth = Carbon::parse($rider_detail->salaryslip_month)->format('m');
+            $onlyYear = Carbon::parse($rider_detail->salaryslip_month)->format('Y');
+            $salary_generated = Rider_salary::where('rider_id',$rider_detail->rider_id)
+            ->whereMonth("month",$onlyMonth)
+            ->whereYear("month",$onlyYear)
+            ->get()
+            ->first();
+            $is_salary_generated = false;
+            if(isset($salary_generated)) $is_salary_generated = true;
+
+            $obj=[];
+            $obj['rider_detail']=$rider_detail;
+            $obj['salary_generated']=$is_salary_generated;
+            array_push($_data, $obj);
+        }
         return response()->json([
-            'rider_detail'=>Rider_detail::all(),
+            'data'=>$_data,
             'd'=>2
         ]);
     }

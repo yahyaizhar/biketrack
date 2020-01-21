@@ -558,7 +558,10 @@ class AjaxNewController extends Controller
         $dicipline=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
-        ->where('source','Discipline Fine')
+        ->where(function($q) {
+            $q->where('source','Discipline Fine')
+             ->orWhereNotNull('kingrider_fine_id');
+        })
         ->sum('amount');
         $rta=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
@@ -862,7 +865,8 @@ class AjaxNewController extends Controller
             $modelObj=null;
             $model=null;
             $editHTML = '<i class="fa fa-edit tr-edit" onclick="editRows(this,'.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
-        
+                
+            $deleteHTML='<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
             /**
              * Skip
              * -Salary row
@@ -871,7 +875,11 @@ class AjaxNewController extends Controller
                 //skip edit
                 $editHTML='';
             }
-            return $editHTML.'<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
+            if($rider_statement->kingrider_fine_id!=null){
+                //skip delete
+                $deleteHTML='';
+            }
+            return $editHTML.$deleteHTML;
             // }
         })
         ->addColumn('cash_paid', function($rider_statement) use (&$cash_paid){
@@ -2362,7 +2370,17 @@ class AjaxNewController extends Controller
     ->addColumn('dicipline_fine', function($rider) use ($month){
        $onlyMonth=Carbon::parse($month)->format('m');
        $onlyYear=Carbon::parse($month)->format('Y');
-        return '0';
+       $startMonth = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
+       $endMonth = Carbon::parse($month)->endOfMonth()->format('Y-m-d');
+       $dicipline=\App\Model\Accounts\Rider_Account::where("rider_id",$rider->id)
+        ->whereDate('month', '>=',$startMonth)
+        ->whereDate('month', '<=',$endMonth)
+        ->where(function($q) {
+            $q->where('source','Discipline Fine')
+             ->orWhereNotNull('kingrider_fine_id');
+        })
+        ->sum('amount');
+        return $dicipline;
     }) 
     ->addColumn('total_deduction', function($rider) use ($month){
        $onlyMonth=Carbon::parse($month)->format('m');

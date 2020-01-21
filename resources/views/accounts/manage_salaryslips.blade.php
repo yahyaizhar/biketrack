@@ -56,25 +56,54 @@
                             <th>Expire on</th>
                             <th>
                                 <label class="kt-checkbox">
-                                    <input name="show_slip" type="checkbox" onchange="toggleAllCheckbox(this);update_data(this,false,0);"> Show All
+                                    <input name="show_slip" type="checkbox" data-target="show_slip" onchange="toggleAllCheckbox(this);update_data(this,false,0);"> All
                                     <span></span>
                                 </label>
-                            </th>                        
+                            </th>
+                            <th>
+                                <label class="kt-checkbox">
+                                    <input name="show_atsh" type="checkbox" data-target="show_atsh" onchange="toggleAllCheckbox(this);update_data(this,false,0);"> All
+                                    <span></span>
+                                </label>
+                            </th>                     
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($riders as $rider) 
-                        <tr data-riderid="{{$rider->id}}">
+                        @php
+                            $show_dates=$rider->Rider_detail->show_salaryslip==1||$rider->Rider_detail->show_attendanceslip==1;
+                            $onlyMonth = Carbon\Carbon::parse($rider->Rider_detail->salaryslip_month)->format('m');
+                            $onlyYear = Carbon\Carbon::parse($rider->Rider_detail->salaryslip_month)->format('Y');
+                            $salary_generated = App\Model\Accounts\Rider_salary::where('rider_id',$rider->id)
+                            ->whereMonth("month",$onlyMonth)
+                            ->whereYear("month",$onlyYear)
+                            ->get()
+                            ->first();
+                            $show__row=false;
+                        @endphp
+                       @isset($salary_generated)
+                       @php
+                           $show__row=true;
+                       @endphp
+                       @endisset
+                        <tr data-riderid="{{$rider->id}}" @if($show__row==false)style="display:none" @endif>
                                 <td>KRD{{$rider->id}} - {{$rider->name}}</td>
-                                <td data-name="active_month">@if($rider->Rider_detail->show_salaryslip==1){{Carbon\Carbon::parse($rider->Rider_detail->salaryslip_month)->format('F Y')}}@endif</td>
-                                <td data-name="expiry">@if($rider->Rider_detail->show_salaryslip==1){{Carbon\Carbon::parse($rider->Rider_detail->salaryslip_expiry)->format('M d, Y')}}@endif</td>
+                                <td data-name="active_month">@if($show_dates){{Carbon\Carbon::parse($rider->Rider_detail->salaryslip_month)->format('F Y')}}@endif</td>
+                                <td data-name="expiry">@if($show_dates){{Carbon\Carbon::parse($rider->Rider_detail->salaryslip_expiry)->format('M d, Y')}}@endif</td>
                                 <td>
                                     <label class="kt-checkbox">
-                                        <input name="show_slip" type="checkbox" onchange="update_data(this,false,{{$rider->id}})" @if($rider->Rider_detail->show_salaryslip==1)checked @endif> Show Slip
+                                        <input name="show_slip" type="checkbox" onchange="update_data(this,false,{{$rider->id}})" @if($rider->Rider_detail->show_salaryslip==1)checked @endif> Show Salary
+                                        <span></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="kt-checkbox">
+                                        <input name="show_atsh" type="checkbox" onchange="update_data(this,false,{{$rider->id}})" @if($rider->Rider_detail->show_attendanceslip==1)checked @endif> Show Attendance
                                         <span></span>
                                     </label>
                                 </td>
                             </tr>
+                        
                         @endforeach
                     </tbody>
                 </table>
@@ -104,6 +133,7 @@ $(function() {
         update_data(this,true);
     });
     $('#rider_salaryslips table thead [name="show_slip"]').prop('checked', $('#rider_salaryslips table tbody [name="show_slip"]:checked').length === $('#rider_salaryslips table tbody [name="show_slip"]').length);
+    $('#rider_salaryslips table thead [name="show_atsh"]').prop('checked', $('#rider_salaryslips table tbody [name="show_atsh"]:checked').length === $('#rider_salaryslips table tbody [name="show_atsh"]').length);
     var _firstCheckedMonth = $('#rider_salaryslips table tbody [name="show_slip"]:checked');
     if(_firstCheckedMonth.length){
         var _monnth = _firstCheckedMonth.eq(0).parents('tr').find('[data-name="active_month"]').text();
@@ -117,17 +147,23 @@ $(function() {
 function update_data(_this,is_month=false,rider_id=null){
     if(rider_id==null && !is_month) return;
     var is_checked=false;
+    var type=null;
     if(!is_month){
         is_checked=$(_this).prop('checked');
+        type=$(_this).attr('name');
     }
     var month = new Date($('#rider_salaryslips [name="month"]').val()).format('yyyy-mm-dd');
     var expiry_date = new Date($('#rider_salaryslips [name="expiry_date"]').val()).format('yyyy-mm-dd');
-    var url = '{{url('admin/rider/update_salaryslips')}}'+"/"+rider_id+"/"+is_checked+"/"+month+"/"+expiry_date; 
-    if(is_month){
-        url = '{{url('admin/rider/update_salaryslips')}}'+"/"+rider_id+"/"+is_checked+"/"+month+"/"+expiry_date;
-    }
+    var url = '{{route('admin.accounts.update_salaryslips')}}';
     $.ajax({
         url :url,
+        data:{
+            type:type,
+            rider_id:rider_id,
+            is_checked:is_checked,
+            month:month,
+            expiry_date:expiry_date
+        }, 
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
@@ -139,19 +175,46 @@ function update_data(_this,is_month=false,rider_id=null){
             $('.loading').hide();
         },
         success: function(data){
-            data.rider_detail.forEach(function(item,i){
-                let _month = new Date(item.salaryslip_month).format('mmmm yyyy');
-                let _expiry = new Date(item.salaryslip_expiry).format('mmm dd, yyyy');
-                let is_checked=item.show_salaryslip=='1'?true:false;
-                if(!is_checked){
-                    _month='';
-                    _expiry='';
-                }
-                $('#rider_salaryslips tr[data-riderid="'+item.rider_id+'"]').find('[data-name="active_month"]').text(_month);
-                $('#rider_salaryslips tr[data-riderid="'+item.rider_id+'"]').find('[data-name="expiry"]').text(_expiry);
-                $('#rider_salaryslips tr[data-riderid="'+item.rider_id+'"]').find('[name="show_slip"]').prop('checked', is_checked);
-            });
+            if(typeof data.rider_detail !=="undefined"){
+                data.rider_detail.forEach(function(item,i){
+                    let _month = new Date(item.salaryslip_month).format('mmmm yyyy');
+                    let _expiry = new Date(item.salaryslip_expiry).format('mmm dd, yyyy');
+                    let show_salaryslip=item.show_salaryslip=='1'?true:false;
+                    let show_attendanceslip=item.show_attendanceslip=='1'?true:false;
+                    if(!show_salaryslip && !show_attendanceslip){
+                        _month='';
+                        _expiry='';
+                    }
+                    $('#rider_salaryslips tr[data-riderid="'+item.rider_id+'"]').find('[data-name="active_month"]').text(_month);
+                    $('#rider_salaryslips tr[data-riderid="'+item.rider_id+'"]').find('[data-name="expiry"]').text(_expiry);
+                    $('#rider_salaryslips tr[data-riderid="'+item.rider_id+'"]').find('[name="show_slip"]').prop('checked', show_salaryslip);
+                    $('#rider_salaryslips tr[data-riderid="'+item.rider_id+'"]').find('[name="show_atsh"]').prop('checked', show_attendanceslip);
+                });
+            }
+            else{
+                data.data.forEach(function(item,i){
+                    var rider_detail = item.rider_detail;
+                    let _month = new Date(rider_detail.salaryslip_month).format('mmmm yyyy');
+                    let _expiry = new Date(rider_detail.salaryslip_expiry).format('mmm dd, yyyy');
+                    let show_salaryslip=rider_detail.show_salaryslip=='1'?true:false;
+                    let show_attendanceslip=rider_detail.show_attendanceslip=='1'?true:false;
+                    if(!show_salaryslip && !show_attendanceslip){
+                        _month='';
+                        _expiry='';
+                    }
+                    var _row = $('#rider_salaryslips tr[data-riderid="'+rider_detail.rider_id+'"]');
+                    _row.show();
+                    if(!item.salary_generated){
+                        _row.hide();
+                    }
+                    _row.find('[data-name="active_month"]').text(_month);
+                    _row.find('[data-name="expiry"]').text(_expiry);
+                    _row.find('[name="show_slip"]').prop('checked', show_salaryslip);
+                    _row.find('[name="show_atsh"]').prop('checked', show_attendanceslip);
+                });
+            }
             $('#rider_salaryslips table thead [name="show_slip"]').prop('checked', $('#rider_salaryslips table tbody [name="show_slip"]:checked').length === $('#rider_salaryslips table tbody [name="show_slip"]').length);
+            $('#rider_salaryslips table thead [name="show_atsh"]').prop('checked', $('#rider_salaryslips table tbody [name="show_atsh"]:checked').length === $('#rider_salaryslips table tbody [name="show_atsh"]').length);
         },
         error: function(error){
             swal.fire({
@@ -166,7 +229,8 @@ function update_data(_this,is_month=false,rider_id=null){
     });
 }
 function toggleAllCheckbox(_this) {
-    $('#rider_salaryslips table tbody [name="show_slip"]').prop('checked', $(_this).prop('checked'));
+    var _which = $(_this).attr('data-target');
+    $('#rider_salaryslips table tbody [name="'+_which+'"]').prop('checked', $(_this).prop('checked'));
 }
 
 

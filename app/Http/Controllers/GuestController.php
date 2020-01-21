@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\GuestNewComer;
 use App\Model\Rider\Rider_detail;
+use App\Model\Accounts\Rider_salary;
 use App\Model\Rider\Rider;
 use Illuminate\Support\Arr;
 use Batch;
@@ -116,11 +117,13 @@ class GuestController extends Controller
       $extra_trips=0;
       $salary_paid=0;
       $show_salaryslip=0;
+      $show_attendanceslip=0;
       $month_salaryslip=0;
       $isshow=true;
       $month=0;
       $TimeSheet=null;
       $expiry_month="";
+      $closing_balance_prev=0;
 
       
 
@@ -133,20 +136,37 @@ class GuestController extends Controller
       }
       if (isset($rider_detail)) {
         $is_show_salaryslip=$rider_detail->show_salaryslip;
-        $dmy="2019-11-01";
-        if ($is_show_salaryslip=='1') {
-          $show_salaryslip=1;
+        $is_show_attendanceslip=$rider_detail->show_attendanceslip;
+        $dmy="";
+        if ($is_show_salaryslip=='1' || $is_show_attendanceslip=='1') {
+          if($is_show_salaryslip=='1') $show_salaryslip=1;
+          if($is_show_attendanceslip=='1') $show_attendanceslip=1;
+          
           $dmy=$rider_detail->salaryslip_month;
           $expiry_month=Carbon::parse($rider_detail->salaryslip_expiry);
           $current_date=Carbon::parse(Carbon::now()->format("Y-m-d"));
           if ($current_date->greaterThan($expiry_month)) {
             $show_salaryslip=0;
+            $show_attendanceslip=0;
           }
         }
-        if($show_salaryslip==0){
+        $onlyMonth = Carbon::parse($rider_detail->salaryslip_month)->format('m');
+        $onlyYear = Carbon::parse($rider_detail->salaryslip_month)->format('Y');
+        $salary_generated = Rider_salary::where('rider_id',$rider_detail->rider_id)
+        ->whereMonth("month",$onlyMonth)
+        ->whereYear("month",$onlyYear)
+        ->get()
+        ->first();
+        if(!isset($salary_generated)){
           return response()->json([
             'status'=>0,
-            'msg'=> 'No data found against this Emirate ID '
+            'msg'=> 'Salary is not generated yet'
+          ]);
+        }
+        if($show_salaryslip==0 && $show_attendanceslip==0){
+          return response()->json([
+            'status'=>0,
+            'msg'=> 'No data found against this Emirate ID'
           ]);
         }
         $rider_id=$rider_detail->rider_id;
@@ -157,6 +177,24 @@ class GuestController extends Controller
         $month=Carbon::parse($dmy)->format("Y-m-d");
         $from =Carbon::parse($month)->startOfMonth()->format("Y-m-d");
         $to =Carbon::parse($month)->endOfMonth()->format("Y-m-d");
+
+         //prev payables
+         $rider_debits_cr_prev_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+         ->where(function($q) {
+             $q->where('type', "cr");
+         })
+         ->whereDate('month', '<',$from)
+         ->sum('amount');
+         
+         $rider_debits_dr_prev_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+         ->where(function($q) {
+             $q->where('type', "cr_payable")
+               ->orWhere('type', 'dr');
+         })
+         ->whereDate('month', '<',$from)
+         ->sum('amount');
+         $closing_balance_prev = round($rider_debits_cr_prev_payable - $rider_debits_dr_prev_payable,2);
+         //ends prev payables
 
         $salary=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
         ->whereDate('month', '>=',$from)
@@ -267,7 +305,10 @@ class GuestController extends Controller
         $dicipline=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
-        ->where('source','Discipline Fine')
+        ->where(function($q) {
+            $q->where('source','Discipline Fine')
+             ->orWhereNotNull('kingrider_fine_id');
+        })
         ->sum('amount');
         $mics=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
         ->whereDate('month', '>=',$from)
@@ -286,7 +327,6 @@ class GuestController extends Controller
         ->where("source","!=","Mobile Installment")
         ->sum('amount');
 
-
         $salary_paid=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
@@ -294,11 +334,38 @@ class GuestController extends Controller
         ->where('payment_status','paid')
         ->sum('amount');
 
-        $TimeSheet=Income_Zomato::with('Time_sheet')->where('rider_id',$rider_id)
-        ->whereDate('date', '>=',$from)
-        ->whereDate('date', '<=',$to)
-        ->get()
-        ->first();
+        if($show_attendanceslip==1){
+          $TimeSheet=Income_Zomato::with('Time_sheet')->where('rider_id',$rider_id)
+          ->whereDate('date', '>=',$from)
+          ->whereDate('date', '<=',$to)
+          ->get()
+          ->first();
+        }
+        if($show_salaryslip==0){
+          $date_of_joining=null;
+          $ncw=0;
+          $tip=0;
+          $bike_allowns=0;
+          $bonus=0;
+          $bike_fine=0;
+          $advance=0;
+          $salik=0;
+          $sim=0;
+          $denial_penalty=0;
+          $dc=0;
+          $macdonald=0;
+          $rta=0;
+          $mobile=0;
+          $dicipline=0;
+          $mics=0;
+          $cash_paid_in_advance=0;
+          $salary=0;
+          $trips=0;
+          $hours=0;
+          $extra_trips=0;
+          $salary_paid=0;
+          $closing_balance_prev=0;
+        }
 
       }
       return response()->json([
@@ -308,6 +375,7 @@ class GuestController extends Controller
         'month'=>$month,
         'date_of_joining'=>$date_of_joining,
 
+        'closing_balance_prev'=>$closing_balance_prev,
         'salary'=>$salary,
         'trips'=>$trips,
         'hours'=>$hours,
@@ -335,7 +403,7 @@ class GuestController extends Controller
         'income_zomato'=>$TimeSheet,
 
         'show_salaryslip'=>$show_salaryslip,
-        
+        'show_attendanceslip'=>$show_attendanceslip,
 
         'payment_date'=>carbon::now()->format("M d,Y"),
         'expiry_month'=>$expiry_month,

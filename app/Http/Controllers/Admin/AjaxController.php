@@ -225,15 +225,21 @@ class AjaxController extends Controller
                 $pm = $settings['payout_method'];
                 $to_return ='';
                 switch ($pm) {
-                    case 'trip_based':
+                    case 'trip_based': 
                         $to_return .='<p><strong>Payout Method:</strong> Based on Trips and Hours</p>';
-                        $to_return .='<p><strong>Per trip amount:</strong> '.$settings['tb__trip_amount'].'</p>';
-                        $to_return .='<p><strong>Per hour amount:</strong> '.$settings['tb__hour_amount'].'</p>';
+                        $temp_var = isset($settings['tb__trip_amount'])?$settings['tb__trip_amount']:'Unspecified';
+                        $to_return .='<p><strong>Per trip amount:</strong> '.$temp_var.'</p>';
+                        $temp_var = isset($settings['tb__hour_amount'])?$settings['tb__hour_amount']:'Unspecified';
+                        $to_return .='<p><strong>Per hour amount:</strong> '.$temp_var.'</p>';
                         break;
                     case 'fixed_based':
                         $to_return .='<p><strong>Payout Method:</strong> Based on Fixed Amount</p>';
-                        $to_return .='<p><strong>Amount:</strong> '.$settings['fb__amount'].'</p>';
-                        $to_return .='<p><strong>Workable Hours:</strong> '.$settings['fb__workable_hours'].'</p>';
+                        $temp_var = isset($settings['fb__amount'])?$settings['fb__amount']:'Unspecified';
+                        $to_return .='<p><strong>Amount:</strong> '.$temp_var.'</p>';
+                        $temp_var = isset($settings['fb__perdayHours'])?$settings['fb__perdayHours']:'Unspecified';
+                        $to_return .='<p><strong>Estimated perday hours:</strong> '.$temp_var.'</p>';
+                        $temp_var = isset($settings['fb__working_days'])?$settings['fb__working_days']:'Unspecified';
+                        $to_return .='<p><strong>Estimated Working Days:</strong> '.$temp_var.'</p>';
                         break;
                     
                     default:
