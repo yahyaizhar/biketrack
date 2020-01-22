@@ -30,28 +30,17 @@
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <div class="kt-portlet">
             <div class="row row-no-padding">
-                <div class="col-md-1">
-                    <div class="my-2 mx-1">
-                        <label>Rider ID:</label>
-                        <select class="form-control kt-select2" name="rider_id_num" class="rider_selector" >
-                            @foreach ($riders as $rider)
-                            <option value="{{ $rider->id }}">
-                                {{ $rider->id }}
-                            </option>     
-                            @endforeach 
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-4">
+                <div class="col-md-5">
                     <div class="my-2 mx-4">
-                        <label>Select Rider:</label>
-                        <select class="form-control kt-select2" name="rider_id" class="rider_selector" >
+                        <label>Select Employee:</label>
+                        <select class="form-control kt-select2" name="rider_id" id="gb_rider_id">
                             @foreach ($riders as $rider)
                             <option value="{{ $rider->id }}">
-                                {{ $rider->name }}
+                                {{ $rider->id }} - {{ $rider->name }}
                             </option>     
                             @endforeach 
                         </select>
+                        <span class="form-text text-muted float-right rider__feid"></span>
                             
                     </div>
                 </div>
