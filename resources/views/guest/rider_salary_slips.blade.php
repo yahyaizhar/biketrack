@@ -114,7 +114,7 @@
                                 {{-- <td style="width:25%;text-align:end;"></td> --}}
                             </tr>
                             <tr>
-                                <td style="width:50%;text-align:left;">BASIC SALARY (<strong>Trips:</strong><span class="total_trips"></span>) (<strong>Hours:</strong><span class="total_hours"></span>) (<strong>Extra Trips:</strong><span class="extra_trips"></span>)</td>
+                                <td style="width:50%;text-align:left;">BASIC SALARY (<strong>Total Trips:</strong><span class="total_trips"></span>) (<strong>Hours:</strong><span class="total_hours"></span>)</td>
                                 <td  class="salary text-success" style="width:25%;text-align:end;"></td> 
                                 {{-- <td style="width:25%;text-align:end;"></td> --}}
                             </tr>
@@ -377,9 +377,9 @@
 
                         $('.previous_balance').html(data.closing_balance_prev);
                         $('.salary').html(data.salary);
-                        $('.total_trips').html(data.trips);
+                        $('.total_trips').html(data.trips+data.extra_trips);
                         $('.total_hours').html(data.hours);
-                        $('.extra_trips').html(data.extra_trips);
+                        // $('.extra_trips').html();
                         $('.ncw').html(data.ncw);
                         $('.tip').html(data.tip);
                         $('.bike_allowns').html(data.bike_allowns);
