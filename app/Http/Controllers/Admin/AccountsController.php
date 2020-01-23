@@ -2455,6 +2455,7 @@ public function client_income_store(Request $request){
         $client_income->total=$income['total'];
         $client_income->total_payout=$income['total_payout'];
         $client_income->status=1;
+        $client_income->income_type="Fixed Based";
         $client_income->save();
 
         $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
