@@ -35,9 +35,14 @@
                     <div class="kt-portlet__head-actions">
                         {{-- <button class="btn btn-danger btn-elevate btn-icon-sm" id="bulk_delete">Delete Selected</button> --}}
                         &nbsp;
-                        <a href="" data-ajax="{{ route('admin.client_income_index') }}" class="btn btn-brand btn-elevate btn-icon-sm">
+                        <a href="" data-ajax="{{ route('admin.client_income_index') }}" class="btn btn-success btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
-                            New Record
+                            New Fixed Income
+                        </a>
+                        &nbsp;
+                        <a href="" data-ajax="{{ route('admin.careem_payout_index') }}" class="btn btn-success btn-elevate btn-icon-sm">
+                            <i class="la la-plus"></i>
+                            New Comission Income
                         </a>
                     </div>
                 </div>
@@ -212,12 +217,46 @@ $(function() {
         });
 
     });
+    setScrollBkModal();
 });
 function deleteRow(id)
 {
     var url = "{{ url('admin/accounts/client_income/delete') }}"+ "/" + id  ;
     console.log(url,true);
     sendDeleteRequest(url, false, null, client_income_table);
+}
+function setScrollBkModal() {
+    $('.bk-scroll').each(function (i, elem) {
+        KTUtil.scrollInit(this, {
+            mobileNativeScroll: true,
+            resetHeightOnDestroy: true,
+            handleWindowResize: true,
+            height: function () {
+                var height;
+
+                height = KTUtil.getViewPort().height;
+
+                if (KTUtil.getByID('kt_header')) {
+                    height = height - KTUtil.actualHeight('kt_header');
+                }
+
+                if (KTUtil.getByID('kt_subheader')) {
+                    height = height - KTUtil.actualHeight('kt_subheader');
+                }
+
+                if (KTUtil.getByID('kt_footer')) {
+                    height = height - parseInt(KTUtil.css('kt_footer', 'height'));
+                }
+
+                if (KTUtil.getByID('kt_content')) {
+                    height = height - parseInt(KTUtil.css('kt_content', 'padding-top')) - parseInt(KTUtil.css('kt_content', 'padding-bottom'));
+                }
+
+                return height;
+            }
+        });
+    });
+
 }
 function updateStatus(id)
 {

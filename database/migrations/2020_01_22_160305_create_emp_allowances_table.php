@@ -15,6 +15,12 @@ class CreateEmpAllowancesTable extends Migration
     {
         Schema::create('emp_allowances', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('employee_id')->nullable();
+            $table->string('type')->nullable();
+            $table->string('month')->nullable();
+            $table->string('given_date')->nullable();
+            $table->string('amount')->nullable();
+            $table->string('active_status')->default('A');
             $table->timestamps();
         });
     }

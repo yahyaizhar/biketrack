@@ -2334,6 +2334,21 @@ public function client_income_index(){
    $riders=Rider::where("active_status","A")->get();
     return view('accounts.Client_income.add_income',compact("clients", 'riders'));
 }
+public function careem_payout_index(){
+    $clients=Client::where("active_status","A")->get();
+    $client_history=Client_History::with("rider")->get();
+    return view('accounts.Client_income.careem_payout',compact("clients", 'client_history'));
+ }
+ public function rider_joining_date($rider_id,$month){
+     $joining_date=Rider_detail::where("rider_id",$rider_id)->get()->first();
+     if (isset($joining_date)) {
+         $Join_date=$joining_date->date_of_joining;
+     }
+    return response()->json([
+        'Join_date'=>$Join_date,
+        'month'=>Carbon::parse($month)->format("Y-m-d"),
+    ]);
+ }
 public function client_income_getRiders($client_id, $month){ 
     $clients=Client::find($client_id);
     $onlymonth=Carbon::parse($month)->format('m');
@@ -2395,6 +2410,49 @@ public function client_income_edit_view($id){
     $edit_client_income=Client_Income::find($id);
     return view('accounts.Client_income.edit_income',compact('readonly','edit_client_income','clients'));
 }
+public function client_comission_income_store(Request $request){
+    $client = Client::find($request->client_id);
+    $incomes = $request->incomes;
+    foreach ($incomes as $income) {
+        $client_income=new Client_Income();
+        $client_income->client_id=$request->client_id;
+        $client_income->rider_id=$request->rider_id;
+        $client_income->month=Carbon::parse($request->get('month'))->startOfMonth()->format('Y-m-d');
+        $client_income->given_date=Carbon::parse($request->get('date'))->format('Y-m-d');
+        $client_income->cash=$income['cash'];
+        $client_income->cash_trips=$income['cash_trips'];
+        $client_income->bank=$income['bank'];
+        $client_income->bank_trips=$income['bank_trips'];
+        $client_income->captain_tips=$income['captain_tips'];
+        $client_income->item_bought=$income['item_bought'];
+        $client_income->item_qty=$income['item_qty'];
+        $client_income->total_payout=$income['total_payout'];
+        $client_income->status=1;
+        $client_income->income_type="Comission Based";
+        $client_income->week_start=Carbon::parse($income['week_start'])->format('Y-m-d');
+        $client_income->week_end=Carbon::parse($income['week_end'])->format('Y-m-d');
+        if ($income['bank']!=null && $income['bank']!="0" || ($income['bank_trips']!=null && $income['bank_trips']!="0")) {
+            $client_income->save();
+        }
+        
+
+        $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+            'client_income_id'=>$client_income->id
+        ]);
+        $ca->client_income_id =$client_income->id;
+        $ca->type='cr';
+        $ca->rider_id=$client_income->rider_id;
+        $ca->month = Carbon::parse($request->get('month'))->format('Y-m-d');
+        $ca->given_date = Carbon::parse($request->get('date'))->format('Y-m-d');
+        $ca->source=$client->name." Payout for Week (".Carbon::parse($income['week_start'])->format('d-M-y')." - ".Carbon::parse($income['week_end'])->format('d-M-y').")"; 
+        $ca->amount=$client_income->total_payout;
+        if ($income['bank']!=null && $income['bank']!="0" || ($income['bank_trips']!=null && $income['bank_trips']!="0")) {
+            $ca->save();
+        }
+        
+    }
+    return redirect(route('admin.client_income_view'));
+}
 public function client_income_store(Request $request){
     $client = Client::find($request->client_id);
     $incomes = $request->incomes;
@@ -2411,6 +2469,7 @@ public function client_income_store(Request $request){
         $client_income->total=$income['total'];
         $client_income->total_payout=$income['total_payout'];
         $client_income->status=1;
+        $client_income->income_type="Fixed Based";
         $client_income->save();
 
         $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
