@@ -589,8 +589,40 @@ _search_recursion(--times);
 },200)
 }
 _search_recursion(6);
-
+setScrollBkModal();
 });
+function setScrollBkModal() {
+    $('.bk-scroll').each(function (i, elem) {
+        KTUtil.scrollInit(this, {
+            mobileNativeScroll: true,
+            resetHeightOnDestroy: true,
+            handleWindowResize: true,
+            height: function () {
+                var height;
+
+                height = KTUtil.getViewPort().height;
+
+                if (KTUtil.getByID('kt_header')) {
+                    height = height - KTUtil.actualHeight('kt_header');
+                }
+
+                if (KTUtil.getByID('kt_subheader')) {
+                    height = height - KTUtil.actualHeight('kt_subheader');
+                }
+
+                if (KTUtil.getByID('kt_footer')) {
+                    height = height - parseInt(KTUtil.css('kt_footer', 'height'));
+                }
+
+                if (KTUtil.getByID('kt_content')) {
+                    height = height - parseInt(KTUtil.css('kt_content', 'padding-top')) - parseInt(KTUtil.css('kt_content', 'padding-bottom'));
+                }
+
+                return height;
+            }
+        });
+    });
+}
 
 ///// if no sub_child them remove child
 $('ul.kt-menu__subnav li.kt-menu__item.kt-menu__item--submenu').each(function(){

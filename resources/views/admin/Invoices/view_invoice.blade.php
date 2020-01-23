@@ -569,40 +569,6 @@ function getOpenInvoice() {
     });
 }
 
-function setScrollBkModal() {
-    $('.bk-scroll').each(function (i, elem) {
-        KTUtil.scrollInit(this, {
-            mobileNativeScroll: true,
-            resetHeightOnDestroy: true,
-            handleWindowResize: true,
-            height: function () {
-                var height;
-
-                height = KTUtil.getViewPort().height;
-
-                if (KTUtil.getByID('kt_header')) {
-                    height = height - KTUtil.actualHeight('kt_header');
-                }
-
-                if (KTUtil.getByID('kt_subheader')) {
-                    height = height - KTUtil.actualHeight('kt_subheader');
-                }
-
-                if (KTUtil.getByID('kt_footer')) {
-                    height = height - parseInt(KTUtil.css('kt_footer', 'height'));
-                }
-
-                if (KTUtil.getByID('kt_content')) {
-                    height = height - parseInt(KTUtil.css('kt_content', 'padding-top')) - parseInt(KTUtil.css('kt_content', 'padding-bottom'));
-                }
-
-                return height;
-            }
-        });
-    });
-
-}
-
 function receive_payment_popup($this) {
     var invoice = JSON.parse($this.nextElementSibling.innerHTML);
     var _newurl = biketrack.updateURLParameter2(window.location.href,'invoice_id',invoice.id);
@@ -760,7 +726,6 @@ if(_box !== ''){
 }
 
 getInvoices();
-setScrollBkModal();
 </script>
 
 <style>

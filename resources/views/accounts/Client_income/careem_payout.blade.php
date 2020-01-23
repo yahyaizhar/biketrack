@@ -135,7 +135,7 @@
                             <thead>
                                 <tr>
                                     <th class="text-center table-row_cell-sr table__cell--bk_width-5">#</th>
-                                    <th class="text-center table__cell--bk_width-35">Rider Name</th>
+                                    <th class="text-center table__cell--bk_width-35">Week</th>
                                     <th class="text-right table__cell--bk_width-20" colspan="2">
                                         <span style="margin-right:25px;">Trips Amount</span>
                                         <div class="row">
@@ -291,7 +291,7 @@ function append_row($row_data = null) {
                 '           <input type="hidden" name="incomes['+i+'][week_end]" value="'+item.week_end+'">'+
                 '       <td class="invoice__table-row_cell-sr"><span class="flaticon2-trash invoice__remove" onclick="delete_row(this);"></span>' + (i + 1)+
                 '       </td>'+
-                '       <td> Ranges:     <input readonly autocomplete="off" type="text" id="datapick1" name="daterange" value="'+item.weekday_start+' - '+item.week_end+'" /></td>  ' +
+                '       <td> Ranges:     <input readonly class="form-control" autocomplete="off" type="text" id="datapick1" name="daterange" value="'+item.weekday_start+' - '+item.week_end+'" /></td>  ' +
                 '       <td> ' +
                 '           <div class="">   ' +
                 '               <input type="text" class="form-control" placeholder="Cash" data-name="cash" oninput="subtotal()" name="incomes['+i+'][cash]">' +
