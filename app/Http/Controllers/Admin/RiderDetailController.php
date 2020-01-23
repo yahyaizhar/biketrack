@@ -369,15 +369,25 @@ class RiderDetailController extends Controller
             ->whereYear('date',$yearOnly)
             ->where("rider_id",$riders->rider_id)
             ->sum('trips_payable');
-            if ($_trips>400) {
-                $extra_trips=($_trips-400)*4;
-                $remain_trips=400*2;
-                $aed_trips+=$extra_trips+$remain_trips;
+            
+            if ($_trips<350) {
+                $aed_trips+=$_trips*2;
             }
-            else{
-                $remain_trips=$_trips*2;
-                $aed_trips+=$remain_trips;
+            else if ($_trips>=350 && $_trips<=399) {
+                $aed_trips+=$_trips*2.5;
             }
+            else if ($_trips>=400) {
+                $aed_trips+=$_trips*3;
+            }
+            // if ($_trips>400) {
+            //     $extra_trips=($_trips-400)*4;
+            //     $remain_trips=400*2;
+            //     $aed_trips+=$extra_trips+$remain_trips;
+            // }
+            // else{
+            //     $remain_trips=$_trips*2;
+            //     $aed_trips+=$remain_trips;
+            // }
             $_hours=Income_zomato::whereMonth('date',$monthOnly)
             ->whereYear('date',$yearOnly)
             ->where("rider_id",$riders->rider_id)
@@ -385,7 +395,13 @@ class RiderDetailController extends Controller
             if ($_hours>286) {
                 $_hours=286;
             }
-            $aed_hours+=$_hours*7.87;
+            if($_trips<250){
+                $aed_hours+=$_hours*6;
+            }
+            else {
+                $aed_hours+=$_hours*7;
+            }
+            
             $bon=Company_Account::where('source',"400 Trips Acheivement Bonus")
             ->where('rider_id',$riders->rider_id)
             ->whereMonth('month',$monthOnly)
