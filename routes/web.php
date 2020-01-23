@@ -661,6 +661,6 @@ Route::group([
     'namespace' => 'Admin',
 										 
 ], function(){    
-    Route::get('/employee/company_account','EmployeeController@viewCompanyEmployeeAccount')->name('employee.viewCompanyEmployeeAccount');
-    Route::get('/employee/employee_account','EmployeeController@viewEmployeeAccount')->name('employee.viewEmployeeAccount');
+    Route::get('/employee/company_account','Auth\EmployeeController@viewCompanyEmployeeAccount')->name('employee.viewCompanyEmployeeAccount');
+    Route::get('/employee/employee_account','Auth\EmployeeController@viewEmployeeAccount')->name('employee.viewEmployeeAccount');
 });

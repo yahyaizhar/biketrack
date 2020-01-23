@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use Batch;
 use Arr;
 use Carbon\Carbon;
+use App\Model\Rider\Rider;
 
 class EmployeeController extends Controller
 {
@@ -175,5 +176,15 @@ class EmployeeController extends Controller
         })
         ->rawColumns(['name','email','actions'])
         ->make(true);
+    }
+
+    public function viewCompanyEmployeeAccount(){
+        $riders = Rider::where(['active_status'=>'A','rider_type' => 'Employee'])->get();
+        return view('admin.Employee.company_employee_account',compact('riders'));
+    }
+
+    public function viewEmployeeAccount(){
+        $riders = Rider::where(['active_status'=>'A','rider_type' => 'Employee'])->get();
+        return view('admin.Employee.employee_account',compact('riders'));
     }
 }
