@@ -999,50 +999,64 @@ class AccountsController extends Controller
             }
         }
         else { // other clients
-            if($pm==''){
-                # no client was found undr this rider
-                return response()->json([
-                    'status'=>0,
-                    'msg'=>'No client assigned to this rider.'
-                ]);
-            }
-            if($pm=='fixed_based'){
-                $basic_salary=isset($client_setting['fb_sm__amount'])?$client_setting['fb_sm__amount']:0;
-                $client_income=Client_Income::where("rider_id",$rider_id)
-                ->whereMonth("month",$onlyMonth)
-                ->whereYear("month",$onlyYear)
-                ->get()->first(); 
-                if(isset($client_income)){
-                    $basic_salary = isset($basic_salary)?$basic_salary:0;
-                    $fb__working_hours = $client_income->total_hours;
-                    $fb__extra_hours = $client_income->extra_hours;
-
-                    $fb__perHourSalary = $basic_salary/$fb__working_hours;
-                    $extra_salary = $fb__perHourSalary * $fb__extra_hours;
-
-                    $fixed_salary = $basic_salary + $extra_salary;
-                    $ra_salary= $fixed_salary + $ra_cr;
-                    $ra_recieved=$ra_salary - $ra_payable;
-                    $total_salary_amt = $fixed_salary;
+            if($rider->rider_type=='Employee'){
+                #### employee's salary
+                $rd = $rider->Rider_detail;
+                $basic_salary = 2000;
+                if($rd->salary!=null){
+                    $basic_salary=$rd->salary;  
                 }
-                else {
-                    # no record found in income zomato table --generate error
+                $fixed_salary = $basic_salary;
+                $ra_salary= $fixed_salary + $ra_cr;
+                $ra_recieved=$ra_salary - $ra_payable;
+                $total_salary_amt = $fixed_salary;
+                $pm='employee';
+            }
+            else {
+                #### rider's salary
+                if($pm==''){
+                    # no client was found undr this rider
                     return response()->json([
                         'status'=>0,
-                        'msg'=>'No Payout found against this rider.'
+                        'msg'=>'No client assigned to this rider.'
                     ]);
                 }
-                 
+                if($pm=='fixed_based'){
+                    $basic_salary=isset($client_setting['fb_sm__amount'])?$client_setting['fb_sm__amount']:0;
+                    $client_income=Client_Income::where("rider_id",$rider_id)
+                    ->whereMonth("month",$onlyMonth)
+                    ->whereYear("month",$onlyYear)
+                    ->get()->first(); 
+                    if(isset($client_income)){
+                        $basic_salary = isset($basic_salary)?$basic_salary:0;
+                        $fb__working_hours = $client_income->total_hours;
+                        $fb__extra_hours = $client_income->extra_hours;
+
+                        $fb__perHourSalary = $basic_salary/$fb__working_hours;
+                        $extra_salary = $fb__perHourSalary * $fb__extra_hours;
+
+                        $fixed_salary = $basic_salary + $extra_salary;
+                        $ra_salary= $fixed_salary + $ra_cr;
+                        $ra_recieved=$ra_salary - $ra_payable;
+                        $total_salary_amt = $fixed_salary;
+                    }
+                    else {
+                        # no record found in income zomato table --generate error
+                        return response()->json([
+                            'status'=>0,
+                            'msg'=>'No Payout found against this rider.'
+                        ]);
+                    }
+                    
+                }
+                if($pm=='trip_based'){
+                    # no FEID found and FEID is cumpulsory for trip based rider
+                    return response()->json([
+                        'status'=>0,
+                        'msg'=>'No FEID found against this rider.'
+                    ]);
+                }
             }
-            if($pm=='trip_based'){
-                # no FEID found and FEID is cumpulsory for trip based rider
-                return response()->json([
-                    'status'=>0,
-                    'msg'=>'No FEID found against this rider.'
-                ]);
-            }
-            
-            
         }
 
         $is_generated= Rider_salary::where('rider_id',$rider_id)

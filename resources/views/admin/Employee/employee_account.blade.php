@@ -1,4 +1,7 @@
 @extends('admin.layouts.app')
+@section('page_title')
+Employee Account
+@endsection
 @section('head')
 <style>
     .fields_wrapper{
@@ -2588,8 +2591,8 @@
                     $('#select_month_custom').fadeIn('fast');
                     $('[name="custom_select_month"]').val(r1d1).trigger('change.select2');
                 }
-                $('[name="rider_id"],[name="rider_id_num"]').val(rider_id);
-                $('[name="rider_id_num"]').trigger('change');
+                $('[name="rider_id"]').val(rider_id);
+                $('[name="rider_id"]').trigger('change');
                 return;
             }
             $('[name="sort_by"]:checked').trigger('change')
