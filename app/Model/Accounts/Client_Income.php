@@ -69,7 +69,22 @@ self::updating(function ($updated_model) {
     // ends logging
     
     protected $fillable = [
-        'client_id', 'month', 'amount', 'status','active_status','rider_id'
+        'client_id',
+        'month',
+        'amount',
+        'status',
+        'active_status',
+        'rider_id',
+        'cash',
+        'bank',
+        'cash_trips',
+        'bank_trips',
+        'captain_tips',
+        'item_bought',
+        'item_qty',
+        'week_start',
+        'week_end',
+        'income_type',
     ];
     public function Rider(){
         return $this->belongsTo('App\Model\Rider\Rider');

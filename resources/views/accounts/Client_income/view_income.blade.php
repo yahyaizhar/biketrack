@@ -39,6 +39,11 @@
                             <i class="la la-plus"></i>
                             New Record
                         </a>
+                        &nbsp;
+                        <a href="" data-ajax="{{ route('admin.client_income_index') }}" class="btn btn-brand btn-elevate btn-icon-sm">
+                            <i class="la la-plus"></i>
+                            Careem Payout
+                        </a>
                     </div>
                 </div>
             </div>
