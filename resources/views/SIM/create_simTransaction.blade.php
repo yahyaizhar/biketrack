@@ -191,10 +191,14 @@
         $('#sims .split--calculated__div').each(function(i, item){
             var total_days = parseFloat($(this).find('[name="data['+i+'][total_days]"]').val())||0;
             var work_days = parseFloat($(this).find('[name="data['+i+'][work_days_count]"]').val())||0;
-            var work_days_allowed_balance = parseFloat($(this).find('[name="data['+i+'][work_days_allowed_balance]"]').val())||0;
             var days=work_days/total_days;
             var amount_to_give=amount*days;
-            $(this).find('[name="data['+i+'][bill_amount_given_by_days]"]').val(amount_to_give.toFixed(2));
+            var bill_amtELem = $(this).find('[name="data['+i+'][bill_amount_given_by_days]"]');
+            if(bill_amtELem.hasAttr('data-emp')){
+                $(this).find('[name="data['+i+'][work_days_allowed_balance]"]').val(amount_to_give.toRound(2));
+            }
+            var work_days_allowed_balance = parseFloat($(this).find('[name="data['+i+'][work_days_allowed_balance]"]').val())||0;
+            bill_amtELem.val(amount_to_give.toFixed(2))
             if (amount_to_give>work_days_allowed_balance) {
                 var extra_amt=amount_to_give-work_days_allowed_balance;
                 $(this).find('[name="data['+i+'][extra_useage_amount_given_by_days]"]').val(extra_amt.toFixed(2));
@@ -266,7 +270,7 @@
     '                                    <input type="text" class="form-control" value="" name="data['+i+'][bill_amount_given_by_days]">'+
     '                                </div>'+
     '                                <div class="form-group">'+
-    '                                     <span class="form-text text-muted">Extra Useage Amount</span>'+
+    '                                     <span class="form-text text-muted">Extra Usage Amount</span>'+
     '                                    <input readonly type="text" class="form-control" value="" name="data['+i+'][extra_useage_amount_given_by_days]">'+
     '                                </div>'+
     '                            </div>'; 
@@ -300,7 +304,7 @@
     '                                    <input type="text" class="form-control" value="" name="data['+i+'][bill_amount_given_by_days]">'+
     '                                </div>'+
     '                                <div class="form-group">'+
-    '                                     <span class="form-text text-muted">Extra Useage Amount</span>'+
+    '                                     <span class="form-text text-muted">Extra Usage Amount</span>'+
     '                                    <input readonly type="text" class="form-control" value="" name="data['+i+'][extra_useage_amount_given_by_days]">'+
     '                                </div>'+
     '                            </div>';   
@@ -310,7 +314,18 @@
                 $('#sims .split__object-container').append(append_sim);
                 
                 // $('#bike_rent [name=*"owner"]').val(histories[Object.keys(histories)[0]].bike.owner).trigger('change');
-                
+                ///check for employee
+                $('#sims .split__object-container')
+                .find('[name="data['+i+'][bill_amount_given_by_days]"]')
+                .removeAttr('data-emp');
+                if(obj.rider && obj.rider.rider_type=='Employee'){
+                    console.log($('#sims .split__object-container').find('[name="data['+i+'][bill_amount_given_by_days]"]'));
+                    
+                    $('#sims .split__object-container')
+                    .find('[name="data['+i+'][bill_amount_given_by_days]"]')
+                    .attr('data-emp', '');
+                    
+                }
             });
 
            
