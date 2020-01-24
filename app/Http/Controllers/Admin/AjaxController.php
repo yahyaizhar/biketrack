@@ -104,6 +104,9 @@ class AjaxController extends Controller
                         $temp_var = isset($settings['fb__working_days'])?$settings['fb__working_days']:'Unspecified';
                         $to_return .='<p><strong>Estimated Working Days:</strong> '.$temp_var.'</p>';
                         break;
+                    case 'comission_based':
+                        $to_return .='<p><strong>Payout Method:</strong> Comission Based</p>';
+                        break;
                     
                     default:
                         
@@ -121,21 +124,29 @@ class AjaxController extends Controller
                 switch ($pm) {
                     case 'trip_based':
                         $to_return .='<p><strong>Salary Method:</strong> Based on Trips and Hours</p>';
-                        $to_return .='<p><strong>Per trip amount:</strong> '.$settings['tb_sm__trip_amount'].'</p>';
-                        $to_return .='<p><strong>Per hour amount:</strong> '.$settings['tb_sm__hour_amount'].'</p>';
-                        $to_return .='<p><strong>Bonus trips:</strong> '.$settings['tb_sm__bonus_trips'].'</p>';
-                        $to_return .='<p><strong>Bonus amount:</strong> '.$settings['tb_sm__bonus_amount'].'</p>';
-                        $to_return .='<p><strong>Bonus trips amount:</strong> '.$settings['tb_sm__trips_bonus_amount'].'</p>';
+                        $temp_var = isset($settings['tb_sm__trip_amount'])?$settings['tb_sm__trip_amount']:'Unspecified';
+                        $to_return .='<p><strong>Per trip amount:</strong> '.$temp_var.'</p>';
+                        $temp_var = isset($settings['tb_sm__hour_amount'])?$settings['tb_sm__hour_amount']:'Unspecified';
+                        $to_return .='<p><strong>Per hour amount:</strong> '.$temp_var.'</p>';
+                        $temp_var = isset($settings['tb_sm__bonus_trips'])?$settings['tb_sm__bonus_trips']:'Unspecified';
+                        $to_return .='<p><strong>Bonus trips:</strong> '.$temp_var.'</p>';
+                        $temp_var = isset($settings['tb_sm__bonus_amount'])?$settings['tb_sm__bonus_amount']:'Unspecified';
+                        $to_return .='<p><strong>Bonus amount:</strong> '.$temp_var.'</p>';
+                        $temp_var = isset($settings['tb_sm__trips_bonus_amount'])?$settings['tb_sm__trips_bonus_amount']:'Unspecified';
+                        $to_return .='<p><strong>Bonus trips amount:</strong> '.$temp_var.'</p>';
                         break;
                     case 'fixed_based':
                         $to_return .='<p><strong>Salary Method:</strong> Based on Fixed Amount</p>';
-                        $to_return .='<p><strong>Amount:</strong> '.$settings['fb_sm__amount'].'</p>';
-                        $to_return .='<p><strong>Extra Hours Rate:</strong> '.$settings['fb_sm__exrta_hours'].'</p>';
+                        $temp_var = isset($settings['fb_sm__amount'])?$settings['fb_sm__amount']:'Unspecified';
+                        $to_return .='<p><strong>Amount:</strong> '.$temp_var.'</p>';
+                        $temp_var = isset($settings['fb_sm__exrta_hours'])?$settings['fb_sm__exrta_hours']:'Unspecified';
+                        $to_return .='<p><strong>Extra Hours Rate:</strong> '.$temp_var.'</p>';
                         break;
                     case 'commission_based':
                         $to_return .='<p><strong>Salary Method:</strong> Based on Commission</p>';
-                        $to_return .='<p><strong>Amount:</strong> '.$settings['cb__amount'];
-                        if($settings['cb__type']=='percent'){
+                        $temp_var = isset($settings['cb_sm__amount'])?$settings['cb_sm__amount']:'Unspecified';
+                        $to_return .='<p><strong>Comission:</strong> '.$temp_var;
+                        if(isset($settings['cb_sm__type'])&&$settings['cb_sm__type']=='percentage'){
                             $to_return .='%</p>' ;
                         }
                         else {
@@ -162,6 +173,7 @@ class AjaxController extends Controller
                 $salary_method_HTML_suffix = '<i class="fa fa-edit"></i>Update Salary Method';
             }
             //<button class="dropdown-item" onclick="deleteClient('.$clients->id.');"><i class="fa fa-trash"></i> Delete</button>
+            $client_settings = $clients->setting==""?null:$clients->setting;
             return '<span class="dtr-data">
             <span class="dropdown">
                 <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
@@ -176,7 +188,7 @@ class AjaxController extends Controller
                     <a class="dropdown-item" href="'.route('client.profit_sheet_view', $clients).'"><i class="fa fa-edit"></i>View Record Sheet</a>
                     <a class="dropdown-item" href="'.route('client.client_total_expense', $clients).'"><i class="fa fa-edit"></i>View Record Summary</a>
                     <a class="dropdown-item" href="'.route('admin.zomato_salary_sheet_export', $clients).'"><i class="fa fa-edit"></i>View Salary Sheet</a> 
-                    <a class="dropdown-item" href="" onclick=\'show_payout_modal('.json_encode($clients->setting).', '.$clients->id.');return false;\'>'.$payout_method_HTML_suffix.'</a> 
+                    <a class="dropdown-item" href="" onclick=\'show_payout_modal('.json_encode($client_settings).', '.$clients->id.');return false;\'>'.$payout_method_HTML_suffix.'</a> 
                     <a class="dropdown-item" href="" onclick=\'show_salary_modal('.json_encode($clients->salary_methods).', '.$clients->id.');return false;\'>'.$salary_method_HTML_suffix.'</a> 
                 </div>
             </span>
