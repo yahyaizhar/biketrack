@@ -348,27 +348,27 @@ class RiderDetailController extends Controller
             $total_hours_client+=Income_zomato::whereMonth('date',$monthOnly)
             ->whereYear('date',$yearOnly)
             ->where("rider_id",$riders->rider_id)
-            ->sum('log_in_hours_payable');
+            ->sum('calculated_hours');
             $hours_client=$total_hours_client*6;
 
             $total_trips_client+=Income_zomato::whereMonth('date',$monthOnly)
             ->whereYear('date',$yearOnly)
             ->where("rider_id",$riders->rider_id)
-            ->sum('trips_payable');
+            ->sum('calculated_trips');
             $trips_client=$total_trips_client*6.75;
 
             $trips+=Income_zomato::whereMonth('date',$monthOnly)
             ->whereYear('date',$yearOnly)
             ->where("rider_id",$riders->rider_id)
-            ->sum('trips_payable');
+            ->sum('calculated_trips');
             $hours+=Income_zomato::whereMonth('date',$monthOnly)
             ->whereYear('date',$yearOnly)
             ->where("rider_id",$riders->rider_id)
-            ->sum('log_in_hours_payable');
+            ->sum('calculated_hours');
             $_trips=Income_zomato::whereMonth('date',$monthOnly)
             ->whereYear('date',$yearOnly)
             ->where("rider_id",$riders->rider_id)
-            ->sum('trips_payable');
+            ->sum('calculated_trips');
             if ($_trips>400) {
                 $extra_trips=($_trips-400)*4;
                 $remain_trips=400*2;
@@ -381,7 +381,7 @@ class RiderDetailController extends Controller
             $_hours=Income_zomato::whereMonth('date',$monthOnly)
             ->whereYear('date',$yearOnly)
             ->where("rider_id",$riders->rider_id)
-            ->sum('log_in_hours_payable');
+            ->sum('calculated_hours');
             if ($_hours>286) {
                 $_hours=286;
             }
