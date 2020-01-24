@@ -19,6 +19,7 @@ use Batch;
 use Arr;
 use Carbon\Carbon;
 use App\Model\Rider\Rider;
+use App\Emp_allowance;
 
 class EmployeeController extends Controller
 {
@@ -187,4 +188,58 @@ class EmployeeController extends Controller
         $riders = Rider::where(['active_status'=>'A','rider_type' => 'Employee'])->get();
         return view('admin.Employee.employee_account',compact('riders'));
     }
+
+    public function employee_allownces(){
+        return view('admin.Employee.EMP_allowns');
+    }
+    public function insert_employee_allowns(Request $request){
+        $emp_add=new Emp_allowance;
+        $emp_add->type=$request->type;
+        $emp_add->employee_id=$request->employee_id;
+        $emp_add->amount=$request->amount;
+        $emp_add->month=carbon::parse($request->month)->startOfMonth()->format("Y-m-d");
+        $emp_add->given_date=carbon::parse($request->given_date)->format("Y-m-d");
+        $emp_add->save();
+        $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+            'employee_allownce_id'=>$emp_add->id
+        ]);
+        $ca->employee_allownce_id =$emp_add->id;
+        $ca->type='dr';
+        $ca->rider_id=$request->employee_id;
+        $ca->month = Carbon::parse($request->month)->startOfMonth()->format('Y-m-d');
+        $ca->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
+        if ($request->type=="transport") {
+            $ca->source="Transport Allownces"; 
+        }
+        if ($request->type=="marketing") {
+            $ca->source="Marketing Allownces"; 
+        }
+        if ($request->type=="health") {
+            $ca->source="Health Allownces"; 
+        }
+        $ca->amount=$request->amount;
+        $ca->save();
+        $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
+            'employee_allownce_id'=>$emp_add->id
+        ]);
+        $ra->employee_allownce_id =$emp_add->id;
+        $ra->type='cr';
+        $ra->rider_id=$request->employee_id;
+        $ra->month = Carbon::parse($request->month)->startOfMonth()->format('Y-m-d');
+        $ra->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
+        if ($request->type=="transport") {
+            $ra->source="Transport Allownces"; 
+        }
+        if ($request->type=="marketing") {
+            $ra->source="Marketing Allownces"; 
+        }
+        if ($request->type=="health") {
+            $ra->source="Health Allownces"; 
+        }
+        $ra->amount=$request->amount;
+        $ra->save();
+
+    }
+
+
 }
