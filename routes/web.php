@@ -663,4 +663,6 @@ Route::group([
 ], function(){    
     Route::get('/employee/company_account','Auth\EmployeeController@viewCompanyEmployeeAccount')->name('employee.viewCompanyEmployeeAccount');
     Route::get('/employee/employee_account','Auth\EmployeeController@viewEmployeeAccount')->name('employee.viewEmployeeAccount');
+    Route::get('/employee/allownces','Auth\EmployeeController@employee_allownces')->name('employee.employee_allownces');
+    Route::post('/employee/add_allownces','Auth\EmployeeController@insert_employee_allowns')->name('employee.insert_employee_allowns');
 });

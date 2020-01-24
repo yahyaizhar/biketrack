@@ -956,7 +956,7 @@ class AccountsController extends Controller
                 // $hours_payable=$hours*$_s_hoursFormula;
 
                 $trips = $calculated_trips > $_s_maxTrips?$_s_maxTrips:$calculated_trips;
-                
+
                 ##  temp_coding
                 // if($trips <350) $_s_tripsFormula=2;
                 // else if($trips >=350 && $trips <=399) $_s_tripsFormula=2.5;

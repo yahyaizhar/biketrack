@@ -38,6 +38,7 @@ class CreateRiderAccountsTable extends Migration
             $table->integer('sim_transaction_id')->nullable();
             $table->integer('mobile_installment_id')->nullable();
             $table->integer('kingrider_fine_id')->nullable();
+            $table->integer('employee_allownce_id')->nullable();
             $table->string('status')->nullable();
             $table->string('active_status')->default("A");
             $table->string('setting')->nullable();
