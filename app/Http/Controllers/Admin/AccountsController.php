@@ -903,6 +903,8 @@ class AccountsController extends Controller
         $bonus=0;
         $absent_app=0;
         $positions=0;
+        $commission=0;
+        $commission_value='0%';
 
 
         //some static_data
@@ -1058,6 +1060,40 @@ class AccountsController extends Controller
                     }
                     
                 }
+                if($pm=='commission_based'){
+                    $commission_val=isset($client_setting['cb_sm__amount'])?$client_setting['cb_sm__amount']:0;
+                    $commission_type=isset($client_setting['cb_sm__type'])?$client_setting['cb_sm__type']:0;
+                    $commission_value=$commission_val.($commission_type=='percentage'?'%':' AED');
+                    $basic_salary=0;
+                    $client_income=Client_Income::where("rider_id",$rider_id)
+                    ->whereMonth("month",$onlyMonth)
+                    ->whereYear("month",$onlyYear)
+                    ->where('income_type', 'commission_based')
+                    ->get()->sum('total_payout');
+                    if(isset($client_income) && $client_income>0){
+                        $basic_salary = $client_income;
+                        
+                        if($commission_type=='percentage'){
+                            $commission=($basic_salary/100)*$commission_val;
+                            $fixed_salary = $basic_salary - $commission;
+                        }
+                        else {
+                            $commission=$commission_val;
+                            $fixed_salary = $basic_salary - $commission;
+                        }
+                        $ra_salary= $fixed_salary + $ra_cr;
+                        $ra_recieved=$ra_salary - $ra_payable;
+                        $total_salary_amt = $fixed_salary;
+                    }
+                    else {
+                        # no record found in income zomato table --generate error
+                        return response()->json([
+                            'status'=>0,
+                            'msg'=>'No Payout found against this rider.'
+                        ]);
+                    }
+                    
+                }
                 if($pm=='trip_based'){
                     # no FEID found and FEID is cumpulsory for trip based rider
                     return response()->json([
@@ -1122,6 +1158,9 @@ class AccountsController extends Controller
             'salary_hours'=>$salary_hours,
             'salary_trips'=>$salary_trips,
             'salary_credits'=>$salary_credits,
+
+            'commission'=>$commission,
+            'commission_value'=>$commission_value,
 
             'net_salary'=>round($ra_salary,2),
             'gross_salary'=>round($ra_recieved,2),
@@ -2353,9 +2392,12 @@ public function careem_payout_index(){
      if (isset($joining_date)) {
          $Join_date=$joining_date->date_of_joining;
      }
+     $already_incomes = Client_Income::where(['rider_id'=>$rider_id, 'month'=>Carbon::parse($month)->format('Y-m-d')])
+    ->get();
     return response()->json([
         'Join_date'=>$Join_date,
         'month'=>Carbon::parse($month)->format("Y-m-d"),
+        'client__incomes'=>$already_incomes
     ]);
  }
 public function client_income_getRiders($client_id, $month){ 
@@ -2422,6 +2464,14 @@ public function client_income_edit_view($id){
 public function client_comission_income_store(Request $request){
     $client = Client::find($request->client_id);
     $incomes = $request->incomes;
+    #delete previous data
+    $already_incomes = Client_Income::where(['rider_id'=>$request->rider_id, 'month'=>Carbon::parse($request->get('month'))->format('Y-m-d')])
+    ->get();
+    foreach ($already_incomes as $already_income) {
+        \App\Model\Accounts\Company_Account::where('client_income_id', $already_income->id)->delete();
+        $already_income->delete();
+    }
+    #end delete previous data
     foreach ($incomes as $income) {
         $client_income=new Client_Income();
         $client_income->client_id=$request->client_id;
@@ -2437,7 +2487,7 @@ public function client_comission_income_store(Request $request){
         $client_income->item_qty=$income['item_qty'];
         $client_income->total_payout=$income['total_payout'];
         $client_income->status=1;
-        $client_income->income_type="Comission Based";
+        $client_income->income_type="commission_based";
         $client_income->week_start=Carbon::parse($income['week_start'])->format('Y-m-d');
         $client_income->week_end=Carbon::parse($income['week_end'])->format('Y-m-d');
         if ($income['bank']!=null && $income['bank']!="0" || ($income['bank_trips']!=null && $income['bank_trips']!="0")) {
@@ -2445,9 +2495,7 @@ public function client_comission_income_store(Request $request){
         }
         
 
-        $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
-            'client_income_id'=>$client_income->id
-        ]);
+        $ca = new \App\Model\Accounts\Company_Account;
         $ca->client_income_id =$client_income->id;
         $ca->type='cr';
         $ca->rider_id=$client_income->rider_id;
@@ -2478,7 +2526,7 @@ public function client_income_store(Request $request){
         $client_income->total=$income['total'];
         $client_income->total_payout=$income['total_payout'];
         $client_income->status=1;
-        $client_income->income_type="Fixed Based";
+        $client_income->income_type="fixed_based";
         $client_income->save();
 
         $ca = \App\Model\Accounts\Company_Account::firstOrCreate([

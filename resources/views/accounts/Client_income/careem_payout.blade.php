@@ -70,12 +70,12 @@
                 <div class="kt-portlet__head">
                     <div class="kt-portlet__head-label">
                         <h3 class="kt-portlet__head-title page__title">
-                            Comission Based Payout
+                            Commission Based Payout
                         </h3>
                     </div>
                 </div>
                 @include('admin.includes.message')
-            <form class="kt-form" action="{{route('admin.client_comission_income_store')}}" method="POST" enctype="multipart/form-data" id="client_income">
+                <form class="kt-form" action="{{route('admin.client_comission_income_store')}}" method="POST" enctype="multipart/form-data" id="client_income">
                     {{ csrf_field() }}
                     <div class="kt-portlet__body">
                         <div class="row">
@@ -103,7 +103,7 @@
                                                 $client_setting = json_decode($client->setting, true);
                                                 $pm = $client_setting['payout_method'];
                                             @endphp
-                                            @if ($pm=='comission_based')
+                                            @if ($pm=='commission_based')
                                                 <option value="{{ $client->id }}">
                                                     {{ $client->name }}
                                                 </option>
@@ -136,11 +136,11 @@
                                 <tr>
                                     <th class="text-center table-row_cell-sr table__cell--bk_width-5">#</th>
                                     <th class="text-center table__cell--bk_width-35">Week</th>
-                                    <th class="text-right table__cell--bk_width-20" colspan="2">
-                                        <span style="margin-right:25px;">Trips Amount</span>
+                                    <th class="table__cell--bk_width-20" colspan="2">
+                                        <span class="d-block text-center">Trips Amount</span>
                                         <div class="row">
-                                            <span class="col-md-6">Cash</span>
-                                            <span class="col-md-6">Bank</span>
+                                            <span class="col-md-6 text-center">Cash</span>
+                                            <span class="col-md-6 text-center">Bank<sup class="text-danger h6">*</sup></span>
                                         </div>
                                     </th>
                                     {{-- <th class="text-right table__cell--bk_width-10"></th> --}}
@@ -237,6 +237,7 @@ $(document).ready(function () {
         $('#client_income [name="rider_id"]').on('change', function(){
         var _rider_id = $(this).val();
         var _month = $('#client_income [name="month"]').val();
+        _month=new Date(_month).format('yyyy-mm-dd');
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -265,10 +266,18 @@ $(document).ready(function () {
                 var _month=moment(_monthDay).format("MM");
                 if(a==_month || b==_month){
                     // alert(weekday_start+"-------"+week_end);
+                    var _ws = moment(weekday_start, "YYYY,MM,DD,dddd").format("DD-MM-YYYY");
+                    var _we = moment(week_end, "YYYY,MM,DD,dddd").format("DD-MM-YYYY");
+                    var _ci = resp.client__incomes.find(function(x){
+                        return moment(x.week_start, "DD-MM-YYYY").isSame(moment(_ws, "YYYY-MM-DD")) 
+                        && 
+                        moment(x.week_end, "DD-MM-YYYY").isSame(moment(_we, "YYYY-MM-DD"))
+                    })
                     riders_HTMLData.push(
                     {
-                        weekday_start:moment(weekday_start, "YYYY,MM,DD,dddd").format("DD-MM-YYYY"),
-                        week_end:moment(week_end, "YYYY,MM,DD,dddd").format("DD-MM-YYYY"),
+                        weekday_start:_ws,
+                        week_end:_we,
+                        ci:_ci
                     });
                 }
                 weekday_start=week_end;
@@ -285,44 +294,64 @@ function append_row($row_data = null) {
     console.log($row_data);
     if ($row_data != null) {
         $row_data.forEach(function (item, i) {
+            var _ci = item.ci;
+            var cash_amount = 0;
+            var cash_trips = 0;
+            var bank_amount = 0;
+            var bank_trips = 0;
+            var captain_tips = 0;
+            var item_bought = 0;
+            var item_qty = 0;
+            var total_payout = 0;
+            if(_ci!=null){
+                cash_amount = parseFloat(_ci.cash)||0;
+                cash_trips = parseFloat(_ci.cash_trips)||0;
+                bank_amount = parseFloat(_ci.bank)||0;
+                bank_trips = parseFloat(_ci.bank_trips)||0;
+                captain_tips = parseFloat(_ci.captain_tips)||0;
+                item_bought = parseFloat(_ci.item_bought)||0;
+                item_qty = parseFloat(_ci.item_qty)||0;
+                total_payout = parseFloat(_ci.total_payout)||0;
+            }
+
             markup += '' +
                 '   <tr>  ' +
                 '           <input type="hidden" name="incomes['+i+'][week_start]" value="'+item.weekday_start+'">'+
                 '           <input type="hidden" name="incomes['+i+'][week_end]" value="'+item.week_end+'">'+
                 '       <td class="invoice__table-row_cell-sr"><span class="flaticon2-trash invoice__remove" onclick="delete_row(this);"></span>' + (i + 1)+
                 '       </td>'+
-                '       <td> Ranges:     <input readonly class="form-control" autocomplete="off" type="text" id="datapick1" name="daterange" value="'+item.weekday_start+' - '+item.week_end+'" /></td>  ' +
+                '       <td> Ranges:     <input readonly class="form-control" autocomplete="off" type="text" name="daterange" value="'+item.weekday_start+' - '+item.week_end+'" /></td>  ' +
                 '       <td> ' +
                 '           <div class="">   ' +
-                '               <input type="text" class="form-control" placeholder="Cash" data-name="cash" oninput="subtotal()" name="incomes['+i+'][cash]">' +
+                '               <input type="text" class="form-control" value="'+cash_amount+'" placeholder="Cash" data-name="cash" oninput="subtotal()" name="incomes['+i+'][cash]">' +
                 '               <div class="">  ' +
-                '                   <p style="margin-top: 13px !important;"><input placeholder="Trips" class="form-control" data-name="cash_trips" name="incomes['+i+'][cash_trips]"></p>' +
+                '                   <p style="margin-top: 13px !important;"><input placeholder="Trips" value="'+cash_trips+'" class="form-control" data-name="cash_trips" name="incomes['+i+'][cash_trips]"></p>' +
                 '               </div>   ' +
                 '           </div>  ' +
                 '       </td>  ' +
                 
                 '       <td> ' +
                 '           <div class="">   ' +
-                '               <input type="text" class="form-control" placeholder="Bank" data-name="bank" oninput="subtotal()" name="incomes['+i+'][bank]">   ' +
+                '               <input type="text" class="form-control" placeholder="Bank" value="'+bank_amount+'" data-name="bank" oninput="subtotal()" name="incomes['+i+'][bank]">   ' +
                 '               <div class="">  ' +
-                '                   <p style="margin-top: 13px !important;"><input placeholder="Trips" class="form-control" data-name="bank_trips" name="incomes['+i+'][bank_trips]"></p>' +
+                '                   <p style="margin-top: 13px !important;"><input placeholder="Trips" value="'+bank_trips+'" class="form-control" data-name="bank_trips" name="incomes['+i+'][bank_trips]"></p>' +
                 '               </div>   ' +
                 '           </div>  ' +
                 '       </td>  ' +
-                '       <td> <input class="form-control" placeholder="Captain Tips" data-name="captain_tips" oninput="subtotal()" name="incomes['+i+'][captain_tips]"> </td>  ' +
+                '       <td> <input class="form-control" placeholder="Captain Tips" data-name="captain_tips" value="'+captain_tips+'" oninput="subtotal()" name="incomes['+i+'][captain_tips]"> </td>  ' +
                 '       <td> ' +
                 '           <div class="">   ' +
-                '               <input type="text" class="form-control" placeholder="Item Bought" data-name="item_bought" oninput="subtotal()" name="incomes['+i+'][item_bought]">   ' +
+                '               <input type="text" class="form-control" placeholder="Item Bought" value="'+item_bought+'" data-name="item_bought" oninput="subtotal()" name="incomes['+i+'][item_bought]">   ' +
                 '               <div class="">  ' +
-                '                   <p style="display:inline-flex;margin-top:13px;"><strong style="margin-top:10px;">QTY: </strong><input placeholder="QTY" class="form-control" data-name="item_qty" name="incomes['+i+'][item_qty]"></p>' +
+                '                   <p style="display:inline-flex;margin-top:13px;"><strong style="margin-top:10px;">QTY: </strong><input placeholder="QTY" value="'+item_qty+'" class="form-control" data-name="item_qty" name="incomes['+i+'][item_qty]"></p>' +
                 '               </div>   ' +
                 '           </div>  ' +
                 '       </td>  ' +
-                '       <td> <input data-input-type="float" readonly class="form-control" placeholder="Payout" data-name="total_payout" name="incomes['+i+'][total_payout]"> </td>  ' +
+                '       <td> <input data-input-type="float" readonly value="'+total_payout+'" class="form-control" placeholder="Payout" data-name="total_payout" name="incomes['+i+'][total_payout]"> </td>  ' +
                 '  </tr>  ';
         });
         $("#client_income_table tbody").html(markup);
-        $('input[name="daterange"]').daterangepicker({
+        $('#client_income input[name="daterange"]').daterangepicker({
             opens: 'right', 
             autoUpdateInput:true,
             locale: {
@@ -330,12 +359,12 @@ function append_row($row_data = null) {
             }
         }, function(start, end, label) {
             $date_data1=$(".datapick1").val();
-            var _data = {
-                range1: {
-                    start_date:$('#datapick1').data('daterangepicker').startDate.format('YYYY-MM-DD'),
-                    end_date: $('#datapick1').data('daterangepicker').endDate.format('YYYY-MM-DD')
-                },
-            };
+            // var _data = {
+            //     range1: {
+            //         start_date:$('#datapick1').data('daterangepicker').startDate.format('YYYY-MM-DD'),
+            //         end_date: $('#datapick1').data('daterangepicker').endDate.format('YYYY-MM-DD')
+            //     },
+            // };
         });
         subtotal();
         return;
