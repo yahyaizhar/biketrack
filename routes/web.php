@@ -553,12 +553,12 @@ Route::group([
 //zomato income 
 // Client_income
     Route::get('/client_income/index','AccountsController@client_income_index')->name('admin.client_income_index'); //ok [Income: add client income]
-    Route::get('/client_income/careem_payout','AccountsController@careem_payout_index')->name('admin.careem_payout_index');//*** 
-    Route::get('/client_income/rider_joining_date/{rider_id}/{month}','AccountsController@rider_joining_date')->name('admin.rider_joining_date'); //*** 
+    Route::get('/client_income/careem_payout','AccountsController@careem_payout_index')->name('admin.careem_payout_index');
+    Route::get('/client_income/rider_joining_date/{rider_id}/{month}','AccountsController@rider_joining_date')->name('admin.rider_joining_date'); 
     Route::get('/client_income/{client_id}/getRiders/month/{month}','AccountsController@client_income_getRiders')->name('admin.client_income_getRiders'); //ok [Income: add client income]
     Route::get('/client_income/view','AccountsController@client_income_view')->name('admin.client_income_view'); //ok [Income: view all clients income]
     Route::post('/client_income/insert','AccountsController@client_income_store')->name('admin.client_income_store'); //ok [Income: add client income]
-    Route::post('/client_income/insert/comission_based','AccountsController@client_comission_income_store')->name('admin.client_comission_income_store'); //*** 
+    Route::post('/client_income/insert/comission_based','AccountsController@client_comission_income_store')->name('admin.client_comission_income_store');
     Route::post('/client_income/{id}/update','AccountsController@client_income_update')->name('admin.client_income_update');  //ok [Income: update client income]
     Route::post('/client_income/{id}/updatestatus','AccountsController@client_income_updatestatus')->name('admin.client_income_updatestatus'); //ok [Income: update status client income]
     Route::delete('/client_income/delete/{id}','AccountsController@client_income_delete')->name('admin.client_income_delete'); //ok [Income: delete client income]
