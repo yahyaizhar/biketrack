@@ -359,6 +359,7 @@ function append_row($row_data = null) {
             }
         }, function(start, end, label) {
             $date_data1=$(".datapick1").val();
+            updateRange();
             // var _data = {
             //     range1: {
             //         start_date:$('#datapick1').data('daterangepicker').startDate.format('YYYY-MM-DD'),
@@ -406,22 +407,40 @@ var subtotal = function(){
     $('#client_income .subtotal_value').text('AED '+Math.round(subtotal_amount))
     $('#client_income [data-name="income_subtotal"]').val(Math.round(subtotal_amount));
 }
-// function updateRange(){
-//     $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
-//         var start_date=picker.startDate.format('MM/DD/YYYY');
-//         var end_date=picker.endDate.format('MM/DD/YYYY');
-//         var index=$(this).parents("tr").index();    
-//         $('#client_income_table tbody tr').each(function(i,x){
-//         var _current_index=$(this).index();
-//         if(_current_index>index){
-//             var start_date=$(this).find('[name="daterange"]').data('daterangepicker').startDate.format("YYYY-MM-DD");
-//             var end_date=$(this).find('[name="daterange"]').data('daterangepicker').endDate.format("DD-MM-YYYY");
-//             var start_day=$(this).parents('tr').next().find('[name="daterange"]').data('daterangepicker').setStartDate(end_date);
-//             console.log(start_day);
-//         }
-//         });
-//     });
-// }
+function updateRange(){
+    $('#client_income input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
+        var current_start_date=picker.startDate.format('MM/DD/YYYY');
+        var current_end_date=picker.endDate.format('MM/DD/YYYY');
+        var index=$(this).parents("tr").index();
+
+        var prev_startDate=moment(current_start_date, 'MM/DD/YYYY');
+        var prev_endDate=moment(current_end_date, 'MM/DD/YYYY');
+
+        $('#client_income_table tbody tr').each(function(i,x){
+        var _current_index=$(this).index();
+        
+        if(_current_index>index){
+            var new_start_date=prev_endDate.format('DD-MM-YYYY');
+            var new_end_day=moment(prev_endDate,"DD-MM-YYYY").add(7, 'd').format("DD-MM-YYYY");
+            
+            var __month = moment($('#client_income [name="month"]').val(), 'MMMM YYYY').month()+1;
+            console.log(new_start_date, '===', new_end_day, '==========',__month );
+
+            $(this).find('[name="daterange"]').data('daterangepicker').setStartDate(new_start_date);
+            $(this).find('[name="daterange"]').data('daterangepicker').setEndDate(new_end_day);
+
+            prev_startDate=moment(new_start_date, 'DD-MM-YYYY');
+            prev_endDate=moment(new_end_day, 'DD-MM-YYYY');
+
+            if(__month!=(moment(new_start_date, 'DD-MM-YYYY').month()+1) && __month!=(moment(new_end_day, 'DD-MM-YYYY').month()+1)){
+                console.log('delete', this);
+                $(this).remove();
+            }
+            
+        }
+        });
+    });
+}
 
 </script>
 @endsection
