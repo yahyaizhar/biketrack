@@ -25,7 +25,7 @@ class CreateMobilesTable extends Migration
             $table->string('amount_received')->nullable();
             $table->string('remaining_amount')->nullable();
             $table->integer('purchased_invoice_id')->nullable();
-            $table->string('seller_detail')->nullable();
+            $table->string('seller_id')->nullable();
             $table->string('purchasing_date')->nullable();
             $table->string('invoice_picture')->nullable();
             $table->integer('status')->default('1');

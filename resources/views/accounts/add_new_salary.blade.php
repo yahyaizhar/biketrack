@@ -167,6 +167,24 @@
                                 <input type="text" required readonly class="form-control col-md-6" name="final_salary" value="" >
                             </div>
                         </div>
+                        <div class="commission_based_salary-wrapper salary__wrapper">
+                            <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
+                                <input type="text" required readonly class="form-control col-md-6" value="Basic Earning" >
+                                <input type="text" required readonly class="form-control col-md-6" name="cb__basic_earning" value="" >
+                            </div>
+                            <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
+                                <input type="text" required readonly class="form-control col-md-6" value="Commision Value" >
+                                <input type="text" required readonly class="form-control col-md-6" name="cb__commision_value" value="" >
+                            </div>
+                            <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
+                                <input type="text" required readonly class="form-control col-md-6" value="Commision Amount" >
+                                <input type="text" required readonly class="form-control col-md-6" name="cb__commision_amount" value="" >
+                            </div>
+                            <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
+                                <input type="text" required readonly class="form-control col-md-6" value="Final Salary" >
+                                <input type="text" required readonly class="form-control col-md-6" name="final_salary" value="" >
+                            </div>
+                        </div>
                         <div class="employee_salary-wrapper salary__wrapper">
                             <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
                                 <input type="text" required readonly class="form-control col-md-6" value="Final Salary" >
@@ -283,6 +301,12 @@
                     $('#salary [name="fb__extra_hours"]').val(data.fb__extra_hours);
 
                     $('#salary [name="fb__extra_hours_amount"]').val(data.fb__extra_hours*data.fb__perHourSalary);
+                }
+                else if(salary_method=='commission_based'){
+                    $('.commission_based_salary-wrapper').show();
+                    $('#salary [name="cb__basic_earning"]').val(data.basic_salary);
+                    $('#salary [name="cb__commision_value"]').val(data.commission_value);
+                    $('#salary [name="cb__commision_amount"]').val(data.commission);
                 }
                 else if(salary_method=='employee'){
                     $('.employee_salary-wrapper').show();

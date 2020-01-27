@@ -104,8 +104,8 @@ class AjaxController extends Controller
                         $temp_var = isset($settings['fb__working_days'])?$settings['fb__working_days']:'Unspecified';
                         $to_return .='<p><strong>Estimated Working Days:</strong> '.$temp_var.'</p>';
                         break;
-                    case 'comission_based':
-                        $to_return .='<p><strong>Payout Method:</strong> Comission Based</p>';
+                    case 'commission_based':
+                        $to_return .='<p><strong>Payout Method:</strong> Based on Commission</p>';
                         break;
                     
                     default:
@@ -145,7 +145,7 @@ class AjaxController extends Controller
                     case 'commission_based':
                         $to_return .='<p><strong>Salary Method:</strong> Based on Commission</p>';
                         $temp_var = isset($settings['cb_sm__amount'])?$settings['cb_sm__amount']:'Unspecified';
-                        $to_return .='<p><strong>Comission:</strong> '.$temp_var;
+                        $to_return .='<p><strong>Commission:</strong> '.$temp_var;
                         if(isset($settings['cb_sm__type'])&&$settings['cb_sm__type']=='percentage'){
                             $to_return .='%</p>' ;
                         }
