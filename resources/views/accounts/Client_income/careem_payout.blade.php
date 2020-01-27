@@ -287,11 +287,11 @@ function append_row($row_data = null) {
         $row_data.forEach(function (item, i) {
             markup += '' +
                 '   <tr>  ' +
-                '           <input type="hidden" name="incomes['+i+'][week_start]" value="'+item.weekday_start+'">'+
-                '           <input type="hidden" name="incomes['+i+'][week_end]" value="'+item.week_end+'">'+
+                '           <input type="hidden" data-name-start="datarange_start" name="incomes['+i+'][week_start]" value="'+item.weekday_start+'">'+
+                '           <input type="hidden" data-name-end="datarange_end" name="incomes['+i+'][week_end]" value="'+item.week_end+'">'+
                 '       <td class="invoice__table-row_cell-sr"><span class="flaticon2-trash invoice__remove" onclick="delete_row(this);"></span>' + (i + 1)+
                 '       </td>'+
-                '       <td> Ranges:     <input readonly class="form-control" autocomplete="off" type="text" id="datapick1" name="daterange" value="'+item.weekday_start+' - '+item.week_end+'" /></td>  ' +
+                '       <td> Ranges:     <input readonly class="form-control" autocomplete="off" type="text" id="datapick1"  name="daterange" value="'+item.weekday_start+' - '+item.week_end+'" /></td>  ' +
                 '       <td> ' +
                 '           <div class="">   ' +
                 '               <input type="text" class="form-control" placeholder="Cash" data-name="cash" oninput="subtotal()" name="incomes['+i+'][cash]">' +
@@ -337,6 +337,7 @@ function append_row($row_data = null) {
                 },
             };
         });
+        
         subtotal();
         return;
     }
@@ -376,7 +377,22 @@ var subtotal = function(){
     $('#client_income .subtotal_value').text('AED '+Math.round(subtotal_amount))
     $('#client_income [data-name="income_subtotal"]').val(Math.round(subtotal_amount));
 }
-
+// function updateRange(){
+//     $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
+//         var start_date=picker.startDate.format('MM/DD/YYYY');
+//         var end_date=picker.endDate.format('MM/DD/YYYY');
+//         var index=$(this).parents("tr").index();    
+//         $('#client_income_table tbody tr').each(function(i,x){
+//         var _current_index=$(this).index();
+//         if(_current_index>index){
+//             var start_date=$(this).find('[name="daterange"]').data('daterangepicker').startDate.format("YYYY-MM-DD");
+//             var end_date=$(this).find('[name="daterange"]').data('daterangepicker').endDate.format("DD-MM-YYYY");
+//             var start_day=$(this).parents('tr').next().find('[name="daterange"]').data('daterangepicker').setStartDate(end_date);
+//             console.log(start_day);
+//         }
+//         });
+//     });
+// }
 
 </script>
 @endsection
