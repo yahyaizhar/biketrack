@@ -442,25 +442,34 @@ class SalikController extends Controller
                 ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
         });
         if(isset($history_found)){
-            $bike_histories = $history_found;
+            
 
             ### check if self bike, we need to deduct absent days
-            // foreach ($bike_histories as $bike_history) {
-            //     $assign_date = $bike_history->bike_assign_date;
-            //     $unassign_date = $bike_history->bike_unassign_date;
-            //     if($bike_history->bike->owner=='self'){
-            //         $timesheet_data=Income_zomato::where('rider_id', '4')
-            //         ->whereDate('date', '2019-12-01')
-            //         ->get()
-            //         ->first()
-            //         ->Time_sheet()
-            //         ->whereDate('date', '>=', '2012-12-01')
-            //         ->whereDate('date', '<=', '2019-12-15')
-            //         ->where('off_days_status', 'absent')
-            //         ->count();
-            //     }
-            // }
-            
+            foreach ($history_found as $key=>$bike_history) {
+                $assign_date = $bike_history['bike_assign_date'];
+                $unassign_date = $bike_history['bike_unassign_date'];
+                if($bike_history['bike']['owner']=='self'){
+                    $timesheet_data=Income_zomato::where('rider_id', $bike_history['rider_id'])
+                    ->whereDate('date', $date)
+                    ->get()
+                    ->first();
+                    if(isset($timesheet_data)){
+                        $timesheet_data=$timesheet_data->Time_sheet()
+                        ->where('off_days_status', 'absent')
+                        ->get();
+                        $absent_days=[];
+                        foreach ($timesheet_data as $timesheet) {
+                            $obj=[];
+                            $obj['date']=$timesheet->date;
+                            array_push($absent_days, $obj);
+                        }
+                        $history_found[$key]['absent_days']=$absent_days;
+                    }
+                    
+                }
+            } 
+            // $bike_history['c']=123;
+            $bike_histories = $history_found;
         }
         // else {
         //     $to_find = $according_to=='bike'?'bike_id':'rider_id';
