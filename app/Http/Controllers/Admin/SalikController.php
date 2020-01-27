@@ -446,19 +446,21 @@ class SalikController extends Controller
 
             ### check if self bike, we need to deduct absent days
             // foreach ($bike_histories as $bike_history) {
-            //     # code...
+            //     $assign_date = $bike_history->bike_assign_date;
+            //     $unassign_date = $bike_history->bike_unassign_date;
+            //     if($bike_history->bike->owner=='self'){
+            //         $timesheet_data=Income_zomato::where('rider_id', '4')
+            //         ->whereDate('date', '2019-12-01')
+            //         ->get()
+            //         ->first()
+            //         ->Time_sheet()
+            //         ->whereDate('date', '>=', '2012-12-01')
+            //         ->whereDate('date', '<=', '2019-12-15')
+            //         ->where('off_days_status', 'absent')
+            //         ->count();
+            //     }
             // }
-            // if($bike_histories->bike->owner=='self'){
-            //     $timesheet_data=Income_zomato::where('rider_id', '4')
-            //     ->whereDate('date', '2019-12-01')
-            //     ->get()
-            //     ->first()
-            //     ->Time_sheet()
-            //     ->whereDate('date', '>=', '2012-12-01')
-            //     ->whereDate('date', '<=', '2019-12-15')
-            //     ->where('off_days_status', 'absent')
-            //     ->count();
-            // }
+            
         }
         // else {
         //     $to_find = $according_to=='bike'?'bike_id':'rider_id';
