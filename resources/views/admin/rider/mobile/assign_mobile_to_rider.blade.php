@@ -24,7 +24,7 @@
                         <select required class="form-control kt-select2 bk-select2" name="mobile_id" >
                             @foreach ($mobiles as $mobile)
                                 <option value="{{ $mobile->id }}"
-                                >{{ $mobile->brand }}&nbsp{{ $mobile->model }}</option>
+                                >{{ $mobile->id }}&nbsp{{ $mobile->brand }}&nbsp{{ $mobile->model }} - {{ $mobile->imei_1 }} & {{ $mobile->imei_2 }} </option>
                             @endforeach
                         </select>      
                     </div>
