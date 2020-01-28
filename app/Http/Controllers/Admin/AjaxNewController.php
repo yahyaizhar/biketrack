@@ -59,6 +59,7 @@ use Str;
 use App\Model\Mobile\Accessory;
 use App\Model\Mobile\Seller;
 use App\Model\Mobile\MobileHistory;
+use DB;
 
 class AjaxNewController extends Controller
 {
