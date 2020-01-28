@@ -2035,12 +2035,11 @@ class AjaxNewController extends Controller
         ->rawColumns(['id','actions','description','month'])
         ->make(true);
     }
-    public function zomato_salary_export($month, $client_id)
+    public function zomato_salary_export($month, $client_id) 
     {
     $total_gross=0;
     $totlpaid=0;
-    $client=Client::find($client_id);
-    $client_riders=$client->riders()->where(['active_status'=>'A'])->get();
+    $client_riders=Client_History::where('client_id', $client_id)->get();
     // $client_riders=Client_Rider::where('client_id', $zomato->id)->get();
     
     return DataTables::of($client_riders)
