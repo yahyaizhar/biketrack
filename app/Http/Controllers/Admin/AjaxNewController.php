@@ -2045,7 +2045,7 @@ class AjaxNewController extends Controller
     foreach ($client_histories as $client_history) {
        array_push($rider_ids, $client_history->rider_id); 
     }
-    $client_riders= DB::table('riders')->whereIn('id', $rider_ids)->get();
+    $client_riders= Rider::whereIn('id', $rider_ids)->get();
     
     return DataTables::of($client_riders)
     ->addColumn('rider_name', function($rider) {
