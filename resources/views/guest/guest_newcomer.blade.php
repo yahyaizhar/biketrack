@@ -1,26 +1,95 @@
-    @extends('guest.layouts.app')
+@extends('guest.layouts.app')
+@section('page_title')
+Apply for riders/driver job
+@endsection
 @section('main-content')
+<style>
+.form-group label {
+    font-size: 20px;
+    color: #57445c;
+}
+.form-group input {
+    font-size: 18px;
+    color: #57445c;
+}
+.form-group select {
+    font-size: 18px;
+    color: #57445c;
+}
+.form-group h6{
+    font-size: 18px;
+    color: #57445c;
+}
+@media only screen and (max-width:480px){
+.form-group input[type='radio'] {
+    font-size: 16px !important;
+  }
+}
+</style>
+
+
+
+<div class="modal fade" id="mics_charges" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title">Check status</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+                <div class="modal-body">
+                </div>
+        </div>
+        </div>
+    </div>
+
+
+
 <!-- begin:: Content -->
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <div class="row">
-        <div class="col-md-7 m-auto">
+        <div class="col-md-7 m-auto"> 
         <!--begin::Portlet-->
             <div class="kt-portlet">
                     <img alt="Logo" style="text-align:center;max-width: 200px;margin: 0px auto;" src="https://biketrack.solutionwin.net/dashboard/assets/media/logos/company-logo.png">
-                <div class="kt-portlet__head">
-                    <div class="kt-portlet__head-label">
-                        <h3 class="kt-portlet__head-title">
-                            New Riders Registration Form
+                    @include('admin.includes.message')  
+                    <div class="kt-portlet__head">
+                    <div class="kt-portlet__head-label" style="width:100%;">
+                        <h3 class="kt-portlet__head-title" style="text-align:center;width: 100%;">
+                            Welcome to king Riderd Delivery Service LLC
                         </h3>
                     </div>
+            
                 </div>
-
+                <div class="custmstructure">
+                        <h5 style=" padding: 15px;color: #57445c;text-align: center; margin-bottom: 15px;">Apply For Job</h5>
+                        <div class="row">
+                            <div class="col-sm-6 text-center">
+                           <div class="biker_image">
+                               <img class="img img-thumbnail" style=" width: 50%;" src="{{ asset('dashboard/assets/media/newcomer/bike.png') }}">
+                               <div style=" padding-top: 12px;">
+                                  <p class="custmclick" style="cursor: pointer;border: 1px solid; display: inline-block; padding: 6px 25px;">Bike rider</p>
+                               </div>
+                           </div>
+                            </div>
+                            <div class="col-sm-6 text-center">
+                               <div class="car_image">
+                                   <img class="img img-thumbnail" style=" width: 50%;" src="{{ asset('dashboard/assets/media/newcomer/car.jpg') }}">
+                                   <div style=" padding-top: 12px;">
+                                  <p class="custmclick" style="cursor: pointer;border: 1px solid; display: inline-block; padding: 6px 25px;">Car driver</p>
+                                   </div>
+                               </div>
+                            </div>
+                        </div>
+                </div>
                 <!--begin::Form-->
                 
-                @include('admin.includes.message')  
-                <div class="alreay_registred" style="padding: 10px 25px;"> 
-                                  <button class="btn btn-info custm_hidden_btn float-right" style=" margin-bottom: 10px;">Track your application</button>
-                        <div class="hidde_status_form" style="display:none;">
+                <div class="alreay_registred" style="margin: 0px auto;padding: 20px 25px;"> 
+                    <h5 style="color: #57445c;">Already Applied for job in King Riders?</h5>
+                                  <button class="btn btn-info custm_hidden_btn float-right" style="text-align: center; width: 100%;margin-bottom: 10px;margin-top: 12px; font-size: 16px;">Check your application status</button>
+                       <div class="divtoappnd">
+                                  <div class="hidde_status_form" style="display:none;">
                        <form method="POST" enctype="multipart/form-data">
                        <div class="form-group">
                            <label>Emirates i'd:</label>
@@ -30,25 +99,24 @@
                        </form>
                         </div>
                     <div class="approval_message" style="display:none;overflow: hidden;width: 100%;">
-
+                        </div>
                     </div>
                 </div>
                 <form class="kt-form" action="{{ route('guest.newComer_add') }}" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
-                    <div class="kt-portlet__body">
+                    <div class="kt-portlet__body" style="display:none;">
                             <div class="form-group">
-                                    <label>Upload picture:</label>
-                                    <input type="file" class="form-control @if($errors->has('newcommer_image')) invalid-field @endif" name="newcommer_image"  value="{{ old('newcommer_image') }}" required>
-                                    @if ($errors->has('newcommer_image'))
-                                        <span class="invalid-response" role="alert">
-                                            <strong>
-                                                {{ $errors->first('newcommer_image') }}
-                                            </strong>
-                                        </span>
-                                    @else
-                                        <span class="form-text text-muted">Please enter your name</span>
-                                    @endif
+                                <div style="text-align:center;">
+                                    <img class="profile-logo img img-thumbnail" src="https://biketrack.solutionwin.net/dashboard/assets/media/users/default.jpg">
+                                </div>
+                                <div style=" text-align: center;margin-top: 5px; ">
+                                <label class="btn btn-info" style=" color: white;">
+                                        Upload picture <input name="newcommer_image" id="newcommer_image" type="file" hidden>
+                                </label>
+                            </div>
                                 </div>  
+                          <input type="hidden" name="applying_for"> 
+                                
                         <div class="form-group">
                             <label>Full Name:</label>
                             <input type="text" class="form-control @if($errors->has('name')) invalid-field @endif" name="full_name" placeholder="Enter your name" value="{{ old('name') }}" required>
@@ -62,10 +130,26 @@
                                 <span class="form-text text-muted">Please enter your name</span>
                             @endif
                         </div>
+
+                        <div class="form-group">
+                                <label>Email:</label>
+                                <input type="email" class="form-control @if($errors->has('email')) invalid-field @endif" name="email" placeholder="Enter your name" value="{{ old('email') }}" required>
+                                @if ($errors->has('email'))
+                                    <span class="invalid-response" role="alert">
+                                        <strong>
+                                            {{ $errors->first('email') }}
+                                        </strong>
+                                    </span>
+                                @else
+                                    <span class="form-text text-muted">Please enter your email</span>
+                                @endif
+                        </div>
+
                         <div class="form-group">
                             <label>Nationality:</label>
                             {{-- <input type="text" >  --}}
                             <select id="country" class="form-control @if($errors->has('nationality')) invalid-field @endif" name="nationality" placeholder="Nationality" value="{{ old('nationality') }}" required>
+                                    <option value="">Please select your country</option>
                                     <option value="Afganistan">Afghanistan</option>
                                     <option value="Albania">Albania</option>
                                     <option value="Algeria">Algeria</option>
@@ -367,21 +451,28 @@
                             
                             @endif
                         </div>
+                        
+                        <div class="form-group">
+                                <label>Do you have your own bike / car .?</label>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="have_bike" name="have_bike" style="width: 15px !important;" value="yes" required=""><h6 style="margin-top: 10px; margin-left: 10px; cursor: pointer;">Yes</h6></div>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="have_bike" name="have_bike" style="width: 15px !important;" value="no" required=""><h6 style="margin-top: 10px; margin-left: 10px; cursor: pointer;">NO</h6></div>
+                        
+                            </div>
                         <div class="form-group">
                                 <label>Visa status:</label>
-                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="visa_status" name="visa_status" style="width: 13px !important;" value="employment" required=""><h6 style="margin-top:10px;margin-left:10px;">Employment</h6></div>
-                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="visa_status" name="visa_status" style="width: 13px !important;" value="cancellation" required=""><h6 style="margin-top:10px;margin-left:10px;">Cancellation</h6></div>
-                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="visa_status" name="visa_status" style="width: 13px !important;" value="visit" required=""><h6 style="margin-top:10px;margin-left:10px;">Visit</h6></div>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="visa_status" name="visa_status" style="width: 15px !important;" value="employment" required=""><h6 style="margin-top:10px;margin-left:10px;">Employment</h6></div>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="visa_status" name="visa_status" style="width: 15px !important;" value="cancellation" required=""><h6 style="margin-top:10px;margin-left:10px;">Cancellation</h6></div>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="visa_status" name="visa_status" style="width: 15px !important;" value="visit" required=""><h6 style="margin-top:10px;margin-left:10px;">Visit</h6></div>
                         </div>
                         <div class="form-group noc_status" style="display:none;">
                                 <label>Do you have Noc:</label>
-                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control "  name="noc_status" style="width: 13px !important;" value="yes"><h6 style="margin-top:10px;margin-left:10px;">Yes</h6></div>
-                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control "  name="noc_status" style="width: 13px !important;" value="no"><h6 style="margin-top:10px;margin-left:10px;">No</h6></div>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control "  name="noc_status" style="width: 15px !important;" value="yes"><h6 style="margin-top:10px;margin-left:10px;">Yes</h6></div>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control "  name="noc_status" style="width: 15px !important;" value="no"><h6 style="margin-top:10px;margin-left:10px;">No</h6></div>
                         </div>
                         <div class="form-group">
                                 <label>Do you have license:</label>
-                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="license_true" name="license_check" style="width: 13px !important;" value="yes" required=""><h6 style="margin-top:10px;margin-left:10px;">Yes</h6></div>
-                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="license_false" name="license_check" style="width: 13px !important;" value="no" required=""><h6 style="margin-top:10px;margin-left:10px;">No</h6></div>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="license_true" name="license_check" style="width: 15px !important;" value="yes" required=""><h6 style="margin-top:10px;margin-left:10px;">Yes</h6></div>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="license_false" name="license_check" style="width: 15px !important;" value="no" required=""><h6 style="margin-top:10px;margin-left:10px;">No</h6></div>
 
                         </div>
                         <div class="form-group license_number" style="display:none">
@@ -402,31 +493,34 @@
                         </div>
                         <div class="form-group license_image" style="display:none">
                             <label>License Image:</label>
-                            <input type="file" name="license_image" class="form-control @if($errors->has('licence_image')) invalid-field @endif" id="license_image" autocomplete="off" value="{{ old('licence_image') }}">
+                            <label class="btn btn-info" style=" color: white;"> Upload picture <input name="license_image" id="license_image" type="file" hidden=""> </label>
+                            {{-- <input type="file" name="license_image" class="form-control @if($errors->has('licence_image')) invalid-field @endif" id="license_image" autocomplete="off" value="{{ old('licence_image') }}"> --}}
                         </div>  
                         <div class="form-group">
                             <label for="experience">How much do you have riding experience in UAE:</label>
-                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('experiance')) invalid-field @endif" id="experiance" name="experiance" style="width: 13px !important;" value="Fresh" required /><h6 style="margin-top:10px;margin-left:10px;">Fresh</h6></div>
-                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('experiance')) invalid-field @endif" id="experiance" name="experiance" style="width: 13px !important;" value="6 months"  required /><h6 style="margin-top:10px;margin-left:10px;">6 months</h6></div>
-                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('experiance')) invalid-field @endif" id="experiance" name="experiance" style="width: 13px !important;" value="1 Year"  required /><h6 style="margin-top:10px;margin-left:10px;">1 Year</h6></div>
-                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('experiance')) invalid-field @endif" id="experiance" name="experiance" style="width: 13px !important;" value="2 Year"  required /><h6 style="margin-top:10px;margin-left:10px;">2 Year</h6></div>
-                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('experiance')) invalid-field @endif" id="experiance" name="experiance" style="width: 13px !important;" value="More Than 2 Year"  required /><h6 style="margin-top:10px;margin-left:10px;">More Than 2 Year</h6></div>
+                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('experiance')) invalid-field @endif" id="experiance" name="experiance" style="width: 15px !important;" value="Fresh" required /><h6 style="margin-top:10px;margin-left:10px;">Fresh</h6></div>
+                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('experiance')) invalid-field @endif" id="experiance" name="experiance" style="width: 15px !important;" value="6 months"  required /><h6 style="margin-top:10px;margin-left:10px;">6 months</h6></div>
+                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('experiance')) invalid-field @endif" id="experiance" name="experiance" style="width: 15px !important;" value="1 Year"  required /><h6 style="margin-top:10px;margin-left:10px;">1 Year</h6></div>
+                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('experiance')) invalid-field @endif" id="experiance" name="experiance" style="width: 15px !important;" value="2 Year"  required /><h6 style="margin-top:10px;margin-left:10px;">2 Year</h6></div>
+                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('experiance')) invalid-field @endif" id="experiance" name="experiance" style="width: 15px !important;" value="More Than 2 Year"  required /><h6 style="margin-top:10px;margin-left:10px;">More Than 2 Year</h6></div>
                         </div>  
                         <div class="form-group">
                             <label for="passport_status">Do you have passport?</label>
-                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('passport_status')) invalid-field @endif" id="passport_status" name="passport_status" style="width: 13px !important;" value="yes"  required/><h6 style="margin-top:10px;margin-left:10px;">Yes</h6></div>
-                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('passport_status')) invalid-field @endif" id="passport_status" name="passport_status" style="width: 13px !important;" value="no"  required /><h6 style="margin-top:10px;margin-left:10px;">No</h6></div>
+                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('passport_status')) invalid-field @endif" id="passport_status" name="passport_status" style="width: 15px !important;" value="yes"  required/><h6 style="margin-top:10px;margin-left:10px;">Yes</h6></div>
+                           <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('passport_status')) invalid-field @endif" id="passport_status" name="passport_status" style="width: 15px !important;" value="no"  required /><h6 style="margin-top:10px;margin-left:10px;">No</h6></div>
                           
                            <label for="passport_number" class="passport_number_label" style="display:none;">Enter Passport Number:</label>
                            <input type="text"  id="passport_number" style="display:none;" autocomplete="off"class="form-control @if($errors->has('passport_number')) invalid-field @endif" name="passport_number" placeholder="Passport Number" value="{{ old('passport_number') }}"> 
                            
                            <label for="passport_image" class="passport_image_label" style="display:none;">Passport Image:</label>
-                           <input type="file"  id="passport_image" style="display:none;" autocomplete="off"class="form-control @if($errors->has('passport_image')) invalid-field @endif" name="passport_image" placeholder="Passport Image" value="{{ old('passport_image') }}"> 
+                           <label class="btn btn-info" id="passport_image" style="color: white;display:none;"> Upload picture <input name="passport_image" type="file" hidden=""> </label>
+
+                           {{-- <input type="file"  id="passport_image" style="display:none;" autocomplete="off"class="form-control @if($errors->has('passport_image')) invalid-field @endif" name="passport_image" placeholder="Passport Image" value="{{ old('passport_image') }}">  --}}
                        </div>
                        <div class="form-group">
                             <label for="current_residence">Your current residence:</label>
-                            <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('current_residence')) invalid-field @endif" id="current_residence" name="current_residence" style="width: 13px !important;" value="uae"  required/><h6 style="margin-top:10px;margin-left:10px;">United Arab Emirates</h6></div>
-                            <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('current_residence')) invalid-field @endif" id="current_residence" name="current_residence" style="width: 13px !important;" value="other"  required/><h6 style="margin-top:10px;margin-left:10px;">Other</h6></div>
+                            <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('current_residence')) invalid-field @endif" id="current_residence" name="current_residence" style="width: 15px !important;" value="uae"  required/><h6 style="margin-top:10px;margin-left:10px;">United Arab Emirates</h6></div>
+                            <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('current_residence')) invalid-field @endif" id="current_residence" name="current_residence" style="width: 15px !important;" value="other"  required/><h6 style="margin-top:10px;margin-left:10px;">Other</h6></div>
                        <div class="current_residence_countries" style="display:none;">
                             <select id="current_residence_countries" class="form-control" name="current_residence_countries" placeholder="Select your country" value="{{ old('current_residence_countries') }}" required>
                                     <option value="Afganistan">Afghanistan</option>
@@ -680,9 +774,9 @@
                        </div>
                         <div class="form-group">
                                 <label>From which source do you know KingRiders Company:</label>
-                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('source')) invalid-field @endif" id="source" name="source" style="width: 13px !important;" value="Friends" required /><h6 style="margin-top:10px;margin-left:10px;">Friends</h6></div>
-                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('source')) invalid-field @endif" id="source" name="source" style="width: 13px !important;" value="social" required /><h6 style="margin-top:10px;margin-left:10px;">Social media</h6></div>
-                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('source')) invalid-field @endif" id="source" name="source" style="width: 13px !important;" value="Ads" required /><h6 style="margin-top:10px;margin-left:10px;">Ads</h6></div>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('source')) invalid-field @endif" id="source" name="source" style="width: 15px !important;" value="Friends" required /><h6 style="margin-top:10px;margin-left:10px;">Friends</h6></div>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('source')) invalid-field @endif" id="source" name="source" style="width: 15px !important;" value="social" required /><h6 style="margin-top:10px;margin-left:10px;">Social media</h6></div>
+                                <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('source')) invalid-field @endif" id="source" name="source" style="width: 15px !important;" value="Ads" required /><h6 style="margin-top:10px;margin-left:10px;">Ads</h6></div>
 
                         </div>
                         <div class="form-group">
@@ -702,7 +796,7 @@
                     
                  
 
-                    <div class="kt-portlet__foot">
+                    <div class="kt-portlet__foot" style="display:none;">
                         <div class="kt-form__actions kt-form__actions--right">
                             <button type="submit" class="btn btn-primary">Submit</button>
                             {{-- <span class="kt-margin-l-10">or <a href="{{ route('admin.riders.index') }}" class="kt-link kt-font-bold">Cancel</a></span> --}}
@@ -790,14 +884,14 @@ $('#source_of_contact_phone_call').change(function(){
 
 
 ///Make natianality select 2
-$('#country').select2({
-    placeholder: "Select a Country",
-    allowClear: true
-});
-$('#education_level').select2({
-    placeholder: "Select Education",
-    allowClear: true
-});
+// $('#country').select2({
+//     placeholder: "Select a Country",
+//     allowClear: true
+// });
+// $('#education_level').select2({
+//     placeholder: "Select Education",
+//     allowClear: true
+// });
 
 //// show hide license info in newcomer form
 
@@ -838,20 +932,24 @@ $('[name="visa_status"]').change(function(){
 $('[name="current_residence"]').change(function(){
     if($(this).val()== 'other'){
         $('.current_residence_countries').show();
-       $('#current_residence_countries').select2({
-         placeholder: "Select a Country",
-         allowClear: true
-      });
+    //    $('#current_residence_countries').select2({
+    //      placeholder: "Select a Country",
+    //      allowClear: true
+    //   });
     }
     else{
         $('.current_residence_countries').hide();
     }
 })
 $('.custm_hidden_btn').click(function(){
-    $('.hidde_status_form').toggle();
-})
+    var _dataa = $('.divtoappnd').html();
+    $('#mics_charges').find('.modal-body').html(_dataa);
+    $('#mics_charges').modal('show')
+    $('.modal-body .hidde_status_form').show();
+    var a = $('.approval_message').html();
+    $('.modal-body').append(a)
 
-$('.alreay_registred').find('form').off('submit').on('submit', function(e){
+$('.modal-body').find('form').off('submit').on('submit', function(e){
                         e.preventDefault();
                         var _form = $(this);
                         var _url ="{{url('guest/newcomer/status_check')}}";
@@ -865,40 +963,46 @@ $('.alreay_registred').find('form').off('submit').on('submit', function(e){
                             success: function(data){
                                 console.log(data);
                                 if(data == 'error'){
-                                $('.approval_message').show();
-                                $('.approval_message').css('color','red');
-                                $('.approval_message').html('<ul><li>No data found against your national id card number.Please submit you application if you have not applied yet.</li></ul>')
+                                $('.modal-body .approval_message').show();
+                                $('.modal-body .approval_message').css('color','red');
+                                $('.modal-body .approval_message').html('<ul><li>No data found against your national id card number.Please submit you application if you have not applied yet.</li></ul>')
                                 }
                                else{
                                    if(data[0].approval_status =="pending"){
-                                $('.approval_message').show();
-                                $('.approval_message').css('color','red'); 
-                                $('.approval_message').html('<ul><li>Your application is still pending.We will inform you shortly within a week.</li></ul>');
+                                $('.modal-body .approval_message').show();
+                                $('.modal-body .approval_message').css('color','red'); 
+                                $('.modal-body .approval_message').html('<ul><li>Your application is still pending.We will inform you shortly within a week.</li></ul>');
                                    }
                                 else if(data[0].approval_status == "reject"){
-                                if(data[0].status_approval_message !== 'null'){
-                                $('.approval_message').show();
-                                $('.approval_message').css('color','red'); 
-                                $('.approval_message').html('<ul><li>Your application is reject </li><li> Application status message:'+data[0].status_approval_message+'</li></ul>');
+                                if(data[0].status_approval_message !== null){
+                                $('.modal-body .approval_message').show();
+                                $('.modal-body .approval_message').css('color','red'); 
+                                $('.modal-body .approval_message').html('<ul><li>Your application is reject </li><li> Application status message:'+data[0].status_approval_message+'</li></ul>');
+                                if(data[0].missing_fields !== null){
+                                $('.modal-body .approval_message ul').append('<li>Click on this link to edit your profile <a href="newcomer/'+data[0].id+'/update">Click here</a></li>')
+                                }
                                 }else{
-                                $('.approval_message').show();
-                                $('.approval_message').css('color','red'); 
-                                $('.approval_message').html('<ul><li>Your application is rejected.</li></ul>');
+                                $('.modal-body .approval_message').show();
+                                $('.modal-body .approval_message').css('color','red'); 
+                                $('.modal-body .approval_message').html('<ul><li>Your application is rejected.</li></ul>');
+                                if(data[0].missing_fields !== null){
+                                $('.modal-body .approval_message ul').append('<li>Click on this link to edit your profile <a href="newcomer/'+data[0].id+'/update">Click here</a></li>')
+                                }
                                 }
                                     
                                 }
                                 else{
-                                $('.approval_message').show();
-                                $('.approval_message').css('color','red'); 
+                                $('.modal-body .approval_message').show();
+                                $('.modal-body .approval_message').css('color','red'); 
                                 if(data[0].interview_date ==''){
-                                $('.approval_message').html('<ul><li>Your application has been Approved. We will inform you about your interview soon.</li></ul>');
+                                $('.modal-body .approval_message').html('<ul><li>Your application has been Approved. We will inform you about your interview soon.</li></ul>');
                                 }
                                 else{
                                 if(data[0].interview_status =='pending'){
-                                    $('.approval_message').html('<ul><li>Your application has been Approved</li><li>Your Interview is scheduled on '+data[0].interview_date+'</li></ul>');
+                                    $('.modal-body .approval_message').html('<ul><li>Your application has been Approved</li><li>Your Interview is scheduled on '+data[0].interview_date+'</li></ul>');
                                 }
                                 else{
-                                    $('.approval_message').html('<ul><li>Your application has been Approved</li><li>Your Interview is scheduled on '+data[0].interview_date+'</li><li>Interview status: '+data[0].interview_status+'</li><li>Interview Message: '+data[0].interview_status_message+'</li></ul>');
+                                    $('.modal-body .approval_message').html('<ul><li>Your application has been Approved</li><li>Your Interview is scheduled on '+data[0].interview_date+'</li><li>Interview status: '+data[0].interview_status+'</li><li>Interview Message: '+data[0].interview_status_message+'</li></ul>');
 
                                 }
                                 }
@@ -909,8 +1013,37 @@ $('.alreay_registred').find('form').off('submit').on('submit', function(e){
                             }
                         });
                     });
+                })
+                $('.custmclick').click(function(){
+                    var _index = $(this).text().indexOf('Bike');
+                    $('.kt-portlet__body').show();
+                    $('.kt-portlet__foot').show();
+                    $('.custmstructure').hide();
+                    $('.alreay_registred').hide();
+                    if(_index > -1){
+                        $('.kt-portlet__head-title').text('Bike Rider Job Registration Form')
+                        $('[name="applying_for"]').val('bike')
+                    }
+                    else{
+                        $('.kt-portlet__head-title').text('Car Driver Job Registration Form')
+                        $('[name="applying_for"]').val('car')
+                    }
+                    })
+                function readURL(input) {
+                if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('img.profile-logo.img.img-thumbnail').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                    }
+                }
 
-    });
+                $("#newcommer_image").change(function(){
+                    readURL(this);
+                });
+
+      });
         </script>
         <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>

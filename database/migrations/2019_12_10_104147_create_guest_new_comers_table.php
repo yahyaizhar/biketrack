@@ -15,6 +15,10 @@ class CreateGuestNewComersTable extends Migration
     {
         Schema::create('guest_new_comers', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('applying_for')->nullable();
+            $table->string('missing_fields')->nullable();
+            $table->string('email')->nullable();
+            $table->string('have_bike')->nullable();
             $table->string('newcommer_image')->nullable();
             $table->string('full_name')->nullable();
             $table->string('nationality')->nullable();

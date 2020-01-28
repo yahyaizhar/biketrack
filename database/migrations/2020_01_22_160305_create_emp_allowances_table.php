@@ -11,7 +11,7 @@ class CreateEmpAllowancesTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up() 
     {
         Schema::create('emp_allowances', function (Blueprint $table) {
             $table->increments('id');
