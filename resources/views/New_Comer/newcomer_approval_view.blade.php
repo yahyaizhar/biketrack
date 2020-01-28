@@ -66,7 +66,7 @@ margin-left: 10px;
             <tr>
                     <th>License issue date:</th>
                     <td class="approval_license_date">Full Name</td>
-                    <th>Source:</th>
+                    <th>Apply for:</th>
                     <td class="approval_source">Full Name</td>
 
             <tr>
@@ -97,6 +97,8 @@ margin-left: 10px;
             <tr>
                     <th>Noc status:</th>
                     <td class="approval_noc_status">Full Name</td>
+                    <th>Email:</th>
+                    <td class="newcomer_email">Full Name</td>
             </tr>
 
            </table>
@@ -130,8 +132,81 @@ margin-left: 10px;
                 <label>Approval status</label>
                 <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control" id="approval_status" name="approval_status" style="width: 2% !important;" value="approve"  required /><h6 style="margin-top:10px;margin-left:10px;">Approve</h6></div>
                 <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control" id="approval_status" name="approval_status" style="width: 2% !important;" value="reject"  required /><h6 style="margin-top:10px;margin-left:10px;">Reject</h6></div>
-            <input style="display:none;" type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker2 form-control @if($errors->has('given_date')) invalid-field @endif" name="interview_date" placeholder="Enter Given Date" value="">
+                <input style="display:none;" type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker2 form-control @if($errors->has('given_date')) invalid-field @endif" name="interview_date" placeholder="Enter Given Date" value="">
             </div>
+            <div class="form-group custm_reject-reason" style="display:none;">
+           <label style=" padding-bottom: 10px;">Which points are missing or wrong</label>
+
+           <div class="row">
+             <div class="col-md-3">
+               <label class="kt-checkbox">
+                <input name="missing_data['newcommer_image']" type="checkbox" value="newcommer_image"> Image:
+                <span></span>
+              </label>
+            </div>
+            <div class="col-md-3">
+                    <label class="kt-checkbox">
+                     <input name="missing_data['license_number']" type="checkbox" value="license_number"> License number:
+                     <span></span>
+                   </label>
+             </div>
+             <div class="col-md-3">
+                    <label class="kt-checkbox">
+                     <input name="missing_data['license_issue_date']" type="checkbox" value="license_issue_date"> License issue date:
+                     <span></span>
+                   </label>
+             </div>
+             <div class="col-md-3">
+                    <label class="kt-checkbox">
+                     <input name="missing_data['license_image']" type="checkbox" value="license_image"> License image:
+                     <span></span>
+                   </label>
+             </div>
+           </div>
+
+           <div class="row">
+               <div class="col-md-3">
+                       <label class="kt-checkbox">
+                        <input name="missing_data['passport_number']" type="checkbox" value="passport_number"> Passport number:
+                        <span></span>
+                      </label>
+                </div>
+                <div class="col-md-3">
+                       <label class="kt-checkbox">
+                        <input name="missing_data['passport_image']" type="checkbox" value="passport_image"> Passport image:
+                        <span></span>
+                      </label>
+                </div>
+                <div class="col-md-3">
+                        <label class="kt-checkbox">
+                         <input name="missing_data['email']" type="checkbox" value="email"> Email:
+                         <span></span>
+                       </label>
+                 </div>
+                 <div class="col-md-3">
+                        <label class="kt-checkbox">
+                         <input name="missing_data['phone_number']" type="checkbox" value="phone_number"> Contact No:
+                         <span></span>
+                       </label>
+                 </div>
+           </div>
+
+           <div class="row">
+                <div class="col-md-3">
+                        <label class="kt-checkbox">
+                         <input name="missing_data['national_id_card_number']" type="checkbox" value="national_id_card_number"> Emirates i'd::
+                         <span></span>
+                       </label>
+                 </div>
+                 <div class="col-md-3">
+                        <label class="kt-checkbox">
+                         <input name="missing_data['whatsapp_number']" type="checkbox" value="whatsapp_number"> WhatsApp Number:
+                         <span></span>
+                       </label>
+                 </div>
+            </div>
+ 
+           </div>
             <div class="form-group"> 
                 <button class="btn btn-success" name="submit" type="submit">Submit</button>
             </div>
@@ -436,6 +511,9 @@ $(function() {
        if(d.current_residence =='other'){
         d.current_residence = d.current_residence_countries
        }
+    //    if(d.apply_for =='other'){
+    //     d.current_residence = d.current_residence_countries
+    //    }
         // `d` is the original data object for the row
         return '<table cellpadding="5" cellspacing="0" id="new_comertable" border="0" style="padding-left:50px;">'+
             '<tr class="row'+d.id+'">'+
@@ -457,8 +535,8 @@ $(function() {
               
             '</tr>'+
             '<tr class="row'+d.id+'">'+
-                '<td style="font-weight:900;">Source:</td>'+
-                '<td colspan="2";>'+d.source+'</td>'+
+                '<td style="font-weight:900;">Apply for:</td>'+
+                '<td colspan="2";>'+d.applying_for+'</td>'+
                 '<td style="font-weight:900;">Education:</td>'+
                 '<td>'+d.education+'</td>'+
                 '<td style="font-weight:900;">Watsapp Number:</td>'+
@@ -543,13 +621,14 @@ function show_waiting_comer(id,$this){
     $('.new_commer_reviews').text(_newcommerdata.overall_remarks);
     $('.approval_license_no').text(_newcommerdata.license_number);
     $('.approval_license_date').text(_newcommerdata.licence_issue_date);
-    $('.approval_source').text(_newcommerdata.source);
+    $('.approval_source').text(_newcommerdata.applying_for);
     $('.approval_w_no').text(_newcommerdata.whatsapp_number);
     $('.approval_passport_status').text(_newcommerdata.passport_status);
     $('.approval_passport_no').text(_newcommerdata.passport_number);
     $('.approval_interview_status').text(_newcommerdata.interview_status);
     $('.approval_visa_status').text(_newcommerdata.visa_status);
     $('.approval_noc_status').text(_newcommerdata.noc_status);
+    $('.newcomer_email').text(_newcommerdata.email);
     $('.approval_app_status').text(_newcommerdata.approval_status);
     if(_newcommerdata.current_residence == 'other'){
         _newcommerdata.current_residence = _newcommerdata.current_residence_countries
@@ -716,6 +795,7 @@ $('.custom_approval_comer_model .footer_f_form').find('form').off('submit').on('
                 }
                 else{
                     $('[name="interview_date"]').hide();
+                    $('.custm_reject-reason').show();
                 }
             })
         var _h6 = $('input[type="radio"]').siblings('h6');

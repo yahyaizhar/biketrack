@@ -22,6 +22,10 @@ class GuestController extends Controller
     public function newComer_view(){
         return view('guest.guest_newcomer');
     }
+    public function newComer_edit($id){
+      $newcomer_data = GuestNewComer::find($id);
+      return view('guest.guest_newcomer_edit',compact('newcomer_data'));
+  }
     public function newComer_add(Request $req){
       $_check_id_card = GuestNewComer::where('national_id_card_number', $req->national_id_card_number)->get()->first();
       if(!isset($_check_id_card)){
@@ -46,7 +50,11 @@ class GuestController extends Controller
             $filesize = $req->license_image->getClientSize();
             $filepath = Storage::putfile('public/uploads/riders/new_commer_pics', $req->file('license_image'));
             $new_commer->license_image = $filepath;
-        }
+        
+          }
+        $new_commer->applying_for = $req->applying_for;
+        $new_commer->email = $req->email;
+        $new_commer->have_bike = $req->have_bike;
         $new_commer->full_name = $req->full_name;
         $new_commer->nationality = $req->nationality;
         $new_commer->phone_number = $req->phone_number;
@@ -75,6 +83,56 @@ class GuestController extends Controller
       else{
         return redirect(url('/guest/newcomer/add'))->with('message', 'You have already registred.');
       }
+    }
+    public function newComer_store(Request $req,$id){
+      // return $id;
+      $new_commer = GuestNewComer::where('id', $id)->first();
+        if($req->hasFile('newcommer_image'))
+        {
+            $filename = $req->newcommer_image->getClientOriginalName();
+            $filesize = $req->newcommer_image->getClientSize();
+            $filepath = Storage::putfile('public/uploads/riders/new_commer_pics', $req->file('newcommer_image'));
+            $new_commer->newcommer_image = $filepath;
+        }
+        if($req->hasFile('passport_image'))
+        {
+            $filename = $req->passport_image->getClientOriginalName();
+            $filesize = $req->passport_image->getClientSize();
+            $filepath = Storage::putfile('public/uploads/riders/new_commer_pics', $req->file('passport_image'));
+            $new_commer->passport_image = $filepath;
+        }
+        if($req->hasFile('license_image'))
+        {
+            $filename = $req->license_image->getClientOriginalName();
+            $filesize = $req->license_image->getClientSize();
+            $filepath = Storage::putfile('public/uploads/riders/new_commer_pics', $req->file('license_image'));
+            $new_commer->license_image = $filepath;
+        
+          }
+        if(isset($req->email)){
+        $new_commer->email = $req->email;
+        }
+        if(isset($req->phone_number)){
+        $new_commer->phone_number = $req->phone_number;
+        }
+        if(isset($req->national_id_card_number)){
+        $new_commer->national_id_card_number = $req->national_id_card_number;
+        }
+        if(isset($req->whatsapp_number)){
+        $new_commer->whatsapp_number = $req->whatsapp_number;
+        }
+        if(isset($req->license_number)){
+        $new_commer->license_number = $req->license_number;
+        }
+        if(isset($req->licence_issue_date)){
+        $new_commer->licence_issue_date = $req->licence_issue_date;
+        }
+        if(isset($req->passport_number)){
+        $new_commer->passport_number = $req->passport_number;
+        }
+        // $new_commer->missing_fields = "";
+        $new_commer->save();
+        return redirect(url('/guest/newcomer/add'))->with('message', 'Record Updated Successfully.');
     }
 
     public function newComer_status(Request $request){

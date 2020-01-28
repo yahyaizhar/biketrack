@@ -327,8 +327,8 @@ class RiderDetailController extends Controller
         $monthOnly=Carbon::parse($month)->format('m');
         $yearOnly=Carbon::parse($month)->format('Y');
         $client_riders=Client_History::where('client_id', $client->id)->get();
-        $total_hours_client=0;
-        $total_trips_client=0;
+        $hours_client=0;
+        $trips_client=0;
         $trips=0;
         $hours=0;
         $aed_trips=0;
@@ -345,17 +345,17 @@ class RiderDetailController extends Controller
         
 
         foreach ($client_riders as $riders) {
-            $total_hours_client+=Income_zomato::whereMonth('date',$monthOnly)
+            $total_hours_client=Income_zomato::whereMonth('date',$monthOnly)
             ->whereYear('date',$yearOnly)
             ->where("rider_id",$riders->rider_id)
-            ->sum('calculated_hours');
-            $hours_client=$total_hours_client*6;
+            ->sum('log_in_hours_payable');
+            $hours_client+=($total_hours_client*6);
 
-            $total_trips_client+=Income_zomato::whereMonth('date',$monthOnly)
+            $total_trips_client=Income_zomato::whereMonth('date',$monthOnly)
             ->whereYear('date',$yearOnly)
             ->where("rider_id",$riders->rider_id)
-            ->sum('calculated_trips');
-            $trips_client=$total_trips_client*6.75;
+            ->sum('trips_payable');
+            $trips_client+=($total_trips_client*6.75);
 
             $trips+=Income_zomato::whereMonth('date',$monthOnly)
             ->whereYear('date',$yearOnly)
@@ -382,7 +382,11 @@ class RiderDetailController extends Controller
             ->whereYear('date',$yearOnly)
             ->where("rider_id",$riders->rider_id)
             ->sum('calculated_hours');
-            
+            if ($_hours>286) {
+                $_hours=286;
+            }
+            $aed_hours+=$_hours*7.87;
+
             $bon=Company_Account::where('source',"400 Trips Acheivement Bonus")
             ->where('rider_id',$riders->rider_id)
             ->whereMonth('month',$monthOnly)
