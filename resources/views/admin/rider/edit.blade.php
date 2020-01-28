@@ -138,10 +138,6 @@
                                     name="password_confirmation" placeholder="Enter confirm password">
                             </div>
                         </div>
-                        {{-- <div class="form-group">
-                        <label>Kingriders ID:</label>
-                        <input type="text" class="form-control" name="kingriders_id" placeholder="Enter Kingriders ID" value="{{ $rider->kingriders_id }}">
-                    </div> --}}
                     <div class="form-group">
                         <label>City:</label>
                         <input type="text" class="form-control" name="address" placeholder="Enter city"
@@ -251,20 +247,6 @@
 
                         </div>
                     </div>
-
-                    {{-- <div class="form-group">
-                                    <label>Official Sim Given Date:</label>
-                                    <input type="text" id="datepicker2" autocomplete="off" class="form-control @if($errors->has('official_sim_given_date')) invalid-field @endif" name="official_sim_given_date" placeholder="Enter official sim given Date" value="{{ $rider_detail->official_sim_given_date }}">
-                    @if ($errors->has('official_sim_given_date'))
-                    <span class="invalid-response" role="alert">
-                        <strong>
-                            {{ $errors->first('official_sim_given_date') }}
-                        </strong>
-                    </span>
-                    @else
-                    <span class="form-text text-muted">Please enter your Official Sim Date</span>
-                    @endif
-            </div> --}}
             <div class="form-group">
                 <label>Is Passport Collected:</label>
                 <div>
@@ -371,8 +353,10 @@
                     </div>
                 </div>
             </div>
-
-
+            <div class="form-group">
+                <label>Passport Number:</label>
+                <input type="text" class="form-control" name="passport_number" value="{{ $rider_detail->passport_number }}" placeholder="Enter Passport Number">
+            </div>
             <div class="form-group" style="margin-bottom:0px;">
                 <label>Passport Expiry:</label>
                 <input type="text" id="datepicker3" autocomplete="off" class="form-control" name="passport_expiry"
@@ -552,18 +536,6 @@
             class="form-control @if($errors->has('other_details')) invalid-field @endif" name="other_details"
             placeholder="Enter Further Details">{{ $rider_detail->other_details }}</textarea>
     </div>
-    <label class="kt-checkbox">
-        <input name="rider_type" type="checkbox" {{$rider->id}} @if ($rider->rider_type=='Employee') checked @endif
-        value="Employee"> Is He Employee?
-        <span></span>
-    </label>
-    {{-- <div class="form-group">
-                                                    <label>Status:</label>
-                                                    <div>
-                                                        <input data-switch="true" name="status" id="status" type="checkbox" {!! $rider->status ==  1 ? 'checked' : '' !!} data-on-text="Enabled" data-handle-width="70" data-off-text="Disabled" data-on-color="brand">
-                                                    </div>
-                                                    
-                                                </div> --}}
 </div>
 <div class="kt-portlet__foot">
     <div class="kt-form__actions kt-form__actions--right">

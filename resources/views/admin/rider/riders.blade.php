@@ -60,7 +60,6 @@ margin-left: 10px;
             <table class="table table-striped table-hover table-checkable table-condensed" id="riders-table">
                 <thead>
                     <tr>
-                    
                         <th class="th_krId">KR-ID</th>
                         <th>Name</th>
                         <th>Assigned To</th>
@@ -79,36 +78,23 @@ margin-left: 10px;
                         <th class="d-none"></th>
                         <th class="d-none"></th>
                         <th class="d-none"></th>
+                        <th class="d-none"></th>
                     </tr>
                 </thead>
             </table>
-
-            <!--end: Datatable -->
         </div>
     </div>
 </div>
 <div>
 </div>
-
-<!-- end:: Content -->
 <input type="hidden" id="active_month">
 @endsection
 @section('foot')
-
-<!--begin::Page Vendors(used by this page) -->
 <script src="{{ asset('dashboard/assets/vendors/custom/datatables/datatables.bundle.js') }}" type="text/javascript"></script>
 <script src="{{ asset('https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js') }}" type="text/javascript"></script>
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
-
-
-<!--end::Page Vendors -->
-
-<!--begin::Page Scripts(used by this page) -->
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/datatables/basic/basic.js') }}" type="text/javascript"></script>
-
-<!--end::Page Scripts -->
-
 <script> 
 $('#month').fdatepicker({format: 'dd-mm-yyyy'}); 
 var riders_table;
@@ -128,6 +114,10 @@ function export_data(){
         "Visa Expiry":item.visa_expiry,
         "Licence Expiry":item.licence_expiry,
         "Mulkiya Expiry":item.mulkiya_expiry,
+        "Passport Number":item.passport_number,
+        "Assigned Sim":$(item.sim_number).text()=="Assign Sim"?'No Sim Assigned':$(item.sim_number).text(),
+        "Assigned Bike":$(item.bike_number).text()=="Assign Bike"?'No Bike Assigned':$(item.bike_number).text(),
+        "Assigned Client":$(item.client_name).text()=="Rider has no client"?'No Client Assigned':$(item.client_name).text(),
         
         });
     });
@@ -190,11 +180,12 @@ $(function() {
             { "data": 'visa_expiry', "name": 'visa_expiry' },
             { "data": 'licence_expiry', "name": 'licence_expiry' },
             { "data": 'mulkiya_expiry', "name": 'mulkiya_expiry' },
+            { "data": 'passport_number', "name": 'passport_number' },
         ];
         _settings.responsive=false;
         _settings.columnDefs=[
             {
-                "targets": [ 10,11,12,13,14,15,16,17,18 ],
+                "targets": [ 10,11,12,13,14,15,16,17,18,19],
                 "visible": false,
                 searchable: true,
             },
@@ -206,6 +197,7 @@ $(function() {
         $('#riders-table thead tr th').eq(9).before('<th>Visa Expiry</th>');
         $('#riders-table thead tr th').eq(10).before('<th>Licence Expiry</th>');
         $('#riders-table thead tr th').eq(11).before('<th>Mulkiya Expiry</th>');
+        $('#riders-table thead tr th').eq(12).before('<th>Passport Number</th>');
         _settings.columns=[
         { "data": 'new_id', "name": 'new_id' },
             { "data": 'new_name', "name": 'name' },
@@ -220,7 +212,8 @@ $(function() {
             { "data": 'visa_expiry', "name": 'visa_expiry' },
             { "data": 'licence_expiry', "name": 'licence_expiry' },
             { "data": 'mulkiya_expiry', "name": 'mulkiya_expiry' },
-            { "data": 'actions', "name": 'actions' }
+            { "data": 'actions', "name": 'actions' },
+            { "data": 'passport_number', "name": 'passport_number' },
         ];
      
     }
@@ -304,7 +297,6 @@ $(function() {
     //         },
     
 function format ( data ) {
-    // `d` is the original data object for the row
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
             '<tr>'+
             '<td colspan="1"; style="font-weight:900;">Date Of Joining:</td>'+
@@ -328,6 +320,8 @@ function format ( data ) {
             '<td colspan="2";>'+data.licence_expiry+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >Mulkiya Expiry:</td>'+
             '<td colspan="2";>'+data.mulkiya_expiry+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Passport #:</td>'+
+            '<td colspan="2";>'+data.passport_number+'</td>'+
             '</tr>'+
         '</table>';
 }

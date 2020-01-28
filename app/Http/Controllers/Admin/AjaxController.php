@@ -1074,6 +1074,10 @@ class AjaxController extends Controller
             $rider_detail =$riders->Rider_detail()->get()->first();
            return $rider_detail->licence_expiry;
         })
+        ->addColumn('passport_number', function($riders){
+            $rider_detail =$riders->Rider_detail()->get()->first();
+           return $rider_detail->passport_number;
+        })
         ->addColumn('mulkiya_expiry', function($riders){
             $assign_bike=$riders->Assign_bike()->where('status', 'active')->get()->first();
             if(isset($assign_bike)){
@@ -1123,7 +1127,7 @@ class AjaxController extends Controller
         })
         
         // <a class="dropdown-item" href="'.route('Rider.salary', $riders).'"><i class="fa fa-money-bill-wave"></i> Salaries</a> 
-        ->rawColumns(['new_name','kingriders_id','sim_number','passport_collected','missing_fields','adress','client_name','emirate_id','mulkiya_expiry','bike_number','official_sim_given_date','licence_expiry','visa_expiry','passport_expiry','official_given_number', 'new_email','date_of_joining', 'phone', 'actions', 'status'])
+        ->rawColumns(['new_name','kingriders_id','sim_number','passport_number','passport_collected','missing_fields','adress','client_name','emirate_id','mulkiya_expiry','bike_number','official_sim_given_date','licence_expiry','visa_expiry','passport_expiry','official_given_number', 'new_email','date_of_joining', 'phone', 'actions', 'status'])
         ->make(true);
     }
     public function getMobiles(){

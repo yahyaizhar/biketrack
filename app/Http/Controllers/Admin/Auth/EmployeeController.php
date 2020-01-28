@@ -19,6 +19,7 @@ use Batch;
 use Arr;
 use Carbon\Carbon;
 use App\Model\Rider\Rider;
+use App\Model\Rider\Rider_detail;
 use App\Emp_allowance;
 
 class EmployeeController extends Controller
@@ -75,6 +76,17 @@ class EmployeeController extends Controller
             $employee->logo = $filepath;
         }
         $employee->save();
+
+        $rider=new Rider;
+        $rider->name=$request->name;
+        $rider->email=$request->email;
+        $rider->password=Hash::make($request->password);
+        $rider->rider_type="Employee";
+        $rider->save();
+        
+        $rider_detail=new Rider_detail;
+        $rider_detail->rider_id=$rider->id;
+        $rider_detail->save();
        
         $roles = $request->get('action_name');
         $user_roles=[];

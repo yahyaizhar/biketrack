@@ -106,10 +106,6 @@
                             <label>Confirm Password: <span class="streric">*</span></label>
                             <input type="password" class="form-control @if($errors->has('passsword')) invalid-field @endif" name="password_confirmation" placeholder="Enter confirm password">
                         </div>
-                        {{-- <div class="form-group">
-                            <label>Kingriders ID:</label>
-                            <input type="text" class="form-control" name="kingriders_id" placeholder="Enter Kingriders ID" >
-                        </div> --}}
                         <div class="form-group">
                             <label>City:</label>
                             <input type="text" class="form-control" name="address" placeholder="Enter city">
@@ -176,6 +172,7 @@
                                 <input data-switch="true" name="passport_collected" id="passport_collected" type="checkbox" checked="checked" data-on-text="Yes" data-handle-width="70" data-off-text="No" data-on-color="brand">
                             </div>
                         </div>
+                          
                         <div class="row" id="passport_status_no">
                             <div class="col-lg-4 col-md-4 col-sm-12"> 
                                 <div class="form-group">
@@ -235,156 +232,116 @@
                                 </div>
                             </div>
                         </div> 
-<div class="row">
-<div class="col-lg-6 col-md-6 col-sm-12">
-<div class="form-group">
-    <label>Passport Expiry:</label>
-    <input type="text" id="datepicker3" autocomplete="off" class="form-control @if($errors->has('passport_expiry')) invalid-field @endif" name="passport_expiry" placeholder="Enter Passport Expiry">
-   
-        <span class="form-text text-muted">Please enter your Passport Expiry Date</span>
-  
-</div>
-</div>
-<div class="col-lg-6 col-md-6 col-sm-12">
-<div class="form-group">
-    <div class="custom-file" style="    margin-top: 26px;">
-        <input type="file" name="passport_image" class="custom-file-input" id="passport_image">
-        <label class="custom-file-label" for="passport_image">Choose Passport Picture</label>
-        <span class="form-text text-muted">Choose Passport Front Image</span>
-    </div>
-    </div>
-</div>
-{{-- <div class="col-lg-3 col-md-3 col-sm-12">
-    <div class="form-group">
-        <div class="custom-file" style="    margin-top: 26px;">
-            <input type="file" name="passport_image_back" class="custom-file-input" id="passport_image_back">
-            <label class="custom-file-label" for="passport_image_back">Choose Passport Picture</label>
-            <span class="form-text text-muted">Choose Passport Back Image</span>
-        </div>
-        </div>
-    </div> --}}
-</div>
+                        <div class="form-group">
+                            <label>Passport Number:</label>
+                            <input type="text" class="form-control" name="passport_number" placeholder="Enter Passport Number">
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label>Passport Expiry:</label>
+                                <input type="text" id="datepicker3" autocomplete="off" class="form-control @if($errors->has('passport_expiry')) invalid-field @endif" name="passport_expiry" placeholder="Enter Passport Expiry">
+                                <span class="form-text text-muted">Please enter your Passport Expiry Date</span>
+                            </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <div class="custom-file" style="    margin-top: 26px;">
+                                    <input type="file" name="passport_image" class="custom-file-input" id="passport_image">
+                                    <label class="custom-file-label" for="passport_image">Choose Passport Picture</label>
+                                    <span class="form-text text-muted">Choose Passport Front Image</span>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
         
-<div class="row">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label>Visa Expiry:</label>
+                                    <input type="text" id="datepicker4" autocomplete="off" class="form-control @if($errors->has('visa_expiry')) invalid-field @endif" name="visa_expiry" placeholder="Enter Visa Expiry">
+                                     <span class="form-text text-muted">Please enter your Visa Expiry Date</span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <div class="custom-file" style="    margin-top: 26px;">
+                                        <input type="file" name="visa_image" class="custom-file-input" id="visa_image">
+                                        <label class="custom-file-label" for="visa_image">Choose Visa Picture</label>
+                                        <span class="form-text text-muted">Choose Visa Front Image</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-<div class="col-lg-6 col-md-6 col-sm-12">
-<div class="form-group">
-    <label>Visa Expiry:</label>
-    <input type="text" id="datepicker4" autocomplete="off" class="form-control @if($errors->has('visa_expiry')) invalid-field @endif" name="visa_expiry" placeholder="Enter Visa Expiry">
-    
-        <span class="form-text text-muted">Please enter your Visa Expiry Date</span>
-   
-</div>
-</div>
-<div class="col-lg-6 col-md-6 col-sm-12">
-    <div class="form-group">
-        <div class="custom-file" style="    margin-top: 26px;">
-            <input type="file" name="visa_image" class="custom-file-input" id="visa_image">
-            <label class="custom-file-label" for="visa_image">Choose Visa Picture</label>
-            <span class="form-text text-muted">Choose Visa Front Image</span>
-        </div>
-    </div>
-    </div>
-    {{-- <div class="col-lg-3 col-md-3 col-sm-12">
-        <div class="form-group">
-            <div class="custom-file" style="    margin-top: 26px;">
-                <input type="file" name="visa_image_back" class="custom-file-input" id="visa_image_back">
-                <label class="custom-file-label" for="visa_image_back">Choose Visa Picture</label>
-                <span class="form-text text-muted">Choose Visa Back Image</span>
-            </div>
-        </div>
-        </div> --}}
- </div>
-
- <div class="row">
- <div class="col-lg-6 col-md-6 col-sm-12">
-    <div class="form-group">
-        <label>Emirates ID:</label>
-        <input type="text"  class="form-control" name="emirate_id" placeholder="Enter Emirate ID">
-       
-            <span class="form-text text-muted">Please enter your Emirate ID.</span>
-       
-    </div>
-    </div>
-    <div class="col-lg-3 col-md-3 col-sm-12">
-        <div class="form-group">
-            <div class="custom-file" style="    margin-top: 26px;">
-                <input type="file" name="emirate_image" class="custom-file-input" id="emirate_image">
-                <label class="custom-file-label" for="emirate_image">Choose Emirates Picture</label>
-                <span class="form-text text-muted">Choose Emirate Front Image</span>
-            </div>
-        </div>
-        </div>
-        <div class="col-lg-3 col-md-3 col-sm-12">
-            <div class="form-group">
-                <div class="custom-file" style="    margin-top: 26px;">
-                    <input type="file" name="emirate_image_back" class="custom-file-input" id="emirate_image_back">
-                    <label class="custom-file-label" for="emirate_image_back">Choose Emirates Picture</label>
-                    <span class="form-text text-muted">Choose Emirate Back Image</span>
-                </div>
-            </div>
-            </div>
-     </div>
-<div class="row">
-
-<div class="col-lg-6 col-md-6 col-sm-12">
-<div class="form-group">
-    <label>Licence Expiry:</label>
-    <input type="text" id="datepicker5" autocomplete="off" class="form-control @if($errors->has('licence_expiry')) invalid-field @endif" name="licence_expiry" placeholder="Enter Licence Expiry">
-    
-        <span class="form-text text-muted">Please enter your Licence Expiry Date</span>
-
-</div>
-</div>
-<div class="col-lg-3 col-md-3 col-sm-12">
-    <div class="form-group">
-        <div class="custom-file" style="    margin-top: 26px;">
-            <input type="file" name="licence_image" class="custom-file-input" id="licence_image">
-            <label class="custom-file-label" for="licence_image">Choose Licence Picture</label>
-            <span class="form-text text-muted">Choose Licence Front Image</span>
-        </div>
-    </div>
-    </div>
-    <div class="col-lg-3 col-md-3 col-sm-12">
-        <div class="form-group">
-            <div class="custom-file" style="    margin-top: 26px;">
-                <input type="file" name="licence_image_back" class="custom-file-input" id="licence_image_back">
-                <label class="custom-file-label" for="licence_image_back">Choose Licence Picture</label>
-                <span class="form-text text-muted">Choose Licence Back Image</span>
-            </div>
-        </div>
-        </div>
-  </div>
-    <div class="form-group">
-            <label>Other Details:</label>
-            <textarea type="text"  rows="8" autocomplete="off" class="form-control @if($errors->has('other_details')) invalid-field @endif" name="other_details" placeholder="Enter Further Details" ></textarea>
-        </div>
-        <label class="kt-checkbox">
-            <input  name="rider_type" type="checkbox" value="Employee"> Is He Employee?
-            <span></span>
-        </label>
-        {{-- <div class="form-group">
-                <label>Status:</label>
-                <div>
-                    <input data-switch="true" name="status" id="status" type="checkbox" checked="checked" data-on-text="Enabled" data-handle-width="70" data-off-text="Disabled" data-on-color="brand">
-                </div>
-            </div> --}}
- </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label>Emirates ID:</label>
+                                    <input type="text"  class="form-control" name="emirate_id" placeholder="Enter Emirate ID">
+                                    <span class="form-text text-muted">Please enter your Emirate ID.</span>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                <div class="form-group">
+                                    <div class="custom-file" style="    margin-top: 26px;">
+                                        <input type="file" name="emirate_image" class="custom-file-input" id="emirate_image">
+                                        <label class="custom-file-label" for="emirate_image">Choose Emirates Picture</label>
+                                        <span class="form-text text-muted">Choose Emirate Front Image</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                <div class="form-group">
+                                    <div class="custom-file" style="    margin-top: 26px;">
+                                        <input type="file" name="emirate_image_back" class="custom-file-input" id="emirate_image_back">
+                                        <label class="custom-file-label" for="emirate_image_back">Choose Emirates Picture</label>
+                                        <span class="form-text text-muted">Choose Emirate Back Image</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label>Licence Expiry:</label>
+                                    <input type="text" id="datepicker5" autocomplete="off" class="form-control @if($errors->has('licence_expiry')) invalid-field @endif" name="licence_expiry" placeholder="Enter Licence Expiry">
+                                    <span class="form-text text-muted">Please enter your Licence Expiry Date</span>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                <div class="form-group">
+                                    <div class="custom-file" style="    margin-top: 26px;">
+                                        <input type="file" name="licence_image" class="custom-file-input" id="licence_image">
+                                        <label class="custom-file-label" for="licence_image">Choose Licence Picture</label>
+                                        <span class="form-text text-muted">Choose Licence Front Image</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                <div class="form-group">
+                                    <div class="custom-file" style="    margin-top: 26px;">
+                                        <input type="file" name="licence_image_back" class="custom-file-input" id="licence_image_back">
+                                        <label class="custom-file-label" for="licence_image_back">Choose Licence Picture</label>
+                                        <span class="form-text text-muted">Choose Licence Back Image</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Other Details:</label>
+                            <textarea type="text"  rows="8" autocomplete="off" class="form-control @if($errors->has('other_details')) invalid-field @endif" name="other_details" placeholder="Enter Further Details" ></textarea>
+                        </div>
+                    </div>
                     <div class="kt-portlet__foot">
                         <div class="kt-form__actions kt-form__actions--right">
                             <button type="submit" class="btn btn-primary">Submit</button>
                             <span class="kt-margin-l-10">or <a href="{{ route('admin.riders.index') }}" class="kt-link kt-font-bold">Cancel</a></span>
                         </div>
-                    </div>
-
-           
-                   
+                    </div> 
                 </form>
-
-                <!--end::Form-->
             </div>
-
-        <!--end::Portlet-->
+        </div>
     </div>
 </div>
 @endsection
@@ -526,9 +483,10 @@ $(document).ready(function(){
        var _checked=$(this).prop("checked");
        if (_checked==false) {
         $("#passport_status_no").show().fadeIn(3000);
+        
        }
-       else if(_checked==true){
-        $("#passport_status_no").hide().fadeOut(3000); 
+        if(_checked==true){
+        $("#passport_status_no").hide().fadeOut(3000);
        }
         
     }); 

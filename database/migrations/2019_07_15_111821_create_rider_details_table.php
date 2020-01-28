@@ -40,6 +40,7 @@ class CreateRiderDetailsTable extends Migration
             $table->string('licence_image')->nullable();
             $table->string('licence_image_back')->nullable();
             $table->string('licence_expiry')->nullable();
+            $table->string('passport_number')->nullable();
             $table->text('other_details')->nullable();
             $table->string('show_salaryslip')->nullable();
             $table->string('salaryslip_month')->nullable();
