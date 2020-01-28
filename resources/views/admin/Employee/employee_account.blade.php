@@ -134,6 +134,43 @@
             </div>
         </div>
     </div>
+    <div class="kt-portlet">
+        <div class="kt-portlet__body  kt-portlet__body--fit">
+            <div class="row text-center py-3">
+                <div class="kt-portlet__head-toolbar col-md-12">
+                    <div class="kt-portlet__head-wrapper">
+                        <div class="kt-portlet__head-actions">
+                            {{-- <a href="" data-ajax="{{ route('MobileInstallment.create') }}" class=" btn btn-success btn-elevate btn-icon-sm">
+                                <i class="fa fa-mobile-alt"></i>
+                                Mobile Installment
+                            </a>
+                            
+                            &nbsp; --}}
+                            <a href=""  class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#rider_expense_bonus" >
+                                <i class="la la-money"></i>
+                                    Bonus
+                            </a>
+                            &nbsp; 
+                            <a href="" class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#rider_expense_discipline" >
+                                <i class="la la-money"></i>
+                                    KingRiders Fine
+                            </a>
+                            &nbsp; 
+                            <a href="" data-ajax="{{ route('SimTransaction.create_sim') }}" class=" btn btn-danger btn-elevate btn-icon-sm">
+                                <i class="fa fa-sim-card"></i>
+                                Sim Bill
+                            </a>
+                            &nbsp;
+                            <a href="" data-ajax="{{ route('account.new_salary') }}" class=" btn btn-brand btn-elevate btn-icon-sm">
+                                <i class="la la-plus"></i>
+                                Generate Salary
+                            </a> 
+                        </div>
+                    </div>
+                </div>  
+            </div>
+        </div>
+    </div>
     <div class="kt-portlet kt-portlet--mobile">
         <div class="kt-portlet__head kt-portlet__head--lg">
             <div class="kt-portlet__head-label">
@@ -145,55 +182,7 @@
                 </h3>
             </div>
             <div class="kt-portlet__head-toolbar"> 
-                <div class="kt-portlet__head-wrapper">
-                    <div class="kt-portlet__head-actions" style="display:contents !important;">
-                         {{-- <a href="" class="btn btn-primary btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_modal" >
-                            <i class="la la-money"></i>
-                             Bike Rent
-                        </a>
-                        &nbsp; --}}
-                        {{-- <a href="" class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_modal" >
-                            <i class="la la-money"></i>
-                             Mobile Charges
-                        </a>
-                        &nbsp; --}}
-                        <a href="" data-ajax="{{ route('MobileInstallment.create') }}" class=" btn btn-success btn-elevate btn-icon-sm">
-                            <i class="fa fa-mobile-alt"></i>
-                            Mobile Installment
-                        </a>
-                        
-                        &nbsp;
-                        <a href="" class="btn btn-info btn-elevate btn-icon-sm" data-toggle="modal" data-target="#mics_charges" >
-                            <i class="la la-money"></i>
-                             MICS Charges
-                        </a>  
-                        &nbsp;
-                        <a style="" href="" class="btn btn-info btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_paid" >
-                            <i class="la la-money"></i>
-                                 Pay Cash To Rider
-                        </a>
-                        &nbsp;
-                        <a style="" href="" class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#advance" >
-                            <i class="la la-money"></i>
-                                Advance
-                        </a>
-                         &nbsp;
-                         <a style="" href="" class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_debit" >
-                            <i class="la la-money"></i>
-                                Receive Cash From Rider
-                        </a>
-                        {{-- &nbsp; --}}
-                        {{-- <a style="" href="" class="btn btn-success btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_credit" >
-                            <i class="la la-money"></i>
-                                Loan
-                        </a>
-                        &nbsp; --}}
-                        {{-- <a href="{{ route('admin.accounts.rider_expense_get') }}" class="btn btn-brand btn-elevate btn-icon-sm">
-                            <i class="la la-plus"></i>
-                            New Record
-                        </a>  --}}
-                    </div>
-                </div>
+            
             </div> 
         </div>
         {{-- pay cash --}}

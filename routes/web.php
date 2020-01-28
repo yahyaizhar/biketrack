@@ -640,6 +640,10 @@ Route::group([
 ], function(){
 // Guest routes
     Route::get('/newcomer/add','GuestController@newComer_view')->name('guest.newComer_view');   //ok
+    Route::get('/newcomer/{id}/update','GuestController@newComer_edit')->name('guest.newComer_edit');   //ok
+    Route::post('/newcomer/{id}/edit','GuestController@newComer_store')->name('guest.newComer_store');   //ok
+
+
     Route::post('/newcomer/store','GuestController@newComer_add')->name('guest.newComer_add');  //ok
     Route::post('/newcomer/status_check','GuestController@newComer_status')->name('guest.newComer_status');  //ok
     
@@ -655,7 +659,7 @@ Route::group([
 
 Route::group([    
     'prefix' => 'admin',
-    'namespace' => 'Admin',
+    'namespace' => 'Admin', 
 										 
 ], function(){    
     Route::get('/employee/company_account','Auth\EmployeeController@viewCompanyEmployeeAccount')->name('employee.viewCompanyEmployeeAccount');

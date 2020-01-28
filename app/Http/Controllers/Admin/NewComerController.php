@@ -96,11 +96,19 @@ class NewComerController extends Controller
         
       }
       public function new_comer_approved(Request $request){
-        $comer_id = $request->new_commer_id;
+        $comer_id = $request->new_commer_id; 
+        // return $request->missing_data;
+        $a=[];
+        if($request->missing_data){
+        foreach($request->missing_data as $key => $value) {
+            array_push($a,$value);
+        }
+    }
+        $data=implode(",",$a);
         if($request->interview_date){
             $request->interview_status ='pending';
         }
-        DB::table('guest_new_comers') ->where('id', $comer_id) ->update(['approval_status' => $request->approval_status,'interview_status' => $request->approval_status, 'interview_date' => $request->interview_date , 'interview_status' => $request->interview_status ,'status_approval_message' => $request->status_approval_message]);
+        DB::table('guest_new_comers')->where('id', $comer_id) ->update(['missing_fields'=>$data,'approval_status' => $request->approval_status,'interview_status' => $request->approval_status, 'interview_date' => $request->interview_date , 'interview_status' => $request->interview_status ,'status_approval_message' => $request->status_approval_message]);
       }
       public function add_interview_status(Request $request){
         $comer_id = $request->new_commer_id;
