@@ -387,7 +387,7 @@ class RiderDetailController extends Controller
             }
             $aed_hours+=$_hours*7.87;
 
-            $bon=Company_Account::where('source',"400 Trips Acheivement Bonus")
+            $bon=Rider_Account::where('source',"400 Trips Acheivement Bonus")
             ->where('rider_id',$riders->rider_id)
             ->whereMonth('month',$monthOnly)
             ->whereYear('month',$yearOnly)
