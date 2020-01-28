@@ -2039,8 +2039,12 @@ class AjaxNewController extends Controller
     {
     $total_gross=0;
     $totlpaid=0;
-    $client_riders=Client_History::where('client_id', $client_id)->get();
-    // $client_riders=Client_Rider::where('client_id', $zomato->id)->get();
+    $client_histories=Client_History::where('client_id', $client_id)->get();
+    $rider_ids=[];
+    foreach ($client_histories as $client_history) {
+       array_push($rider_ids, $client_history->rider_id); 
+    }
+    $client_riders= DB::table('riders')->whereIn('id', $rider_ids)->get();
     
     return DataTables::of($client_riders)
     ->addColumn('rider_name', function($rider) {
