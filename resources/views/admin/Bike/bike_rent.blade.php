@@ -172,8 +172,23 @@
                 if(obj.status=="active"){ // unassign_date will be last of the month
                     unassign_date = end;
                 }
-                
+
+                /**
+                 * absent days deduction
+                */
+                var total_absent=0;
+                if(obj.absent_days && obj.absent_days.length){
+                    obj.absent_days.forEach(function(objAbsent, i){
+                        if(moment(objAbsent.date, 'YYYY-MM-DD').isSameOrAfter(assign_date)
+                        && 
+                        moment(objAbsent.date, 'YYYY-MM-DD').isSameOrBefore(unassign_date)){
+                            total_absent++;
+                        }
+                    });
+                }
+                console.log(obj.absent_days, 'total_absent');
                 var work_days = unassign_date.diff(assign_date, 'days')+1;
+                work_days-=total_absent;
                 console.log('assign_date', assign_date.format("YYYY-MM-DD"), 'unassign_date', unassign_date.format("YYYY-MM-DD"));
                 
                 console.warn(work_days);
@@ -181,9 +196,12 @@
                 var owner__kr_bike='';
                 var owner__rent='';
                 var owner__self='';
+                var total_absentHTML='';
                 if(obj.bike.owner=='kr_bike') owner__kr_bike='selected';
                 if(obj.bike.owner=='rent') owner__rent='selected';
                 if(obj.bike.owner=='self') owner__self='selected';
+                if(total_absent>0) total_absentHTML='<span class="form-text text-danger float-right">Absents: '+total_absent+'</span>';
+
                 if(according_to=="bike"){
                     append_bike='<div class="split--calculated__div" >'+
     '                                <div class="form-group">'+
@@ -191,6 +209,7 @@
     '                                    <input readonly type="text" class="form-control" value="'+obj.bike.brand+'-'+obj.bike.bike_number+'">'+
     '                                </div>'+
     '                                <div class="form-group">'+
+    '                                     '+total_absentHTML+
     '                                    <input type="text" class="form-control" value="'+(work_days)+'" name="data['+i+'][work_days_count]">'+
     '                                     <span class="form-text text-muted">'+assign_date.format("DD/MM/YYYY")+' - '+unassign_date.format("DD/MM/YYYY")+'</span>'+
     '                                </div>'+
@@ -236,15 +255,9 @@
     '                               </div>  ' +
     '                            </div>';   
                 }
-
-                
                 $('#bike_rent .split__object-container').append(append_bike);
-                
-                // $('#bike_rent [name=*"owner"]').val(histories[Object.keys(histories)[0]].bike.owner).trigger('change');
-                
             });
-
-           
+            $('#bike_rent [name="amount"]').trigger('change');
         }
     }
     $("#bike_rent [name='amount']").on("change input",function(){

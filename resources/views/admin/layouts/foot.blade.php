@@ -461,7 +461,36 @@ setInputFilter(document.getElementById("hexTextBox"), function(value) {
             }
         }   
 });
-
+$.fn.onpropertychange=function(prop_name,callback){
+    if(this.length){
+        Object.defineProperty(this[0], prop_name, {
+            enumerable: true,
+            configurable: true,
+            set:  function (t) {
+            //   alert('#changed content value');
+            var caller = arguments.callee
+            ? (arguments.callee.caller ? arguments.callee.caller : arguments.callee)
+            : '';
+            if(typeof callback=="function") callback(this,caller,event);
+            return this.setAttribute('value',t);
+            }
+        });
+    }
+}
+$.fn.offpropertychange=function(prop_name){
+    if(this.length){
+        Object.defineProperty(this[0], prop_name, {
+            enumerable: true,
+            configurable: true,
+            set:  function (t) {
+                return this.setAttribute('value',t);
+            }
+        });
+    }
+}
+$.fn.hasAttr=function(attr){
+    return typeof this.attr(attr) !=="undefined";
+}
 biketrack.send_ajax=function(type,url,data, table, fire_swal=true){
     if(type=="") return;
     $.ajaxSetup({
@@ -560,8 +589,40 @@ _search_recursion(--times);
 },200)
 }
 _search_recursion(6);
-
+setScrollBkModal();
 });
+function setScrollBkModal() {
+    $('.bk-scroll').each(function (i, elem) {
+        KTUtil.scrollInit(this, {
+            mobileNativeScroll: true,
+            resetHeightOnDestroy: true,
+            handleWindowResize: true,
+            height: function () {
+                var height;
+
+                height = KTUtil.getViewPort().height;
+
+                if (KTUtil.getByID('kt_header')) {
+                    height = height - KTUtil.actualHeight('kt_header');
+                }
+
+                if (KTUtil.getByID('kt_subheader')) {
+                    height = height - KTUtil.actualHeight('kt_subheader');
+                }
+
+                if (KTUtil.getByID('kt_footer')) {
+                    height = height - parseInt(KTUtil.css('kt_footer', 'height'));
+                }
+
+                if (KTUtil.getByID('kt_content')) {
+                    height = height - parseInt(KTUtil.css('kt_content', 'padding-top')) - parseInt(KTUtil.css('kt_content', 'padding-bottom'));
+                }
+
+                return height;
+            }
+        });
+    });
+}
 
 ///// if no sub_child them remove child
 $('ul.kt-menu__subnav li.kt-menu__item.kt-menu__item--submenu').each(function(){
@@ -592,11 +653,11 @@ $(document).on('keyup','input[type="search"]',function(){
 })
 
 biketrack.show_logs=false;
-if(sessionStorage.getItem("show_logs") == true || sessionStorage.getItem("show_logs") == "true"){
+if(localStorage.getItem("show_logs") == true || localStorage.getItem("show_logs") == "true"){
     biketrack.show_logs= true;
 }
 
-console.log(biketrack.show_logs,'[use sessionStorage.show_logs=true to show logs]')
+console.log(biketrack.show_logs,'[use localStorage.show_logs=true to show logs]')
 var old_log = console.log;
 console.log = function() {
 	if(biketrack.show_logs) {

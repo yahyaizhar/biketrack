@@ -35,9 +35,14 @@
                     <div class="kt-portlet__head-actions">
                         {{-- <button class="btn btn-danger btn-elevate btn-icon-sm" id="bulk_delete">Delete Selected</button> --}}
                         &nbsp;
-                        <a href="" data-ajax="{{ route('admin.client_income_index') }}" class="btn btn-brand btn-elevate btn-icon-sm">
+                        <a href="" data-ajax="{{ route('admin.client_income_index') }}" class="btn btn-success btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
-                            New Record
+                            New Fixed Income
+                        </a>
+                        &nbsp;
+                        <a href="" data-ajax="{{ route('admin.careem_payout_index') }}" class="btn btn-success btn-elevate btn-icon-sm">
+                            <i class="la la-plus"></i>
+                            New Comission Income
                         </a>
                     </div>
                 </div>
@@ -219,6 +224,7 @@ function deleteRow(id)
     console.log(url,true);
     sendDeleteRequest(url, false, null, client_income_table);
 }
+
 function updateStatus(id)
 {
     var url = "{{ url('admin/accounts/client_income') }}" + "/" + id +"/updatestatus";

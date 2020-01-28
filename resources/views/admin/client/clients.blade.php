@@ -87,6 +87,7 @@
                             <option value="">Select Payout Method</option>
                             <option value="trip_based">Based on Trips and Hours</option>   
                             <option value="fixed_based">Based on Fixed Amount</option> 
+                            <option value="commission_based">Commission Based</option> 
                         </select>
                     </div>
 
@@ -114,6 +115,9 @@
                             <label>Working Days:</label>
                             <input type="text" autocomplete="off" class="form-control" name="fb__working_days" placeholder="Enter estimated working days" />
                         </div>
+                    </div>
+                    <div class="d-none" data-payout-types data-show="commission_based">
+                        {{-- No settings yet for commission_based based payout --}}
                     </div>
 
                     <div class="modal-footer border-top-0 d-flex justify-content-center">

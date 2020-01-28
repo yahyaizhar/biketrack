@@ -23,8 +23,16 @@ class CreateClientIncomesTable extends Migration
             $table->string('working_days')->nullable();
             $table->string('total_hours')->nullable();
             $table->string('extra_hours')->nullable();
+            $table->string('cash_trips')->nullable();
+            $table->string('bank_trips')->nullable();
+            $table->string('captain_tips')->nullable();
+            $table->string('item_bought')->nullable();
+            $table->string('item_qty')->nullable();
+            $table->string('week_start')->nullable();
+            $table->string('week_end')->nullable();
             $table->string('total')->nullable();
             $table->string('total_payout')->nullable();
+            $table->string('income_type')->nullable();
             $table->string('status')->nullable();
             $table->string('active_status')->default("A");
             $table->timestamps();

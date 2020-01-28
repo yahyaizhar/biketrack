@@ -476,6 +476,9 @@ public function add_payout_method(Request $r){
             $settings['fb__working_days']=$r->fb__working_days;
             $settings['fb__perdayHours']=$r->fb__perdayHours;
             break;
+        case 'commission_based':
+            ### No settings yet
+            break;
         
         default:
             return response()->json([

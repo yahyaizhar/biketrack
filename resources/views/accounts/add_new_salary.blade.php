@@ -167,6 +167,30 @@
                                 <input type="text" required readonly class="form-control col-md-6" name="final_salary" value="" >
                             </div>
                         </div>
+                        <div class="commission_based_salary-wrapper salary__wrapper">
+                            <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
+                                <input type="text" required readonly class="form-control col-md-6" value="Basic Earning" >
+                                <input type="text" required readonly class="form-control col-md-6" name="cb__basic_earning" value="" >
+                            </div>
+                            <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
+                                <input type="text" required readonly class="form-control col-md-6" value="Commision Value" >
+                                <input type="text" required readonly class="form-control col-md-6" name="cb__commision_value" value="" >
+                            </div>
+                            <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
+                                <input type="text" required readonly class="form-control col-md-6" value="Commision Amount" >
+                                <input type="text" required readonly class="form-control col-md-6" name="cb__commision_amount" value="" >
+                            </div>
+                            <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
+                                <input type="text" required readonly class="form-control col-md-6" value="Final Salary" >
+                                <input type="text" required readonly class="form-control col-md-6" name="final_salary" value="" >
+                            </div>
+                        </div>
+                        <div class="employee_salary-wrapper salary__wrapper">
+                            <div class="form-group row" style="margin-right:0px !important;margin-left:0px !important;">
+                                <input type="text" required readonly class="form-control col-md-6" value="Final Salary" >
+                                <input type="text" required readonly class="form-control col-md-6" name="final_salary" oninput="document.querySelector('#salary [name=total_salary]').value=this.value;" value="" >
+                            </div>
+                        </div>
                         <input type="hidden"  name="total_salary" >
                         <input type="hidden"  name="net_salary" >
                         <input type="hidden"  name="gross_salary" >
@@ -278,24 +302,15 @@
 
                     $('#salary [name="fb__extra_hours_amount"]').val(data.fb__extra_hours*data.fb__perHourSalary);
                 }
-                
-                $('#salary [name="monthly_hours_val"]').val(data._s_monthlyHours);
-                $('#salary [name="absent_day_val"]').val(data.absent_count);
-                $('#salary [name="absent_hours_val"]').val((data.absent_count*data._s_maxHours).toFixed(2));
-                $('#salary [name="workable_days"]').val(data.working_days);
-                $('#salary [name="workable_hours_based_on_available_days"]').val((data.working_hours).toFixed(2));
-                $('#salary [name="working_hours_during_available_days"]').val((data.hours).toFixed(2));
-                $('#salary [name="working_zomato_hours"]').val((data.zomato_hours).toFixed(2));
-                $('#salary [name="Less time calculated"]').val((data.less_time).toFixed(2));
-                $('#salary [name="finals_hours"]').val((data.payable_hours).toFixed(2));
-                $('#salary [name="hours_multiply_with"]').val(data._s_hoursFormula);
-                $('#salary [name="hours_amount"]').val((data.payable_hours*data._s_hoursFormula).toFixed(2));
-                $('#salary [name="trips"]').val(data.trips);
-                $('#salary [name="trips_multiply_with"]').val(data._s_tripsFormula);
-                $('#salary [name="trips_amount"]').val(data.trips_payable);
-                $('#salary [name="extra_trips"]').val(data.trips_EXTRA);
-                $('#salary [name="extra_trips_multiply_with"]').val(data._s_maxTripsFormula);
-                $('#salary [name="extra_trips_amount"]').val(data.trips_EXTRA_payable);
+                else if(salary_method=='commission_based'){
+                    $('.commission_based_salary-wrapper').show();
+                    $('#salary [name="cb__basic_earning"]').val(data.basic_salary);
+                    $('#salary [name="cb__commision_value"]').val(data.commission_value);
+                    $('#salary [name="cb__commision_amount"]').val(data.commission);
+                }
+                else if(salary_method=='employee'){
+                    $('.employee_salary-wrapper').show();
+                }
 
                 // $('#salary [name="absent_hours"]').val(data.absent_approve_hours);
                 // $('#salary [name="absent_hours_multiply_with"]').val(data._s_hoursFormula);

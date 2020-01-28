@@ -1,4 +1,7 @@
 @extends('admin.layouts.app')
+@section('page_title')
+    Company-Employee Account
+@endsection
 @section('head')
 <style>
     .fields_wrapper{
@@ -136,16 +139,27 @@
                                 </a>
                                 
                                 &nbsp; --}}
-                                <a href=""  class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#rider_expense_bonus" >
-                                    <i class="la la-money"></i>
-                                        Bonus
+                                
+                                <a href="" data-ajax="{{ route('admin.fuel_expense_create') }}" class=" btn btn-success btn-elevate btn-icon-sm">
+                                    <i class="fa fa-gas-pump"></i>
+                                    Fuel
                                 </a>
-                                &nbsp; 
-                                <a href="" class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#rider_expense_discipline" >
-                                    <i class="la la-money"></i>
-                                        KingRiders Fine
+                                &nbsp;
+                                <a href="" data-ajax="{{ route('admin.create_bike_rent') }}" class=" btn btn-danger btn-elevate btn-icon-sm">
+                                    <i class="fa fa-motorcycle"></i>
+                                    Bike Rent
                                 </a>
-                                &nbsp; 
+                                &nbsp;
+                                <a href="" data-ajax="{{ route('admin.accounts.maintenance_index') }}" class=" btn btn-danger btn-elevate btn-icon-sm">
+                                    <i class="flaticon2-gear"></i>
+                                    Maintenance
+                                </a>
+                                &nbsp;
+                                <a href="" data-ajax="{{ route('salik.add_salik') }}" class=" btn btn-danger btn-elevate btn-icon-sm">
+                                    <i class="flaticon2-lorry"></i>
+                                    Add Salik
+                                </a>
+                                &nbsp;
                                 <a href="" data-ajax="{{ route('SimTransaction.create_sim') }}" class=" btn btn-danger btn-elevate btn-icon-sm">
                                     <i class="fa fa-sim-card"></i>
                                     Sim Bill
@@ -154,7 +168,19 @@
                                 <a href="" data-ajax="{{ route('account.new_salary') }}" class=" btn btn-brand btn-elevate btn-icon-sm">
                                     <i class="la la-plus"></i>
                                     Generate Salary
-                                </a> 
+                                </a>
+                                <div class="kt-portlet__head-actions" style="margin-top:10px;">
+                                    <a href=""  class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#rider_expense_bonus" >
+                                        <i class="la la-money"></i>
+                                            Bonus
+                                    </a>
+                                    &nbsp; 
+                                    <a href="" class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#rider_expense_discipline" >
+                                        <i class="la la-money"></i>
+                                            KingRiders Fine
+                                    </a>
+                                    &nbsp;      
+                                </div> 
                             </div>
                         </div>
                     </div>  
@@ -974,8 +1000,8 @@
                     $('#select_month_custom').fadeIn('fast');
                     $('[name="custom_select_month"]').val(r1d1).trigger('change.select2');
                 }
-                $('[name="rider_id"],[name="rider_id_num"]').val(rider_id);
-                $('[name="rider_id_num"]').trigger('change');
+                $('[name="rider_id"]').val(rider_id);
+                $('[name="rider_id"]').trigger('change');
                 return;
             }
             $('[name="sort_by"]:checked').trigger('change')

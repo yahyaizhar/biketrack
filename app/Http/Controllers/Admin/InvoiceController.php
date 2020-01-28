@@ -369,6 +369,7 @@ class InvoiceController extends Controller
                 $dc_deduction=0;
                 $mcdonald_deduction=0;
 
+                $temp=[];
                 $per_trip_amount = $client_settings['tb__trip_amount']; // 6.75
                 $per_hour_amount = $client_settings['tb__hour_amount']; // 6
                 foreach ($client_riders as $riders) {
@@ -380,7 +381,11 @@ class InvoiceController extends Controller
                     $hours=Income_zomato::whereMonth('date',$month)
                     ->where("rider_id",$riders->rider_id)
                     ->sum('log_in_hours_payable');
-                    
+
+                    $obj_temp=[];
+                    $obj_temp['hours']=$hours;
+                    $obj_temp['feid']=$riders->client_rider_id;
+                    array_push($temp,$obj_temp);
 
                     if ($_trips>400) {
                         $extra_trips=($_trips-400)*4;
@@ -508,7 +513,8 @@ class InvoiceController extends Controller
                     'is_edit'=>false,
                     'aed_trips'=>round($aed_trips,2),
                     'aed_hours'=>round($aed_hours,2),
-                    'next_id'=>$next_invoice_id[0]->Auto_increment
+                    'next_id'=>$next_invoice_id[0]->Auto_increment,
+                    'temp'=>$temp
                 ]);
                 break;
             case 'fixed_based':

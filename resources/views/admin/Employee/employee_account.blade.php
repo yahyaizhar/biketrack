@@ -1,4 +1,7 @@
 @extends('admin.layouts.app')
+@section('page_title')
+Employee Account
+@endsection
 @section('head')
 <style>
     .fields_wrapper{
@@ -140,31 +143,48 @@
                 <div class="kt-portlet__head-toolbar col-md-12">
                     <div class="kt-portlet__head-wrapper">
                         <div class="kt-portlet__head-actions">
-                            {{-- <a href="" data-ajax="{{ route('MobileInstallment.create') }}" class=" btn btn-success btn-elevate btn-icon-sm">
+                            <a href="" data-ajax="{{ route('MobileInstallment.create') }}" class=" btn btn-success btn-elevate btn-icon-sm">
                                 <i class="fa fa-mobile-alt"></i>
                                 Mobile Installment
                             </a>
                             
-                            &nbsp; --}}
-                            <a href=""  class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#rider_expense_bonus" >
+                            &nbsp;
+                            <a href="" class="btn btn-info btn-elevate btn-icon-sm" data-toggle="modal" data-target="#mics_charges" >
                                 <i class="la la-money"></i>
-                                    Bonus
-                            </a>
-                            &nbsp; 
-                            <a href="" class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#rider_expense_discipline" >
+                                MICS Charges
+                            </a>  
+                            &nbsp;
+                            <a style="" href="" class="btn btn-info btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_paid" >
                                 <i class="la la-money"></i>
-                                    KingRiders Fine
-                            </a>
-                            &nbsp; 
-                            <a href="" data-ajax="{{ route('SimTransaction.create_sim') }}" class=" btn btn-danger btn-elevate btn-icon-sm">
-                                <i class="fa fa-sim-card"></i>
-                                Sim Bill
+                                    Pay Cash To Rider
                             </a>
                             &nbsp;
-                            <a href="" data-ajax="{{ route('account.new_salary') }}" class=" btn btn-brand btn-elevate btn-icon-sm">
-                                <i class="la la-plus"></i>
-                                Generate Salary
-                            </a> 
+                            <a style="" href="" class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#advance" >
+                                <i class="la la-money"></i>
+                                    Advance
+                            </a>
+                            &nbsp;
+                            <a style="" href="" class="btn btn-warning btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_pay_debit" >
+                                <i class="la la-money"></i>
+                                    Receive Cash From Rider
+                            </a>
+                            <div class="kt-portlet__head-actions" style="margin-top:10px;">
+                                &nbsp;
+                                <a href="" data-ajax="{{ url('/admin/employee/allownces') }}?type=marketing" data-type="marketing" id="marketing" class="btn btn-success btn-elevate btn-icon-sm">
+                                    <i class="la la-money"></i>
+                                        Marketing Allowns
+                                </a>
+                                &nbsp;
+                                <a href="" data-ajax="{{ url('/admin/employee/allownces') }}?type=health" data-type="health" id="health" class="btn btn-danger btn-elevate btn-icon-sm">
+                                    <i class="la la-money"></i>
+                                        Health Allowns
+                                </a>
+                                &nbsp;
+                                <a href="" data-ajax="{{ url('/admin/employee/allownces') }}?type=transport" data-type="transport" id="transport" class="btn btn-warning btn-elevate btn-icon-sm">
+                                    <i class="la la-money"></i>
+                                        Transport Allowns
+                                </a>  
+                            </div> 
                         </div>
                     </div>
                 </div>  
@@ -182,10 +202,12 @@
                 </h3>
             </div>
             <div class="kt-portlet__head-toolbar"> 
-            
+                <div class="kt-portlet__head-wrapper">
+                    <div class="kt-portlet__head-actions" style="display:contents !important;">
+                    </div>
+                </div>
             </div> 
         </div>
-        {{-- pay cash --}}
         <div class="modal fade" id="mics_charges" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -2054,7 +2076,7 @@
                     _quickViewModal.find('[name="month"]').attr('data-month',selected_month);
                     _quickViewModal.find('[name="month_year"]').attr('data-month',selected_month);
                     $('script[data-ajax]').remove();
-                    console.warn($(data).find('[data-ajax]'));
+                    console.log($(data).filter('[data-ajax]'));
                     var $ajax_script = $(data).find('[data-ajax]');
                     if($ajax_script.length==0) $ajax_script = $(data).filter('[data-ajax]');
 
@@ -2577,8 +2599,8 @@
                     $('#select_month_custom').fadeIn('fast');
                     $('[name="custom_select_month"]').val(r1d1).trigger('change.select2');
                 }
-                $('[name="rider_id"],[name="rider_id_num"]').val(rider_id);
-                $('[name="rider_id_num"]').trigger('change');
+                $('[name="rider_id"]').val(rider_id);
+                $('[name="rider_id"]').trigger('change');
                 return;
             }
             $('[name="sort_by"]:checked').trigger('change')
