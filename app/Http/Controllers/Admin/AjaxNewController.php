@@ -3279,7 +3279,10 @@ class AjaxNewController extends Controller
         return DataTables::of($client_riders)
         ->addColumn('rider_name', function($rider) {
             $riderFound = Rider::find($rider->rider_id);
-            return $riderFound->name;
+            if (isset($riderFound)) {
+                return $riderFound->name;
+            }
+            return "No Rider is Assigned";
         }) 
         ->addColumn('bike_number', function($rider) {
               $assign_bike=Assign_bike::where("rider_id",$rider->rider_id)->where("status","active")->get()->first();             
@@ -3302,6 +3305,7 @@ class AjaxNewController extends Controller
               return round($aed_trips_sum*2,2); 
         }) 
         ->addColumn('aed_hours', function($rider) use ($month) {
+            
             $onlyMonth=Carbon::parse($month)->format('m');
             $onlyYear=Carbon::parse($month)->format('Y');
             $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)

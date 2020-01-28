@@ -38,19 +38,12 @@ margin-left: 10px;
             <div class="kt-portlet__body">
             <div>
                 <select class="form-control bk-select2" id="kt_select2_3_5" name="month_id" >
-                    <option >Select Month</option>
-                    <option value="01">January</option>   
-                    <option value="02">Febuary</option>   
-                    <option value="03">March</option>   
-                    <option value="04">April</option>   
-                    <option value="05">May</option>   
-                    <option value="06">June</option>   
-                    <option value="07">July</option>   
-                    <option value="08">August</option>   
-                    <option value="09">September</option>   
-                    <option value="10">October</option>   
-                    <option value="11">November</option>   
-                    <option value="12">December</option>    
+                    @for ($i = 0; $i <= 12; $i++)
+                    @php
+                        $_m =Carbon\Carbon::now()->startOfMonth()->addMonth(-$i);
+                    @endphp
+                    <option value="{{$_m->format('Y-m-d')}}">{{$_m->format('F-Y')}}</option>
+                @endfor    
                 </select> 
                 </div>
             </div>
@@ -325,7 +318,7 @@ $("#kt_select2_3_5").change(function(){
     $('th#remove_head').remove();
     $('#kt_content-b').show(); 
     var month=$(this).val();
-    var month_url=new Date(month).format("mm");
+    var month_url=new Date(month).format("yyyy-mm-dd");
    var client_id=$('[name="client_id"]').val();
    console.log(client_id);
    var data = {
