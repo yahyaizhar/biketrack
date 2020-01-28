@@ -39,6 +39,8 @@ margin-left: 10px;
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
+                        {{-- <input class="btn btn-success" type="button" onclick="export_data()" value="Export Riders Data"> --}}
+                        &nbsp;
                         <input class="btn btn-success" type="button" onclick="export_data()" value="Export Riders Data">
                         &nbsp;
                         <div class="checkbox checkbox-danger btn btn-default btn-elevate btn-icon-sm">
@@ -99,30 +101,71 @@ margin-left: 10px;
 $('#month').fdatepicker({format: 'dd-mm-yyyy'}); 
 var riders_table;
 var riders_data = [];
+// function export_data(){
+//     var export_details=[];
+//     var _data=riders_table.ajax.json().data;
+//     console.log(_data);
+//     _data.forEach(function(item,index) {
+//         export_details.push({
+//         "ID":item.id,
+//         "Name":item.name,
+//         "Date Of Joining":item.date_of_joining,
+//         "Emirate Id":item.emirate_id,
+//         "Email":item.email,
+//         "Passport Expiry":item.passport_expiry,
+//         "Visa Expiry":item.visa_expiry,
+//         "Licence Expiry":item.licence_expiry,
+//         "Mulkiya Expiry":item.mulkiya_expiry,
+//         "Passport Number":item.passport_number,
+//         "Assigned Sim":$(item.sim_number).text()=="Assign Sim"?'No Sim Assigned':$(item.sim_number).text(),
+//         "Assigned Bike":$(item.bike_number).text()=="Assign Bike"?'No Bike Assigned':$(item.bike_number).text(),
+//         "Assigned Client":$(item.client_name).text()=="Rider has no client"?'No Client Assigned':$(item.client_name).text(),
+        
+//         });
+//     });
+//         var export_data = new CSVExport(export_details);
+//     return false;
+// }
+
 function export_data(){
     var export_details=[];
     var _data=riders_table.ajax.json().data;
-    console.log(_data);
-    _data.forEach(function(item,index) {
+    var headers = {
+        id: 'ID',
+        name: "Name",
+        date_of_joining: "Date Of Joining",
+        emirate_id: "Emirate Id",
+        email: "Email",
+        passport_expiry: "Passport Expiry",
+        visa_expiry: "Visa Expiry",
+        licence_expiry: "Licence Expiry",
+        mulkiya_expiry: "Mulkiya Expiry",
+        passport_number: "Passport Number",
+        assigned_sim: "Assigned Sim",
+        assigned_bike: "Assigned Bike",
+        assigned_client: "Assigned Client",
+    };
+
+    _data.forEach((item) => {
         export_details.push({
-        "ID":item.id,
-        "Name":item.name,
-        "Date Of Joining":item.date_of_joining,
-        "Emirate Id":item.emirate_id,
-        "Email":item.email,
-        "Passport Expiry":item.passport_expiry,
-        "Visa Expiry":item.visa_expiry,
-        "Licence Expiry":item.licence_expiry,
-        "Mulkiya Expiry":item.mulkiya_expiry,
-        "Passport Number":item.passport_number,
-        "Assigned Sim":$(item.sim_number).text()=="Assign Sim"?'No Sim Assigned':$(item.sim_number).text(),
-        "Assigned Bike":$(item.bike_number).text()=="Assign Bike"?'No Bike Assigned':$(item.bike_number).text(),
-        "Assigned Client":$(item.client_name).text()=="Rider has no client"?'No Client Assigned':$(item.client_name).text(),
-        
+            id: item.id,
+            name: item.name,
+            date_of_joining: item.date_of_joining,
+            emirate_id: item.emirate_id,
+            email: item.email,
+            passport_expiry: item.passport_expiry,
+            visa_expiry: item.visa_expiry,
+            licence_expiry: item.licence_expiry,
+            mulkiya_expiry: item.mulkiya_expiry,
+            passport_number: item.passport_number,
+            assigned_sim: $(item.sim_number).text()=="Assign Sim"?'No Sim Assigned':$(item.sim_number).text(),
+            assigned_bike: $(item.bike_number).text()=="Assign Bike"?'No Bike Assigned':$(item.bike_number).text(),
+            assigned_client: $(item.client_name).text()=="Rider has no client"?'No Client Assigned':$(item.client_name).text(),
         });
     });
-        var export_data = new CSVExport(export_details);
-    return false;
+console.log(export_details);
+    var fileTitle = 'Riders Export Data';
+    biketrack.exportCSVFile(headers, export_details, fileTitle); 
 }
 $(function() {
 
