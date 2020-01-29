@@ -129,6 +129,7 @@
                         </th> --}}
                         <th>Inv</th>
                         <th>Invoice-ID</th>
+                        <th>Assigned To</th>
                         <th>Model</th>
                         <th>IMEI-1</th>
                         <th>IMEI-2</th>
@@ -581,6 +582,11 @@ function getInvoices() {
             {
                 data: 'invoice_id',
                 name: 'invoice_id',
+                className:'col_editable'
+            },
+            {
+                data: 'rider_id',
+                name: 'rider_id',
                 className:'col_editable'
             },
             {
