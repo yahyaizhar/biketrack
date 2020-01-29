@@ -93,41 +93,86 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }, 
-                    url:"{{url('/admin/mobile/ajax/data/')}}"+"/"+mobile_id+"/"+_month,
+                    url:"{{url('/admin/mobile/ajax/data/')}}"+"/"+mobile_id+"/"+_month+"/mobile",
                     method: "GET"
                 })
                 .done(function(data) {  
                     console.log(data); 
-                    console.log(data.payment_type);
-                    if (data.payment_type==null) {
-                        $("#mobile_intallment [type='submit']").prop("disabled",true).html("Mobile is not assigned to any rider");
-                    }
-                    if (data.payment_type=="cash" ) {
-                        $("#mobile_intallment [type='submit']").prop("disabled",true).html("Cash Paid");
-                    }
-                    if (data.payment_type=="installment") {
-                        $("#mobile_intallment [type='submit']").prop("disabled",false).html("Pay Installment");
-                        if (parseFloat(data.remaining_amount)==0) {
-                            $("#mobile_intallment [type='submit']").prop("disabled",true).html("All Installments are paid");
+                    if(data.status==1){
+                        console.log(data.payment_type);
+                        if (data.payment_type==null) {
+                            $("#mobile_intallment [type='submit']").prop("disabled",true).html("Mobile is not assigned to any rider");
+                        }
+                        if (data.payment_type=="cash" ) {
+                            $("#mobile_intallment [type='submit']").prop("disabled",true).html("Cash Paid");
+                        }
+                        if (data.payment_type=="installment") {
+                            $("#mobile_intallment [type='submit']").prop("disabled",false).html("Pay Installment");
+                            if (parseFloat(data.remaining_amount)==0) {
+                                $("#mobile_intallment [type='submit']").prop("disabled",true).html("All Installments are paid");
+                            }
+                        }
+                        $('#mobile_intallment [name="sale_price"]').val(data.sale_price).attr("data-sale",data.sale_price);
+                        $('#mobile_intallment [name="amount_received"]').val(data.amount_received).attr("data-received",data.amount_received);
+                        $('#mobile_intallment [name="remaining_amount"]').val(data.remaining_amount).attr("data-remaining",data.remaining_amount);
+                        $('#mobile_intallment [name="per_month_installment_amount"]').attr("min",1);
+                        $('#mobile_intallment [name="per_month_installment_amount"]').attr("max",data.remaining_amount);
+                        if (data.mobile_history!=null) {
+                            $('#mobile_intallment [name="rider_id"]').val(data.mobile_history.rider_id).trigger("change.select2");
+                        }
+                        else{
+                            $('#mobile_intallment [name="rider_id"]').val("").trigger("change.select2");
                         }
                     }
-                    $('#mobile_intallment [name="sale_price"]').val(data.sale_price).attr("data-sale",data.sale_price);
-                    $('#mobile_intallment [name="amount_received"]').val(data.amount_received).attr("data-received",data.amount_received);
-                    $('#mobile_intallment [name="remaining_amount"]').val(data.remaining_amount).attr("data-remaining",data.remaining_amount);
-                    $('#mobile_intallment [name="per_month_installment_amount"]').attr("min",1);
-                    $('#mobile_intallment [name="per_month_installment_amount"]').attr("max",data.remaining_amount);
-                    if (data.mobile_history!=null) {
-                        $('#mobile_intallment [name="rider_id"]').val(data._id_rider).trigger("change.select2");
-                    }
                     else{
-                        $('#mobile_intallment [name="rider_id"]').val("").trigger("change.select2");
+                        $("#mobile_intallment [type='submit']").prop("disabled",true).html("Mobile is not assigned to any rider");
                     }
-                    
-                    
-
                 });
         });
-        $('#mobile_intallment [name="mobile_id"]').trigger("change");
+        $('#mobile_intallment [name="rider_id"]').on("change",function(){
+            var rider_id=$('#mobile_intallment [name="rider_id"]').val();
+            var _month=new Date($('#mobile_intallment [name="month_year"]').val()).format('yyyy-mm-dd');
+            $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }, 
+                    url:"{{url('/admin/mobile/ajax/data/')}}"+"/"+rider_id+"/"+_month+"/rider",
+                    method: "GET"
+                })
+                .done(function(data) {  
+                    console.log(data); 
+                    if(data.status==1){
+                        console.log(data.payment_type);
+                        if (data.payment_type==null) {
+                            $("#mobile_intallment [type='submit']").prop("disabled",true).html("Rider has no mobile"); 
+                        }
+                        if (data.payment_type=="cash" ) {
+                            $("#mobile_intallment [type='submit']").prop("disabled",true).html("Cash Paid");
+                        }
+                        if (data.payment_type=="installment") {
+                            $("#mobile_intallment [type='submit']").prop("disabled",false).html("Pay Installment");
+                            if (parseFloat(data.remaining_amount)==0) {
+                                $("#mobile_intallment [type='submit']").prop("disabled",true).html("All Installments are paid");
+                            }
+                        }
+                        $('#mobile_intallment [name="sale_price"]').val(data.sale_price).attr("data-sale",data.sale_price);
+                        $('#mobile_intallment [name="amount_received"]').val(data.amount_received).attr("data-received",data.amount_received);
+                        $('#mobile_intallment [name="remaining_amount"]').val(data.remaining_amount).attr("data-remaining",data.remaining_amount);
+                        $('#mobile_intallment [name="per_month_installment_amount"]').attr("min",1);
+                        $('#mobile_intallment [name="per_month_installment_amount"]').attr("max",data.remaining_amount);
+                        if (data.mobile_history!=null) {
+                            $('#mobile_intallment [name="mobile_id"]').val(data.mobile_history.mobile_id).trigger("change.select2");
+                        }
+                        else{
+                            $('#mobile_intallment [name="mobile_id"]').val("").trigger("change.select2");
+                        }
+                    }
+                    else{
+                        $("#mobile_intallment [type='submit']").prop("disabled",true).html("Rider has no mobile");
+                    }
+                });
+        });
+        $('#mobile_intallment [name="rider_id"]').trigger("change");
         $('#mobile_intallment [name="per_month_installment_amount"]').on("change input",function(){
             var inst_amt=parseFloat($(this).val())||0;
             var sale_amt= parseFloat($('#mobile_intallment [name="sale_price"]').attr("data-sale"));
