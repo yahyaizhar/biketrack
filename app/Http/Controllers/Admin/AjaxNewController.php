@@ -59,6 +59,7 @@ use Str;
 use App\Model\Mobile\Accessory;
 use App\Model\Mobile\Seller;
 use App\Model\Mobile\MobileHistory;
+use DB;
 
 class AjaxNewController extends Controller
 {
@@ -2035,13 +2036,16 @@ class AjaxNewController extends Controller
         ->rawColumns(['id','actions','description','month'])
         ->make(true);
     }
-    public function zomato_salary_export($month, $client_id)
+    public function zomato_salary_export($month, $client_id) 
     {
     $total_gross=0;
     $totlpaid=0;
-    $client=Client::find($client_id);
-    $client_riders=$client->riders()->where(['active_status'=>'A'])->get();
-    // $client_riders=Client_Rider::where('client_id', $zomato->id)->get();
+    $client_histories=Client_History::where('client_id', $client_id)->get();
+    $rider_ids=[];
+    foreach ($client_histories as $client_history) {
+       array_push($rider_ids, $client_history->rider_id); 
+    }
+    $client_riders= Rider::whereIn('id', $rider_ids)->get();
     
     return DataTables::of($client_riders)
     ->addColumn('rider_name', function($rider) {
@@ -3279,7 +3283,10 @@ class AjaxNewController extends Controller
         return DataTables::of($client_riders)
         ->addColumn('rider_name', function($rider) {
             $riderFound = Rider::find($rider->rider_id);
-            return $riderFound->name;
+            if (isset($riderFound)) {
+                return $riderFound->name;
+            }
+            return "No Rider is Assigned";
         }) 
         ->addColumn('bike_number', function($rider) {
               $assign_bike=Assign_bike::where("rider_id",$rider->rider_id)->where("status","active")->get()->first();             
@@ -3302,6 +3309,7 @@ class AjaxNewController extends Controller
               return round($aed_trips_sum*2,2); 
         }) 
         ->addColumn('aed_hours', function($rider) use ($month) {
+            
             $onlyMonth=Carbon::parse($month)->format('m');
             $onlyYear=Carbon::parse($month)->format('Y');
             $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)

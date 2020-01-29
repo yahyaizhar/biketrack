@@ -39,6 +39,8 @@ margin-left: 10px;
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
+                        {{-- <input class="btn btn-success" type="button" onclick="export_data()" value="Export Riders Data"> --}}
+                        &nbsp;
                         <input class="btn btn-success" type="button" onclick="export_data()" value="Export Riders Data">
                         &nbsp;
                         <div class="checkbox checkbox-danger btn btn-default btn-elevate btn-icon-sm">
@@ -60,7 +62,6 @@ margin-left: 10px;
             <table class="table table-striped table-hover table-checkable table-condensed" id="riders-table">
                 <thead>
                     <tr>
-                    
                         <th class="th_krId">KR-ID</th>
                         <th>Name</th>
                         <th>Assigned To</th>
@@ -79,60 +80,92 @@ margin-left: 10px;
                         <th class="d-none"></th>
                         <th class="d-none"></th>
                         <th class="d-none"></th>
+                        <th class="d-none"></th>
                     </tr>
                 </thead>
             </table>
-
-            <!--end: Datatable -->
         </div>
     </div>
 </div>
 <div>
 </div>
-
-<!-- end:: Content -->
 <input type="hidden" id="active_month">
 @endsection
 @section('foot')
-
-<!--begin::Page Vendors(used by this page) -->
 <script src="{{ asset('dashboard/assets/vendors/custom/datatables/datatables.bundle.js') }}" type="text/javascript"></script>
 <script src="{{ asset('https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js') }}" type="text/javascript"></script>
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
-
-
-<!--end::Page Vendors -->
-
-<!--begin::Page Scripts(used by this page) -->
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/datatables/basic/basic.js') }}" type="text/javascript"></script>
-
-<!--end::Page Scripts -->
-
 <script> 
 $('#month').fdatepicker({format: 'dd-mm-yyyy'}); 
 var riders_table;
 var riders_data = [];
+// function export_data(){
+//     var export_details=[];
+//     var _data=riders_table.ajax.json().data;
+//     console.log(_data);
+//     _data.forEach(function(item,index) {
+//         export_details.push({
+//         "ID":item.id,
+//         "Name":item.name,
+//         "Date Of Joining":item.date_of_joining,
+//         "Emirate Id":item.emirate_id,
+//         "Email":item.email,
+//         "Passport Expiry":item.passport_expiry,
+//         "Visa Expiry":item.visa_expiry,
+//         "Licence Expiry":item.licence_expiry,
+//         "Mulkiya Expiry":item.mulkiya_expiry,
+//         "Passport Number":item.passport_number,
+//         "Assigned Sim":$(item.sim_number).text()=="Assign Sim"?'No Sim Assigned':$(item.sim_number).text(),
+//         "Assigned Bike":$(item.bike_number).text()=="Assign Bike"?'No Bike Assigned':$(item.bike_number).text(),
+//         "Assigned Client":$(item.client_name).text()=="Rider has no client"?'No Client Assigned':$(item.client_name).text(),
+        
+//         });
+//     });
+//         var export_data = new CSVExport(export_details);
+//     return false;
+// }
+
 function export_data(){
     var export_details=[];
     var _data=riders_table.ajax.json().data;
-    console.log(_data);
-    _data.forEach(function(item,index) {
+    var headers = {
+        id: 'ID',
+        name: "Name",
+        date_of_joining: "Date Of Joining",
+        emirate_id: "Emirate Id",
+        email: "Email",
+        passport_expiry: "Passport Expiry",
+        visa_expiry: "Visa Expiry",
+        licence_expiry: "Licence Expiry",
+        mulkiya_expiry: "Mulkiya Expiry",
+        passport_number: "Passport Number",
+        assigned_sim: "Assigned Sim",
+        assigned_bike: "Assigned Bike",
+        assigned_client: "Assigned Client",
+    };
+
+    _data.forEach((item) => {
         export_details.push({
-        "ID":item.id,
-        "Name":item.name,
-        "Date Of Joining":item.date_of_joining,
-        "Emirate Id":item.emirate_id,
-        "Email":item.email,
-        "Passport Expiry":item.passport_expiry,
-        "Visa Expiry":item.visa_expiry,
-        "Licence Expiry":item.licence_expiry,
-        "Mulkiya Expiry":item.mulkiya_expiry,
-        
+            id: item.id,
+            name: item.name,
+            date_of_joining: item.date_of_joining,
+            emirate_id: item.emirate_id,
+            email: item.email,
+            passport_expiry: item.passport_expiry,
+            visa_expiry: item.visa_expiry,
+            licence_expiry: item.licence_expiry,
+            mulkiya_expiry: item.mulkiya_expiry,
+            passport_number: item.passport_number,
+            assigned_sim: $(item.sim_number).text()=="Assign Sim"?'No Sim Assigned':$(item.sim_number).text(),
+            assigned_bike: $(item.bike_number).text()=="Assign Bike"?'No Bike Assigned':$(item.bike_number).text(),
+            assigned_client: $(item.client_name).text()=="Rider has no client"?'No Client Assigned':$(item.client_name).text(),
         });
     });
-        var export_data = new CSVExport(export_details);
-    return false;
+console.log(export_details);
+    var fileTitle = 'Riders Export Data';
+    biketrack.exportCSVFile(headers, export_details, fileTitle); 
 }
 $(function() {
 
@@ -190,11 +223,12 @@ $(function() {
             { "data": 'visa_expiry', "name": 'visa_expiry' },
             { "data": 'licence_expiry', "name": 'licence_expiry' },
             { "data": 'mulkiya_expiry', "name": 'mulkiya_expiry' },
+            { "data": 'passport_number', "name": 'passport_number' },
         ];
         _settings.responsive=false;
         _settings.columnDefs=[
             {
-                "targets": [ 10,11,12,13,14,15,16,17,18 ],
+                "targets": [ 10,11,12,13,14,15,16,17,18,19],
                 "visible": false,
                 searchable: true,
             },
@@ -206,6 +240,7 @@ $(function() {
         $('#riders-table thead tr th').eq(9).before('<th>Visa Expiry</th>');
         $('#riders-table thead tr th').eq(10).before('<th>Licence Expiry</th>');
         $('#riders-table thead tr th').eq(11).before('<th>Mulkiya Expiry</th>');
+        $('#riders-table thead tr th').eq(12).before('<th>Passport Number</th>');
         _settings.columns=[
         { "data": 'new_id', "name": 'new_id' },
             { "data": 'new_name', "name": 'name' },
@@ -220,7 +255,8 @@ $(function() {
             { "data": 'visa_expiry', "name": 'visa_expiry' },
             { "data": 'licence_expiry', "name": 'licence_expiry' },
             { "data": 'mulkiya_expiry', "name": 'mulkiya_expiry' },
-            { "data": 'actions', "name": 'actions' }
+            { "data": 'actions', "name": 'actions' },
+            { "data": 'passport_number', "name": 'passport_number' },
         ];
      
     }
@@ -304,7 +340,6 @@ $(function() {
     //         },
     
 function format ( data ) {
-    // `d` is the original data object for the row
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
             '<tr>'+
             '<td colspan="1"; style="font-weight:900;">Date Of Joining:</td>'+
@@ -328,6 +363,8 @@ function format ( data ) {
             '<td colspan="2";>'+data.licence_expiry+'</td>'+
             '<td colspan="1"; style="font-weight:900;" >Mulkiya Expiry:</td>'+
             '<td colspan="2";>'+data.mulkiya_expiry+'</td>'+
+            '<td colspan="1"; style="font-weight:900;" >Passport #:</td>'+
+            '<td colspan="2";>'+data.passport_number+'</td>'+
             '</tr>'+
         '</table>';
 }
