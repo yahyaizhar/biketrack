@@ -624,7 +624,7 @@ function getInvoices() {
         ],
         responsive: true,
         columnDefs: [{
-            targets: [8],
+            targets: [9],
             visible: false,
             searchable: true,
         }],
