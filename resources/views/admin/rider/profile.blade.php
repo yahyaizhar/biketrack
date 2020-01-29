@@ -228,7 +228,7 @@
                              </div>
                       
             
-                      <div class="form-group">
+                            <div class="form-group">
                                 <label>Date of Joining:</label>
                                 <input type="text" id="datepicker1" autocomplete="off" class="form-control @if($errors->has('date_of_joining')) invalid-field @endif" name="date_of_joining" placeholder="Enter joining Date" value="{{ $rider_details->date_of_joining }}" disabled>
                                 @if ($errors->has('date_of_joining'))
@@ -240,6 +240,10 @@
                                 @else
                                     <span class="form-text text-muted">Rider Joining Date</span>
                                 @endif
+                            </div>
+                            <div class="form-group">
+                                <label>Passport Number:</label>
+                                <input disabled type="text" class="form-control" name="passport_number" value="{{ $rider_details->passport_number }}" placeholder="Enter Passport Number">
                             </div>
                             <div class="row">
                                 <div class="col-lg-12 col-md-12 col-sm-12">
@@ -320,16 +324,6 @@
                                       @endif
                                            
                                         </div>
-                                        {{-- <div class="col-lg-4 col-md-4 col-sm-12">
-                                            @if($rider_details->passport_image_back)
-                                            <a href="#" data-featherlight="{{ asset(Storage::url($rider_details->passport_image_back)) }}"><img style="width:150px;height:150px;" style="width:150px;height:150px;" class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_details->passport_image_back)) }}" alt="image"></a>
-                                            <span class="form-text text-muted"> Back Image</span>
-                                            @else
-                                        <a href="#" data-featherlight="{{ asset('dashboard/assets/media/users/default.jpg') }}"><img style="width:150px;height:150px;" style="width:150px;height:150px;" class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" /></a>
-                                        <span class="form-text text-muted"> Back Image</span> 
-                                        @endif
-                                           
-                                        </div> --}}
                                     </div> 
                                 </div>
                                     <div style="border: 2px solid #ddd;padding: 15px;margin: 7px 0;">

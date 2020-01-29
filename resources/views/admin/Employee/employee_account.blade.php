@@ -102,35 +102,13 @@ Employee Account
 
             </div>
         <div class="row row-no-padding row-col-separator-xl">
-            {{-- <div class="col-md-12 col-lg-6 col-xl-6">
-    
-                <!--begin::New Orders-->
-                <div class="kt-widget24">
-                    <div class="kt-widget24__details">
-                        <a href="#" class="kt-widget24__info">
-                            <h4 class="kt-widget24__title">
-                                Opening Balance
-                            </h4>
-                            
-                            <span class="kt-widget24__stats kt-font-danger">
-                                {{$opening_balance}}
-                            </span>
-                        </a>
-                    </div>
-                    
-                </div>
-    
-                <!--end::New Orders-->
-            </div> --}}
             <div class="col-md-12 col-lg-6 col-xl-6">
-                <!--begin::New Users-->
                 <div class="kt-widget24" style="padding:5px !important;padding-left:25px !important;">
                     <div class="kt-widget24__details" >
                         <a href="https://kingridersapp.solutionwin.net/admin/livemap" class="kt-widget24__info">
                             <h4 class="kt-widget24__title">
                                 Closing Balance:  <span style="font-size: 1.2rem !important;" class="kt-widget24__stats kt-font-success" id="closing_balance"> </span>
                             </h4>
-                            
                         </a>
                     </div>
                 </div>
@@ -257,17 +235,6 @@ Employee Account
                                 </span>
                             @endif
                         </div>
-                        {{-- <div class="form-group">
-                            <label>Description:</label>
-                            <textarea required class="form-control @if($errors->has('desc')) invalid-field @endif" name="desc" cols="3" rows="5"></textarea>
-                            @if ($errors->has('desc'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{$errors->first('desc')}}
-                                    </strong>
-                                </span>
-                            @endif
-                        </div> --}}
                         <div class="kt-form__actions kt-form__actions--right">
                             <button type="submit" class="btn btn-primary button_disabled">Pay Visa Charges</button>
                         </div>
@@ -288,19 +255,6 @@ Employee Account
                 <form class="kt-form" enctype="multipart/form-data" id="cash_paid">
                     <div class="modal-body">
                         <input type="hidden" name="cash_rider_id">
-                        {{-- <div class="form-group">
-                            <label>Rider Cash Paid Date:</label>
-                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
-                            @if ($errors->has('month'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{ $errors->first('month') }}
-                                    </strong>
-                                </span>
-                            @else
-                                <span class="form-text text-muted">Please enter Month</span>
-                            @endif
-                        </div> --}}
                         <div class="form-group">
                             <label>Cash Paid Month:</label>
                             <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
@@ -369,19 +323,6 @@ Employee Account
                 <form class="kt-form" enctype="multipart/form-data" id="cash_pay_dr">
                     <div class="modal-body">
                         <input type="text" name="cash_rider_id_debit">
-                        {{-- <div class="form-group">
-                            <label>Month:</label>
-                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
-                            @if ($errors->has('month'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{ $errors->first('month') }}
-                                    </strong>
-                                </span>
-                            @else
-                                <span class="form-text text-muted">Please enter Month</span>
-                            @endif
-                        </div> --}}
                         <div class="form-group">
                             <label>Receive Loan Month:</label>
                             <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
@@ -450,19 +391,6 @@ Employee Account
                 <form class="kt-form" enctype="multipart/form-data" id="cash_pay_cr">
                     <div class="modal-body">
                         <input type="hidden" name="cash_rider_id">
-                        {{-- <div class="form-group">
-                            <label>Rider Cash Paid Date:</label>
-                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
-                            @if ($errors->has('month'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{ $errors->first('month') }}
-                                    </strong>
-                                </span>
-                            @else
-                                <span class="form-text text-muted">Please enter Month</span>
-                            @endif
-                        </div> --}}
                         <div class="form-group">
                             <label>Loan Month:</label>
                             <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
@@ -519,7 +447,6 @@ Employee Account
             </div>
             </div>
         </div>
-        {{-- end pay cash --}}
         <div class="modal fade" id="remaining_pay_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -533,19 +460,6 @@ Employee Account
                     <div class="modal-body">
                         <input type="hidden" name="account_id" value="">
                         <input type="hidden" name="statement_id" value="">
-                        {{-- <div class="form-group">
-                            <label>Rider Date Paid:</label>
-                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month_paid_rider')) invalid-field @endif" name="month_paid_rider" placeholder="Enter Month" value="">
-                            @if ($errors->has('month'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{ $errors->first('month') }}
-                                    </strong>
-                                </span>
-                            @else
-                                <span class="form-text text-muted">Please enter Month</span>
-                            @endif
-                        </div> --}}
                         <div class="form-group">
                             <label>Salary Month:</label>
                             <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
@@ -572,19 +486,6 @@ Employee Account
                                 <span class="form-text text-muted">Please enter Given Date</span>
                             @endif
                         </div>
-                            {{-- <div class="form-group">
-                                    <label>Total Salary:</label>
-                                    <input readonly type="text" class="form-control @if($errors->has('net_salary')) invalid-field @endif" name="net_salary" value="">
-                                    @if ($errors->has('net_salary'))
-                                        <span class="invalid-response" role="alert">
-                                            <strong>
-                                                {{ $errors->first('net_salary') }}
-                                            </strong>
-                                        </span>
-                                    @else
-                                        <span class="form-text text-muted">Net salary</span>
-                                    @endif 
-                                </div> --}}
                             <div class="form-group">
                                 <label>Available Balance:</label>
                             <input readonly type="text" class="form-control @if($errors->has('gross_salary')) invalid-field @endif" name="gross_salary" value="">
@@ -709,13 +610,9 @@ Employee Account
             </div>
         </div>
         <div class="kt-portlet__body">
-                <!--begin: Datatable -->
             <table class="table table-striped- table-hover table-checkable table-condensed" id="data-table">
                 <thead>
                     <tr>
-                        {{-- <th>
-                            <input type="checkbox" id="select_all" >
-                        </th> --}}
                         <th>Date</th>
                         <th>Description</th>
                         <th>Credit</th>
@@ -726,8 +623,6 @@ Employee Account
                     </tr>
                 </thead>
             </table>
-            <!--end: Datatable -->
-            
             <tfoot>
             <div>
                 <div class="_for_view_upload_salary_slip">
@@ -748,11 +643,6 @@ Employee Account
                 <div>
                     <button style="float:right;margin-right: 10px;" class="btn btn-info btn-elevate btn-icon-sm" id="for_edit" type="button">
                         Edit Salary Slip
-                    </button>
-                </div>
-                <div>
-                    <button style="float:right;margin-right: 10px;" class="btn btn-info btn-elevate btn-icon-sm" id="for_days_payouts" type="button">
-                        Rider Payout detail
                     </button>
                 </div>
                 <div>
@@ -781,129 +671,6 @@ Employee Account
         </div>
     </div>
 </div>
-<div class="kt-content  kt-grid__item kt-grid__item--fluid">
-    <div class="kt-portlet" style="padding: 10px;">
-        <div class="row" style="padding: 10px;">
-            <label class="kt-checkbox col-md-2">
-                <input name="show_slip" type="checkbox" onchange="show_rider_record(this)"  @if($rider->Rider_detail->show_salaryslip==1)checked @endif> Show Salary Slip
-                <span></span>
-            </label>
-            <label class="kt-checkbox col-md-2">
-                <input name="show_atsh" type="checkbox" onchange="show_rider_record(this)"  @if($rider->Rider_detail->show_attendanceslip==1)checked @endif> Show Attendance
-                <span></span>
-            </label>
-        </div>
-        <div>
-            <label for="expiry_date">Expiry date</label>
-            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" readonly class="month_picker form-control" name="expiry_date" placeholder="Select Expiry" >
-        </div>
-    </div>
-    
-</div>
-{{-- rider payouts by days --}}
-
-<div class="kt-content  kt-grid__item kt-grid__item--fluid days_payout" id="kt_content">
-    <div class="kt-portlet kt-portlet--mobile">
-        <div class="kt-portlet__head kt-portlet__head--lg">
-            <div class="kt-portlet__head-label">
-                <span class="kt-portlet__head-icon">
-                    <i class="kt-font-brand fa fa-hotel"></i>
-                </span>
-                <h3 class="kt-portlet__head-title">
-                    Days Payouts
-                </h3>
-            </div>
-            {{-- <div class="kt-portlet__head-toolbar">
-                <div class="kt-portlet__head-wrapper">
-                    <div class="kt-portlet__head-actions">
-                        <div class="mt-2">
-                            <div class="kt-portlet__head-actions" id="select_day">
-                                <label for="dr1">Select Weekly Off Day</label>
-                                <select class="form-control bk-select2" name="custom_select_Day" value="select Day">
-                                    <option >Select Day</option>
-                                    <option value="Monday">Monday</option>   
-                                    <option value="Tuesday">Tuesday</option>   
-                                    <option value="Wednesday">Wednesday</option>   
-                                    <option value="Thursday">Thursday</option>   
-                                    <option value="Friday">Friday</option>   
-                                    <option value="Saturday">Saturday</option>   
-                                    <option value="Sunday">Sunday</option>   
-                                </select> 
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> --}}
-        </div>
-        <div class="kt-portlet__body">
-            <div class="attendance__msg-container" style="">
-                <div class="attendance__msg"></div>
-                <div class="attendance__sync-data">
-                    <div class="row">
-                        <div class="col-md-3 offset-md-9">
-                            <form class="kt-form" enctype="multipart/form-data" id="resync__attendance-form">
-                                <select class="form-control" name="weekday" >
-                                    <option value="0">Sunday</option>
-                                    <option value="1">Monday</option>
-                                    <option value="2">Tuesday</option>
-                                    <option value="3">Wednesday</option>
-                                    <option value="4">Thursday</option>
-                                    <option value="5">Friday</option>
-                                    <option value="6">Saturday</option>
-                                </select>
-            
-                                <button onclick="resync__attendace(this)" class="btn btn-success btn-elevate btn-icon-sm mt-3 float-right" type="button">
-                                    Resync Data
-                                </button> 
-                                <noscript id="resync__attendace_data"></noscript>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="kt-portlet__body" id="rider_days_detail">
-                <style type="text/css">
-                    #rider_days_detail table {
-                        border:solid #000 !important;
-                        border-width:1px 0 0 1px !important;
-                    }
-                    #rider_days_detail th,#rider_days_detail td {
-                        border:solid #000 !important;
-                        border-width:0 1px 1px 0 !important;
-                    }
-                    .custom_rider_id {
-                        font-size: 18px;
-                        }
-                    .custom_rider_name {
-                    font-size: 18px;
-                    }
-                    </style>
-                    <div class="custom_rider_id"></div>
-                    <div class="custom_rider_name"></div>
-
-            <table class="table table-striped- table-hover table-checkable table-condensed rider_days_detail"  style="width:100%;margin:0px auto;">
-                <thead>
-                    <tr>
-                        <th style=" width: 25%;border: 1px solid black;">Date</th>
-                        <th style=" width: 25%;border: 1px solid black;">Trips</th>
-                        <th style=" width: 25%;border: 1px solid black;">Hours</th>     
-                        <th style=" width: 25%;border: 1px solid black;">Status</th>                   
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-                <tfoot></tfoot>
-            </table>
-            <div>
-            </div>
-        </div>
-        <button style="float:right;margin-right: 10px;" onclick="print_data()"  class="btn btn-success btn-elevate btn-icon-sm" id="sync_data" type="button">
-                Print Data
-        </button> 
-    </div>
-</div>
-{{-- end rider payouts by days --}}
 {{-- salary slip --}}
 <div>
 <div class="print_slip_editable" style="">
@@ -1447,116 +1214,6 @@ Employee Account
  '                              </div> </div>  ' ;
  
 
- var resync__attendace=function(_this){
-     var _data = JSON.parse($('#resync__attendace_data').html());
-     if(_data){
-         console.log(_data);
-        var dayoff = parseInt($('#resync__attendance-form [name="weekday"]').val())||0;
-         var time_sheet_data=JSON.parse(JSON.stringify(_data.time_sheet));
-         var _zi={
-            calculated_hours:0,
-            calculated_trips:0,
-            weekly_off:0,
-            absents_count:0,
-            extra_day:0,
-            working_days:0,
-            id:_data.id
-        };
-
-        time_sheet_data.forEach(function(item, i){
-            var _trips = parseFloat(item.trips)||0;
-            var _hours = parseFloat(item.login_hours)||0;
-            console.log(_hours);
-            var item_dayoff = parseFloat(moment(item.date, 'YYYY-MM-DD').format('d'))||0;
-            var item_dayoff_name = moment(item.date, 'YYYY-MM-DD').format('dddd');
-            _zi.off_day=item_dayoff_name;
-            if(_trips==0 && _hours==0){//absent
-                
-                if(item_dayoff==dayoff){
-                    //weekday
-                    _zi.weekly_off++;
-                    item.off_days_status='weeklyoff';
-                }
-                else{
-                    //absent
-                    _zi.absents_count++;
-                    item.off_days_status='absent';
-                }
-            }
-            else{
-                _zi.calculated_trips+=_trips;
-                if(item_dayoff==dayoff){
-                    //extraday
-                    _zi.extra_day++;
-                    item.off_days_status='extraday';
-                    
-                }
-                else{
-                    //present
-                    
-                    _zi.calculated_hours+=(_hours>11?11:_hours);
-                    _zi.working_days++;
-                    item.off_days_status='present';
-
-                }
-            }
-        });
-
-        var __data={
-            time_sheet:time_sheet_data,
-            zomato_income:_zi
-        }
-        $.ajax({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            url : "{{route('import.resync_attendance_data')}}",
-            type : 'POST',
-            data: __data,
-            beforeSend: function() {            
-                $('.bk_loading').show();
-            },
-            complete: function(){
-                $('.bk_loading').hide();
-            },
-            success: function(data){
-                console.warn(data);
-                $('.bk_loading').hide();
-                if(data.status==0){
-                    swal.fire({
-                        position: 'center',
-                        type: 'error',
-                        title: 'Oops...',
-                        text: data.message,
-                        showConfirmButton: true  
-                    });
-                    return;
-                }
-                swal.fire({
-                    position: 'center',
-                    type: 'success',
-                    title: 'Record imported successfully.',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-                $('#for_days_payouts').trigger('click');
-            },
-            error: function(error){
-                $('.bk_loading').hide();
-                swal.fire({
-                    position: 'center',
-                    type: 'error',
-                    title: 'Oops...',
-                    text: 'Unable to update.',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }
-        });
-        console.log(__data)
-         
-     }
- }
     $("#advance").on('shown.bs.modal', function(){
         var month=biketrack.getUrlParameter('r1d1');
         var _month=new Date(month).format("mmmm yyyy");
@@ -1612,147 +1269,6 @@ Employee Account
     }
     });
     
-   
-        $(".days_payout").hide();
-        $('.print_slip_editable').hide();
-        $("#for_days_payouts").on("click",function(){
-        $(".days_payout").show();
-        $('.print_slip_editable').hide();
-        var month=biketrack.getUrlParameter('r1d1');
-        var rider_id=biketrack.getUrlParameter('rider_id');
-         var _Url = "{{url('admin/rider/hours/trips/details')}}"+"/"+month+"/"+rider_id;
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                url : _Url,
-                type : 'GET',
-                beforeSend: function() {            
-                    $('.bk_loading').show();
-                },
-                complete: function(){
-                    $('.bk_loading').hide();
-                },
-                success: function(data){
-                    var _data=data.data;
-                    console.log(_data);
-                    $('.attendance__msg').hide();
-                    $(".rider_days_detail tbody").html(""); 
-                    $(".rider_days_detail tfoot").html(""); 
-                    if(!_data) {return; }
-                    if(_data.error!=null){
-                        var _err = JSON.parse(_data.error);
-                        var _errCode=parseInt(_err.error_code);
-                        $('.attendance__msg-container, .attendance__sync-data').show();
-                        if(_errCode==2){
-                            //no weekday found
-                            var msg="No weekday found. Please manually select the weekly-off day for this rider.";
-                            var _msg = $(basic_alert);
-                            _msg.find('.alert-text').html(msg);
-                            _msg.find('.alert').addClass('alert-outline-danger');
-                            $('.attendance__sync-data').show();
-                            $('.attendance__msg').html(_msg.html()).show();
-                            // $('#resync__attendace_data').html(JSON.stringify(_data));
-                            // return;
-                        }
-                        if(_errCode==1){
-                            //weekday not matched with previous weekday, just show the warning
-                            var msg="Current Weekly Off Day iis not matched with previous month's weekday.";
-                            var _msg = $(basic_alert);
-                            _msg.find('.alert-text').html(msg);
-                            _msg.find('.alert').addClass('alert-outline-warning');
-                            $('.attendance__sync-data').show();
-                            $('.attendance__msg').html(_msg.html());
-                        }
-
-                    }
-                    $('#resync__attendace_data').html(JSON.stringify(_data));
-                    var time_sheet=_data.time_sheet;
-                    var  rows='';
-                    var calculated_trips=0;
-                    var calculated_hours=0;
-                    
-                    var total_absents=_data.absents_count;
-                    var extra_day=_data.extra_day;
-
-                    var absent_hours=total_absents*11;
-                    var work_hours_days=_data.working_days*11;
-                    time_sheet.sort(function(a,b){
-                        return a.date<b.date?-1:1;
-                    });
-                    time_sheet.forEach(function(item,j){
-                        var trips=parseFloat(item.trips)||0;
-                        var login_hours=parseFloat(item.login_hours)||0;
-                        var date=new Date(item.date).format("dd mmm yyyy dddd");
-                        if (login_hours>11) {
-                            login_hours=11;
-                        }
-
-                        var absent__status=item.absent_status;
-                        
-                        var absent_stat='';
-                        var absent_color='';
-                        switch (absent__status) {
-                            case 'Approved':
-                                absent_stat='- Approved ';
-                                absent_color='green';
-                                break;
-                            case 'Rejected':
-                                absent_stat='- Rejected';
-                                absent_color='red';
-                                break;
-                            default:
-                                absent_stat=' (Pending)';
-                                absent_color='red';
-                                break;
-                        }
-                        
-                        
-                        var off__status=item.off_days_status;
-                        
-                        var status='';
-                        switch (off__status) {
-                            case 'weeklyoff':
-                                status='<div style="color:green;">Weekly Off</div>';
-                                break;
-                            case 'absent':
-                                status='<div style="color:'+absent_color+';" class="absents">Absent'+absent_stat+'</div>';
-                                break;
-                            case 'extraday':
-                                login_hours=0;
-                                status='<div style="color:orange;">Extra Day</div>';
-                                break;
-                            case 'present':
-                                status='<div>Present</div>';
-                                break;
-                        
-                            default:
-                                break;
-                        }
-                        calculated_trips+=trips;
-                        calculated_hours+=login_hours;
-                       rows+='<tr><td style=" width: 25%;">'+date+'</td><td style=" width: 25%;text-align: center;">'+trips+'</td><td style=" width: 25%;text-align: center;">'+login_hours+'</td> <td style=" width: 25%;text-align: center;">'+status+'</td></tr>';
-                    });
-                    var less_time=work_hours_days - calculated_hours;
-                    var actual_hours=286 - less_time - absent_hours;
-                    $("[name='absent_days']").val(total_absents);
-                    $('[name="extra_day"]').val(extra_day);
-                    $(".rider_days_detail tbody").html(rows); 
-                    var tr='<tr><th>Total</th><th>'+calculated_trips.toFixed(2)+'</th><th>'+calculated_hours.toFixed(2)+'</th><th></th></tr><tr><th>Actual Hours</th><th></th><th colspan="2">(Total: 286)-(Off: '+absent_hours+')-(Less time: '+less_time.toFixed(2)+')= '+actual_hours.toFixed(2)+'</th></tr>';
-                    $(".rider_days_detail tfoot").html(tr);
-                  var _name =  $('[name="rider_id"]:eq(0) option:selected').text().trim(); 
-                  $('.custom_rider_id').text('Rider id: '+_data.rider_id);
-                  $('.custom_rider_name').text('Rider name: '+_name);
-
-
-                },
-                error: function(error){
-                    console.log(error);
-                }
-            });
-        });
 
             $(document).on("click",".rider_days_detail .absents",function(){
             var a=$(this).parents("tr").find("td:eq(0)").text();
@@ -2462,7 +1978,6 @@ Employee Account
                         $("#to_pay").hide();
                     }
                     
-                    $("#for_days_payouts").trigger("click");
                 },
                 ajax: url,
                 columns: [
@@ -2934,45 +2449,6 @@ function deleteRows(id,model_class,model_id,rider_id,string,month){
     });
     
 }
-function SYNC_DATA(){
-    var absent_days=$('[name="absent_days"]').val();
-    var weekly_off=$('[name="weekly_off"]').val();
-    var weekly_off_day=$('[name="weekly_off_day"]').val();
-    var extra_day=$('[name="extra_day"]').val();
-    var month=r1d1=biketrack.getUrlParameter('r1d1');
-    var rider_id=biketrack.getUrlParameter('rider_id');
-    var _Url = "{{url('admin/rider/week/days/sync/data')}}"+"/"+month+"/"+rider_id+"/"+weekly_off_day+"/"+absent_days+"/"+weekly_off+"/"+extra_day;
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-    $.ajax({
-        url : _Url,
-        type : 'GET',
-        success: function(data){
-            swal.fire({
-                position: 'center',
-                type: 'success',
-                title: 'Record Synchronized successfully.',
-                showConfirmButton: false,
-                timer: 1500
-            });
-            table.ajax.reload(null, false);
-        },
-        error: function(error){
-            swal.fire({
-                position: 'center',
-                type: 'error',
-                title: 'Oops...',
-                text: 'Unable to Synchronized.',
-                showConfirmButton: false,
-                timer: 1500
-            });
-        }
-    });
-
-}
 function print_data(){
     printJS('rider_days_detail','html');
 }
@@ -3030,80 +2506,10 @@ function SimBillsImage(rider_id,month,type){
     });
 }
 
-function approved_rejected_status(rider_id,month,rider_payout_date,status){
-            var _Url = "{{url('admin/rider/rider_account/ajax/absents_status')}}"+"/"+rider_id+"/"+month+"/"+rider_payout_date+"/"+status;
-            console.log(_Url);
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                url : _Url,
-                type : 'GET',
-                success: function(data){
-                    swal.fire({
-                        position: 'center',
-                        type: 'success',
-                        title: 'Record Entered successfully.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                    table.ajax.reload(null, false);
-                },
-                error: function(error){
-                    swal.fire({
-                        position: 'center',
-                        type: 'error',
-                        title: 'Oops...',
-                        text: 'Unable to update.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                }
-            });
-}
 $(function(){
     $('[name="expiry_date"]').on('changeDate', function(){
         $('[name="show_slip"]').trigger('change');
     });
 });
-function show_rider_record(_this){
-    var month=r1d1=biketrack.getUrlParameter('r1d1');
-    var rider_id=biketrack.getUrlParameter('rider_id');
-    var is_checked=$(_this).prop('checked');
-    var type=$(_this).attr('name');
-    var expiry_date = new Date($('[name="expiry_date"]').val()).format('yyyy-mm-dd');
-    var month = new Date(month).format('yyyy-mm-dd');
-    var url = '{{route('admin.accounts.update_salaryslips')}}';
-    $.ajax({
-        url :url,
-        data:{
-            type:type,
-            rider_id:rider_id,
-            is_checked:is_checked,
-            month:month,
-            expiry_date:expiry_date
-        }, 
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        type : 'PUT',
-        success: function(data){
-        
-          
-         },
-        error: function(error){
-            swal.fire({
-                position: 'center',
-                type: 'error',
-                title: 'Oops...',
-                text: 'Unable to update.',
-                showConfirmButton: false,
-                timer: 1500
-            });
-        }
-    });
-}
 </script>
 @endsection

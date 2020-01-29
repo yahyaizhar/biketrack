@@ -100,9 +100,6 @@ class RiderController extends Controller
         $rider->active_month = Carbon::parse($request->active_month)->format('Y-m-d');
         $rider->status = 1;
         $rider->rider_type="Rider";
-        if ($request->rider_type=="Employee") {
-            $rider->rider_type="Employee";
-        }
         $ca=json_decode($rider->spell_time,true);
         if (!isset($ca)) {
             $ca=[];
@@ -140,6 +137,7 @@ class RiderController extends Controller
        $rider_detail->salik_amount = $request->salik_amount;
        $rider_detail->other_passport_given = $request->other_passport_given;
        $rider_detail->not_given = $request->not_given;
+       $rider_detail->passport_number = $request->passport_number;
     
        if($request->passport_collected)
        $rider_detail->passport_collected = 'yes';
@@ -395,7 +393,6 @@ class RiderController extends Controller
         $rider->break_start_time = $request->break_start_time;
         $rider->break_end_time = $request->break_end_time;
         $rider->active_month = Carbon::parse($request->active_month)->format('Y-m-d');
-        $rider->rider_type="Rider";
         if ($request->rider_type=="Employee") {
             $rider->rider_type="Employee";
         }
@@ -432,7 +429,8 @@ class RiderController extends Controller
         $rider_detail->empoloyee_reference = $request->empoloyee_reference;
         $rider_detail->other_passport_given = $request->other_passport_given;
         $rider_detail->not_given = $request->not_given;
-        
+        $rider_detail->passport_number = $request->passport_number;
+
         if($request->passport_collected)
         $rider_detail->passport_collected = 'yes';
     else

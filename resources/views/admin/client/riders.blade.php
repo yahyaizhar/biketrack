@@ -67,6 +67,8 @@ function updateClientHistoryDates(rider_id,client_history_id,assign_date,deassig
         }); 
         }
 </script>
+<input type="hidden" id="active_clients" value="{{$client_active_count}}">
+<input type="hidden" id="deactive_clients" value="{{$client_deactive_count}}">
 <div class="kt-subheader   kt-grid__item" id="kt_subheader">
     <div class="kt-subheader__main">
         
@@ -74,7 +76,7 @@ function updateClientHistoryDates(rider_id,client_history_id,assign_date,deassig
 
         <span class="kt-subheader__separator kt-subheader__separator--v"></span>
 
-        <span class="kt-subheader__desc">Riders</span>
+    <span class="kt-subheader__desc">Riders: <span class="number_of_riders"></span></span>
 
         <a href="{{ route('admin.clients.assignRiders', $client->id) }}" class="btn btn-label-warning btn-bold btn-sm btn-icon-h kt-margin-l-10">
             Assign Riders
@@ -399,18 +401,21 @@ function updateClientHistoryDates(rider_id,client_history_id,assign_date,deassig
  
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
- $("#deactive_riders").hide();       
+ $("#deactive_riders").hide();
+ $('.number_of_riders').html("<a class='text-success'>{{$client_active_count}}</a>");       
 $("#deactive_Riders").on("click",function(){
     var rider_val=$(".change_riders").text();
     if (rider_val=="Active Riders") {
         $(".change_riders").text("Deactive Riders");
         $("#active_riders").show();
         $("#deactive_riders").hide(); 
+        $('.number_of_riders').html("<a class='text-success'>{{$client_active_count}}</a>");
     }
     if (rider_val=="Deactive Riders") {
         $(".change_riders").text("Active Riders");
         $("#active_riders").hide();
         $("#deactive_riders").show(); 
+        $('.number_of_riders').html("<a class='text-danger'>{{$client_deactive_count}}</a>");
     }
     
 });
