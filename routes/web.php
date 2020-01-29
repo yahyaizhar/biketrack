@@ -518,8 +518,8 @@ Route::group([
 // mobile 
 
  //Mobiles   
-    Route::get('/add/purchased_invoices','MobileController@add_purchased_invoices')->name('mobile.add_purchased_invoices');
-    Route::post('/insert/purchased_invoices','MobileController@submit_purchased_invoices')->name('mobile.submit_purchased_invoices');
+    Route::get('/add/purchased_invoices','MobileController@add_purchased_invoices')->name('mobile.add_purchased_invoices'); //// jan ha tw jahan ha, peechy sohaib k mra sara khandan ha
+    Route::post('/insert/purchased_invoices','MobileController@submit_purchased_invoices')->name('mobile.submit_purchased_invoices'); //// jan ha tw jahan ha, peechy sohaib k mra sara khandan ha
     
     Route::get('/mobile/create','MobileController@create_mobile_GET')->name('mobile.create_mobile_GET');
     Route::post('/mobile/create/add','MobileController@create_mobile_POST')->name('mobile.create_mobile_POST');
