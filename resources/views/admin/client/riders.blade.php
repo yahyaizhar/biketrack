@@ -247,7 +247,6 @@ function updateClientHistoryDates(rider_id,client_history_id,assign_date,deassig
         @foreach ($client_history as $client_H)
         @php
             $rider=App\Model\Rider\Rider::find($client_H->rider_id);
-            echo $rider;
         @endphp
         @isset($rider)
             @else
