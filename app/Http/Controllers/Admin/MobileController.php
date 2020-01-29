@@ -173,7 +173,7 @@ class MobileController extends Controller
         if (isset($mobile_history)) {
             $rider_id=$mobile_history->rider_id;
         }
-
+        
         $ra =new \App\Model\Accounts\Rider_Account;
         $ra->mobile_installment_id =$installment->id;
         $ra->type='cr_payable';
@@ -269,16 +269,18 @@ class MobileController extends Controller
         $installment->per_month_installment_amount=$request->installment_amount;
         $installment->save();
 
-        $ra =new \App\Model\Accounts\Rider_Account;
-        $ra->mobile_installment_id =$installment->id;
-        $ra->type='cr_payable';
-        $ra->rider_id=$rider_id;
-        $ra->month =carbon::parse($request->installment_starting_date)->startOfMonth()->format('Y-m-d');
-        $ra->source="Mobile Installment";
-        $ra->amount=$request->installment_amount;
-        $ra->given_date=carbon::parse($request->installment_starting_date)->startOfMonth()->format('Y-m-d');
-        $ra->payment_status="paid";
-        $ra->save();
+        if($request->installment_amount>0){
+            $ra =new \App\Model\Accounts\Rider_Account;
+            $ra->mobile_installment_id =$installment->id;
+            $ra->type='cr_payable';
+            $ra->rider_id=$rider_id;
+            $ra->month =carbon::parse($request->installment_starting_date)->startOfMonth()->format('Y-m-d');
+            $ra->source="Mobile Installment";
+            $ra->amount=$request->installment_amount;
+            $ra->given_date=carbon::parse($request->installment_starting_date)->startOfMonth()->format('Y-m-d');
+            $ra->payment_status="paid";
+            $ra->save();
+        }
     }
         
     $assign_mobile->save();
