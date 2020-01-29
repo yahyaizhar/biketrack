@@ -31,7 +31,7 @@
                                     <div>
                                         <select id="mobile_id" class="form-control kt-select2 bk-select2" name="mobile_id" >
                                             @foreach ($mobiles as $mobile)
-                                                <option value='{{$mobile->id}}'>{{$mobile->model}}-{{$mobile->brand}} </option>
+                                                <option value='{{$mobile->id}}'>{{$mobile->id}}-{{$mobile->model}}-{{$mobile->brand}} - {{$mobile->imei_1}} </option>
                                             @endforeach
                                         </select> 
                                         <span class="form-text text-muted">Like <strong>Samsung</strong>.</span>
