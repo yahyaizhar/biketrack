@@ -57,7 +57,7 @@ Apply for riders/driver job
                     <div class="kt-portlet__head">
                     <div class="kt-portlet__head-label" style="width:100%;">
                         <h3 class="kt-portlet__head-title" style="text-align:center;width: 100%;">
-                            Welcome to king Riderd Delivery Service LLC
+                            Welcome to king Rider Delivery Service LLC
                         </h3>
                     </div>
             
