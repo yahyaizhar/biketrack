@@ -344,6 +344,7 @@ public function store_simTransaction(Request $request){
         // $ce->rider_id=$r->rider_id;
         $ce->month = Carbon::parse($request->get('month'))->format('Y-m-d');
         $ce->description="Sim Bill remaining amount";
+        $ce->type="Sim Bill";
         $ce->save();
     }
     return redirect(route('SimTransaction.view_records'))->with('message', 'Sim Transaction is completed successfully.');
