@@ -22,6 +22,7 @@ use App\Model\Accounts\Income_zomato;
 use App\Model\Client\Client_Rider;
 use App\Model\Admin\Company_info;
 use App\Model\Admin\Admin;  
+use App\Model\Transaction\Transaction; 
 use Arr;
 use DB;
 
@@ -167,18 +168,18 @@ class InvoiceController extends Controller
                 //saving payment
                 $payment_method='cash';
                 $invoice_payment->payment_method=$payment_method;
-                // if($payment_method=="bank"){
-                //     $invoice_payment->bank_id=$last_payment->bank_id; 
-                //     //saving transaction
-                //     $bank_transaction=new Bank_transaction;
-                //     $bank_transaction->bank_id=$last_payment->bank_id;
-                //     $bank_transaction->type='cr';
-                //     $bank_transaction->amount=$payment_amount;
-                //     $bank_transaction->source=get_class($invoice);
-                //     $bank_transaction->source_id=$invoice->id;
-                //     $bank_transaction->created_by=Auth::user()->id;
-                //     $bank_transaction->save();
-                // }
+                if($payment_method=="bank"){
+                    $invoice_payment->bank_id=$last_payment->bank_id; 
+                    //saving transaction
+                    $transaction=new Transaction;
+                    $transaction->bank_id=$last_payment->bank_id;
+                    $transaction->payment_type='cr';
+                    $transaction->type='Bank Account';
+                    $transaction->amount=$payment_amount;
+                    $transaction->desc=get_class($invoice);
+                    $transaction->date=Carbon::now()->format('Y-m-d');
+                    $transaction->save();
+                }
 
                 $invoice_payment->payment_date=Carbon::now()->format('Y-m-d'); 
                 $invoice_payment->payment=$payment_amount;
@@ -236,21 +237,36 @@ class InvoiceController extends Controller
             $invoice->received_date =$inv_receivedDate;
             $invoice->status=$inv_status;
 
-
+            $client_name="";
+            $client=Client::find($r->client_id);
+            if (isset($client)) {
+                $client_name=$client->name;
+            }
 
             //saving payment
             $invoice_payment->payment_method=$payment_method;
             if($payment_method=="bank"){
                 $invoice_payment->bank_id=$r->bank_id; 
                 //saving transaction
-                $bank_transaction=new Bank_transaction;
-                $bank_transaction->bank_id=$r->bank_id;
-                $bank_transaction->type='cr';
-                $bank_transaction->amount=$payment_amount;
-                $bank_transaction->source=get_class($invoice);
-                $bank_transaction->source_id=$invoice->id;
-                $bank_transaction->created_by=Auth::user()->id;
-                $bank_transaction->save();
+                $transaction=new Transaction;
+                $transaction->bank_id=$r->bank_id;
+                $transaction->payment_type='cr';
+                $transaction->type='bank';
+                $transaction->amount=$payment_amount;
+                $transaction->desc='Deposit amount in bank from '.$client_name.' on '.Carbon::parse($r->payment_date)->format('Y-m-d').'';
+                $transaction->date=Carbon::parse($r->payment_date)->format('Y-m-d');
+                $transaction->save();
+            }
+            if($payment_method=="cash"){
+                $invoice_payment->bank_id=$r->bank_id; 
+                //saving transaction
+                $transaction=new Transaction;
+                $transaction->payment_type='cr';
+                $transaction->type='petty_cash';
+                $transaction->amount=$payment_amount;
+                $transaction->desc='Deposit amount in petty cash from '.$client_name.' on '.Carbon::parse($r->payment_date)->format('Y-m-d').'';
+                $transaction->date=Carbon::parse($r->payment_date)->format('Y-m-d');
+                $transaction->save();
             }
 
             $invoice_payment->payment_date=Carbon::parse($r->payment_date)->format('Y-m-d'); 

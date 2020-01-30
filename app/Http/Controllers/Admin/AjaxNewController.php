@@ -2046,7 +2046,6 @@ class AjaxNewController extends Controller
        array_push($rider_ids, $client_history->rider_id); 
     }
     $client_riders= Rider::whereIn('id', $rider_ids)->get();
-    
     return DataTables::of($client_riders)
     ->addColumn('rider_name', function($rider) {
         $riderFound = Rider::find($rider->id);
@@ -2650,7 +2649,18 @@ class AjaxNewController extends Controller
         }
         return '<div totlgros="'.$total_gross.'">'.round($ra_recieved,2).'</div>';
     })
-    ->rawColumns(['sim_extra_charges','fuel','mobile_charges','bonus','bike_allowns','aed_extra_trips','extra_trips','net_salary','gross_salary','rider_name','bike_number','advance','poor_performance', 'salik', 'sim_charges', 'dc', 'cod', 'rta_fine', 'total_deduction', 'aed_hours', 'total_salary','visa','mobile','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
+    ->addColumn('get_paid_salaries', function($rider) use ($month) {
+            $onlyMonth=Carbon::parse($month)->format('m');
+            $onlyYear=Carbon::parse($month)->format('Y');
+            $paid_salaries=Rider_Account::where('rider_id',$rider->id)
+            ->whereMonth("month",$onlyMonth)
+            ->where("source","salary_paid")
+            ->where("payment_status","paid")
+            ->get()
+            ->sum('amount');
+            return $paid_salaries;
+    })
+    ->rawColumns(['get_paid_salaries','sim_extra_charges','fuel','mobile_charges','bonus','bike_allowns','aed_extra_trips','extra_trips','net_salary','gross_salary','rider_name','bike_number','advance','poor_performance', 'salik', 'sim_charges', 'dc', 'cod', 'rta_fine', 'total_deduction', 'aed_hours', 'total_salary','visa','mobile','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
     ->make(true);
     }
     public function client_salary_export($month)
