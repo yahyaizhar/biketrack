@@ -370,7 +370,8 @@ var init_table=function(month){
             $('.total_entries').remove();
             $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
             mark_table();
-            total_data(_data);
+            console.log(this);   
+            total_data(this.api().ajax.json().data);
         },
         // ajax: '{!! route('admin.accounts.income_zomato_ajax') !!}',
         ajax: "{{url('admin/zomato/salary/sheet/export/ajax')}}"+"/"+month+"/"+client_id,
