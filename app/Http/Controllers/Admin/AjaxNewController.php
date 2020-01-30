@@ -329,17 +329,46 @@ class AjaxNewController extends Controller
             }
         }
         //bike_rent
-        $model = \App\Model\Accounts\Company_Account::
+        // $model = \App\Model\Accounts\Company_Account::
+        // whereMonth('month', $month)
+        // ->where("rider_id",$rider_id)
+        // ->whereNotNull('bike_rent_id')
+        // ->get()
+        // ->first();
+        // if(isset($model)){
+        //     $model->source = "Bike Rent";
+        //     if ($model!="") {
+        //         $bills->push($model);
+        //     }
+        // }
+
+        $modelArr = \App\Model\Accounts\Company_Account::
         whereMonth('month', $month)
         ->where("rider_id",$rider_id)
         ->whereNotNull('bike_rent_id')
-        ->get()
-        ->first();
-        if(isset($model)){
-            $model->source = "Bike Rent";
-            if ($model!="") {
-                $bills->push($model);
+        ->get();
+        $model = $modelArr->first();
+        if(isset($model)){ 
+        $bike_rent_pend=0;
+        $bike_rent_paid=0;
+        foreach ($modelArr as $mod) {
+            if ($mod->payment_status=="pending") {
+                $bike_rent_pend+=$mod->amount;
             }
+            $bike_rent_paid+=$mod->amount;
+            }   
+            if (isset($bike_rent_paid)) {
+                $model->amount=$bike_rent_paid; 
+                $model->payment_status="paid";  
+            } 
+        
+        if ($bike_rent_pend>0) {
+            $model->payment_status="pending";
+            $model->amount=$bike_rent_pend.' is remaining out of '.$bike_rent_paid;  
+        }
+        if ($model!="") {
+            $bills->push($model);
+        }
         }
 
 

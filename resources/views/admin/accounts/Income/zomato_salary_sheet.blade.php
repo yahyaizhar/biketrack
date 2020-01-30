@@ -370,6 +370,7 @@ var init_table=function(month){
             $('.total_entries').remove();
             $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
             mark_table();
+            total_data(_data);
         },
         // ajax: '{!! route('admin.accounts.income_zomato_ajax') !!}',
         ajax: "{{url('admin/zomato/salary/sheet/export/ajax')}}"+"/"+month+"/"+client_id,
@@ -542,9 +543,7 @@ $(function() {
         }
         biketrack.updateURL(push_state);
         init_table(month)
-        setTimeout(function(){
-            total_data();
-        },5000)
+        
     });
     var query_month = biketrack.getUrlParameter('month');
     if(query_month!=""){
@@ -759,19 +758,19 @@ function _rec(times){
     },1000)
 }
 _rec(10)
-function total_data(){
-    console.log(riders_data);
+function total_data(data){
+    console.log(data);
     var total_paid_salaries=0;
     var total_paid=0;
     $('.total_gross_').html("");
     $('.total_paid_').html("");
-    Object.keys(riders_data).forEach(function(i,j){
-        if (riders_data[i].get_paid_salaries!==0) {
-            console.log(riders_data[i].get_paid_salaries);
+    Object.keys(data).forEach(function(i,j){
+        if (data[i].get_paid_salaries!==0) {
+            console.log(data[i].get_paid_salaries);
             total_paid++;
         }
         $('.total_paid_').html(total_paid);
-        total_paid_salaries+=riders_data[i].get_paid_salaries;
+        total_paid_salaries+=data[i].get_paid_salaries;
         $('.total_gross_').html(total_paid_salaries.toFixed(2));
     });
 }
