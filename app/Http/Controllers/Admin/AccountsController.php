@@ -1002,13 +1002,13 @@ class AccountsController extends Controller
                         } 
                     }
                 }
-                $salary_hours=round($hours_payable,0);
+                $salary_hours=round($hours_payable,2);
                 $salary_trips=$trips_payable+$trips_EXTRA_payable;
                 $salary_credits=round($ra_cr,2);
                 $ra_salary=$salary_hours +$salary_trips  +$salary_credits ;
                 $ra_recieved=$ra_salary - $ra_payable;
 
-                $total_salary_amt = round($salary_hours+$salary_trips,2);
+                $total_salary_amt = round($hours_payable+$trips_payable+$trips_EXTRA_payable,2);
             }
             else { 
                 # no record found in income zomato table --generate error 
@@ -1055,7 +1055,7 @@ class AccountsController extends Controller
                         $fb__perHourSalary = $basic_salary/$fb__working_hours;
                         $extra_salary = $fb__perHourSalary * $fb__extra_hours;
 
-                        $fixed_salary = round($basic_salary + $extra_salary);
+                        $fixed_salary = $basic_salary + $extra_salary;
                         $ra_salary= $fixed_salary + $ra_cr;
                         $ra_recieved=$ra_salary - $ra_payable;
                         $total_salary_amt = $fixed_salary;
@@ -1084,11 +1084,11 @@ class AccountsController extends Controller
                         
                         if($commission_type=='percentage'){
                             $commission=($basic_salary/100)*$commission_val;
-                            $fixed_salary = round($basic_salary - $commission);
+                            $fixed_salary = $basic_salary - $commission;
                         }
                         else {
                             $commission=$commission_val;
-                            $fixed_salary = round($basic_salary - $commission);
+                            $fixed_salary = $basic_salary - $commission;
                         }
                         $ra_salary= $fixed_salary + $ra_cr;
                         $ra_recieved=$ra_salary - $ra_payable;
