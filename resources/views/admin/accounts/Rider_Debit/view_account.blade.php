@@ -2628,7 +2628,7 @@
                 $('#remaining_salary [name="recieved_salary"]').off('change input').on('change input', function(){
                     var _gross_salary = parseFloat($('#remaining_salary [name="gross_salary"]').val().trim());
                     var _recieved_salary = parseFloat($(this).val().trim());
-                    $('#remaining_salary [name="remaining_salary"]').val(_recieved_salary-_gross_salary);
+                    $('#remaining_salary [name="remaining_salary"]').val((_recieved_salary-_gross_salary).toRound(2));
                 });
                 $('#remaining_salary [name="is_paid"]').val(data.is_paid);
                 $('#remaining_salary [name="gross_salary"], #remaining_salary [name="recieved_salary"]').val(data.gross_salary).trigger('change');
@@ -2642,8 +2642,8 @@
                 // }else{
                 //     $('#remaining_salary [type="submit"]').html("Submit").prop("disabled",false);
                 // }
-                
-
+               var received_salary_auto= $('#remaining_salary [name="recieved_salary"]').val();
+                $('#remaining_salary [name="recieved_salary"]').val(received_salary_auto.toRound(0)).trigger("change");
             });
             
         // $('#remaining_salary [name="remaining_salary"]').val(0);
