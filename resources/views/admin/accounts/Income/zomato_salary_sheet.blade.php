@@ -764,15 +764,15 @@ function total_data(data){
     var total_paid=0;
     $('.total_gross_').html("");
     $('.total_paid_').html("");
-    Object.keys(data).forEach(function(i,j){
-        if (data[i].get_paid_salaries!==0) {
-            console.log(data[i].get_paid_salaries);
+    data.forEach(function(item,j){
+        if (item.get_paid_salaries!==0) {
+            console.log(item.get_paid_salaries);
             total_paid++;
+            total_paid_salaries+=item.get_paid_salaries;
         }
-        $('.total_paid_').html(total_paid);
-        total_paid_salaries+=data[i].get_paid_salaries;
-        $('.total_gross_').html(total_paid_salaries.toFixed(2));
     });
+    $('.total_paid_').html(total_paid);
+    $('.total_gross_').html(total_paid_salaries.toFixed(2));
 }
 </script>
 <style>
