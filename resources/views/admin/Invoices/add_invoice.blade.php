@@ -656,7 +656,7 @@ $(document).ready(function () {
                         }
                     });
                     console.info("====================================================4");
-                    subtotal();
+                    // subtotal();
                     
                 } else {
                     _invoices.make_invoice_readonly();
