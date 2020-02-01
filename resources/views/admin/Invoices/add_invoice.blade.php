@@ -1239,9 +1239,9 @@ function append_row($row_data = null) {
                 '       <td> <input data-input-type="float" class="form-control" data-name="rate" name="invoice_items['+i+'][rate]" min="0" value="' + item.rate + '"> </td>  ' +
                 '       <td> <input data-input-type="float" class="form-control" data-name="qty" name="invoice_items['+i+'][qty]" min="1" value="' + item.qty + '"> </td>  ' +
                 '       <td> ' +
-                '           <input type="hidden" data-name="item_subtotal" name="invoice_items['+i+'][item_subtotal]" value="'+item.subtotal+'">'+
+                '           <input type="hidden" data-name="item_subtotal" name="invoice_items['+i+'][item_subtotal]">'+
                 '           <div class="input-group">   ' +
-                '               <input type="text" class="form-control" placeholder="Amount" data-name="amount" name="invoice_items['+i+'][amount]" readonly aria-describedby="basic-addon2">   ' +
+                '               <input type="text" class="form-control" placeholder="Amount" data-name="amount" name="invoice_items['+i+'][amount]" readonly aria-describedby="basic-addon2" value="'+item.subtotal+'">   ' +
                 '               <div class="input-group-append">  ' +
                 '                   <span class="input-group-text" id="basic-addon2">' +
                 '                       <label class="kt-checkbox kt-checkbox--single kt-checkbox--primary"> <input type="checkbox" data-name="deductable" name="invoice_items['+i+'][deductable]" ' + _isDeductable + '> <span></span> </label>' +
@@ -1270,7 +1270,7 @@ function append_row($row_data = null) {
         '       <td> <input data-input-type="float" class="form-control" data-name="qty" name="invoice_items['+total_rows+'][qty]" min="1" value="1"> </td>  ' +
         '       <td> ' +
         '           <div class="input-group">   ' +
-        '               <input type="text" class="form-control" placeholder="Amount" data-name="amount" name="invoice_items['+total_rows+'][amount]" readonly aria-describedby="basic-addon2">   ' +
+        '               <input type="text" class="form-control" placeholder="Amount" data-name="amount" name="invoice_items['+total_rows+'][amount]"  aria-describedby="basic-addon2" value="'+item.subtotal+'">   ' +
         '               <div class="input-group-append">  ' +
         '                   <span class="input-group-text" id="basic-addon2">' +
         '                       <label class="kt-checkbox kt-checkbox--single kt-checkbox--primary"> <input type="checkbox" data-name="deductable" name="invoice_items['+total_rows+'][deductable]"> <span></span> </label>' +
