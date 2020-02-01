@@ -1286,7 +1286,7 @@ function append_row($row_data = null) {
         '               </label>  ' +
         '           </div>  ' +
         '       </td>  ' +
-        '       <td> <input data-input-type="float" class="form-control" data-name="tax_amount" name="invoice_items['+total_rows+'][tax_amount]" min="0" value="0"> ' +
+        '       <td> <input data-input-type="float" class="form-control" data-name="tax_amount" name="invoice_items['+total_rows+'][tax_amount]" min="0" value="'+item.taxable_amount+'"> ' +
         '           '
     '       </td>  ' +
     '  </tr>  ';
