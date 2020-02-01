@@ -691,7 +691,7 @@ $(document).ready(function () {
             
         }
         console.info("====================================================1");
-        subtotal();
+        // subtotal();
         typeof receive_payment !=="undefined" && (receive_payment.modal_confirmation_required=true);
     });
 
@@ -1092,7 +1092,7 @@ var _invoices={
 
         biketrack.refresh_global();
         console.info("====================================================2");
-        subtotal();
+        // subtotal();
         
         // if(_invoices.invoice.payment_status=="paid"){
         //     $('#invoices .balance_due').text('PAID');
@@ -1296,7 +1296,7 @@ function append_row($row_data = null) {
 function delete_row(ctl) {
     $(ctl).parents("tr").remove();
     console.info("====================================================3");
-    subtotal();
+    // subtotal();
     typeof receive_payment !=="undefined" && (receive_payment.modal_confirmation_required=true);
 }
 
