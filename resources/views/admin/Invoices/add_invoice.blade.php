@@ -1222,6 +1222,7 @@ function append_row($row_data = null) {
     if ($row_data != null) {
         console.log($row_data);
         $row_data.forEach(function (item, i) {
+            console.log(item+"sadhkasdgjdssdfsdafhdsaf")
             var _isTaxable = item.is_taxable ? 'checked' : '';
             // var _isPaybale = item.is_payable?'checked':'';
             var _isDeductable = item.is_deductable ? 'checked' : '';
@@ -1238,7 +1239,7 @@ function append_row($row_data = null) {
                 '       <td> <input data-input-type="float" class="form-control" data-name="rate" name="invoice_items['+i+'][rate]" min="0" value="' + item.rate + '"> </td>  ' +
                 '       <td> <input data-input-type="float" class="form-control" data-name="qty" name="invoice_items['+i+'][qty]" min="1" value="' + item.qty + '"> </td>  ' +
                 '       <td> ' +
-                '           <input type="hidden" data-name="item_subtotal" name="invoice_items['+i+'][item_subtotal]">'+
+                '           <input type="hidden" data-name="item_subtotal" name="invoice_items['+i+'][item_subtotal]" value="'+item.subtotal+'">'+
                 '           <div class="input-group">   ' +
                 '               <input type="text" class="form-control" placeholder="Amount" data-name="amount" name="invoice_items['+i+'][amount]" readonly aria-describedby="basic-addon2">   ' +
                 '               <div class="input-group-append">  ' +
@@ -1251,7 +1252,7 @@ function append_row($row_data = null) {
                 '       <td>   ' +
                 tax +
                 '       </td>  ' +
-                '       <td> <input data-input-type="float" class="form-control" data-name="tax_amount" name="invoice_items['+i+'][tax_amount]" min="0" value="0"> ' +
+                '       <td> <input data-input-type="float" class="form-control" data-name="tax_amount" name="invoice_items['+i+'][tax_amount]" min="0" value="'+item.taxable_amount+'"> ' +
                 '           '
             '       </td>  ' +
             '  </tr>  ';

@@ -570,10 +570,12 @@ public function cash_credit_rider(Request $r){
         $ra->save();
 }
 public function view_upload_salary_slip(Request $request,$month,$rider_id){
-    $_month=Carbon::parse($month)->format('Y-m-d');
+    $_month=Carbon::parse($month)->format('m');
+    $_year=Carbon::parse($month)->format('Y');
     $slip_image=0;
     $salary_paid=Rider_Account::where("rider_id",$rider_id)
-    ->where("month",$_month)
+    ->whereMonth("month",$_month)
+    ->whereYear("month",$_year)
     ->where("source","salary_paid")
     ->get()
     ->first();

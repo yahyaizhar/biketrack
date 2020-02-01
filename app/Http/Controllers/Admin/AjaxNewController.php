@@ -893,10 +893,32 @@ class AjaxNewController extends Controller
             $rider_id=$rider_statement->rider_id;
             $string="source";
             $month=Carbon::parse($rider_statement->month)->format('m');
+            $year=Carbon::parse($rider_statement->month)->format('Y');
             $modelObj=null;
             $model=null;
+            $source_id="";
+            if ($model_id=="Salik Extra" || $model_id=="Salik") {
+                $source_id=$rider_statement->salik_id;   
+            }
+            if ($model_id=="Bike Rent") {
+                $source_id=$rider_statement->bike_rent_id;   
+            }
+            if ($model_id=="fuel_expense_vip") {
+                $source_id=$rider_statement->fuel_expense_id;   
+            }
+            if ($model_id=="fuel_expense_cash") {
+                $source_id=$rider_statement->fuel_expense_id;   
+            }
+            if ($model_id=="Sim Transaction" || $model_id=="Sim extra usage") {
+                $source_id=$rider_statement->sim_transaction_id;   
+            }
+            if ($model_id=="advance") {
+                $source_id=$rider_statement->advance_return_id;   
+            }
+
+
             $editHTML = '<i class="fa fa-edit tr-edit" onclick="editRows(this,'.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
-                
+            $UpdateHTML='';
             $deleteHTML='<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
             /**
              * Skip
@@ -910,7 +932,10 @@ class AjaxNewController extends Controller
                 //skip delete
                 $deleteHTML='';
             }
-            return $editHTML.$deleteHTML;
+            if($rider_statement->bike_rent_id!=null || $rider_statement->sim_transaction_id!=null || $rider_statement->salik_id!=null || $rider_statement->advance_return_id!=null){
+                $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit" onclick="UpdateRows(this,'.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\','.$source_id.')"></i>';
+            }
+            return $UpdateHTML.$editHTML.$deleteHTML;
             // }
         })
         ->addColumn('cash_paid', function($rider_statement) use (&$cash_paid){
@@ -1293,20 +1318,39 @@ class AjaxNewController extends Controller
             $rider_id=$company_statements->rider_id;
             $string="source";
             $month=Carbon::parse($company_statements->month)->format('m');
+            $year=Carbon::parse($company_statements->month)->format('Y');
             $modelObj=null;
             $model=null;
-
+            $source_id="";
+            if ($model_id=="Salik Extra" || $model_id=="Salik") {
+                $source_id=$company_statements->salik_id;   
+            }
+            if ($model_id=="Bike Rent") {
+                $source_id=$company_statements->bike_rent_id;   
+            }
+            if ($model_id=="fuel_expense_vip") {
+                $source_id=$company_statements->fuel_expense_id;   
+            }
+            if ($model_id=="fuel_expense_cash") {
+                $source_id=$company_statements->fuel_expense_id;   
+            }
+            if ($model_id=="Sim Transaction" || $model_id=="Sim extra usage") {
+                $source_id=$company_statements->sim_transaction_id;   
+            }
             $editHTML = '<i class="fa fa-edit tr-edit" onclick="editRows(this,'.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
-            
-            /**
-             * Skip
-             * -Salary row
-             */
-            if($company_statements->salary_id!=null){
+            $UpdateHTML='';
+
+            if($company_statements->salary_id!=null || $company_statements->sim_transaction_id!=null || $company_statements->bike_rent_id!=null|| $company_statements->salik_id!=null){
                 //skip edit
                 $editHTML='';
             }
-            return $editHTML.'<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
+            if($company_statements->fuel_expense_id!=null || $company_statements->bike_rent_id!=null || $company_statements->sim_transaction_id!=null || $company_statements->salik_id!=null || $company_statements->advance_return_id!=null){
+                $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit" onclick="UpdateRows(this,'.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\','.$source_id.')"></i>';
+            }
+            if ($model_id=="Sim extra usage" || $model_id=="Salik Extra") {
+                $UpdateHTML='';
+            }
+            return $UpdateHTML.$editHTML.'<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
 
         })
         
@@ -4453,6 +4497,173 @@ class AjaxNewController extends Controller
             
         })
         ->rawColumns(['id','date','purchase_price','profit_loss','model'])
+        ->make(true);
+    }
+
+    public function getSalaryList($month)
+    {
+        $rider = Rider::where("active_status","A")->get();
+        return DataTables::of($rider)
+        ->addColumn('id', function($rider){
+            return "KR-".$rider->id;
+        })
+        ->addColumn('rider_id', function($rider){
+            return '<a  href="'.route('admin.rider.profile', $rider->id).'">'.$rider->name.'</a>';
+        })
+        ->addColumn('salary', function($rider) use($month){
+            $start_month=carbon::parse($month)->startOfMonth()->format("Y-m-d");
+            $onlyMonth=carbon::parse($month)->format("m");
+            $onlyYear=carbon::parse($month)->format("Y");
+            
+            //prev payables
+            $rider_debits_cr_prev_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$rider->id)
+            ->where(function($q) {
+                $q->where('type', "cr");
+            })
+            ->whereDate('month', '<',$start_month)
+            ->sum('amount');
+            
+            $rider_debits_dr_prev_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$rider->id)
+            ->where(function($q) {
+                $q->where('type', "cr_payable")
+                ->orWhere('type', 'dr');
+            })
+            ->whereDate('month', '<',$start_month)
+            ->sum('amount');
+            $closing_balance_prev = round($rider_debits_cr_prev_payable - $rider_debits_dr_prev_payable,2);
+            //ends prev payables
+
+            $ra_payable=Rider_Account::where("rider_id",$rider->id)
+            ->whereMonth("month",$onlyMonth)
+            ->whereYear("month",$onlyYear)
+            ->where(function($q) {
+                $q->where('type', "cr_payable")
+                ->orWhere('type', 'dr');
+            })
+            ->where("source",'!=',"salary_paid")
+            ->sum('amount');
+            $ra_cr=Rider_Account::where("rider_id",$rider->id)
+            ->whereMonth("month",$onlyMonth)
+            ->whereYear("month",$onlyYear)
+            ->where("payment_status","pending")
+            ->where("type","cr")
+            ->sum('amount');  
+            if($closing_balance_prev < 0){ //deduct
+                $ra_payable += abs($closing_balance_prev);
+            }
+            else {
+                // add
+                $ra_cr += abs($closing_balance_prev);
+            }
+            // ->where("source",'!=',"salary_paid")
+            $ra_recieved=$ra_cr - $ra_payable;
+            return round($ra_recieved,2);
+        })
+        ->addColumn('remaining_salary', function($rider) use($month){
+            $start_month=carbon::parse($month)->startOfMonth()->format("Y-m-d");
+            $onlyMonth=carbon::parse($month)->format("m");
+            $onlyYear=carbon::parse($month)->format("Y");
+            
+            //prev payables
+            $rider_debits_cr_prev_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$rider->id)
+            ->where(function($q) {
+                $q->where('type', "cr");
+            })
+            ->whereDate('month', '<',$start_month)
+            ->sum('amount');
+            
+            $rider_debits_dr_prev_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$rider->id)
+            ->where(function($q) {
+                $q->where('type', "cr_payable")
+                ->orWhere('type', 'dr');
+            })
+            ->whereDate('month', '<',$start_month)
+            ->sum('amount');
+            $closing_balance_prev = round($rider_debits_cr_prev_payable - $rider_debits_dr_prev_payable,2);
+            //ends prev payables
+
+            $ra_payable=Rider_Account::where("rider_id",$rider->id)
+            ->whereMonth("month",$onlyMonth)
+            ->whereYear("month",$onlyYear)
+            ->where(function($q) {
+                $q->where('type', "cr_payable")
+                ->orWhere('type', 'dr');
+            })
+            ->sum('amount');
+            $ra_cr=Rider_Account::where("rider_id",$rider->id)
+            ->whereMonth("month",$onlyMonth)
+            ->whereYear("month",$onlyYear)
+            ->where("payment_status","pending")
+            ->where("type","cr")
+            ->sum('amount');  
+            if($closing_balance_prev < 0){ //deduct
+                $ra_payable += abs($closing_balance_prev);
+            }
+            else {
+                // add
+                $ra_cr += abs($closing_balance_prev);
+            }
+            // ->where("source",'!=',"salary_paid")
+            $ra_recieved=$ra_cr - $ra_payable;
+            
+            if ($ra_recieved>1) {
+                return '<div class="text-success">'.round($ra_recieved,0).'</div>';
+            }
+            if ($ra_recieved<=0) {
+                return '<div class="text-warning">'.round($ra_recieved,0).'</div>';
+            }
+            if ($ra_recieved>0 && $ra_recieved<1) {
+                return '<div class="text-danger">'.round($ra_recieved,0).'</div>';
+            }
+            
+        })
+        ->addColumn('payment_status', function($rider) use($month){
+            $start_month=carbon::parse($month)->startOfMonth()->format("Y-m-d");
+            $onlyMonth=carbon::parse($month)->format("m");
+            $onlyYear=carbon::parse($month)->format("Y");
+            
+            $salary_paid=Rider_Account::where("rider_id",$rider->id)
+            ->whereMonth("month",$onlyMonth)
+            ->whereYear("month",$onlyYear)
+            ->where("source","salary_paid")
+            ->get()
+            ->first();
+            if (isset($salary_paid)) {
+                // return $salary_paid;
+                return "<div class='text-success'>Paid</div>";
+            }
+            return "<div class='text-danger'>Pending</div>";
+        })
+        ->addColumn('image', function($rider) use($month){
+            $_onlyMonth=carbon::parse($month)->format("m");
+            $_onlyYear=carbon::parse($month)->format("Y");
+            $slip=0;
+            $paid=0;
+            $salary_paid=Rider_Account::where("rider_id",$rider->id)
+            ->whereMonth("month",$_onlyMonth)
+            ->whereYear("month",$_onlyYear)
+            ->where("source","salary_paid")
+            ->get()
+            ->first();
+            if (isset($salary_paid)) {
+                $paid=1;
+            }
+
+            $salary_slip=Rider_salary::where("rider_id",$rider->id)
+            ->whereMonth("month",$_onlyMonth)
+            ->whereYear("month",$_onlyYear)
+            ->get()
+            ->first();
+            // return $salary_slip;
+            if (isset($salary_slip)) {
+                $slip=asset(Storage::url($salary_slip->salary_slip_image));
+                if ($salary_slip->salary_slip_image==null) {
+                    $slip='';
+                }
+            }
+            return '<a data-image="'.$slip.'" data-rider="'.$rider->id.'" data-paid="'.$paid.'" class="show_image"><i class="fa fa-eye"></i></a>';
+        })
+        ->rawColumns(['id','rider_id','salary','remaining_salary','image','payment_status'])
         ->make(true);
     }
 }
