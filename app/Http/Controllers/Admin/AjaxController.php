@@ -1137,6 +1137,15 @@ class AjaxController extends Controller
         ->addColumn('id', function($mobile){
             return $mobile->id;
         })
+        ->addColumn('rider_id', function($mobile){
+            $mobile_history=MobileHistory::where("mobile_id",$mobile->id)->get()->first();
+            if (isset($mobile_history)) {
+                $rider_id=$mobile_history->rider_id;
+                $rider=Rider::find($rider_id);
+                return $rider->name;
+            }
+            return "No Rider is Assigned";
+        })
         ->addColumn('invoice_id', function($mobile){
             return $mobile->purchased_invoice_id;
         })
@@ -1240,7 +1249,7 @@ class AjaxController extends Controller
             </div>';
         return $html;
         })
-        ->rawColumns(['model','installments','imei_1','imei_2','id','invoice_id','actions', 'status','month'])
+        ->rawColumns(['model','rider_id','installments','imei_1','imei_2','id','invoice_id','actions', 'status','month'])
         ->make(true);
     }
 

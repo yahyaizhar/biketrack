@@ -478,25 +478,11 @@ $(function() {
     salary_sheet.on( 'search.dt', function () {
         mark_table();
     });
-    if(window.outerWidth>=521){
-        $('#zomato_salary_sheet tbody').on('click', 'td.details-control', function () {
-            var tr = $(this).closest('tr');
-            var row = salary_sheet.row( tr );
-            if ( row.child.isShown() ) {
-                // This row is already open - close it
-                row.child.hide();
-                tr.removeClass('shown');
-            }
-            else {
-                // Open this row
-                var _arow = row.child( format(row.data()) );
-                _arow.show();
-                tr.addClass('shown');
-            }
-        });
-    }
 
-    function format ( data ) {
+    
+});
+});
+function format ( data ) {
     // `d` is the original data object for the row
 
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
@@ -545,7 +531,24 @@ $(function() {
 }
 
     if(window.outerWidth>=521){
+        $(document).on('click', 'td.details-control', function () {
+            
+            var tr = $(this).closest('tr');
+            var row = salary_sheet.row( tr );
+            if ( row.child.isShown() ) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            }
+            else {
+                // Open this row
+                var _arow = row.child( format(row.data()) );
+                _arow.show();
+                tr.addClass('shown');
+            }
+        });
         $("#check_id").change(function(){
+
 
             if($("#check_id").prop("checked") == true){
                 $("td.details-control").each(function(){
@@ -581,8 +584,6 @@ $(function() {
             }
         });
     }
-});
-});
 var mon=biketrack.getUrlParameter('month');
 if (mon!="") {
     $('#kt_select2_3_5').val(biketrack.getUrlParameter('month')).trigger('change');

@@ -45,7 +45,7 @@
                 <div class="col-md-4">
                     <div class="my-2 mx-4">
                         <label>Select Rider:</label>
-                        <select class="form-control kt-select2" name="rider_id" class="rider_selector" >
+                        <select class="form-control kt-select2" name="rider_id" class="rider_selector" id="gb_rider_id" >
                             @foreach ($riders as $rider)
                             <option value="{{ $rider->id }}">
                                 {{ $rider->name }}
@@ -2075,6 +2075,10 @@
                     _quickViewModal.find('.modal-body').html(_targetForm);
                     _quickViewModal.find('[name="month"]').attr('data-month',selected_month);
                     _quickViewModal.find('[name="month_year"]').attr('data-month',selected_month);
+                    var rider_id = $('#gb_rider_id').val();
+                    if(_quickViewModal.find('[name="rider_id"]').length){
+                        _quickViewModal.find('[name="rider_id"]').val(rider_id).trigger('change.select2');
+                    }
                     $('script[data-ajax]').remove();
                     console.warn($(data).find('[data-ajax]'));
                     var $ajax_script = $(data).find('[data-ajax]');
@@ -2083,10 +2087,7 @@
                     if($ajax_script.length==0) alert('Cannot find ajax script in this form');
                     $('body').append('<script data-ajax>'+$ajax_script.eq(0).html()+'<\/script>');
 
-                    var rider_id = $('#gb_rider_id').val();
-                    if(_quickViewModal.find('[name="rider_id"]').length){
-                        _quickViewModal.find('[name="rider_id"]').val(rider_id).trigger('change.select2');
-                    }
+                    
                         biketrack.refresh_global();
                     //add event handler to submit form in modal
                     _quickViewModal.find('form').off('submit').on('submit', function(e){
@@ -2627,7 +2628,7 @@
                 $('#remaining_salary [name="recieved_salary"]').off('change input').on('change input', function(){
                     var _gross_salary = parseFloat($('#remaining_salary [name="gross_salary"]').val().trim());
                     var _recieved_salary = parseFloat($(this).val().trim());
-                    $('#remaining_salary [name="remaining_salary"]').val(_recieved_salary-_gross_salary);
+                    $('#remaining_salary [name="remaining_salary"]').val((_recieved_salary-_gross_salary).toRound(2));
                 });
                 $('#remaining_salary [name="is_paid"]').val(data.is_paid);
                 $('#remaining_salary [name="gross_salary"], #remaining_salary [name="recieved_salary"]').val(data.gross_salary).trigger('change');
@@ -2641,8 +2642,8 @@
                 // }else{
                 //     $('#remaining_salary [type="submit"]').html("Submit").prop("disabled",false);
                 // }
-                
-
+               var received_salary_auto= $('#remaining_salary [name="recieved_salary"]').val();
+                $('#remaining_salary [name="recieved_salary"]').val(received_salary_auto.toRound(0)).trigger("change");
             });
             
         // $('#remaining_salary [name="remaining_salary"]').val(0);

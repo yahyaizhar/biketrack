@@ -209,7 +209,9 @@ class ClientController extends Controller
         $riders = $client->riders;
         $client_history=Client_History::where("client_id",$client->id)->where("status","deactive")->get();
         $client_history_active=Client_History::where("client_id",$client->id)->where("status","active")->get();
-        return view('admin.client.riders', compact('client', 'riders','client_history','client_history_active'));
+        $client_active_count=$client_history_active->count();
+        $client_deactive_count=$client_history->count();
+        return view('admin.client.riders', compact('client', 'riders','client_history','client_history_active','client_active_count','client_deactive_count'));
     }
 
     public function assignRiders(Client $client)

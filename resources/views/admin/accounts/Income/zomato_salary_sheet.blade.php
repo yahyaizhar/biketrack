@@ -127,8 +127,8 @@ margin-left: 10px;
                     </tr>
                 </thead>
             </table>
-    <div style=" padding-left: 15px; "><h4 style="font-size: 15px;display: inline-block;text-transform: capitalize;color: #555252;"> paid salaries:</h4>  <span style=" font-size: 15px; color: #c84e4e; font-weight: 500;" class="totl_paid_salry"></span></div>
-    <div style=" padding-left: 15px; "><h4 style="font-size: 15px;display: inline-block;text-transform: capitalize;color: #555252;">Total salaries:</h4>  <span style=" font-size: 15px; color: #c84e4e; font-weight: 500; " class="totl_gros_salry"></span></div>
+    <div style=" padding-left: 15px; "><h4 style="font-size: 15px;display: inline-block;text-transform: capitalize;color: #555252;"> paid salaries:</h4>  <span style=" font-size: 15px; color: #c84e4e; font-weight: 500;" class="total_paid_"></span></div>
+    <div style=" padding-left: 15px; "><h4 style="font-size: 15px;display: inline-block;text-transform: capitalize;color: #555252;">Total salaries:</h4>  <span style=" font-size: 15px; color: #c84e4e; font-weight: 500; " class="total_gross_"></span></div>
 
             <!--end: Datatable -->
         </div>
@@ -176,7 +176,8 @@ margin-left: 10px;
     $client_riders=App\Model\Client\Client_Rider::all();
 @endphp
 <script>
-        function export_data(){
+
+    function export_data(){
 var export_details=[];
 console.log(riders_data);
         riders_data.forEach(function(item,index) {
@@ -369,7 +370,8 @@ var init_table=function(month){
             $('.total_entries').remove();
             $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
             mark_table();
-            
+            console.log(this);   
+            total_data(this.api().ajax.json().data);
         },
         // ajax: '{!! route('admin.accounts.income_zomato_ajax') !!}',
         ajax: "{{url('admin/zomato/salary/sheet/export/ajax')}}"+"/"+month+"/"+client_id,
@@ -542,7 +544,7 @@ $(function() {
         }
         biketrack.updateURL(push_state);
         init_table(month)
-        _rec(5)
+        
     });
     var query_month = biketrack.getUrlParameter('month');
     if(query_month!=""){
@@ -757,7 +759,22 @@ function _rec(times){
     },1000)
 }
 _rec(10)
-
+function total_data(data){
+    console.log(data);
+    var total_paid_salaries=0;
+    var total_paid=0;
+    $('.total_gross_').html("");
+    $('.total_paid_').html("");
+    data.forEach(function(item,j){
+        if (item.get_paid_salaries!==0) {
+            console.log(item.get_paid_salaries);
+            total_paid++;
+            total_paid_salaries+=item.get_paid_salaries;
+        }
+    });
+    $('.total_paid_').html(total_paid);
+    $('.total_gross_').html(total_paid_salaries.toFixed(2));
+}
 </script>
 <style>
     td.details-control {

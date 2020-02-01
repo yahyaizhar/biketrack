@@ -329,17 +329,46 @@ class AjaxNewController extends Controller
             }
         }
         //bike_rent
-        $model = \App\Model\Accounts\Company_Account::
+        // $model = \App\Model\Accounts\Company_Account::
+        // whereMonth('month', $month)
+        // ->where("rider_id",$rider_id)
+        // ->whereNotNull('bike_rent_id')
+        // ->get()
+        // ->first();
+        // if(isset($model)){
+        //     $model->source = "Bike Rent";
+        //     if ($model!="") {
+        //         $bills->push($model);
+        //     }
+        // }
+
+        $modelArr = \App\Model\Accounts\Company_Account::
         whereMonth('month', $month)
         ->where("rider_id",$rider_id)
         ->whereNotNull('bike_rent_id')
-        ->get()
-        ->first();
-        if(isset($model)){
-            $model->source = "Bike Rent";
-            if ($model!="") {
-                $bills->push($model);
+        ->get();
+        $model = $modelArr->first();
+        if(isset($model)){ 
+        $bike_rent_pend=0;
+        $bike_rent_paid=0;
+        foreach ($modelArr as $mod) {
+            if ($mod->payment_status=="pending") {
+                $bike_rent_pend+=$mod->amount;
             }
+            $bike_rent_paid+=$mod->amount;
+            }   
+            if (isset($bike_rent_paid)) {
+                $model->amount=$bike_rent_paid; 
+                $model->payment_status="paid";  
+            } 
+        
+        if ($bike_rent_pend>0) {
+            $model->payment_status="pending";
+            $model->amount=$bike_rent_pend.' is remaining out of '.$bike_rent_paid;  
+        }
+        if ($model!="") {
+            $bills->push($model);
+        }
         }
 
 
@@ -2046,7 +2075,6 @@ class AjaxNewController extends Controller
        array_push($rider_ids, $client_history->rider_id); 
     }
     $client_riders= Rider::whereIn('id', $rider_ids)->get();
-    
     return DataTables::of($client_riders)
     ->addColumn('rider_name', function($rider) {
         $riderFound = Rider::find($rider->id);
@@ -2650,7 +2678,18 @@ class AjaxNewController extends Controller
         }
         return '<div totlgros="'.$total_gross.'">'.round($ra_recieved,2).'</div>';
     })
-    ->rawColumns(['sim_extra_charges','fuel','mobile_charges','bonus','bike_allowns','aed_extra_trips','extra_trips','net_salary','gross_salary','rider_name','bike_number','advance','poor_performance', 'salik', 'sim_charges', 'dc', 'cod', 'rta_fine', 'total_deduction', 'aed_hours', 'total_salary','visa','mobile','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
+    ->addColumn('get_paid_salaries', function($rider) use ($month) {
+            $onlyMonth=Carbon::parse($month)->format('m');
+            $onlyYear=Carbon::parse($month)->format('Y');
+            $paid_salaries=Rider_Account::where('rider_id',$rider->id)
+            ->whereMonth("month",$onlyMonth)
+            ->where("source","salary_paid")
+            ->where("payment_status","paid")
+            ->get()
+            ->sum('amount');
+            return $paid_salaries;
+    })
+    ->rawColumns(['get_paid_salaries','sim_extra_charges','fuel','mobile_charges','bonus','bike_allowns','aed_extra_trips','extra_trips','net_salary','gross_salary','rider_name','bike_number','advance','poor_performance', 'salik', 'sim_charges', 'dc', 'cod', 'rta_fine', 'total_deduction', 'aed_hours', 'total_salary','visa','mobile','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
     ->make(true);
     }
     public function client_salary_export($month)

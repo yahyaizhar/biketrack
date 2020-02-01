@@ -917,7 +917,7 @@ class AccountsController extends Controller
 
 
         //some static_data
-        $_s_maxTrips=800;
+        $_s_maxTrips=400;
         $_s_tripsFormula=2;
         $_s_maxTripsFormula=4;
         $_s_monthlyHours=286;
@@ -931,7 +931,7 @@ class AccountsController extends Controller
 
             if ($pm=='trip_based') {
                 
-                // $_s_maxTrips=$client_setting['tb_sm__bonus_trips'];
+                $_s_maxTrips=$client_setting['tb_sm__bonus_trips'];
                 $_s_tripsFormula=$client_setting['tb_sm__trip_amount'];
                 $_s_maxTripsFormula=$client_setting['tb_sm__trips_bonus_amount'];
                 $_s_monthlyHours=286;

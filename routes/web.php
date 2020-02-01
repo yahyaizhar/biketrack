@@ -518,8 +518,8 @@ Route::group([
 // mobile 
 
  //Mobiles   
-    Route::get('/add/purchased_invoices','MobileController@add_purchased_invoices')->name('mobile.add_purchased_invoices');
-    Route::post('/insert/purchased_invoices','MobileController@submit_purchased_invoices')->name('mobile.submit_purchased_invoices');
+    Route::get('/add/purchased_invoices','MobileController@add_purchased_invoices')->name('mobile.add_purchased_invoices'); //// jan ha tw jahan ha, peechy sohaib k mra sara khandan ha
+    Route::post('/insert/purchased_invoices','MobileController@submit_purchased_invoices')->name('mobile.submit_purchased_invoices'); //// jan ha tw jahan ha, peechy sohaib k mra sara khandan ha
     
     Route::get('/mobile/create','MobileController@create_mobile_GET')->name('mobile.create_mobile_GET');
     Route::post('/mobile/create/add','MobileController@create_mobile_POST')->name('mobile.create_mobile_POST');
@@ -534,7 +534,7 @@ Route::group([
     Route::post('/mobile/assignedMobile_to_rider/{rider_id}','MobileController@mobile_is_assigned_to_rider')->name('Mobile.mobile_is_assigned_to_rider');
     Route::get('/mobile/rider_history/{rider_id}','MobileController@mobile_rider_history')->name('Mobile.mobile_rider_history');
     Route::get('/mobile/change_given_date/history/{rider_id}/{mobile_history_id}','MobileController@change_Mobile_given_date')->name('Mobile.change_Mobile_given_date');
-    Route::get('/mobile/ajax/data/{mobile_id}/{month}','MobileController@consumption_mobile_records')->name('Mobile.consumption_mobile_records');
+    Route::get('/mobile/ajax/data/{mobile_id}/{month}/{according_to}','MobileController@consumption_mobile_records')->name('Mobile.consumption_mobile_records');
     Route::get('/mobile/sellers/view','MobileController@sellers_view')->name('mobile.sellers_view');
     Route::get('/mobile/sellers/edit/{seller_id}','MobileController@sellers_edit')->name('mobile.sellers_edit');
     Route::post('/mobile/sellers/update/{seller_id}','MobileController@sellers_update')->name('mobile.sellers_update');

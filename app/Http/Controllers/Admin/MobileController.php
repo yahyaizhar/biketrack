@@ -173,7 +173,7 @@ class MobileController extends Controller
         if (isset($mobile_history)) {
             $rider_id=$mobile_history->rider_id;
         }
-
+        
         $ra =new \App\Model\Accounts\Rider_Account;
         $ra->mobile_installment_id =$installment->id;
         $ra->type='cr_payable';
@@ -187,45 +187,46 @@ class MobileController extends Controller
         return redirect(route('mobile.show'));
     }
 
-    public function consumption_mobile_records($mobile_id,$month){
+    public function consumption_mobile_records($_id,$month, $accordingTo){
 
         $startMonth = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
         $month = Carbon::parse($month)->format('Y-m-d');
         $onlyMonth = Carbon::parse($month)->format('m');
-
-        $mobile=Mobile::where('id',$mobile_id)->get()->first();
-        $sale_price=$mobile->sale_price;
-        $remaining_amount=$mobile->remaining_amount;
-        $amount_received=$mobile->amount_received;
-        $mobile_history=MobileHistory::where('mobile_id',$mobile_id)->get()->first();
-        $rider_id_mh=null;
-        $rider_id=null;
-        $payment_type_mh=null;
-        if (isset($mobile_history)) {
-            $rider_id=$mobile_history->rider_id;
-            $rider_id_mh=$mobile_history->rider_id;
-            $payment_type_mh=$mobile_history->payment_type; 
+        
+        if($accordingTo=='mobile'){
+            $mobile_history = MobileHistory::where("mobile_id",$_id)->get()->first();
+            $_id_rider=null;
+            $_id_mobile=null;
         }
-
-        $mobile_history = MobileHistory::where("mobile_id",$mobile_id)->get()->first();
-        $_id_rider=null;
-        $_id_mobile=null;
+        else {
+            $mobile_history = MobileHistory::where("rider_id",$_id)->get()->first();
+            $_id_rider=null;
+            $_id_mobile=null;
+        }
         if (isset($mobile_history)) {
             $_id_rider=$mobile_history->rider_id;
             $_id_mobile=$mobile_history->mobile_id;
-            
+            $payment_type_mh=$mobile_history->payment_type; 
+            $mobile=Mobile::where('id',$_id_mobile)->get()->first();
+            $sale_price=$mobile->sale_price;
+            $remaining_amount=$mobile->remaining_amount;
+            $amount_received=$mobile->amount_received;
+            return response()->json([
+                'status' => 1,
+                'sale_price'=>$sale_price,
+                'remaining_amount'=>$remaining_amount,
+                'amount_received'=>$amount_received,
+                'rider_id'=>$_id_rider,
+                'payment_type'=>$payment_type_mh,
+                'mobile_history'=>$mobile_history,
+                '_id_rider'=>$_id_rider,
+                '_id_mobile'=>$_id_mobile,
+            ]); 
         }
         return response()->json([
-            'data' => true,
-            'sale_price'=>$sale_price,
-            'remaining_amount'=>$remaining_amount,
-            'amount_received'=>$amount_received,
-            'rider_id'=>$rider_id_mh,
-            'payment_type'=>$payment_type_mh,
-            'mobile_history'=>$mobile_history,
-            '_id_rider'=>$_id_rider,
-            '_id_mobile'=>$_id_mobile,
+            'status' => 0,
         ]); 
+        
     }
     public function addSellerDeatil(Request $r){
     
@@ -268,16 +269,18 @@ class MobileController extends Controller
         $installment->per_month_installment_amount=$request->installment_amount;
         $installment->save();
 
-        $ra =new \App\Model\Accounts\Rider_Account;
-        $ra->mobile_installment_id =$installment->id;
-        $ra->type='cr_payable';
-        $ra->rider_id=$rider_id;
-        $ra->month =carbon::parse($request->installment_starting_date)->startOfMonth()->format('Y-m-d');
-        $ra->source="Mobile Installment";
-        $ra->amount=$request->installment_amount;
-        $ra->given_date=carbon::parse($request->installment_starting_date)->startOfMonth()->format('Y-m-d');
-        $ra->payment_status="paid";
-        $ra->save();
+        if($request->installment_amount>0){
+            $ra =new \App\Model\Accounts\Rider_Account;
+            $ra->mobile_installment_id =$installment->id;
+            $ra->type='cr_payable';
+            $ra->rider_id=$rider_id;
+            $ra->month =carbon::parse($request->installment_starting_date)->startOfMonth()->format('Y-m-d');
+            $ra->source="Mobile Installment";
+            $ra->amount=$request->installment_amount;
+            $ra->given_date=carbon::parse($request->installment_starting_date)->startOfMonth()->format('Y-m-d');
+            $ra->payment_status="paid";
+            $ra->save();
+        }
     }
         
     $assign_mobile->save();
