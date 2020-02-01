@@ -1141,6 +1141,8 @@ function subtotal() {
 
         // var amount = rate * qty;
         // $(this).find('[data-name="item_subtotal"]').val((amount).toFixed(2));
+        
+        var amount=$(this).find('[data-name="amount"]').val();
 
         // if(is_deductable){
         //     total_amount -= amount;
