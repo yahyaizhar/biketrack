@@ -1139,10 +1139,8 @@ function subtotal() {
         }
         var qty = parseFloat($(this).find('[data-name="qty"]').val()) || 0;
 
-        // var amount = rate * qty;
-        // $(this).find('[data-name="item_subtotal"]').val((amount).toFixed(2));
-        
-        var amount=$(this).find('[data-name="amount"]').val();
+        var amount = rate * qty;
+        $(this).find('[data-name="item_subtotal"]').val((amount).toFixed(2));
 
         // if(is_deductable){
         //     total_amount -= amount;
