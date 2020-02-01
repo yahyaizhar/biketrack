@@ -12,6 +12,10 @@ Apply for riders/driver job
     font-size: 18px;
     color: #57445c;
 }
+.form-group textarea {
+    font-size: 18px;
+    color: #57445c;
+}
 .form-group select {
     font-size: 18px;
     color: #57445c;
@@ -20,10 +24,53 @@ Apply for riders/driver job
     font-size: 18px;
     color: #57445c;
 }
+img.img.img-thumbnail{
+    cursor: pointer;
+}
+.kt-portlet__body{
+margin-left: 100%;
+transition:1s cubic-bezier(0.04, 0.46, 0.6, 1.07);
+}
 @media only screen and (max-width:480px){
 .form-group input[type='radio'] {
-    font-size: 16px !important;
+    font-size: 16px !important; 
   }
+  #kt_wrapper{
+  padding-top: 5px;
+}
+h3.kt-portlet__head-title{
+    font-size: 15px !important;
+}
+.custmstructure h5 {
+    padding: 14px 0px 4px !important;
+}
+.alreay_registred{
+    padding: 5px 25px !important;
+}
+.custm_hidden_btn{
+    font-size: 14px !important;
+}
+.form-group label{
+    font-size: 18px !important;
+}
+.form-group select{
+    font-size: 17px !important;
+}
+.form-group input{
+    font-size: 17px !important;
+}
+.form-group h6{
+    font-size: 17px !important;
+}
+.form-group textarea{
+    font-size: 17px !important;
+}
+.form-group{
+    margin-bottom: 10px !important;
+}
+.altlogo {
+    max-width: 180px !important;
+}
 }
 </style>
 
@@ -52,11 +99,11 @@ Apply for riders/driver job
         <div class="col-md-7 m-auto"> 
         <!--begin::Portlet-->
             <div class="kt-portlet">
-                    <img alt="Logo" style="text-align:center;max-width: 200px;margin: 0px auto;" src="https://biketrack.solutionwin.net/dashboard/assets/media/logos/company-logo.png">
+                    <img class="altlogo" alt="Logo" style="text-align:center;max-width: 200px;margin: 0px auto;" src="https://biketrack.solutionwin.net/dashboard/assets/media/logos/company-logo.png">
                     @include('admin.includes.message')  
                     <div class="kt-portlet__head">
                     <div class="kt-portlet__head-label" style="width:100%;">
-                        <h3 class="kt-portlet__head-title" style="text-align:center;width: 100%;">
+                        <h3 class="kt-portlet__head-title" style="text-align:center;width: 100%;font-size: 18px;">
                             Welcome to king Rider Delivery Service LLC
                         </h3>
                     </div>
@@ -85,20 +132,20 @@ Apply for riders/driver job
                 </div>
                 <!--begin::Form-->
                 
-                <div class="alreay_registred" style="margin: 0px auto;padding: 20px 25px;"> 
+                <div class="alreay_registred" style="margin: 0px auto;padding: 20px 25px;text-align: center;"> 
                     <h5 style="color: #57445c;">Already Applied for job in King Riders?</h5>
                                   <button class="btn btn-info custm_hidden_btn float-right" style="text-align: center; width: 100%;margin-bottom: 10px;margin-top: 12px; font-size: 16px;">Check your application status</button>
                        <div class="divtoappnd">
                                   <div class="hidde_status_form" style="display:none;">
                        <form method="POST" enctype="multipart/form-data">
                        <div class="form-group">
-                           <label>Emirates i'd:</label>
+                           <label>Emirates id:</label>
                            <input class="form-control" name="national_id_card_no" id="national_id_card_no" type="text">
-                           <button name="submit" type="submit" class="btn btn-success" style="margin-top: 10px;">Submit</button>
+                           <button name="submit" type="submit" class="btn btn-dark" style="margin-top: 10px;">Submit</button>
                        </div>
                        </form>
                         </div>
-                    <div class="approval_message" style="display:none;overflow: hidden;width: 100%;">
+                    <div class="approval_message" style="display:none;overflow: hidden;width: 100%;font-size: 14px;">
                         </div>
                     </div>
                 </div>
@@ -127,7 +174,7 @@ Apply for riders/driver job
                                     </strong>
                                 </span>
                             @else
-                                <span class="form-text text-muted">Please enter your name</span>
+                                {{-- <span class="form-text text-muted">Please enter your name</span> --}}
                             @endif
                         </div>
 
@@ -141,7 +188,7 @@ Apply for riders/driver job
                                         </strong>
                                     </span>
                                 @else
-                                    <span class="form-text text-muted">Please enter your email</span>
+                                    {{-- <span class="form-text text-muted">Please enter your email</span> --}}
                                 @endif
                         </div>
 
@@ -416,7 +463,7 @@ Apply for riders/driver job
                                     </strong>
                                 </span>
                             @else
-                                <span class="form-text text-muted">Please enter your phone number</span>
+                                {{-- <span class="form-text text-muted">Please enter your phone number</span> --}}
                             @endif
                         </div>
                         <div class="form-group">
@@ -789,7 +836,7 @@ Apply for riders/driver job
                                     </strong>
                                 </span>
                             @else
-                                <span class="form-text text-muted">About yourself</span>
+                                {{-- <span class="form-text text-muted">About yourself</span> --}}
                             @endif
                         </div>
                          </div>
@@ -965,44 +1012,44 @@ $('.modal-body').find('form').off('submit').on('submit', function(e){
                                 if(data == 'error'){
                                 $('.modal-body .approval_message').show();
                                 $('.modal-body .approval_message').css('color','red');
-                                $('.modal-body .approval_message').html('<ul><li>No data found against your national id card number.Please submit you application if you have not applied yet.</li></ul>')
+                                $('.modal-body .approval_message').html('<ul style="padding:0px;"><li><div class="alert alert-info" role="alert"> <div class="alert-icon"><i class="flaticon-warning"></i></div> <div class="alert-text">No data found against your national id card number.Please submit you application if you have not applied yet.!</div> </div></li></ul>')
                                 }
                                else{
                                    if(data[0].approval_status =="pending"){
                                 $('.modal-body .approval_message').show();
-                                $('.modal-body .approval_message').css('color','red'); 
-                                $('.modal-body .approval_message').html('<ul><li>Your application is still pending.We will inform you shortly within a week.</li></ul>');
+                                $('.modal-body .approval_message').css('color','rgb(50, 48, 48)'); 
+                                $('.modal-body .approval_message').html('<ul style="padding:0px;"><li><div class="alert alert-dark" role="alert"> <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div> <div class="alert-text">Your application is still pending.We will inform you shortly within a week.!</div> </div></li></ul>');
                                    }
                                 else if(data[0].approval_status == "reject"){
                                 if(data[0].status_approval_message !== null){
                                 $('.modal-body .approval_message').show();
-                                $('.modal-body .approval_message').css('color','red'); 
-                                $('.modal-body .approval_message').html('<ul><li>Your application is reject </li><li> Application status message:'+data[0].status_approval_message+'</li></ul>');
+                                $('.modal-body .approval_message').css('color','rgb(50, 48, 48)'); 
+                                $('.modal-body .approval_message').html('<ul style="padding:0px;"><div class="alert alert-danger" role="alert"> <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div> <div class="alert-text"><li style=" display: block; ">Your application is rejected </li><li style=" display: block; "> Application status message :  '+data[0].status_approval_message+'</li></div> </div></ul>');
                                 if(data[0].missing_fields !== null){
-                                $('.modal-body .approval_message ul').append('<li>Click on this link to edit your profile <a href="newcomer/'+data[0].id+'/update">Click here</a></li>')
+                                $('.modal-body .approval_message ul').append('<div class="alert alert-info" role="alert"> <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div> <div class="alert-text"><li>Click on this link to edit your profile <a style=" color: wheat; font-size: 18px; padding-left: 12px; " href="newcomer/'+data[0].id+'/update">Click here</a></li></div> </div>')
                                 }
                                 }else{
                                 $('.modal-body .approval_message').show();
-                                $('.modal-body .approval_message').css('color','red'); 
-                                $('.modal-body .approval_message').html('<ul><li>Your application is rejected.</li></ul>');
+                                $('.modal-body .approval_message').css('color','rgb(50, 48, 48)'); 
+                                $('.modal-body .approval_message').html('<ul style="padding:0px;"><div class="alert alert-danger" role="alert"> <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div> <div class="alert-text"><li>Your application is rejected.</li></div> </div></ul>');
                                 if(data[0].missing_fields !== null){
-                                $('.modal-body .approval_message ul').append('<li>Click on this link to edit your profile <a href="newcomer/'+data[0].id+'/update">Click here</a></li>')
+                                $('.modal-body .approval_message ul').append('<div class="alert alert-info" role="alert"> <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div> <div class="alert-text"><li>Click on this link to edit your profile <a style=" color: wheat; font-size: 18px; padding-left: 12px; " href="newcomer/'+data[0].id+'/update">Click here</a></li></div> </div>')
                                 }
                                 }
                                     
                                 }
                                 else{
                                 $('.modal-body .approval_message').show();
-                                $('.modal-body .approval_message').css('color','red'); 
+                                $('.modal-body .approval_message').css('color','rgb(50, 48, 48)'); 
                                 if(data[0].interview_date ==''){
-                                $('.modal-body .approval_message').html('<ul><li>Your application has been Approved. We will inform you about your interview soon.</li></ul>');
+                                $('.modal-body .approval_message').html('<ul style="padding:0px;"><div class="alert alert-success" role="alert"> <div class="alert-icon"><i class="flaticon-warning"></i></div> <div class="alert-text"><li style=" display: block; ">Your application has been Approved. We will inform you about your interview soon.</li></div> </div></ul>');
                                 }
                                 else{
                                 if(data[0].interview_status =='pending'){
-                                    $('.modal-body .approval_message').html('<ul><li>Your application has been Approved</li><li>Your Interview is scheduled on '+data[0].interview_date+'</li></ul>');
+                                    $('.modal-body .approval_message').html('<ul style="padding:0px;"><div class="alert alert-success" role="alert"> <div class="alert-icon"><i class="flaticon-warning"></i></div> <div class="alert-text"><li style=" display: block; ">Your application has been Approved</li><li style=" display: block; ">Your Interview is scheduled on '+data[0].interview_date+'</li></div> </div></ul>');
                                 }
                                 else{
-                                    $('.modal-body .approval_message').html('<ul><li>Your application has been Approved</li><li>Your Interview is scheduled on '+data[0].interview_date+'</li><li>Interview status: '+data[0].interview_status+'</li><li>Interview Message: '+data[0].interview_status_message+'</li></ul>');
+                                    $('.modal-body .approval_message').html('<ul style="padding:0px;"><div class="alert alert-success" role="alert"> <div class="alert-icon"><i class="flaticon-warning"></i></div> <div class="alert-text"><li style=" display: block; ">Your application has been Approved</li><li style=" display: block; ">Your Interview is scheduled on '+data[0].interview_date+'</li><li style=" display: block; ">Interview status: '+data[0].interview_status+'</li><li style=" display: block; ">Interview Message: '+data[0].interview_status_message+'</li></div> </div></ul>');
 
                                 }
                                 }
@@ -1016,10 +1063,12 @@ $('.modal-body').find('form').off('submit').on('submit', function(e){
                 })
                 $('.custmclick').click(function(){
                     var _index = $(this).text().indexOf('Bike');
-                    $('.kt-portlet__body').show();
-                    $('.kt-portlet__foot').show();
-                    $('.custmstructure').hide();
-                    $('.alreay_registred').hide();
+                    $('.kt-portlet__body').fadeToggle();
+                    $('.kt-portlet__body').css('margin-left','0%');
+                    $('.kt-portlet__foot').fadeToggle();
+                    $('.custmstructure').fadeToggle();
+                    $('.alreay_registred').fadeToggle();
+                    $("body").scrollTop("0px");
                     if(_index > -1){
                         $('.kt-portlet__head-title').text('Bike Rider Job Registration Form')
                         $('[name="applying_for"]').val('bike')
@@ -1056,6 +1105,9 @@ $('.modal-body').find('form').off('submit').on('submit', function(e){
                 $(_h6).click(function(){
                     $(this).siblings('input[type="radio"]').prop( "checked", true );
                     $(this).siblings('input[type="radio"]').change();
+                })
+                $('img.img.img-thumbnail').click(function(){
+                $(this).parents('.biker_image , .car_image').find('p.custmclick').trigger('click');
                 })
                
              });

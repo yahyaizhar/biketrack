@@ -24,6 +24,42 @@ Apply for riders/driver job
 .form-group input[type='radio'] {
     font-size: 16px !important;
   }
+  #kt_wrapper{
+  padding-top: 5px;
+}
+h3.kt-portlet__head-title{
+    font-size: 15px !important;
+}
+.custmstructure h5 {
+    padding: 14px 0px 4px !important;
+}
+.alreay_registred{
+    padding: 5px 25px !important;
+}
+.custm_hidden_btn{
+    font-size: 14px !important;
+}
+.form-group label{
+    font-size: 18px !important;
+}
+.form-group select{
+    font-size: 17px !important;
+}
+.form-group input{
+    font-size: 17px !important;
+}
+.form-group h6{
+    font-size: 17px !important;
+}
+.form-group textarea{
+    font-size: 17px !important;
+}
+.form-group{
+    margin-bottom: 10px !important;
+}
+.altlogo {
+    max-width: 180px !important;
+}
 }
 </style>
 
@@ -52,11 +88,11 @@ Apply for riders/driver job
         <div class="col-md-7 m-auto"> 
         <!--begin::Portlet-->
             <div class="kt-portlet">
-                    <img alt="Logo" style="text-align:center;max-width: 200px;margin: 0px auto;" src="https://biketrack.solutionwin.net/dashboard/assets/media/logos/company-logo.png">
+                    <img class="altlogo" alt="Logo" style="text-align:center;max-width: 200px;margin: 0px auto;" src="https://biketrack.solutionwin.net/dashboard/assets/media/logos/company-logo.png">
                     @include('admin.includes.message')  
                     <div class="kt-portlet__head">
                     <div class="kt-portlet__head-label" style="width:100%;">
-                        <h3 class="kt-portlet__head-title" style="text-align:center;width: 100%;">
+                        <h3 class="kt-portlet__head-title" style="text-align:center;width: 100%;font-size: 19px;">
                             Welcome to king Riderd Delivery Service LLC
                         </h3>
                     </div>
@@ -91,7 +127,7 @@ Apply for riders/driver job
                                         </strong>
                                     </span>
                                 @else
-                                    <span class="form-text text-muted">Please enter your email</span>
+                                    {{-- <span class="form-text text-muted">Please enter your email</span> --}}
                                 @endif
                         </div>
                         @endif
@@ -107,14 +143,14 @@ Apply for riders/driver job
                                     </strong>
                                 </span>
                             @else
-                                <span class="form-text text-muted">Please enter your phone number</span>
+                                {{-- <span class="form-text text-muted">Please enter your phone number</span> --}}
                             @endif
                         </div>
                         @endif
                         @if (strpos($newcomer_data->missing_fields, 'national_id_card_number') !== false)
 
                         <div class="form-group">
-                            <label>Emirates i'd:</label>
+                            <label>Emirates id:</label>
                             <input value="{{$newcomer_data->national_id_card_number}}" type="text" class="form-control" name="national_id_card_number" id="national_id_card_number" placeholder="Enter National id card number" required> 
                         </div>
                         @endif
