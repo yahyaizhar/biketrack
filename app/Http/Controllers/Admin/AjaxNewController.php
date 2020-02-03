@@ -1869,8 +1869,10 @@ class AjaxNewController extends Controller
     }
     public function getCE_REPORT($month)
     {  
-        $CE=Company_Expense::where("active_status","A")->whereMonth('month', $month)->get();
-        $total_expense=Company_Expense::where("active_status","A")->whereMonth('month', $month)->sum("amount");
+        $only_month = Carbon::parse($month)->format('m');
+        $only_year =  Carbon::parse($month)->format('Y');
+        $CE=Company_Expense::where("active_status","A")->whereMonth('month', $only_month)->whereYear('month',$only_year)->get();
+        $total_expense=Company_Expense::where("active_status","A")->whereMonth('month', $only_month)->whereYear('month',$only_year)->sum("amount");
         
         $flag = new Company_Expense;
         $flag->month='temp';
