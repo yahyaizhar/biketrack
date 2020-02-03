@@ -1144,11 +1144,10 @@ function subtotal() {
             var amount = parseFloat($(this).find('[data-name="amount"]').val())||0;
             var item_subtotal = parseFloat($(this).find('[data-name="item_subtotal"]').val())||0;
             $(this).find('[data-name="item_subtotal"]').val((item_subtotal).toFixed(2));
+            total_amount += amount;
+            non_tax_amount += amount;
             if ($(this).find('[data-name="tax"]').is(":checked")) {
-                
                 taxable_amount += amount;
-		        total_amount += amount;
-                non_tax_amount += amount;
                 if (tax_rate > 0) {
                     var tax_amount=parseFloat($(this).find('[data-name="tax_amount"]').val())||0; 
                     res_of_tax+=tax_amount;
