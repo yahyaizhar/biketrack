@@ -919,7 +919,7 @@ $(document).ready(function () {
             printJS('invoice_slip', 'html');
         }
         
-        if(invoice){
+        if(invoice && !_invoices.edit){
             generate_invoice_HTML(invoice);
         }
         else{
