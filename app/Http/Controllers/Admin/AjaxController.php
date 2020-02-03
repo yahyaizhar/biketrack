@@ -253,6 +253,9 @@ class AjaxController extends Controller
                         $temp_var = isset($settings['fb__working_days'])?$settings['fb__working_days']:'Unspecified';
                         $to_return .='<p><strong>Estimated Working Days:</strong> '.$temp_var.'</p>';
                         break;
+                    case 'commission_based':
+                        $to_return .='<p><strong>Payout Method:</strong> Based on Commission</p>';
+                        break;
                     
                     default:
                         
@@ -270,21 +273,29 @@ class AjaxController extends Controller
                 switch ($pm) {
                     case 'trip_based':
                         $to_return .='<p><strong>Salary Method:</strong> Based on Trips and Hours</p>';
-                        $to_return .='<p><strong>Per trip amount:</strong> '.$settings['tb_sm__trip_amount'].'</p>';
-                        $to_return .='<p><strong>Per hour amount:</strong> '.$settings['tb_sm__hour_amount'].'</p>';
-                        $to_return .='<p><strong>Bonus trips:</strong> '.$settings['tb_sm__bonus_trips'].'</p>';
-                        $to_return .='<p><strong>Bonus amount:</strong> '.$settings['tb_sm__bonus_amount'].'</p>';
-                        $to_return .='<p><strong>Bonus trips amount:</strong> '.$settings['tb_sm__trips_bonus_amount'].'</p>';
+                        $temp_var = isset($settings['tb_sm__trip_amount'])?$settings['tb_sm__trip_amount']:'Unspecified';
+                        $to_return .='<p><strong>Per trip amount:</strong> '.$temp_var.'</p>';
+                        $temp_var = isset($settings['tb_sm__hour_amount'])?$settings['tb_sm__hour_amount']:'Unspecified';
+                        $to_return .='<p><strong>Per hour amount:</strong> '.$temp_var.'</p>';
+                        $temp_var = isset($settings['tb_sm__bonus_trips'])?$settings['tb_sm__bonus_trips']:'Unspecified';
+                        $to_return .='<p><strong>Bonus trips:</strong> '.$temp_var.'</p>';
+                        $temp_var = isset($settings['tb_sm__bonus_amount'])?$settings['tb_sm__bonus_amount']:'Unspecified';
+                        $to_return .='<p><strong>Bonus amount:</strong> '.$temp_var.'</p>';
+                        $temp_var = isset($settings['tb_sm__trips_bonus_amount'])?$settings['tb_sm__trips_bonus_amount']:'Unspecified';
+                        $to_return .='<p><strong>Bonus trips amount:</strong> '.$temp_var.'</p>';
                         break;
                     case 'fixed_based':
                         $to_return .='<p><strong>Salary Method:</strong> Based on Fixed Amount</p>';
-                        $to_return .='<p><strong>Amount:</strong> '.$settings['fb_sm__amount'].'</p>';
-                        $to_return .='<p><strong>Extra Hours Rate:</strong> '.$settings['fb_sm__exrta_hours'].'</p>';
+                        $temp_var = isset($settings['fb_sm__amount'])?$settings['fb_sm__amount']:'Unspecified';
+                        $to_return .='<p><strong>Amount:</strong> '.$temp_var.'</p>';
+                        $temp_var = isset($settings['fb_sm__exrta_hours'])?$settings['fb_sm__exrta_hours']:'Unspecified';
+                        $to_return .='<p><strong>Extra Hours Rate:</strong> '.$temp_var.'</p>';
                         break;
                     case 'commission_based':
                         $to_return .='<p><strong>Salary Method:</strong> Based on Commission</p>';
-                        $to_return .='<p><strong>Amount:</strong> '.$settings['cb__amount'];
-                        if($settings['cb__type']=='percent'){
+                        $temp_var = isset($settings['cb_sm__amount'])?$settings['cb_sm__amount']:'Unspecified';
+                        $to_return .='<p><strong>Commission:</strong> '.$temp_var;
+                        if(isset($settings['cb_sm__type'])&&$settings['cb_sm__type']=='percentage'){
                             $to_return .='%</p>' ;
                         }
                         else {
