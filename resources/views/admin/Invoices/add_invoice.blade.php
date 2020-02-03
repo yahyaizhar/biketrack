@@ -1194,6 +1194,8 @@ function subtotal() {
         $("#invoices [data-name='invoice_total']").val((total_amount).toFixed(2));
     }
     else{
+        $('[data-name="tax_value"]').val("");
+        $('[data-name="tax_amount"]').val(0);
         $("#invoice-table tbody tr").each(function (item, index) {
             // var is_payable = $(this).find('[data-name="payable"]').is(":checked");
             var is_deductable = $(this).find('[data-name="deductable"]').is(":checked");
@@ -1297,6 +1299,8 @@ function append_row($row_data = null) {
             //if (!_isDeductable) {
                 tax = '<div class="kt-checkbox-list"><label class="kt-checkbox"> <input data-name="tax" name="invoice_items['+i+'][tax]" type="checkbox" ' + _isTaxable+ '><span></span> </label></div>';
            // }
+            var _subtotal=typeof item.subtotal =="undefined"?0:item.subtotal;
+            var _taxable_amount=typeof item.taxable_amount =="undefined"?0:item.taxable_amount;
             var action = '<button type="button" onclick="delete_row(this);" class="delete-row btn btn-danger"><i class="fa fa-trash-alt"></i></button>';
             markup += '' +
                 '   <tr>  ' +
@@ -1307,7 +1311,7 @@ function append_row($row_data = null) {
                 '       <td> ' +
                 '           <input type="hidden" data-name="item_subtotal" name="invoice_items['+i+'][item_subtotal]" value="'+item.amount+'">'+
                 '           <div class="input-group">   ' +
-                '               <input type="text" class="form-control" placeholder="Amount" data-name="amount" name="invoice_items['+i+'][amount]" aria-describedby="basic-addon2" value="'+item.subtotal+'">   ' +
+                '               <input type="text" class="form-control" placeholder="Amount" data-name="amount" name="invoice_items['+i+'][amount]" aria-describedby="basic-addon2" value="'+_subtotal+'">   ' +
                 '               <div class="input-group-append">  ' +
                 '                   <span class="input-group-text" id="basic-addon2">' +
                 '                       <label class="kt-checkbox kt-checkbox--single kt-checkbox--primary"> <input type="checkbox" data-name="deductable" name="invoice_items['+i+'][deductable]" ' + _isDeductable + '> <span></span> </label>' +
@@ -1318,7 +1322,7 @@ function append_row($row_data = null) {
                 '       <td>   ' +
                 tax +
                 '       </td>  ' +
-                '       <td> <input data-input-type="float" class="form-control" data-name="tax_amount" name="invoice_items['+i+'][tax_amount]" min="0" value="'+item.taxable_amount+'"> ' +
+                '       <td> <input data-input-type="float" class="form-control" data-name="tax_amount" name="invoice_items['+i+'][tax_amount]" min="0" value="'+_taxable_amount+'"> ' +
                 '           '
             '       </td>  ' +
             '  </tr>  ';
