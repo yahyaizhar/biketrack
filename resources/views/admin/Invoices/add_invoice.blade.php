@@ -1117,6 +1117,7 @@ var _invoices={
     }
 };
 function subtotal() {
+    return;
     total_amount = 0;
     taxable_amount = 0;
     var non_tax_amount = 0;

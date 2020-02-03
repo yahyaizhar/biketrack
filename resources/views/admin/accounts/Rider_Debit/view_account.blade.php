@@ -145,6 +145,23 @@
             </div>
         </div>
     </div>
+    <div class="kt-portlet">
+        <div class="kt-portlet__body  kt-portlet__body--fit">
+            <div class="row text-center py-3">
+                <div class="kt-portlet__head-toolbar col-md-12">
+                    <div class="kt-portlet__head-wrapper">
+                        <div class="kt-portlet__head-actions">
+                            
+                            <div class="auto_bills-wrapper">
+                                
+                            </div>
+
+                        </div>
+                    </div>
+                </div>  
+            </div>
+        </div>
+    </div>
     <div class="kt-portlet kt-portlet--mobile">
         <div class="kt-portlet__head kt-portlet__head--lg">
             <div class="kt-portlet__head-label">
@@ -1446,7 +1463,53 @@
  '                                   </div>  '  + 
  '                              </div> </div>  ' ;
  
+var detect_billchanges=function(){
+    var laoding_html = '<div class="d-flex justify-content-center modal_loading"><i class="la la-spinner fa-spin display-3"></i></div>';
+    var rider_id = $('#gb_rider_id').val();
+    var r1d1=biketrack.getUrlParameter('r1d1');
+    var _month = new Date(r1d1).format('yyyy-mm-dd');
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        url : "{{route('admin.accounts.detect_bill_changes')}}",
+        type : 'GET',
+        data:{
+            'rider_id':rider_id,
+            'month':_month
+        },
+        beforeSend: function() {            
+            $('.auto_bills-wrapper').html(laoding_html);
+        },
+        complete: function(){
+            $('.auto_bills-wrapper').find('.modal_loading').remove();
+        },
+        success: function(data){
+            console.log(data);
+            if(data.status==1){
+                if (data.changes==0) {
+                    //no changes detected
+                    $('.auto_bills-wrapper').html('<div class="text-success">No changes deleted</div>');
+                }
+                else{
 
+                }
+            }
+
+        },
+        error: function(error){
+            $('.bk_loading').hide();
+            swal.fire({
+                position: 'center',
+                type: 'error',
+                title: 'Oops...',
+                text: 'Unable to update.',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+    });
+}
  var resync__attendace=function(_this){
      var _data = JSON.parse($('#resync__attendace_data').html());
      if(_data){
@@ -2464,6 +2527,8 @@
                     }
                     
                     $("#for_days_payouts").trigger("click");
+
+                    detect_billchanges();
                 },
                 ajax: url,
                 columns: [

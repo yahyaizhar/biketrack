@@ -2116,6 +2116,7 @@ public function income_zomato_import(Request $r){
         $ca_obj['amount']=$ca_amt1;
         $ca_obj['month']=$obj['date'];
         $ca_obj['type']='cr';
+        $ca_obj['given_date']=Carbon::now();
         $ca_obj['created_at']=Carbon::now();
         $ca_obj['updated_at']=Carbon::now();
         array_push($ca_objects, $ca_obj);
@@ -2130,6 +2131,7 @@ public function income_zomato_import(Request $r){
             $ca_obj['amount']=$ca_amt2;
             $ca_obj['month']=$obj['date'];
             $ca_obj['type']='dr';
+            $ca_obj['given_date']=Carbon::now();
             $ca_obj['created_at']=Carbon::now();
             $ca_obj['updated_at']=Carbon::now();
             array_push($ca_objects, $ca_obj);
@@ -2144,6 +2146,7 @@ public function income_zomato_import(Request $r){
             $ca_obj['amount']=$ca_amt2;
             $ca_obj['month']=$obj['date'];
             $ca_obj['type']='dr';
+            $ca_obj['given_date']=Carbon::now();
             $ca_obj['created_at']=Carbon::now();
             $ca_obj['updated_at']=Carbon::now();
             array_push($ca_objects, $ca_obj);
@@ -2159,6 +2162,7 @@ public function income_zomato_import(Request $r){
             $ra_obj['amount']=$ra_amt2;
             $ra_obj['month']=$obj['date'];
             $ra_obj['type']='cr';
+            $ra_obj['given_date']=Carbon::now();
             $ra_obj['created_at']=Carbon::now();
             $ra_obj['updated_at']=Carbon::now();
             array_push($ra_objects, $ra_obj);
@@ -2173,6 +2177,7 @@ public function income_zomato_import(Request $r){
             $ca_obj['amount']=$ca_amt2;
             $ca_obj['month']=$obj['date'];
             $ca_obj['type']='dr';
+            $ca_obj['given_date']=Carbon::now();
             $ca_obj['created_at']=Carbon::now();
             $ca_obj['updated_at']=Carbon::now();
             array_push($ca_objects, $ca_obj);
@@ -2188,6 +2193,7 @@ public function income_zomato_import(Request $r){
             $ra_obj['amount']=$ra_amt2;
             $ra_obj['month']=$obj['date'];
             $ra_obj['type']='cr';
+            $ra_obj['given_date']=Carbon::now();
             $ra_obj['created_at']=Carbon::now();
             $ra_obj['updated_at']=Carbon::now();
             array_push($ra_objects, $ra_obj);
@@ -2202,6 +2208,7 @@ public function income_zomato_import(Request $r){
             $ra_obj['amount']=$ra_amt2;
             $ra_obj['month']=$obj['date'];
             $ra_obj['type']='cr';
+            $ra_obj['given_date']=Carbon::now();
             $ra_obj['created_at']=Carbon::now();
             $ra_obj['updated_at']=Carbon::now();
             array_push($ra_objects, $ra_obj);
@@ -2233,6 +2240,7 @@ public function income_zomato_import(Request $r){
             $ca_obj['amount']=$bonus_amount;
             $ca_obj['month']=$obj['date'];
             $ca_obj['type']='dr';
+            $ca_obj['given_date']=Carbon::now();
             $ca_obj['created_at']=Carbon::now();
             $ca_obj['updated_at']=Carbon::now();
             array_push($ca_objects, $ca_obj);
@@ -2244,6 +2252,7 @@ public function income_zomato_import(Request $r){
             $ra_obj['amount']=$bonus_amount;
             $ra_obj['month']=$obj['date'];
             $ra_obj['type']='cr';
+            $ra_obj['given_date']=Carbon::now();
             $ra_obj['created_at']=Carbon::now();
             $ra_obj['updated_at']=Carbon::now();
             array_push($ra_objects, $ra_obj);
@@ -2261,6 +2270,7 @@ public function income_zomato_import(Request $r){
             $ra_obj['amount']=$ra_amt1;
             $ra_obj['month']=$obj['date'];
             $ra_obj['type']='cr_payable';
+            $ra_obj['given_date']=Carbon::now();
             $ra_obj['created_at']=Carbon::now();
             $ra_obj['updated_at']=Carbon::now();
             array_push($ra_objects, $ra_obj);
@@ -2275,6 +2285,7 @@ public function income_zomato_import(Request $r){
             $ra_obj['amount']=$ra_amt1;
             $ra_obj['month']=$obj['date'];
             $ra_obj['type']='cr_payable';
+            $ra_obj['given_date']=Carbon::now();
             $ra_obj['created_at']=Carbon::now();
             $ra_obj['updated_at']=Carbon::now();
             array_push($ra_objects, $ra_obj);
@@ -2289,6 +2300,7 @@ public function income_zomato_import(Request $r){
             $ra_obj['amount']=$ra_amt1;
             $ra_obj['month']=$obj['date'];
             $ra_obj['type']='cr_payable';
+            $ra_obj['given_date']=Carbon::now();
             $ra_obj['created_at']=Carbon::now();
             $ra_obj['updated_at']=Carbon::now();
             array_push($ra_objects, $ra_obj);
@@ -2305,6 +2317,7 @@ public function income_zomato_import(Request $r){
             $ca_obj['amount']=$ca_amt1;
             $ca_obj['month']=$obj['date'];
             $ca_obj['type']='dr_receivable';
+            $ca_obj['given_date']=Carbon::now();
             $ca_obj['created_at']=Carbon::now();
             $ca_obj['updated_at']=Carbon::now();
             array_push($ca_objects, $ca_obj);
@@ -2319,6 +2332,7 @@ public function income_zomato_import(Request $r){
             $ca_obj['amount']=$ca_amt1;
             $ca_obj['month']=$obj['date'];
             $ca_obj['type']='dr_receivable';
+            $ca_obj['given_date']=Carbon::now();
             $ca_obj['created_at']=Carbon::now();
             $ca_obj['updated_at']=Carbon::now();
             array_push($ca_objects, $ca_obj);
@@ -2333,6 +2347,7 @@ public function income_zomato_import(Request $r){
             $ca_obj['amount']=$ca_amt1;
             $ca_obj['month']=$obj['date'];
             $ca_obj['type']='dr_receivable';
+            $ca_obj['given_date']=Carbon::now();
             $ca_obj['created_at']=Carbon::now();
             $ca_obj['updated_at']=Carbon::now();
             array_push($ca_objects, $ca_obj);
@@ -3315,5 +3330,18 @@ public function client_income_update(Request $request,$id){
             'd'=>2
         ]);
     }
-    
+    public function detect_bill_changes(Request $r)
+    {
+        $rider_id=$r->get('rider_id');
+        $month = $r->get('month');
+        $onlyMonth=Carbon::parse($month)->format('m');
+        $onlyYear=Carbon::parse($month)->format('Y');
+
+        
+        return response()->json([
+            'status'=>1,
+            'changes'=>0,
+            'data'=>$r->all()
+        ]);
+    }
 }

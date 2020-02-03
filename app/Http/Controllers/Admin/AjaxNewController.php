@@ -1095,6 +1095,7 @@ class AjaxNewController extends Controller
         return DataTables::of($company_statements)
         ->addColumn('date', function($company_statements){
             if($company_statements->type=='skip') return '';
+            if($company_statements->given_date==null || $company_statements->given_date=='') return 'No given date';
             return Carbon::parse($company_statements->given_date)->format('M d, Y');
         })
         ->addColumn('desc', function($company_statement)  use ($company_statements){

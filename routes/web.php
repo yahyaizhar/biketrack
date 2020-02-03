@@ -599,6 +599,8 @@ Route::group([
    
    Route::get('/rider/manage-salaryslips','AccountsController@manage_salaryslips')->name('admin.accounts.manage_salaryslips');//[Accounts-Manage Salary slips]
    Route::put('/rider/update_salaryslips','AccountsController@update_salaryslips')->name('admin.accounts.update_salaryslips');
+
+   Route::get('/accounts/detect_changes','AccountsController@detect_bill_changes')->name('admin.accounts.detect_bill_changes');//*** */
 //end admin routs only
 
 
