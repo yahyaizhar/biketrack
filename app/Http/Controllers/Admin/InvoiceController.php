@@ -99,12 +99,12 @@ class InvoiceController extends Controller
                 $invoice_item->deductable=1;
             }
             
-            $invoice_item->item_amount= round($invoice_itemObj['qty'] * $invoice_itemObj['rate'],2) ;
+            $invoice_item->item_amount=round(abs($invoice_itemObj['item_subtotal']),2) ;
             if(isset($invoice_itemObj['tax'])){
                 $invoice_item->tax_method_id=$r->tax_method_id;
                 $invoice_item->taxable_amount=$invoice_itemObj['tax_amount'];
             }
-            $invoice_item->subtotal=$invoice_itemObj['amount'];
+            $invoice_item->subtotal=abs($invoice_itemObj['amount']);
             $invoice_item->save();
             array_push($invoice_modal['invoice']['invoice_items'], $invoice_item->toArray());
         }
@@ -339,11 +339,18 @@ class InvoiceController extends Controller
             $invoice_items = $open_invoice->Invoice_item;
             $invoice_items_data=[];
             foreach ($invoice_items as $invoice_item) {
+                $taxable_amount=$invoice_item->taxable_amount!=null?$invoice_item->taxable_amount:0;
+                $item_amount=$invoice_item->item_amount!=null?$invoice_item->item_amount:0;
+                $item_rate=$invoice_item->item_rate!=null?$invoice_item->item_rate:0;
+                $item_qty=$invoice_item->item_qty!=null?$invoice_item->item_qty:0;
+                $subtotal=$invoice_item->subtotal!=null?$invoice_item->subtotal:0;
                 $obj=[
                     'desc'=>$invoice_item->item_desc,
-                    'amount'=> $invoice_item->item_amount,
-                    'rate'=> $invoice_item->item_rate,
-                    'qty'=> $invoice_item->item_qty,
+                    'amount'=> $item_amount,
+                    'rate'=> $item_rate,
+                    'qty'=> $item_qty,
+                    'taxable_amount'=>$taxable_amount,
+                    'subtotal'=>$subtotal,
                     'is_taxable'=> $invoice_item->tax_method_id!=null?true:false,
                     'is_deductable'=> $invoice_item->deductable==0?false:true
                 ];

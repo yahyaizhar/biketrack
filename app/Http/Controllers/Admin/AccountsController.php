@@ -841,7 +841,6 @@ class AccountsController extends Controller
         ->sum('amount'); 
         if($is_update)
         {
-            //we skip paid salary
             $ra_payable=Rider_Account::where("rider_id",$rider_id)
             ->whereMonth("month",$onlyMonth)
             ->where(function($q) {
@@ -2116,6 +2115,7 @@ public function income_zomato_import(Request $r){
         $ca_obj['amount']=$ca_amt1;
         $ca_obj['month']=$obj['date'];
         $ca_obj['type']='cr';
+        $ca_obj['given_date']=Carbon::now();
         $ca_obj['created_at']=Carbon::now();
         $ca_obj['updated_at']=Carbon::now();
         array_push($ca_objects, $ca_obj);
@@ -2130,6 +2130,7 @@ public function income_zomato_import(Request $r){
             $ca_obj['amount']=$ca_amt2;
             $ca_obj['month']=$obj['date'];
             $ca_obj['type']='dr';
+            $ca_obj['given_date']=Carbon::now();
             $ca_obj['created_at']=Carbon::now();
             $ca_obj['updated_at']=Carbon::now();
             array_push($ca_objects, $ca_obj);
@@ -2144,6 +2145,7 @@ public function income_zomato_import(Request $r){
             $ca_obj['amount']=$ca_amt2;
             $ca_obj['month']=$obj['date'];
             $ca_obj['type']='dr';
+            $ca_obj['given_date']=Carbon::now();
             $ca_obj['created_at']=Carbon::now();
             $ca_obj['updated_at']=Carbon::now();
             array_push($ca_objects, $ca_obj);
@@ -2159,6 +2161,7 @@ public function income_zomato_import(Request $r){
             $ra_obj['amount']=$ra_amt2;
             $ra_obj['month']=$obj['date'];
             $ra_obj['type']='cr';
+            $ra_obj['given_date']=Carbon::now();
             $ra_obj['created_at']=Carbon::now();
             $ra_obj['updated_at']=Carbon::now();
             array_push($ra_objects, $ra_obj);
@@ -2173,6 +2176,7 @@ public function income_zomato_import(Request $r){
             $ca_obj['amount']=$ca_amt2;
             $ca_obj['month']=$obj['date'];
             $ca_obj['type']='dr';
+            $ca_obj['given_date']=Carbon::now();
             $ca_obj['created_at']=Carbon::now();
             $ca_obj['updated_at']=Carbon::now();
             array_push($ca_objects, $ca_obj);
@@ -2188,6 +2192,7 @@ public function income_zomato_import(Request $r){
             $ra_obj['amount']=$ra_amt2;
             $ra_obj['month']=$obj['date'];
             $ra_obj['type']='cr';
+            $ra_obj['given_date']=Carbon::now();
             $ra_obj['created_at']=Carbon::now();
             $ra_obj['updated_at']=Carbon::now();
             array_push($ra_objects, $ra_obj);
@@ -2202,6 +2207,7 @@ public function income_zomato_import(Request $r){
             $ra_obj['amount']=$ra_amt2;
             $ra_obj['month']=$obj['date'];
             $ra_obj['type']='cr';
+            $ra_obj['given_date']=Carbon::now();
             $ra_obj['created_at']=Carbon::now();
             $ra_obj['updated_at']=Carbon::now();
             array_push($ra_objects, $ra_obj);
@@ -2233,6 +2239,7 @@ public function income_zomato_import(Request $r){
             $ca_obj['amount']=$bonus_amount;
             $ca_obj['month']=$obj['date'];
             $ca_obj['type']='dr';
+            $ca_obj['given_date']=Carbon::now();
             $ca_obj['created_at']=Carbon::now();
             $ca_obj['updated_at']=Carbon::now();
             array_push($ca_objects, $ca_obj);
@@ -2244,6 +2251,7 @@ public function income_zomato_import(Request $r){
             $ra_obj['amount']=$bonus_amount;
             $ra_obj['month']=$obj['date'];
             $ra_obj['type']='cr';
+            $ra_obj['given_date']=Carbon::now();
             $ra_obj['created_at']=Carbon::now();
             $ra_obj['updated_at']=Carbon::now();
             array_push($ra_objects, $ra_obj);
@@ -2261,6 +2269,7 @@ public function income_zomato_import(Request $r){
             $ra_obj['amount']=$ra_amt1;
             $ra_obj['month']=$obj['date'];
             $ra_obj['type']='cr_payable';
+            $ra_obj['given_date']=Carbon::now();
             $ra_obj['created_at']=Carbon::now();
             $ra_obj['updated_at']=Carbon::now();
             array_push($ra_objects, $ra_obj);
@@ -2275,6 +2284,7 @@ public function income_zomato_import(Request $r){
             $ra_obj['amount']=$ra_amt1;
             $ra_obj['month']=$obj['date'];
             $ra_obj['type']='cr_payable';
+            $ra_obj['given_date']=Carbon::now();
             $ra_obj['created_at']=Carbon::now();
             $ra_obj['updated_at']=Carbon::now();
             array_push($ra_objects, $ra_obj);
@@ -2289,6 +2299,7 @@ public function income_zomato_import(Request $r){
             $ra_obj['amount']=$ra_amt1;
             $ra_obj['month']=$obj['date'];
             $ra_obj['type']='cr_payable';
+            $ra_obj['given_date']=Carbon::now();
             $ra_obj['created_at']=Carbon::now();
             $ra_obj['updated_at']=Carbon::now();
             array_push($ra_objects, $ra_obj);
@@ -2305,6 +2316,7 @@ public function income_zomato_import(Request $r){
             $ca_obj['amount']=$ca_amt1;
             $ca_obj['month']=$obj['date'];
             $ca_obj['type']='dr_receivable';
+            $ca_obj['given_date']=Carbon::now();
             $ca_obj['created_at']=Carbon::now();
             $ca_obj['updated_at']=Carbon::now();
             array_push($ca_objects, $ca_obj);
@@ -2319,6 +2331,7 @@ public function income_zomato_import(Request $r){
             $ca_obj['amount']=$ca_amt1;
             $ca_obj['month']=$obj['date'];
             $ca_obj['type']='dr_receivable';
+            $ca_obj['given_date']=Carbon::now();
             $ca_obj['created_at']=Carbon::now();
             $ca_obj['updated_at']=Carbon::now();
             array_push($ca_objects, $ca_obj);
@@ -2333,6 +2346,7 @@ public function income_zomato_import(Request $r){
             $ca_obj['amount']=$ca_amt1;
             $ca_obj['month']=$obj['date'];
             $ca_obj['type']='dr_receivable';
+            $ca_obj['given_date']=Carbon::now();
             $ca_obj['created_at']=Carbon::now();
             $ca_obj['updated_at']=Carbon::now();
             array_push($ca_objects, $ca_obj);
@@ -3101,6 +3115,197 @@ public function client_income_update(Request $request,$id){
             'status'=>1
         ]);
     }
+
+    public function update_row_company_account(Request $r,$rider_id,$_month,$_year){
+        // $_month=carbon::parse($month)->format("m");
+        // $_year=carbon::parse($year)->format("Y");
+        $_source=$r->source; 
+        if ($_source=="Salik Extra" || $_source=="Salik") {
+            $src="salik_id";
+        }
+        if ($_source=="Bike Rent") {
+            $src="bike_rent_id"; 
+        }
+        if ($_source=="fuel_expense_vip") {
+            $src="fuel_expense_id";  
+        }
+        if ($_source=="fuel_expense_cash") {
+            $src="fuel_expense_id";  
+        }
+        if ($_source=="Sim Transaction" || $_source=="Sim extra usage") {
+            $src="sim_transaction_id";  
+        }
+        $ca =Company_Account::where("rider_id",$rider_id)
+        ->whereMonth("month",$_month)
+        ->whereYear("month",$_year)
+        ->where($src,$r->source_id)
+        ->get();
+        foreach ($ca as $value) {
+            $amount=$r->amount;
+            $rider_id=$r->rider_id_update;
+            $allowed_balance=105;
+            $month=carbon::parse($r->month_update)->startOfMonth()->format("Y-m-d");
+            if ($value->source=="Salik") {
+                $value->amount=$amount;
+                $value->rider_id=$rider_id;
+                $value->month=$month;
+            }
+            if ($value->source=="Salik Extra") {
+                $value->amount=($amount)-50;
+                $value->rider_id=$rider_id;
+                $value->month=$month;
+            }
+            if ($value->source=="fuel_expense_vip") {
+                $value->amount=$amount;
+                $value->rider_id=$rider_id;
+                $value->month=$month;
+            }
+            if ($value->source=="fuel_expense_cash") {
+                $value->amount=$amount;
+                $value->rider_id=$rider_id;
+                $value->month=$month;
+            }
+            if ($value->source=="Bike Rent") {
+                $value->amount=$amount;
+                $value->rider_id=$rider_id;
+                $value->month=$month;
+            }
+            if ($value->source=="Sim Transaction") {
+                $value->amount=$amount;
+                $value->rider_id=$rider_id;
+                $value->month=$month;
+            }
+            if ($value->source=="Sim extra usage") {
+                $value->amount=($amount)-$allowed_balance;
+                $value->rider_id=$rider_id;
+                $value->month=$month;
+            }
+            $value->save();
+        }
+
+        $ra =Rider_Account::where("rider_id",$rider_id)
+        ->whereMonth("month",$_month)
+        ->whereYear("month",$_year)
+        ->where($src,$r->source_id)
+        ->get();
+        foreach ($ra as $value) {
+            if ($value->source=="Salik") {
+                $value->amount=($r->amount)-50;
+                $value->rider_id=$rider_id;
+                $value->month=$month;
+            }
+            if ($value->source=="Bike Allowns") {
+                $value->amount=$amount;
+                $value->rider_id=$rider_id;
+                $value->month=$month;
+            }
+            if ($value->source=="Sim extra usage") {
+                $value->amount=($amount)-$allowed_balance;
+                $value->rider_id=$rider_id;
+                $value->month=$month;
+            }
+            $value->save();
+        }
+         return response()->json([
+             'ca'=>$ca,
+             'ra'=>$ra,
+             '$r'=>$r->all(),
+         ]);
+    }
+
+    public function update_row_rider_account(Request $r,$rider_id,$_month,$_year){
+        $_source=$r->source; 
+        $ca='';
+        if ($_source=="Salik Extra" || $_source=="Salik") {
+            $src="salik_id";
+        }
+        if ($_source=="Bike Rent") {
+            $src="bike_rent_id"; 
+        }
+        if ($_source=="Sim Transaction" || $_source=="Sim extra usage") {
+            $src="sim_transaction_id";  
+        }
+        if ($_source=="advance") {
+            $src='advance_return_id';
+        }
+        if ($_source!="advance") {
+            $ca =Company_Account::where("rider_id",$rider_id)
+            ->whereMonth("month",$_month)
+            ->whereYear("month",$_year)
+            ->where($src,$r->source_id)
+            ->get();
+            foreach ($ca as $value) {
+                $amount=$r->amount;
+                $rider_id=$r->rider_id_update;
+                $allowed_balance=105;
+                $month=carbon::parse($r->month_update)->startOfMonth()->format("Y-m-d");
+                if ($value->source=="Salik") {
+                    $value->amount=$amount+50;
+                    $value->rider_id=$rider_id;
+                    $value->month=$month;
+                }
+                if ($value->source=="Salik Extra") {
+                    $value->amount=$amount;
+                    $value->rider_id=$rider_id;
+                    $value->month=$month;
+                }
+                if ($value->source=="Bike Rent") {
+                    $value->amount=$amount;
+                    $value->rider_id=$rider_id;
+                    $value->month=$month;
+                }
+                if ($value->source=="Sim Transaction") {
+                    $value->amount=$amount+$allowed_balance;
+                    $value->rider_id=$rider_id;
+                    $value->month=$month;
+                }
+                if ($value->source=="Sim extra usage") {
+                    $value->amount=($amount);
+                    $value->rider_id=$rider_id;
+                    $value->month=$month;
+                }
+                $value->save();
+            }
+        }
+        $ra =Rider_Account::where("rider_id",$rider_id)
+        ->whereMonth("month",$_month)
+        ->whereYear("month",$_year)
+        ->where($src,$r->source_id)
+        ->get();
+        foreach ($ra as $value) {
+            $amount=$r->amount;
+            $rider_id=$r->rider_id_update;
+            $allowed_balance=105;
+            $month=carbon::parse($r->month_update)->startOfMonth()->format("Y-m-d");
+            if ($value->source=="Salik") {
+                $value->amount=($r->amount);
+                $value->rider_id=$rider_id;
+                $value->month=$month;
+            }
+            if ($value->source=="Bike Allowns") {
+                $value->amount=$amount;
+                $value->rider_id=$rider_id;
+                $value->month=$month;
+            }
+            if ($value->source=="Sim extra usage") {
+                $value->amount=$amount;
+                $value->rider_id=$rider_id;
+                $value->month=$month;
+            }
+            if ($value->source=="advance") {
+                $value->amount=$amount;
+                $value->rider_id=$rider_id;
+                $value->month=$month;
+            }
+            $value->save();
+        }
+         return response()->json([
+             'ca'=>$ca,
+             'ra'=>$ra,
+             '$r'=>$r->all(),
+         ]);
+    }
+
     public function edit_rider_account(Request $r){
         $statement_id=$r->statement_id;
         $source=$r->source;
@@ -3315,5 +3520,21 @@ public function client_income_update(Request $request,$id){
             'd'=>2
         ]);
     }
-    
+    public function detect_bill_changes(Request $r)
+    {
+        $rider_id=$r->get('rider_id');
+        $month = $r->get('month');
+        $onlyMonth=Carbon::parse($month)->format('m');
+        $onlyYear=Carbon::parse($month)->format('Y');
+
+        
+        return response()->json([
+            'status'=>1,
+            'changes'=>0,
+            'data'=>$r->all()
+        ]);
+    }
+    public function rider_salary_status(){
+        return view('admin.rider.rider_salary_status');
+    }
 }

@@ -597,6 +597,7 @@ $(document).ready(function () {
             .done(function (resp) {
                 console.log(resp);
                 _invoices.remove_invoice_readonly();
+                _invoices.edit=false;
                 $('.btn-form-submit').prop('disabled',false);
                 if (resp.status == 1) {
                     $("#invoice-table tbody").html('');
@@ -627,6 +628,7 @@ $(document).ready(function () {
                         $('#invoices .btn-save-invoice-drafted,#invoices .btn-save-invoice-generate').hide();
                         _invoices.make_invoice_readonly();
                         _invoices.is_allow=false;
+                        _invoices.edit=true;
                         $('#invoices .btn-edit-invoice').text('Edit Invoice');
                         $('#invoices .btn-edit-invoice, .receive_payment_btn, #invoices .edit_page_content').show();
                         if(_invoices.invoice.payment_status=="paid"){
@@ -719,6 +721,7 @@ $(document).ready(function () {
         e.preventDefault();
         var _form = $(this).parents('form');
         var is_allowed=_invoices.is_allow;
+        _invoices.edit=false;
         if(is_allowed){
             if(validate_invoice(_form)){
                 save_invoice(_form, "generated");
@@ -916,7 +919,7 @@ $(document).ready(function () {
             printJS('invoice_slip', 'html');
         }
         
-        if(invoice){
+        if(invoice && !_invoices.edit){
             generate_invoice_HTML(invoice);
         }
         else{
@@ -1089,6 +1092,7 @@ var _invoices={
             $('#invoices .all_amount_received').text('AED '+_totalPayments);
             $('#invoices [data-name="amount_received"]').val(_totalPayments);
         }
+        
 
         biketrack.refresh_global();
         console.info("====================================================2");
@@ -1117,6 +1121,8 @@ var _invoices={
     }
 };
 function subtotal() {
+    // return;
+    
     total_amount = 0;
     taxable_amount = 0;
     var non_tax_amount = 0;
@@ -1124,94 +1130,156 @@ function subtotal() {
     var tax_rate = parseFloat($('[data-name="tax_rate"]').val()) || 0;
     var tax_type=$('[data-name="tax_rate"] :selected').attr('data-type')||"";
     var tax_value=parseFloat($('[data-name="tax_rate"] :selected').attr('data-value'))||0;
+    if(_invoices.edit && _invoices.edit==true){
+        $("#invoice-table tbody tr").each(function (item, index) {
+            // var is_payable = $(this).find('[data-name="payable"]').is(":checked");
+            var is_deductable = $(this).find('[data-name="deductable"]').is(":checked");
 
+            var rate = parseFloat($(this).find('[data-name="rate"]').val()) || 0;
+            var qty = parseFloat($(this).find('[data-name="qty"]').val()) || 0;
 
-    $('[data-name="tax_value"]').val("");
-    $('[data-name="tax_amount"]').val(0);
-
-    $("#invoice-table tbody tr").each(function (item, index) {
-        // var is_payable = $(this).find('[data-name="payable"]').is(":checked");
-        var is_deductable = $(this).find('[data-name="deductable"]').is(":checked");
-
-        var rate = parseFloat($(this).find('[data-name="rate"]').val()) || 0;
-        if(is_deductable){
-            rate = rate*-1;
-        }
-        var qty = parseFloat($(this).find('[data-name="qty"]').val()) || 0;
-
-        var amount = rate * qty;
-        $(this).find('[data-name="item_subtotal"]').val((amount).toFixed(2));
-
-        // if(is_deductable){
-        //     total_amount -= amount;
-        //     non_tax_amount -= amount;
-        // }
-        // else{
+            var amount = parseFloat($(this).find('[data-name="amount"]').val())||0;
+            if(is_deductable){
+                amount= amount*-1;
+            }
+            var item_subtotal = parseFloat($(this).find('[data-name="item_subtotal"]').val())||0;
+            $(this).find('[data-name="item_subtotal"]').val((item_subtotal).toFixed(2));
             total_amount += amount;
             non_tax_amount += amount;
-        //}
-        // debugger;
-        if ($(this).find('[data-name="tax"]').is(":checked")) {
-            
-            taxable_amount += amount;
-            if (tax_rate > 0) {
-                var tax_amount=0;
-                if(tax_type=="percentage"){
-                    tax_amount = (amount * tax_value) / 100;
+            if ($(this).find('[data-name="tax"]').is(":checked")) {
+                taxable_amount += amount;
+                if (tax_rate > 0) {
+                    var tax_amount=parseFloat($(this).find('[data-name="tax_amount"]').val())||0; 
+                    res_of_tax+=tax_amount;
                 }
-                else{
-                    tax_amount = tax_value/$("#invoice-table [data-name='tax']:checked").length;
-                }
-                
-                amount += tax_amount;
-                res_of_tax+=tax_amount;
-                // if(is_deductable){
-                //     tax_amount = Math.abs(tax_amount);
-                // }
-                $(this).find('[data-name="tax_amount"]').val((tax_amount).toFixed(2));
+            }
+            var amount = parseFloat($(this).find('[data-name="amount"]').val())||0;
+            $(this).find('[data-name="amount"]').val((amount).toFixed(2));
+        });
+
+        if (tax_rate > 0) {
+            res_of_tax=parseFloat((res_of_tax).toFixed(2));
+            var vat_val = parseFloat(tax_rate);
+            if (taxable_amount > 0) {
+                $('[data-name="tax_value"]').val(res_of_tax);
+                //total_amount += res_of_tax;
             }
         }
-        $(this).find('[data-name="amount"]').val((amount).toFixed(2));
-    });
-
-
-
-    if (tax_rate > 0) {
-        res_of_tax=parseFloat((res_of_tax).toFixed(2));
-        var vat_val = parseFloat(tax_rate);
-        if (taxable_amount > 0) {
-            $('[data-name="tax_value"]').val(res_of_tax);
-            total_amount += res_of_tax;
+        var discount = $('[data-name="discount"]').val();
+        if (discount == 'percent') {
+            var discount_value_percent = parseFloat($('[data-name="discount_values"]').val()) || 0;
+            res_of_discount = (discount_value_percent * non_tax_amount) / 100;
+            $('.discount_amount').text('AED -' + (res_of_discount).toFixed(2));
+            $('[data-name="discount_amount"]').val((res_of_discount).toFixed(2));
+            //total_amount -= res_of_discount;
         }
-    }
-    var discount = $('[data-name="discount"]').val();
-    if (discount == 'percent') {
-        var discount_value_percent = parseFloat($('[data-name="discount_values"]').val()) || 0;
-        res_of_discount = (discount_value_percent * non_tax_amount) / 100;
-        $('.discount_amount').text('AED -' + (res_of_discount).toFixed(2));
-        $('[data-name="discount_amount"]').val((res_of_discount).toFixed(2));
-        total_amount -= res_of_discount;
-    }
-    if (discount == 'value') {
-        var discount_value_value = parseFloat($('[data-name="discount_values"]').val()) || 0;
-        var res_of_discount = discount_value_value;
-        $('.discount_amount').text('AED -' + (res_of_discount).toFixed(2));
-        total_amount -= res_of_discount;
-    }
-    var amount_received=parseFloat($('#invoices [data-name="amount_received"]').val())||0;
+        if (discount == 'value') {
+            var discount_value_value = parseFloat($('[data-name="discount_values"]').val()) || 0;
+            var res_of_discount = discount_value_value;
+            $('.discount_amount').text('AED -' + (res_of_discount).toFixed(2));
+            //total_amount -= res_of_discount;
+        }
+        var amount_received=parseFloat($('#invoices [data-name="amount_received"]').val())||0;
 
-    $("#invoices .subtotal_value").text("AED " + (non_tax_amount).toFixed(2));
-    
-    $("#invoices .taxable_subtotal").text("AED " + (taxable_amount).toFixed(2));
-    $('#invoices .all_total_amount').text("AED " + (total_amount).toFixed(2));
+        $("#invoices .subtotal_value").text("AED " + (non_tax_amount).toFixed(2));
+        
+        $("#invoices .taxable_subtotal").text("AED " + (taxable_amount).toFixed(2));
+        $('#invoices .all_total_amount').text("AED " + (total_amount).toFixed(2));
 
-    var balance_due = total_amount-amount_received;
-    $('#invoices .balance_due').text("AED " + (balance_due).toFixed(2));
+        var balance_due = total_amount-amount_received;
+        $('#invoices .balance_due').text("AED " + (balance_due).toFixed(2));
 
-    $("#invoices [data-name='invoice_subtotal']").val((non_tax_amount).toFixed(2));
-    $("#invoices [data-name='taxable_subtotal']").val((taxable_amount).toFixed(2));
-    $("#invoices [data-name='invoice_total']").val((total_amount).toFixed(2));
-    // 
+        $("#invoices [data-name='invoice_subtotal']").val((non_tax_amount).toFixed(2));
+        $("#invoices [data-name='taxable_subtotal']").val((taxable_amount).toFixed(2));
+        $("#invoices [data-name='invoice_total']").val((total_amount).toFixed(2));
+    }
+    else{
+        $('[data-name="tax_value"]').val("");
+        $('[data-name="tax_amount"]').val(0);
+        $("#invoice-table tbody tr").each(function (item, index) {
+            // var is_payable = $(this).find('[data-name="payable"]').is(":checked");
+            var is_deductable = $(this).find('[data-name="deductable"]').is(":checked");
+
+            var rate = parseFloat($(this).find('[data-name="rate"]').val()) || 0;
+            if(is_deductable){
+                rate = rate*-1;
+            }
+            var qty = parseFloat($(this).find('[data-name="qty"]').val()) || 0;
+
+            var amount = rate * qty;
+            $(this).find('[data-name="item_subtotal"]').val((amount).toFixed(2));
+
+            // if(is_deductable){
+            //     total_amount -= amount;
+            //     non_tax_amount -= amount;
+            // }
+            // else{
+                total_amount += amount;
+                non_tax_amount += amount;
+            //}
+            // debugger;
+            if ($(this).find('[data-name="tax"]').is(":checked")) {
+                
+                taxable_amount += amount;
+                if (tax_rate > 0) {
+                    var tax_amount=0;
+                    if(tax_type=="percentage"){
+                        tax_amount = (amount * tax_value) / 100;
+                    }
+                    else{
+                        tax_amount = tax_value/$("#invoice-table [data-name='tax']:checked").length;
+                    }
+                    
+                    amount += tax_amount;
+                    res_of_tax+=tax_amount;
+                    // if(is_deductable){
+                    //     tax_amount = Math.abs(tax_amount);
+                    // }
+                    $(this).find('[data-name="tax_amount"]').val((tax_amount).toFixed(2));
+                }
+            }
+            $(this).find('[data-name="amount"]').val((amount).toFixed(2));
+        });
+
+
+
+        if (tax_rate > 0) {
+            res_of_tax=parseFloat((res_of_tax).toFixed(2));
+            var vat_val = parseFloat(tax_rate);
+            if (taxable_amount > 0) {
+                $('[data-name="tax_value"]').val(res_of_tax);
+                total_amount += res_of_tax;
+            }
+        }
+        var discount = $('[data-name="discount"]').val();
+        if (discount == 'percent') {
+            var discount_value_percent = parseFloat($('[data-name="discount_values"]').val()) || 0;
+            res_of_discount = (discount_value_percent * non_tax_amount) / 100;
+            $('.discount_amount').text('AED -' + (res_of_discount).toFixed(2));
+            $('[data-name="discount_amount"]').val((res_of_discount).toFixed(2));
+            total_amount -= res_of_discount;
+        }
+        if (discount == 'value') {
+            var discount_value_value = parseFloat($('[data-name="discount_values"]').val()) || 0;
+            var res_of_discount = discount_value_value;
+            $('.discount_amount').text('AED -' + (res_of_discount).toFixed(2));
+            total_amount -= res_of_discount;
+        }
+        var amount_received=parseFloat($('#invoices [data-name="amount_received"]').val())||0;
+
+        $("#invoices .subtotal_value").text("AED " + (non_tax_amount).toFixed(2));
+        
+        $("#invoices .taxable_subtotal").text("AED " + (taxable_amount).toFixed(2));
+        $('#invoices .all_total_amount').text("AED " + (total_amount).toFixed(2));
+
+        var balance_due = total_amount-amount_received;
+        $('#invoices .balance_due').text("AED " + (balance_due).toFixed(2));
+
+        $("#invoices [data-name='invoice_subtotal']").val((non_tax_amount).toFixed(2));
+        $("#invoices [data-name='taxable_subtotal']").val((taxable_amount).toFixed(2));
+        $("#invoices [data-name='invoice_total']").val((total_amount).toFixed(2));
+        // 
+    }
 }
 
 
@@ -1222,6 +1290,7 @@ function append_row($row_data = null) {
     if ($row_data != null) {
         console.log($row_data);
         $row_data.forEach(function (item, i) {
+            console.log(item+"sadhkasdgjdssdfsdafhdsaf")
             var _isTaxable = item.is_taxable ? 'checked' : '';
             // var _isPaybale = item.is_payable?'checked':'';
             var _isDeductable = item.is_deductable ? 'checked' : '';
@@ -1230,6 +1299,8 @@ function append_row($row_data = null) {
             //if (!_isDeductable) {
                 tax = '<div class="kt-checkbox-list"><label class="kt-checkbox"> <input data-name="tax" name="invoice_items['+i+'][tax]" type="checkbox" ' + _isTaxable+ '><span></span> </label></div>';
            // }
+            var _subtotal=typeof item.subtotal =="undefined"?0:item.subtotal;
+            var _taxable_amount=typeof item.taxable_amount =="undefined"?0:item.taxable_amount;
             var action = '<button type="button" onclick="delete_row(this);" class="delete-row btn btn-danger"><i class="fa fa-trash-alt"></i></button>';
             markup += '' +
                 '   <tr>  ' +
@@ -1238,9 +1309,9 @@ function append_row($row_data = null) {
                 '       <td> <input data-input-type="float" class="form-control" data-name="rate" name="invoice_items['+i+'][rate]" min="0" value="' + item.rate + '"> </td>  ' +
                 '       <td> <input data-input-type="float" class="form-control" data-name="qty" name="invoice_items['+i+'][qty]" min="1" value="' + item.qty + '"> </td>  ' +
                 '       <td> ' +
-                '           <input type="hidden" data-name="item_subtotal" name="invoice_items['+i+'][item_subtotal]">'+
+                '           <input type="hidden" data-name="item_subtotal" name="invoice_items['+i+'][item_subtotal]" value="'+item.amount+'">'+
                 '           <div class="input-group">   ' +
-                '               <input type="text" class="form-control" placeholder="Amount" data-name="amount" name="invoice_items['+i+'][amount]" readonly aria-describedby="basic-addon2">   ' +
+                '               <input type="text" class="form-control" placeholder="Amount" data-name="amount" name="invoice_items['+i+'][amount]" aria-describedby="basic-addon2" value="'+_subtotal+'">   ' +
                 '               <div class="input-group-append">  ' +
                 '                   <span class="input-group-text" id="basic-addon2">' +
                 '                       <label class="kt-checkbox kt-checkbox--single kt-checkbox--primary"> <input type="checkbox" data-name="deductable" name="invoice_items['+i+'][deductable]" ' + _isDeductable + '> <span></span> </label>' +
@@ -1251,7 +1322,7 @@ function append_row($row_data = null) {
                 '       <td>   ' +
                 tax +
                 '       </td>  ' +
-                '       <td> <input data-input-type="float" class="form-control" data-name="tax_amount" name="invoice_items['+i+'][tax_amount]" min="0" value="0"> ' +
+                '       <td> <input data-input-type="float" class="form-control" data-name="tax_amount" name="invoice_items['+i+'][tax_amount]" min="0" value="'+_taxable_amount+'"> ' +
                 '           '
             '       </td>  ' +
             '  </tr>  ';
@@ -1269,7 +1340,7 @@ function append_row($row_data = null) {
         '       <td> <input data-input-type="float" class="form-control" data-name="qty" name="invoice_items['+total_rows+'][qty]" min="1" value="1"> </td>  ' +
         '       <td> ' +
         '           <div class="input-group">   ' +
-        '               <input type="text" class="form-control" placeholder="Amount" data-name="amount" name="invoice_items['+total_rows+'][amount]" readonly aria-describedby="basic-addon2">   ' +
+        '               <input type="text" class="form-control" placeholder="Amount" data-name="amount" name="invoice_items['+total_rows+'][amount]"  aria-describedby="basic-addon2" value="0">   ' +
         '               <div class="input-group-append">  ' +
         '                   <span class="input-group-text" id="basic-addon2">' +
         '                       <label class="kt-checkbox kt-checkbox--single kt-checkbox--primary"> <input type="checkbox" data-name="deductable" name="invoice_items['+total_rows+'][deductable]"> <span></span> </label>' +

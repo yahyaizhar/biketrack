@@ -21,6 +21,7 @@ use Carbon\Carbon;
 use App\Model\Accounts\Company_Expense;
 use Arr;
 use \App\Model\Accounts\Company_Account;
+use App\Model\Accounts\Bill_change;
 
 class SimController extends Controller
 {
@@ -256,6 +257,14 @@ public function store_simTransaction(Request $request){
     $data=$request->data;
     $splitted_amount=0;
     $total_amount=$request->amount;
+
+    $bill_changes = new Bill_change;
+    $bill_changes->month=Carbon::parse($request->month_year)->startOfMonth()->format('Y-m-d');
+    $bill_changes->type='sim';
+    $bill_changes->amount=$total_amount;
+    $bill_changes->given_date=Carbon::parse($request->given_date)->format('Y-m-d');
+    $billchanges_feed=[];
+
     foreach ($data as $value) {
         $sim_trans=new Sim_Transaction();
         $sim_trans->month_year=Carbon::parse($request->month_year)->startOfMonth()->format('Y-m-d');
@@ -281,7 +290,7 @@ public function store_simTransaction(Request $request){
             $filepath = Storage::putfile('public/uploads/riders/sim_bill_image', $request->file('sim_bill_image'));
             $sim_trans->sim_bill_image = $filepath;
         }
-        $sim_trans->save();
+        // $sim_trans->save();
 
         $sim=$sim_trans->Sim;
     
@@ -296,7 +305,7 @@ public function store_simTransaction(Request $request){
             $ca->rider_id=$value['rider_id'];
         }
         $ca->month = Carbon::parse($sim_trans->month_year)->startOfMonth()->format('Y-m-d');
-        $ca->given_date = Carbon::parse($sim_trans->given_date)->format('Y-m-d');
+        $ca->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
         $ca->source="Sim Transaction"; 
         $ca->amount=$value['bill_amount_given_by_days'];
         $ca->save();
@@ -312,10 +321,10 @@ public function store_simTransaction(Request $request){
                 $ra->rider_id=$value['rider_id'];
             }
             $ra->month = Carbon::parse($sim_trans->month_year)->startOfMonth()->format('Y-m-d');
-            $ra->given_date = Carbon::parse($sim_trans->given_date)->format('Y-m-d');
+            $ra->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
             $ra->source="Sim extra usage"; 
             $ra->amount=round($extra,2);
-            $ra->save();
+            // $ra->save();
             
             $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
                 'sim_transaction_id'=>$sim_trans->id,
@@ -328,13 +337,33 @@ public function store_simTransaction(Request $request){
                 $ca->rider_id=$value['rider_id'];
             }
             $ca->month = Carbon::parse($sim_trans->month_year)->startOfMonth()->format('Y-m-d');
-            $ca->given_date = Carbon::parse($sim_trans->given_date)->format('Y-m-d');
+            $ca->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
             $ca->source="Sim extra usage";
             $ca->amount=round($extra,2);
-            $ca->save();
+            // $ca->save();
         }
         $splitted_amount+=$value['bill_amount_given_by_days'];
+
+        
+        $obj_feed=[];
+        $obj_feed['sim_id']=$request->sim_id;
+        if(isset($value['sim_id'])){
+            $obj_feed['sim_id']=$value['sim_id'];
+        }
+        $obj_feed['rider_id']=$request->rider_id;
+        if(isset($value['rider_id'])){
+            $obj_feed['rider_id']=$value['rider_id'];
+        }
+        $obj_feed['allowed_balance']=$value['allowed_balance'];
+        $obj_feed['work_days']=$value['work_days_count'];
+        $obj_feed['working_allowed']=$value['work_days_allowed_balance'];
+        $obj_feed['month_days']=$value['total_days'];
+        $obj_feed['bill_amount']=$value['bill_amount_given_by_days'];
+        $obj_feed['extra']=$value['extra_useage_amount_given_by_days'];
+        array_push($billchanges_feed,$obj_feed);
     }
+    $bill_changes->feed=json_encode($billchanges_feed);
+
     $remaining_amount=$total_amount-$splitted_amount;
 
     if($remaining_amount>0){
@@ -345,12 +374,14 @@ public function store_simTransaction(Request $request){
         $ce->month = Carbon::parse($request->get('month'))->format('Y-m-d');
         $ce->description="Sim Bill remaining amount";
         $ce->type="Sim Bill";
-        $ce->save();
+        // $ce->save();
     }
-    return redirect(route('SimTransaction.view_records'))->with('message', 'Sim Transaction is completed successfully.');
     return response()->json([
-        'status' => true
+        'status' => true,
+        'data'=>$bill_changes
     ]);
+    return redirect(route('SimTransaction.view_records'))->with('message', 'Sim Transaction is completed successfully.');
+    
 }
 
 public function view_sim_transaction_records(){

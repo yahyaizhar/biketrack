@@ -304,6 +304,62 @@
     </div>
     </div>
 </div>
+
+<div class="modal fade" id="update_row_model" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header border-bottom-0">
+            <h5 class="modal-title">Update Company Account</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form class="kt-form" enctype="multipart/form-data" id="update_rows">
+                <input type="hidden" name="statement_id">
+                <input type="hidden" name="source_id">
+                <div class="form-group">
+                    <label>Rider:</label>
+                    <select required class="form-control kt-select2-general" name="rider_id_update" >
+                        @foreach ($riders as $rider)
+                        <option value="{{ $rider->id }}">
+                            {{ $rider->name }}
+                        </option>     
+                        @endforeach 
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Month:</label>
+                    <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month_update" placeholder="Enter Month" value="">
+                    @if ($errors->has('month'))
+                        <span class="invalid-response" role="alert">
+                            <strong>
+                                {{ $errors->first('month') }}
+                            </strong>
+                        </span>
+                    @else
+                        <span class="form-text text-muted">Please enter Month</span>
+                    @endif
+                </div>
+                <div class="form-group">
+                    <label>Description:</label>
+                    <textarea readonly class="form-control" name="source" placeholder="Enter Description"></textarea>
+                    <span class="form-text text-muted">Please enter Description</span>
+                </div>
+                <div class="form-group">
+                    <label>Amount:</label>
+                    <input type="number" step="0.01" required class="form-control" name="amount" placeholder="Enter Amount" value="0">
+                    <span class="form-text text-muted">Please enter Amount</span>
+                </div>
+
+                <div class="kt-form__actions kt-form__actions--right">
+                    <button type="submit" class="btn btn-success">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    </div>
+</div>
 <div class="modal fade" id="rider_expense_bonus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">  
@@ -1019,9 +1075,9 @@
         
 
     })
-function FineBike(rider_id,bike_fine_id,amount,month){
+function FineBike(rider_id,bike_fine_id,amount,month,given_date){
     console.log(month)
-    var url = "{{ url('admin/accounts/fine/paid/Rider') }}" + "/" + rider_id +"/"+bike_fine_id+"/"+amount+"/"+month;
+    var url = "{{ url('admin/accounts/fine/paid/Rider') }}" + "/" + rider_id +"/"+bike_fine_id+"/"+amount+"/"+month+"/"+given_date;
    console.log(url)
     $.ajaxSetup({
                 headers: {
@@ -1267,6 +1323,72 @@ function SimBillsImage(rider_id,month,type){
                     });
                 }
             });
+
+}
+function UpdateRows($this,id,model_class,model_id,rider_id,string,month,year,source_id){
+    
+    var _tr = $($this).parents('tr');
+    var _row = table.row(_tr).data();
+    var _model = $('#update_row_model');
+    var r1d1=biketrack.getUrlParameter('r1d1');
+    var rider_id_update=biketrack.getUrlParameter('rider_id');
+    var _month=new Date(r1d1).format("mmmm yyyy");
+    _model.find('#update_rows [name="source"]').val(_row.source);
+    _model.find('#update_rows [name="amount"]').val(_row.amount);
+    _model.find('#update_rows [name="statement_id"]').val(_row.id);
+    _model.find('#update_rows [name="source_id"]').val(source_id);
+    _model.find('#update_rows [name="month_update"]').attr("data-month",_month);
+    _model.find('#update_rows [name="rider_id_update"]').val(rider_id_update).trigger("change.select2");
+    biketrack.refresh_global();
+    var bk_rider_id=rider_id;
+    var bk_month=month;
+    var bk_year=year;
+    _model.modal('show');
+
+    _model.find('form').off('submit').on('submit', function(e){
+        e.preventDefault();
+        var url ="{{ url('admin/accounts/company/update_row/') }}"+ "/" + bk_rider_id + "/" + bk_month + "/" + bk_year ;
+        var _form = $(this);
+        var _submitBtn = _form.find('[type="submit"]');
+        $.ajax({
+            url : url,
+            type : 'PUT',
+            data:_form.serializeArray(),
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            beforeSend: function() {            
+                // $('.loading').show();
+                _submitBtn.prop('disabled', true);
+            },
+            complete: function(){
+                // $('.loading').hide();
+                _submitBtn.prop('disabled', false);
+                _model.modal('hide');
+            },
+            success: function(data){
+                swal.fire({
+                    position: 'center',
+                    type: 'success',
+                    title: 'Record updated successfully.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                table.ajax.reload(null, false);
+                table_bills.ajax.reload(null, false);
+            },
+            error: function(error){
+                swal.fire({
+                    position: 'center',
+                    type: 'error',
+                    title: 'Oops...',
+                    text: 'Unable to update.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        });
+    });
 
 }
 </script> 

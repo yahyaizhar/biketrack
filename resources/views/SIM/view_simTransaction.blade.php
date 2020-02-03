@@ -72,25 +72,16 @@
                     </tr>
                 </thead>
             </table>
-
-            <!--end: Datatable -->
         </div>
     </div>
 </div>
-
-<!-- end:: Content -->
 @endsection
 @section('foot')
-<!--begin::Page Vendors(used by this page) -->
 <script src="{{ asset('dashboard/assets/vendors/custom/datatables/datatables.bundle.js') }}" type="text/javascript"></script>
 <script src="{{ asset('js/dataTables.cellEdit.js') }}" type="text/javascript"></script>
-<!--end::Page Vendors -->
-
-<!--begin::Page Scripts(used by this page) -->
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/datatables/basic/basic.js') }}" type="text/javascript"></script>
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
-<!--end::Page Scripts -->
 <script>
 var simTransaction_table;
 $(function() {

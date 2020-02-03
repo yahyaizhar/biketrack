@@ -34,6 +34,7 @@
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
                         {{-- <button class="btn btn-danger btn-elevate btn-icon-sm" id="bulk_delete">Delete Selected</button> --}}
+                        <input class="btn btn-success" type="button" onclick="export_data()" value="Export Client Data">
                         &nbsp;
                         <a href="{{ route('admin.clients.create') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>
@@ -55,6 +56,7 @@
                         <th>ID</th>
                         <th>Name</th>
                         <th>Phone</th>
+                        <th>TRN No</th>
                         <th>Payout Method</th>
                         <th>Salary Method</th>
                         <th>Actions</th>
@@ -85,10 +87,11 @@
                             <option value="">Select Payout Method</option>
                             <option value="trip_based">Based on Trips and Hours</option>   
                             <option value="fixed_based">Based on Fixed Amount</option> 
+                            <option value="commission_based">Commission Based</option> 
                         </select>
                     </div>
 
-                    <div class="d-none" data-payout-types data-show="trip_based">
+                    <div class="d-none" data-payout-types data-show="trip_based"> 
                         <div class="form-group">
                             <label>Amount per Trip:</label>
                             <input type="text" autocomplete="off" class="form-control" name="tb__trip_amount" placeholder="Enter per trip amount" />
@@ -105,9 +108,16 @@
                             <input type="text" autocomplete="off" class="form-control" name="fb__amount" placeholder="Enter fixed amount" />
                         </div>
                         <div class="form-group">
-                            <label>Workable Hours:</label>
-                            <input type="text" autocomplete="off" class="form-control" name="fb__workable_hours" placeholder="Enter workable hours" />
+                            <label>Perday Hours:</label>
+                            <input type="text" autocomplete="off" class="form-control" name="fb__perdayHours" placeholder="Enter estimated hours in one day" />
                         </div>
+                        <div class="form-group">
+                            <label>Working Days:</label>
+                            <input type="text" autocomplete="off" class="form-control" name="fb__working_days" placeholder="Enter estimated working days" />
+                        </div>
+                    </div>
+                    <div class="d-none" data-payout-types data-show="commission_based">
+                        {{-- No settings yet for commission_based based payout --}}
                     </div>
 
                     <div class="modal-footer border-top-0 d-flex justify-content-center">
@@ -216,7 +226,20 @@
 <!--end::Page Scripts -->
 <script>
 var clients_table;
-
+function export_data(){
+    var export_details=[];
+    var _data=clients_table.ajax.json().data;
+    console.log(_data);
+    _data.forEach(function(item,index) {
+        export_details.push({
+        "ID":item.id,
+        "Name":item.name,
+        "Phone":item.phone,
+        });
+    });
+        var export_data = new CSVExport(export_details);
+    return false;
+}
 function show_salary_modal(salary_method, client_id){
     salary_method = JSON.parse(salary_method);
     console.log(salary_method);
@@ -370,12 +393,13 @@ $(function() {
             $('.total_entries').remove();
         $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
     },
-        ajax: '{!! route('admin.clients.data.active') !!}', 
+        ajax: '{!! route('admin.clients.data') !!}', 
         columns: [
             // { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
             { data: 'new_id', name: 'new_id' },
             { data: 'new_name', name: 'name' },
             { data: 'new_phone', name: 'phone' },
+            { data: 'trn_no', name: 'trn_no' },
             { data: 'payout_method', name: 'payout_method' },
             { data: 'salary_method', name: 'salary_method' },
             { data: 'actions', name: 'actions', orderable: false, searchable: false }
