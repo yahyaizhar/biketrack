@@ -1148,34 +1148,14 @@ function subtotal() {
 
             var amount = parseFloat($(this).find('[data-name="item_subtotal"]').val())||0;
             $(this).find('[data-name="item_subtotal"]').val((amount).toFixed(2));
-
-            // if(is_deductable){
-            //     total_amount -= amount;
-            //     non_tax_amount -= amount;
-            // }
-            // else{
-                total_amount += amount;
-                non_tax_amount += amount;
-            //}
-            // debugger;
             if ($(this).find('[data-name="tax"]').is(":checked")) {
                 
                 taxable_amount += amount;
                 if (tax_rate > 0) {
                     var tax_amount=0;
-                    if(tax_type=="percentage"){
-                        tax_amount = (amount * tax_value) / 100;
-                    }
-                    else{
-                        tax_amount = tax_value/$("#invoice-table [data-name='tax']:checked").length;
-                    }
                     
                     amount += tax_amount;
                     res_of_tax+=tax_amount;
-                    // if(is_deductable){
-                    //     tax_amount = Math.abs(tax_amount);
-                    // }
-                    $(this).find('[data-name="tax_amount"]').val((tax_amount).toFixed(2));
                 }
             }
             $(this).find('[data-name="amount"]').val((amount).toFixed(2));
