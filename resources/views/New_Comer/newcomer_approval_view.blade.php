@@ -295,7 +295,11 @@ padding: 10px;
             </div>
         </div>
     </div>
-    <div class="customFilters">
+    <div class="row" style=" padding: 8px; ">
+            <div class="col-md-4">
+    <button class="btn btn-primary cstmshow">Show Filters</button>
+            </div></div>
+    <div class="customFilters" style="display:none;">
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
@@ -1195,11 +1199,11 @@ $('.customFilters select').on( 'change', function () {
     
 });
 $(document).ready(function() {
-    setTimeout(function(){
-$('.customFilters select').select2({
-    // allowClear: true
-});
-},1000)
+ $('.cstmshow').click(function(){
+  $('.customFilters').toggle();
+   $('.customFilters select').select2({
+    });
+})
 });
 </script>
 <style>
