@@ -1340,7 +1340,7 @@ function append_row($row_data = null) {
         '       <td> <input data-input-type="float" class="form-control" data-name="qty" name="invoice_items['+total_rows+'][qty]" min="1" value="1"> </td>  ' +
         '       <td> ' +
         '           <div class="input-group">   ' +
-        '               <input type="text" class="form-control" placeholder="Amount" data-name="amount" name="invoice_items['+total_rows+'][amount]"  aria-describedby="basic-addon2" value="'+item.subtotal+'">   ' +
+        '               <input type="text" class="form-control" placeholder="Amount" data-name="amount" name="invoice_items['+total_rows+'][amount]"  aria-describedby="basic-addon2" value="0">   ' +
         '               <div class="input-group-append">  ' +
         '                   <span class="input-group-text" id="basic-addon2">' +
         '                       <label class="kt-checkbox kt-checkbox--single kt-checkbox--primary"> <input type="checkbox" data-name="deductable" name="invoice_items['+total_rows+'][deductable]"> <span></span> </label>' +
@@ -1356,7 +1356,7 @@ function append_row($row_data = null) {
         '               </label>  ' +
         '           </div>  ' +
         '       </td>  ' +
-        '       <td> <input data-input-type="float" class="form-control" data-name="tax_amount" name="invoice_items['+total_rows+'][tax_amount]" min="0" value="'+item.taxable_amount+'"> ' +
+        '       <td> <input data-input-type="float" class="form-control" data-name="tax_amount" name="invoice_items['+total_rows+'][tax_amount]" min="0" value="0"> ' +
         '           '
     '       </td>  ' +
     '  </tr>  ';
