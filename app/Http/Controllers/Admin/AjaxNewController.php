@@ -1140,7 +1140,8 @@ class AjaxNewController extends Controller
                     $amount=$company_statement->amount;
                     $bike_fine_id=$company_statement->bike_fine;
                     $month=$company_statement->month;
-                    return '<div>Fine Paid By Kingriders <button type="button" id="getting_val" onclick="FineBike('.$amount.','.$rider_id.','.$bike_fine_id.',\''.$month.'\')" data-toggle="modal" data-target="#bike_fine" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
+                    $given_date=$company_statement->given_date;
+                    return '<div>Fine Paid By Kingriders <button type="button" id="getting_val" onclick="FineBike('.$amount.','.$rider_id.','.$bike_fine_id.',\''.$month.'\',\''.$given_date.'\')" data-toggle="modal" data-target="#bike_fine" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
                 }
                 return "Bike Fine Paid By King Riders";
             }

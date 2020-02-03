@@ -442,7 +442,7 @@ Route::group([
     /*[Accounts - delete Bike Fine]*/Route::delete('/accounts/BF/delete/{id}','KRController@BF_delete')->name('admin.BF_delete');
     /*[Accounts - edit Bike Fine]*/Route::get('/accounts/BF/edit/{id}','KRController@BF_edit')->name('admin.BF_edit');
     /*[Accounts - view Bike Fine]*/Route::get('/accounts/BF/edit/view/{id}','KRController@BF_edit_view')->name('admin.BF_edit_view');
-    /*[Accounts - Pay Bike Fine]*/Route::get('/accounts/fine/paid/Rider/{rider_id}/{bike_fine_id}/{amount}/{month}','KRController@paid_fine_by_rider')->name('admin.BF_pay');
+    /*[Accounts - Pay Bike Fine]*/Route::get('/accounts/fine/paid/Rider/{rider_id}/{bike_fine_id}/{amount}/{month}/{given_date}','KRController@paid_fine_by_rider')->name('admin.BF_pay');
 // End Bike Fine
     Route::get("/accounts/accounts/testing","HomeController@accounts_testing_v1")->name("admin.accounts.testing_v1");//not_using
    
