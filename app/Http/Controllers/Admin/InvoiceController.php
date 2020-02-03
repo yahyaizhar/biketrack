@@ -344,6 +344,8 @@ class InvoiceController extends Controller
                     'amount'=> $invoice_item->item_amount,
                     'rate'=> $invoice_item->item_rate,
                     'qty'=> $invoice_item->item_qty,
+                    'taxable_amount'=>$invoice_item->taxable_amount,
+                    'subtotal'=>$invoice_item->subtotal,
                     'is_taxable'=> $invoice_item->tax_method_id!=null?true:false,
                     'is_deductable'=> $invoice_item->deductable==0?false:true
                 ];

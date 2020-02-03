@@ -52,7 +52,7 @@ margin-left: 10px;
                 <td class="approval_experience">Full Name</td>
            <tr>
             <tr>
-                    <th>National id card:</th>
+                    <th>Emirates id:</th>
                     <td class="approval_id_card_no">Full Name</td>
                     <th>Education:</th>
                     <td class="approval_education">Full Name</td>
@@ -99,6 +99,12 @@ margin-left: 10px;
                     <td class="approval_noc_status">Full Name</td>
                     <th>Email:</th>
                     <td class="newcomer_email">Full Name</td>
+            </tr>
+            <tr>
+                <th>Have bike.?</th>
+                <td class="newcomer_hasbike">Full Name</td>
+                <th>Source:</th>
+                <td class="newcomer_source">Full Name</td>
             </tr>
 
            </table>
@@ -629,6 +635,8 @@ function show_waiting_comer(id,$this){
     $('.approval_visa_status').text(_newcommerdata.visa_status);
     $('.approval_noc_status').text(_newcommerdata.noc_status);
     $('.newcomer_email').text(_newcommerdata.email);
+    $('.newcomer_hasbike').text(_newcommerdata.have_bike);
+    $('.newcomer_source').text(_newcommerdata.source);
     $('.approval_app_status').text(_newcommerdata.approval_status);
     if(_newcommerdata.current_residence == 'other'){
         _newcommerdata.current_residence = _newcommerdata.current_residence_countries

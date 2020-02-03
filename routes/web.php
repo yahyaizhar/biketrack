@@ -146,7 +146,7 @@ Route::group([
     Route::get("/accounts/company/expense/investment/detail/{month}","ExpenseController@get_investment_detail")->name("admin.get_investment_detail");
 
     Route::get("/accounts/company/debits/get_salary_deduction/{month}/{rider_id}","AccountsController@get_salary_deduction")->name("admin.accounts.get_salary_deduction");
-
+    Route::get("/rider/salarystatus/{month}","AjaxNewController@getSalaryList")->name("rider.getSalaryList");
 });
 // End Ajax Routes
 
@@ -234,7 +234,7 @@ Route::group([
     /*[clients- performance delete last import]*/Route::delete('/delete/last/import','RiderController@delete_lastImport')->name('delete.import_data');
     /*[clients- View salary sheet]*/Route::get("/client/{cleint_id}/salarysheet","AccountsController@zomato_salary_sheet_export")->name("admin.zomato_salary_sheet_export");
     /*[clients- View all clients salary sheet]*/Route::get("/all_clients/salarysheet","AccountsController@all_clients_salary_sheet_export")->name("admin.all_clients_salary_sheet_export");
-    
+    Route::get("/rider/salarystatus/","AccountsController@rider_salary_status")->name("rider.rider_salary_status");//***
     /*[rider- View attendance data]*/Route::get('/zomato/riders/payout/by/days','AccountsController@view_riders_payouts_days')->name('zomato.view_riders_payouts_days');
     /*[rider- Import attendance data]*/Route::post('/import/riders/payouts/days','AccountsController@import_rider_daysPayouts')->name('import.import_rider_daysPayouts');
     /*[rider- view attendance]*/Route::get("/rider/hours/trips/details/{month}/{rider_id}","AccountsController@hours_trips_details")->name('attendance.get_attendance_ajax');
@@ -594,6 +594,8 @@ Route::group([
    Route::post('/view/upload/salary_slip/{month}/{rider_id}','RiderDetailController@view_upload_salary_slip')->name('rider.view_upload_salary_slip');//[Accounts-Upload salary Slip] .
 
    Route::put('accounts/company/edit', 'AccountsController@edit_company_account')->name('admin.accounts.edit_company'); //[Accounts - Edit company account]
+   Route::put('accounts/company/update_row/{rider_id}/{month}/{year}', 'AccountsController@update_row_company_account')->name('admin.accounts.update_row_company_account');//*** */
+   Route::put('accounts/rider/update_row/{rider_id}/{month}/{year}', 'AccountsController@update_row_rider_account')->name('admin.accounts.update_row_rider_account');//*** */
    Route::put('accounts/rider/edit', 'AccountsController@edit_rider_account')->name('admin.accounts.edit_rider'); //[Accounts - Edit rider account]
    Route::get('/sim/bill/image/{rider_id}/{month}/{type}','SimController@SimBIllImage')->name('Sim.SimBIllImage');//[Accounts-Sim Bill Image] .
    
