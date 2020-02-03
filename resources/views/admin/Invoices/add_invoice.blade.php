@@ -1130,11 +1130,6 @@ function subtotal() {
     var tax_rate = parseFloat($('[data-name="tax_rate"]').val()) || 0;
     var tax_type=$('[data-name="tax_rate"] :selected').attr('data-type')||"";
     var tax_value=parseFloat($('[data-name="tax_rate"] :selected').attr('data-value'))||0;
-
-
-    $('[data-name="tax_value"]').val("");
-    $('[data-name="tax_amount"]').val(0);
-
     if(_invoices.edit && _invoices.edit==true){
         $("#invoice-table tbody tr").each(function (item, index) {
             // var is_payable = $(this).find('[data-name="payable"]').is(":checked");
@@ -1146,15 +1141,16 @@ function subtotal() {
             }
             var qty = parseFloat($(this).find('[data-name="qty"]').val()) || 0;
 
-            var amount = parseFloat($(this).find('[data-name="item_subtotal"]').val())||0;
-            $(this).find('[data-name="item_subtotal"]').val((amount).toFixed(2));
+            var amount = parseFloat($(this).find('[data-name="amount"]').val())||0;
+            var item_subtotal = parseFloat($(this).find('[data-name="item_subtotal"]').val())||0;
+            $(this).find('[data-name="item_subtotal"]').val((item_subtotal).toFixed(2));
             if ($(this).find('[data-name="tax"]').is(":checked")) {
                 
                 taxable_amount += amount;
+		        total_amount += amount;
+                non_tax_amount += amount;
                 if (tax_rate > 0) {
-                    var tax_amount=0;
-                    
-                    amount += tax_amount;
+                    var tax_amount=parseFloat($(this).find('[data-name="tax_amount"]').val())||0; 
                     res_of_tax+=tax_amount;
                 }
             }
