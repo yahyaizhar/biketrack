@@ -1075,9 +1075,9 @@
         
 
     })
-function FineBike(rider_id,bike_fine_id,amount,month){
+function FineBike(rider_id,bike_fine_id,amount,month,given_date){
     console.log(month)
-    var url = "{{ url('admin/accounts/fine/paid/Rider') }}" + "/" + rider_id +"/"+bike_fine_id+"/"+amount+"/"+month;
+    var url = "{{ url('admin/accounts/fine/paid/Rider') }}" + "/" + rider_id +"/"+bike_fine_id+"/"+amount+"/"+month+"/"+given_date;
    console.log(url)
     $.ajaxSetup({
                 headers: {
