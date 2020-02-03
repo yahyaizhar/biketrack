@@ -1136,12 +1136,12 @@ function subtotal() {
             var is_deductable = $(this).find('[data-name="deductable"]').is(":checked");
 
             var rate = parseFloat($(this).find('[data-name="rate"]').val()) || 0;
-            if(is_deductable){
-                rate = rate*-1;
-            }
             var qty = parseFloat($(this).find('[data-name="qty"]').val()) || 0;
 
             var amount = parseFloat($(this).find('[data-name="amount"]').val())||0;
+            if(is_deductable){
+                amount= amount*-1;
+            }
             var item_subtotal = parseFloat($(this).find('[data-name="item_subtotal"]').val())||0;
             $(this).find('[data-name="item_subtotal"]').val((item_subtotal).toFixed(2));
             total_amount += amount;
@@ -1153,17 +1153,16 @@ function subtotal() {
                     res_of_tax+=tax_amount;
                 }
             }
+            var amount = parseFloat($(this).find('[data-name="amount"]').val())||0;
             $(this).find('[data-name="amount"]').val((amount).toFixed(2));
         });
-
-
 
         if (tax_rate > 0) {
             res_of_tax=parseFloat((res_of_tax).toFixed(2));
             var vat_val = parseFloat(tax_rate);
             if (taxable_amount > 0) {
                 $('[data-name="tax_value"]').val(res_of_tax);
-                total_amount += res_of_tax;
+                //total_amount += res_of_tax;
             }
         }
         var discount = $('[data-name="discount"]').val();
@@ -1172,13 +1171,13 @@ function subtotal() {
             res_of_discount = (discount_value_percent * non_tax_amount) / 100;
             $('.discount_amount').text('AED -' + (res_of_discount).toFixed(2));
             $('[data-name="discount_amount"]').val((res_of_discount).toFixed(2));
-            total_amount -= res_of_discount;
+            //total_amount -= res_of_discount;
         }
         if (discount == 'value') {
             var discount_value_value = parseFloat($('[data-name="discount_values"]').val()) || 0;
             var res_of_discount = discount_value_value;
             $('.discount_amount').text('AED -' + (res_of_discount).toFixed(2));
-            total_amount -= res_of_discount;
+            //total_amount -= res_of_discount;
         }
         var amount_received=parseFloat($('#invoices [data-name="amount_received"]').val())||0;
 
