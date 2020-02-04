@@ -19,7 +19,7 @@
                             <div class="p-2">
                                 <label for="month_id">Select Month</label>
                                 <select class="form-control kt-select2 bk-select2" id="month_id" name="month_id" >
-                                    <option value="">Select Month</option>
+                                    {{-- <option value="">Select Month</option>
                                     <option value="{{Carbon\Carbon::now()->format('Y')}}-01-01">January</option>   
                                     <option value="{{Carbon\Carbon::now()->format('Y')}}-02-01">Febuary</option>   
                                     <option value="{{Carbon\Carbon::now()->format('Y')}}-03-01">March</option>   
@@ -31,7 +31,14 @@
                                     <option value="{{Carbon\Carbon::now()->format('Y')}}-09-01">September</option>   
                                     <option value="{{Carbon\Carbon::now()->format('Y')}}-10-01">October</option>   
                                     <option value="{{Carbon\Carbon::now()->format('Y')}}-11-01">November</option>   
-                                    <option value="{{Carbon\Carbon::now()->format('Y')}}-12-01">December</option>    
+                                    <option value="{{Carbon\Carbon::now()->format('Y')}}-12-01">December</option>     --}}
+
+                                  @for ($i = 0; $i <= 12; $i++)
+                                    @php 
+                                    $_m =Carbon\Carbon::now()->startOfMonth()->addMonth(-$i);
+                                    @endphp
+                                    <option value="{{$_m->format('Y-m-d')}}">{{$_m->format('F-Y')}}</option>
+                                  @endfor 
                                 </select> 
                             </div>
                         </div>
