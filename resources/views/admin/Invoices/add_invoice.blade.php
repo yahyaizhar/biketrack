@@ -1157,13 +1157,10 @@ function subtotal() {
             $(this).find('[data-name="amount"]').val((amount).toFixed(2));
         });
 
+        res_of_tax=_invoices.invoice.taxable_amount;
+
         if (tax_rate > 0) {
-            res_of_tax=parseFloat((res_of_tax).toFixed(2));
-            var vat_val = parseFloat(tax_rate);
-            if (taxable_amount > 0) {
-                $('[data-name="tax_value"]').val(res_of_tax);
-                //total_amount += res_of_tax;
-            }
+            $('[data-name="tax_value"]').val(res_of_tax);
         }
         var discount = $('[data-name="discount"]').val();
         if (discount == 'percent') {
@@ -1181,8 +1178,11 @@ function subtotal() {
         }
         var amount_received=parseFloat($('#invoices [data-name="amount_received"]').val())||0;
 
+        non_tax_amount=_invoices.invoice.invoice_subtotal;
+        taxable_amount=_invoices.invoice.taxable_subtotal;
+        total_amount=_invoices.invoice.invoice_total;
+
         $("#invoices .subtotal_value").text("AED " + (non_tax_amount).toFixed(2));
-        
         $("#invoices .taxable_subtotal").text("AED " + (taxable_amount).toFixed(2));
         $('#invoices .all_total_amount').text("AED " + (total_amount).toFixed(2));
 
