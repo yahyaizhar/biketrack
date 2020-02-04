@@ -3382,8 +3382,11 @@ class AjaxNewController extends Controller
               return 'No Bike is assigned';
         }) 
         ->addColumn('aed_trips', function($rider) use ($month) {
+            $onlyMonth=Carbon::parse($month)->format('m');
+            $onlyYear=Carbon::parse($month)->format('Y');
             $aed_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$month)
+            ->whereMonth('date',$onlyMonth)
+            ->whereYear('date',$onlyYear)
             ->get()
             ->sum('trips_payable');
             if ( $aed_trips_sum > 400){
@@ -3406,98 +3409,135 @@ class AjaxNewController extends Controller
             return round($number_of_hours_sum *7.87,2);
         })
         ->addColumn('aed_trips_zomato', function($rider) use ($month) {
+            $onlyMonth=Carbon::parse($month)->format('m');
+            $onlyYear=Carbon::parse($month)->format('Y');
             $aed_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$month)
+            ->whereMonth('date',$onlyMonth)
+            ->whereYear('date',$onlyYear)
             ->get()
             ->sum('trips_payable');
                 return round($aed_trips_sum*6.75,2); 
         }) 
         ->addColumn('aed_hours_zomato', function($rider) use ($month) {
+            $onlyMonth=Carbon::parse($month)->format('m');
+            $onlyYear=Carbon::parse($month)->format('Y');
             $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$month)
+            ->whereMonth('date',$onlyMonth)
+            ->whereYear('date',$onlyYear)
             ->get()
             ->sum('log_in_hours_payable');
             return round($number_of_hours_sum *6,2);
         })
         ->addColumn('number_of_hours', function($rider) use ($month) {
+            $onlyMonth=Carbon::parse($month)->format('m');
+            $onlyYear=Carbon::parse($month)->format('Y');
             $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$month)
+            ->whereMonth('date',$onlyMonth)
+            ->whereYear('date',$onlyYear)
             ->get()
             ->sum('log_in_hours_payable');
             // if($number_of_hours_sum > 286) $number_of_hours_sum = 286;
                 return round($number_of_hours_sum,2); 
         }) 
         ->addColumn('number_of_trips', function($rider) use ($month) {
+            $onlyMonth=Carbon::parse($month)->format('m');
+            $onlyYear=Carbon::parse($month)->format('Y');
             $number_of_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$month)
+            ->whereMonth('date',$onlyMonth)
+            ->whereYear('date',$onlyYear)
             ->get()
             ->sum('trips_payable');
            
               return round($number_of_trips_sum,2); 
         }) 
         ->addColumn('ncw', function($rider) use ($month) {
+            $onlyMonth=Carbon::parse($month)->format('m');
+            $onlyYear=Carbon::parse($month)->format('Y');
             $ncw_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$month)
+            ->whereMonth('date',$onlyMonth)
+            ->whereYear('date',$onlyYear)
             ->get()
             ->sum('ncw_incentives');
                 return round($ncw_sum,2); 
         }) 
         ->addColumn('tips', function($rider) use ($month) {
+            $onlyMonth=Carbon::parse($month)->format('m');
+            $onlyYear=Carbon::parse($month)->format('Y');
             $tips_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$month)
+            ->whereMonth('date',$onlyMonth)
+            ->whereYear('date',$onlyYear)
             ->get()
             ->sum('tips_payouts');
                 return round($tips_sum,2); 
         }) 
         ->addColumn('penalty', function($rider) use ($month) {
+            $onlyMonth=Carbon::parse($month)->format('m');
+            $onlyYear=Carbon::parse($month)->format('Y');
             $penalty_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$month)
+            ->whereMonth('date',$onlyMonth)
+            ->whereYear('date',$onlyYear)
             ->get()
             ->sum('denials_penalty');
-                return round($penalty_sum,2); 
+            return round($penalty_sum,2); 
         }) 
         ->addColumn('payout', function($rider) use ($month) {
+            $onlyMonth=Carbon::parse($month)->format('m');
+            $onlyYear=Carbon::parse($month)->format('Y');
             $payout_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$month)
+            ->whereMonth('date',$onlyMonth)
+            ->whereYear('date',$onlyYear)
             ->get()
             ->sum('total_to_be_paid_out');
             $dc_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$month)
+            ->whereMonth('date',$onlyMonth)
+            ->whereYear('date',$onlyYear)
             ->get()
             ->sum('dc_deductions');
             $penalty_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$month)
+            ->whereMonth('date',$onlyMonth)
+            ->whereYear('date',$onlyYear)
             ->get()
             ->sum('denials_penalty');
             $tips_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$month)
+            ->whereMonth('date',$onlyMonth)
+            ->whereYear('date',$onlyYear)
             ->get()
             ->sum('tips_payouts');
             $ncw_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$month)
+            ->whereMonth('date',$onlyMonth)
+            ->whereYear('date',$onlyYear)
             ->get()
             ->sum('ncw_incentives');
             $total_payout=($payout_sum+$dc_sum+$penalty_sum)-($tips_sum+$ncw_sum);
-                return round($total_payout,2); 
+            return round($total_payout,2); 
         }) 
         ->addColumn('payout_less', function($rider) use ($month) {
+            $onlyMonth=Carbon::parse($month)->format('m');
+            $onlyYear=Carbon::parse($month)->format('Y');
             $payout_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$month)
+            ->whereMonth('date',$onlyMonth)
+            ->whereYear('date',$onlyYear)
             ->get()
             ->sum('total_to_be_paid_out');
           
-                return round($payout_sum,2); 
+            return round($payout_sum,2); 
         }) 
         ->addColumn('cod', function($rider) use ($month) {
+            $onlyMonth=Carbon::parse($month)->format('m');
+            $onlyYear=Carbon::parse($month)->format('Y');
             $cod_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$month)
+            ->whereMonth('date',$onlyMonth)
+            ->whereYear('date',$onlyYear)
             ->get()
             ->sum('mcdonalds_deductions');
                 return round($cod_sum,2); 
         }) 
         ->addColumn('dc', function($rider) use ($month) {
+            $onlyMonth=Carbon::parse($month)->format('m');
+            $onlyYear=Carbon::parse($month)->format('Y');
             $dc_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$month)
+            ->whereMonth('date',$onlyMonth)
+            ->whereYear('date',$onlyYear)
             ->get()
             ->sum('dc_deductions');
                 return round($dc_sum,2); 
@@ -3510,17 +3550,23 @@ class AjaxNewController extends Controller
             //         
             //     } 
             // } 
-            $salik_amount=Company_Account::whereMonth('month',$month) 
-                    ->where("source","Salik")
-                    ->where('rider_id',$rider->rider_id)
-                    ->sum('amount');
-                    return round($salik_amount,2);
+            $onlyMonth=Carbon::parse($month)->format('m');
+            $onlyYear=Carbon::parse($month)->format('Y');
+            $salik_amount=Company_Account::whereMonth('month',$onlyMonth)
+            ->whereYear('month',$onlyYear) 
+            ->where("source","Salik")
+            ->where('rider_id',$rider->rider_id)
+            ->sum('amount');
+            return round($salik_amount,2);
             
         }) 
         ->addColumn('sim_charges', function($rider) use ($month) {
+            $onlyMonth=Carbon::parse($month)->format('m');
+            $onlyYear=Carbon::parse($month)->format('Y');
             $sim_charges=Company_Account::where("source","Sim Transaction")
             ->where('rider_id',$rider->rider_id)
-            ->whereMonth('month',$month)
+            ->whereMonth('month',$onlyMonth)
+            ->whereYear('month',$onlyYear)
             ->where('type','dr')
             ->whereNotNull('sim_transaction_id')
             ->sum('amount');
@@ -3532,85 +3578,110 @@ class AjaxNewController extends Controller
             return round($allowed_balance,2).'('.round($sim_extra_charges,2).')';
         }) 
         ->addColumn('fuel', function($rider) use ($month) {
+            $onlyMonth=Carbon::parse($month)->format('m');
+            $onlyYear=Carbon::parse($month)->format('Y');
             $fuel_amount=Company_Account::whereNotNull('fuel_expense_id')
             ->where('rider_id',$rider->rider_id)
-            ->whereMonth('month',$month)
+            ->whereMonth('month',$onlyMonth)
+            ->whereYear('month',$onlyYear)
             ->sum('amount');
             return round($fuel_amount,2);
         }) 
         ->addColumn('bonus', function($rider) use ($month) {
+            $onlyMonth=Carbon::parse($month)->format('m');
+            $onlyYear=Carbon::parse($month)->format('Y');
             $bonus_amount=Company_Account::where('source','400 Trips Acheivement Bonus')
             ->where('rider_id',$rider->rider_id)
-            ->whereMonth('month',$month)
+            ->whereMonth('month',$onlyMonth)
+            ->whereYear('month',$onlyYear)
             ->sum('amount');
             return round($bonus_amount,2);
         }) 
         ->addColumn('bike_rent', function($rider) use ($month) {
+            $onlyMonth=Carbon::parse($month)->format('m');
+            $onlyYear=Carbon::parse($month)->format('Y');
             $bike_rent_amount=Company_Account::where('source','Bike Rent')
             ->where('rider_id',$rider->rider_id)
-            ->whereMonth('month',$month)
+            ->whereMonth('month',$onlyMonth)
+            ->whereYear('month',$onlyYear)
             ->sum('amount');
             return round($bike_rent_amount,2);
         }) 
         ->addColumn('net_salary', function($rider) use ($month) {
+            $onlyMonth=Carbon::parse($month)->format('m');
+            $onlyYear=Carbon::parse($month)->format('Y');
             $salary=Company_Account::where('rider_id',$rider->rider_id)
-            ->whereMonth('month',$month)
+            ->whereMonth('month',$onlyMonth)
+            ->whereYear('month',$onlyYear)
             ->where('source','salary')
             ->where('type','dr')
             ->sum('amount');
             $bonus_amount=Company_Account::where('source','400 Trips Acheivement Bonus')
             ->where('rider_id',$rider->rider_id)
-            ->whereMonth('month',$month)
+            ->whereMonth('month',$onlyMonth)
+            ->whereYear('month',$onlyYear)
             ->sum('amount');
             $total_salary=$salary+$bonus_amount;
             return round($total_salary,2);
         })
         ->addColumn('profit', function($rider) use ($month) {
+            $onlyMonth=Carbon::parse($month)->format('m');
+            $onlyYear=Carbon::parse($month)->format('Y');
             $payout_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$month)
+            ->whereMonth('date',$onlyMonth)
+            ->whereYear('date',$onlyYear)
             ->get()
             ->sum('total_to_be_paid_out');
             $dc_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$month)
+            ->whereMonth('date',$onlyMonth)
+            ->whereYear('date',$onlyYear)
             ->get()
             ->sum('dc_deductions');
             $cod_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$month)
+            ->whereMonth('date',$onlyMonth)
+            ->whereYear('date',$onlyYear)
             ->get()
             ->sum('mcdonalds_deductions');
             $penalty_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$month)
+            ->whereMonth('date',$onlyMonth)
+            ->whereYear('date',$onlyYear)
             ->get()
             ->sum('denials_penalty');
 
             $ncw_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$month)
+            ->whereMonth('date',$onlyMonth)
+            ->whereYear('date',$onlyYear)
             ->get()
             ->sum('ncw_incentives');
 
             $tips_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$month)
+            ->whereMonth('date',$onlyMonth)
+            ->whereYear('date',$onlyYear)
             ->get()
             ->sum('tips_payouts');
 
             $salary=Company_Account::where('rider_id',$rider->rider_id)
-            ->whereMonth('month',$month)
+            ->whereMonth('month',$onlyMonth)
+            ->whereYear('month',$onlyYear)
             ->where('source','salary')
             ->where('type','dr')
             ->sum('amount');
             $fuel_amount=Company_Account::whereNotNull('fuel_expense_id')
             ->where('rider_id',$rider->rider_id)
-            ->whereMonth('month',$month)
+            ->whereMonth('month',$onlyMonth)
+            ->whereYear('month',$onlyYear)
             ->sum('amount');
             $sim_charges=Company_Account::where("source","Sim Transaction")
             ->where('rider_id',$rider->rider_id)
-            ->whereMonth('month',$month)
+            ->whereMonth('month',$onlyMonth)
+            ->whereYear('month',$onlyYear)
             ->where('type','dr')
             ->whereNotNull('sim_transaction_id')
             ->sum('amount');
             $sim_charges_EXTRA=Company_Account::where("source","Sim extra usage")
             ->where('rider_id',$rider->rider_id)
-            ->whereMonth('month',$month)
+            ->whereMonth('month',$onlyMonth)
+            ->whereYear('month',$onlyYear)
             ->sum('amount');
             //  $salik_amount=0;
             // $assign_bike=Assign_bike::where('rider_id',$rider->rider_id)->where('status','active')->get()->first();
@@ -3622,17 +3693,20 @@ class AjaxNewController extends Controller
             //         ->sum('amount_aed');
             //     }
             // }
-               $salik_amount=Company_Account::whereMonth('month',$month) 
-                    ->where("source","Salik")
-                    ->where('rider_id',$rider->rider_id)
-                    ->sum('amount');
+            $salik_amount=Company_Account::whereMonth('month',$onlyMonth)
+            ->whereYear('month',$onlyYear) 
+            ->where("source","Salik")
+            ->where('rider_id',$rider->rider_id)
+            ->sum('amount');
             $bike_rent_amount=Company_Account::where('source','Bike Rent')
             ->where('rider_id',$rider->rider_id)
-            ->whereMonth('month',$month)
+            ->whereMonth('month',$onlyMonth)
+            ->whereYear('month',$onlyYear)
             ->sum('amount');
             $bonus_amount=Company_Account::where('source','400 Trips Acheivement Bonus')
             ->where('rider_id',$rider->rider_id)
-            ->whereMonth('month',$month)
+            ->whereMonth('month',$onlyMonth)
+            ->whereYear('month',$onlyYear)
             ->sum('amount'); 
             // $advance=Company_Account::where('source','advance')
             // ->where('rider_id',$rider->rider_id)
@@ -3644,33 +3718,41 @@ class AjaxNewController extends Controller
             return round($total_profit,2);
         })
         ->addColumn('expenses_bills', function($rider) use ($month) {
+            $onlyMonth=Carbon::parse($month)->format('m');
+            $onlyYear=Carbon::parse($month)->format('Y');
            $bike_rent=Company_Account::where("rider_id",$rider->rider_id)
-           ->whereMonth('month',$month)
+           ->whereMonth('month',$onlyMonth)
+            ->whereYear('month',$onlyYear)
            ->where("source","Bike Rent")
            ->sum('amount');
 
            $total_salik=Company_Account::where("rider_id",$rider->rider_id)
-           ->whereMonth('month',$month)
+           ->whereMonth('month',$onlyMonth)
+            ->whereYear('month',$onlyYear)
            ->where("source","Salik")
            ->sum('amount');
            $salik_extra=Company_Account::where("rider_id",$rider->rider_id)
-           ->whereMonth('month',$month)
+           ->whereMonth('month',$onlyMonth)
+            ->whereYear('month',$onlyYear)
            ->where("source","Salik Extra")
            ->sum('amount');
            $salik=$total_salik-$salik_extra;
 
            $total_sim_bill=Company_Account::where("rider_id",$rider->rider_id)
-           ->whereMonth('month',$month)
+           ->whereMonth('month',$onlyMonth)
+            ->whereYear('month',$onlyYear)
            ->where("source","Sim Transaction")
            ->sum('amount');
            $sim_extra_useage=Company_Account::where("rider_id",$rider->rider_id)
-           ->whereMonth('month',$month)
+           ->whereMonth('month',$onlyMonth)
+            ->whereYear('month',$onlyYear)
            ->where("source","Sim extra usage")
            ->sum('amount');
            $sim=$total_sim_bill-$sim_extra_useage;
 
            $fuel=Company_Account::where("rider_id",$rider->rider_id)
-           ->whereMonth('month',$month)
+           ->whereMonth('month',$onlyMonth)
+            ->whereYear('month',$onlyYear)
            ->whereNotNull("fuel_expense_id")
            ->sum('amount');
            $total_expense=$bike_rent+$salik+$sim+$fuel;

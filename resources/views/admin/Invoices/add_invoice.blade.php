@@ -1340,6 +1340,7 @@ function append_row($row_data = null) {
         '       <td> <input data-input-type="float" class="form-control" data-name="qty" name="invoice_items['+total_rows+'][qty]" min="1" value="1"> </td>  ' +
         '       <td> ' +
         '           <div class="input-group">   ' +
+        '           <input type="hidden" data-name="item_subtotal" name="invoice_items['+total_rows+'][item_subtotal]" value="">'+
         '               <input type="text" class="form-control" placeholder="Amount" data-name="amount" name="invoice_items['+total_rows+'][amount]"  aria-describedby="basic-addon2" value="0">   ' +
         '               <div class="input-group-append">  ' +
         '                   <span class="input-group-text" id="basic-addon2">' +
