@@ -122,9 +122,9 @@ h3.kt-portlet__head-title{
                             </div>
                             <div class="col-sm-6 text-center">
                                <div class="car_image">
-                                   <img class="img img-thumbnail" style=" width: 50%;" src="{{ asset('dashboard/assets/media/newcomer/car.jpg') }}">
+                                   <img class="img img-thumbnail" style=" width: 50%;" src="{{ asset('dashboard/assets/media/newcomer/car.png') }}">
                                    <div style=" padding-top: 12px;">
-                                  <p class="custmclick" style="cursor: pointer;border: 1px solid; display: inline-block; padding: 6px 25px;">Car driver</p>
+                                  <p class="custmclick" style="cursor: pointer;border: 1px solid; display: inline-block; padding: 6px 25px;">chauffeur driver</p>
                                    </div>
                                </div>
                             </div>
@@ -152,14 +152,26 @@ h3.kt-portlet__head-title{
                 <form class="kt-form" action="{{ route('guest.newComer_add') }}" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="kt-portlet__body" style="display:none;">
-                            <div class="form-group">
-                                <div style="text-align:center;">
-                                    <img class="profile-logo img img-thumbnail" src="https://biketrack.solutionwin.net/dashboard/assets/media/users/default.jpg">
-                                </div>
-                                <div style=" text-align: center;margin-top: 5px; ">
-                                <label class="btn btn-info" style=" color: white;">
-                                        Upload picture <input name="newcommer_image" id="newcommer_image" type="file" hidden>
+                            <div class="form-group" style=" text-align: center; ">
+                            <div class="img1 imgparnt" style=" display: inline-block; ">
+                            <div style="text-align:center;">
+                            <img style=" width: 190px; height: 190px;" class="profile-logo img img-thumbnail" src="https://biketrack.solutionwin.net/dashboard/assets/media/users/default.jpg">
+                            </div>
+                            <div style=" text-align: center;margin-top: 5px; ">
+                            <label class="btn btn-info" style=" color: white;font-size: 18px;">
+                            Uplaod profile picture <input name="newcommer_image" id="newcommer_image" type="file" hidden>
+                            </label>
+                            </div>
+                            </div>
+                            <div class="img2 imgparnt d-none" style=" display: inline-block;">
+                                    <div style="text-align:center;">
+                                    <img style=" width: 190px; height: 190px;" class="profile-logo img2 img-thumbnail" src="https://biketrack.solutionwin.net/dashboard/assets/media/users/default.jpg">
+                                    </div>
+                                    <div style=" text-align: center;margin-top: 5px; ">
+                                    <label class="btn btn-info" style=" color: white;font-size: 18px;">
+                                Attach Back picture <input name="newcommer_image2" id="newcommer_image2" type="file" hidden>
                                 </label>
+                                </div>
                             </div>
                                 </div>  
                           <input type="hidden" name="applying_for"> 
@@ -197,6 +209,7 @@ h3.kt-portlet__head-title{
                             {{-- <input type="text" >  --}}
                             <select id="country" class="form-control @if($errors->has('nationality')) invalid-field @endif" name="nationality" placeholder="Nationality" value="{{ old('nationality') }}" required>
                                     <option value="">Please select your country</option>
+                                    <option value="Africa">Africa</option>
                                     <option value="Afganistan">Afghanistan</option>
                                     <option value="Albania">Albania</option>
                                     <option value="Algeria">Algeria</option>
@@ -443,6 +456,7 @@ h3.kt-portlet__head-title{
                                     <option value="Zaire">Zaire</option>
                                     <option value="Zambia">Zambia</option>
                                     <option value="Zimbabwe">Zimbabwe</option>
+                                    <option value="Other">Other</option>
                                  </select>
                             @if ($errors->has('nationality'))
                                 <span class="invalid-response" role="alert">
@@ -467,20 +481,20 @@ h3.kt-portlet__head-title{
                             @endif
                         </div>
                         <div class="form-group">
+                                <label>WhatsApp Number:</label>
+                                <input type="text" class="form-control @if($errors->has('whatsapp_number')) invalid-field @endif" name="whatsapp_number" placeholder="Whatsapp Number" value="{{ old('whatsapp_number') }}" required> 
+                                @if ($errors->has('whatsapp_number'))
+                                    <span class="invalid-response" role="alert">
+                                        <strong>
+                                            {{ $errors->first('whatsapp_number') }}
+                                        </strong>
+                                    </span>
+                                
+                                @endif
+                            </div>
+                        <div class="form-group">
                             <label>Emirates i'd:</label>
                             <input type="text" class="form-control" name="national_id_card_number" id="national_id_card_number" placeholder="Enter National id card number" required> 
-                        </div>
-                        <div class="form-group">
-                            <label>WhatsApp Number:</label>
-                            <input type="text" class="form-control @if($errors->has('whatsapp_number')) invalid-field @endif" name="whatsapp_number" placeholder="Whatsapp Number" value="{{ old('whatsapp_number') }}" required> 
-                            @if ($errors->has('whatsapp_number'))
-                                <span class="invalid-response" role="alert">
-                                    <strong>
-                                        {{ $errors->first('whatsapp_number') }}
-                                    </strong>
-                                </span>
-                            
-                            @endif
                         </div>
                         <div class="form-group">
                             <label>Education Level:</label>
@@ -500,7 +514,7 @@ h3.kt-portlet__head-title{
                         </div>
                         
                         <div class="form-group">
-                                <label>Do you have your own bike / car .?</label>
+                                <label class="bikechkcar">Do you have your own bike / car .?</label>
                                 <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="have_bike" name="have_bike" style="width: 15px !important;" value="yes" required=""><h6 style="margin-top: 10px; margin-left: 10px; cursor: pointer;">Yes</h6></div>
                                 <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="have_bike" name="have_bike" style="width: 15px !important;" value="no" required=""><h6 style="margin-top: 10px; margin-left: 10px; cursor: pointer;">NO</h6></div>
                         
@@ -517,7 +531,7 @@ h3.kt-portlet__head-title{
                                 <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control "  name="noc_status" style="width: 15px !important;" value="no"><h6 style="margin-top:10px;margin-left:10px;">No</h6></div>
                         </div>
                         <div class="form-group">
-                                <label>Do you have license:</label>
+                                <label>Do you have driving license:</label>
                                 <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="license_true" name="license_check" style="width: 15px !important;" value="yes" required=""><h6 style="margin-top:10px;margin-left:10px;">Yes</h6></div>
                                 <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " id="license_false" name="license_check" style="width: 15px !important;" value="no" required=""><h6 style="margin-top:10px;margin-left:10px;">No</h6></div>
 
@@ -540,8 +554,29 @@ h3.kt-portlet__head-title{
                         </div>
                         <div class="form-group license_image" style="display:none">
                             <label>License Image:</label>
-                            <label class="btn btn-info" style=" color: white;"> Upload picture <input name="license_image" id="license_image" type="file" hidden=""> </label>
-                            {{-- <input type="file" name="license_image" class="form-control @if($errors->has('licence_image')) invalid-field @endif" id="license_image" autocomplete="off" value="{{ old('licence_image') }}"> --}}
+                            {{-- <label class="btn btn-info" style=" color: white;"> Upload picture <input name="license_image" id="license_image" type="file" hidden=""> </label> --}}
+                            <div class="form-group" style=" text-align: center; ">
+                                    <div class="img1 imgparnt" style=" display: inline-block; ">
+                                    <div style="text-align:center;">
+                                    <img style=" width: 190px; height: 190px;" class="license1 img img-thumbnail" src="https://biketrack.solutionwin.net/dashboard/assets/media/users/default.jpg">
+                                    </div>
+                                    <div style=" text-align: center;margin-top: 5px; ">
+                                    <label class="btn btn-info" style=" color: white;font-size: 18px;">
+                                    License Front picture <input name="license_image" id="license_image" type="file" hidden>
+                                    </label>
+                                    </div>
+                                    </div>
+                                    <div class="img2 imgparnt" style=" display: inline-block;">
+                                            <div style="text-align:center;">
+                                            <img style=" width: 190px; height: 190px;" class="license2 img2 img-thumbnail" src="https://biketrack.solutionwin.net/dashboard/assets/media/users/default.jpg">
+                                            </div>
+                                            <div style=" text-align: center;margin-top: 5px; ">
+                                            <label class="btn btn-info" style=" color: white;font-size: 18px;">
+                                        License Back picture <input name="license_image2" id="license_image2" type="file" hidden>
+                                        </label>
+                                        </div>
+                                    </div>
+                        </div>  
                         </div>  
                         <div class="form-group">
                             <label for="experience">How much do you have riding experience in UAE:</label>
@@ -560,16 +595,26 @@ h3.kt-portlet__head-title{
                            <input type="text"  id="passport_number" style="display:none;" autocomplete="off"class="form-control @if($errors->has('passport_number')) invalid-field @endif" name="passport_number" placeholder="Passport Number" value="{{ old('passport_number') }}"> 
                            
                            <label for="passport_image" class="passport_image_label" style="display:none;">Passport Image:</label>
-                           <label class="btn btn-info" id="passport_image" style="color: white;display:none;"> Upload picture <input name="passport_image" type="file" hidden=""> </label>
-
-                           {{-- <input type="file"  id="passport_image" style="display:none;" autocomplete="off"class="form-control @if($errors->has('passport_image')) invalid-field @endif" name="passport_image" placeholder="Passport Image" value="{{ old('passport_image') }}">  --}}
+                           {{-- <label class="btn btn-info"  > Upload picture <input name="passport_image" type="file" hidden=""> </label> --}}
+                           <div class="passport imgparntpass" id="passport_image" style="color: white;display:none;">
+                                <div style="text-align:center;">
+                                <img style=" width: 190px; height: 190px;" class="pass img img-thumbnail" src="https://biketrack.solutionwin.net/dashboard/assets/media/users/default.jpg">
+                                </div>
+                                <div style=" text-align: center;margin-top: 5px; ">
+                                <label class="btn btn-info" style=" color: white;font-size: 18px;">
+                                Attach Passport picture <input name="passport_image" type="file" hidden>
+                                </label>
+                                </div>
+                          </div>
                        </div>
                        <div class="form-group">
                             <label for="current_residence">Your current residence:</label>
                             <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('current_residence')) invalid-field @endif" id="current_residence" name="current_residence" style="width: 15px !important;" value="uae"  required/><h6 style="margin-top:10px;margin-left:10px;">United Arab Emirates</h6></div>
                             <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control @if($errors->has('current_residence')) invalid-field @endif" id="current_residence" name="current_residence" style="width: 15px !important;" value="other"  required/><h6 style="margin-top:10px;margin-left:10px;">Other</h6></div>
                        <div class="current_residence_countries" style="display:none;">
-                            <select id="current_residence_countries" class="form-control" name="current_residence_countries" placeholder="Select your country" value="{{ old('current_residence_countries') }}" required>
+                            <select id="current_residence_countries" class="form-control" name="current_residence_countries" placeholder="Select your country" value="{{ old('current_residence_countries') }}">
+                                    <option value="">Please select your country</option>
+                                    <option value="Africa">Africa</option>   
                                     <option value="Afganistan">Afghanistan</option>
                                     <option value="Albania">Albania</option>
                                     <option value="Algeria">Algeria</option>
@@ -816,6 +861,7 @@ h3.kt-portlet__head-title{
                                     <option value="Zaire">Zaire</option>
                                     <option value="Zambia">Zambia</option>
                                     <option value="Zimbabwe">Zimbabwe</option>
+                                    <option value="Other">Other</option>
                                  </select>
                        </div>
                        </div>
@@ -844,8 +890,8 @@ h3.kt-portlet__head-title{
                  
 
                     <div class="kt-portlet__foot" style="display:none;">
-                        <div class="kt-form__actions kt-form__actions--right">
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                        <div class="kt-form__actions kt-form__actions--center">
+                            <button type="submit" class="btn btn-primary btn-lg px-5">Submit</button>
                             {{-- <span class="kt-margin-l-10">or <a href="{{ route('admin.riders.index') }}" class="kt-link kt-font-bold">Cancel</a></span> --}}
                         </div>
                     </div>
@@ -1072,16 +1118,20 @@ $('.modal-body').find('form').off('submit').on('submit', function(e){
                     if(_index > -1){
                         $('.kt-portlet__head-title').text('Bike Rider Job Registration Form')
                         $('[name="applying_for"]').val('bike')
+                        $('.bikechkcar').text('Do you have your own bike .?');
                     }
                     else{
-                        $('.kt-portlet__head-title').text('Car Driver Job Registration Form')
-                        $('[name="applying_for"]').val('car')
+                        $('.kt-portlet__head-title').text('Chauffeur Driver Job Registration Form')
+                        $('[name="applying_for"]').val('car');
+                        $('.bikechkcar').text('Do you have your own car .?');
+
                     }
                     })
                 function readURL(input) {
                 if (input.files && input.files[0]) {
                 var reader = new FileReader();
                 reader.onload = function (e) {
+                    console.log(e);
                     $('img.profile-logo.img.img-thumbnail').attr('src', e.target.result);
                     }
                     reader.readAsDataURL(input.files[0]);
@@ -1091,6 +1141,47 @@ $('.modal-body').find('form').off('submit').on('submit', function(e){
                 $("#newcommer_image").change(function(){
                     readURL(this);
                 });
+                $("#newcommer_image2").change(function(){
+                    if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                    console.log(e);
+                    $('img.profile-logo.img2.img-thumbnail').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                    }
+                });
+                $("#license_image").change(function(){
+                    if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                    console.log(e);
+                    $('img.license1.img.img-thumbnail').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                    }
+                });
+                $("#license_image2").change(function(){
+                    if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                    console.log(e);
+                    $('img.license2.img2.img-thumbnail').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                    }
+                });
+                $("[name='passport_image']").change(function(){
+                    if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                    console.log(e);
+                    $('img.pass.img.img-thumbnail').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                    }
+                });
+                
 
       });
         </script>

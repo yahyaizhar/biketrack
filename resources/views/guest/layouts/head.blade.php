@@ -13,11 +13,10 @@
 			@endif
 		</title>
 		<meta name="description" content="King Riders Delivery Services L.L.C">
-		{{-- <meta itemprop="image" content="https://www.apple.com/v/iphone/home/t/images/home/og.png?201610171354"> --}}
-		<meta property="og:image" content="https://www.apple.com/ac/structured-data/images/open_graph_logo.png?201809210816" />
-		<meta property="og:image:width" content="100%" /> 
-		<meta property="og:image:height" content="100%" />
-		<meta property="og:url" content="https://biketrack.solutionwin.net/guest/newcomer/add" /> 
+	<meta property="og:image" content="{{url('/dashboard/assets/media/logos/company-logo.png')}}" />
+		<meta property="og:image:width" content="500" /> 
+		<meta property="og:image:height" content="500" />
+	<meta property="og:url" content="{{url('/guest/newcomer/add')}}" />  
 		<meta property="og:type" content="article" /> 
 		<meta property="og:title" content="Apply for riders/driver job" />
 		<meta property="fb:app_id" content="284377042187566" />
