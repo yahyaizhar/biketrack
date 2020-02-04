@@ -1182,16 +1182,16 @@ function subtotal() {
         taxable_amount=_invoices.invoice.taxable_subtotal;
         total_amount=_invoices.invoice.invoice_total;
 
-        $("#invoices .subtotal_value").text("AED " + (non_tax_amount).toFixed(2));
-        $("#invoices .taxable_subtotal").text("AED " + (taxable_amount).toFixed(2));
-        $('#invoices .all_total_amount').text("AED " + (total_amount).toFixed(2));
+        $("#invoices .subtotal_value").text("AED " + non_tax_amount);
+        $("#invoices .taxable_subtotal").text("AED " + taxable_amount);
+        $('#invoices .all_total_amount').text("AED " + total_amount);
 
         var balance_due = total_amount-amount_received;
         $('#invoices .balance_due').text("AED " + (balance_due).toFixed(2));
 
-        $("#invoices [data-name='invoice_subtotal']").val((non_tax_amount).toFixed(2));
-        $("#invoices [data-name='taxable_subtotal']").val((taxable_amount).toFixed(2));
-        $("#invoices [data-name='invoice_total']").val((total_amount).toFixed(2));
+        $("#invoices [data-name='invoice_subtotal']").val(non_tax_amount);
+        $("#invoices [data-name='taxable_subtotal']").val(taxable_amount);
+        $("#invoices [data-name='invoice_total']").val(total_amount);
     }
     else{
         $('[data-name="tax_value"]').val("");
