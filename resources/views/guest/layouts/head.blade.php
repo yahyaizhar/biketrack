@@ -14,7 +14,7 @@
 		</title>
 		<meta name="description" content="King Riders Delivery Services L.L.C">
 		{{-- <meta itemprop="image" content="https://www.apple.com/v/iphone/home/t/images/home/og.png?201610171354"> --}}
-		<meta property="og:image" content="https://biketrack.solutionwin.net/dashboard/assets/media/logos/company-logo.png" />
+		<meta property="og:image" content="https://www.apple.com/ac/structured-data/images/open_graph_logo.png?201809210816" />
 		<meta property="og:image:width" content="100%" /> 
 		<meta property="og:image:height" content="100%" />
 		<meta property="og:url" content="https://biketrack.solutionwin.net/guest/newcomer/add" /> 
