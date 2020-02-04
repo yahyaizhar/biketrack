@@ -3526,12 +3526,36 @@ public function client_income_update(Request $request,$id){
         $month = $r->get('month');
         $onlyMonth=Carbon::parse($month)->format('m');
         $onlyYear=Carbon::parse($month)->format('Y');
+        $changes=0;
+        $msg='';
 
-        
+        $salary_data = $this->get_salary_deduction($r,$month,$rider_id);
+        if(isset($salary_data->original)){
+            $generated_salary=$salary_data->original;
+            if($generated_salary['status']==1){
+                //salary found
+                $already_salary = \App\Model\Accounts\Company_Account::where([
+                    'rider_id'=>$rider_id, 
+                    'month'=>$month,
+                    'source'=>'salary'
+                ])
+                ->whereNotNull('salary_id')
+                ->get()
+                ->first();
+                if(isset($already_salary)){
+                    //match amount
+                    if($already_salary->amount!=$generated_salary['total_salary']){
+                        $changes++;
+                        $msg='Salary';
+                    }
+                }
+            }
+        }
         return response()->json([
             'status'=>1,
-            'changes'=>0,
-            'data'=>$r->all()
+            'changes'=>$changes,
+            'msg'=>$msg,
+            'data'=>$salary_data
         ]);
     }
     public function rider_salary_status(){
