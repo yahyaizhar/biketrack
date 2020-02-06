@@ -26,10 +26,8 @@
                         <div>
                             <select class="form-control kt-select2" id="kt_select2_3" name="bike_id" >
                                 @foreach ($bikes as $bike)
-                                @if ($bike->availability=='yes' && $bike->status==1)
                                     <option value="{{ $bike->id }}"
                                     >{{ $bike->brand }}&nbsp{{$bike->bike_number}}&nbsp{{ $bike->model }}</option>    
-                                @endif
                                 @endforeach
                             </select>      
                         </div>
