@@ -27,7 +27,7 @@
                             <select class="form-control kt-select2" id="kt_select2_3" name="bike_id" >
                                 @foreach ($bikes as $bike)
                                     <option value="{{ $bike->id }}"
-                                    >{{ $bike->brand }}&nbsp{{$bike->bike_number}}&nbsp{{ $bike->model }}</option>    
+                                    >{{ $bike->brand }}&nbsp{{$bike->bike_number}}&nbsp{{ $bike->model }}</option>
                                 @endforeach
                             </select>      
                         </div>
