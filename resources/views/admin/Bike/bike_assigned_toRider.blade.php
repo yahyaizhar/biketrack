@@ -57,7 +57,7 @@
         $(document).ready(function(){
             $('#assign_bike [type="submit"]').prop('disabled',false);
             $("#error_bike_assigned").hide();
-            $('#assign_bike [name="bike_assign_date"]').on("change",function(){
+            $('#assign_bike [name="bike_assign_date"],#assign_bike [name="bike_id"]').on("change",function(){
                 var bike_id=$('#assign_bike [name="bike_id"]').val();
                 var rider_id=$('[name="rider_id"]').val();
                 var month=$('#assign_bike [name="bike_assign_date"]').val();
@@ -80,6 +80,7 @@
                     }
                 });
             });
+            $('#assign_bike [name="bike_id"]').trigger('change');
         }); 
     </script>
 @endsection
