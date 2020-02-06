@@ -24,10 +24,11 @@
                             <label>Select bike:</label>
                             @if ($assign_bike<=0)
                         <div>
-                            <select class="form-control kt-select2" id="kt_select2_3" name="bike_id" >
+                            <select class="form-control kt-select2" id="kt_select2_3" name="bike_id" test2>
                                 @foreach ($bikes as $bike)
-                                    <option value="{{ $bike->id }}"
-                                    >{{ $bike->brand }}&nbsp{{$bike->bike_number}}&nbsp{{ $bike->model }}</option>
+                                    <option value="{{ $bike->id }}">
+                                        {{ $bike->brand }}&nbsp{{$bike->bike_number}}&nbsp{{ $bike->model }}
+                                    </option>
                                 @endforeach
                             </select>      
                         </div>
