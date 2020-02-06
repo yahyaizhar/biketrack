@@ -99,12 +99,12 @@ class InvoiceController extends Controller
                 $invoice_item->deductable=1;
             }
             
-            $invoice_item->item_amount= round($invoice_itemObj['qty'] * $invoice_itemObj['rate'],2) ;
+            $invoice_item->item_amount=round(abs($invoice_itemObj['item_subtotal']),2) ;
             if(isset($invoice_itemObj['tax'])){
                 $invoice_item->tax_method_id=$r->tax_method_id;
                 $invoice_item->taxable_amount=$invoice_itemObj['tax_amount'];
             }
-            $invoice_item->subtotal=$invoice_itemObj['amount'];
+            $invoice_item->subtotal=abs($invoice_itemObj['amount']);
             $invoice_item->save();
             array_push($invoice_modal['invoice']['invoice_items'], $invoice_item->toArray());
         }

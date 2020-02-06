@@ -153,8 +153,18 @@
         if(Object.keys(histories).length>0){
             $('#bike_rent [name="bike_id"]').parents('.form-group').after('<div class="split__object-container"></div>');
             var previous_unassigned_date=null;
-            Object.keys(histories).forEach(function(x ,i){
-                var obj = histories[x];
+            var _tempArr=[];
+            Object.keys(histories).forEach(function(key,i){
+                var _item = histories[key];
+                _tempArr.push(_item);
+            });
+            _tempArr.sort(function(a,b){
+                var _date1=moment(a.bike_assign_date, 'YYYY-MM-DD');
+                var _date2=moment(b.bike_assign_date, 'YYYY-MM-DD');
+                return _date1.isSameOrBefore(_date2)?-1:1;
+            });
+            _tempArr.forEach(function(x ,i){
+                var obj = x;
                 var days_in_month=moment(_month, "YYYY-MM-DD").daysInMonth();
                 var start  = moment(_month, "YYYY-MM-DD").startOf('month');
                 var end    = moment(_month, "YYYY-MM-DD").endOf('month');

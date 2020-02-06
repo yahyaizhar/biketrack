@@ -12,7 +12,15 @@
 			Kingriders
 			@endif
 		</title>
-		<meta name="description" content="Updates and statistics">
+		<meta name="description" content="King Riders Delivery Services L.L.C">
+	<meta property="og:image" content="{{url('/dashboard/assets/media/logos/company-logo.png')}}" />
+		<meta property="og:image:width" content="500" /> 
+		<meta property="og:image:height" content="500" />
+	<meta property="og:url" content="{{url('/guest/newcomer/add')}}" />  
+		<meta property="og:type" content="article" /> 
+		<meta property="og:title" content="Apply for riders/driver job" />
+		<meta property="fb:app_id" content="284377042187566" />
+		<meta property="og:description" content="King Riders Delivery Services L.L.C">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<meta name="csrf-token" content="{{ csrf_token() }}">
 

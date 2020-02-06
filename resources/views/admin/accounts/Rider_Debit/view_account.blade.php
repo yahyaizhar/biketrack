@@ -1585,10 +1585,10 @@ var detect_billchanges=function(){
             if(data.status==1){
                 if (data.changes==0) {
                     //no changes detected
-                    $('.auto_bills-wrapper').html('<div class="text-success">No changes deleted</div>');
+                    $('.auto_bills-wrapper').html('<div class="text-success">No changes detected</div>');
                 }
                 else{
-
+                    $('.auto_bills-wrapper').html('<div class="text-success">'+data.changes+' changes detected in <strong>'+data.msg+'</strong></div>');
                 }
             }
 

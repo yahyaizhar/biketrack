@@ -41,7 +41,7 @@ class RiderDetailController extends Controller
     public function view_detail(){
         $riders=Rider::where("active_status","A")->get();
         $sims=Sim::where("active_status","A")->get();
-        $bikes=bike::where("active_status","A")->get();
+        $bikes=bike::where("active_status","A")->get(); 
         return view('admin.rider.rider_details',compact('riders', 'sims', 'bikes'));
     }
     public function get_data_ajax_detail($_id,$month, $according_to){

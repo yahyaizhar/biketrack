@@ -37,6 +37,13 @@ class GuestController extends Controller
             $filepath = Storage::putfile('public/uploads/riders/new_commer_pics', $req->file('newcommer_image'));
             $new_commer->newcommer_image = $filepath;
         }
+        if($req->hasFile('newcommer_image2'))
+        {
+            $filename = $req->newcommer_image2->getClientOriginalName();
+            $filesize = $req->newcommer_image2->getClientSize();
+            $filepath = Storage::putfile('public/uploads/riders/new_commer_pics', $req->file('newcommer_image2'));
+            $new_commer->newcommer_image2 = $filepath;
+        }
         if($req->hasFile('passport_image'))
         {
             $filename = $req->passport_image->getClientOriginalName();
@@ -52,6 +59,14 @@ class GuestController extends Controller
             $new_commer->license_image = $filepath;
         
           }
+          if($req->hasFile('license_image2'))
+        {
+            $filename = $req->license_image2->getClientOriginalName();
+            $filesize = $req->license_image2->getClientSize();
+            $filepath = Storage::putfile('public/uploads/riders/new_commer_pics', $req->file('license_image2'));
+            $new_commer->license_image2 = $filepath;
+        
+        }
         $new_commer->applying_for = $req->applying_for;
         $new_commer->email = $req->email;
         $new_commer->have_bike = $req->have_bike;

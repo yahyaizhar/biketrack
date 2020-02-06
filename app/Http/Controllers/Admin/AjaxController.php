@@ -1516,13 +1516,18 @@ class AjaxController extends Controller
     }
     public function getMonthToRider($month)
     {  
-        $rider_salaries=Rider_salary::where("active_status","A")->whereMonth('month', $month)->get();
+        $only_month = Carbon::parse($month)->format('m');
+        $only_year =  Carbon::parse($month)->format('Y');
+        $rider_salaries=Rider_salary::where("active_status","A")->whereMonth('month', $only_month)->whereYear('month',$only_year)->get();
         
         return DataTables::of($rider_salaries)
         ->addColumn('status', function($monthToRider){
+            
+            $only_month2 = Carbon::parse($monthToRider->month)->format('m');
+            $only_year2 =  Carbon::parse($monthToRider->month)->format('Y');
              $ra=Rider_Account::where('type','cr_payable')
             ->where("rider_id",$monthToRider->rider_id)
-            ->whereMonth("month",Carbon::parse($monthToRider->month)->format('m'))
+            ->whereMonth("month",$only_month2)->whereYear("month",$only_year2)
             ->get()->toArray();
             $total_salaary=$monthToRider->total_salary;
             $gross_salary=$monthToRider->gross_salary;
@@ -1875,6 +1880,15 @@ class AjaxController extends Controller
         ->addColumn('overall_remarks', function($newComer){
             return $newComer->overall_remarks;
         })
+        ->addColumn('overall_remarks', function($newComer){
+            return $newComer->overall_remarks;
+        })
+        ->addColumn('noc_status', function($newComer){
+            return $newComer->noc_status;
+        })
+        ->addColumn('have_bike', function($newComer){
+            return $newComer->have_bike;
+        })
         ->addColumn('actions', function($newComer){
             $status_text = $newComer->status == 0 ? 'Inactive' : 'Active';
                  return '<span class="show_waiting_comer" onclick="show_waiting_comer('.$newComer->id.',this);">
@@ -1883,7 +1897,7 @@ class AjaxController extends Controller
            
         })
 
-        ->rawColumns(['newcommer_image','full_name','nationality','phone_number','national_id_card_number','whatsapp_number','education','license_check','license_number','licence_issue_date','license_image', 'experiance','passport_status', 'passport_number','passport_image', 'current_residence','current_residence_countries', 'status','source','overall_remarks','actions'])
+        ->rawColumns(['noc_status','have_bike','applying_for','newcommer_image','full_name','nationality','phone_number','national_id_card_number','whatsapp_number','education','license_check','license_number','licence_issue_date','license_image', 'experiance','passport_status', 'passport_number','passport_image', 'current_residence','current_residence_countries', 'status','source','overall_remarks','actions'])
         ->make(true);
     }
     public function getWebRoutes()

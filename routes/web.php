@@ -132,7 +132,7 @@ Route::group([
     Route::get('/ajax/generated/rider/bill/status/{month}/{client_id}','AjaxNewController@getGeneratedBillStatus')->name('ajax.getGeneratedBillStatus');
     Route::GET('/get/invoices','AjaxNewController@getInvoices')->name('invoice.get_invoices'); 
     Route::get("/invoice/ajax/payments/view","AjaxNewController@getInvoicePayments")->name("admin.getInvoicePayments");
-    Route::get('/newApprovalComer/view/ajax/{id}', 'AjaxController@getApprovalComer')->name('NewComer.view_approval_ajax');
+    Route::get('/newApprovalComer/view/ajax/{id}', 'AjaxController@getApprovalComer')->name('NewComer.view_approval_ajax'); 
     Route::get('ajax/view_routes','AjaxController@getWebRoutes')->name('admin.view_routes_ajax'); //ok [for developer]
 
     Route::get('/salik/ajax/get_active_riders/{rider_id}/{month}/{according_to}','SalikController@get_active_riders_ajax_salik')->name('Saik.get_active_riders_ajax_salik');
