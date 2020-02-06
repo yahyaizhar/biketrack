@@ -2438,6 +2438,10 @@ public function client_income_getRiders($client_id, $month){
         $updated_at =Carbon::parse($start_updated_at);
         $req_date =Carbon::parse($startMonth);
 
+        if($item['status']=='active'){    
+            return $item['client_id']==$client_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+        }
+
         return $item['client_id']==$client_id &&
             ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
     });
