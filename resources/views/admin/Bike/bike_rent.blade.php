@@ -29,7 +29,7 @@
                             @endif
                         </div>
                         <div class="row">
-                        <div class="form-group col-md-6">
+                        {{-- <div class="form-group col-md-6">
                             <label>Rider:</label>
                             <select class="form-control bk-select2 kt-select2-general" name="rider_id" >
                                 <option value="">Select a Rider<option>
@@ -39,7 +39,7 @@
                                 </option>     
                                 @endforeach 
                             </select>
-                        </div>
+                        </div> --}}
                         <div class="form-group col-md-6">
                             <label>Bike:</label>
                             <select  class="form-control bk-select2" name="bike_id" >
@@ -292,32 +292,32 @@
         }
         $('#bike_rent [name="amount"]').trigger('change');
     });
-    $('#bike_rent [name="rider_id"]').on('change', function(){
-        var _month = $('#bike_rent [name="month"]').val();
+    // $('#bike_rent [name="rider_id"]').on('change', function(){
+    //     var _month = $('#bike_rent [name="month"]').val();
         
-        if(_month=='')return;
-        _month = new Date(_month).format('yyyy-mm-dd');
-        var rider_id=$(this).val();
-        if(rider_id=="") return;
-        $.ajax({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }, 
-            url:"{{url('admin/salik/ajax/get_active_bikes/')}}"+'/'+rider_id+"/"+_month+"/rider",
-            method: "GET"
-        })
-        .done(function(data) {  
-            console.log(data);
-            if(data.bike_histories!==null){
-                split_objects(data.bike_histories, _month, "bike");
-            }
-        });
-    });
+    //     if(_month=='')return;
+    //     _month = new Date(_month).format('yyyy-mm-dd');
+    //     var rider_id=$(this).val();
+    //     if(rider_id=="") return;
+    //     $.ajax({
+    //         headers: {
+    //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //         }, 
+    //         url:"{{url('admin/salik/ajax/get_active_bikes/')}}"+'/'+rider_id+"/"+_month+"/rider",
+    //         method: "GET"
+    //     })
+    //     .done(function(data) {  
+    //         console.log(data);
+    //         if(data.bike_histories!==null){
+    //             split_objects(data.bike_histories, _month, "bike");
+    //         }
+    //     });
+    // });
     //set default rider
-    var _gb_rider_id = $('#gb_rider_id').val();
-    if(typeof _gb_rider_id !== "undefined"){
-        $('#bike_rent [name="rider_id"]').val(_gb_rider_id).trigger('change');
-    }
+    // var _gb_rider_id = $('#gb_rider_id').val();
+    // if(typeof _gb_rider_id !== "undefined"){
+    //     $('#bike_rent [name="rider_id"]').val(_gb_rider_id).trigger('change');
+    // }
   });
   
 

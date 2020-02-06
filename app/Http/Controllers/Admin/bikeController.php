@@ -231,11 +231,11 @@ class bikeController extends Controller
       foreach ($data as $item) {
         $type=$item['type'];
         if(isset($item['bike_id'])){
-        $bike_id=$item['bike_id'];
-      }
-      else{
-        $bike_id = $r->bike_id;
-      }
+          $bike_id=$item['bike_id'];
+        }
+        else{
+          $bike_id = $r->bike_id;
+        }
         $work_days_count=$item['work_days_count'];
         $total_days=$item['total_days'];
         $amount_given_by_days=$item['amount_given_by_days'];
@@ -316,12 +316,13 @@ class bikeController extends Controller
 
       if($remaining_amount>0){
         //add this as company expense
+        $bike = bike::find($r->bike_id);
         $ce=new Company_Expense();
         $ce->amount=$remaining_amount;
-        $ce->rider_id=$r->rider_id;
+        // $ce->rider_id=$r->rider_id;
         $ce->month = Carbon::parse($r->get('month'))->format('Y-m-d');
-        $ce->description="Bike rent remaining amount";
-        // $ce->save();
+        $ce->description="Bike rent remaining amount against ".$bike->bike_number;
+        $ce->save();
       }
       return redirect(route('bike.bike_view'));
       
