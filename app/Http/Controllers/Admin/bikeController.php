@@ -393,7 +393,7 @@ class bikeController extends Controller
           if ($item->status=="active") {
             return $item->rider_id==$rider_id && ( $req_date->greaterThanOrEqualTo($created_at));
           }
-          return $item->rider_id==$rider_id && ( $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->lessThan($updated_at));
+          return $item->rider_id==$rider_id && ( $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->lessThanOrEqualTo($updated_at));
       });
       $history_found2 = Arr::first($bike_history, function ($item, $key) use ($bike_id, $date) {
         $start_created_at =Carbon::parse($item->bike_assign_date)->format('Y-m-d');
@@ -405,7 +405,7 @@ class bikeController extends Controller
         if ($item->status=="active") {
           return $item->bike_id==$bike_id &&  ( $req_date->greaterThanOrEqualTo($created_at));
         }
-        return $item->bike_id==$bike_id && ( $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->lessThan($updated_at));
+        return $item->bike_id==$bike_id && ( $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->lessThanOrEqualTo($updated_at));
     });
       $error=0;
       if (isset($history_found) || isset($history_found2)) {
