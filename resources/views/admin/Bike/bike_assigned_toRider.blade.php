@@ -16,7 +16,7 @@
                     </div>
                 </div>
             @include('client.includes.message')
-            <form class="kt-form" action="{{ route('bike.bike_assignRiders', $rider->id) }}" method="POST" enctype="multipart/form-data" id="assign_bike">
+            <form class="kt-form" action="{{ route('bike.bike_assignRiders', $rider->id) }}" method="PUT" enctype="multipart/form-data" id="assign_bike">
                 {{ csrf_field() }}
                 <div class="kt-portlet__body">
                     <div class="form-group">
