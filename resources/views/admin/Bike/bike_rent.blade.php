@@ -40,7 +40,7 @@
                                 @endforeach 
                             </select>
                         </div> --}}
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-12">
                             <label>Bike:</label>
                             <select  class="form-control bk-select2" name="bike_id" >
                                     <option value="">Select a Bike<option>

@@ -868,7 +868,7 @@ class AccountsController extends Controller
         }
         $total_salary_amt = 0;
 
-        $client_history = Client_History::all();
+        $client_history = Client_History::all(); 
         $history_found = Arr::first($client_history, function ($item, $key) use ($rider_id, $startMonth) {
             $start_created_at =Carbon::parse($item->assign_date)->startOfMonth()->format('Y-m-d');
             $created_at =Carbon::parse($start_created_at);
@@ -876,6 +876,10 @@ class AccountsController extends Controller
             $start_updated_at =Carbon::parse($item->deassign_date)->endOfMonth()->format('Y-m-d');
             $updated_at =Carbon::parse($start_updated_at);
             $req_date =Carbon::parse($startMonth);
+
+            if($item->status=='active'){    
+                return $item->rider_id==$rider_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+            }
 
             return $item->rider_id==$rider_id &&
                 ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
