@@ -32,6 +32,7 @@ use App\Assign_bike;
 use App\Company_investment;
 use App\Company_Tax;
 use App\Model\Zomato\Riders_Payouts_By_Days;
+use App\Export_data;
 
 
 class AccountsController extends Controller
@@ -1237,88 +1238,6 @@ class AccountsController extends Controller
         $salary->status=$request->get('status')=='on'?1:0;
         $salary->save();
 
-
-        
-
-
-        // $RA=\App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
-        // ->whereMonth("month", Carbon::parse($request->get('month'))->format('m'))
-        // ->get();
-
-        // $RA_cr=\App\Model\Accounts\Rider_Account::
-        // where("rider_id",$rider_id)
-        // ->whereMonth("month", Carbon::parse($request->get('month'))->format('m'))
-        // ->where(function($q) {
-        //     $q->where('type', "cr_payable")
-        //       ->orWhere('type', 'cr');
-        // })
-        // ->get();
-        // $ra__debits=[];
-        // $ca__debits=[];
-        // foreach ($RA_cr as $check_rider_cr_payable) {
-        //     $check_rider_dr_payable=Arr::first($RA, function ($item_zi, $key) use ($check_rider_cr_payable) {
-        //         if($check_rider_cr_payable->type=="cr"){
-        //             return $item_zi->type == "dr" && $item_zi->rider_id == $check_rider_cr_payable->rider_id &&  $item_zi->month == $check_rider_cr_payable->month && $item_zi->amount == $check_rider_cr_payable->amount;
-        //         }
-        //         elseif ($check_rider_cr_payable->type=="cr_payable") {
-        //             return $item_zi->type == "dr_payable" && $item_zi->rider_id == $check_rider_cr_payable->rider_id &&  $item_zi->month == $check_rider_cr_payable->month && $item_zi->amount == $check_rider_cr_payable->amount;
-        //         }
-                
-        //     });
-        //     if (!isset($check_rider_dr_payable)) {
-        //         // not found, add one
-        //         if($check_rider_cr_payable->type=="cr"){
-        //             $obj=[];
-        //             $obj['salary_id'] =$check_rider_cr_payable->salary_id;
-        //             $obj['income_zomato_id'] =$check_rider_cr_payable->income_zomato_id;
-        //             $obj['advance_return_id'] =$check_rider_cr_payable->advance_return_id;
-        //             $obj['id_charge_id'] =$check_rider_cr_payable->id_charge_id;
-        //             $obj['wps_id'] =$check_rider_cr_payable->wps_id;
-        //             $obj['fuel_expense_id'] =$check_rider_cr_payable->fuel_expense_id;
-        //             $obj['maintenance_id'] =$check_rider_cr_payable->maintenance_id;
-        //             $obj['edirham_id'] =$check_rider_cr_payable->edirham_id;
-        //             $obj['company_expense_id'] =$check_rider_cr_payable->company_expense_id;
-        //             $obj['salik_id'] =$check_rider_cr_payable->salik_id;
-        //             $obj['sim_transaction_id'] =$check_rider_cr_payable->sim_transaction_id;
-        //             $obj['type']='dr';
-        //             $obj['rider_id']=$rider_id;
-        //             $obj['month'] = $check_rider_cr_payable->month;
-        //             $obj['source']=$check_rider_cr_payable->source; 
-        //             $obj['amount']=$check_rider_cr_payable->amount;
-        //             array_push($ra__debits, $obj);
-
-        //             // $obj['type']='dr';
-        //             // array_push($ca__debits, $obj);
-        //         }
-        //         elseif ($check_rider_cr_payable->type=="cr_payable") {
-        //             $obj=[];
-        //             $obj['salary_id'] =$check_rider_cr_payable->salary_id;
-        //             $obj['income_zomato_id'] =$check_rider_cr_payable->income_zomato_id;
-        //             $obj['advance_return_id'] =$check_rider_cr_payable->advance_return_id;
-        //             $obj['id_charge_id'] =$check_rider_cr_payable->id_charge_id;
-        //             $obj['wps_id'] =$check_rider_cr_payable->wps_id;
-        //             $obj['fuel_expense_id'] =$check_rider_cr_payable->fuel_expense_id;
-        //             $obj['maintenance_id'] =$check_rider_cr_payable->maintenance_id;
-        //             $obj['edirham_id'] =$check_rider_cr_payable->edirham_id;
-        //             $obj['company_expense_id'] =$check_rider_cr_payable->company_expense_id;
-        //             $obj['salik_id'] =$check_rider_cr_payable->salik_id;
-        //             $obj['sim_transaction_id'] =$check_rider_cr_payable->sim_transaction_id;
-        //             $obj['type']='dr_payable';
-        //             $obj['rider_id']=$rider_id;
-        //             $obj['month'] = $check_rider_cr_payable->month;
-        //             $obj['source']=$check_rider_cr_payable->source; 
-        //             $obj['amount']=$check_rider_cr_payable->amount;
-        //             array_push($ra__debits, $obj);
-
-        //             $obj['type']='cr';
-        //             array_push($ca__debits, $obj);
-        //         }
-                
-        //     }
-        // }
-        // DB::table('rider__accounts')->insert($ra__debits); //r4
-        // DB::table('company__accounts')->insert($ca__debits); //r4
-
         $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
             'salary_id'=>$salary->id
         ]);
@@ -1344,100 +1263,20 @@ class AccountsController extends Controller
         $ra->payment_status="pending";
         $ra->amount=round($request->total_salary,2);
         $ra->save();
-        // return response()->json([
-        //     'ca'=>$ca,
-        //     'ra'=>$ra,
-        // ]);
-    
-        // $remaining_salary=$request->remaining_salary;
-        // if ($remaining_salary>0) { // rider will give to company
-        //     $ca = new \App\Model\Accounts\Company_Account;
-        //     $ca->salary_id =$salary->id;
-        //     $ca->type='dr';
-        //     $ca->rider_id=$rider_id;
-        //     $ca->month = Carbon::parse($request->get('month'))->addMonth()->format('Y-m-d');
-        //     $ca->source="Remaining Salary From Previous Month"; 
-        //     $ca->amount=abs($remaining_salary);
-        //     $ca->save();
-    
-        //     $ra = new \App\Model\Accounts\Rider_Account;
-        //     $ra->salary_id =$salary->id;
-        //     $ra->type='cr_payable';
-        //     $ra->rider_id=$rider_id;
-        //     $ra->month = Carbon::parse($request->get('month'))->addMonth()->format('Y-m-d');
-        //     $ra->source="Remaining Salary From Previous Month"; 
-        //     $ra->amount=abs($remaining_salary);
-        //     $ra->save();
-        // }
-        // else if ($remaining_salary<0) {  // company will give to rider
-        //     $ca = new \App\Model\Accounts\Company_Account;
-        //     $ca->salary_id =$salary->id;
-        //     $ca->type='dr';
-        //     $ca->rider_id=$rider_id;
-        //     $ca->month = Carbon::parse($request->get('month'))->addMonth()->format('Y-m-d');
-        //     $ca->source="Remaining Salary From Previous Month"; 
-        //     $ca->amount=abs($remaining_salary);
-        //     $ca->save();
-    
-        //     $ra = new \App\Model\Accounts\Rider_Account;
-        //     $ra->salary_id =$salary->id;
-        //     $ra->type='cr';
-        //     $ra->rider_id=$rider_id;
-        //     $ra->month = Carbon::parse($request->get('month'))->addMonth()->format('Y-m-d');
-        //     $ra->source="Remaining Salary From Previous Month"; 
-        //     $ra->amount=abs($remaining_salary);
-        //     $ra->save();
-        // }
-        
-        // foreach ($RA as $check_rider_cr_payable) {
-        //     $check_rider_dr_payable=\App\Model\Accounts\Rider_Account::where("source",$check_rider_cr_payable->source)
-        //     ->where("type","dr_payable")
-        //    ->where("rider_id",$check_rider_cr_payable->rider_id)
-        //    ->where("month",$check_rider_cr_payable->month)
-        //    ->get()
-        //    ->first();
 
-        // if (!isset($check_rider_dr_payable)) {
-        //     $ra = new \App\Model\Accounts\Rider_Account;
-        //     $ra->salary_id =$check_rider_cr_payable->salary_id;
-        //     $ra->income_zomato_id =$check_rider_cr_payable->income_zomato_id;
-        //     $ra->advance_return_id =$check_rider_cr_payable->advance_return_id;
-        //     $ra->id_charge_id =$check_rider_cr_payable->id_charge_id;
-        //     $ra->wps_id =$check_rider_cr_payable->wps_id;
-        //     $ra->fuel_expense_id =$check_rider_cr_payable->fuel_expense_id;
-        //     $ra->maintenance_id =$check_rider_cr_payable->maintenance_id;
-        //     $ra->edirham_id =$check_rider_cr_payable->edirham_id;
-        //     $ra->company_expense_id =$check_rider_cr_payable->company_expense_id;
-        //     $ra->salik_id =$check_rider_cr_payable->salik_id;
-        //     $ra->sim_transaction_id =$check_rider_cr_payable->sim_transaction_id;
-        //     $ra->type='dr_payable';
-        //     $ra->rider_id=$rider_id;
-        //     $ra->month = $check_rider_cr_payable->month;
-        //     $ra->source=$check_rider_cr_payable->source; 
-        //     $ra->amount=$check_rider_cr_payable->amount;
-        //     $ra->save();
-
-        //     $ca = new \App\Model\Accounts\Company_Account;
-        //     $ca->salary_id =$check_rider_cr_payable->salary_id;
-        //     $ca->income_zomato_id =$check_rider_cr_payable->income_zomato_id;
-        //     $ca->advance_return_id =$check_rider_cr_payable->advance_return_id;
-        //     $ca->id_charge_id =$check_rider_cr_payable->id_charge_id;
-        //     $ca->wps_id =$check_rider_cr_payable->wps_id;
-        //     $ca->fuel_expense_id =$check_rider_cr_payable->fuel_expense_id;
-        //     $ca->maintenance_id =$check_rider_cr_payable->maintenance_id;
-        //     $ca->edirham_id =$check_rider_cr_payable->edirham_id;
-        //     $ca->company_expense_id =$check_rider_cr_payable->company_expense_id;
-        //     $ca->salik_id =$check_rider_cr_payable->salik_id;
-        //     $ca->sim_transaction_id =$check_rider_cr_payable->sim_transaction_id;
-        //     $ca->type='cr';
-        //     $ca->rider_id=$rider_id;
-        //     $ca->month = $check_rider_cr_payable->month;
-        //     $ca->source=$check_rider_cr_payable->source; 
-        //     $ca->amount=$check_rider_cr_payable->amount;
-        //     $ca->save();
-        // } 
-       
-    // }
+        $ed =Export_data::firstOrCreate([
+            'source'=>"salary",
+            'source_id'=>$salary->id,
+        ]);
+        $ed->type='dr';
+        $ed->rider_id=$rider_id;
+        $ed->amount=round($request->total_salary,2);
+        $ed->month = Carbon::parse($request->get('month'))->startOfMonth()->format('Y-m-d');
+        $ed->given_date = Carbon::parse($request->get('given_date'))->format('Y-m-d');
+        $ed->source="salary"; 
+        $ed->source_id=$salary->id;
+        $ed->payment_status="pending";
+        $ed->save();
         return redirect(route('admin.accounts.company_account'));
     }
 
@@ -1631,6 +1470,22 @@ public function fuel_expense_insert(Request $r){
             $ca->source='fuel_expense_vip';
             $ca->fuel_expense_id=$fuel_expense->id;
             $ca->save();
+
+            $ed =Export_data::firstOrCreate([
+                'source'=>"fuel_expense_vip",
+                'source_id'=>$fuel_expense->id,
+            ]);
+            $ed->type='dr';
+            $ed->rider_id=$r->rider_id;
+            if(isset($value['rider_id'])){
+                $ed->rider_id=$value['rider_id'];
+            }
+            $ed->amount=$value['amount_given_by_days'];
+            $ed->month = Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+            $ed->given_date = Carbon::parse($r->get('given_date'))->format('Y-m-d');
+            $ed->source='fuel_expense_vip';
+            $ed->source_id=$fuel_expense->id;
+            $ed->save();
         }else if($fuel_expense->type=="cash"){
             $ca = new \App\Model\Accounts\Company_Account;
             $ca->type='dr';
@@ -1643,11 +1498,24 @@ public function fuel_expense_insert(Request $r){
             }
             $ca->source='fuel_expense_cash';
             $ca->fuel_expense_id=$fuel_expense->id;
-            $ca->payment_status='paid';
             $ca->save();
-        }
-        
-           
+
+            $ed =Export_data::firstOrCreate([
+                'source'=>"fuel_expense_cash",
+                'source_id'=>$fuel_expense->id,
+            ]);
+            $ed->type='dr';
+            $ed->rider_id=$r->rider_id;
+            if(isset($value['rider_id'])){
+                $ed->rider_id=$value['rider_id'];
+            }
+            $ed->amount=$value['amount_given_by_days'];
+            $ed->month = Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+            $ed->given_date = Carbon::parse($r->get('given_date'))->format('Y-m-d');
+            $ed->source='fuel_expense_cash';
+            $ed->source_id=$fuel_expense->id;
+            $ed->save();
+        } 
     }
     return redirect(route('admin.fuel_expense_view'));
 }
@@ -3564,5 +3432,8 @@ public function client_income_update(Request $request,$id){
     }
     public function rider_salary_status(){
         return view('admin.rider.rider_salary_status');
+    }
+    public function expense_data(){
+        return view('admin.accounts.Company_Expense.expense_data');
     }
 }

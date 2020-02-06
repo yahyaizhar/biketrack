@@ -1395,6 +1395,47 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="absent_details" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title">Rider Absent Detail</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="kt-form" enctype="multipart/form-data" id="absent_detail_form">
+                <div class="modal-body">
+                    <div id="absent_detail_message" style="text-align: center;margin-bottom: 10px;"></div>
+                    <div id="is_absent_detail">
+                    <div class="form-group">
+                        <label>Rider:</label>
+                        <input class="form-control" type="text" readonly name="rider_id_absent_detail">
+                    </div>
+                    <div class="form-group">
+                        <label>Absent Date:</label>
+                        <input class="form-control" type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" readonly name="absent_date">
+                    </div>
+                    <div class="form-group">
+                        <label>Absent Reason:</label>
+                        <textarea class="form-control" type="text" readonly name="absent_reason"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Sent to Client?</label>
+                        <input class="form-control" type="text" readonly name="email_sent">
+                    </div>
+                    <div class="form-group">
+                        <label>Approval Status:</label>
+                        <input class="form-control" type="text" readonly name="approval_status">
+                    </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="bills_image_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">  
@@ -1816,14 +1857,17 @@ var detect_billchanges=function(){
                             case 'Approved':
                                 absent_stat='- Approved ';
                                 absent_color='green';
+                                absent_detail='<i class="flaticon2-file"></i>';
                                 break;
                             case 'Rejected':
                                 absent_stat='- Rejected';
                                 absent_color='red';
+                                absent_detail='<i class="flaticon2-file"></i>';
                                 break;
                             default:
                                 absent_stat=' (Pending)';
                                 absent_color='red';
+                                absent_detail='';
                                 break;
                         }
                         
@@ -1836,7 +1880,7 @@ var detect_billchanges=function(){
                                 status='<div style="color:green;">Weekly Off</div>';
                                 break;
                             case 'absent':
-                                status='<div style="color:'+absent_color+';" class="absents">Absent'+absent_stat+'</div>';
+                                status='<div class="row"><div style="color:'+absent_color+';" class="absents col-md-9">Absent'+absent_stat+'</div><div class="rider_absent_detail col-md-1">'+absent_detail+'</div></div>'; 
                                 break;
                             case 'extraday':
                                 login_hours=0;
@@ -1886,6 +1930,45 @@ var detect_billchanges=function(){
             "<button class='btn-btn-danger' id='absent_rejected' onclick='approved_rejected_status("+rider_id+",\""+month+"\",\""+rider_payout_days_date+"\",\""+rejected+"\")' style='float:right;color: red;font-size: 10px;'>Reject</button>"+
             " <button class='btn-btn-success' onclick='approved_rejected_status("+rider_id+",\""+month+"\",\""+rider_payout_days_date+"\",\""+approved+"\")' id='absent_approved' style='float:right;color: green;font-size: 10px;'>Approve</button>";
             $(this).html(option);
+            });
+
+            $(document).on("click",".rider_absent_detail",function(){
+                $("#absent_details").modal("show");
+                var a=$(this).parents("tr").find("td:eq(0)").text();
+                var month=biketrack.getUrlParameter('r1d1');
+                var rider_id=biketrack.getUrlParameter('rider_id');
+                var _year=new Date(month).format("yyyy");
+                var day=a.split(_year).pop("");
+                var date=a.replace(day, '');
+                var rider_payout_days_date=new Date(date).format("yyyy-mm-dd");
+                var _Url = "{{url('admin/absent_detail/ajax')}}"+"/"+month+"/"+rider_id+"/"+rider_payout_days_date;
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url : _Url,
+                    type : 'GET',
+                    success: function(data){
+                        var _date=null;
+                        if (data.status==1) {
+                             _date=new Date(data.absnt_date).format("mmmm dd, yyyy");
+                             $("#is_absent_detail").show();
+                        }
+                            $('#absent_detail_form [name="rider_id_absent_detail"]').val(data.rider_name);
+                            $('#absent_detail_form [name="absent_date"]').val(_date);
+                            $('#absent_detail_form [name="absent_reason"]').html(data.absnt_reason);
+                            $('#absent_detail_form [name="email_sent"]').val(data.absnt_email);
+                            $('#absent_detail_form [name="approval_status"]').val(data.absnt_app_status);
+                        
+                       
+                        if (data.status=="0") {
+                            $("#is_absent_detail").hide();
+                            $("#absent_detail_form #absent_detail_message").html("<span style='font-size:25px;color:coral;'>Rider has no absent details</span>");
+                        }
+                    }
+                });
             });
 
         $('[name="custom_select_Day"]').on("change",function(){

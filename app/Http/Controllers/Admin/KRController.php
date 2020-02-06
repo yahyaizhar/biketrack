@@ -30,6 +30,8 @@ use Batch;
 use App\Model\Accounts\Company_Account;
 use App\Assign_bike;
 use App\Log_activity;
+use App\Model\Accounts\Absent_detail;
+use App\Model\Zomato\Riders_Payouts_By_Days;
 
 
 class KRController extends Controller
@@ -174,10 +176,133 @@ class KRController extends Controller
         $ra->payment_status='pending';
         $ra->save();
 
-return response()->json([
-    'status'=>$ca,
-    'ra'=>$ra,
+        return response()->json([
+            'status'=>$ca,
+            'ra'=>$ra,
 
-]);
+        ]);
+    }
+
+    public function absent_detail(){
+        $riders=Rider::where("active_status","A")->get();
+        return view('admin.accounts.Rider_Debit.absent_form',compact('riders'));
+    }
+
+    public function absent_detail_store(Request $request){
+        $absent_detail=new Absent_detail;
+        $already_absent_detail = Absent_detail::where(['rider_id'=>$request->rider_id, 'absent_date'=>Carbon::parse($request->absent_date)->format('Y-m-d')])
+        ->get()
+        ->first();
+        if(isset($already_absent_detail)){
+            $absent_detail=$already_absent_detail;
+        }
+        $absent_detail->rider_id=$request->rider_id;
+        $absent_detail->absent_reason=$request->absent_reason;
+        $absent_detail->absent_date=carbon::parse($request->absent_date)->format("Y-m-d");
+        $absent_detail->email_sent=$request->email_sent;
+        $absent_detail->approval_status=$request->approval_status;
+        if($request->hasFile('document_image'))
+        {
+            $filename = $request->document_image->getClientOriginalName();
+            $filesize = $request->document_image->getClientSize();
+            $filepath = Storage::putfile('public/uploads/riders/absent_document_image', $request->file('document_image'));
+            $absent_detail->document_image = $filepath;
+        }
+
+        if ($request->approval_status=="accepted") {
+            $rpbd=Riders_Payouts_By_Days::where("rider_id",$request->rider_id)->where("date", $absent_detail->absent_date)->get()->first();
+            if ($rpbd->absent_status!="Approved") {
+                $absent_detail->save();
+                $rpbd->absent_status="Approved";
+                $rpbd->absent_fine_id=null;
+                $income_id=$rpbd->zomato_income_id;
+                $rpbd->save();
+                $income_zomato=Income_zomato::find($income_id);
+                if ($income_zomato->approve_absents!=0 || $income_zomato->approve_absents!=null) {
+                    $income_zomato->approve_absents-=1;
+                }
+                $income_zomato->save();
+                
+            }
+        }
+        if ($request->approval_status=="rejected") {
+            $rpbd=Riders_Payouts_By_Days::where("rider_id",$request->rider_id)->where("date", $absent_detail->absent_date)->get()->first();
+            if ($rpbd->absent_status!="Rejected") {
+                $absent_detail->save();
+                $rpbd->absent_status="Rejected";
+                $rpbd->absent_fine_id=$rpbd->id;
+                $income_id=$rpbd->zomato_income_id;
+                $rpbd->save();
+                $income_zomato=Income_zomato::find($income_id);
+                $income_zomato->approve_absents+=1;
+                $income_zomato->save();
+            }
+        }
+        return redirect(route('account.absent_detail'));
+    }
+    public function absent_detail_ajax($month,$rider_id,$_date){
+        $rider_name="";
+        $absnt_date="";
+        $absnt_reason="";
+        $absnt_email="";
+        $absnt_app_status="";
+
+        $absent_detail=Absent_detail::where("rider_id",$rider_id)
+        ->where("absent_date",$_date)
+        ->get()
+        ->first();
+        if (isset($absent_detail)) {
+            $absnt_date=$absent_detail->absent_date;
+            $absnt_reason=$absent_detail->absent_reason;
+            $absnt_email=$absent_detail->email_sent;
+            $absnt_app_status=$absent_detail->approval_status;
+            $rider=Rider::find($absent_detail->rider_id);
+            if (isset($rider)) {
+                $rider_name=$rider->name;
+            }
+            $status="1";
+        }
+        if (!isset($absent_detail)) {
+            $status="0";
+        }
+        return response()->json([
+            'rider_name'=>$rider_name,
+            'absnt_date'=>$absnt_date,
+            'absnt_reason'=>$absnt_reason,
+            'absnt_email'=>$absnt_email,
+            'absnt_app_status'=>$absnt_app_status,
+            'status'=>$status,
+        ]);
+    }
+    public function check_payout($month,$rider_id,$date){
+        $income_zomato=Income_zomato::where("rider_id",$rider_id)
+        ->whereMonth("date",$month)
+        ->get()
+        ->first();
+        $is_payout="0";
+        if (isset($income_zomato)) {
+            $is_payout="1";
+        }
+        $rpbd=Riders_Payouts_By_Days::where("rider_id",$rider_id)->where("date", $date)->get()->first();
+        $day_status='';
+        if (isset($rpbd)) {
+            if($rpbd->off_days_status=="present" || $rpbd->off_days_status=="extraday" || $rpbd->off_days_status=="weeklyoff"){
+                if ($rpbd->off_days_status=="present") {
+                   $day_status="present"; 
+                }
+                if ($rpbd->off_days_status=="extraday") {
+                    $day_status="extraday";
+                }
+                if ($rpbd->off_days_status=="weeklyoff") {
+                    $day_status="weeklyoff";
+                }
+            }
+        }
+        return response()->json([
+            'month'=>$month,
+            'rider_id'=>$rider_id,
+            'is_payout'=>$is_payout,
+            'day_status'=>$day_status,
+        ]);
     }
 }

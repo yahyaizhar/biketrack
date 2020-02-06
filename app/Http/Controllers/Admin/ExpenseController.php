@@ -17,6 +17,7 @@ use App\Model\Accounts\AdvanceReturn;
 use App\Company_investment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Export_data;
 
 class ExpenseController extends Controller
 {
@@ -422,6 +423,20 @@ public function AR_store(Request $r){
         $ra->payment_status="paid";
         $ra->save();
 
+        $ed =Export_data::firstOrCreate([
+            'source'=>"advance",
+            'source_id'=>$ar->id,
+        ]);
+        $ed->type='cr_payable';
+        $ed->rider_id=$ar->rider_id;
+        $ed->amount=$r->amount;
+        $ed->month = Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+        $ed->given_date = Carbon::parse($r->get('given_date'))->format('Y-m-d');
+        if($ar->type=="advance"){$ed->source='advance';}
+        else if($ar->type=="return"){$ed->source='loan';}
+        $ed->source_id=$ar->id;
+        $ed->payment_status="paid";
+        $ed->save();
     }
 
 

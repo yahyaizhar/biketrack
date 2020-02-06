@@ -27,6 +27,7 @@ use App\Model\Mobile\Seller;
 use App\Model\Mobile\MobileHistory;
 use Arr;
 use Batch;
+use App\Export_data;
 class MobileController extends Controller
 {
     public function __construct()
@@ -184,6 +185,21 @@ class MobileController extends Controller
         $ra->given_date=carbon::parse($request->given_date)->format("Y-m-d");
         $ra->payment_status="paid";
         $ra->save();
+
+        $ed =Export_data::firstOrCreate([
+            'source'=>"Mobile Installment",
+            'source_id'=>$installment->id,
+        ]);
+        $ed->type='cr_payable';
+        $ed->rider_id=$rider_id;
+        $ed->amount=$request->per_month_installment_amount;
+        $ed->month = Carbon::parse($request->month_year)->startOfMonth()->format('Y-m-d');
+        $ed->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
+        $ed->source="Mobile Installment";
+        $ed->source_id=$installment->id;
+        $ed->payment_status="paid";
+        $ed->save();
+
         return redirect(route('mobile.show'));
     }
 

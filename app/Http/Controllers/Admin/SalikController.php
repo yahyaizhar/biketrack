@@ -20,6 +20,7 @@ use App\Model\Rider\Rider_detail;
 use App\Model\Sim\Sim_History;
 use Carbon\Carbon;
 use App\Model\Accounts\Income_zomato;
+use App\Export_data;
 
 class SalikController extends Controller
 {
@@ -576,6 +577,17 @@ class SalikController extends Controller
             $rider = Rider::find($bike_histories->rider_id);
             $rider_id=$rider->id;
             $allow_salik=$rider->Rider_Detail->salik_amount;
+
+            $ed =new Export_data;
+            $ed->type='dr';
+            $ed->rider_id=$rider_id;
+            $ed->amount=$used_salik;
+            $ed->month = Carbon::parse($request->month)->startOfMonth()->format('Y-m-d');
+            $ed->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
+            $ed->source="Salik";
+            $ed->source_id='0';
+            $ed->save();  
+            
         if($used_salik>$allow_salik){
             $_greater_ca= new Company_Account;
             $_greater_ca->source="Salik";
@@ -636,6 +648,7 @@ class SalikController extends Controller
             //     $_less_ra->save();
             // }
         }
+          
             
         return redirect(route('admin.salik'));
     }
