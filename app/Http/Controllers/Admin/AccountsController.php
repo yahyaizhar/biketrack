@@ -1056,7 +1056,8 @@ class AccountsController extends Controller
                         $fb__working_hours = $client_income->total_hours;
                         $fb__extra_hours = $client_income->extra_hours;
 
-                        $fb__perHourSalary = $basic_salary/$fb__working_hours;
+                        // $fb__perHourSalary = $basic_salary/$fb__working_hours;
+                        $fb__perHourSalary = isset($client_setting['fb_sm__exrta_hours'])?$client_setting['fb_sm__exrta_hours']:0;
                         $extra_salary = $fb__perHourSalary * $fb__extra_hours;
 
                         $fixed_salary = $basic_salary + $extra_salary;
