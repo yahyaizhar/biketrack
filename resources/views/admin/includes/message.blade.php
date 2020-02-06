@@ -1,5 +1,5 @@
 @if (session()->has('message'))
-	<div class="kt-portlet__body">
+	<div class="kt-portlet__body" style="margin-left:0px;">
 		<div class="kt-section__content">
 			<div class="alert alert-success fade show" role="alert">
 				<div class="alert-icon"><i class="flaticon2-correct"></i></div>

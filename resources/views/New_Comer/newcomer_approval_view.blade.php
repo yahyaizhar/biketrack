@@ -343,7 +343,7 @@ padding: 10px;
                     <select id="applyfor" class="form-control " name="applyfor" placeholder="Apply for" data-num="21" multiple="multiple"> 
                     {{-- <option selected disabled>Please select your option</option> --}}
                     <option value="bike">Bike</option>
-                    <option value="car">Car</option>
+                    <option value="car">Chauffeur</option>
                 </select>
               </div>
             </div>
@@ -374,6 +374,7 @@ padding: 10px;
                         <label>Country</label>
                         <select id="country" class="form-control" name="nationality" placeholder="Nationality" data-num="3" multiple="multiple">
                                 {{-- <option value="" selected disabled>Please select country</option> --}}
+                                <option value="Africa">Africa</option>
                                 <option value="Afganistan">Afghanistan</option>
                                 <option value="Albania">Albania</option>
                                 <option value="Algeria">Algeria</option>
@@ -620,6 +621,7 @@ padding: 10px;
                                 <option value="Zaire">Zaire</option>
                                 <option value="Zambia">Zambia</option>
                                 <option value="Zimbabwe">Zimbabwe</option>
+                                <option value="Other">Other</option>
                              </select>
                     </div>
             </div>
