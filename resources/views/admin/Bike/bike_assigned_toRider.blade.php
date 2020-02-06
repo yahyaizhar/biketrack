@@ -17,14 +17,12 @@
                 </div>
             @include('client.includes.message')
             <form class="kt-form" action="{{ route('bike.bike_assignRiders', $rider->id) }}" method="POST" enctype="multipart/form-data" id="assign_bike">
-                    {{ method_field('PUT') }}
-                    {{ csrf_field() }}
-                    <div class="kt-portlet__body">
-                        <div class="form-group">
-                            <label>Select bike:</label>
-                            @if ($assign_bike<=0)
+                {{ csrf_field() }}
+                <div class="kt-portlet__body">
+                    <div class="form-group">
+                        <label>Select bike:</label>
                         <div>
-                            <select class="form-control kt-select2" id="kt_select2_3" name="bike_id" test2>
+                            <select class="form-control kt-select2" id="kt_select2_3" name="bike_id">
                                 @foreach ($bikes as $bike)
                                     <option value="{{ $bike->id }}">
                                         {{ $bike->brand }}&nbsp{{$bike->bike_number}}&nbsp{{ $bike->model }}
@@ -36,26 +34,8 @@
                             <label>Bike Assign Date:</label>
                             <input type="text" data-month="{{Carbon\Carbon::now()->format('Y-m-d')}}"  readonly class="month_picker form-control" name="bike_assign_date" placeholder="Enter Expiry Date">
                         </div>
-                            @else
-                            <div>
-                                <div>
-                                    <select class="form-control kt-select2" id="kt_select2_3" name="bike_id" >
-                                        @foreach ($bikes as $bike)
-                                        @if ($bike->availability=='yes')
-                                            <option value="{{ $bike->id }}" 
-                                        >{{ $bike->brand }}&nbsp{{$bike->bike_number}}&nbsp{{ $bike->model }}</option>    
-                                        @endif
-                                        @endforeach
-                                    </select>     
-                                </div>
-                                <div class="form-group mt-4">
-                                    <label>Bike Assign Date:</label>
-                                    <input type="text" data-month="{{Carbon\Carbon::now()->format('Y-m-d')}}"  readonly class="month_picker form-control" name="bike_assign_date" placeholder="Enter Expiry Date">
-                                </div>
-                            </div>
-                            @endif
                     </div>
-            </div>
+                </div>
                 <div class="kt-portlet__foot">
                     <div class="kt-form__actions kt-form__actions--right">
                         <span id="error_bike_assigned" class="text-danger" style="float:left;font-size:30px;">The Bike is already assigned in this date.</span>
