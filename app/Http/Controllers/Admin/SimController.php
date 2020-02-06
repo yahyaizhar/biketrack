@@ -22,6 +22,7 @@ use App\Model\Accounts\Company_Expense;
 use Arr;
 use \App\Model\Accounts\Company_Account;
 use App\Model\Accounts\Bill_change;
+use App\Export_data;
 
 class SimController extends Controller
 {
@@ -290,7 +291,7 @@ public function store_simTransaction(Request $request){
             $filepath = Storage::putfile('public/uploads/riders/sim_bill_image', $request->file('sim_bill_image'));
             $sim_trans->sim_bill_image = $filepath;
         }
-        // $sim_trans->save();
+        $sim_trans->save();
 
         $sim=$sim_trans->Sim;
     
@@ -310,6 +311,19 @@ public function store_simTransaction(Request $request){
         $ca->amount=$value['bill_amount_given_by_days'];
         $ca->save();
 
+        $ed =new Export_data;
+        $ed->type='dr';
+        $ed->rider_id=$request->rider_id;
+        if(isset($value['rider_id'])){
+            $ed->rider_id=$value['rider_id'];
+        }
+        $ed->amount=$value['bill_amount_given_by_days'];
+        $ed->month = Carbon::parse($sim_trans->month_year)->startOfMonth()->format('Y-m-d');
+        $ed->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
+        $ed->source="Sim Transaction"; 
+        $ed->source_id=$sim_trans->id;
+        $ed->save();
+
         if($extra>0){
             $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
                 'sim_transaction_id'=>$sim_trans->id
@@ -324,7 +338,7 @@ public function store_simTransaction(Request $request){
             $ra->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
             $ra->source="Sim extra usage"; 
             $ra->amount=round($extra,2);
-            // $ra->save();
+             $ra->save();
             
             $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
                 'sim_transaction_id'=>$sim_trans->id,
@@ -340,7 +354,7 @@ public function store_simTransaction(Request $request){
             $ca->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
             $ca->source="Sim extra usage";
             $ca->amount=round($extra,2);
-            // $ca->save();
+             $ca->save();
         }
         $splitted_amount+=$value['bill_amount_given_by_days'];
 
@@ -374,7 +388,7 @@ public function store_simTransaction(Request $request){
         $ce->month = Carbon::parse($request->get('month'))->format('Y-m-d');
         $ce->description="Sim Bill remaining amount";
         $ce->type="Sim Bill";
-        // $ce->save();
+        $ce->save();
     }
     return response()->json([
         'status' => true,

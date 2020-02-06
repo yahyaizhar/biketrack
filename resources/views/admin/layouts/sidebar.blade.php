@@ -146,6 +146,14 @@ color: #5d78ff !important;
                                 </a>
                             </li>
                             @endif
+
+                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='account.absent_detail';   }); @endphp
+                            @if($is_in_array || $is_admin)
+                            <li class="kt-menu__item @if(strpos(Request::url(), "/account/absent_detail") !== false && strpos(Request::url(), "admin/account/absent_detail") != false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                <a route_status="{{$is_in_array['action_name']}}" href="{{ route('account.absent_detail') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Absent Details</span>
+                                </a>
+                            </li>
+                            @endif
                             
                             @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.accounts.rider_expense_get';   }); @endphp
                             @if($is_in_array || $is_admin)
@@ -815,6 +823,13 @@ color: #5d78ff !important;
                                         </ul>
                                     </div>
                                 </li>
+                                @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='account.expense_data';   }); @endphp
+                                @if($is_in_array || $is_admin)
+                                <li class="kt-menu__item @if(strpos(Request::url(), "/account/expense_data/") !== false && strpos(Request::url(), "admin/account/expense_data/") != false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                    <a route_status="{{$is_in_array['action_name']}}" href="{{ route('account.expense_data') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Expense Data</span>
+                                    </a>
+                                </li>
+                                @endif
                              </ul> 
                         </div>
                     </li>

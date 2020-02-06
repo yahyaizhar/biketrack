@@ -1,6 +1,5 @@
 @extends('admin.layouts.app')
 @section('main-content')
-<!-- begin:: Content -->
 <style>
     .custom-file-label::after{
            color: white;
@@ -13,7 +12,6 @@
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <div class="row">
         <div class="col-md-12">
-        <!--begin::Portlet-->
             <div class="kt-portlet">
                 <div class="kt-portlet__head">
                     <div class="kt-portlet__head-label">
@@ -22,9 +20,6 @@
                         </h3>
                     </div>
                 </div>
-
-                <!--begin::Form-->
-                
                 @include('admin.includes.message')
                 <form class="kt-form" action="{{ route('bike.bike_create') }}" method="POST" enctype="multipart/form-data" id="add_bikeForm">
                     {{ csrf_field() }}
@@ -133,7 +128,7 @@
                                 <label>Insurance Company:</label>
                                 <select class="form-control bk-select2 kt-select2" id="insurance_co" name="insurance_co" placeholder="Enter Insurance Company">
                                     @foreach ($insurance_co_name as $item)
-                                <option value="{{$item->insurance_co_name}}">{{$item->insurance_co_name}}</option>
+                                        <option value="{{$item->insurance_co_name}}">{{$item->insurance_co_name}}</option>
                                     @endforeach
                                 </select> 
                             </div>
@@ -173,8 +168,6 @@
                                     </div>
                                 </div></div>
                             </div>
-                     
-                        
                         <div class="form-group">
                             <label>Status:</label>
                             <div>
@@ -182,7 +175,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="kt-portlet__foot">
                         <div class="kt-form__actions kt-form__actions--right">
                             <button type="submit" class="btn btn-primary">Submit</button>
@@ -190,28 +182,20 @@
                         </div>
                     </div>
                 </form>
-
-                <!--end::Form-->
             </div>
-
-        <!--end::Portlet-->
+        </div>
     </div>
 </div>
-</div>
-
 @endsection
 @section('foot')
-    
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/bootstrap-switch.js') }}" type="text/javascript"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link rel="stylesheet" href="/resources/demos/style.css">
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
- 
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
   $(document).ready(function(){
-    //   $('#datepicker').datepicker({dateFormat: 'yy-mm-dd'}); 
       $('#datepicker').fdatepicker({format: 'dd-mm-yyyy'}); 
       $('#datepicker_con_1').fdatepicker({format: 'M d, yyyy'}); 
       $('#datepicker_con_2').fdatepicker({format: 'M d, yyyy'});
@@ -270,14 +254,11 @@
                 })
                 .done(function(data) {  
                     console.log(data);
-                    window.location.reload();
-                    swal.fire({
-                                position: 'center',
-                                type: 'success',
-                                title: 'Record updated successfully.',
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
+                    // window.location.reload();
+                    var option_html= '<option value="'+data.insurance_co_name.insurance_co_name+'">'+data.insurance_co_name.insurance_co_name+'</option>';
+                    $('[name="insurance_co"]').append(option_html);
+                    $('[name="insurance_co"]').select2('close');
+                    $('[name="insurance_co"]').val(data.insurance_co_name.insurance_co_name).trigger("change");
                 });
             }
         });

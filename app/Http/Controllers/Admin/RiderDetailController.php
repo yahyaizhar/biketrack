@@ -30,6 +30,7 @@ use App\Model\Accounts\Rider_Account;
 use App\Model\Accounts\Income_zomato;
 use App\Model\Rider\Trip_Detail;
 use App\Model\Accounts\Rider_salary;
+use App\Export_data;
 
 class RiderDetailController extends Controller
 {
@@ -483,6 +484,16 @@ class RiderDetailController extends Controller
         $ra->rider_id = $request->rider_id;
         $ra->source='400 Trips Acheivement Bonus';
         $ra->save();
+
+        $ed =new Export_data;
+        $ed->type='dr';
+        $ed->rider_id=$request->rider_id;
+        $ed->amount=$request->amount;
+        $ed->month = Carbon::parse($request->get('month'))->startOfMonth()->format('Y-m-d');
+        $ed->given_date = Carbon::parse($request->get('given_date'))->format('Y-m-d');
+        $ed->source='Bonus';
+        $ed->source_id='0';
+        $ed->save();
         
     }
     public function rider_expense_discipline(Request $request)
@@ -504,6 +515,16 @@ class RiderDetailController extends Controller
         $ra->rider_id = $request->rider_id;
         $ra->source='Discipline Fine';
         $ra->save();
+
+        $ed =new Export_data;
+        $ed->type='cr';
+        $ed->rider_id=$request->rider_id;
+        $ed->amount=$request->amount;
+        $ed->month = Carbon::parse($request->get('month'))->startOfMonth()->format('Y-m-d');
+        $ed->given_date = Carbon::parse($request->get('given_date'))->format('Y-m-d');
+        $ed->source='Discipline Fine';
+        $ed->source_id='0';
+        $ed->save();
         
     }
     public function cash_paid(Request $r){
@@ -516,6 +537,17 @@ class RiderDetailController extends Controller
             $ra->source=$r->desc;
             $ra->payment_status="paid";
             $ra->save();
+
+            $ed =new Export_data;
+            $ed->type='cr';
+            $ed->rider_id=$r->cash_rider_id;
+            $ed->amount=$r->amount;
+            $ed->month = Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+            $ed->given_date = Carbon::parse($r->get('given_date'))->format('Y-m-d');
+            $ed->source="PC@".$r->desc;
+            $ed->source_id='0';
+            $ed->payment_status="paid";
+            $ed->save();
      
 }
 public function cash_debit_rider(Request $r){
@@ -537,6 +569,16 @@ public function cash_debit_rider(Request $r){
         $ra->rider_id = $r->cash_rider_id_debit;
         $ra->source=$r->desc;
         $ra->save();
+
+        $ed =new Export_data;
+        $ed->type='cr';
+        $ed->rider_id=$r->cash_rider_id_debit;
+        $ed->amount=$r->amount;
+        $ed->month = Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+        $ed->given_date = Carbon::parse($r->get('given_date'))->format('Y-m-d');
+        $ed->source="RC@".$r->desc;
+        $ed->source_id='0';
+        $ed->save();
     
 }
 public function mics_charges(Request $r){
@@ -549,6 +591,18 @@ public function mics_charges(Request $r){
     $ra->source="Visa Charges";
     $ra->payment_status="paid";
     $ra->save();
+
+    $ed =new Export_data;
+    $ed->type='dr';
+    $ed->rider_id=$r->visa_rider_id;
+    $ed->amount=$r->amount;
+    $ed->month = Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+    $ed->given_date = Carbon::parse($r->get('given_date'))->format('Y-m-d');
+    $ed->source="Visa Charges";
+    $ed->source_id='0';
+    $ed->payment_status="paid";
+    $ed->save();
+
 }
 public function cash_credit_rider(Request $r){
         $ca = new \App\Model\Accounts\Company_Account;

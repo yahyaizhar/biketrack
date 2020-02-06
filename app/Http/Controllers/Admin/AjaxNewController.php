@@ -60,6 +60,7 @@ use App\Model\Mobile\Accessory;
 use App\Model\Mobile\Seller;
 use App\Model\Mobile\MobileHistory;
 use DB;
+use App\Export_data;
 
 class AjaxNewController extends Controller
 {
@@ -4666,6 +4667,58 @@ class AjaxNewController extends Controller
             return '<a data-image="'.$slip.'" data-rider="'.$rider->id.'" data-paid="'.$paid.'" class="show_image"><i class="fa fa-eye"></i></a>';
         })
         ->rawColumns(['id','rider_id','salary','remaining_salary','image','payment_status'])
+        ->make(true);
+    }
+
+    public function getExpenseData($month)
+    {
+        $_onlyMonth=carbon::parse($month)->format('m');
+        $_onlyYear=carbon::parse($month)->format('Y');
+        $export_data = Export_data::where("active_status","A")
+        ->whereMonth("month",$_onlyMonth)
+        ->whereYear("month",$_onlyYear)
+        ->get();
+        return DataTables::of($export_data)
+        ->addColumn('id', function($export_data){
+            $src=$export_data->source;
+            $kr='O-';
+            if ( $src=="advance") {$kr="A-";}
+            if ( $src=="Bonus") {$kr="B-";}
+            if ( $src=="Mobile Installment") {$kr="MI-";}
+            if ( $src=="Visa Charges") {$kr="VC-";}
+            if ( $src=="fuel_expense_vip") {$kr="F-";}
+            if ( $src=="fuel_expense_cash") {$kr="F-";} 
+            if ( $src=="Bike Rent") {$kr="BR-";}
+            if ( $src=="Discipline Fine") {$kr="KF-";}
+            if ( $src=="Sim Transaction") {$kr="S-";}
+            if ( $src=="Salik") {$kr="S-";}
+            if ( strpos($src,'RC@')!==false) {$kr="RC-";} 
+            if ( strpos($src,'PC@')!==false) {$kr="PC-";} 
+            if ( $src=="salary") {$kr="S-";}
+            return $kr.$export_data->id;
+        })
+        ->addColumn('source', function($export_data){
+            $source=$export_data->source;
+            if ( strpos($source,'RC@')!==false || strpos($source,'PC@')!==false) $source=explode('@',$source)[1];
+            return $source;
+        })
+        ->addColumn('rider_id', function($export_data){
+            $rider=Rider::find($export_data->rider_id);
+            if (isset($rider)) {
+                return '<a  href="'.route('admin.rider.profile', $rider->id).'">'.$rider->name.'</a>';
+            }
+            return 'no rider is found';
+        })
+        ->addColumn('month', function($export_data){
+            return carbon::parse($export_data->month)->format('F Y');
+        })
+        ->addColumn('given_date', function($export_data){
+            return carbon::parse($export_data->given_date)->format('F d,Y');
+        })
+        ->addColumn('amount', function($export_data){
+            return $export_data->amount;
+        })
+        ->rawColumns(['id','source','rider_id','month','given_date','amount'])
         ->make(true);
     }
 }

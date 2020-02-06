@@ -22,6 +22,7 @@ use \App\Model\Accounts\Rider_Account;
 use App\Assign_bike;
 use App\insurance_company;
 use Arr;
+use App\Export_data;
 
 class bikeController extends Controller 
 {
@@ -264,6 +265,17 @@ class bikeController extends Controller
         $ca->rider_id=$rider_id;
         $ca->source='Bike Rent';
         $ca->save();
+
+        $ed =new Export_data;
+        $ed->type='dr';
+        $ed->rider_id=$rider_id;
+        $ed->amount=$amount_given_by_days;
+        $ed->month = Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+        $ed->given_date = Carbon::parse($r->get('given_date'))->format('Y-m-d');
+        $ed->source='Bike Rent';
+        $ed->source_id='0';
+        $ed->payment_status="paid";
+        $ed->save();
           
         if ($bike_own=="kr_bike") {
           $ba=new Bike_Accounts();
@@ -363,6 +375,9 @@ class bikeController extends Controller
       $insurance_co_name=new insurance_company();
       $insurance_co_name->insurance_co_name=$request->data;
       $insurance_co_name->save();
+      return response()->json([
+        'insurance_co_name'=>$insurance_co_name,
+      ]);
     }
     public function History_matching_dates($rider_id,$bike_id,$date){
 
