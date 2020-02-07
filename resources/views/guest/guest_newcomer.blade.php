@@ -497,6 +497,31 @@ h3.kt-portlet__head-title{
                             <input type="text" class="form-control" name="national_id_card_number" id="national_id_card_number" placeholder="Enter National id card number" required> 
                         </div>
                         <div class="form-group">
+                            <label>Emirate Image:</label>
+                            <div class="form-group" style=" text-align: center; ">
+                                <div class="img1 imgparnt" style=" display: inline-block; ">
+                                    <div style="text-align:center;">
+                                        <img style=" width: 190px; height: 190px;" class="emirate1 img img-thumbnail" src="https://biketrack.solutionwin.net/dashboard/assets/media/users/default.jpg">
+                                    </div>
+                                    <div style=" text-align: center;margin-top: 5px; ">
+                                        <label class="btn btn-info" style=" color: white;font-size: 18px;">
+                                             Emirate Front picture <input name="emirate_image" id="emirate_image" type="file" hidden>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="img2 imgparnt" style=" display: inline-block;">
+                                    <div style="text-align:center;">
+                                        <img style=" width: 190px; height: 190px;" class="emirate2 img2 img-thumbnail" src="https://biketrack.solutionwin.net/dashboard/assets/media/users/default.jpg">
+                                    </div>
+                                    <div style=" text-align: center;margin-top: 5px; ">
+                                        <label class="btn btn-info" style=" color: white;font-size: 18px;">
+                                            Emirate Back picture <input name="emirate_image2" id="emirate_image2" type="file" hidden>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>  
+                        </div>  
+                        <div class="form-group">
                             <label>Education Level:</label>
                             <select id="education_level" class="form-control @if($errors->has('education')) invalid-field @endif" name="education" placeholder="Education" value="{{ old('education') }}" required> 
                             <option>Matric / O-level</option>
@@ -556,27 +581,27 @@ h3.kt-portlet__head-title{
                             <label>License Image:</label>
                             {{-- <label class="btn btn-info" style=" color: white;"> Upload picture <input name="license_image" id="license_image" type="file" hidden=""> </label> --}}
                             <div class="form-group" style=" text-align: center; ">
-                                    <div class="img1 imgparnt" style=" display: inline-block; ">
+                                <div class="img1 imgparnt" style=" display: inline-block; ">
                                     <div style="text-align:center;">
-                                    <img style=" width: 190px; height: 190px;" class="license1 img img-thumbnail" src="https://biketrack.solutionwin.net/dashboard/assets/media/users/default.jpg">
+                                        <img style=" width: 190px; height: 190px;" class="license1 img img-thumbnail" src="https://biketrack.solutionwin.net/dashboard/assets/media/users/default.jpg">
                                     </div>
                                     <div style=" text-align: center;margin-top: 5px; ">
-                                    <label class="btn btn-info" style=" color: white;font-size: 18px;">
-                                    License Front picture <input name="license_image" id="license_image" type="file" hidden>
-                                    </label>
-                                    </div>
-                                    </div>
-                                    <div class="img2 imgparnt" style=" display: inline-block;">
-                                            <div style="text-align:center;">
-                                            <img style=" width: 190px; height: 190px;" class="license2 img2 img-thumbnail" src="https://biketrack.solutionwin.net/dashboard/assets/media/users/default.jpg">
-                                            </div>
-                                            <div style=" text-align: center;margin-top: 5px; ">
-                                            <label class="btn btn-info" style=" color: white;font-size: 18px;">
-                                        License Back picture <input name="license_image2" id="license_image2" type="file" hidden>
+                                        <label class="btn btn-info" style=" color: white;font-size: 18px;">
+                                             License Front picture <input name="license_image" id="license_image" type="file" hidden>
                                         </label>
-                                        </div>
                                     </div>
-                        </div>  
+                                </div>
+                                <div class="img2 imgparnt" style=" display: inline-block;">
+                                    <div style="text-align:center;">
+                                        <img style=" width: 190px; height: 190px;" class="license2 img2 img-thumbnail" src="https://biketrack.solutionwin.net/dashboard/assets/media/users/default.jpg">
+                                    </div>
+                                    <div style=" text-align: center;margin-top: 5px; ">
+                                        <label class="btn btn-info" style=" color: white;font-size: 18px;">
+                                            License Back picture <input name="license_image2" id="license_image2" type="file" hidden>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>  
                         </div>  
                         <div class="form-group">
                             <label for="experience">How much do you have riding experience in UAE:</label>
@@ -1119,12 +1144,13 @@ $('.modal-body').find('form').off('submit').on('submit', function(e){
                         $('.kt-portlet__head-title').text('Bike Rider Job Registration Form')
                         $('[name="applying_for"]').val('bike')
                         $('.bikechkcar').text('Do you have your own bike .?');
+                        // window.history.pushState(window.location.pathname, "", window.location.pathname+"#Bike");
                     }
                     else{
                         $('.kt-portlet__head-title').text('Chauffeur Driver Job Registration Form')
                         $('[name="applying_for"]').val('car');
                         $('.bikechkcar').text('Do you have your own car .?');
-
+                        // window.history.pushState(window.location.pathname, "", window.location.pathname+"#Car");
                     }
                     })
                 function readURL(input) {
@@ -1167,6 +1193,26 @@ $('.modal-body').find('form').off('submit').on('submit', function(e){
                     reader.onload = function (e) {
                     console.log(e);
                     $('img.license2.img2.img-thumbnail').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                    }
+                });
+                $("#emirate_image").change(function(){
+                    if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                    console.log(e);
+                    $('img.emirate1.img.img-thumbnail').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                    }
+                });
+                $("#emirate_image2").change(function(){
+                    if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                    console.log(e);
+                    $('img.emirate2.img2.img-thumbnail').attr('src', e.target.result);
                     }
                     reader.readAsDataURL(this.files[0]);
                     }

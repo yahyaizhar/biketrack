@@ -1807,7 +1807,7 @@ var detect_billchanges=function(){
                         $('.attendance__msg-container, .attendance__sync-data').show();
                         if(_errCode==2){
                             //no weekday found
-                            var msg="No weekday found. Please manually select the weekly-off day for this rider.";
+                            var msg=_err.error_message;
                             var _msg = $(basic_alert);
                             _msg.find('.alert-text').html(msg);
                             _msg.find('.alert').addClass('alert-outline-danger');
@@ -1818,12 +1818,12 @@ var detect_billchanges=function(){
                         }
                         if(_errCode==1){
                             //weekday not matched with previous weekday, just show the warning
-                            var msg="Current Weekly Off Day iis not matched with previous month's weekday.";
+                            var msg=_err.error_message;
                             var _msg = $(basic_alert);
                             _msg.find('.alert-text').html(msg);
                             _msg.find('.alert').addClass('alert-outline-warning');
                             $('.attendance__sync-data').show();
-                            $('.attendance__msg').html(_msg.html());
+                            $('.attendance__msg').html(_msg.html()).show();
                         }
 
                     }
