@@ -868,7 +868,7 @@ class AccountsController extends Controller
         }
         $total_salary_amt = 0;
 
-        $client_history = Client_History::all();
+        $client_history = Client_History::all(); 
         $history_found = Arr::first($client_history, function ($item, $key) use ($rider_id, $startMonth) {
             $start_created_at =Carbon::parse($item->assign_date)->startOfMonth()->format('Y-m-d');
             $created_at =Carbon::parse($start_created_at);
@@ -876,6 +876,10 @@ class AccountsController extends Controller
             $start_updated_at =Carbon::parse($item->deassign_date)->endOfMonth()->format('Y-m-d');
             $updated_at =Carbon::parse($start_updated_at);
             $req_date =Carbon::parse($startMonth);
+
+            if($item->status=='active'){    
+                return $item->rider_id==$rider_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+            }
 
             return $item->rider_id==$rider_id &&
                 ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
@@ -1052,7 +1056,8 @@ class AccountsController extends Controller
                         $fb__working_hours = $client_income->total_hours;
                         $fb__extra_hours = $client_income->extra_hours;
 
-                        $fb__perHourSalary = $basic_salary/$fb__working_hours;
+                        // $fb__perHourSalary = $basic_salary/$fb__working_hours;
+                        $fb__perHourSalary = isset($client_setting['fb_sm__exrta_hours'])?$client_setting['fb_sm__exrta_hours']:0;
                         $extra_salary = $fb__perHourSalary * $fb__extra_hours;
 
                         $fixed_salary = $basic_salary + $extra_salary;
@@ -1681,7 +1686,7 @@ public function income_zomato_import(Request $r){
     $ra_objects=[];
     $ra_objects_updates=[];
     $zi = Income_zomato::all(); // r1
-    $client_riders = Client_Rider::all();
+    $client_riders = Client_History::all();
     $update_data = [];
     $i=0;
     $unique_id=uniqid().'-'.time();
