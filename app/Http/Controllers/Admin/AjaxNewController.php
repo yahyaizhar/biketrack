@@ -3190,73 +3190,59 @@ class AjaxNewController extends Controller
               return 'No Bike is assigned';
         }) 
         ->addColumn('aed_trips', function($rider) use ($month) {
-            $onlyMonth=Carbon::parse($month)->format('m');
-            $onlyYear=Carbon::parse($month)->format('Y');
-            $aed_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$onlyMonth)
-            ->whereYear('date',$onlyYear)
-            ->get()
-            ->sum('trips_payable');
-            if ( $aed_trips_sum > 400){
-                $extra_trips=$aed_trips_sum-400;
-                $trips=400;
-                return round(($extra_trips*4)+($trips*2),2);
-            } 
-              return round($aed_trips_sum*2,2); 
+            $salary_deductions = \App\Http\Controllers\Admin\AccountsController::get_salary_deduction_v2($month,$rider->rider_id);
+            $salary_deductions=json_decode($salary_deductions->content(), true);
+            if($salary_deductions['status']==1){
+                $_trips=$salary_deductions['trips_payable'];
+                return round($_trips,2); 
+            }
+            return 0; 
         }) 
         ->addColumn('aed_hours', function($rider) use ($month) {
             
-            $onlyMonth=Carbon::parse($month)->format('m');
-            $onlyYear=Carbon::parse($month)->format('Y');
-            $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$onlyMonth)
-            ->whereYear('date',$onlyYear)
-            ->get()
-            ->sum('log_in_hours_payable');
-             if($number_of_hours_sum > 286) $number_of_hours_sum = 286;
-            return round($number_of_hours_sum *7.87,2);
+            $salary_deductions = \App\Http\Controllers\Admin\AccountsController::get_salary_deduction_v2($month,$rider->rider_id);
+            $salary_deductions=json_decode($salary_deductions->content(), true);
+            if($salary_deductions['status']==1){
+                $hours_payable=$salary_deductions['hours_payable'];
+                return round($hours_payable,2); 
+            }
+            return 0; 
         })
         ->addColumn('aed_trips_zomato', function($rider) use ($month) {
-            $onlyMonth=Carbon::parse($month)->format('m');
-            $onlyYear=Carbon::parse($month)->format('Y');
-            $aed_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$onlyMonth)
-            ->whereYear('date',$onlyYear)
-            ->get()
-            ->sum('trips_payable');
-                return round($aed_trips_sum*6.75,2); 
+            $salary_deductions = \App\Http\Controllers\Admin\AccountsController::get_salary_deduction_v2($month,$rider->rider_id);
+            $salary_deductions=json_decode($salary_deductions->content(), true);
+            if($salary_deductions['status']==1){
+                $zomato_trips=$salary_deductions['zomato_trips'];
+                return round($zomato_trips,2); 
+            }
+            return 0;
         }) 
         ->addColumn('aed_hours_zomato', function($rider) use ($month) {
-            $onlyMonth=Carbon::parse($month)->format('m');
-            $onlyYear=Carbon::parse($month)->format('Y');
-            $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$onlyMonth)
-            ->whereYear('date',$onlyYear)
-            ->get()
-            ->sum('log_in_hours_payable');
-            return round($number_of_hours_sum *6,2);
+            $salary_deductions = \App\Http\Controllers\Admin\AccountsController::get_salary_deduction_v2($month,$rider->rider_id);
+            $salary_deductions=json_decode($salary_deductions->content(), true);
+            if($salary_deductions['status']==1){
+                $zomato_hours=$salary_deductions['payable_hours'];
+                return round($zomato_hours,2); 
+            }
+            return 0;
         })
         ->addColumn('number_of_hours', function($rider) use ($month) {
-            $onlyMonth=Carbon::parse($month)->format('m');
-            $onlyYear=Carbon::parse($month)->format('Y');
-            $number_of_hours_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$onlyMonth)
-            ->whereYear('date',$onlyYear)
-            ->get()
-            ->sum('log_in_hours_payable');
-            // if($number_of_hours_sum > 286) $number_of_hours_sum = 286;
-                return round($number_of_hours_sum,2); 
+            $salary_deductions = \App\Http\Controllers\Admin\AccountsController::get_salary_deduction_v2($month,$rider->rider_id);
+            $salary_deductions=json_decode($salary_deductions->content(), true);
+            if($salary_deductions['status']==1){
+                $payable_hours=$salary_deductions['payable_hours'];
+                return round($payable_hours,2); 
+            }
+            return 0; 
         }) 
         ->addColumn('number_of_trips', function($rider) use ($month) {
-            $onlyMonth=Carbon::parse($month)->format('m');
-            $onlyYear=Carbon::parse($month)->format('Y');
-            $number_of_trips_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$onlyMonth)
-            ->whereYear('date',$onlyYear)
-            ->get()
-            ->sum('trips_payable');
-           
-              return round($number_of_trips_sum,2); 
+            $salary_deductions = \App\Http\Controllers\Admin\AccountsController::get_salary_deduction_v2($month,$rider->rider_id);
+            $salary_deductions=json_decode($salary_deductions->content(), true);
+            if($salary_deductions['status']==1){
+                $trips=$salary_deductions['trips'];
+                return round($trips,2); 
+            }
+            return 0;  
         }) 
         ->addColumn('ncw', function($rider) use ($month) {
             $onlyMonth=Carbon::parse($month)->format('m');
@@ -3296,28 +3282,7 @@ class AjaxNewController extends Controller
             ->whereYear('date',$onlyYear)
             ->get()
             ->sum('total_to_be_paid_out');
-            $dc_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$onlyMonth)
-            ->whereYear('date',$onlyYear)
-            ->get()
-            ->sum('dc_deductions');
-            $penalty_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$onlyMonth)
-            ->whereYear('date',$onlyYear)
-            ->get()
-            ->sum('denials_penalty');
-            $tips_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$onlyMonth)
-            ->whereYear('date',$onlyYear)
-            ->get()
-            ->sum('tips_payouts');
-            $ncw_sum=Income_zomato::where('rider_id',$rider->rider_id)
-            ->whereMonth('date',$onlyMonth)
-            ->whereYear('date',$onlyYear)
-            ->get()
-            ->sum('ncw_incentives');
-            $total_payout=($payout_sum+$dc_sum+$penalty_sum)-($tips_sum+$ncw_sum);
-            return round($total_payout,2); 
+            return round($payout_sum,2); 
         }) 
         ->addColumn('payout_less', function($rider) use ($month) {
             $onlyMonth=Carbon::parse($month)->format('m');
@@ -3338,7 +3303,7 @@ class AjaxNewController extends Controller
             ->whereYear('date',$onlyYear)
             ->get()
             ->sum('mcdonalds_deductions');
-                return round($cod_sum,2); 
+            return round($cod_sum,2); 
         }) 
         ->addColumn('dc', function($rider) use ($month) {
             $onlyMonth=Carbon::parse($month)->format('m');
@@ -3348,7 +3313,7 @@ class AjaxNewController extends Controller
             ->whereYear('date',$onlyYear)
             ->get()
             ->sum('dc_deductions');
-                return round($dc_sum,2); 
+            return round($dc_sum,2); 
         }) 
         ->addColumn('salik', function($rider) use ($month) {
             // $assign_bike=Assign_bike::where('rider_id',$rider->rider_id)->where('status','active')->get()->first();
@@ -3375,7 +3340,6 @@ class AjaxNewController extends Controller
             ->where('rider_id',$rider->rider_id)
             ->whereMonth('month',$onlyMonth)
             ->whereYear('month',$onlyYear)
-            ->where('type','dr')
             ->whereNotNull('sim_transaction_id')
             ->sum('amount');
             $sim_extra_charges=$sim_charges-105;
@@ -3416,21 +3380,13 @@ class AjaxNewController extends Controller
             return round($bike_rent_amount,2);
         }) 
         ->addColumn('net_salary', function($rider) use ($month) {
-            $onlyMonth=Carbon::parse($month)->format('m');
-            $onlyYear=Carbon::parse($month)->format('Y');
-            $salary=Company_Account::where('rider_id',$rider->rider_id)
-            ->whereMonth('month',$onlyMonth)
-            ->whereYear('month',$onlyYear)
-            ->where('source','salary')
-            ->where('type','dr')
-            ->sum('amount');
-            $bonus_amount=Company_Account::where('source','400 Trips Acheivement Bonus')
-            ->where('rider_id',$rider->rider_id)
-            ->whereMonth('month',$onlyMonth)
-            ->whereYear('month',$onlyYear)
-            ->sum('amount');
-            $total_salary=$salary+$bonus_amount;
-            return round($total_salary,2);
+            $salary_deductions = \App\Http\Controllers\Admin\AccountsController::get_salary_deduction_v2($month,$rider->id);
+            $salary_deductions=json_decode($salary_deductions->content(), true);
+            if($salary_deductions['status']==1){
+                return $salary_deductions['total_salary'];
+
+            }
+            return 0;
         })
         ->addColumn('profit', function($rider) use ($month) {
             $onlyMonth=Carbon::parse($month)->format('m');

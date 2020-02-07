@@ -3024,7 +3024,7 @@ public function client_income_update(Request $request,$id){
             }
         }
         else { // other clients
-            if($rider->rider_type=='Employee'){
+            if(isset($rider->rider_type)&&$rider->rider_type=='Employee'){
                 #### employee's salary
                 $rd = $rider->Rider_detail;
                 $basic_salary = 2000;
