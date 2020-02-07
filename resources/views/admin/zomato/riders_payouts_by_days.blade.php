@@ -329,7 +329,7 @@ uppy.use(Uppy.DragDrop, {
                                         time_sheet.is_error=true;
                                         time_sheet.error_code=001;
                                         time_sheet.error_type='warning';
-                                        time_sheet.error_message='Previous month weekday is '+_oldincome_zomato.off_day+' which is different from the cuurrent month weekday.';
+                                        time_sheet.error_message='Previous month weekday is '+_oldincome_zomato.off_day+' which is different from the current month weekday.';
                                     }
                                 }
                                 time_sheet.weekly_off=week_absents;
