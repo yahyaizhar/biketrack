@@ -1686,7 +1686,7 @@ public function income_zomato_import(Request $r){
     $ra_objects=[];
     $ra_objects_updates=[];
     $zi = Income_zomato::all(); // r1
-    $client_riders = Client_Rider::all();
+    $client_riders = Client_History::all();
     $update_data = [];
     $i=0;
     $unique_id=uniqid().'-'.time();
