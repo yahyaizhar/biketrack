@@ -346,47 +346,27 @@ class RiderDetailController extends Controller
         
 
         foreach ($client_riders as $riders) {
-            $total_hours_client=Income_zomato::whereMonth('date',$monthOnly)
-            ->whereYear('date',$yearOnly)
-            ->where("rider_id",$riders->rider_id)
-            ->sum('log_in_hours_payable');
-            $hours_client+=($total_hours_client*6);
+            $salary_deductions = \App\Http\Controllers\Admin\AccountsController::get_salary_deduction_v2($month,$riders->rider_id);
+            $salary_deductions=json_decode($salary_deductions->content(), true);
+            $total_hours_client=0;
+            $total_trips_client=0;
+            $_trips=0;
+            if($salary_deductions['status']==1){
+                $total_hours_client=$salary_deductions['zomato_hours'];
+                $total_trips_client=$salary_deductions['zomato_trips'];
+                $_trips=$salary_deductions['trips'];
+                $_hours=$salary_deductions['payable_hours'];
 
-            $total_trips_client=Income_zomato::whereMonth('date',$monthOnly)
-            ->whereYear('date',$yearOnly)
-            ->where("rider_id",$riders->rider_id)
-            ->sum('trips_payable');
-            $trips_client+=($total_trips_client*6.75);
+                $aed_hours+=$salary_deductions['hours_payable'];
+                $aed_trips+=$salary_deductions['trips_payable'];
+                $hours_client+=($total_hours_client*6);
+                $trips_client+=($total_trips_client*6.75);
 
-            $trips+=Income_zomato::whereMonth('date',$monthOnly)
-            ->whereYear('date',$yearOnly)
-            ->where("rider_id",$riders->rider_id)
-            ->sum('calculated_trips');
-            $hours+=Income_zomato::whereMonth('date',$monthOnly)
-            ->whereYear('date',$yearOnly)
-            ->where("rider_id",$riders->rider_id)
-            ->sum('calculated_hours');
-            $_trips=Income_zomato::whereMonth('date',$monthOnly)
-            ->whereYear('date',$yearOnly)
-            ->where("rider_id",$riders->rider_id)
-            ->sum('calculated_trips');
-            if ($_trips>400) {
-                $extra_trips=($_trips-400)*4;
-                $remain_trips=400*2;
-                $aed_trips+=$extra_trips+$remain_trips;
+                $trips+=$_trips;
+                $hours+=$_hours;
             }
-            else{
-                $remain_trips=$_trips*2;
-                $aed_trips+=$remain_trips;
-            }
-            $_hours=Income_zomato::whereMonth('date',$monthOnly)
-            ->whereYear('date',$yearOnly)
-            ->where("rider_id",$riders->rider_id)
-            ->sum('calculated_hours');
-            if ($_hours>286) {
-                $_hours=286;
-            }
-            $aed_hours+=$_hours*7.87;
+            
+            
 
             $bon=Rider_Account::where('source',"400 Trips Acheivement Bonus")
             ->where('rider_id',$riders->rider_id)

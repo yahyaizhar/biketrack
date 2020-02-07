@@ -2643,6 +2643,585 @@ public function client_income_update(Request $request,$id){
     ]);
 
 }
+    // salary deduction with respect to ratio method
+    public static function get_salary_deduction_v2($month,$rider_id){  
+        // //dataset we need to fetch formula from
+        // $dataset=array(
+        //     ['trips'=>0,'hours'=>286,'rate_per_trip'=>2,'rate_per_hour'=>4],
+        //     ['trips'=>100,'hours'=>286,'rate_per_trip'=>2,'rate_per_hour'=>4],
+        //     ['trips'=>150,'hours'=>286,'rate_per_trip'=>2.25,'rate_per_hour'=>4.5],
+        //     ['trips'=>200,'hours'=>286,'rate_per_trip'=>2.5,'rate_per_hour'=>5],
+        //     ['trips'=>250,'hours'=>286,'rate_per_trip'=>2.75,'rate_per_hour'=>5.5],
+        //     ['trips'=>300,'hours'=>286,'rate_per_trip'=>3,'rate_per_hour'=>5.75],
+        //     ['trips'=>350,'hours'=>286,'rate_per_trip'=>3.25,'rate_per_hour'=>6],
+        //     ['trips'=>400,'hours'=>286,'rate_per_trip'=>3.5,'rate_per_hour'=>6.125],
+        //     ['trips'=>450,'hours'=>286,'rate_per_trip'=>3.5,'rate_per_hour'=>6.25],
+        //     ['trips'=>500,'hours'=>286,'rate_per_trip'=>3.5,'rate_per_hour'=>6.375],
+        //     ['trips'=>550,'hours'=>286,'rate_per_trip'=>3.5,'rate_per_hour'=>6.5],
+        //     ['trips'=>1000,'hours'=>286,'rate_per_trip'=>3.5,'rate_per_hour'=>6.5],
+        // );
+
+        // //calculate ratios and store it into the data set
+        // foreach ($dataset as $key => $data_item) {
+        //     $item_trips = $dataset[$key]['trips'];
+        //     $item_hours = $dataset[$key]['hours'];
+        //     $dataset[$key]['ratio']=round($item_trips/$item_hours,6);
+        // }
+        
+        // // $trips_v2=186;
+        // // $hours_v2=275.6;
+
+        // //calc current ratio
+        // $current_ratio=round($trips_v2/$hours_v2,6);
+
+        // //find where ratio falls
+        // $current_ratio_index=null;
+        // $current_ratio_Arr = Arr::first($dataset, function ($data_item, $key) use (&$current_ratio_index,$current_ratio) {
+            
+        //     if($current_ratio<$data_item['ratio']){
+        //         $current_ratio_index=$key-1;
+        //         return true;
+        //     }
+        //     if($current_ratio==$data_item['ratio']){
+        //         $current_ratio_index=$key;
+        //         return true;
+        //     }
+        //     return false;
+        // });
+
+        // //finding min and max value
+        // $max_index=$current_ratio_index+1;
+        // if($current_ratio_index == -1 || $current_ratio_index==count($dataset)){
+        //     return response()->json([
+        //         'status'=>0,
+        //         'msg'=>'index is out of bounds'
+        //     ]); 
+        // }
+        // //check if max is out of bound of array
+        // if(($current_ratio_index+1)>=count($dataset)){
+        //     // return response()->json([
+        //     //     'status'=>0,
+        //     //     'msg'=>'index is out of bounds'
+        //     // ]); 
+        //     $max_index=0; // reset to the 1st index
+        // }
+
+        // $min = $dataset[$current_ratio_index];
+        // $max = $dataset[$max_index];
+
+        // //min/max ratio
+        // $min_ratio=$min['ratio'];
+        // $max_ratio=$max['ratio'];
+
+        // //finds %age of fall
+        // $fall_percentage_of_ratio = round((($current_ratio-$min_ratio)/($max_ratio-$min_ratio))*100);
+
+        // //min/max rate per trips
+        // $min_rpt=$min['rate_per_trip'];
+        // $max_rpt=$max['rate_per_trip'];
+
+        // //finds current rate per trips
+        // $current_rpt=((($max_rpt-$min_rpt)/100)*$fall_percentage_of_ratio)+$min_rpt;
+
+        // //min/max rate per hour
+        // $min_rph=$min['rate_per_hour'];
+        // $max_rph=$max['rate_per_hour'];
+
+        // //finds current rate per hours
+        // $current_rph=((($max_rph-$min_rph)/100)*$fall_percentage_of_ratio)+$min_rph;
+
+
+        // //salary
+        // $salary = ($trips_v2*$current_rpt)+(($hours_v2*$current_rph));
+
+        
+
+        // return response()->json([
+        //     'status'=>1,
+        //     'data_set'=>$dataset,
+        //     'input_trips'=>$trips_v2,
+        //     'input_hours'=>$hours_v2,
+        //     'current_index'=>$current_ratio_index,
+        //     'current_ratio'=>$current_ratio,
+        //     'min'=>$min,
+        //     'max'=>$max,
+        //     'percentage'=>$fall_percentage_of_ratio,
+        //     'hours'=>$current_rph,
+        //     'trips'=>$current_rpt,
+        //     'salary'=>$salary,
+
+
+
+
+        //     'test'=>count($dataset)
+        // ]);
+        // before tthat check if rider is zomato's
+        $startMonth = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
+        $month = Carbon::parse($month)->format('Y-m-d');
+        $onlyMonth = Carbon::parse($month)->format('m');
+        $onlyYear = Carbon::parse($month)->format('Y');
+        $rider = Rider::find($rider_id);
+
+        //prev payables
+        $rider_debits_cr_prev_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        ->where(function($q) {
+            $q->where('type', "cr");
+        })
+        ->whereDate('month', '<',$startMonth)
+        ->sum('amount');
+        
+        $rider_debits_dr_prev_payable = \App\Model\Accounts\Rider_Account::where("rider_id",$rider_id)
+        ->where(function($q) {
+            $q->where('type', "cr_payable")
+              ->orWhere('type', 'dr');
+        })
+        ->whereDate('month', '<',$startMonth)
+        ->sum('amount');
+        $closing_balance_prev = round($rider_debits_cr_prev_payable - $rider_debits_dr_prev_payable,2);
+        //ends prev payables
+
+        $ra_payable=Rider_Account::where("rider_id",$rider_id)
+        ->whereMonth("month",$onlyMonth)
+        ->where(function($q) {
+            $q->where('type', "cr_payable")
+            ->orWhere('type', 'dr');
+        })
+        ->sum('amount');
+
+
+        $ra_cr=Rider_Account::where("rider_id",$rider_id)
+        ->whereMonth("month",$onlyMonth)
+        ->where("payment_status","pending")
+        ->where("type","cr")
+        ->where("source",'!=',"salary")
+        ->sum('amount');  
+        if($closing_balance_prev < 0){ //deduct
+            $ra_payable += abs($closing_balance_prev);
+        }
+        else {
+            // add
+            $ra_cr += abs($closing_balance_prev);
+        }
+        $total_salary_amt = 0;
+
+        $client_history = Client_History::all(); 
+        $history_found = Arr::first($client_history, function ($item, $key) use ($rider_id, $startMonth) {
+            $start_created_at =Carbon::parse($item->assign_date)->startOfMonth()->format('Y-m-d');
+            $created_at =Carbon::parse($start_created_at);
+
+            $start_updated_at =Carbon::parse($item->deassign_date)->endOfMonth()->format('Y-m-d');
+            $updated_at =Carbon::parse($start_updated_at);
+            $req_date =Carbon::parse($startMonth);
+
+            if($item->status=='active'){    
+                return $item->rider_id==$rider_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+            }
+
+            return $item->rider_id==$rider_id &&
+                ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+        });
+
+        $feid=null;
+        $client=null;
+        $client_setting=[];
+        $pm='';
+        if (isset($history_found)) {
+            $feid=$history_found->client_rider_id;
+            $client=Client::find($history_found->client_id);
+            if($client->salary_methods==null){
+                # no salary method was found against this client
+                return response()->json([
+                    'status'=>0,
+                    'msg'=>'No salary method is found under client '.$client->name
+                ]);
+            }
+            $client_setting = json_decode($client->salary_methods, true);
+            $pm = $client_setting['salary_method'];
+        }
+
+        $zomato_hours =0;
+        $zomato_trips = 0;
+
+        $calculated_hours =0;
+        $calculated_trips = 0;
+        $absent_count=0;
+        $working_count=0;
+        $absent_hours=0;
+        $working_hours=0;
+        $less_time=0;
+        $bonus=0;
+        $absent_app=0;
+        $positions=0;
+        $commission=0;
+        $commission_value='0%';
+
+
+        //some static_data
+        $_s_maxTrips=400;
+        $_s_tripsFormula=2;
+        $_s_maxTripsFormula=4;
+        $_s_monthlyHours=286;
+        $_s_hoursFormula=7.87;
+        $_s_maxHours=11;
+        if(isset($feid) && $feid!=null){ // rider belongs to zomato
+
+            $ra_zomatos=Income_zomato::where("rider_id",$rider_id)
+            ->whereMonth("date",$onlyMonth)
+            ->get()->first();  
+
+            if ($pm=='trip_based') {
+                
+                $_s_maxTrips=$client_setting['tb_sm__bonus_trips'];
+                $_s_tripsFormula=$client_setting['tb_sm__trip_amount'];
+                $_s_maxTripsFormula=$client_setting['tb_sm__trips_bonus_amount'];
+                $_s_monthlyHours=286;
+                $_s_hoursFormula=$client_setting['tb_sm__hour_amount'];
+                $_s_maxHours=11; 
+            }
+           
+            
+            if(isset($ra_zomatos)){
+                
+                $absent_app=$ra_zomatos->approve_absents;
+                $absent_approve_hours=$absent_app*$_s_maxHours;
+                $calculated_absent_hours=$absent_approve_hours*$_s_hoursFormula;
+                
+                $absent_count=$ra_zomatos->absents_count;
+                $working_count=$ra_zomatos->working_days;
+
+                $weekly_off=$ra_zomatos->weekly_off;
+                $extra_day=$ra_zomatos->extra_day;
+                
+                $absent_hours=$absent_count*$_s_maxHours;
+                $working_hours=$working_count*$_s_maxHours;
+
+                $calculated_hours =$ra_zomatos->calculated_hours;
+                $calculated_trips = $ra_zomatos->calculated_trips;
+
+                $less_time=$working_hours-$calculated_hours;
+
+                $zomato_hours =$ra_zomatos->log_in_hours_payable;
+                $zomato_trips = $ra_zomatos->trips_payable;
+
+                $hours=$calculated_hours;
+                // $hours_payable=$hours*$_s_hoursFormula;
+
+                $trips = $calculated_trips;
+                $payable_hours=round($_s_monthlyHours - $absent_hours - $less_time,2);
+                ##  temp_coding
+                //dataset we need to fetch formula from
+                $dataset=array(
+                    ['trips'=>0,'hours'=>286,'rate_per_trip'=>2,'rate_per_hour'=>4],
+                    ['trips'=>100,'hours'=>286,'rate_per_trip'=>2,'rate_per_hour'=>4],
+                    ['trips'=>150,'hours'=>286,'rate_per_trip'=>2.25,'rate_per_hour'=>4.5],
+                    ['trips'=>200,'hours'=>286,'rate_per_trip'=>2.5,'rate_per_hour'=>5],
+                    ['trips'=>250,'hours'=>286,'rate_per_trip'=>2.75,'rate_per_hour'=>5.5],
+                    ['trips'=>300,'hours'=>286,'rate_per_trip'=>3,'rate_per_hour'=>5.75],
+                    ['trips'=>350,'hours'=>286,'rate_per_trip'=>3.25,'rate_per_hour'=>6],
+                    ['trips'=>400,'hours'=>286,'rate_per_trip'=>3.5,'rate_per_hour'=>6.125],
+                    ['trips'=>450,'hours'=>286,'rate_per_trip'=>3.5,'rate_per_hour'=>6.25],
+                    ['trips'=>500,'hours'=>286,'rate_per_trip'=>3.5,'rate_per_hour'=>6.375],
+                    ['trips'=>550,'hours'=>286,'rate_per_trip'=>3.5,'rate_per_hour'=>6.5],
+                    ['trips'=>1000,'hours'=>286,'rate_per_trip'=>3.5,'rate_per_hour'=>6.5],
+                );
+
+                //calculate ratios and store it into the data set
+                foreach ($dataset as $key => $data_item) {
+                    $item_trips = $dataset[$key]['trips'];
+                    $item_hours = $dataset[$key]['hours'];
+                    $dataset[$key]['ratio']=round($item_trips/$item_hours,6);
+                }
+                
+                $trips_v2=$trips;
+                $hours_v2=$payable_hours;
+
+                //calc current ratio
+                if($hours_v2==0){
+                    $current_ratio=0;
+                }
+                else {
+                    $current_ratio=round($trips_v2/$hours_v2,6);
+                }
+
+                //find where ratio falls
+                $current_ratio_index=null;
+                $current_ratio_Arr = Arr::first($dataset, function ($data_item, $key) use (&$current_ratio_index,$current_ratio) {
+                    
+                    if($current_ratio<$data_item['ratio']){
+                        $current_ratio_index=$key-1;
+                        return true;
+                    }
+                    if($current_ratio==$data_item['ratio']){
+                        $current_ratio_index=$key;
+                        return true;
+                    }
+                    return false;
+                });
+
+                //finding min and max value
+                $max_index=$current_ratio_index+1;
+                if($current_ratio_index == -1 || $current_ratio_index==count($dataset)){
+                    return response()->json([
+                        'status'=>0,
+                        'msg'=>'index is out of bounds'
+                    ]); 
+                }
+                //check if max is out of bound of array
+                if(($current_ratio_index+1)>=count($dataset)){
+                    // return response()->json([
+                    //     'status'=>0,
+                    //     'msg'=>'index is out of bounds'
+                    // ]); 
+                    $max_index=0; // reset to the 1st index
+                }
+
+                $min = $dataset[$current_ratio_index];
+                $max = $dataset[$max_index];
+
+                //min/max ratio
+                $min_ratio=$min['ratio'];
+                $max_ratio=$max['ratio'];
+
+                //finds %age of fall
+                $fall_percentage_of_ratio = round((($current_ratio-$min_ratio)/($max_ratio-$min_ratio))*100,6);
+
+                //min/max rate per trips
+                $min_rpt=$min['rate_per_trip'];
+                $max_rpt=$max['rate_per_trip'];
+
+                //finds current rate per trips
+                $current_rpt=((($max_rpt-$min_rpt)/100)*$fall_percentage_of_ratio)+$min_rpt;
+
+                //min/max rate per hour
+                $min_rph=$min['rate_per_hour'];
+                $max_rph=$max['rate_per_hour'];
+
+                //finds current rate per hours
+                $current_rph=((($max_rph-$min_rph)/100)*$fall_percentage_of_ratio)+$min_rph;
+                ## end temp coding
+
+                $trips_payable = $trips_v2*$current_rpt;
+
+                // $trips_payable+=$trips_EXTRA_payable;
+
+                
+
+                $hours_payable=$payable_hours*$current_rph;
+                $salary_hours=round($hours_payable,2);
+                $salary_trips=$trips_payable;
+                $salary_credits=round($ra_cr,2);
+                $ra_salary=$salary_hours +$salary_trips  +$salary_credits ;
+                $ra_recieved=$ra_salary - $ra_payable;
+
+                $total_salary_amt = round($salary_hours+$salary_trips,2);
+            }
+            else { 
+                # no record found in income zomato table --generate error 
+                return response()->json([
+                    'status'=>0,
+                    'msg'=>'No record found on Zomato Income against this rider.'
+                ]);
+            }
+        }
+        else { // other clients
+            if($rider->rider_type=='Employee'){
+                #### employee's salary
+                $rd = $rider->Rider_detail;
+                $basic_salary = 2000;
+                if($rd->salary!=null){
+                    $basic_salary=$rd->salary;  
+                }
+                $fixed_salary = $basic_salary;
+                $ra_salary= $fixed_salary + $ra_cr;
+                $ra_recieved=$ra_salary - $ra_payable;
+                $total_salary_amt = $fixed_salary;
+                $pm='employee';
+            }
+            else {
+                #### rider's salary
+                if($pm==''){
+                    # no client was found undr this rider
+                    return response()->json([
+                        'status'=>0,
+                        'msg'=>'No client assigned to this rider.'
+                    ]);
+                }
+                if($pm=='fixed_based'){
+                    $basic_salary=isset($client_setting['fb_sm__amount'])?$client_setting['fb_sm__amount']:0;
+                    $client_income=Client_Income::where("rider_id",$rider_id)
+                    ->whereMonth("month",$onlyMonth)
+                    ->whereYear("month",$onlyYear)
+                    ->get()->first(); 
+                    if(isset($client_income)){
+                        $basic_salary = isset($basic_salary)?$basic_salary:0;
+                        $fb__working_hours = $client_income->total_hours;
+                        $fb__extra_hours = $client_income->extra_hours;
+
+                        // $fb__perHourSalary = $basic_salary/$fb__working_hours;
+                        $fb__perHourSalary = isset($client_setting['fb_sm__exrta_hours'])?$client_setting['fb_sm__exrta_hours']:0;
+                        $extra_salary = $fb__perHourSalary * $fb__extra_hours;
+
+                        $fixed_salary = $basic_salary + $extra_salary;
+                        $ra_salary= $fixed_salary + $ra_cr;
+                        $ra_recieved=$ra_salary - $ra_payable;
+                        $total_salary_amt = $fixed_salary;
+                    }
+                    else {
+                        # no record found in income zomato table --generate error
+                        return response()->json([
+                            'status'=>0,
+                            'msg'=>'No Payout found against this rider.'
+                        ]);
+                    }
+                    
+                }
+                if($pm=='commission_based'){
+                    $commission_val=isset($client_setting['cb_sm__amount'])?$client_setting['cb_sm__amount']:0;
+                    $commission_type=isset($client_setting['cb_sm__type'])?$client_setting['cb_sm__type']:0;
+                    $commission_value=$commission_val.($commission_type=='percentage'?'%':' AED');
+                    $basic_salary=0;
+                    $client_income=Client_Income::where("rider_id",$rider_id)
+                    ->whereMonth("month",$onlyMonth)
+                    ->whereYear("month",$onlyYear)
+                    ->where('income_type', 'commission_based')
+                    ->get()->sum('total_payout');
+                    if(isset($client_income) && $client_income>0){
+                        $basic_salary = $client_income;
+                        
+                        if($commission_type=='percentage'){
+                            $commission=($basic_salary/100)*$commission_val;
+                            $fixed_salary = $basic_salary - $commission;
+                        }
+                        else {
+                            $commission=$commission_val;
+                            $fixed_salary = $basic_salary - $commission;
+                        }
+                        $ra_salary= $fixed_salary + $ra_cr;
+                        $ra_recieved=$ra_salary - $ra_payable;
+                        $total_salary_amt = $fixed_salary;
+                    }
+                    else {
+                        # no record found in income zomato table --generate error
+                        return response()->json([
+                            'status'=>0,
+                            'msg'=>'No Payout found against this rider.'
+                        ]);
+                    }
+                    
+                }
+                if($pm=='trip_based'){
+                    # no FEID found and FEID is cumpulsory for trip based rider
+                    return response()->json([
+                        'status'=>0,
+                        'msg'=>'No FEID found against this rider.'
+                    ]);
+                }
+            }
+        }
+
+        $is_generated= Rider_salary::where('rider_id',$rider_id)
+        ->whereMonth("month",$onlyMonth)
+        ->get()
+        ->first();
+       if (isset($is_generated)) {
+            $is_generated_salary=true;
+       }
+       else{
+            $is_generated_salary=false;
+       }
+        
+       $is_paid= \App\Model\Accounts\Rider_Account::where("source","salary_paid")
+       ->where("payment_status","paid")
+       ->where("rider_id",$rider_id)
+       ->whereMonth("month",$onlyMonth)
+       ->get()
+       ->first();
+       if (isset($is_paid)) {
+            $is_paid_salary=true;
+       }else{
+            $is_paid_salary=false;
+       }
+
+       //fixed based client
+       $basic_salary=isset($basic_salary)?$basic_salary:0;
+       $fb__working_hours=isset($fb__working_hours)?$fb__working_hours:0;
+       $fb__extra_hours=isset($fb__extra_hours)?$fb__extra_hours:0;
+       $fb__perHourSalary=isset($fb__perHourSalary)?$fb__perHourSalary:0;
+       //end fixed based client
+
+       $salary_hours=isset($salary_hours)?$salary_hours:0;
+       $absent_approve_hours=isset($absent_approve_hours)?$absent_approve_hours:0;
+       $salary_trips=isset($salary_trips)?$salary_trips:0;
+       $salary_credits=isset($salary_credits)?$salary_credits:0;
+       $weekly_off=isset($weekly_off)?$weekly_off:0;
+       $extra_day=isset($extra_day)?$extra_day:0;
+       $trips=isset($trips)?$trips:0;
+       $hours=isset($hours)?$hours:0;
+       $hours_payable=isset($hours_payable)?$hours_payable:0;
+       $trips_payable=isset($trips_payable)?$trips_payable:0;
+       $calculated_absent_hours=isset($calculated_absent_hours)?$calculated_absent_hours:0;
+       $trips_EXTRA=isset($trips_EXTRA)?$trips_EXTRA:0;
+       $trips_EXTRA_payable=isset($trips_EXTRA_payable)?$trips_EXTRA_payable:0;
+       $less_time=isset($less_time)?$less_time:0;
+       $payable_hours=isset($payable_hours)?$payable_hours:0;
+        return response()->json([
+            'status'=>1,
+            'salary_method'=>$pm,
+            'ra_salary'=>$ra_salary,
+            'client'=>$client,
+            
+            'salary_hours'=>$salary_hours,
+            'salary_trips'=>$salary_trips,
+            'salary_credits'=>$salary_credits,
+
+            'commission'=>$commission,
+            'commission_value'=>$commission_value,
+
+            'net_salary'=>round($ra_salary,2),
+            'gross_salary'=>round($ra_recieved,2),
+            'zomato_hours'=>round($zomato_hours,2),
+            'zomato_trips'=>round($zomato_trips,2),
+            'total_deduction'=>round($ra_payable,2),
+            'total_salary'=>round($total_salary_amt,2),
+            'closing_balance_prev'=>$closing_balance_prev,
+            'is_paid'=>$is_paid_salary,
+            'is_generated'=>$is_generated_salary,
+            'absent_count'=>$absent_count,
+            'weekly_off'=>$weekly_off,
+            'extra_day'=>$extra_day,
+            'working_days'=>$working_count,
+            'absent_hours'=>$absent_hours,
+            'working_hours'=>$working_hours,
+            'trips'=>round($trips,2),
+            'hours'=>round($hours,2),
+            'bonus'=>$bonus,
+            'absent_approve_hours'=>$absent_approve_hours,
+            'calculated_absent_hours'=>round($calculated_absent_hours,2),
+            
+            'hours_payable'=>round($hours_payable,2),
+            'trips_payable'=>round($trips_payable,2),
+            'trips_EXTRA'=>round($trips_EXTRA,2),
+            'trips_EXTRA_payable'=>round($trips_EXTRA_payable,2),
+            'less_time'=>round($less_time,2),
+            'payable_hours'=>round($payable_hours,2),
+
+            'basic_salary'=>round($basic_salary,2),
+            'fb__working_hours'=>round($fb__working_hours,2),
+            'fb__extra_hours'=>round($fb__extra_hours,2),
+            'fb__perHourSalary'=>round($fb__perHourSalary,2),
+
+            '_s_maxTrips'=>round($_s_maxTrips,2),
+            '_s_tripsFormula'=>round($_s_tripsFormula,2),
+            '_s_maxTripsFormula'=>round($_s_maxTripsFormula,2),
+            '_s_monthlyHours'=>round($_s_monthlyHours,2),
+            '_s_hoursFormula'=>round($_s_hoursFormula,2),
+            '_s_maxHours'=>$_s_maxHours,
+
+            'pm'=>$pm,
+            'client_setting'=>$client_setting,
+            'position'=>$positions,
+        ]);
+    }
     public function zomato_salary_sheet_export($client_id){
         $client=Client::find($client_id);
         return view('admin.accounts.Income.zomato_salary_sheet', compact('client'));
