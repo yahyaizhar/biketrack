@@ -1823,7 +1823,7 @@ var detect_billchanges=function(){
                             _msg.find('.alert-text').html(msg);
                             _msg.find('.alert').addClass('alert-outline-warning');
                             $('.attendance__sync-data').show();
-                            $('.attendance__msg').html(_msg.html());
+                            $('.attendance__msg').html(_msg.html()).show();
                         }
 
                     }
