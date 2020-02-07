@@ -389,34 +389,43 @@ uppy.use(Uppy.DragDrop, {
                                     var day=new Date(item.date).getDay();
                                     // debugger;
                                     var offday_name = item.time_sheet.off_day;
-                                    console.log(offday_name,'offday_name', item.time_sheet)
-                                    var offday=item.time_sheet.weekdays.find(function(x){return x.day_name==offday_name}).day;
-                                    if(item.orders==0 && item.login_hours==0){
-                                        //absent
-                                        if(day==offday){
-                                            //weekday
-                                            item.time_sheet.off_day_status='weeklyoff';
+                                    console.log(offday_name,'offday_name', item.time_sheet);
+                                    if(typeof offday_name!="undefined"){
+                                        var offday=item.time_sheet.weekdays.find(function(x){return x.day_name==offday_name}).day;
+                                        if(item.orders==0 && item.login_hours==0){
+                                            //absent
+                                            if(day==offday){
+                                                //weekday
+                                                item.time_sheet.off_day_status='weeklyoff';
+                                            }
+                                            else{
+                                                //absent
+                                                item.time_sheet.off_day_status='absent';
+                                            }
                                         }
                                         else{
-                                            //absent
-                                            item.time_sheet.off_day_status='absent';
+                                            time_sheet.calculated_trips+=item.orders;
+                                            if(day==offday){
+                                                //extraday
+                                                item.time_sheet.off_day_status='extraday';
+                                            }
+                                            else{
+                                                //present
+                                                item.time_sheet.off_day_status='present';
+                                                //storing total trips and hours
+                                                time_sheet.calculated_hours+=item.login_hours>11?11:item.login_hours; 
+                                            }
+                                            //adding it to data
+                                            item.time_sheet_mutable.calculated_trips=time_sheet.calculated_trips;
+                                            item.time_sheet_mutable.calculated_hours=time_sheet.calculated_hours;
                                         }
                                     }
                                     else{
-                                        time_sheet.calculated_trips+=item.orders;
-                                        if(day==offday){
-                                            //extraday
-                                            item.time_sheet.off_day_status='extraday';
-                                        }
-                                        else{
-                                            //present
-                                            item.time_sheet.off_day_status='present';
-                                            //storing total trips and hours
-                                            time_sheet.calculated_hours+=item.login_hours>11?11:item.login_hours; 
-                                        }
-                                        //adding it to data
-                                        item.time_sheet_mutable.calculated_trips=time_sheet.calculated_trips;
-                                        item.time_sheet_mutable.calculated_hours=time_sheet.calculated_hours;
+                                        //offday is undefined, mean no weekday found (moslty when absents are too much) - so we simply generate the error
+                                        item.time_sheet.is_error=true;
+                                        item.time_sheet.error_code=002;
+                                        item.time_sheet.error_type='error';
+                                        item.time_sheet.error_message='Cannot find weekday.';
                                     }
                                 }
                             }
