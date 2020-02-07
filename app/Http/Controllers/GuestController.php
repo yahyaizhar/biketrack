@@ -37,6 +37,22 @@ class GuestController extends Controller
             $filepath = Storage::putfile('public/uploads/riders/new_commer_pics', $req->file('newcommer_image'));
             $new_commer->newcommer_image = $filepath;
         }
+        if($req->hasFile('emirate_image'))
+        {
+            $filename = $req->emirate_image->getClientOriginalName();
+            $filesize = $req->emirate_image->getClientSize();
+            $filepath = Storage::putfile('public/uploads/riders/new_commer_pics', $req->file('emirate_image'));
+            $new_commer->emirate_image = $filepath;
+        
+          }
+          if($req->hasFile('emirate_image2'))
+        {
+            $filename = $req->emirate_image2->getClientOriginalName();
+            $filesize = $req->emirate_image2->getClientSize();
+            $filepath = Storage::putfile('public/uploads/riders/new_commer_pics', $req->file('emirate_image2'));
+            $new_commer->emirate_image2 = $filepath;
+        
+        }
         if($req->hasFile('newcommer_image2'))
         {
             $filename = $req->newcommer_image2->getClientOriginalName();

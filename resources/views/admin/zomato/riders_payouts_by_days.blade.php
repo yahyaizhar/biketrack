@@ -389,6 +389,7 @@ uppy.use(Uppy.DragDrop, {
                                     var day=new Date(item.date).getDay();
                                     // debugger;
                                     var offday_name = item.time_sheet.off_day;
+                                    console.log(offday_name,'offday_name', item.time_sheet)
                                     var offday=item.time_sheet.weekdays.find(function(x){return x.day_name==offday_name}).day;
                                     if(item.orders==0 && item.login_hours==0){
                                         //absent
