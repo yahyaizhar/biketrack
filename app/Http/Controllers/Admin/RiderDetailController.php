@@ -346,7 +346,7 @@ class RiderDetailController extends Controller
         
 
         foreach ($client_riders as $riders) {
-            $salary_deductions = \App\Http\Controllers\Admin\AccountsController::get_salary_deduction_v2($month,$riders->rider_id);
+            $salary_deductions = \App\Http\Controllers\Admin\AccountsController::get_salary_deduction(new Request(),$month,$riders->rider_id);
             $salary_deductions=json_decode($salary_deductions->content(), true);
             $total_hours_client=0;
             $total_trips_client=0;

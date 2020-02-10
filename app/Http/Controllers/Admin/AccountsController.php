@@ -795,14 +795,14 @@ class AccountsController extends Controller
                         
         return view('admin.accounts.Rider_Debit.view_account',compact('closing_balance','rider', 'rider_statements', 'opening_balance')); 
     }
-    public function get_salary_deduction(Request $r,$month, $rider_id){   
+    public static function get_salary_deduction(Request $r,$month, $rider_id){ 
         // before tthat check if rider is zomato's
         $startMonth = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
         $month = Carbon::parse($month)->format('Y-m-d');
         $onlyMonth = Carbon::parse($month)->format('m');
         $onlyYear = Carbon::parse($month)->format('Y');
 
-        $is_update = $r->update;
+        $is_update = $r->get('update');
         if($is_update==true || $is_update=='true'){
             $is_update=true;
         }
@@ -1023,7 +1023,7 @@ class AccountsController extends Controller
             }
         }
         else { // other clients
-            if($rider->rider_type=='Employee'){
+            if(isset($rider->rider_type)&&$rider->rider_type=='Employee'){
                 #### employee's salary
                 $rd = $rider->Rider_detail;
                 $basic_salary = 2000;
@@ -1978,20 +1978,20 @@ public function income_zomato_import(Request $r){
         array_push($zomato_obj, $obj);
 
         
-
-        $ca_amt1 = round(($obj['amount_for_login_hours']+$obj['settlements']+$obj['amount_to_be_paid_against_orders_completed']+$obj['ncw_incentives']+$obj['tips_payouts'])
-        - ($obj['dc_deductions'] + $obj['mcdonalds_deductions'] + $obj['denials_penalty']));
-        $ca_obj = [];
-        $ca_obj['income_zomato_id']=$p_id;
-        $ca_obj['source']=$client_name.' Payout';
-        $ca_obj['rider_id']=$rider_id;
-        $ca_obj['amount']=$ca_amt1;
-        $ca_obj['month']=$obj['date'];
-        $ca_obj['type']='cr';
-        $ca_obj['given_date']=Carbon::now();
-        $ca_obj['created_at']=Carbon::now();
-        $ca_obj['updated_at']=Carbon::now();
-        array_push($ca_objects, $ca_obj);
+        $ca_amt1 = $obj['total_to_be_paid_out'];
+        if($ca_amt1 > 0){
+            $ca_obj = [];
+            $ca_obj['income_zomato_id']=$p_id;
+            $ca_obj['source']=$client_name.' Payout';
+            $ca_obj['rider_id']=$rider_id;
+            $ca_obj['amount']=$ca_amt1;
+            $ca_obj['month']=$obj['date'];
+            $ca_obj['type']='cr';
+            $ca_obj['given_date']=Carbon::now();
+            $ca_obj['created_at']=Carbon::now();
+            $ca_obj['updated_at']=Carbon::now();
+            array_push($ca_objects, $ca_obj);
+        }
 
         //bonus
         $ca_amt2 = $obj['ncw_incentives'];
@@ -2044,7 +2044,7 @@ public function income_zomato_import(Request $r){
         if($ca_amt2 > 0){
             $ca_obj = [];
             $ca_obj['income_zomato_id']=$p_id;
-            $ca_obj['source']='Zomato Settlements';
+            $ca_obj['source']=$client_name.' Settlements';
             $ca_obj['rider_id']=$rider_id;
             $ca_obj['amount']=$ca_amt2;
             $ca_obj['month']=$obj['date'];
@@ -2053,37 +2053,6 @@ public function income_zomato_import(Request $r){
             $ca_obj['created_at']=Carbon::now();
             $ca_obj['updated_at']=Carbon::now();
             array_push($ca_objects, $ca_obj);
-        }
-
-        
-        $ra_amt2 = $obj['settlements'];
-        if($ra_amt2 > 0){
-            $ra_obj = [];
-            $ra_obj['income_zomato_id']=$p_id;
-            $ra_obj['source']='Zomato Settlements';
-            $ra_obj['rider_id']=$rider_id;
-            $ra_obj['amount']=$ra_amt2;
-            $ra_obj['month']=$obj['date'];
-            $ra_obj['type']='cr';
-            $ra_obj['given_date']=Carbon::now();
-            $ra_obj['created_at']=Carbon::now();
-            $ra_obj['updated_at']=Carbon::now();
-            array_push($ra_objects, $ra_obj);
-        }
-
-        $ra_amt2 = $obj['ncw_incentives'];
-        if($ra_amt2 > 0){
-            $ra_obj = [];
-            $ra_obj['income_zomato_id']=$p_id;
-            $ra_obj['source']='NCW Incentives';
-            $ra_obj['rider_id']=$rider_id;
-            $ra_obj['amount']=$ra_amt2;
-            $ra_obj['month']=$obj['date'];
-            $ra_obj['type']='cr';
-            $ra_obj['given_date']=Carbon::now();
-            $ra_obj['created_at']=Carbon::now();
-            $ra_obj['updated_at']=Carbon::now();
-            array_push($ra_objects, $ra_obj);
         }
 
         //bonus after 400 trips
@@ -3221,6 +3190,113 @@ public function client_income_update(Request $request,$id){
             'client_setting'=>$client_setting,
             'position'=>$positions,
         ]);
+    }
+    //static function to calculate profit
+    public static function calculate_profit($month,$rider_id){
+        $startMonth = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
+        $month = Carbon::parse($month)->format('Y-m-d');
+        $onlyMonth = Carbon::parse($month)->format('m');
+        $onlyYear = Carbon::parse($month)->format('Y');
+        $rider = Rider::find($rider_id);
+
+        //prev payables
+        $ca_debits_cr_prev_payable = \App\Model\Accounts\Company_Account::where("rider_id",$rider_id)
+        ->where(function($q) {
+            $q->where('type', "dr_receivable")
+            ->orWhere('type', 'cr');
+        })
+        ->whereDate('month', '<',$startMonth)
+        ->sum('amount');
+        
+        $ca_debits_dr_prev_payable = \App\Model\Accounts\Company_Account::where("rider_id",$rider_id)
+        ->where(function($q) {
+            $q->where('type', "dr");
+        })
+        ->whereDate('month', '<',$startMonth)
+        ->sum('amount');
+        $closing_balance_prev = round($ca_debits_cr_prev_payable - $ca_debits_dr_prev_payable,2);
+        //ends prev payables
+
+        $ca_payable=Company_Account::where("rider_id",$rider_id)
+        ->whereMonth("month",$onlyMonth)
+        ->whereYear("month",$onlyYear)
+        ->where("type","dr")
+        ->sum('amount');
+
+
+        $ca_cr=Company_Account::where("rider_id",$rider_id)
+        ->whereMonth("month",$onlyMonth)
+        ->whereYear("month",$onlyYear)
+        ->where(function($q) {
+            $q->where('type', "dr_receivable")
+            ->orWhere('type', 'cr');
+        })
+        ->sum('amount');  
+        if($closing_balance_prev < 0){ //deduct
+            $ca_payable += abs($closing_balance_prev);
+        }
+        else {
+            // add
+            $ca_cr += abs($closing_balance_prev);
+        }
+
+        $profit = round($ca_cr-$ca_payable,2);
+        return $profit;
+    }
+    public static function calculate_bills($month,$rider_id){
+        $startMonth = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
+        $month = Carbon::parse($month)->format('Y-m-d');
+        $onlyMonth = Carbon::parse($month)->format('m');
+        $onlyYear = Carbon::parse($month)->format('Y');
+        $rider = Rider::find($rider_id);
+
+        //prev payables
+        $bike_rent=Company_Account::where("rider_id",$rider_id)
+        ->whereMonth('month',$onlyMonth)
+         ->whereYear('month',$onlyYear)
+        ->where("source","Bike Rent")
+        ->sum('amount');
+
+        $total_salik=Company_Account::where("rider_id",$rider_id)
+        ->whereMonth('month',$onlyMonth)
+         ->whereYear('month',$onlyYear)
+        ->where("source","Salik")
+        ->sum('amount');
+        $salik_extra=Company_Account::where("rider_id",$rider_id)
+        ->whereMonth('month',$onlyMonth)
+         ->whereYear('month',$onlyYear)
+        ->where("source","Salik Extra")
+        ->sum('amount');
+        $salik=$total_salik-$salik_extra;
+
+        $total_sim_bill=Company_Account::where("rider_id",$rider_id)
+        ->whereMonth('month',$onlyMonth)
+         ->whereYear('month',$onlyYear)
+        ->where("source","Sim Transaction")
+        ->sum('amount');
+        $sim_extra_useage=Company_Account::where("rider_id",$rider_id)
+        ->whereMonth('month',$onlyMonth)
+         ->whereYear('month',$onlyYear)
+        ->where("source","Sim extra usage")
+        ->sum('amount');
+        $sim=$total_sim_bill-$sim_extra_useage;
+
+        $fuel=Company_Account::where("rider_id",$rider_id)
+        ->whereMonth('month',$onlyMonth)
+         ->whereYear('month',$onlyYear)
+        ->whereNotNull("fuel_expense_id")
+        ->sum('amount');
+        $total_expense=$bike_rent+$salik+$sim+$fuel;
+
+        return array(
+            'bike_rent'=>$bike_rent,
+            'salik'=>$salik,
+            'salik_extra'=>$salik_extra,
+            'sim'=>$sim,
+            'sim_extra'=>$sim_extra_useage,
+            'fuel'=>$fuel,
+            'total'=>$total_expense
+        );
     }
     public function zomato_salary_sheet_export($client_id){
         $client=Client::find($client_id);
