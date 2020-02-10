@@ -602,6 +602,12 @@ function getInvoices() {
         columns: [
             //  { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
             {
+                data: 'id',
+                name: 'id',
+                searchable: true,
+                visible:false
+            },
+            {
                 data: 'invoice',
                 name: 'invoice',
                 className:'col_editable'
