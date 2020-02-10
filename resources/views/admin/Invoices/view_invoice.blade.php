@@ -117,6 +117,7 @@
                         {{-- <th>
                             <input type="checkbox" id="select_all" >
                         </th> --}}
+                        <th></th>
                         <th>Inv</th>
                         <th>Client</th>
                         <th>Month</th>
@@ -652,7 +653,7 @@ function getInvoices() {
         ],
         responsive: true,
         columnDefs: [{
-            targets: [8],
+            targets: [9],
             visible: false,
             searchable: true,
         }],
