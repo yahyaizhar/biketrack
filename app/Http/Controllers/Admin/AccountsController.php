@@ -3199,23 +3199,24 @@ public function client_income_update(Request $request,$id){
         $onlyYear = Carbon::parse($month)->format('Y');
         $rider = Rider::find($rider_id);
 
-        //prev payables
-        $ca_debits_cr_prev_payable = \App\Model\Accounts\Company_Account::where("rider_id",$rider_id)
-        ->where(function($q) {
-            $q->where('type', "dr_receivable")
-            ->orWhere('type', 'cr');
-        })
-        ->whereDate('month', '<',$startMonth)
-        ->sum('amount');
+        // //prev payables
+        // $ca_debits_cr_prev_payable = \App\Model\Accounts\Company_Account::where("rider_id",$rider_id)
+        // ->where(function($q) {
+        //     $q->where('type', "dr_receivable")
+        //     ->orWhere('type', 'cr');
+        // })
+        // ->whereDate('month', '<',$startMonth)
+        // ->sum('amount');
         
-        $ca_debits_dr_prev_payable = \App\Model\Accounts\Company_Account::where("rider_id",$rider_id)
-        ->where(function($q) {
-            $q->where('type', "dr");
-        })
-        ->whereDate('month', '<',$startMonth)
-        ->sum('amount');
-        $closing_balance_prev = round($ca_debits_cr_prev_payable - $ca_debits_dr_prev_payable,2);
-        //ends prev payables
+        // $ca_debits_dr_prev_payable = \App\Model\Accounts\Company_Account::where("rider_id",$rider_id)
+        // ->where(function($q) {
+        //     $q->where('type', "dr")
+        //     ->orWhere('type', 'pl');
+        // })
+        // ->whereDate('month', '<',$startMonth)
+        // ->sum('amount');
+        // $closing_balance_prev = round($ca_debits_cr_prev_payable - $ca_debits_dr_prev_payable,2);
+        // //ends prev payables
 
         $ca_payable=Company_Account::where("rider_id",$rider_id)
         ->whereMonth("month",$onlyMonth)
@@ -3232,15 +3233,22 @@ public function client_income_update(Request $request,$id){
             ->orWhere('type', 'cr');
         })
         ->sum('amount');  
-        if($closing_balance_prev < 0){ //deduct
-            $ca_payable += abs($closing_balance_prev);
-        }
-        else {
-            // add
-            $ca_cr += abs($closing_balance_prev);
-        }
+        // if($closing_balance_prev < 0){ //deduct
+        //     $ca_payable += abs($closing_balance_prev);
+        // }
+        // else {
+        //     // add
+        //     $ca_cr += abs($closing_balance_prev);
+        // }
 
         $profit = round($ca_cr-$ca_payable,2);
+        // return response()->json([
+        //     'a'=>$ca_debits_cr_prev_payable,
+        //     'b'=>$ca_debits_dr_prev_payable,
+        //     'c'=>$closing_balance_prev,
+        //     'd'=>$ca_payable,
+        //     'e'=>$ca_cr,
+        // ]);
         return $profit;
     }
     public static function calculate_bills($month,$rider_id){
