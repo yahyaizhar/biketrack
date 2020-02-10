@@ -1456,6 +1456,25 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="bills_detail_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">  
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title" id="title_rider_expense">Fuel Expense Cash</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="kt-form" enctype="multipart/form-data" id="bills_detail">
+                <div class="modal-body">
+                  <div class="bills_detail_html" style="display:grid;"></div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 @section('foot')
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
@@ -1848,21 +1867,24 @@ var detect_billchanges=function(){
                         if (login_hours>11) {
                             login_hours=11;
                         }
-
+                        var absent_detail_status=item.absent_detail_status;
                         var absent__status=item.absent_status;
-                        
                         var absent_stat='';
+                        var absent_details='';
+                        if(absent_detail_status!="0"){
+                            absent_details='<i class="flaticon2-file"></i>';
+                        }
                         var absent_color='';
                         switch (absent__status) {
                             case 'Approved':
                                 absent_stat='- Approved ';
                                 absent_color='green';
-                                absent_detail='<i class="flaticon2-file"></i>';
+                                absent_detail=absent_details;
                                 break;
                             case 'Rejected':
                                 absent_stat='- Rejected';
                                 absent_color='red';
-                                absent_detail='<i class="flaticon2-file"></i>';
+                                absent_detail=absent_details;
                                 break;
                             default:
                                 absent_stat=' (Pending)';
@@ -1908,7 +1930,7 @@ var detect_billchanges=function(){
                   $('.custom_rider_id').text('Rider id: '+_data.rider_id);
                   $('.custom_rider_name').text('Rider name: '+_name);
 
-
+                  default_rejected();
                 },
                 error: function(error){
                     console.log(error);
@@ -1931,7 +1953,7 @@ var detect_billchanges=function(){
             " <button class='btn-btn-success' onclick='approved_rejected_status("+rider_id+",\""+month+"\",\""+rider_payout_days_date+"\",\""+approved+"\")' id='absent_approved' style='float:right;color: green;font-size: 10px;'>Approve</button>";
             $(this).html(option);
             });
-
+          
             $(document).on("click",".rider_absent_detail",function(){
                 $("#absent_details").modal("show");
                 var a=$(this).parents("tr").find("td:eq(0)").text();
@@ -3374,6 +3396,41 @@ function UpdateRows($this,id,model_class,model_id,rider_id,string,month,year,sou
         });
     });
 
+}
+function default_rejected(){
+    $(".rider_days_detail tbody tr").each(function(i,j){
+    var pending_status=$(this).find("td:eq(3)").text();
+    if(pending_status=="Absent (Pending)"){
+        var a=$(this).find("td:eq(0)").text();
+        var month=biketrack.getUrlParameter('r1d1');
+        var rider_id=biketrack.getUrlParameter('rider_id');
+        var _year=new Date(month).format("yyyy");
+        var day=a.split(_year).pop("");
+        var date=a.replace(day, '');
+        var rider_payout_days_date=new Date(date).format("yyyy-mm-dd");
+        var rejected='rejected';
+        approved_rejected_status(rider_id,month,rider_payout_days_date,rejected);
+    }
+});
+}
+function BillsDetails(){
+    var month=biketrack.getUrlParameter('r1d1');
+    var rider_id=biketrack.getUrlParameter('rider_id');
+    var _onlyMonth=new Date(month).format("mm");
+    var _onlyYear=new Date(month).format("yyyy");
+    var _model = $('#bills_detail_model');
+    _model.modal('show');
+    var url ="{{ url('admin/rider/bills_details/ajax') }}"+ "/" + rider_id + "/" + _onlyMonth + "/" + _onlyYear ;
+    $.ajax({
+        url : url,
+        type : 'GET',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data){
+            console.log(data);
+        },
+    });
 }
 </script>
 @endsection

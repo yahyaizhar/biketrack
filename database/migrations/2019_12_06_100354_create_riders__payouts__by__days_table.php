@@ -27,6 +27,7 @@ class CreateRidersPayoutsByDaysTable extends Migration
             $table->string('off_days_status')->nullable();
             $table->string('absent_status')->nullable();
             $table->integer('absent_fine_id')->nullable();
+            $table->string('absent_detail_status')->default("0");
             $table->timestamps();
         });
     }

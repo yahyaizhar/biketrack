@@ -214,7 +214,16 @@ class KRController extends Controller
             if ($rpbd->absent_status!="Approved") {
                 $absent_detail->save();
                 $rpbd->absent_status="Approved";
+                if(isset($rpbd->absent_fine_id)){
+                    $ra =Rider_Account::where("kingrider_fine_id",$rpbd->absent_fine_id)->get()->first();
+                    if(isset($ra)) $ra->delete();
+
+                    $ca =Company_Account::where("kingrider_fine_id",$rpbd->absent_fine_id)->get()->first();
+                    if (isset($ca)) $ca->delete();
+                    
+                }
                 $rpbd->absent_fine_id=null;
+                $rpbd->absent_detail_status="1";
                 $income_id=$rpbd->zomato_income_id;
                 $rpbd->save();
                 $income_zomato=Income_zomato::find($income_id);
@@ -222,7 +231,6 @@ class KRController extends Controller
                     $income_zomato->approve_absents-=1;
                 }
                 $income_zomato->save();
-                
             }
         }
         if ($request->approval_status=="rejected") {
@@ -232,10 +240,34 @@ class KRController extends Controller
                 $rpbd->absent_status="Rejected";
                 $rpbd->absent_fine_id=$rpbd->id;
                 $income_id=$rpbd->zomato_income_id;
+                $rpbd->absent_detail_status="1";
                 $rpbd->save();
                 $income_zomato=Income_zomato::find($income_id);
                 $income_zomato->approve_absents+=1;
                 $income_zomato->save();
+
+                $amt=100;
+                $ra =new Rider_Account;
+                $ra->type='dr';
+                $ra->month = Carbon::parse($absent_detail->absent_date)->startOfMonth()->format('Y-m-d');
+                $ra->given_date=Carbon::now()->format('Y-m-d');
+                $ra->amount=round($amt,2);
+                $ra->rider_id=$request->rider_id;
+                $ra->source='Absent Fine (on '.Carbon::parse($absent_detail->absent_date)->format('Y-m-d').')';
+                $ra->payment_status='pending';
+                $ra->kingrider_fine_id=$rpbd->id; 
+                $ra->save();
+
+                $ca =new Company_Account;
+                $ca->type='cr';
+                $ca->month = Carbon::parse($absent_detail->absent_date)->startOfMonth()->format('Y-m-d');
+                $ca->given_date=Carbon::now()->format('Y-m-d');
+                $ca->amount=round($amt,2);
+                $ca->rider_id=$request->rider_id;
+                $ca->source='Absent Fine (on '.Carbon::parse($absent_detail->absent_date)->format('Y-m-d').')';
+                $ca->payment_status='pending';
+                $ca->kingrider_fine_id=$rpbd->id; 
+                $ca->save();
             }
         }
         return redirect(route('account.absent_detail'));

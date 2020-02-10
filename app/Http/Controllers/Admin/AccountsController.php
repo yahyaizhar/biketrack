@@ -3441,4 +3441,11 @@ public function client_income_update(Request $request,$id){
     public function expense_data(){
         return view('admin.accounts.Company_Expense.expense_data');
     }
+    public function bills_details_for_riders($rider_id,$month,$year){
+        return response()->json([
+            'rider_id'=>$rider_id,
+            'month'=>$month,
+            'year'=>$year,
+        ]);
+    }
 }
