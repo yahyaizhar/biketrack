@@ -1469,7 +1469,21 @@
             <form class="kt-form" enctype="multipart/form-data" id="bills_detail">
                 <div class="modal-body">
                   <div class="bills_detail_html" style="display:grid;"></div>
-
+                    <div class="form-group row">
+                        <div class=" col-md-1 mr-4"><strong>#</strong></div>
+                        <div class=" col-md-3 mr-4"><strong>Source</strong></div>
+                        <div class=" col-md-4 mr-4"><strong>Date</strong></div>
+                        <div class=" col-md-2 mr-4"><strong>Amount</strong></div>
+                    </div>
+                    <div class="form-group" id="bills_html">
+                        
+                    </div>
+                    <div class="form-group row">
+                        <div class=" col-md-1 mr-4"><strong></strong></div>
+                        <div class=" col-md-3 mr-4"><strong></strong></div>
+                        <div class=" col-md-4 mr-4"><strong>Total Amount</strong></div>
+                        <div class=" col-md-2 mr-4" id="total_bill_amount_detail"><strong>0.00</strong></div>
+                    </div>
                 </div>
             </form>
         </div>
@@ -3416,11 +3430,12 @@ function default_rejected(){
 function BillsDetails(){
     var month=biketrack.getUrlParameter('r1d1');
     var rider_id=biketrack.getUrlParameter('rider_id');
-    var _onlyMonth=new Date(month).format("mm");
-    var _onlyYear=new Date(month).format("yyyy");
+    var _onlyMonth=new Date(month).format("yyyy-mm-dd");
     var _model = $('#bills_detail_model');
+    $("#bills_html").append("");
+    $("#total_bill_amount_detail").html("");
     _model.modal('show');
-    var url ="{{ url('admin/rider/bills_details/ajax') }}"+ "/" + rider_id + "/" + _onlyMonth + "/" + _onlyYear ;
+    var url ="{{ url('admin/rider/bills_details/ajax') }}"+ "/" + rider_id + "/" + _onlyMonth ;
     $.ajax({
         url : url,
         type : 'GET',
@@ -3428,7 +3443,20 @@ function BillsDetails(){
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         success: function(data){
-            console.log(data);
+            console.log(data)
+            var count=1;
+            data.bills.fuel_cash.forEach(function(item,j){
+                var given_date=new Date(item.given_date).format("mmmm dd,yyyy");
+                var _row_bill_details= '<div class="row mt-5"><div class=" col-md-1 mr-4">'+(count++)+'</div>'+ 
+                                       '<div class=" col-md-3 mr-4">'+item.source+'</div>'+ 
+                                       '<div class=" col-md-4 mr-4">'+given_date+'</div>'+ 
+                                       '<div class=" col-md-2 mr-4">'+item.amount+'</div></div>';                      
+                $("#bills_html").append(_row_bill_details);
+            });
+            $("#total_bill_amount_detail").html("<strong>"+data.bills.fuel_cash_amt+"</strong>");
+            if (data.bills.fuel_cash=='') {
+                $("#bills_html").append("");
+            }
         },
     });
 }

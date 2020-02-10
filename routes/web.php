@@ -313,7 +313,7 @@ Route::group([
     Route::post('/developer/update/{developer_id}','AccountsController@developer_update')->name('account.developer_update');//not_using
 
     /*[accounts - rider account]*/ Route::get("/Salary/accounts/rider/account","AccountsController@rider_account")->name("admin.accounts.rider_account");//imp
-    Route::get("/rider/bills_details/ajax/{rider_id}/{month}/{year}","AccountsController@bills_details_for_riders")->name("admin.accounts.bills_details_for_riders");//***
+    Route::get("/rider/bills_details/ajax/{rider_id}/{month}","AccountsController@bills_details_for_riders")->name("admin.accounts.bills_details_for_riders");//***
     /*[accounts - company account]*/Route::get("/Salary/accounts/company/account","AccountsController@company_account")->name("admin.accounts.company_account");//imp
     /*[accounts - delete rider account]*/Route::get("/delete/accounts/rows","AccountsController@delete_account_rows")->name("admin.delete_account_rows");//imp
     
