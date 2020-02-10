@@ -443,7 +443,7 @@
                                 {{-- <tr>
                                     <th style="border:1px solid #dddd;width:75%;text-align:left;">Item Description</th>
                                     <td style="border:1px solid #dddd;width:25%;text-align:left;">2000</td>
-                                </tr> --}}
+                                </tr> --}} 
                             </table>
                             <table class="invoice_slip__invoice_total" style=" margin-top: 0px;display:none;">
                                 <tr style="background: #E9F8FF;">
@@ -837,7 +837,7 @@ $(document).ready(function () {
             $('.invoice_slip__client_no').text(invoice.client.phone);
             $('.invoice_slip__client_name').text(invoice.client.name);
             $('.invoice_slip__client_trn').text(invoice.client.trn_no);
-            $('.invoice_slip__total_amount').text('AED '+(invoice.invoice_total).toRound(2));
+            $('.invoice_slip__total_amount').text('AED '+(invoice.invoice_total).toRound(0));
             $('.invoice_date').text(invoice.invoice_date)
             $('.invc_no').text(invoice.invoice_id)
             $('.invoice_month').text(new Date(invoice.month).format('mmmm yyyy'));

@@ -3899,6 +3899,9 @@ class AjaxNewController extends Controller
             if($invoice->invoice_id != null) return $invoice->invoice_id;
             return 'No Invoice id';
         })
+        ->addColumn('id', function($invoice){
+            return $invoice->id;
+        })
         ->addColumn('client_name', function($invoice){
             $client=Client::find($invoice->client_id);
             return $client->name;
@@ -4073,7 +4076,7 @@ class AjaxNewController extends Controller
                     </div>';
             return $html;
         })
-        ->rawColumns(['invoice','client_name','month','date','due_date','balance','total','status','actions', 'details'])
+        ->rawColumns(['id','invoice','client_name','month','date','due_date','balance','total','status','actions', 'details'])
         ->make(true);
     }
 
