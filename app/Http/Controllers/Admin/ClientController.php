@@ -432,7 +432,7 @@ return view('admin.Bike.bike_profile',compact('bike_profile','rider','assign_bik
 return redirect('admin/riders');
 }
 public function deletebikeprofile($rider_id,$bike_id){
-$assign_bike=Assign_bike::where('rider_id',$rider_id)->where('bike_id',$bike_id)->get()->first();
+    $assign_bike=Assign_bike::where('rider_id',$rider_id)->where('bike_id',$bike_id)->get()->first();
    if (isset($assign_bike)) {
        $assign_bike->status='deactive';
        $assign_bike->bike_unassign_date=Carbon::now()->format("Y-m-d");

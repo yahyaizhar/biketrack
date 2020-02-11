@@ -4140,4 +4140,58 @@ public function client_income_update(Request $request,$id){
             'bills'=>$bills,
         ]);
     }
+
+    public function is_bill_pending($rider_id,$month){
+        $onlyMonth=Carbon::parse($month)->format("m");
+        $onlyYear=Carbon::parse($month)->format("Y");
+
+        $fuel_cash=[];
+        $fuel_vip=[];
+        $salik=[];
+        $sim=[];
+        $bike_rent=[];
+
+        $bill_fuel_cash=Company_Account::where("rider_id",$rider_id)
+        ->whereMonth('month',$onlyMonth)
+        ->whereYear('month',$onlyYear);
+        if (isset($bill_fuel_cash)) {
+            $fuel_cash=$bill_fuel_cash->where("source","fuel_expense_cash")->get();
+        }
+        $bill_fuel_vip=Company_Account::where("rider_id",$rider_id)
+        ->whereMonth('month',$onlyMonth)
+        ->whereYear('month',$onlyYear);
+        if (isset($bill_fuel_vip)) {
+            $fuel_vip=$bill_fuel_vip->where("source","fuel_expense_vip")->get();
+        }
+        $bill_salik=Company_Account::where("rider_id",$rider_id)
+        ->whereMonth('month',$onlyMonth)
+        ->whereYear('month',$onlyYear);
+        if (isset($bill_salik)) {
+            $salik=$bill_salik->where("source","Salik")->get();
+        }
+        $bill_sim=Company_Account::where("rider_id",$rider_id)
+        ->whereMonth('month',$onlyMonth)
+        ->whereYear('month',$onlyYear);
+        if (isset($bill_sim)) {
+            $sim=$bill_sim->where("source","Sim Transaction")->get();
+        }
+        $bill_bike_rent=Company_Account::where("rider_id",$rider_id)
+        ->whereMonth('month',$onlyMonth)
+        ->whereYear('month',$onlyYear);
+        if (isset($bill_bike_rent)) {
+            $bike_rent=$bill_bike_rent->where("source","Bike Rent")->get();
+        }
+
+
+        return response()->json([
+            'rider_id'=>$rider_id,
+            'month'=>$month,
+
+            'fuel_cash'=>$fuel_cash,
+            'fuel_vip'=>$fuel_vip,
+            'salik'=>$salik,
+            'sim'=>$sim,
+            'bike_rent'=>$bike_rent,
+        ]);
+    }
 }

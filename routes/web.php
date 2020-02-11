@@ -314,6 +314,7 @@ Route::group([
 
     /*[accounts - rider account]*/ Route::get("/Salary/accounts/rider/account","AccountsController@rider_account")->name("admin.accounts.rider_account");//imp
     Route::get("/rider/bills_details/ajax/{rider_id}/{month}","AccountsController@bills_details_for_riders")->name("admin.accounts.bills_details_for_riders");//***
+    Route::get("/rider/is_bill_pending/ajax/{rider_id}/{month}","AccountsController@is_bill_pending")->name("admin.accounts.is_bill_pending");//***
     /*[accounts - company account]*/Route::get("/Salary/accounts/company/account","AccountsController@company_account")->name("admin.accounts.company_account");//imp
     /*[accounts - delete rider account]*/Route::get("/delete/accounts/rows","AccountsController@delete_account_rows")->name("admin.delete_account_rows");//imp
     
