@@ -802,14 +802,8 @@ $(document).ready(function () {
                 if(callback && typeof callback=="function"){
                     callback(data.invoice);
                 }
-                // swal.fire({
-                //     position: 'center',
-                //     type: 'success',
-                //     title: 'Record updated successfully.',
-                //     showConfirmButton: false,
-                //     timer: 1500
-                // });
-                // clients_table.ajax.reload(null, false);
+                //reload invoice 
+                $('#invoices [data-name="client_id"]').trigger('change');
             },
             error: function (error) {
                 console.warn(error);
