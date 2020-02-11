@@ -3376,7 +3376,11 @@ class AjaxNewController extends Controller
             $bills = AccountsController::calculate_bills($month,$rider->rider_id);
             return $bills['total'];
         }) 
-        ->rawColumns(['aed_trips_zomato','aed_hours_zomato','payout_less','expenses_bills','bonus','profit','bike_rent','fuel','payout','penalty','aed_extra_trips','net_salary','rider_name','bike_number', 'salik', 'sim_charges', 'dc', 'cod', 'aed_hours','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
+        ->addColumn('decipline_fine', function($rider) use ($month) {
+            $bills = AccountsController::calculate_bills($month,$rider->rider_id);
+            return $bills['dicipline_fine'];
+        }) 
+        ->rawColumns(['decipline_fine','aed_trips_zomato','aed_hours_zomato','payout_less','expenses_bills','bonus','profit','bike_rent','fuel','payout','penalty','aed_extra_trips','net_salary','rider_name','bike_number', 'salik', 'sim_charges', 'dc', 'cod', 'aed_hours','tips','aed_trips','ncw','number_of_trips','number_of_hours'])
         ->make(true);
     }
     public function getBikeAccounts($ranges)

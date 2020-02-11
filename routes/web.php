@@ -194,6 +194,7 @@ Route::group([
     Route::post('/rider/{rider}/sendMessage', 'RiderController@sendSMS')->name('admin.rider.sendSMS'); //trash
     /*[rider-active/inactive]*/Route::post('/rider/{rider}/updateStatus', 'RiderController@updateStatus')->name('admin.rider.updateStatus');//ajax_route //active/inactive 
     /*[rider-client history]*/Route::get('/rider/client_history/{id}',"RiderController@client_history")->name('Client.client_history');
+    Route::get('/change_client_dates/{rider_id}/history/{client_history_id}',"RiderController@update_client_history_dates")->name('Client.update_client_history_dates');//*** */
     /*[rider-Duration time]*/Route::get('/rider/spell/time/{id}',"RiderController@Spell_time")->name('Rider.spell_time');
 //  map Routes
     Route::get('/rider/assign-area', 'HomeController@assign_area')->name('admin.assignArea');   ///not_using
