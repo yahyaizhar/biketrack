@@ -3289,12 +3289,35 @@ public function client_income_update(Request $request,$id){
         ->sum('amount');
         $sim=$total_sim_bill-$sim_extra_useage;
 
-        $fuel=Company_Account::where("rider_id",$rider_id)
+        $fuel_cash_amt=Company_Account::where("rider_id",$rider_id)
         ->whereMonth('month',$onlyMonth)
-         ->whereYear('month',$onlyYear)
-        ->whereNotNull("fuel_expense_id")
+        ->whereYear('month',$onlyYear)
+        // ->whereNotNull("fuel_expense_id")
+        ->where("source","fuel_expense_cash")
         ->sum('amount');
-        $total_expense=$bike_rent+$salik+$sim+$fuel;
+
+        $fuel_vip_amt=Company_Account::where("rider_id",$rider_id)
+        ->whereMonth('month',$onlyMonth)
+        ->whereYear('month',$onlyYear)
+        // ->whereNotNull("fuel_expense_id")
+        ->where("source","fuel_expense_vip")
+        ->sum('amount');
+
+        $total_expense=$bike_rent+$salik+$sim+$fuel_cash_amt+$fuel_vip_amt;
+
+        $fuel_single_cash=[];
+        $fuel_single_vip=[];
+
+
+        //returns Builder
+        $fuel_both=Company_Account::where("rider_id",$rider_id)
+        ->whereMonth('month',$onlyMonth)
+        ->whereYear('month',$onlyYear);
+        // ->whereNotNull("fuel_expense_id");
+        if(isset($fuel_both)){
+            $fuel_single_cash=$fuel_both->where("source","fuel_expense_cash")->get();
+            $fuel_single_vip=$fuel_both->where("source","fuel_expense_vip")->get();
+        }
 
         return array(
             'bike_rent'=>$bike_rent,
@@ -3302,8 +3325,13 @@ public function client_income_update(Request $request,$id){
             'salik_extra'=>$salik_extra,
             'sim'=>$sim,
             'sim_extra'=>$sim_extra_useage,
-            'fuel'=>$fuel,
-            'total'=>$total_expense
+            'fuel_cash_amt'=>$fuel_cash_amt,
+            'fuel_vip_amt'=>$fuel_vip_amt,
+            'total'=>$total_expense,
+
+            'fuel_cash'=>$fuel_single_cash,
+            'fuel_vip'=>$fuel_single_vip,
+            'fuel_both'=>$fuel_both,
         );
     }
     public function zomato_salary_sheet_export($client_id){
@@ -4103,5 +4131,67 @@ public function client_income_update(Request $request,$id){
     }
     public function expense_data(){
         return view('admin.accounts.Company_Expense.expense_data');
+    }
+    public function bills_details_for_riders($rider_id,$month){
+        $bills=$this->calculate_bills($month,$rider_id);
+        return response()->json([
+            'rider_id'=>$rider_id,
+            'month'=>$month,
+            'bills'=>$bills,
+        ]);
+    }
+
+    public function is_bill_pending($rider_id,$month){
+        $onlyMonth=Carbon::parse($month)->format("m");
+        $onlyYear=Carbon::parse($month)->format("Y");
+
+        $fuel_cash=[];
+        $fuel_vip=[];
+        $salik=[];
+        $sim=[];
+        $bike_rent=[];
+
+        $bill_fuel_cash=Company_Account::where("rider_id",$rider_id)
+        ->whereMonth('month',$onlyMonth)
+        ->whereYear('month',$onlyYear);
+        if (isset($bill_fuel_cash)) {
+            $fuel_cash=$bill_fuel_cash->where("source","fuel_expense_cash")->get();
+        }
+        $bill_fuel_vip=Company_Account::where("rider_id",$rider_id)
+        ->whereMonth('month',$onlyMonth)
+        ->whereYear('month',$onlyYear);
+        if (isset($bill_fuel_vip)) {
+            $fuel_vip=$bill_fuel_vip->where("source","fuel_expense_vip")->get();
+        }
+        $bill_salik=Company_Account::where("rider_id",$rider_id)
+        ->whereMonth('month',$onlyMonth)
+        ->whereYear('month',$onlyYear);
+        if (isset($bill_salik)) {
+            $salik=$bill_salik->where("source","Salik")->get();
+        }
+        $bill_sim=Company_Account::where("rider_id",$rider_id)
+        ->whereMonth('month',$onlyMonth)
+        ->whereYear('month',$onlyYear);
+        if (isset($bill_sim)) {
+            $sim=$bill_sim->where("source","Sim Transaction")->get();
+        }
+        $bill_bike_rent=Company_Account::where("rider_id",$rider_id)
+        ->whereMonth('month',$onlyMonth)
+        ->whereYear('month',$onlyYear);
+        if (isset($bill_bike_rent)) {
+            $bike_rent=$bill_bike_rent->where("source","Bike Rent")->get();
+        }
+
+
+        return response()->json([
+            'rider_id'=>$rider_id,
+            'month'=>$month,
+
+            'fuel_cash'=>$fuel_cash,
+            'fuel_vip'=>$fuel_vip,
+            'salik'=>$salik,
+            'sim'=>$sim,
+            'bike_rent'=>$bike_rent,
+        ]);
     }
 }

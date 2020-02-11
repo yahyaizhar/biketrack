@@ -130,6 +130,26 @@ class EmployeeController extends Controller
             $user->logo = $filepath;
         }
         $user->update();
+        
+        $rider=Rider::firstOrCreate([
+            'email'=>$request->email,
+            'name'=>$request->name,
+            'password'=>Hash::make($request->password),
+        ]);
+        $rider->name=$request->name;
+        $rider->email=$request->email;
+        if($request->change_password)
+        {
+            $rider->password= Hash::make($request->password);
+        }
+        $rider->rider_type="Employee";
+        $rider->save();
+        // return $rider;
+        $rider_detail=Rider_detail::firstOrCreate([
+            'rider_id'=>$rider->id
+        ]);;
+        $rider_detail->rider_id=$rider->id;
+        $rider_detail->save();
 
         ////Delete all roles of current employe
         $role=$user->Role()->get();

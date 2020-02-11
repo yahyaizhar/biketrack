@@ -393,7 +393,7 @@ $(function() {
             $('.total_entries').remove();
         $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
     },
-        ajax: '{!! route('admin.clients.data') !!}', 
+        ajax: '{!! route('admin.clients.data.active') !!}', 
         columns: [
             // { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
             { data: 'new_id', name: 'new_id' },

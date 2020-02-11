@@ -546,6 +546,8 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
+                <div class="modal-header border-bottom-0 pending_bill_msg" style="display:none;">
+                </div>
                 <form class="kt-form" enctype="multipart/form-data" id="remaining_salary">
                     <div class="modal-body">
                         <input type="hidden" name="account_id" value="">
@@ -1456,6 +1458,39 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="bills_detail_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">  
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title" id="title_rider_expense">Fuel Expense Cash</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="kt-form" enctype="multipart/form-data" id="bills_detail">
+                <div class="modal-body">
+                  <div class="bills_detail_html" style="display:grid;"></div>
+                    <div class="form-group row">
+                        <div class=" col-md-1 mr-4"><strong>#</strong></div>
+                        <div class=" col-md-3 mr-4"><strong>Source</strong></div>
+                        <div class=" col-md-4 mr-4"><strong>Date</strong></div>
+                        <div class=" col-md-2 mr-4"><strong>Amount</strong></div>
+                    </div>
+                    <div class="form-group" id="bills_html">
+                        
+                    </div>
+                    <div class="form-group row">
+                        <div class=" col-md-1 mr-4"><strong></strong></div>
+                        <div class=" col-md-3 mr-4"><strong></strong></div>
+                        <div class=" col-md-4 mr-4"><strong>Total Amount</strong></div>
+                        <div class=" col-md-2 mr-4" id="total_bill_amount_detail"><strong>0.00</strong></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 @section('foot')
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
@@ -1549,7 +1584,7 @@
 
 
 
-  var basic_alert= '   <div><div class="alert fade show" role="alert">  '  + 
+  var basic_alert= '   <div><div class="alert alert-danger fade show" role="alert">  '  + 
  '                                   <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div>  '  + 
  '                                       <div class="alert-text">A simple danger alert—check it out!</div>  '  + 
  '                                       <div class="alert-close">  '  + 
@@ -1767,8 +1802,9 @@ var detect_billchanges=function(){
     var _month=new Date(month).format("mmmm yyyy");
     if (month!="") { 
         $("#remaining_pay_modal [name='month']").attr("data-month", _month)
-        biketrack.refresh_global()
+        biketrack.refresh_global();
     }
+    _isBillPending();
     });
     
    
@@ -1848,21 +1884,24 @@ var detect_billchanges=function(){
                         if (login_hours>11) {
                             login_hours=11;
                         }
-
+                        var absent_detail_status=item.absent_detail_status;
                         var absent__status=item.absent_status;
-                        
                         var absent_stat='';
+                        var absent_details='';
+                        if(absent_detail_status!="0"){
+                            absent_details='<i class="flaticon2-file"></i>';
+                        }
                         var absent_color='';
                         switch (absent__status) {
                             case 'Approved':
                                 absent_stat='- Approved ';
                                 absent_color='green';
-                                absent_detail='<i class="flaticon2-file"></i>';
+                                absent_detail=absent_details;
                                 break;
                             case 'Rejected':
                                 absent_stat='- Rejected';
                                 absent_color='red';
-                                absent_detail='<i class="flaticon2-file"></i>';
+                                absent_detail=absent_details;
                                 break;
                             default:
                                 absent_stat=' (Pending)';
@@ -1908,7 +1947,7 @@ var detect_billchanges=function(){
                   $('.custom_rider_id').text('Rider id: '+_data.rider_id);
                   $('.custom_rider_name').text('Rider name: '+_name);
 
-
+                  default_rejected();
                 },
                 error: function(error){
                     console.log(error);
@@ -1931,7 +1970,7 @@ var detect_billchanges=function(){
             " <button class='btn-btn-success' onclick='approved_rejected_status("+rider_id+",\""+month+"\",\""+rider_payout_days_date+"\",\""+approved+"\")' id='absent_approved' style='float:right;color: green;font-size: 10px;'>Approve</button>";
             $(this).html(option);
             });
-
+          
             $(document).on("click",".rider_absent_detail",function(){
                 $("#absent_details").modal("show");
                 var a=$(this).parents("tr").find("td:eq(0)").text();
@@ -3374,6 +3413,115 @@ function UpdateRows($this,id,model_class,model_id,rider_id,string,month,year,sou
         });
     });
 
+}
+function default_rejected(){
+    $(".rider_days_detail tbody tr").each(function(i,j){
+    var pending_status=$(this).find("td:eq(3)").text();
+    if(pending_status=="Absent (Pending)"){
+        var a=$(this).find("td:eq(0)").text();
+        var month=biketrack.getUrlParameter('r1d1');
+        var rider_id=biketrack.getUrlParameter('rider_id');
+        var _year=new Date(month).format("yyyy");
+        var day=a.split(_year).pop("");
+        var date=a.replace(day, '');
+        var rider_payout_days_date=new Date(date).format("yyyy-mm-dd");
+        var rejected='rejected';
+        approved_rejected_status(rider_id,month,rider_payout_days_date,rejected);
+    }
+});
+}
+function BillsDetails(){
+    var month=biketrack.getUrlParameter('r1d1');
+    var rider_id=biketrack.getUrlParameter('rider_id');
+    var _onlyMonth=new Date(month).format("yyyy-mm-dd");
+    var _model = $('#bills_detail_model');
+    $("#bills_html").append("");
+    $("#total_bill_amount_detail").html("");
+    _model.modal('show');
+    var url ="{{ url('admin/rider/bills_details/ajax') }}"+ "/" + rider_id + "/" + _onlyMonth ;
+    $.ajax({
+        url : url,
+        type : 'GET',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data){
+            console.log(data)
+            $("#bills_html").html("");
+            var count=1;
+            data.bills.fuel_cash.forEach(function(item,j){
+                var given_date=new Date(item.given_date).format("mmmm dd,yyyy");
+                var _row_bill_details= '<div class="row mt-5"><div class=" col-md-1 mr-4">'+(count++)+'</div>'+ 
+                                       '<div class=" col-md-3 mr-4">'+item.source+'</div>'+ 
+                                       '<div class=" col-md-4 mr-4">'+given_date+'</div>'+ 
+                                       '<div class=" col-md-2 mr-4">'+item.amount+'</div></div>';                      
+                $("#bills_html").append(_row_bill_details);
+            });
+            $("#total_bill_amount_detail").html("<strong>"+data.bills.fuel_cash_amt+"</strong>");
+            if (data.bills.fuel_cash=='') {
+                $("#bills_html").append("");
+            }
+        },
+    });
+}
+function _isBillPending(){
+    var month=biketrack.getUrlParameter('r1d1');
+    var rider_id=biketrack.getUrlParameter('rider_id');
+    var _onlyMonth=new Date(month).format("yyyy-mm-dd");
+    var url ="{{ url('admin/rider/is_bill_pending/ajax') }}"+ "/" + rider_id + "/" + _onlyMonth ;
+    $.ajax({
+        url : url,
+        type : 'GET',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data){
+            console.log(data);
+            $(".pending_bill_msg").html("");
+            $(".pending_bill_msg").hide();
+            var bills='';
+            var bill_fuel_cash=data.fuel_cash;
+            var bill_fuel_vip=data.fuel_vip;
+            var bill_salik=data.salik;
+            var bill_sim=data.sim;
+            var bill_bike_rent=data.bike_rent;
+
+
+            bill_fuel_cash.forEach(function(item,j){
+                if(item.payment_status=="pending"){
+                    $(".pending_bill_msg").show();
+                     bills+="<li>Fuel Expense Cash Bill is pending";
+                }
+            });
+            bill_fuel_vip.forEach(function(item,j){
+                if(item.payment_status=="pending"){
+                    $(".pending_bill_msg").show();
+                     bills+="<li>Fuel Expense VIP Bill is pending</li>";
+                }
+            });
+            bill_salik.forEach(function(item,j){
+                if(item.payment_status=="pending"){
+                    $(".pending_bill_msg").show();
+                     bills+="<li>Salik Bill is pending</li>";
+                }
+            });
+            bill_sim.forEach(function(item,j){
+                if(item.payment_status=="pending"){
+                    $(".pending_bill_msg").show();
+                     bills+="<li>Sim Bill is pending</li>";
+                }
+            });
+            bill_bike_rent.forEach(function(item,j){
+                if(item.payment_status=="pending"){
+                    $(".pending_bill_msg").show();
+                     bills+="<li>Bike Rent Bill is pending</li>";
+                }
+            });
+            var _msg = $(basic_alert);
+            _msg.find('.alert-text').html("<ul>"+bills+"</ul>");
+            $('.pending_bill_msg').html(_msg.html());
+        },
+    });
 }
 </script>
 @endsection

@@ -382,6 +382,10 @@ class AjaxNewController extends Controller
         })
         ->addColumn('bill', function($bill){
             if (isset($bill->source)) {
+                if($bill->source=="fuel_expense_cash"){
+                    $_rowFuel='<a id="bill_detail" type="button" onclick="BillsDetails()">'.$bill->source.'</a>';
+                    return $_rowFuel;
+                }
                 return $bill->source;
             }
             
