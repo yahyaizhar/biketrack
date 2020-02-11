@@ -73,7 +73,7 @@ margin-left: 10px;
                         </div>
                         &nbsp;
                         {{-- <a style="padding:8.45px 13px;" href="" data-toggle="modal" data-target="#import_data"  class="btn btn-label-success btn-sm btn-upper">Import Zomato Income</a>&nbsp; --}}
-                        {{-- <input class="btn btn-primary" type="button" onclick="export_data();" value="Export Zomato Salary Sheet"> --}}
+                        <input class="btn btn-primary" type="button" onclick="export_data();" value="Export Profit Sheet">
                     </div>
                 </div>
             </div>
@@ -151,37 +151,31 @@ var export_details=[];
 console.log(riders_data);
         riders_data.forEach(function(item,index) {
            export_details.push({
-            "KR-ID":item.rider_id, 
-            "FEID":item.client_rider_id, 
-            "Name":item.name, 
-            "Bike No": item.bike_number,
-            "Advance":item.advance,
+            "Client ID":item.client_id,
+            "Rider":item.rider_name,
+
+            "Bike Rent":item.bike_rent,
+            "Fuel":item.fuel,
             "Salik":item.salik,
             "Sim Charges":item.sim_charges,
-            "POOR PERFORMANCE":item.poor_performance,
-            "DC":item.dc,
-            "COD ":item.cod,
-            "Visa Charges":item.visa,
-            "RTA Fine":item.rta_fine,
-            "mobile charges":item.mobile,
-            "Disipline Fine":"",
-            "Total deduction":item.total_deduction,
-            "No of hours ":item.number_of_hours,
-            "No of Trip ":item.number_of_trips,
-            "AED hours":item.aed_hours,
-            "AED TRIP":item.aed_trips,
-            "Total":item.total_salary,
-            "NCW":item.ncw,
-            "Tip":item.tips,
+            "Expenses Bills":item.expenses_bills,
+
+            "Zomato Hours AED":item.aed_hours_zomato,  
+            "Zomato Trips AED":item.aed_trips_zomato,
+            "Total Payout":item.payout_less,
+
+            "Trips":item.number_of_trips,
+            "AED Trips":item.aed_trips,
+            "Hours":item.number_of_hours,
+            "AED Hours":item.aed_hours,
             "Bonus":item.bonus,
-            "Bike allowns":"",
-            "Net Salary ":item.net_salary,
-            "Gross Salary":item.gross_salary,
-            "Cash Paid":"",
-            "Advance":"",
+            "Salary":item.net_salary,
+            
+            "Profit":item.profit,
+            
            });
         });
-        var export_data = new CSVExport(export_details, 'Zomato Salary Sheet '+$('[name="month_id"] option:selected').text());
+        var export_data = new CSVExport(export_details, 'Zomato Profit Sheet '+$('[name="month_id"] option:selected').text());
         return false;
     }  
     
