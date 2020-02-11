@@ -41,7 +41,7 @@ class ClientController extends Controller
     }
     public function get_active_clients()
     {
-        $clients_count=Client::where("active_status","A")->get()->count();
+        $clients_count=Client::where("active_status","A")->where("status","1")->get()->count();
         return view('admin.client.clients_active',compact('clients_count'));
     }
 
