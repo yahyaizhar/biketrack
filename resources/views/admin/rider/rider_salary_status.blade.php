@@ -48,6 +48,7 @@
                     <tr>
                         <th>ID</th>
                         <th>Rider</th>
+                        <th>Client</th>
                         <th>Payable Salary</th>
                         <th>Remaining Blance</th>
                         <th>Payment Status</th>
@@ -199,6 +200,7 @@ var init_table=function(){
         columns: [
             { data: 'id', name: 'id' },
             { data: 'rider_id', name: 'rider_id' },
+            {data:  'client_name',  name: 'client_name'},
             { data: 'salary', name: 'salary' },            
             { data: 'remaining_salary', name: 'remaining_salary' },
             { data: 'payment_status', name: 'payment_status' },

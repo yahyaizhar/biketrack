@@ -2123,11 +2123,37 @@ class AjaxNewController extends Controller
     {
         // return \App\Http\Controllers\Admin\AccountsController::get_salary_deduction(new Request(),$month,5);
         $total_gross=0;
-        $totlpaid=0;
-        $client_histories=Client_History::where('client_id', $client_id)->get();
+        $totlpaid=0; 
+        $client_histories = collect([]);
+        $client_history=Client_History::all()->toArray(); 
+        $tmps = Arr::where($client_history, function ($item, $key) use ($client_id, $month) {
+            $start_created_at =Carbon::parse($item['assign_date'])->startOfMonth()->format('Y-m-d');
+            $created_at =Carbon::parse($start_created_at);
+    
+            $start_updated_at =Carbon::parse($item['deassign_date'])->endOfMonth()->format('Y-m-d');
+            $updated_at =Carbon::parse($start_updated_at);
+            $req_date =Carbon::parse($month);
+    
+            if($item['status']=='active'){    
+                return $item['client_id']==$client_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+            }
+    
+            return $item['client_id']==$client_id &&
+                ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+        });
+        foreach ($tmps as $tmp) {
+            $mdl = new Client_History;
+            $mdl->rider_id=$tmp['rider_id'];
+            $mdl->client_id=$tmp['client_id'];
+            $mdl->assign_date=$tmp['assign_date'];
+            $mdl->deassign_date=$tmp['deassign_date'];
+            $mdl->client_rider_id=$tmp['client_rider_id'];
+            $client_histories->push($mdl);
+        }
+
         $rider_ids=[];
         foreach ($client_histories as $client_history) {
-        array_push($rider_ids, $client_history->rider_id); 
+            array_push($rider_ids, $client_history->rider_id); 
         }
         $client_riders= Rider::whereIn('id', $rider_ids)->get();
         return DataTables::of($client_riders)
@@ -4233,13 +4259,65 @@ class AjaxNewController extends Controller
 
     public function getSalaryList($month)
     {
-        $rider = Rider::where("active_status","A")->get();
+        $client_histories = collect([]);
+        $client_history=Client_History::all()->toArray(); 
+        $tmps = Arr::where($client_history, function ($item, $key) use ($month) {
+            $start_created_at =Carbon::parse($item['assign_date'])->startOfMonth()->format('Y-m-d');
+            $created_at =Carbon::parse($start_created_at);
+    
+            $start_updated_at =Carbon::parse($item['deassign_date'])->endOfMonth()->format('Y-m-d');
+            $updated_at =Carbon::parse($start_updated_at);
+            $req_date =Carbon::parse($month);
+    
+            if($item['status']=='active'){    
+                return ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+            }
+    
+            return ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+        });
+        foreach ($tmps as $tmp) {
+            $mdl = new Client_History;
+            $mdl->rider_id=$tmp['rider_id'];
+            $mdl->assign_date=$tmp['assign_date'];
+            $mdl->deassign_date=$tmp['deassign_date'];
+            $mdl->client_rider_id=$tmp['client_rider_id'];
+            $client_histories->push($mdl);
+        }
+
+        $rider_ids=[];
+        foreach ($client_histories as $client_history) {
+            array_push($rider_ids, $client_history->rider_id); 
+        }
+        $rider= Rider::whereIn('id', $rider_ids)->get();
+
+        // $rider = Rider::where("active_status","A")->get(); 
         return DataTables::of($rider)
         ->addColumn('id', function($rider){
             return "KR-".$rider->id;
         })
         ->addColumn('rider_id', function($rider){
             return '<a  href="'.route('admin.rider.profile', $rider->id).'">'.$rider->name.'</a>';
+        })
+        ->addColumn('client_name', function($rider) use ($month){
+            $rider_id=$rider->id;
+            $client_history = Client_History::all();
+            $startMonth = Carbon::parse($month)->startOfMonth()->format('Y-m-d');
+            $history_found = Arr::first($client_history, function ($item, $key) use ($rider_id, $startMonth) {
+                $start_created_at =Carbon::parse($item->assign_date)->startOfMonth()->format('Y-m-d');
+                $created_at =Carbon::parse($start_created_at);
+        
+                $start_updated_at =Carbon::parse($item->deassign_date)->endOfMonth()->format('Y-m-d');
+                $updated_at =Carbon::parse($start_updated_at);
+                $req_date =Carbon::parse($startMonth);
+        
+                return $item->rider_id==$rider_id &&
+                    ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+            });
+            if(isset($history_found)){
+                $client = Client::find($history_found->client_id);
+                return $client->name;
+            }
+            return 'No client assigned';
         })
         ->addColumn('salary', function($rider) use($month){
             $start_month=carbon::parse($month)->startOfMonth()->format("Y-m-d");
@@ -4394,7 +4472,7 @@ class AjaxNewController extends Controller
             }
             return '<a data-image="'.$slip.'" data-rider="'.$rider->id.'" data-paid="'.$paid.'" class="show_image"><i class="fa fa-eye"></i></a>';
         })
-        ->rawColumns(['id','rider_id','salary','remaining_salary','image','payment_status'])
+        ->rawColumns(['id','rider_id','client_name','salary','remaining_salary','image','payment_status'])
         ->make(true);
     }
 
