@@ -3261,8 +3261,17 @@ public function client_income_update(Request $request,$id){
         //prev payables
         $bike_rent=Company_Account::where("rider_id",$rider_id)
         ->whereMonth('month',$onlyMonth)
-         ->whereYear('month',$onlyYear)
+        ->whereYear('month',$onlyYear)
         ->where("source","Bike Rent")
+        ->sum('amount');
+
+        $dicipline_fine=Company_Account::where("rider_id",$rider_id)
+        ->whereMonth('month',$onlyMonth)
+        ->whereYear('month',$onlyYear)
+        ->where(function($q) {
+            $q->where("source","Discipline Fine")
+              ->orWhereNotNull("kingrider_fine_id"); 
+        })
         ->sum('amount');
 
         $total_salik=Company_Account::where("rider_id",$rider_id)
@@ -3321,6 +3330,7 @@ public function client_income_update(Request $request,$id){
 
         return array(
             'bike_rent'=>$bike_rent,
+            'dicipline_fine'=>$dicipline_fine,
             'salik'=>$salik,
             'salik_extra'=>$salik_extra,
             'sim'=>$sim,

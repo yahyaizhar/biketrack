@@ -101,6 +101,7 @@ margin-left: 10px;
                         <th class="d-none"></th>
                         <th class="d-none"></th>
                         <th class="d-none"></th>
+                        <th class="d-none"></th>
                     </tr>
                 </thead>
             </table>
@@ -172,7 +173,7 @@ console.log(riders_data);
             "Salary":item.net_salary,
             
             "Profit":item.profit,
-            
+            "Decipline Fine":item.decipline_fine,
            });
         });
         var export_data = new CSVExport(export_details, 'Zomato Profit Sheet '+$('[name="month_id"] option:selected').text());
@@ -381,15 +382,12 @@ $(function() {
             { "data": 'bonus', "name": 'bonus' },
             { "data": 'aed_trips', "name": 'aed_trips' },
             { "data": 'aed_hours', "name": 'aed_hours' },
-            
-            
-           
-            
+            { "data": 'decipline_fine', "name": 'decipline_fine' },
             
         ];
         _settings.columnDefs=[
             {
-                "targets": [6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+                "targets": [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
                 "visible": false,
                 searchable: true, 
             },
@@ -425,6 +423,7 @@ $(function() {
             { "data": 'bonus', "name": 'bonus' },
             { "data": 'aed_trips', "name": 'aed_trips' },
             { "data": 'aed_hours', "name": 'aed_hours' },
+            { "data": 'decipline_fine', "name": 'decipline_fine' },
             
         ];
      
@@ -520,6 +519,10 @@ function format ( data ) {
             '<tr>'+
                 '<td colspan="1"; style="font-weight:900;">Profit:</td>'+
                 '<td colspan="2";>'+data.profit+'</td>'+
+            '</tr>'+
+            '<tr>'+
+                '<td colspan="1"; style="font-weight:900;">Decipline Fine:</td>'+
+                '<td colspan="2";>'+data.decipline_fine+'</td>'+
             '</tr>'+
         '</table>';
 }
