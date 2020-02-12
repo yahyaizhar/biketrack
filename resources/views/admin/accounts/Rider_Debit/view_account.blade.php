@@ -1947,7 +1947,7 @@ var detect_billchanges=function(){
                   $('.custom_rider_id').text('Rider id: '+_data.rider_id);
                   $('.custom_rider_name').text('Rider name: '+_name);
 
-                  default_rejected();
+                //   default_rejected();
                 },
                 error: function(error){
                     console.log(error);

@@ -208,7 +208,8 @@ class KRController extends Controller
             $filepath = Storage::putfile('public/uploads/riders/absent_document_image', $request->file('document_image'));
             $absent_detail->document_image = $filepath;
         }
-
+        $check_zomato_payout=Riders_Payouts_By_Days::where("rider_id",$request->rider_id)->where("date", $absent_detail->absent_date)->get()->first();
+        if (isset($check_zomato_payout)) {
         if ($request->approval_status=="accepted") {
             $rpbd=Riders_Payouts_By_Days::where("rider_id",$request->rider_id)->where("date", $absent_detail->absent_date)->get()->first();
             if ($rpbd->absent_status!="Approved") {
@@ -270,6 +271,10 @@ class KRController extends Controller
                 $ca->save();
             }
         }
+    }
+    else{
+        $absent_detail->save();
+    }
         return redirect(route('account.absent_detail'));
     }
     public function absent_detail_ajax($month,$rider_id,$_date){
