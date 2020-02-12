@@ -211,26 +211,31 @@ class SalikController extends Controller
         }
 
 
-        // $iz_deletes = DB::table('trip__details')
-        //             ->whereIn('id', $delete_data)
-        //             ->delete();
+        $iz_deletes = DB::table('trip__details')
+                    ->whereIn('id', $delete_data)
+                    ->delete();
 
-        // $ca_deletes = DB::table('company__accounts')
-        //                 ->whereIn('salik_id', $ca_delete_data)
-        //                 ->delete();
-        // $ra_deletes = DB::table('rider__accounts')
-        //                 ->whereIn('salik_id', $ra_delete_data)
-        //                 ->delete();
+        $ca_deletes = DB::table('company__accounts')
+                        ->whereIn('salik_id', $ca_delete_data)
+                        ->delete();
+        $ra_deletes = DB::table('rider__accounts')
+                        ->whereIn('salik_id', $ra_delete_data)
+                        ->delete();
 
        
-        // DB::table('trip__details')->insert($trip_objects); //r2
-        // DB::table('company__accounts')->insert($ca_objects); //r4
-        // DB::table('rider__accounts')->insert($ra_objects); //r4  
+        DB::table('trip__details')->insert($trip_objects); //r2
+        DB::table('company__accounts')->insert($ca_objects); //r4
+        DB::table('rider__accounts')->insert($ra_objects); //r4  
 
         return response()->json([
             'data'=>$distinct_data,
             'ra'=>$ra_objects,
             'ca'=>$ca_objects,
+
+            'data_d'=>$delete_data,
+            'ra_d'=>$ca_delete_data,
+            'ca_d'=>$ra_delete_data,
+
             'i'=>$i,
             'j'=>$j,
             'k'=>$k,
