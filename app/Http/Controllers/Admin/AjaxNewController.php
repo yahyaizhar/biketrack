@@ -4472,9 +4472,11 @@ class AjaxNewController extends Controller
                 $slip=asset(Storage::url($salary_slip->salary_slip_image));
                 if ($salary_slip->salary_slip_image==null) {
                     $slip='';
+                    return '<a data-image="'.$slip.'" data-rider="'.$rider->id.'" data-paid="'.$paid.'" class="show_image text-warning"><strong>Upload Salary Slip</strong></a>';
                 }
+                return '<a data-image="'.$slip.'" data-rider="'.$rider->id.'" data-paid="'.$paid.'" class="show_image text-success"><i class="fa fa-eye"></i></a>';
             }
-            return '<a data-image="'.$slip.'" data-rider="'.$rider->id.'" data-paid="'.$paid.'" class="show_image"><i class="fa fa-eye"></i></a>';
+            return '<a data-image="'.$slip.'" data-rider="'.$rider->id.'" data-paid="'.$paid.'" class="show_image text-danger"><strong>Salary is not paid</strong></a>';
         })
         ->rawColumns(['id','rider_id','client_name','salary','remaining_salary','image','payment_status'])
         ->make(true);

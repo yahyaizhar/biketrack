@@ -678,6 +678,9 @@ class RiderController extends Controller
                 $bike=bike::find($assign_bike->bike_id);
                 if (isset($bike)) {
                     $bike->availability="yes";
+                    if ( $bike->owner=="self") {
+                        $bike->active_status="D";
+                    }
                     $bike->update();
                 }
             }
@@ -733,6 +736,16 @@ class RiderController extends Controller
                 $obj['end_time']="";
                 array_push($ca, $obj);
                 $rider->spell_time=json_encode($ca);
+                $assign_bike=Assign_bike::where("rider_id",$rider->id)->get()->last();
+                if (isset($assign_bike)) {
+                $bike=bike::find($assign_bike->bike_id);
+                if (isset($bike)) {
+                    if ($bike->owner=="self") {
+                        $bike->active_status="A";
+                    }
+                    $bike->update();
+                }
+            }
         }
         $rider->update();
         return response()->json([

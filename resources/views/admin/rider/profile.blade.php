@@ -1,11 +1,8 @@
 @extends('admin.layouts.app')
 @section('main-content')
-
-<!-- begin:: Content -->
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <div class="row">
         <div class="col-md-12">
-        <!--begin::Portlet-->
             <div class="kt-portlet">
                 <div class="kt-portlet__head">
                     <div class="kt-portlet__head-label">
@@ -14,14 +11,10 @@
                         </h3>
                     </div>
                 </div>
-
-                <!--begin::Form-->
-                
                 @include('admin.includes.message')
-                        <div class="kt-portlet__body">
+                    <div class="kt-portlet__body">
                         <div class="row">
                             <div class="col-lg-8 col-md-8 col-sm-12">
-                                
                                 <div class="form-group">
                                     <label>Full Name:</label>
                                     <input type="text" class="form-control @if($errors->has('name')) invalid-field @endif" name="name" placeholder="Full name" value="{{ $rider->name }}" disabled>
@@ -31,7 +24,6 @@
                                                 {{ $errors->first('name') }}
                                             </strong>
                                         </span>
-                                    
                                     @endif
                                 </div>
                                 <div class="form-group">
@@ -54,7 +46,6 @@
                                 @else
                                     <img class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
                                 @endif
-                               
                             </div>
                         </div>
                         <div class="form-group">
@@ -94,42 +85,42 @@
                             @endif
                         </div>
                         @if ( $rider_details->passport_collected=="no")
-                        <div style="border: 1px solid #adadc9;padding: 7px;">
+                            <div style="border: 1px solid #adadc9;padding: 7px;">
                                 <div class="form-group" >
                                     <label>IS Passport Collected:</label>
                                     <input type="text" class="form-control " value="{{ $rider_details->passport_collected }}" disabled>
-                                    </div>
-                                    @if ($rider_details->is_guarantee=="employee")
+                                </div>
+                                @if ($rider_details->is_guarantee=="employee")
                                     <div class="form-group">
                                         @php
                                             $rider_pasport=App\Model\Rider\Rider::find($rider_details->empoloyee_reference);
                                         @endphp
-                                            <label>Employee Reference:</label>
-                                            <input type="text" class="form-control @if($errors->has('empoloyee_reference')) invalid-field @endif" name="empoloyee_reference"  value="{{ $rider_pasport->name }}" disabled>
-                                            @if ($errors->has('empoloyee_reference'))
-                                                <span class="invalid-response" role="alert">
-                                                    <strong>
-                                                        {{$errors->first('empoloyee_reference')}}
-                                                    </strong>
-                                                </span>
-                                            @endif
-                                        </div> 
+                                        <label>Employee Reference:</label>
+                                        <input type="text" class="form-control @if($errors->has('empoloyee_reference')) invalid-field @endif" name="empoloyee_reference"  value="{{ $rider_pasport->name }}" disabled>
+                                        @if ($errors->has('empoloyee_reference'))
+                                            <span class="invalid-response" role="alert">
+                                                <strong>
+                                                    {{$errors->first('empoloyee_reference')}}
+                                                </strong>
+                                            </span>
+                                        @endif
+                                    </div> 
+                                @endif
+                                @if ($rider_details->is_guarantee=="outsider")
+                                <div class="form-group">
+                                    <label>Someone else passport:</label>
+                                    <input type="text" class="form-control @if($errors->has('other_passport_given')) invalid-field @endif" name="other_passport_given"  value="{{ $rider_details->other_passport_given }}" disabled>
+                                    @if ($errors->has('other_passport_given'))
+                                        <span class="invalid-response" role="alert">
+                                            <strong>
+                                                {{$errors->first('other_passport_given')}}
+                                            </strong>
+                                        </span>
                                     @endif
-                                    @if ($rider_details->is_guarantee=="outsider")
-                                    <div class="form-group">
-                                            <label>Someone else passport:</label>
-                                            <input type="text" class="form-control @if($errors->has('other_passport_given')) invalid-field @endif" name="other_passport_given"  value="{{ $rider_details->other_passport_given }}" disabled>
-                                            @if ($errors->has('other_passport_given'))
-                                                <span class="invalid-response" role="alert">
-                                                    <strong>
-                                                        {{$errors->first('other_passport_given')}}
-                                                    </strong>
-                                                </span>
-                                            @endif
-                                        </div> 
-                                    @endif
-                                   @if ($rider_details->is_guarantee=="not_given")
-                                   <div class="form-group">
+                                </div> 
+                                @endif
+                                @if ($rider_details->is_guarantee=="not_given")
+                                <div class="form-group">
                                         <label>Not Given:</label>
                                         <input type="text" class="form-control @if($errors->has('not_given')) invalid-field @endif" name="not_given"  value="{{ $rider_details->not_given }}" disabled>
                                         @if ($errors->has('not_given'))
@@ -140,18 +131,17 @@
                                             </span>
                                         @endif
                                     </div> 
-                                   @endif
-                                        
+                                @endif 
                                     <div class="row">
-                                    <div class="col-lg-6 col-md-6 col-sm-12">
-                                        @if($rider_details->passport_document_image)
-                                            <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_details->passport_document_image)) }}" alt="image">
-                                        @else
-                                            <img class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
-                                        @endif
-                                        <span class="form-text text-muted"> Passport Or Document Image</span> 
-                                    </div>
-                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <div class="col-lg-6 col-md-6 col-sm-12">
+                                            @if($rider_details->passport_document_image)
+                                                <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_details->passport_document_image)) }}" alt="image">
+                                            @else
+                                                <img class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                                            @endif
+                                            <span class="form-text text-muted"> Passport Or Document Image</span> 
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-sm-12">
                                             @if($rider_details->agreement_image)
                                                 <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($rider_details->agreement_image)) }}" alt="image">
                                             @else
@@ -159,8 +149,8 @@
                                             @endif
                                             <span class="form-text text-muted"> Agreement Image</span> 
                                         </div>
-                                        </div>
-                                    </div> 
+                                    </div>
+                                </div> 
                         @else
                         <div class="form-group" >
                                 <label>IS Passport Collected:</label>
@@ -491,11 +481,10 @@
                                 
                                                
                             
-                                            <div class="form-group"style="margin-top:25px;">
-                                                    <label>Other Details:</label>
-                                                    <textarea type="text" rows="8"  autocomplete="off" class="form-control @if($errors->has('other_details')) invalid-field @endif" name="other_details" placeholder="Enter Further Details" disabled >{{ $rider_details->other_details }}</textarea>
-                                                </div>
-                                                
+                        <div class="form-group"style="margin-top:25px;">
+                            <label>Other Details:</label>
+                            <textarea type="text" rows="8"  autocomplete="off" class="form-control @if($errors->has('other_details')) invalid-field @endif" name="other_details" placeholder="Enter Further Details" disabled >{{ $rider_details->other_details }}</textarea>
+                        </div>                  
                     </div>
                     <div class="kt-portlet__foot">
                         <div class="kt-form__actions kt-form__actions--right"> 
@@ -531,44 +520,40 @@
                             <a href="{{ route('Mobile.mobile_assign_to_rider', $rider->id) }}" class="btn btn-primary btn-sm btn-upper">Assign Mobile</a>&nbsp;
                         </div>
                     </div>
-                </div>
                 </form>
- 
-                <!--end::Form-->
-            </div>
-
-        <!--end::Portlet-->
+            </div> 
+        </div>
     </div>
 </div>
 <div>
-        <div class="modal fade" id="inactive_reasons" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header border-bottom-0">
-                        <h5 class="modal-title" id="exampleModalLabel">Inactive Reasons</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form class="kt-form" id="inactive"  enctype="multipart/form-data">
-                        <div class="container">
-                            <div class="form-group">
-                                <label>Month:</label>
-                                <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('inactive_month')) invalid-field @endif" name="inactive_month" placeholder="Enter Month" value="">
-                            </div>
-                            <div class="form-group">
-                                <label>Reason:</label>
-                                <textarea type="text"  rows="6" autocomplete="off" class="form-control" name="inactive_reason" placeholder="Enter Details" ></textarea>
-                            </div>
-                            <div class="modal-footer border-top-0 d-flex justify-content-center">
-                                <button class="upload-button btn btn-success">Submit</button>
-                            </div>
-                        </div>
-                    </form>
+    <div class="modal fade" id="inactive_reasons" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title" id="exampleModalLabel">Inactive Reasons</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
+                <form class="kt-form" id="inactive"  enctype="multipart/form-data">
+                    <div class="container">
+                        <div class="form-group">
+                            <label>Month:</label>
+                            <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('inactive_month')) invalid-field @endif" name="inactive_month" placeholder="Enter Month" value="">
+                        </div>
+                        <div class="form-group">
+                            <label>Reason:</label>
+                            <textarea type="text"  rows="6" autocomplete="off" class="form-control" name="inactive_reason" placeholder="Enter Details" ></textarea>
+                        </div>
+                        <div class="modal-footer border-top-0 d-flex justify-content-center">
+                            <button class="upload-button btn btn-success">Submit</button>
+                        </div>
+                    </div>
+                </form>
             </div>
-        </div> 
-    </div>
+        </div>
+    </div> 
+</div>
 <!-- end:: Content -->
 @endsection
 @section('foot') 
