@@ -327,7 +327,34 @@ class RiderDetailController extends Controller
         $client=Client::where("id",$client_id)->get()->first();
         $monthOnly=Carbon::parse($month)->format('m');
         $yearOnly=Carbon::parse($month)->format('Y');
-        $client_riders=Client_History::where('client_id', $client->id)->get();
+        $client_id=$client->id;
+        $client_riders = collect([]);
+        $client_history=Client_History::all()->toArray(); 
+        $tmps = Arr::where($client_history, function ($item, $key) use ($client_id, $month) {
+            $start_created_at =Carbon::parse($item['assign_date'])->startOfMonth()->format('Y-m-d');
+            $created_at =Carbon::parse($start_created_at);
+    
+            $start_updated_at =Carbon::parse($item['deassign_date'])->endOfMonth()->format('Y-m-d');
+            $updated_at =Carbon::parse($start_updated_at);
+            $req_date =Carbon::parse($month);
+    
+            if($item['status']=='active'){    
+                return $item['client_id']==$client_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+            }
+    
+            return $item['client_id']==$client_id &&
+                ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+        });
+        foreach ($tmps as $tmp) {
+            $mdl = new Client_History;
+            $mdl->rider_id=$tmp['rider_id'];
+            $mdl->client_id=$tmp['client_id'];
+            $mdl->assign_date=$tmp['assign_date'];
+            $mdl->deassign_date=$tmp['deassign_date'];
+            $mdl->client_rider_id=$tmp['client_rider_id'];
+            $client_riders->push($mdl);
+        }
+
         $hours_client=0;
         $trips_client=0;
         $trips=0;
