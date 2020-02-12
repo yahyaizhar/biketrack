@@ -74,7 +74,7 @@
                     <div class="form-group select_salary_slip" style="margin-top:10px;">
                         <div class="custom-file">
                             <div class="custom-file" style="">
-                                <input type="file" name="slip_image" class="custom-file-input" id="slip_image">
+                                <input required type="file" name="slip_image" class="custom-file-input" id="slip_image">
                                 <label class="custom-file-label" for="slip_image">Choose Slip Picture</label>
                                 <span class="form-text text-muted">Select Rider Salary Slip</span>
                             </div>
@@ -102,11 +102,14 @@ $(document).ready(function(){
         var _attr_image=$(this).attr("data-image");
         var salary_paid=$(this).attr("data-paid");
         $('form#upload_slip_view').find('[type="submit"]').prop('disabled',false).html("Upload Slip");
+        
+        // $(".show_image").html();
         if (salary_paid==1) {
             $('form#upload_slip_view').find('[type="submit"]').prop('disabled',false);
         }
         if (salary_paid==0) {
             $('form#upload_slip_view').find('[type="submit"]').prop('disabled',true).html("Salary is not paid");
+            // $(".show_image").html("<strong>Salary is not paid</strong>");
         }
         var _showImage=' <img class="profile-logo img img-thumbnail" data-featherlight="'+_attr_image+'" src="'+_attr_image+'" alt="image"><div></div>'
         if (_attr_image!=0 || _attr_image==null) {
@@ -117,6 +120,7 @@ $(document).ready(function(){
         if (_attr_image==0) {
             $(".show_salary_slip_image").html("");
         }
+
     });
     $('form#upload_slip_view').on('submit', function(e){
         var _self = $(this);
