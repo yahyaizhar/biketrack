@@ -19,8 +19,12 @@
                             <label>Select Rider:</label>
                             <select required class="form-control kt-select2-general" name="rider_id" >
                                 @foreach ($riders as $rider)
+                                @php
+                                    $client_rider_id=App\Model\Client\Client_History::where("rider_id",$rider->id)->get()->first();
+                                    echo $client_rider_id;
+                                @endphp
                                 <option value="{{ $rider->id }}">
-                                    {{ $rider->name }}
+                                    KR{{$rider->id}} {{ $rider->name }} ({{$client_rider_id['client_rider_id']}})
                                 </option>     
                                 @endforeach 
                             </select>  
@@ -130,7 +134,7 @@
                     }
                     }
                     if(data.is_payout=="0"){
-                    $('#absent_detail [type="submit"]').prop("disabled",true);
+                    $('#absent_detail [type="submit"]').prop("disabled",false);
                     $(".payout_message").html("Payout against this Rider is not imported");
                     }
                 }
