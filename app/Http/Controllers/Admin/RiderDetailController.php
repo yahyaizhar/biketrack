@@ -343,6 +343,7 @@ class RiderDetailController extends Controller
         $sim_extra=0;
         $total_salik=0;
         $total_sim=0;
+        $total_profit=0;
         
 
         foreach ($client_riders as $riders) {
@@ -419,10 +420,14 @@ class RiderDetailController extends Controller
             $total_salik=$salik-$salik_extra;
             $total_sim=$sim-$sim_extra;
 
+
+            $profit = AccountsController::calculate_profit($month,$riders->rider_id);
+            $total_profit+=$profit;
+
         }
         return response()->json([
             'client'=>$client_riders,
-
+            'total_profit'=>$total_profit,
             'aed_hours_client'=>$hours_client,
             'aed_trips_client'=>$trips_client,
             'sum_1'=>$hours_client+$trips_client,
