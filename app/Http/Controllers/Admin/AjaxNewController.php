@@ -65,6 +65,10 @@ use App\Http\Controllers\Admin\AccountsController;
 
 class AjaxNewController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:admin');
+    } 
     public function getIdCharges()
     {
         $id_charges = Id_charge::orderByDesc('created_at')->where('active_status', 'A')->get();
@@ -730,6 +734,7 @@ class AjaxNewController extends Controller
         })
         ->addColumn('action', function($rider_statement) use (&$running_balance){
             if($rider_statement->type=='skip') return '';
+            if(Auth::user()->type!='su')return '';
             $model="";
             $model_id="";
             $rider_id="";
@@ -1204,8 +1209,10 @@ class AjaxNewController extends Controller
                 && $item['p_id'] == $company_statement->income_zomato_id;
                 });
                 $trips=0;
+                $settlements=0;
                 if (isset($trips_found)) {
-                        $trips=$trips_found['trips_payable'];
+                    $trips=$trips_found['trips_payable'];
+                    $settlements=$trips_found['settlements'];
                 }
                 $hours=0;
                 if (isset($hours_found)) {
@@ -1270,6 +1277,7 @@ class AjaxNewController extends Controller
         })
         ->addColumn('action', function($company_statements) use (&$running_balance){
             if($company_statements->type=='skip') return '';
+            if(Auth::user()->type!='su')return '';
             $model="";
             $model_id="";
             $rider_id="";

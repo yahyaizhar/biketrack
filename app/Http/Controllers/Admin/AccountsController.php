@@ -2008,6 +2008,20 @@ public function income_zomato_import(Request $r){
             $ca_obj['updated_at']=Carbon::now();
             array_push($ca_objects, $ca_obj);
         }
+        // $ra_amt2 = $obj['ncw_incentives'];
+        // if($ra_amt2 > 0){
+        //     $ra_obj = [];
+        //     $ra_obj['income_zomato_id']=$p_id;
+        //     $ra_obj['source']='NCW Incentives';
+        //     $ra_obj['rider_id']=$rider_id;
+        //     $ra_obj['amount']=$ra_amt2;
+        //     $ra_obj['month']=$obj['date'];
+        //     $ra_obj['type']='cr';
+        //     $ra_obj['given_date']=Carbon::now();
+        //     $ra_obj['created_at']=Carbon::now();
+        //     $ra_obj['updated_at']=Carbon::now();
+        //     array_push($ra_objects, $ra_obj);
+        // }
 
         $ca_amt2 = $obj['tips_payouts'];
         if($ca_amt2 > 0){
@@ -2054,6 +2068,7 @@ public function income_zomato_import(Request $r){
             $ca_obj['updated_at']=Carbon::now();
             array_push($ca_objects, $ca_obj);
         }
+        
 
         //bonus after 400 trips
         
