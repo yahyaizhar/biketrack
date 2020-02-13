@@ -4219,4 +4219,35 @@ public function client_income_update(Request $request,$id){
             'bike_rent'=>$bike_rent,
         ]);
     }
+
+    public function check_salary_status(Request $r,$rider_id,$month){
+        $onlyMonth=Carbon::parse($month)->format('m');
+        $onlyYear=Carbon::parse($month)->format('Y');
+        $status=0;
+        $msg='Salary is not generated';
+
+        $salary_data = $this->get_salary_deduction($r,$month,$rider_id);
+        if(isset($salary_data->original)){
+            $generated_salary=$salary_data->original;
+            if($generated_salary['status']==1){
+                if ($salary_data->original['is_paid']!=true) {
+                    $status=1;
+                    $msg='Salary is not paid';
+                }
+                if ($salary_data->original['is_paid']==true) {
+                    $status=2;
+                    $msg='Salary is already paid';
+                }
+            }
+        }
+        return response()->json([
+            'rider_id'=>$rider_id,
+            'month'=>$month,
+
+            'salary_data'=>$salary_data,
+            'status'=>$status,
+            'msg'=>$msg,
+
+        ]);
+    }
 }

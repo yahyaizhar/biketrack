@@ -755,15 +755,15 @@
                     </button>
                 </div>
                 <div>
-                    <button style="float:right;margin-right: 10px;" class="btn btn-warning btn-elevate btn-icon-sm" id="for_print" type="button" onclick="printJS('print_slip_for_rider', 'html')">
+                    <button style="float:right;margin-right: 10px;" class="btn btn-warning btn-elevate btn-icon-sm" id="for_print" type="button" onclick="rider_full_detail_company()">
                         Print Company Slip
                     </button>
                 </div>
                 <div>
-                        <button style="float:right;margin-right: 10px;" class="btn btn-warning btn-elevate btn-icon-sm" id="for_print" type="button" onclick="rider_full_detail();">
-                            Print Rider Slip
-                        </button>
-                    </div>
+                    <button style="float:right;margin-right: 10px;" class="btn btn-warning btn-elevate btn-icon-sm" id="for_print" type="button" onclick="rider_full_detail();">
+                        Print Rider Slip
+                    </button>
+                </div>
                 <div>
                     <button style="float:right;margin-right: 10px;" class="btn btn-info btn-elevate btn-icon-sm" id="for_edit" type="button">
                         Edit Salary Slip
@@ -3220,6 +3220,7 @@ function print_data(){
     printJS('rider_days_detail','html');
 }
 function rider_full_detail(){
+check_salary_status();
 $('#for_days_payouts').trigger('click');
 setTimeout(function(){
 var _html2 = $('#rider_days_detail').html();
@@ -3231,7 +3232,13 @@ $('#rider_attendance_detail').find('.custom_rider_id').hide()
 $('#rider_attendance_detail').find('.custom_rider_name').hide()
 
 printJS('print_slip_for_rider2', 'html');
-},1000)
+},2000)
+}
+function rider_full_detail_company(){
+check_salary_status();
+setTimeout(function(){
+printJS('print_slip_for_rider', 'html');
+},2000)
 }
 
 function SimBillsImage(rider_id,month,type){
@@ -3520,6 +3527,34 @@ function _isBillPending(){
             var _msg = $(basic_alert);
             _msg.find('.alert-text').html("<ul>"+bills+"</ul>");
             $('.pending_bill_msg').html(_msg.html());
+        },
+    });
+}
+function check_salary_status(){
+    var month=biketrack.getUrlParameter('r1d1');
+    var rider_id=biketrack.getUrlParameter('rider_id');
+    var _onlyMonth=new Date(month).format("yyyy-mm-dd");
+    var url ="{{ url('admin/rider/check_salary_status/ajax') }}"+ "/" + rider_id + "/" + _onlyMonth ;
+    console.log(url);
+    $.ajax({
+        url : url,
+        type : 'GET',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data){
+            console.log(data);
+            var status=data.status;
+            var msg=data.msg;
+            if (status==0) {
+                alert(msg);
+            }
+            if (status==1) {
+                alert(msg);
+            }
+            if (status==2) {
+                alert(msg);
+            }
         },
     });
 }
