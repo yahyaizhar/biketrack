@@ -3334,12 +3334,19 @@ class AjaxNewController extends Controller
         ->addColumn('payout', function($rider) use ($month) {
             $onlyMonth=Carbon::parse($month)->format('m');
             $onlyYear=Carbon::parse($month)->format('Y');
-            $payout_sum=Income_zomato::where('rider_id',$rider->rider_id)
+            $hours=Income_zomato::where('rider_id',$rider->rider_id)
             ->whereMonth('date',$onlyMonth)
             ->whereYear('date',$onlyYear)
             ->get()
-            ->sum('total_to_be_paid_out');
-            return round($payout_sum,2); 
+            ->sum('log_in_hours_payable'); 
+            $trips=Income_zomato::where('rider_id',$rider->rider_id)
+            ->whereMonth('date',$onlyMonth)
+            ->whereYear('date',$onlyYear)
+            ->get()
+            ->sum('trips_payable');
+            $AED_hours=$hours*6;
+            $AED_trips=$trips*6.75;
+            return round($AED_hours+$AED_trips,2); 
         }) 
         ->addColumn('payout_less', function($rider) use ($month) {
             $onlyMonth=Carbon::parse($month)->format('m');
