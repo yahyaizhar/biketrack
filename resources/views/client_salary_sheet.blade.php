@@ -52,6 +52,7 @@
                         <div class="total_payout col-md-2" style="padding-right: 0px !important;"></div>
                         <div class="aed_hour_client col-md-2" style="padding-right: 0px !important;"></div>
                         <div class="aed_trips_client col-md-2" style="padding-right: 0px !important;"></div>
+                        <div class="settlements col-md-2" style="padding-right: 0px !important;"></div>
                         <div class="sum_1 col-md-2" style="padding-right: 0px !important;"></div>
                     </div>
                     <div class="row">
@@ -74,7 +75,14 @@
                     </div>
                     <div class="row">
                         <div class="profit col-md-2"></div>
-                        <div class="profit_val col-md-1"></div>
+                        <div class="profit_val col-md-2"></div>
+                        <div class="fine_amt col-md-2"></div>
+                        <div class="gross_loss col-md-2"></div>
+                        <div class="net_profit col-md-2"></div>
+                    </div>
+                    <div class="row">
+                        <div class="tax col-md-2"></div>
+                        <div class="tax_amount col-md-10"></div>
                     </div>
                 </div>
             </div>
@@ -113,20 +121,23 @@
                 },
                 success: function(data){
                     console.log(data);
-                    $hour_client=(data.aed_hours_client).toFixed(2);
-                    $trip_client=(data.aed_trips_client).toFixed(2);
-                    $sum_1=(data.sum_1).toFixed(2);
+                    var $hour_client=(data.aed_hours_client).toFixed(2);
+                    var $trip_client=(data.aed_trips_client).toFixed(2);
+                    var $sum_1=(data.sum_1).toFixed(2);
+                    var $settlements=(data.settlements).toFixed(2);
                     $('.total_payout').html('<strong>Total Payout:</strong>');
                     $('.aed_hour_client').html('AED Hours: <strong>'+$hour_client+'</strong>');
                     $('.aed_trips_client').html('AED Trips: <strong>'+$trip_client+'</strong>');
+                    $('.settlements').html('Settlements: <strong>'+$settlements+'</strong>');
+                    
                     $('.sum_1').html('Sum/Total: <strong>'+$sum_1+'</strong>');
-
-                    $trips=(data.trips).toFixed(2);
-                    $hours=(data.hours).toFixed(2);
-                    $aed_trips=(data.aed_trips).toFixed(2);
-                    $aed_hours=(data.aed_hours).toFixed(2);
-                    $bonus=(data.bonus).toFixed(2);
-                    $sum_2=(data.sum_2).toFixed(2);
+                    $
+                    var $trips=(data.trips).toFixed(2);
+                    var $hours=(data.hours).toFixed(2);
+                    var $aed_trips=(data.aed_trips).toFixed(2);
+                    var $aed_hours=(data.aed_hours).toFixed(2);
+                    var $bonus=(data.bonus).toFixed(2);
+                    var $sum_2=(data.sum_2).toFixed(2);
                     $('.salary_bonus').html('<strong>Salary + Bonus:</strong>');
                     $('.hours').html('Hours: <strong>'+$hours+'</strong>');
                     $('.trips').html('Trips: <strong>'+$trips+'</strong>');
@@ -135,11 +146,11 @@
                     $('.bonus').html('Bonus: <strong>'+$bonus+'</strong>');
                     $('.sum_2').html('Sum/Total: <strong>'+$sum_2+'</strong>');
 
-                    $bike_rent=(data.bike_rent).toFixed(2);
-                    $fuel=(data.fuel).toFixed(2);
-                    $salik=(data.salik).toFixed(2);
-                    $sim=(data.sim).toFixed(2);
-                    $sum_3=(data.sum_3).toFixed(2);
+                    var $bike_rent=(data.bike_rent).toFixed(2);
+                    var $fuel=(data.fuel).toFixed(2);
+                    var $salik=(data.salik).toFixed(2);
+                    var $sim=(data.sim).toFixed(2);
+                    var $sum_3=(data.sum_3).toFixed(2);
                     $('.expense_bills').html('<strong>Expense & Bills:</strong>');
                     $('.bike_rent').html('Bike-Rent: <strong>'+$bike_rent+'</strong>');
                     $('.fuel').html('Fuel: <strong>'+$fuel+'</strong>');
@@ -147,9 +158,22 @@
                     $('.sim').html('Sim: <strong>'+$sim+'('+data.sim_extra+')</strong>');
                     $('.sum_3').html('Sum/Total: <strong>'+$sum_3+'</strong>');
 
-                    $profit=(data.total_profit).toFixed(2);
+                    var $gross_profit=(data.gross_profit).toFixed(2);
+                    var $gross_loss=(data.gross_loss).toFixed(2);
+                    var $fine_amt=(data.fine_amt).toFixed(2);
+                    var $net_profit=(data.net_profit).toFixed(2);
                     $('.profit').html('<strong>Profit:</strong>');
-                    $('.profit_val').html('Profit:<strong>'+$profit+'</strong>');
+                    $('.profit_val').html('Profit: <strong>'+$gross_profit+'</strong>');
+                    $('.fine_amt').html('Fined Amount: <strong>'+$fine_amt+'</strong>');
+                    $('.gross_loss').html('Loss: <strong>'+$gross_loss+'</strong>');
+                    $('.net_profit').html('Final Profit: <strong>'+$net_profit+'</strong>');
+
+                    var $tax_collected='<span class="text-danger">Invoice not generated yet</span>';
+                    if(data.tax_collected!=null){
+                        $tax_collected=(data.tax_collected).toFixed(2);
+                    }
+                    $('.tax').html('<strong>Tax:</strong>');
+                    $('.tax_amount').html('Tax Collected: <strong>'+$tax_collected+'</strong>');
 
 
                     swal.fire({

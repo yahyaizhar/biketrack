@@ -31,6 +31,7 @@ use App\Model\Accounts\Income_zomato;
 use App\Model\Rider\Trip_Detail;
 use App\Model\Accounts\Rider_salary;
 use App\Export_data;
+use App\Model\Invoice\Invoice;
 
 class RiderDetailController extends Controller
 {
@@ -370,7 +371,12 @@ class RiderDetailController extends Controller
         $sim_extra=0;
         $total_salik=0;
         $total_sim=0;
+        $gross_profit=0;
+        $fine_amt=0;
+        $gross_loss=0;
+        $net_profit=0;
         $total_profit=0;
+        $settlements=0;
         
 
         foreach ($client_riders as $riders) {
@@ -408,6 +414,11 @@ class RiderDetailController extends Controller
             ->where("rider_id",$riders->rider_id)
             ->whereMonth('month',$monthOnly)
             ->sum('amount');
+
+            $settlements+=Income_zomato::where('rider_id',$riders->rider_id)
+            ->whereMonth('date',$monthOnly)
+            ->whereYear('date',$yearOnly)
+            ->sum('settlements');
 
             $fuel+=Company_Account::whereNotNull('fuel_expense_id')
             ->where('rider_id',$riders->rider_id)
@@ -449,15 +460,41 @@ class RiderDetailController extends Controller
 
 
             $profit = AccountsController::calculate_profit($month,$riders->rider_id);
+            if($profit<0) $gross_loss+=abs($profit);
+            else $gross_profit+=abs($profit);
+        
             $total_profit+=$profit;
 
+            $bills = AccountsController::calculate_bills($month,$riders->rider_id);
+            $fine_amt+=$bills['dicipline_fine'];
+
         }
+        $net_profit=($gross_profit-$gross_loss)+$fine_amt;
+
+        $tax_collected=null;
+        $invoice=Invoice::where('client_id',$client_id)
+        ->whereMonth('month',$monthOnly)
+        ->whereYear('month',$yearOnly)
+        ->get()
+        ->first();
+        if(isset($invoice)){
+            $tax_collected=round($invoice->taxable_amount,2);
+        }
+
         return response()->json([
             'client'=>$client_riders,
+            
             'total_profit'=>$total_profit,
+            'net_profit'=>$net_profit,
+            'gross_profit'=>$gross_profit,
+            'gross_loss'=>$gross_loss,
+            'fine_amt'=>$fine_amt,
+            'settlements'=>$settlements,
+            'tax_collected'=>$tax_collected,
+
             'aed_hours_client'=>$hours_client,
             'aed_trips_client'=>$trips_client,
-            'sum_1'=>$hours_client+$trips_client,
+            'sum_1'=>$hours_client+$trips_client+$settlements,
 
             'trips'=>$trips,
             'hours'=>$hours,
