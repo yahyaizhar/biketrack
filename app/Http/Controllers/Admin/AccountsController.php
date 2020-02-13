@@ -3406,8 +3406,39 @@ public function client_income_update(Request $request,$id){
     public function view_riders_payouts_days(){
         return view('admin.zomato.riders_payouts_by_days');
     }
-    public function resync_attendance_data(Request $r)
+    public function resync_attendance_data(Request $r,$rider_id,$month)
     {
+        $_onlyMonth=Carbon::parse($month)->format("m");
+        $_onlyYear=Carbon::parse($month)->format("Y");
+
+        $ca=Company_Account::where("rider_id",$rider_id)
+        ->whereMonth("month",$_onlyMonth)
+        ->whereYear("month",$_onlyYear)
+        ->whereNotNull("kingrider_fine_id")
+        ->delete();
+
+        $ra=Rider_Account::where("rider_id",$rider_id)
+        ->whereMonth("month",$_onlyMonth)
+        ->whereYear("month",$_onlyYear)
+        ->whereNotNull("kingrider_fine_id")
+        ->delete();
+        
+        $zincome=Income_zomato::where("rider_id",$rider_id)
+        ->whereMonth("date",$_onlyMonth)
+        ->whereYear("date",$_onlyYear)
+        ->get()
+        ->first();
+        if (isset($zincome)) {
+            $zincome->approve_absents=null;
+            $zincome->save();
+            $rpbds=Riders_Payouts_By_Days::where("zomato_income_id",$zincome->id)->get();
+            foreach ($rpbds as $rpbd) {
+                $rpbd->absent_status=null;
+                $rpbd->absent_fine_id=null;
+                $rpbd->save();
+            }
+        }
+      
         $time_sheet=$r->time_sheet;
         $zi=$r->zomato_income;
 

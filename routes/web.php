@@ -245,7 +245,7 @@ Route::group([
     Route::get("/rider/week/days/sync/data/{month}/{rider_id}/{weekly_off_day}/{absent_days}/{weekly_off}/{extra_day}/","AccountsController@weekly_days_sync_data"); //not_using
 //ends import Zomato
 
-    /*[rider- resync attendace data]*/Route::post('/resync_attendance_data','AccountsController@resync_attendance_data')->name('import.resync_attendance_data');
+    /*[rider- resync attendace data]*/Route::post('/resync_attendance_data/{rider_id}/{month}','AccountsController@resync_attendance_data')->name('import.resync_attendance_data');
     //payout method
     /*[clients - Add payout method]*/Route::POST("/client/add_payout_method","ClientController@add_payout_method")->name("admin.add_payout_method");
     //payout method
@@ -625,7 +625,9 @@ Route::get('{route}/edit_route','HomeController@edit_routes')->name('admin.edit_
 Route::get('/add/employee','Auth\EmployeeController@showloginform')->name('Employee.showloginform');   ///only for admin
 Route::post('/insert/employee','Auth\EmployeeController@insert_employee')->name('Employee.insert_employee'); ///only for admin
 Route::get('/show/employee','Auth\EmployeeController@viewEmployee')->name('Employee.viewEmployee'); ///only for admin
-Route::get('/show/employee/ajax','Auth\EmployeeController@getEmployee')->name('Employee.getEmployee'); ///only for admin
+Route::get('/show/active_employee','Auth\EmployeeController@viewActiveEmployee')->name('Employee.viewActiveEmployee');//***
+Route::get('/show/employee/ajax/','Auth\EmployeeController@getEmployee')->name('Employee.getEmployee'); ///only for admin
+Route::get('/show/active_employee/ajax/','Auth\EmployeeController@getActiveEmployee')->name('Employee.getActiveEmployee'); //*** 
 Route::delete('/delete/employee/{employee_id}','Auth\EmployeeController@deleteEmployee')->name('Employee.deleteEmployee'); ///only for admin
 Route::get('/edit/employee/{employee_id}','Auth\EmployeeController@edit_employee')->name('Employee.edit_employee'); ///only for admin
 Route::get('/view/employee/{employee_id}','Auth\EmployeeController@view_employee')->name('Employee.view_employee'); ///only for admin

@@ -854,72 +854,79 @@
                 </div>
             </div> --}}
         </div>
-        <div class="kt-portlet__body">
+        <div class="kt-portlet__body" id="rider_payout_msg">
             <div class="attendance__msg-container" style="">
-                <div class="attendance__msg"></div>
-                <div class="attendance__sync-data">
-                    <div class="row">
-                        <div class="col-md-3 offset-md-9">
-                            <form class="kt-form" enctype="multipart/form-data" id="resync__attendance-form">
-                                <select class="form-control" name="weekday" >
-                                    <option value="0">Sunday</option>
-                                    <option value="1">Monday</option>
-                                    <option value="2">Tuesday</option>
-                                    <option value="3">Wednesday</option>
-                                    <option value="4">Thursday</option>
-                                    <option value="5">Friday</option>
-                                    <option value="6">Saturday</option>
-                                </select>
-            
-                                <button onclick="resync__attendace(this)" class="btn btn-success btn-elevate btn-icon-sm mt-3 float-right" type="button">
-                                    Resync Data
-                                </button> 
-                                <noscript id="resync__attendace_data"></noscript>
-                            </form>
+                <div class="attendance__msg_payout"></div>
+            </div>
+        </div>
+        <div id="rider_payout_hidden">
+            <div class="kt-portlet__body">
+                <div class="attendance__msg-container" style="">
+                    {{-- <div class="attendance__msg"></div> --}}
+                    <div class="attendance__sync-data">
+                        <div class="row">
+                            <div class="col-md-3 offset-md-9">
+                                <form class="kt-form" enctype="multipart/form-data" id="resync__attendance-form">
+                                    <select class="form-control" name="weekday" >
+                                        <option value="0">Sunday</option>
+                                        <option value="1">Monday</option>
+                                        <option value="2">Tuesday</option>
+                                        <option value="3">Wednesday</option>
+                                        <option value="4">Thursday</option>
+                                        <option value="5">Friday</option>
+                                        <option value="6">Saturday</option>
+                                    </select>
+                
+                                    <button onclick="resync__attendace(this)" class="btn btn-success btn-elevate btn-icon-sm mt-3 float-right" type="button">
+                                        Resync Data
+                                    </button> 
+                                    <noscript id="resync__attendace_data"></noscript>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="kt-portlet__body" id="rider_days_detail">
-                <style type="text/css">
-                    #rider_days_detail table {
-                        border:solid #000 !important;
-                        border-width:1px 0 0 1px !important;
-                    }
-                    #rider_days_detail th,#rider_days_detail td {
-                        border:solid #000 !important;
-                        border-width:0 1px 1px 0 !important;
-                    }
-                    .custom_rider_id {
+            <div class="kt-portlet__body" id="rider_days_detail">
+                    <style type="text/css">
+                        #rider_days_detail table {
+                            border:solid #000 !important;
+                            border-width:1px 0 0 1px !important;
+                        }
+                        #rider_days_detail th,#rider_days_detail td {
+                            border:solid #000 !important;
+                            border-width:0 1px 1px 0 !important;
+                        }
+                        .custom_rider_id {
+                            font-size: 18px;
+                            }
+                        .custom_rider_name {
                         font-size: 18px;
                         }
-                    .custom_rider_name {
-                    font-size: 18px;
-                    }
-                    </style>
-                    <div class="custom_rider_id"></div>
-                    <div class="custom_rider_name"></div>
+                        </style>
+                        <div class="custom_rider_id"></div>
+                        <div class="custom_rider_name"></div>
 
-            <table class="table table-striped- table-hover table-checkable table-condensed rider_days_detail"  style="width:100%;margin:0px auto;">
-                <thead>
-                    <tr>
-                        <th style=" width: 25%;border: 1px solid black;">Date</th>
-                        <th style=" width: 25%;border: 1px solid black;">Trips</th>
-                        <th style=" width: 25%;border: 1px solid black;">Hours</th>     
-                        <th style=" width: 25%;border: 1px solid black;">Status</th>                   
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-                <tfoot></tfoot>
-            </table>
-            <div>
+                <table class="table table-striped- table-hover table-checkable table-condensed rider_days_detail"  style="width:100%;margin:0px auto;">
+                    <thead>
+                        <tr>
+                            <th style=" width: 25%;border: 1px solid black;">Date</th>
+                            <th style=" width: 25%;border: 1px solid black;">Trips</th>
+                            <th style=" width: 25%;border: 1px solid black;">Hours</th>     
+                            <th style=" width: 25%;border: 1px solid black;">Status</th>                   
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <tfoot></tfoot>
+                </table>
+                <div>
+                </div>
             </div>
+            <button style="float:right;margin-right: 10px;" onclick="print_data()"  class="btn btn-success btn-elevate btn-icon-sm" id="sync_data" type="button">
+                    Print Data
+            </button> 
         </div>
-        <button style="float:right;margin-right: 10px;" onclick="print_data()"  class="btn btn-success btn-elevate btn-icon-sm" id="sync_data" type="button">
-                Print Data
-        </button> 
     </div>
 </div>
 {{-- end rider payouts by days --}}
@@ -1584,7 +1591,7 @@
 
 
 
-  var basic_alert= '   <div><div class="alert alert-danger fade show" role="alert">  '  + 
+  var basic_alert= '   <div><div class="alert alert-danger fade show" id="alert-text-css" role="alert">  '  + 
  '                                   <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div>  '  + 
  '                                       <div class="alert-text">A simple danger alert—check it out!</div>  '  + 
  '                                       <div class="alert-close">  '  + 
@@ -1695,7 +1702,8 @@ var detect_billchanges=function(){
                 }
             }
         });
-
+        var rider_id=biketrack.getUrlParameter('rider_id');
+        var month=biketrack.getUrlParameter('r1d1');
         var __data={
             time_sheet:time_sheet_data,
             zomato_income:_zi
@@ -1704,7 +1712,7 @@ var detect_billchanges=function(){
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            url : "{{route('import.resync_attendance_data')}}",
+            url : "{{ url('admin/resync_attendance_data') }}" + "/" + rider_id + "/" + month,
             type : 'POST',
             data: __data,
             beforeSend: function() {            
@@ -1715,6 +1723,7 @@ var detect_billchanges=function(){
             },
             success: function(data){
                 console.warn(data);
+                default_rejected();
                 $('.bk_loading').hide();
                 if(data.status==0){
                     swal.fire({
@@ -1836,6 +1845,19 @@ var detect_billchanges=function(){
                     $('.attendance__msg').hide();
                     $(".rider_days_detail tbody").html(""); 
                     $(".rider_days_detail tfoot").html(""); 
+                    $("#rider_payout_hidden").show(); 
+                    $("#rider_payout_msg").hide();
+                    if (_data==null) {
+                        $("#rider_payout_hidden").hide();
+                        $("#rider_payout_msg").show();
+                        var msg="Rider payout is not imported";
+                        var _msg = $(basic_alert);
+                        _msg.find('.alert-text').html(msg);
+                        _msg.find('.alert').addClass('alert-outline-danger');
+                        $('.attendance__sync-data').show();
+                        $('.attendance__msg_payout').html(_msg.html()).show();
+                        $("#alert-text-css").css({"background-color": "white", "font-size": "35px"});
+                    }
                     if(!_data) {return; }
                     if(_data.error!=null){
                         var _err = JSON.parse(_data.error);
@@ -1861,6 +1883,7 @@ var detect_billchanges=function(){
                             $('.attendance__sync-data').show();
                             $('.attendance__msg').html(_msg.html()).show();
                         }
+                        
 
                     }
                     $('#resync__attendace_data').html(JSON.stringify(_data));
@@ -1947,7 +1970,7 @@ var detect_billchanges=function(){
                   $('.custom_rider_id').text('Rider id: '+_data.rider_id);
                   $('.custom_rider_name').text('Rider name: '+_name);
 
-                //   default_rejected();
+                  default_rejected();
                 },
                 error: function(error){
                     console.log(error);
@@ -3422,20 +3445,24 @@ function UpdateRows($this,id,model_class,model_id,rider_id,string,month,year,sou
 
 }
 function default_rejected(){
-    $(".rider_days_detail tbody tr").each(function(i,j){
-    var pending_status=$(this).find("td:eq(3)").text();
-    if(pending_status=="Absent (Pending)"){
-        var a=$(this).find("td:eq(0)").text();
-        var month=biketrack.getUrlParameter('r1d1');
-        var rider_id=biketrack.getUrlParameter('rider_id');
-        var _year=new Date(month).format("yyyy");
-        var day=a.split(_year).pop("");
-        var date=a.replace(day, '');
-        var rider_payout_days_date=new Date(date).format("yyyy-mm-dd");
-        var rejected='rejected';
-        approved_rejected_status(rider_id,month,rider_payout_days_date,rejected);
+    var get_month=new Date(biketrack.getUrlParameter('r1d1')).format("yyyy-mm");
+    var static_month=new Date("2019-12-01").format("yyyy-mm");
+    if(get_month>static_month){
+        $(".rider_days_detail tbody tr").each(function(i,j){
+            var pending_status=$(this).find("td:eq(3)").text();
+            if(pending_status=="Absent (Pending)"){
+                var a=$(this).find("td:eq(0)").text();
+                var month=biketrack.getUrlParameter('r1d1');
+                var rider_id=biketrack.getUrlParameter('rider_id');
+                var _year=new Date(month).format("yyyy");
+                var day=a.split(_year).pop("");
+                var date=a.replace(day, '');
+                var rider_payout_days_date=new Date(date).format("yyyy-mm-dd");
+                var rejected='rejected';
+                approved_rejected_status(rider_id,month,rider_payout_days_date,rejected);
+            }
+        });
     }
-});
 }
 function BillsDetails(){
     var month=biketrack.getUrlParameter('r1d1');
