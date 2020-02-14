@@ -185,7 +185,7 @@
                              Mobile Charges
                         </a>
                         &nbsp; --}}
-                        <a href="" data-ajax="{{ route('Rider.update_remaining_salary') }}" class=" btn btn-success btn-elevate btn-icon-sm">
+                        <a href="" data-ajax="{{ route('Rider.update_remaining_salary') }}" id="update_remaining_pay" class=" btn btn-success btn-elevate btn-icon-sm">
                             <i class="la la-money"></i>
                             Pay Remaining Salary
                         </a>
@@ -2415,7 +2415,8 @@ var detect_billchanges=function(){
         
         $('form#remaining_salary').on('submit', function(e){
             e.preventDefault();
-            $("to_pay").hide();
+            $("#to_pay").hide();
+            $("#update_remaining_pay").hide();
             var _form = $(this);
             var _modal = _form.parents('.modal');
             var _cta = _form.find('[type="submit"]');
@@ -2724,12 +2725,14 @@ var detect_billchanges=function(){
                         if(is_update){
                             //update salary
                             $("#to_pay").html('<i class="fa fa-dollar-sign"></i> Update Salary');
+                            $("#update_remaining_pay").show(); 
                         }
                         $("#to_pay").attr("onclick",$("#getting_val").attr('onclick'));
                         $("#to_pay").attr("data-target",$("#getting_val").attr('data-target'));
                     }
                     else{
                         $("#to_pay").hide();
+                        $("#update_remaining_pay").hide(); 
                     }
                     
                     $("#for_days_payouts").trigger("click");
