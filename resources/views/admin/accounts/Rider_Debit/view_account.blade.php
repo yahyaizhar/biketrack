@@ -185,6 +185,12 @@
                              Mobile Charges
                         </a>
                         &nbsp; --}}
+                        <a href="" data-ajax="{{ route('Rider.update_remaining_salary') }}" class=" btn btn-success btn-elevate btn-icon-sm">
+                            <i class="la la-money"></i>
+                            Pay Remaining Salary
+                        </a>
+                        
+                        &nbsp;
                         <a href="" data-ajax="{{ route('MobileInstallment.create') }}" class=" btn btn-success btn-elevate btn-icon-sm">
                             <i class="fa fa-mobile-alt"></i>
                             Mobile Installment

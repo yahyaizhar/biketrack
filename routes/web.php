@@ -298,6 +298,8 @@ Route::group([
     /*[accounts - generate salary]*/Route::get('/Add/Salary','AccountsController@add_new_salary_create')->name('account.new_salary');
     /*[accounts - generate salary]*/Route::post('/Salary/Added','AccountsController@new_salary_added')->name('account.added_salary');
     Route::get('/rider/salary','RiderController@rider_salary')->name('Rider.salary');//not_using
+    Route::get('/rider/update_remaining_salary','AccountsController@update_remaining_salary')->name('Rider.update_remaining_salary');//*** 
+    Route::post('/rider/add/update_remaining_salary','AccountsController@add_update_remaining_salary')->name('Rider.add_update_remaining_salary');//*** 
 	
     Route::delete('/month/{month_id}', 'AccountsController@DeleteMonth')->name('account.DeleteMonth');//not_using
     /*[accounts - view salary by month]*/Route::get('/Month/Salary','AccountsController@salary_by_month_create')->name('account.month_salary');

@@ -699,6 +699,9 @@ class AjaxNewController extends Controller
             if($rider_statement->source == 'salary_paid'){
                 return "Salary Paid";
             }
+            if($rider_statement->source == 'remaining_salary'){
+                return "Remaining Salary";
+            }
             return $rider_statement->source;
         })
         ->addColumn('cr', function($rider_statement){

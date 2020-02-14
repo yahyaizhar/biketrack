@@ -851,7 +851,18 @@ class AccountsController extends Controller
             ->where("source",'!=',"salary_paid")
             ->sum('amount');
         }
-
+        
+        $salary_paid=Rider_Account::where("rider_id",$rider_id)
+        ->whereMonth("month",$onlyMonth)
+        ->where(function($q) {
+            $q->where('type', "cr_payable")
+            ->orWhere('type', 'dr');
+        })
+        ->where(function($w) {
+            $w->where('source', "salary_paid")
+            ->orWhere('source', 'remaining_salary');
+        })
+        ->sum('amount');
 
         $ra_cr=Rider_Account::where("rider_id",$rider_id)
         ->whereMonth("month",$onlyMonth)
@@ -1182,6 +1193,7 @@ class AccountsController extends Controller
             'zomato_trips'=>round($zomato_trips,2),
             'total_deduction'=>round($ra_payable,2),
             'total_salary'=>round($total_salary_amt,2),
+            'salary_paid'=>round($salary_paid,2),
             'closing_balance_prev'=>$closing_balance_prev,
             'is_paid'=>$is_paid_salary,
             'is_generated'=>$is_generated_salary,
@@ -4280,5 +4292,39 @@ public function client_income_update(Request $request,$id){
             'msg'=>$msg,
 
         ]);
+    }
+    public function update_remaining_salary(){
+        $riders=Rider::where("active_status","A")->get();
+        return view('accounts.remaining_salary',compact("riders"));
+    }
+    public function add_update_remaining_salary(Request $request){
+        $rider_id=$request->rider_id;
+        $_onlyMonth=Carbon::parse($request->month)->format("m");
+        $_onlyYear=Carbon::parse($request->month)->format("Y");
+
+        $rider_salary=Rider_salary::where("rider_id",$rider_id)
+        ->whereMonth("month",$_onlyMonth)
+        ->whereYear("month",$_onlyYear)
+        ->get()
+        ->first();
+        if(isset($rider_salary)){
+            $rider_salary->recieved_salary=($request->salary_paid)+($request->reamining_salary);
+            $rider_salary->remaining_salary=round((($request->total_remaining)-($request->reamining_salary)),2);
+            $rider_salary->save();
+        }
+
+        $ra=new Rider_Account;
+        $ra->type='dr';
+        $ra->month = Carbon::parse($request->month)->startOfMonth()->format('Y-m-d');
+        $ra->given_date=Carbon::parse($request->given_date)->format('Y-m-d');
+        $ra->amount=round($request->reamining_salary,2);
+        $ra->rider_id=$rider_id;
+        $ra->source='remaining_salary';
+        $ra->payment_status='paid';
+        $ra->salary_id=$rider_salary->id; 
+        $ra->save();
+
+        // return $rider_salary;
+        
     }
 }
