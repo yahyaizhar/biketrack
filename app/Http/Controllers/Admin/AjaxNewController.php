@@ -480,7 +480,10 @@ class AjaxNewController extends Controller
         $salary_paid_status=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
-        ->where('source','salary_paid')
+        ->where(function($q) {
+            $q->where('source', "salary_paid")
+              ->orWhere('source', 'remaining_salary');
+        })
         ->get()
         ->first();
         if (isset($salary_paid_status)) {
@@ -568,6 +571,7 @@ class AjaxNewController extends Controller
         ->where("source","!=","advance")
         ->where("source","!=","salary_paid")
         ->where("source","!=","Visa Charges")
+        ->where("source","!=","remaining_salary")
         ->where("source","!=","Mobile Installment")
         ->sum('amount');
         $salik=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
@@ -588,7 +592,10 @@ class AjaxNewController extends Controller
         $salary_paid=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
-        ->where('source','salary_paid')
+        ->where(function($q) {
+            $q->where('source', "salary_paid")
+              ->orWhere('source', 'remaining_salary');
+        })
         ->where('payment_status','paid')
         ->sum('amount');
         $macdonald=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
