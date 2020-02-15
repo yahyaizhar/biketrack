@@ -101,6 +101,14 @@
             </div>
             <form class="kt-form" id="form_dates"  enctype="multipart/form-data">
                 <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                        <a href="{{asset('\dashboard\assets\media\sample_import_sheets\careem_payout.csv')}}" download="Careem Payout Sample.csv">
+                            <i class="la la-download"></i>
+                            Download sample file
+                        </a>
+                        </div>
+                    </div>
                     <div class="UppyDragDrop"></div>
                     <div class="card card-body bg-light py-1 mt-1 uppy_result">
                         <span></span>
