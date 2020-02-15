@@ -412,13 +412,13 @@ function updateRange(){
         var current_start_date=picker.startDate.format('MM/DD/YYYY');
         var current_end_date=picker.endDate.format('MM/DD/YYYY');
         var index=$(this).parents("tr").index();
-
+// console.log('========');
         var prev_startDate=moment(current_start_date, 'MM/DD/YYYY');
         var prev_endDate=moment(current_end_date, 'MM/DD/YYYY');
 
         $('#client_income_table tbody tr').each(function(i,x){
         var _current_index=$(this).index();
-        
+        console.log(index,'========',_current_index);
         if(_current_index>index){
             var new_start_date=prev_endDate.format('DD-MM-YYYY');
             var new_end_day=moment(prev_endDate,"DD-MM-YYYY").add(7, 'd').format("DD-MM-YYYY");

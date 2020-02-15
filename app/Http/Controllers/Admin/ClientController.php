@@ -17,6 +17,10 @@ use App\Model\Bikes\bike;
 use App\Model\Bikes\bike_detail;
 use App\Assign_bike;
 use Carbon\Carbon;
+use App\Model\Accounts\Client_Income;
+use App\Model\Accounts\Rider_salary;
+use Arr;
+use Batch;
 
 class ClientController extends Controller
 {
@@ -461,7 +465,439 @@ public function profit_client($id){
     $client=Client::find($id);
     return view('client_profit_sheet',compact('client'));
 }
+    public function import_income(Request $r)
+    {
+        $client_histories=Client_History::all();
+        $data = $r->data;
+        
+        $income_objs=[];
+        $ca_objects=[];
+        $ra_objects=[];
+        $salaries=[];
 
+        $delete_data=[];
+        $ca_delete_data=[];
+        $ra_delete_data=[];
+
+        $salaries_updates=[];
+
+        $client_incomes = Client_Income::all(); // r1
+        $clients = Client::all(); // r2
+        $rider_salaries = Rider_salary::all(); // r3
+        $warnings=[];
+        $i=0;
+        $commission_type='percentage';
+        $commission_value=30;
+        $commission=0;
+        $salary_amount=0;
+        
+
+        foreach ($data as $item) {
+            $i++;
+            if(!isset($item['captain_id']) || $item['captain_id']==null){
+                continue; # just skip the iteration..because we don't find any data
+            }
+            $captain_id=$item['captain_id'];
+            $unique_id=uniqid().time().$captain_id;
+            $date_to_match=$item['week_start'];
+            $month = Carbon::parse($date_to_match)->startOfMonth()->format('Y-m-d');
+
+            # loop to find client history againts this captain id (so we can fetch rider id and client id)
+            $history_found = Arr::first($client_histories, function ($iteration, $key) use ($captain_id, $date_to_match) {
+                $start_created_at =Carbon::parse($iteration->assign_date)->startOfMonth()->format('Y-m-d');
+                $created_at =Carbon::parse($start_created_at);
+    
+                $start_updated_at =Carbon::parse($iteration->deassign_date)->endOfMonth()->format('Y-m-d');
+                $updated_at =Carbon::parse($start_updated_at);
+                $req_date =Carbon::parse($date_to_match);
+    
+                if($iteration->status=='active'){    
+                    return $iteration->client_rider_id==$captain_id && 
+                    ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+                }
+    
+                return $iteration->client_rider_id==$captain_id &&
+                    ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+            });
+            $rider_id=null;
+            $client_id=null;
+            
+            /**
+             * =======================================================================
+             *              Start validation of the data we received
+             * =======================================================================
+            */
+
+            if(isset($history_found)){
+                # history found - get rider and client id
+                $rider_id=$history_found->rider_id;
+                $client_id=$history_found->client_id;
+
+                # validate and store the commission
+                if($history_found->comission!=null){
+                    $commission_data = json_decode($history_found->comission,true);
+                    if(isset($commission_data['com_type']) && isset($commission_data['com_amount'])){
+                        $commission_type = $commission_data['com_type'];
+                        $commission_value = $commission_data['com_amount'];
+
+                        if($commission_type!='percentage' && $commission_type!='fixed'){
+                           # Commission type isn't valid (check [com_type] and [com_amount] on client__histories table)
+                            $obj = [];
+                            $obj['msg']='Invalid commission type against captain id '.$captain_id; 
+                            array_push($warnings, $obj);
+                            continue; # we no longer need to persue the process 
+                        }
+                    }
+                    else {
+                        # Commission isn't valid (check [com_type] and [com_amount] on client__histories table)
+                        $obj = [];
+                        $obj['msg']='Invalid commission against captain id '.$captain_id; 
+                        array_push($warnings, $obj);
+                        continue; # we no longer need to persue the process
+                    }
+                }
+                else {
+                    # Commission not found
+                    $obj = [];
+                    $obj['msg']='Commission not found against captain id '.$captain_id; 
+                    array_push($warnings, $obj);
+                    continue; # we no longer need to persue the process
+                }
+            }
+            else {
+                # history not found, we need to show error against this rider
+                $obj = [];
+                $obj['msg']='No rider found against '.$captain_id.'. Please assign the captain id first'; 
+                array_push($warnings, $obj);
+                continue; # we no longer need to persue the process
+            }
+            # now we need to find the client and check if it is commission based
+            $client = Arr::first($clients, function ($iteration, $key) use ($client_id) {
+                return $iteration->id == $client_id;
+            });
+            if(isset($client)){
+                if($client->setting!=null){
+                    $payout_method = json_decode($client->setting, true);
+                    $pm = $payout_method['payout_method'];
+                    # checking if client is commission based
+                    if($pm!='commission_based'){
+                        # client isn't commission based
+                        $obj = [];
+                        $obj['msg']=$client->name.' is not Commission Based, Please set the payout method to commission base.';
+                        array_push($warnings, $obj);
+                        continue; # we no longer need to persue the process
+                    }
+                }
+                else {
+                    # no payout method is defined
+                    $obj = [];
+                    $obj['msg']='Payout method is undefined against client '.$client->name.'.'; 
+                    array_push($warnings, $obj);
+                    continue; # we no longer need to persue the process
+                }
+            }
+            else {
+                # no client found
+                $obj = [];
+                $obj['msg']='No client found against client id '.$client_id.'.'; 
+                array_push($warnings, $obj);
+                continue; # we no longer need to persue the process
+            }
+
+            $cash = isset($item['cash_payment'])?abs($item['cash_payment']):null;
+            $bank = isset($item['cash_balance'])?$item['cash_balance']:null;
+            $total_payout = round($cash+$bank,2);
+            ## total payout must be greater than zero
+            if($total_payout<=0){
+                continue; # we no longer need to persue the process
+            }
+
+            /**
+             * =======================================================================
+             * Adding data started from here - no validations will be apply after this
+             * =======================================================================
+            */
+
+            # now we need to check if data is already exist - if exist than we delete it
+            $already_income = Arr::first($client_incomes, function ($iteration, $key) use ($item) {
+                $ws_i = Carbon::parse($iteration->week_start);
+                $we_i = Carbon::parse($iteration->week_end);
+                $ws_item = Carbon::parse($item['week_start']); 
+                $we_item = Carbon::parse($item['week_end']);
+                return $iteration->captain_id == $item['captain_id'] &&
+                $ws_i->equalTo($ws_item) &&
+                $we_i->equalTo($we_item);
+            });
+            
+
+            if(isset($already_income)){ 
+                # data found - deleting it from 3 tables
+                //client icnome table
+                $objDelete = [];
+                $objDelete['id']=$already_income->id; 
+                array_push($delete_data, $objDelete);
+                //ca (company_account table)
+                $objDelete = [];
+                $objDelete['client_income_id']=$already_income->acc_id; 
+                array_push($ca_delete_data, $objDelete);
+                //ra (rider_account table)
+                $objDelete = [];
+                $objDelete['client_income_id']=$already_income->acc_id; 
+                array_push($ra_delete_data, $objDelete);
+            }
+            ## storing the data into client_income table
+            
+            $obj = [];
+            $obj['client_id']=$client_id;
+            $obj['rider_id']=$rider_id;
+            $obj['acc_id']=$unique_id;
+            $obj['month']=$month;
+            $obj['given_date']=Carbon::now()->format('Y-m-d');
+            $obj['captain_id']=$captain_id;
+            $obj['trips']=isset($item['trips'])?$item['trips']:null;
+            $obj['total_payout']=$total_payout;
+            $obj['cash']=$cash;
+            $obj['bank']=$bank;
+            $obj['week_start']=isset($item['week_start'])?Carbon::parse($item['week_start'])->format('Y-m-d'):null;
+            $obj['week_end']=isset($item['week_end'])?Carbon::parse($item['week_end'])->format('Y-m-d'):null;
+            $obj['income_type']='commission_based';
+            $obj['status']=1;
+            $obj['created_at']=Carbon::now();
+            $obj['updated_at']=Carbon::now();
+            array_push($income_objs, $obj);
+
+            ## storing data into company account and rider acc table
+            $week_start = Carbon::parse($obj['week_start'])->format('d M');
+            $week_end = Carbon::parse($obj['week_end'])->format('d M');
+            $client_name = $client->name;
+            
+            # calculating commission based on commission type and value
+            if($commission_type=='percentage'){
+                # calculate the percentage of payout
+                $commission = ($total_payout/100)*$commission_value;
+            }
+            else {
+                # just duduct the commission value from percentage
+                $commission = $commission_value;
+            }
+            $salary_amount = $total_payout - $commission;
+
+            # adding payout - to CA
+            $ca_amt = $total_payout;
+            $ca_obj = [];
+            $ca_obj['client_income_id']=$unique_id;
+            $ca_obj['source']=$client_name.' Weekly Payout<br>('.$week_start.' - '.$week_end.') <br>Cash: '.$cash.'<br>Bank: '.$bank;
+            $ca_obj['rider_id']=$rider_id;
+            $ca_obj['amount']=$ca_amt;
+            $ca_obj['month']=$month;
+            $ca_obj['type']='cr';
+            $ca_obj['salary_id']=null;
+            $ca_obj['given_date']=Carbon::now();
+            $ca_obj['created_at']=Carbon::now();
+            $ca_obj['updated_at']=Carbon::now();
+            array_push($ca_objects, $ca_obj);
+
+            # adding commission
+            $ca_amt = round($commission,2);
+            if($ca_amt>0){
+                $ca_obj = [];
+                $ca_obj['client_income_id']=$unique_id;
+                $ca_obj['source']= 'Weekly Commission ('.$week_start.' - '.$week_end.')';
+                $ca_obj['rider_id']=$rider_id;
+                $ca_obj['amount']=$ca_amt;
+                $ca_obj['month']=$month;
+                $ca_obj['type']='pl';
+                $ca_obj['salary_id']=null;
+                $ca_obj['given_date']=Carbon::now();
+                $ca_obj['created_at']=Carbon::now();
+                $ca_obj['updated_at']=Carbon::now();
+                array_push($ca_objects, $ca_obj);
+            }
+
+            # generating salary - To CA
+            $ca_amt = round($salary_amount,2);
+            if($ca_amt>0){
+                $ca_obj = [];
+                $ca_obj['client_income_id']=$unique_id;
+                $ca_obj['source']= 'Weekly Salary ('.$week_start.' - '.$week_end.')';
+                $ca_obj['rider_id']=$rider_id;
+                $ca_obj['amount']=$ca_amt;
+                $ca_obj['month']=$month;
+                $ca_obj['type']='dr';
+                $ca_obj['salary_id']=null;
+                $ca_obj['given_date']=Carbon::now();
+                $ca_obj['created_at']=Carbon::now();
+                $ca_obj['updated_at']=Carbon::now();
+                array_push($ca_objects, $ca_obj);
+            }
+
+            # generating salary - To RA
+            $ra_amt = round($salary_amount,2);
+            if($ra_amt>0){
+                $ra_obj = [];
+                $ra_obj['client_income_id']=$unique_id;
+                $ra_obj['source']= 'Weekly Salary ('.$week_start.' - '.$week_end.')';
+                $ra_obj['rider_id']=$rider_id;
+                $ra_obj['amount']=$ra_amt;
+                $ra_obj['month']=$month;
+                $ra_obj['type']='cr';
+                $ra_obj['salary_id']=null;
+                $ra_obj['given_date']=Carbon::now();
+                $ra_obj['created_at']=Carbon::now();
+                $ra_obj['updated_at']=Carbon::now();
+                array_push($ra_objects, $ra_obj);
+            }
+
+            if(isset($already_income)){ 
+
+                $rs= Arr::first($rider_salaries, function ($iteration, $key) use ($already_income) {
+                    $rs_i = Carbon::parse($iteration->month);
+                    $rs_item = Carbon::parse($already_income->month);
+                    return $iteration->rider_id == $already_income->rider_id &&
+                    $rs_i->equalTo($rs_item) &&
+                    $iteration->settings==$already_income->acc_id;
+                });
+                if (isset($rs)) {
+                    #salary found - update salary to rider salaries table
+                    $rs_amt = round($salary_amount,2);
+                    if($rs_amt>0){
+                        $rs_obj = [];
+                        $rs_obj['id']=$rs->id;
+                        $rs_obj['total_salary'] = $rs_amt;
+                        $rs_obj['gross_salary']=$rs_amt;
+                        $rs_obj['rider_id']=$rider_id;
+                        $rs_obj['month']=$month;
+                        $rs_obj['paid_by']=Auth::user()->id;
+                        $rs_obj['settings'] = $unique_id;
+                        $rs_obj['created_at']=Carbon::now();
+                        $rs_obj['updated_at']=Carbon::now();
+                        array_push($salaries_updates, $rs_obj);
+                    }
+
+                    
+                }
+                else {
+                    #adding salary to rider salaries table
+                    $rs_amt = round($salary_amount,2);
+                    if($rs_amt>0){
+                        $rs_obj = [];
+                        $rs_obj['total_salary'] = $rs_amt;
+                        $rs_obj['gross_salary']=$rs_amt;
+                        $rs_obj['rider_id']=$rider_id;
+                        $rs_obj['month']=$month;
+                        $rs_obj['paid_by']=Auth::user()->id;
+                        $rs_obj['settings'] = $unique_id;
+                        $rs_obj['created_at']=Carbon::now();
+                        $rs_obj['updated_at']=Carbon::now();
+                        array_push($salaries, $rs_obj);
+                    }
+                }
+            }
+            else {
+                #adding salary to rider salaries table
+                $rs_amt = round($salary_amount,2);
+                if($rs_amt>0){
+                    $rs_obj = [];
+                    $rs_obj['total_salary'] = $rs_amt;
+                    $rs_obj['gross_salary']=$rs_amt;
+                    $rs_obj['rider_id']=$rider_id;
+                    $rs_obj['month']=$month;
+                    $rs_obj['paid_by']=Auth::user()->id;
+                    $rs_obj['settings'] = $unique_id;
+                    $rs_obj['created_at']=Carbon::now();
+                    $rs_obj['updated_at']=Carbon::now();
+                    array_push($salaries, $rs_obj);
+                }
+            }
+        }
+
+        
+
+
+        $ci_deletes = DB::table('client__incomes')
+                    ->whereIn('id', $delete_data)
+                    ->delete();
+
+        $ca_deletes = DB::table('company__accounts')
+                        ->whereIn('client_income_id', $ca_delete_data)
+                        ->delete();
+        $ra_deletes = DB::table('rider__accounts')
+                        ->whereIn('client_income_id', $ra_delete_data)
+                        ->delete();
+
+        // $salaries_deletes = DB::table('rider_salaries')
+        // ->whereNotNull('settings')
+        // ->whereIn('settings', $delete_salaries)
+        // ->delete();
+        
+
+       
+        DB::table('client__incomes')->insert($income_objs); //r2
+
+        DB::table('rider_salaries')->insert($salaries); //r2
+        $su = Batch::update(new Rider_salary, $salaries_updates, 'id'); //r5 
+
+        $last_insertedids=[];
+        foreach ($salaries as $salary) {
+            # code...
+            $obj=[];
+            $obj['settings']=$salary['settings'];
+            array_push($last_insertedids,$obj);
+        }
+        foreach ($salaries_updates as $salary) {
+            # code...
+            $obj=[];
+            $obj['settings']=$salary['settings'];
+            array_push($last_insertedids,$obj);
+        }
+        # we need to update salary id in ca and ra
+        $salaries_justCreated = DB::table('rider_salaries')
+        ->whereNotNull('settings')
+        ->whereIn('settings', $last_insertedids)
+        ->get();
+
+        
+        foreach ($salaries_justCreated as $salary) {
+            # storing the salary_id one by one to company accounts
+            foreach ($ca_objects as $ca_key=>$ca_value) {
+                # code...
+                if($ca_value['client_income_id']==$salary->settings && strpos($ca_value['source'], 'Weekly Salary')!==false){
+                    $ca_objects[$ca_key]['salary_id'] = $salary->id;
+                }
+            }
+            # storing the salary_id one by one to rider accounts
+            foreach ($ra_objects as $ra_key=>$ra_value) {
+                # code...
+                if(strpos($ra_value['source'], 'Weekly Salary')!==false){
+                    if($ra_value['client_income_id']==$salary->settings){
+                        $ra_objects[$ra_key]['salary_id'] = $salary->id;
+                    }
+                }
+            }
+        } 
+        
+        DB::table('company__accounts')->insert($ca_objects); //r4
+        DB::table('rider__accounts')->insert($ra_objects); //r4
+        
+
+        return response()->json([
+            'income_objs'=>$income_objs,
+            'ra'=>$ra_objects,
+            'ca'=>$ca_objects,
+            'salaries'=>$salaries,
+
+            'data_d'=>$delete_data,
+            'ra_d'=>$ca_delete_data,
+            'ca_d'=>$ra_delete_data,
+            'salaries_u'=>$salaries_updates,
+
+            'salary_updates'=>$su,
+
+            'i'=>$last_insertedids,
+            'warnings'=>$warnings
+        ]);
+
+    }
 public function add_payout_method(Request $r){
 
     $method = $r->payout_method; 
