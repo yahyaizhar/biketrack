@@ -38,6 +38,9 @@ class EmployeeController extends Controller
     public function viewEmployee(){
         return view('admin.auth.employee_view');
     }
+    public function viewActiveEmployee(){
+        return view('admin.auth.active_employee_view');
+    }
     public function edit_employee($employee_id){
         $edit_employee=Admin::find($employee_id); 
         $webroutes = WebRoute::all();
@@ -177,7 +180,7 @@ class EmployeeController extends Controller
     }
     public function getEmployee()
     {
-        $users=Auth::user()->where("type","normal")->where("active_status","A")->get();
+        $users=Auth::user()->where("type","normal")->get();
         // return $clients;
         return DataTables::of($users)
        
@@ -190,7 +193,16 @@ class EmployeeController extends Controller
         ->addColumn('email', function($users){
             return $users->email;
         })
-       
+        ->addColumn('status', function($users){
+            if($users->Active_status == "A")
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
+            }
+            else
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
+            }
+        })
        
         ->addColumn('actions', function($users){
             $status_text = $users->status == 1 ? 'Inactive' : 'Active';
@@ -207,7 +219,51 @@ class EmployeeController extends Controller
             </span>
         </span>';
         })
-        ->rawColumns(['name','email','actions'])
+        ->rawColumns(['name','email','actions','status'])
+        ->make(true);
+    }
+    public function getActiveEmployee()
+    {
+        $users=Auth::user()->where("type","normal")->where("active_status","A")->get();
+        // return $clients;
+        return DataTables::of($users)
+       
+        ->addColumn('id', function($users){
+            return '1000'.$users->id;
+        })
+        ->addColumn('name', function($users){
+            return $users->name;
+        })
+        ->addColumn('email', function($users){
+            return $users->email;
+        })
+        ->addColumn('status', function($users){
+            if($users->Active_status == "A")
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-success">Active</span>';
+            }
+            else
+            {
+                return '<span class="btn btn-bold btn-sm btn-font-sm  btn-label-danger">Inactive</span>';
+            }
+        })
+       
+        ->addColumn('actions', function($users){
+            $status_text = $users->status == 1 ? 'Inactive' : 'Active';
+            return '<span class="dtr-data">
+            <span class="dropdown">
+                <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+                <i class="la la-ellipsis-h"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="'.route('Employee.view_employee', $users).'"><i class="fa fa-eye"></i> View</a>
+                    <a class="dropdown-item" href="'.route('Employee.edit_employee', $users).'"><i class="fa fa-edit"></i> Edit</a>
+                    <button class="dropdown-item" onclick="deleteEmployee('.$users->id.');"><i class="fa fa-trash"></i> Delete</button>
+                    </div>
+            </span>
+        </span>';
+        })
+        ->rawColumns(['name','email','actions','status',])
         ->make(true);
     }
 

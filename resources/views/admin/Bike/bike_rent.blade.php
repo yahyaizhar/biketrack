@@ -318,6 +318,7 @@
     // if(typeof _gb_rider_id !== "undefined"){
     //     $('#bike_rent [name="rider_id"]').val(_gb_rider_id).trigger('change');
     // }
+
   });
   
 

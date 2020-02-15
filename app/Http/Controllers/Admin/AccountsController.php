@@ -851,7 +851,18 @@ class AccountsController extends Controller
             ->where("source",'!=',"salary_paid")
             ->sum('amount');
         }
-
+        
+        $salary_paid=Rider_Account::where("rider_id",$rider_id)
+        ->whereMonth("month",$onlyMonth)
+        ->where(function($q) {
+            $q->where('type', "cr_payable")
+            ->orWhere('type', 'dr');
+        })
+        ->where(function($w) {
+            $w->where('source', "salary_paid")
+            ->orWhere('source', 'remaining_salary');
+        })
+        ->sum('amount');
 
         $ra_cr=Rider_Account::where("rider_id",$rider_id)
         ->whereMonth("month",$onlyMonth)
@@ -1210,6 +1221,7 @@ class AccountsController extends Controller
             'zomato_trips'=>round($zomato_trips,2),
             'total_deduction'=>round($ra_payable,2),
             'total_salary'=>round($total_salary_amt,2),
+            'salary_paid'=>round($salary_paid,2),
             'closing_balance_prev'=>$closing_balance_prev,
             'is_paid'=>$is_paid_salary,
             'is_generated'=>$is_generated_salary,
@@ -1466,8 +1478,37 @@ public function fuel_rider_selector($rider_id,$bike_id){
     ]);
 }
 public function fuel_expense_insert(Request $r){
+
     $data=$r->data;
     foreach ($data as $value) {
+        $rider_id=$r->rider_id;
+        if(isset($value['rider_id'])){
+            $rider_id=$value['rider_id'];
+        }
+        $date_to_match=$r->get('month');
+        $client_histories=Client_History::all();
+        $history_found = Arr::first($client_histories, function ($iteration, $key) use ($rider_id, $date_to_match) {
+            $start_created_at =Carbon::parse($iteration->assign_date)->startOfMonth()->format('Y-m-d');
+            $created_at =Carbon::parse($start_created_at);
+
+            $start_updated_at =Carbon::parse($iteration->deassign_date)->endOfMonth()->format('Y-m-d');
+            $updated_at =Carbon::parse($start_updated_at);
+            $req_date =Carbon::parse($date_to_match);
+
+            if($iteration->status=='active'){    
+                return $iteration->rider_id==$rider_id && 
+                ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+            }
+
+            return $iteration->rider_id==$rider_id &&
+                ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+        });
+        if (isset($history_found)) {
+            $client_id=$history_found->client_id;
+            $client=Client::find($client_id);
+            $c_setting=json_decode($client->setting,true);
+            $pm=$c_setting['payout_method'];
+        }
         if($value['amount_given_by_days']<=0) continue;
         $fuel_expense=new Fuel_Expense();
         $fuel_expense->amount=$value['amount_given_by_days'];
@@ -1491,19 +1532,47 @@ public function fuel_expense_insert(Request $r){
         
         $fuel_expense->save();
         if ($fuel_expense->type=="vip_tag") {
-            $ca = new \App\Model\Accounts\Company_Account;
-            $ca->type='dr';
-            $ca->amount=$value['amount_given_by_days'];
-            $ca->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
-            $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
-            $ca->rider_id=$r->rider_id;
-            if(isset($value['rider_id'])){
-                $ca->rider_id=$value['rider_id'];
-            }
-            $ca->source='fuel_expense_vip';
-            $ca->fuel_expense_id=$fuel_expense->id;
-            $ca->save();
+            if ($pm=="commission_based") {
+                $ra = new \App\Model\Accounts\Rider_Account;
+                $ra->type='dr';
+                $ra->amount=$value['amount_given_by_days'];
+                $ra->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+                $ra->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+                $ra->rider_id=$r->rider_id;
+                if(isset($value['rider_id'])){
+                    $ra->rider_id=$value['rider_id'];
+                }
+                $ra->source='fuel_expense_vip';
+                $ra->fuel_expense_id=$fuel_expense->id;
+                $ra->save();
 
+                $ca = new \App\Model\Accounts\Company_Account;
+                $ca->type='cr';
+                $ca->amount=$value['amount_given_by_days'];
+                $ca->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+                $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+                $ca->rider_id=$r->rider_id;
+                if(isset($value['rider_id'])){
+                    $ca->rider_id=$value['rider_id'];
+                }
+                $ca->source='fuel_expense_vip';
+                $ca->fuel_expense_id=$fuel_expense->id;
+                $ca->save();
+            }
+            else{
+                $ca = new \App\Model\Accounts\Company_Account;
+                $ca->type='dr';
+                $ca->amount=$value['amount_given_by_days'];
+                $ca->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+                $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+                $ca->rider_id=$r->rider_id;
+                if(isset($value['rider_id'])){
+                    $ca->rider_id=$value['rider_id'];
+                }
+                $ca->source='fuel_expense_vip';
+                $ca->fuel_expense_id=$fuel_expense->id;
+                $ca->save();
+            }
             $ed =Export_data::firstOrCreate([
                 'source'=>"fuel_expense_vip",
                 'source_id'=>$fuel_expense->id,
@@ -1520,19 +1589,47 @@ public function fuel_expense_insert(Request $r){
             $ed->source_id=$fuel_expense->id;
             $ed->save();
         }else if($fuel_expense->type=="cash"){
-            $ca = new \App\Model\Accounts\Company_Account;
-            $ca->type='dr';
-            $ca->amount=$value['amount_given_by_days'];
-            $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
-            $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
-            $ca->rider_id=$r->rider_id;
-            if(isset($value['rider_id'])){
-                $ca->rider_id=$value['rider_id'];
-            }
-            $ca->source='fuel_expense_cash';
-            $ca->fuel_expense_id=$fuel_expense->id;
-            $ca->save();
+            if ($pm=="commission_based") {
+                $ra = new \App\Model\Accounts\Rider_Account;
+                $ra->type='dr';
+                $ra->amount=$value['amount_given_by_days'];
+                $ra->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+                $ra->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+                $ra->rider_id=$r->rider_id;
+                if(isset($value['rider_id'])){
+                    $ra->rider_id=$value['rider_id'];
+                }
+                $ra->source='fuel_expense_cash';
+                $ra->fuel_expense_id=$fuel_expense->id;
+                $ra->save();
 
+                $ca = new \App\Model\Accounts\Company_Account;
+                $ca->type='cr';
+                $ca->amount=$value['amount_given_by_days'];
+                $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+                $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+                $ca->rider_id=$r->rider_id;
+                if(isset($value['rider_id'])){
+                    $ca->rider_id=$value['rider_id'];
+                }
+                $ca->source='fuel_expense_cash';
+                $ca->fuel_expense_id=$fuel_expense->id;
+                $ca->save();
+            }
+            else{
+                $ca = new \App\Model\Accounts\Company_Account;
+                $ca->type='dr';
+                $ca->amount=$value['amount_given_by_days'];
+                $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+                $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+                $ca->rider_id=$r->rider_id;
+                if(isset($value['rider_id'])){
+                    $ca->rider_id=$value['rider_id'];
+                }
+                $ca->source='fuel_expense_cash';
+                $ca->fuel_expense_id=$fuel_expense->id;
+                $ca->save();
+            }
             $ed =Export_data::firstOrCreate([
                 'source'=>"fuel_expense_cash",
                 'source_id'=>$fuel_expense->id,
@@ -1551,6 +1648,7 @@ public function fuel_expense_insert(Request $r){
         } 
     }
     return redirect(route('admin.fuel_expense_view'));
+    
 }
 public function fuel_expense_view()
 { 
@@ -3449,8 +3547,39 @@ public function client_income_update(Request $request,$id){
     public function view_riders_payouts_days(){
         return view('admin.zomato.riders_payouts_by_days');
     }
-    public function resync_attendance_data(Request $r)
+    public function resync_attendance_data(Request $r,$rider_id,$month)
     {
+        $_onlyMonth=Carbon::parse($month)->format("m");
+        $_onlyYear=Carbon::parse($month)->format("Y");
+
+        $ca=Company_Account::where("rider_id",$rider_id)
+        ->whereMonth("month",$_onlyMonth)
+        ->whereYear("month",$_onlyYear)
+        ->whereNotNull("kingrider_fine_id")
+        ->delete();
+
+        $ra=Rider_Account::where("rider_id",$rider_id)
+        ->whereMonth("month",$_onlyMonth)
+        ->whereYear("month",$_onlyYear)
+        ->whereNotNull("kingrider_fine_id")
+        ->delete();
+        
+        $zincome=Income_zomato::where("rider_id",$rider_id)
+        ->whereMonth("date",$_onlyMonth)
+        ->whereYear("date",$_onlyYear)
+        ->get()
+        ->first();
+        if (isset($zincome)) {
+            $zincome->approve_absents=null;
+            $zincome->save();
+            $rpbds=Riders_Payouts_By_Days::where("zomato_income_id",$zincome->id)->get();
+            foreach ($rpbds as $rpbd) {
+                $rpbd->absent_status=null;
+                $rpbd->absent_fine_id=null;
+                $rpbd->save();
+            }
+        }
+      
         $time_sheet=$r->time_sheet;
         $zi=$r->zomato_income;
 
@@ -4277,5 +4406,39 @@ public function client_income_update(Request $request,$id){
             'msg'=>$msg,
 
         ]);
+    }
+    public function update_remaining_salary(){
+        $riders=Rider::where("active_status","A")->get();
+        return view('accounts.remaining_salary',compact("riders"));
+    }
+    public function add_update_remaining_salary(Request $request){
+        $rider_id=$request->rider_id;
+        $_onlyMonth=Carbon::parse($request->month)->format("m");
+        $_onlyYear=Carbon::parse($request->month)->format("Y");
+
+        $rider_salary=Rider_salary::where("rider_id",$rider_id)
+        ->whereMonth("month",$_onlyMonth)
+        ->whereYear("month",$_onlyYear)
+        ->get()
+        ->first();
+        if(isset($rider_salary)){
+            $rider_salary->recieved_salary=($request->salary_paid)+($request->reamining_salary);
+            $rider_salary->remaining_salary=round((($request->total_remaining)-($request->reamining_salary)),2);
+            $rider_salary->save();
+        }
+
+        $ra=new Rider_Account;
+        $ra->type='dr';
+        $ra->month = Carbon::parse($request->month)->startOfMonth()->format('Y-m-d');
+        $ra->given_date=Carbon::parse($request->given_date)->format('Y-m-d');
+        $ra->amount=round($request->reamining_salary,2);
+        $ra->rider_id=$rider_id;
+        $ra->source='remaining_salary';
+        $ra->payment_status='paid';
+        $ra->salary_id=$rider_salary->id; 
+        $ra->save();
+
+        // return $rider_salary;
+        
     }
 }

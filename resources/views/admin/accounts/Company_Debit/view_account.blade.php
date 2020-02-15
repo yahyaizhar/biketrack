@@ -757,7 +757,11 @@
                             processData:false,
                             success: function(data){
                                 console.log(data);
-                                
+                                if (data.pm="commission_based") {
+                                    if (data.bike_own=="self") {
+                                        alert("Commision Based Rider");
+                                    }
+                                } 
                                 swal.fire({
                                     position: 'center',
                                     type: 'success',

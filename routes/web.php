@@ -194,7 +194,7 @@ Route::group([
     Route::post('/rider/{rider}/sendMessage', 'RiderController@sendSMS')->name('admin.rider.sendSMS'); //trash
     /*[rider-active/inactive]*/Route::post('/rider/{rider}/updateStatus', 'RiderController@updateStatus')->name('admin.rider.updateStatus');//ajax_route //active/inactive 
     /*[rider-client history]*/Route::get('/rider/client_history/{id}',"RiderController@client_history")->name('Client.client_history');
-    Route::get('/change_client_dates/{rider_id}/history/{client_history_id}',"RiderController@update_client_history_dates")->name('Client.update_client_history_dates');//*** */
+    Route::get('/change_client_dates/{rider_id}/history/{client_history_id}',"RiderController@update_client_history_dates")->name('Client.update_client_history_dates');
     /*[rider-Duration time]*/Route::get('/rider/spell/time/{id}',"RiderController@Spell_time")->name('Rider.spell_time');
 //  map Routes
     Route::get('/rider/assign-area', 'HomeController@assign_area')->name('admin.assignArea');   ///not_using
@@ -213,6 +213,7 @@ Route::group([
 // end Riders
 // clients
     /*[clients-change feid]*/Route::post('/update/client/riders/{rider_id}','RiderController@update_ClientRiders')->name('ClientRiders.admin.update');//ajax_route //changing feid on admin.clients.riders route ////ok
+    Route::post('/update/rider_comission','RiderController@update_rider_comission')->name('admin.update_rider_comission');//***
     /*[clients-rider performance]*/Route::get('/client/rider/performance','RiderController@RiderPerformance')->name('admin.riderPerformance');////ok
     Route::resource('/clients', 'ClientController', [
         'as' => 'admin'
@@ -245,7 +246,7 @@ Route::group([
     Route::get("/rider/week/days/sync/data/{month}/{rider_id}/{weekly_off_day}/{absent_days}/{weekly_off}/{extra_day}/","AccountsController@weekly_days_sync_data"); //not_using
 //ends import Zomato
 
-    /*[rider- resync attendace data]*/Route::post('/resync_attendance_data','AccountsController@resync_attendance_data')->name('import.resync_attendance_data');
+    /*[rider- resync attendace data]*/Route::post('/resync_attendance_data/{rider_id}/{month}','AccountsController@resync_attendance_data')->name('import.resync_attendance_data');
     //payout method
     /*[clients - Add payout method]*/Route::POST("/client/add_payout_method","ClientController@add_payout_method")->name("admin.add_payout_method");
     //payout method
@@ -298,6 +299,8 @@ Route::group([
     /*[accounts - generate salary]*/Route::get('/Add/Salary','AccountsController@add_new_salary_create')->name('account.new_salary');
     /*[accounts - generate salary]*/Route::post('/Salary/Added','AccountsController@new_salary_added')->name('account.added_salary');
     Route::get('/rider/salary','RiderController@rider_salary')->name('Rider.salary');//not_using
+    Route::get('/rider/update_remaining_salary','AccountsController@update_remaining_salary')->name('Rider.update_remaining_salary');
+    Route::post('/rider/add/update_remaining_salary','AccountsController@add_update_remaining_salary')->name('Rider.add_update_remaining_salary');
 	
     Route::delete('/month/{month_id}', 'AccountsController@DeleteMonth')->name('account.DeleteMonth');//not_using
     /*[accounts - view salary by month]*/Route::get('/Month/Salary','AccountsController@salary_by_month_create')->name('account.month_salary');
@@ -314,9 +317,9 @@ Route::group([
     Route::post('/developer/update/{developer_id}','AccountsController@developer_update')->name('account.developer_update');//not_using
 
     /*[accounts - rider account]*/ Route::get("/Salary/accounts/rider/account","AccountsController@rider_account")->name("admin.accounts.rider_account");//imp
-    Route::get("/rider/bills_details/ajax/{rider_id}/{month}","AccountsController@bills_details_for_riders")->name("admin.accounts.bills_details_for_riders");//***
-    Route::get("/rider/is_bill_pending/ajax/{rider_id}/{month}","AccountsController@is_bill_pending")->name("admin.accounts.is_bill_pending");//***
-    Route::get("/rider/check_salary_status/ajax/{rider_id}/{month}","AccountsController@check_salary_status")->name("admin.accounts.check_salary_status");//***
+    Route::get("/rider/bills_details/ajax/{rider_id}/{month}","AccountsController@bills_details_for_riders")->name("admin.accounts.bills_details_for_riders");
+    Route::get("/rider/is_bill_pending/ajax/{rider_id}/{month}","AccountsController@is_bill_pending")->name("admin.accounts.is_bill_pending");
+    Route::get("/rider/check_salary_status/ajax/{rider_id}/{month}","AccountsController@check_salary_status")->name("admin.accounts.check_salary_status");
     /*[accounts - company account]*/Route::get("/Salary/accounts/company/account","AccountsController@company_account")->name("admin.accounts.company_account");//imp
     /*[accounts - delete rider account]*/Route::get("/delete/accounts/rows","AccountsController@delete_account_rows")->name("admin.delete_account_rows");//imp
     
@@ -626,7 +629,9 @@ Route::get('{route}/edit_route','HomeController@edit_routes')->name('admin.edit_
 Route::get('/add/employee','Auth\EmployeeController@showloginform')->name('Employee.showloginform');   ///only for admin
 Route::post('/insert/employee','Auth\EmployeeController@insert_employee')->name('Employee.insert_employee'); ///only for admin
 Route::get('/show/employee','Auth\EmployeeController@viewEmployee')->name('Employee.viewEmployee'); ///only for admin
-Route::get('/show/employee/ajax','Auth\EmployeeController@getEmployee')->name('Employee.getEmployee'); ///only for admin
+Route::get('/show/active_employee','Auth\EmployeeController@viewActiveEmployee')->name('Employee.viewActiveEmployee');
+Route::get('/show/employee/ajax/','Auth\EmployeeController@getEmployee')->name('Employee.getEmployee'); ///only for admin
+Route::get('/show/active_employee/ajax/','Auth\EmployeeController@getActiveEmployee')->name('Employee.getActiveEmployee');  //yajra
 Route::delete('/delete/employee/{employee_id}','Auth\EmployeeController@deleteEmployee')->name('Employee.deleteEmployee'); ///only for admin
 Route::get('/edit/employee/{employee_id}','Auth\EmployeeController@edit_employee')->name('Employee.edit_employee'); ///only for admin
 Route::get('/view/employee/{employee_id}','Auth\EmployeeController@view_employee')->name('Employee.view_employee'); ///only for admin

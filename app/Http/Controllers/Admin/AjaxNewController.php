@@ -182,7 +182,7 @@ class AjaxNewController extends Controller
         $modelArr = \App\Model\Accounts\Company_Account::
         whereMonth('month', $month)
         ->where("rider_id",$rider_id)
-        ->where("type","dr")
+        // ->where("type","dr")
         ->whereNotNull('sim_transaction_id')
         ->get();
         $model = $modelArr->first();
@@ -480,7 +480,10 @@ class AjaxNewController extends Controller
         $salary_paid_status=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
-        ->where('source','salary_paid')
+        ->where(function($q) {
+            $q->where('source', "salary_paid")
+              ->orWhere('source', 'remaining_salary');
+        })
         ->get()
         ->first();
         if (isset($salary_paid_status)) {
@@ -568,6 +571,7 @@ class AjaxNewController extends Controller
         ->where("source","!=","advance")
         ->where("source","!=","salary_paid")
         ->where("source","!=","Visa Charges")
+        ->where("source","!=","remaining_salary")
         ->where("source","!=","Mobile Installment")
         ->sum('amount');
         $salik=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
@@ -588,7 +592,10 @@ class AjaxNewController extends Controller
         $salary_paid=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
-        ->where('source','salary_paid')
+        ->where(function($q) {
+            $q->where('source', "salary_paid")
+              ->orWhere('source', 'remaining_salary');
+        })
         ->where('payment_status','paid')
         ->sum('amount');
         $macdonald=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
@@ -726,6 +733,9 @@ class AjaxNewController extends Controller
             }
             if($rider_statement->source == 'salary_paid'){
                 return "Salary Paid";
+            }
+            if($rider_statement->source == 'remaining_salary'){
+                return "Remaining Salary";
             }
             return $rider_statement->source;
         })
@@ -1057,7 +1067,7 @@ class AjaxNewController extends Controller
             $company_statement->salik_id != null ||
             $company_statement->bike_fine != null ||
             $company_statement->bike_rent_id != null    ){
-                if($company_statement->payment_status=="pending" && $company_statement->type!="cr"){
+                if($company_statement->payment_status=="pending"){
                     //skip this
                     $continue = true;
                 }

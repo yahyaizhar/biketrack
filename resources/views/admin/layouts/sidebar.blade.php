@@ -409,13 +409,54 @@ color: #5d78ff !important;
                     </a>
                     <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
                         <ul class="kt-menu__subnav">
-                                @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.accounts.company_account';   }); @endphp
-                                @if($is_in_array || $is_admin)
+                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.accounts.company_account';   }); @endphp
+                            @if($is_in_array || $is_admin)
                             <li class="kt-menu__item @if(strpos(Request::url(), "/Salary/accounts") !== false && strpos(Request::url(), "admin/generated/month/bills") != false&& strpos(Request::url(), "admin/Salary/accounts/company") != false) kt-menu__item--active @endif  " aria-haspopup="true">
                                 <a href="{{ route('admin.accounts.company_account') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Company-Rider Account</span>
                                 </a>
                             </li>
                             @endif
+
+                            <li class="kt-menu__item kt-menu__item--submenu @if(strpos(Request::url(), "/employee") !== false) kt-menu__item--active kt-menu__item--open @endif "  aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
+                                <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
+                                    <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
+                                        <span></span>
+                                    </i>
+                                    <span class="kt-menu__link-text">Employee Accounts</span>
+                                    <i class="kt-menu__ver-arrow la la-angle-right"></i>
+                                </a>
+                                <div class="kt-menu__submenu " kt-hidden-height="160" @if(strpos(Request::url(), "/employee") === false)style="display: none; overflow: hidden;"@endif><span class="kt-menu__arrow"></span>
+                                    <ul class="kt-menu__subnav">
+                                        <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text"></span></span></li>
+                                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='employee.viewCompanyEmployeeAccount';   }); @endphp
+                                        @if($is_in_array || $is_admin)
+                                        <li class="kt-menu__item @if(strpos(Request::url(), "/employee/company_account") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                            <a href="{{ route('employee.viewCompanyEmployeeAccount') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Company-Employee Account</span>
+                                            </a>
+                                        </li>
+                                        @endif
+
+                                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='Employee.viewEmployee';   }); @endphp
+                                        @if($is_in_array || $is_admin)
+                                        <li class="kt-menu__item @if(strpos(Request::url(), "/show/employee") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                            <a href="{{ route('Employee.viewEmployee') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">View Employee</span>
+                                            </a>
+                                        </li>
+                                        @endif
+
+                                        @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='Employee.viewActiveEmployee';   }); @endphp
+                                        @if($is_in_array || $is_admin)
+                                        <li class="kt-menu__item @if(strpos(Request::url(), "/show/active_employee") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                            <a href="{{ route('Employee.viewActiveEmployee') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">View Active Employee</span>
+                                            </a>
+                                        </li>
+                                        @endif
+
+                                    </ul>
+                                </div>
+                            </li>
+
+                            
 
                             @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.accounts.company_overall_report';   }); @endphp
                             @if($is_in_array || $is_admin)
@@ -1038,14 +1079,6 @@ color: #5d78ff !important;
                         </a>
                         <div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
                             <ul class="kt-menu__subnav">
-                                @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='employee.viewCompanyEmployeeAccount';   }); @endphp
-                                @if($is_in_array || $is_admin)
-                                <li class="kt-menu__item @if(strpos(Request::url(), "/employee/company_account") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
-                                    <a href="{{ route('employee.viewCompanyEmployeeAccount') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Company-Employee Account</span>
-                                    </a>
-                                </li>
-                                @endif
-
                                 @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='employee.viewEmployeeAccount';   }); @endphp
                                 @if($is_in_array || $is_admin)
                                 <li class="kt-menu__item @if(strpos(Request::url(), "/employee/employee_account") !== false) kt-menu__item--active @endif  " aria-haspopup="true">

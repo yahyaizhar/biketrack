@@ -198,12 +198,22 @@ function updateClientHistoryDates(rider_id,client_history_id,assign_date,deassig
                                             $bike=App\Model\Bikes\bike::find($assign_bike->bike_id);
                                             $bike_number=$bike->bike_number;
                                         } 
-                                      
+                                        $client_setting = json_decode($client->setting, true);
+                                        $pm = $client_setting['payout_method'];
                                         @endphp
                                         @if (isset($client_rider->client_rider_id))
-                                        <a>FEID: {{$client_rider->client_rider_id}}</a>; 
+                                            
+                                            @if ($pm=="commission_based")
+                                                <a>Captain ID: {{$client_rider->client_rider_id}}</a>;
+                                            @else 
+                                                <a>FEID: {{$client_rider->client_rider_id}}</a>; 
+                                            @endif
                                         @else
-                                        <a onclick="updatefied({{$rider->id}})" ><i class="fa fa-user-plus"></i>No FEID</a> 
+                                            @if ($pm=="commission_based")
+                                                <a onclick="updatefied({{$rider->id}})" ><i class="fa fa-user-plus"></i>No Captain ID</a> 
+                                            @else
+                                                <a onclick="updatefied({{$rider->id}})" ><i class="fa fa-user-plus"></i>No FEID</a> 
+                                            @endif
                                         @endif
                                         <a href="mailto:{{ $rider->email }}"><i class="flaticon2-new-email"></i>{{ $rider->email }}</a>
                                         <a><i class="flaticon2-calendar-3"></i>{{ $rider->phone }} </a>
@@ -224,6 +234,28 @@ function updateClientHistoryDates(rider_id,client_history_id,assign_date,deassig
                                        
                                         </div>
                                     </div>
+                                    @if ($pm=="commission_based")
+                                    <div class="kt-widget__info">
+                                        &nbsp;
+                                        @php
+                                            $client_comission = json_decode($client_H_A['comission'], true);
+                                            $type = $client_comission['com_type'];
+                                            $amount=$client_comission['com_amount'];
+                                            if ($type=="fixed") {
+                                                $postfix="AED";
+                                            } else {
+                                                $postfix="%";
+                                            }
+                                        @endphp
+                                        <div class="kt-widget__desc">
+                                            @if ($type!=null || $amount!=null)
+                                                <a onclick="update_Comission({{$rider->id}},{{$client_H_A['id']}},{{$client->id}},'{{$type}}',{{$amount}})"  class=""><span><strong>Comission Type</strong> : {{$type}}</span><br><span style=""><strong>Comission Amount</strong> : {{$amount}} {{$postfix}}</span></a>&nbsp; 
+                                            @else
+                                                <a onclick="update_Comission({{$rider->id}},{{$client_H_A['id']}},{{$client->id}},'',0)"  class="btn btn-label-danger btn-sm btn-upper">Set Comission</a>&nbsp;
+                                            @endif
+                                        </div>
+                                    </div>
+                                    @endif
                                 </div>
                             </div>
                             
@@ -284,11 +316,21 @@ function updateClientHistoryDates(rider_id,client_history_id,assign_date,deassig
                                                 $bike=App\Model\Bikes\bike::find($assign_bike->bike_id);
                                                 $bike_number=$bike->bike_number;
                                             } 
+                                            $client_setting = json_decode($client->setting, true);
+                                            $pm = $client_setting['payout_method'];
                                             @endphp
                                             @if (isset($client_H->client_rider_id))
-                                            <a>FEID: {{$client_H->client_rider_id}}</a>; 
+                                                @if ($pm=="commission_based")
+                                                    <a>Captain ID: {{$client_H->client_rider_id}}</a>;
+                                                @else 
+                                                    <a>FEID: {{$client_H->client_rider_id}}</a>;
+                                                @endif
                                             @else
-                                            <a onclick="updatefied({{$rider->id}})" ><i class="fa fa-user-plus"></i>No FEID</a> 
+                                                @if ($pm=="commission_based")
+                                                    <a onclick="updatefied({{$rider->id}})" ><i class="fa fa-user-plus"></i>No Captain ID</a> 
+                                                @else
+                                                    <a onclick="updatefied({{$rider->id}})" ><i class="fa fa-user-plus"></i>No FEID</a> 
+                                                @endif
                                             @endif
                                             <a href="mailto:{{ $rider->email }}"><i class="flaticon2-new-email"></i>{{ $rider->email }}</a>
                                             <a><i class="flaticon2-calendar-3"></i>{{ $rider->phone }} </a>
@@ -307,6 +349,28 @@ function updateClientHistoryDates(rider_id,client_history_id,assign_date,deassig
                                                 <h6 style="float:right;color:green;" onclick="updateClientHistoryDates({{$rider->id}},{{$client_H['id']}},'{{$created}}','{{$updated}}')">{{gmdate("d-m-Y", $mytimestamp)}} {{'to'}} {{gmdate("d-m-Y", $timestampupdated)}}</h6>
                                             </div>
                                         </div>
+                                        @if ($pm=="commission_based")
+                                        <div class="kt-widget__info">
+                                            @php
+                                            $client_comission = json_decode($client_H['comission'], true);
+                                            $type = $client_comission['com_type'];
+                                            $amount=$client_comission['com_amount'];
+                                            if ($type=="fixed") {
+                                                $postfix="AED";
+                                            } else {
+                                                $postfix="%";
+                                            }
+                                        @endphp
+                                            &nbsp;
+                                            <div class="kt-widget__desc">
+                                                @if ($type!=null || $amount!=null)
+                                                    <a onclick="update_Comission({{$rider->id}},{{$client_H['id']}},{{$client->id}},'{{$type}}',{{$amount}})"  class=""><span><strong>Comission Type</strong> : {{$type}}</span><br><span style=""><strong>Comission Amount</strong> : {{$amount}} {{$postfix}}</span></a>&nbsp; 
+                                                @else
+                                                    <a onclick="update_Comission({{$rider->id}},{{$client_H['id']}},{{$client->id}},'',0)"  class="btn btn-label-danger btn-sm btn-upper">Set Comission</a>&nbsp;
+                                                @endif
+                                            </div>
+                                        </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -390,7 +454,42 @@ function updateClientHistoryDates(rider_id,client_history_id,assign_date,deassig
             </div>
         </div>
     </div>
-<!-- end:: Content -->
+    <div class="modal fade" id="salary_method_pop" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title" id="exampleModalLabel">Set Comission</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form class="kt-form" id="set_comission_Form" enctype="multipart/form-data">
+                    <input type="hidden" name="client_id">
+                    <input type="hidden" name="rider_id">
+                    <input type="hidden" name="client_history_id">
+                    <div class="container">
+                        <div class="form-group">
+                            <label>Amount:</label>
+                            <div class="input-group">
+                                <input type="text" autocomplete="off" class="form-control" name="com_amount" placeholder="Enter commission amount" />
+                                <div class="input-group-append"><span class="input-group-text" id="cb_sm__amount_postfix"></span></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Type:</label>
+                            <select class="form-control kt-select2 bk-select2" id="cb_sm__type" name="com_type" >
+                                <option value="percentage" selected>Percentage</option>   
+                                <option value="fixed">Fixed</option> 
+                            </select>
+                        </div>
+                        <div class="modal-footer border-top-0 d-flex justify-content-center">
+                            <button class="upload-button btn btn-success">Save Comission</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('foot')
 <script src="{{ asset('dashboard/assets/js/demo1/pages/crud/forms/widgets/bootstrap-switch.js') }}" type="text/javascript"></script>
@@ -450,6 +549,7 @@ $("#deactive_Riders").on("click",function(){
             if(current_open_target){
                 current_open_target.text(data.rider_id);
             }
+            window.location.reload();
         });
         
     });
@@ -483,6 +583,62 @@ $("#deactive_Riders").on("click",function(){
             console.log(url);
             sendDeleteRequest(url, true);
         }
-       
+        function update_Comission(rider_id,client_history_id,client_id,type,amount){
+            $("#salary_method_pop").modal("show");
+            $('#cb_sm__type').on('change', function(){
+                var _type = $(this).val().trim();
+                var _sign = _type=="percentage"?'%':'AED';
+                $('#cb_sm__amount_postfix').text(_sign);
+            }).trigger('change');
+            $('#set_comission_Form [name="client_id"]').val(client_id);
+            $('#set_comission_Form [name="rider_id"]').val(rider_id);
+            $('#set_comission_Form [name="client_history_id"]').val(client_history_id);
+            $('#set_comission_Form [name="com_type"]').val(type).trigger("change");
+            $('#set_comission_Form [name="com_amount"]').val(amount);
+        }
+        $('#set_comission_Form').on('submit', function(e){
+            e.preventDefault();
+            var url = "{{route('admin.update_rider_comission')}}";
+            var _form = $(this);
+            $('#salary_method_pop').modal('hide');
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url : url,
+                type : 'POST',
+                data: _form.serializeArray(),
+                beforeSend: function() {            
+                    $('.bk_loading').show();
+                },
+                complete: function(){
+                    $('.bk_loading').hide();
+                },
+                success: function(data){
+                    console.warn(data);
+                    swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Record updated successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    window.location.reload();
+                },
+                error: function(error){
+                    console.warn(error);
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Unable to update.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+        });
     </script>
 @endsection

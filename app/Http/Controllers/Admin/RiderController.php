@@ -837,4 +837,17 @@ class RiderController extends Controller
         'client_history'=>$client_history,
     ]);
    }
+   public function update_rider_comission(Request $request){
+       $client_history=Client_History::find($request->client_history_id);
+       if (isset($client_history)) {
+            $settings=[];
+            $settings['com_amount']=$request->com_amount;
+            $settings['com_type']=$request->com_type;
+            $client_history->comission=json_encode($settings);
+            $client_history->save();
+       }
+       return response()->json([
+           'status'=>1,
+       ]);
+   }
 }
