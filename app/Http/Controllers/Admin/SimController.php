@@ -10,6 +10,7 @@ use App\Model\Client\Client;
 use Illuminate\Support\Facades\Hash;
 use App\Model\Rider\Rider;
 use App\Model\Client\Client_Rider;
+use App\Model\Client\Client_History;
 use Illuminate\Support\Facades\Storage;
 use App\Model\Rider\Rider_Message;
 use Illuminate\Support\Facades\Auth;
@@ -295,22 +296,87 @@ public function store_simTransaction(Request $request){
 
         $sim=$sim_trans->Sim;
     
-        $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
-            'sim_transaction_id'=>$sim_trans->id,
-            'type' => 'dr'
-        ]);
-        $ca->sim_transaction_id =$sim_trans->id;
-        $ca->type='dr';
-        $ca->rider_id=$request->rider_id;
+        $rider_id=$request->rider_id;
         if(isset($value['rider_id'])){
-            $ca->rider_id=$value['rider_id'];
+            $rider_id=$value['rider_id'];
         }
-        $ca->month = Carbon::parse($sim_trans->month_year)->startOfMonth()->format('Y-m-d');
-        $ca->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
-        $ca->source="Sim Transaction"; 
-        $ca->amount=$value['bill_amount_given_by_days'];
-        $ca->save();
+        $date_to_match=Carbon::parse($request->month_year)->format('Y-m-d');
+        $client_histories=Client_History::all();
+        $history_found = Arr::first($client_histories, function ($iteration, $key) use ($rider_id, $date_to_match) {
+            $start_created_at =Carbon::parse($iteration->assign_date)->startOfMonth()->format('Y-m-d');
+            $created_at =Carbon::parse($start_created_at);
 
+            $start_updated_at =Carbon::parse($iteration->deassign_date)->endOfMonth()->format('Y-m-d');
+            $updated_at =Carbon::parse($start_updated_at);
+            $req_date =Carbon::parse($date_to_match);
+
+            if($iteration->status=='active'){    
+                return $iteration->rider_id==$rider_id && 
+                ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+            }
+
+            return $iteration->rider_id==$rider_id &&
+                ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+        });
+        if (isset($history_found)) {
+            $client_id=$history_found->client_id;
+            $client=Client::find($client_id);
+            $c_setting=json_decode($client->setting,true);
+            $pm=$c_setting['payout_method'];
+        }
+        if ($pm=="commission_based") {
+            $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+                'sim_transaction_id'=>$sim_trans->id,
+            ]);
+            $ca->sim_transaction_id =$sim_trans->id;
+            $ca->type='cr';
+            $ca->rider_id=$request->rider_id;
+            if(isset($value['rider_id'])){
+                $ca->rider_id=$value['rider_id'];
+            }
+            $ca->month = Carbon::parse($sim_trans->month_year)->startOfMonth()->format('Y-m-d');
+            $ca->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
+            $ca->source="Sim Transaction"; 
+            $ca->amount=$value['bill_amount_given_by_days'];
+            $ca->save();
+            
+            $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
+                'sim_transaction_id'=>$sim_trans->id,
+            ]);
+            $ra->sim_transaction_id =$sim_trans->id;
+            $ra->type='dr';
+            $ra->rider_id=$request->rider_id;
+            if(isset($value['rider_id'])){
+                $ra->rider_id=$value['rider_id'];
+            }
+            $ra->month = Carbon::parse($sim_trans->month_year)->startOfMonth()->format('Y-m-d');
+            $ra->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
+            $ra->source="Sim Transaction"; 
+            $ra->amount=$value['bill_amount_given_by_days'];
+            $ra->save();
+            return response()->json([
+                'ca'=>$ca,
+                'ra'=>$ra,
+                'sim_trans'=>$sim_trans->id,
+            ]);
+        }
+        else{
+            $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+                'sim_transaction_id'=>$sim_trans->id,
+                'type' => 'dr'
+            ]);
+            $ca->sim_transaction_id =$sim_trans->id;
+            $ca->type='dr';
+            $ca->rider_id=$request->rider_id;
+            if(isset($value['rider_id'])){
+                $ca->rider_id=$value['rider_id'];
+            }
+            $ca->month = Carbon::parse($sim_trans->month_year)->startOfMonth()->format('Y-m-d');
+            $ca->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
+            $ca->source="Sim Transaction"; 
+            $ca->amount=$value['bill_amount_given_by_days'];
+            // $ca->save();
+        }
         $ed =new Export_data;
         $ed->type='dr';
         $ed->rider_id=$request->rider_id;
@@ -322,39 +388,40 @@ public function store_simTransaction(Request $request){
         $ed->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
         $ed->source="Sim Transaction"; 
         $ed->source_id=$sim_trans->id;
-        $ed->save();
-
-        if($extra>0){
-            $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
-                'sim_transaction_id'=>$sim_trans->id
-            ]);
-            $ra->sim_transaction_id =$sim_trans->id;
-            $ra->type='cr_payable';
-            $ra->rider_id=$request->rider_id;
-            if(isset($value['rider_id'])){
-                $ra->rider_id=$value['rider_id'];
+        // $ed->save();
+        if ($pm!="commission_based") {
+            if($extra>0){
+                $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
+                    'sim_transaction_id'=>$sim_trans->id
+                ]);
+                $ra->sim_transaction_id =$sim_trans->id;
+                $ra->type='cr_payable';
+                $ra->rider_id=$request->rider_id;
+                if(isset($value['rider_id'])){
+                    $ra->rider_id=$value['rider_id'];
+                }
+                $ra->month = Carbon::parse($sim_trans->month_year)->startOfMonth()->format('Y-m-d');
+                $ra->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
+                $ra->source="Sim extra usage"; 
+                $ra->amount=round($extra,2);
+                // $ra->save();
+                
+                $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
+                    'sim_transaction_id'=>$sim_trans->id,
+                    'type' => 'cr'
+                ]);
+                $ca->sim_transaction_id =$sim_trans->id;
+                $ca->type='cr';
+                $ca->rider_id=$request->rider_id;
+                if(isset($value['rider_id'])){
+                    $ca->rider_id=$value['rider_id'];
+                }
+                $ca->month = Carbon::parse($sim_trans->month_year)->startOfMonth()->format('Y-m-d');
+                $ca->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
+                $ca->source="Sim extra usage";
+                $ca->amount=round($extra,2);
+                // $ca->save();
             }
-            $ra->month = Carbon::parse($sim_trans->month_year)->startOfMonth()->format('Y-m-d');
-            $ra->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
-            $ra->source="Sim extra usage"; 
-            $ra->amount=round($extra,2);
-             $ra->save();
-            
-            $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
-                'sim_transaction_id'=>$sim_trans->id,
-                'type' => 'cr'
-            ]);
-            $ca->sim_transaction_id =$sim_trans->id;
-            $ca->type='cr';
-            $ca->rider_id=$request->rider_id;
-            if(isset($value['rider_id'])){
-                $ca->rider_id=$value['rider_id'];
-            }
-            $ca->month = Carbon::parse($sim_trans->month_year)->startOfMonth()->format('Y-m-d');
-            $ca->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
-            $ca->source="Sim extra usage";
-            $ca->amount=round($extra,2);
-             $ca->save();
         }
         $splitted_amount+=$value['bill_amount_given_by_days'];
 
@@ -388,7 +455,7 @@ public function store_simTransaction(Request $request){
         $ce->month = Carbon::parse($request->get('month'))->format('Y-m-d');
         $ce->description="Sim Bill remaining amount";
         $ce->type="Sim Bill";
-        $ce->save();
+        // $ce->save();
     }
     return response()->json([
         'status' => true,

@@ -1450,8 +1450,37 @@ public function fuel_rider_selector($rider_id,$bike_id){
     ]);
 }
 public function fuel_expense_insert(Request $r){
+
     $data=$r->data;
     foreach ($data as $value) {
+        $rider_id=$r->rider_id;
+        if(isset($value['rider_id'])){
+            $rider_id=$value['rider_id'];
+        }
+        $date_to_match=$r->get('month');
+        $client_histories=Client_History::all();
+        $history_found = Arr::first($client_histories, function ($iteration, $key) use ($rider_id, $date_to_match) {
+            $start_created_at =Carbon::parse($iteration->assign_date)->startOfMonth()->format('Y-m-d');
+            $created_at =Carbon::parse($start_created_at);
+
+            $start_updated_at =Carbon::parse($iteration->deassign_date)->endOfMonth()->format('Y-m-d');
+            $updated_at =Carbon::parse($start_updated_at);
+            $req_date =Carbon::parse($date_to_match);
+
+            if($iteration->status=='active'){    
+                return $iteration->rider_id==$rider_id && 
+                ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+            }
+
+            return $iteration->rider_id==$rider_id &&
+                ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+        });
+        if (isset($history_found)) {
+            $client_id=$history_found->client_id;
+            $client=Client::find($client_id);
+            $c_setting=json_decode($client->setting,true);
+            $pm=$c_setting['payout_method'];
+        }
         if($value['amount_given_by_days']<=0) continue;
         $fuel_expense=new Fuel_Expense();
         $fuel_expense->amount=$value['amount_given_by_days'];
@@ -1475,19 +1504,47 @@ public function fuel_expense_insert(Request $r){
         
         $fuel_expense->save();
         if ($fuel_expense->type=="vip_tag") {
-            $ca = new \App\Model\Accounts\Company_Account;
-            $ca->type='dr';
-            $ca->amount=$value['amount_given_by_days'];
-            $ca->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
-            $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
-            $ca->rider_id=$r->rider_id;
-            if(isset($value['rider_id'])){
-                $ca->rider_id=$value['rider_id'];
-            }
-            $ca->source='fuel_expense_vip';
-            $ca->fuel_expense_id=$fuel_expense->id;
-            $ca->save();
+            if ($pm=="commission_based") {
+                $ra = new \App\Model\Accounts\Rider_Account;
+                $ra->type='dr';
+                $ra->amount=$value['amount_given_by_days'];
+                $ra->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+                $ra->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+                $ra->rider_id=$r->rider_id;
+                if(isset($value['rider_id'])){
+                    $ra->rider_id=$value['rider_id'];
+                }
+                $ra->source='fuel_expense_vip';
+                $ra->fuel_expense_id=$fuel_expense->id;
+                $ra->save();
 
+                $ca = new \App\Model\Accounts\Company_Account;
+                $ca->type='cr';
+                $ca->amount=$value['amount_given_by_days'];
+                $ca->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+                $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+                $ca->rider_id=$r->rider_id;
+                if(isset($value['rider_id'])){
+                    $ca->rider_id=$value['rider_id'];
+                }
+                $ca->source='fuel_expense_vip';
+                $ca->fuel_expense_id=$fuel_expense->id;
+                $ca->save();
+            }
+            else{
+                $ca = new \App\Model\Accounts\Company_Account;
+                $ca->type='dr';
+                $ca->amount=$value['amount_given_by_days'];
+                $ca->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+                $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+                $ca->rider_id=$r->rider_id;
+                if(isset($value['rider_id'])){
+                    $ca->rider_id=$value['rider_id'];
+                }
+                $ca->source='fuel_expense_vip';
+                $ca->fuel_expense_id=$fuel_expense->id;
+                $ca->save();
+            }
             $ed =Export_data::firstOrCreate([
                 'source'=>"fuel_expense_vip",
                 'source_id'=>$fuel_expense->id,
@@ -1504,19 +1561,47 @@ public function fuel_expense_insert(Request $r){
             $ed->source_id=$fuel_expense->id;
             $ed->save();
         }else if($fuel_expense->type=="cash"){
-            $ca = new \App\Model\Accounts\Company_Account;
-            $ca->type='dr';
-            $ca->amount=$value['amount_given_by_days'];
-            $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
-            $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
-            $ca->rider_id=$r->rider_id;
-            if(isset($value['rider_id'])){
-                $ca->rider_id=$value['rider_id'];
-            }
-            $ca->source='fuel_expense_cash';
-            $ca->fuel_expense_id=$fuel_expense->id;
-            $ca->save();
+            if ($pm=="commission_based") {
+                $ra = new \App\Model\Accounts\Rider_Account;
+                $ra->type='dr';
+                $ra->amount=$value['amount_given_by_days'];
+                $ra->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+                $ra->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+                $ra->rider_id=$r->rider_id;
+                if(isset($value['rider_id'])){
+                    $ra->rider_id=$value['rider_id'];
+                }
+                $ra->source='fuel_expense_cash';
+                $ra->fuel_expense_id=$fuel_expense->id;
+                $ra->save();
 
+                $ca = new \App\Model\Accounts\Company_Account;
+                $ca->type='cr';
+                $ca->amount=$value['amount_given_by_days'];
+                $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+                $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+                $ca->rider_id=$r->rider_id;
+                if(isset($value['rider_id'])){
+                    $ca->rider_id=$value['rider_id'];
+                }
+                $ca->source='fuel_expense_cash';
+                $ca->fuel_expense_id=$fuel_expense->id;
+                $ca->save();
+            }
+            else{
+                $ca = new \App\Model\Accounts\Company_Account;
+                $ca->type='dr';
+                $ca->amount=$value['amount_given_by_days'];
+                $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+                $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+                $ca->rider_id=$r->rider_id;
+                if(isset($value['rider_id'])){
+                    $ca->rider_id=$value['rider_id'];
+                }
+                $ca->source='fuel_expense_cash';
+                $ca->fuel_expense_id=$fuel_expense->id;
+                $ca->save();
+            }
             $ed =Export_data::firstOrCreate([
                 'source'=>"fuel_expense_cash",
                 'source_id'=>$fuel_expense->id,
@@ -1535,6 +1620,7 @@ public function fuel_expense_insert(Request $r){
         } 
     }
     return redirect(route('admin.fuel_expense_view'));
+    
 }
 public function fuel_expense_view()
 { 

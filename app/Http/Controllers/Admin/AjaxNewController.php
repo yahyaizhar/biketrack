@@ -182,7 +182,7 @@ class AjaxNewController extends Controller
         $modelArr = \App\Model\Accounts\Company_Account::
         whereMonth('month', $month)
         ->where("rider_id",$rider_id)
-        ->where("type","dr")
+        // ->where("type","dr")
         ->whereNotNull('sim_transaction_id')
         ->get();
         $model = $modelArr->first();
@@ -1039,7 +1039,7 @@ class AjaxNewController extends Controller
             $company_statement->salik_id != null ||
             $company_statement->bike_fine != null ||
             $company_statement->bike_rent_id != null    ){
-                if($company_statement->payment_status=="pending" && $company_statement->type!="cr"){
+                if($company_statement->payment_status=="pending"){
                     //skip this
                     $continue = true;
                 }

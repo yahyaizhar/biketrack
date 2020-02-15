@@ -213,6 +213,7 @@ Route::group([
 // end Riders
 // clients
     /*[clients-change feid]*/Route::post('/update/client/riders/{rider_id}','RiderController@update_ClientRiders')->name('ClientRiders.admin.update');//ajax_route //changing feid on admin.clients.riders route ////ok
+    Route::post('/update/rider_comission','RiderController@update_rider_comission')->name('admin.update_rider_comission');//***
     /*[clients-rider performance]*/Route::get('/client/rider/performance','RiderController@RiderPerformance')->name('admin.riderPerformance');////ok
     Route::resource('/clients', 'ClientController', [
         'as' => 'admin'

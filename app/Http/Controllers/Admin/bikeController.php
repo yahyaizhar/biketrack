@@ -23,6 +23,7 @@ use App\Assign_bike;
 use App\insurance_company;
 use Arr;
 use App\Export_data;
+use App\Model\Client\Client_History;
 
 class bikeController extends Controller 
 {
@@ -228,8 +229,38 @@ class bikeController extends Controller
       $data=$r->data;
       $total_amount=$r->amount;
       $splitted_amount=0;
+      $bike_own='';
+      $pm='';
       // return $r->all();
       foreach ($data as $item) {
+        $rider_id=$r->rider_id;
+        if(isset($item['rider_id'])){
+            $rider_id=$item['rider_id'];
+        }
+        $date_to_match=$r->get('month');
+        $client_histories=Client_History::all();
+        $history_found = Arr::first($client_histories, function ($iteration, $key) use ($rider_id, $date_to_match) {
+            $start_created_at =Carbon::parse($iteration->assign_date)->startOfMonth()->format('Y-m-d');
+            $created_at =Carbon::parse($start_created_at);
+
+            $start_updated_at =Carbon::parse($iteration->deassign_date)->endOfMonth()->format('Y-m-d');
+            $updated_at =Carbon::parse($start_updated_at);
+            $req_date =Carbon::parse($date_to_match);
+
+            if($iteration->status=='active'){    
+                return $iteration->rider_id==$rider_id && 
+                ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+            }
+
+            return $iteration->rider_id==$rider_id &&
+                ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+        });
+        if (isset($history_found)) {
+            $client_id=$history_found->client_id;
+            $client=Client::find($client_id);
+            $c_setting=json_decode($client->setting,true);
+            $pm=$c_setting['payout_method'];
+        }
         $type=$item['type'];
         if(isset($item['bike_id'])){
           $bike_id=$item['bike_id'];
@@ -255,17 +286,40 @@ class bikeController extends Controller
           $rider_id=$item['rider_id'];
           $bike_id=$r->bike_id;
         }
+        if ($pm=="commission_based") {
+          if ($bike_own!="self") {
+            $ca=new Company_Account();
+            $ca->type='cr';
+            $ca->amount=$amount_given_by_days;
+            $ca->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+            $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+            $ca->bike_rent_id =$bike_id;
+            $ca->rider_id=$rider_id;
+            $ca->source='Bike Rent';
+            $ca->save();
 
-        $ca=new Company_Account();
-        $ca->type='dr';
-        $ca->amount=$amount_given_by_days;
-        $ca->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
-        $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
-        $ca->bike_rent_id =$bike_id;
-        $ca->rider_id=$rider_id;
-        $ca->source='Bike Rent';
-        $ca->save();
-
+            $ra=new Rider_Account();
+            $ra->type='dr';
+            $ra->amount=$amount_given_by_days;
+            $ra->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+            $ra->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+            $ra->bike_rent_id =$bike_id;
+            $ra->rider_id=$rider_id;
+            $ra->source='Bike Rent';
+            $ra->save();
+          }
+        }
+        else{
+          $ca=new Company_Account();
+          $ca->type='dr';
+          $ca->amount=$amount_given_by_days;
+          $ca->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+          $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+          $ca->bike_rent_id =$bike_id;
+          $ca->rider_id=$rider_id;
+          $ca->source='Bike Rent';
+          $ca->save();
+        }
         $ed =new Export_data;
         $ed->type='dr';
         $ed->rider_id=$rider_id;
@@ -310,16 +364,17 @@ class bikeController extends Controller
           $ba->save();
         }
         if ($bike_own=="self") {
-  
-          $ra=new Rider_Account();
-          $ra->type='cr';
-          $ra->amount=$amount_given_by_days;
-          $ra->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
-          $ra->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
-          $ra->bike_rent_id =$bike_id;
-          $ra->rider_id=$rider_id;
-          $ra->source='Bike Allowns';
-          $ra->save();
+          if ($pm!="commission_based") {
+            $ra=new Rider_Account();
+            $ra->type='cr';
+            $ra->amount=$amount_given_by_days;
+            $ra->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+            $ra->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+            $ra->bike_rent_id =$bike_id;
+            $ra->rider_id=$rider_id;
+            $ra->source='Bike Allowns';
+            $ra->save();
+          }
         }
 
         $splitted_amount+=$amount_given_by_days;
@@ -336,7 +391,11 @@ class bikeController extends Controller
         $ce->description="Bike rent remaining amount against ".$bike->bike_number;
         $ce->save();
       }
-      return redirect(route('bike.bike_view'));
+      return response()->json([
+        'pm'=>$pm,
+        'bike_own'=>$bike_own,
+      ]);
+      // return redirect(route('bike.bike_view'));
       
     }
     // end Bike Rent
