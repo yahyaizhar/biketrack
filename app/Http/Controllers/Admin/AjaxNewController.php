@@ -2480,6 +2480,7 @@ class AjaxNewController extends Controller
             $onlyYear=Carbon::parse($month)->format('Y');
             $sim_charges=Company_Account::where('rider_id',$rider->id)
             ->whereNotNull('sim_transaction_id')
+            ->where("source","Sim Transaction")
             ->whereMonth('month',$onlyMonth)
             ->whereYear('month',$onlyYear)
             ->get()
@@ -2491,6 +2492,7 @@ class AjaxNewController extends Controller
             $onlyYear=Carbon::parse($month)->format('Y');
             $sim_extra_charges=Rider_Account::where('rider_id',$rider->id)
             ->whereNotNull('sim_transaction_id')
+            ->where("source","Sim extra usage")
             ->whereMonth('month',$onlyMonth)
             ->whereYear('month',$onlyYear)
             ->get()
