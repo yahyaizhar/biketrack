@@ -3445,6 +3445,7 @@ public function client_income_update(Request $request,$id){
         ->whereMonth('month',$onlyMonth)
          ->whereYear('month',$onlyYear)
         ->where("source","Salik")
+        ->where("type","dr")
         ->sum('amount');
         $salik_extra=Company_Account::where("rider_id",$rider_id)
         ->whereMonth('month',$onlyMonth)
