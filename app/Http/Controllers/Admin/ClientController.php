@@ -995,6 +995,7 @@ public function insert_multiple_clients(Request $request,$rider_id){
         $client_histories->rider_id=$rider_id;
         $client_histories->assign_date=Carbon::parse($value['assign_date'])->format('Y-m-d');
         $client_histories->deassign_date=Carbon::parse($value['assign_date'])->format('Y-m-d');
+        $client_histories->working_days=$value['rider_working_days'];
         $client_histories->status="active";
         $client_histories->active_status="A";
         $client_histories->save();

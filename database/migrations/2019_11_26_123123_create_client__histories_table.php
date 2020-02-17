@@ -21,6 +21,7 @@ class CreateClientHistoriesTable extends Migration
             $table->string('deassign_date')->nullable();
             $table->integer('client_rider_id')->nullable();
             $table->string('comission')->nullable();
+            $table->string('working_days')->nullable();
             $table->string('status')->nullable();
             $table->string('active_status')->default("A");
             $table->timestamps();
