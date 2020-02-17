@@ -173,8 +173,19 @@
                                 <textarea type="text" cols="20" rows="5" class="form-control" data-name="billing_address" name="billing_address" placeholder="Enter Your Adress"></textarea>
                             </div>
                             <div class="form-group col-md-2">
-                                <label>Invoice id:</label>
-                                <input required type="text" class="form-control @if($errors->has('invoice_id')) invalid-field @endif" data-name="invoice_id" name="invoice_id" placeholder="Enter Invoice Id" >
+                                <div>
+                                    <label>Invoice id:</label>
+                                    <input required type="text" class="form-control @if($errors->has('invoice_id')) invalid-field @endif" data-name="invoice_id" name="invoice_id" placeholder="Enter Invoice Id" >
+                                </div>
+                                <div>
+                                    <div class="kt-checkbox-inline">
+										<label class="kt-checkbox">
+				                           	<input type="checkbox"> Email 
+				                            <span></span>
+				                        </label>
+				                    </div>
+                                </div>
+
                             </div>
                             <div class="form-group col-md-3">
                                 <label>Invoice Date:</label>
