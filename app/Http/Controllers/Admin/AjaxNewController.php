@@ -182,7 +182,8 @@ class AjaxNewController extends Controller
         $modelArr = \App\Model\Accounts\Company_Account::
         whereMonth('month', $month)
         ->where("rider_id",$rider_id)
-        // ->where("type","dr")
+        ->where("source","Sim Transaction")
+        ->where("type","dr")
         ->whereNotNull('sim_transaction_id')
         ->get();
         $model = $modelArr->first();
@@ -268,6 +269,7 @@ class AjaxNewController extends Controller
         ->where("rider_id",$rider_id)
         ->whereNotNull('fuel_expense_id')
         ->where('source','fuel_expense_vip')
+        ->where('type','dr')
         ->get();
         $model = $modelArr->first();
         if(isset($model)){ 
@@ -297,6 +299,7 @@ class AjaxNewController extends Controller
         ->where("rider_id",$rider_id)
         ->whereNotNull('fuel_expense_id')
         ->where('source','fuel_expense_cash')
+        ->where('type','dr')
         ->get();
         $model = $modelArr->first();
         if(isset($model)){ 
@@ -352,6 +355,7 @@ class AjaxNewController extends Controller
         whereMonth('month', $month)
         ->where("rider_id",$rider_id)
         ->whereNotNull('bike_rent_id')
+        ->where("type","dr")
         ->get();
         $model = $modelArr->first();
         if(isset($model)){ 
@@ -1039,9 +1043,9 @@ class AjaxNewController extends Controller
             $company_statement->salik_id != null ||
             $company_statement->bike_fine != null ||
             $company_statement->bike_rent_id != null    ){
-                if($company_statement->payment_status=="pending"){
+                if($company_statement->payment_status=="pending" && ($company_statement->source!='Sim extra usage')){
                     //skip this
-                    $continue = true;
+                    $continue = true; 
                 }
             }
 

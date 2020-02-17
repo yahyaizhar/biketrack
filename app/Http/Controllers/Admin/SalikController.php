@@ -645,38 +645,47 @@ class SalikController extends Controller
             $ed->source_id='0';
             $ed->save();  
             
-        if($used_salik>$allow_salik){
-            $_greater_ca= new Company_Account;
-            $_greater_ca->source="Salik";
-            $_greater_ca->salik_id="0";
-            $_greater_ca->amount=$used_salik;
-            $_greater_ca->rider_id=$rider_id;
-            $_greater_ca->month=Carbon::parse($request->month)->startOfMonth()->format("Y-m-d");
-            $_greater_ca->given_date=Carbon::parse($request->given_date)->format("Y-m-d");
-            $_greater_ca->type="dr";
-            $_greater_ca->save();
+        // if($used_salik>$allow_salik){
+        //     $_greater_ca= new Company_Account;
+        //     $_greater_ca->source="Salik";
+        //     $_greater_ca->salik_id="0";
+        //     $_greater_ca->amount=$used_salik;
+        //     $_greater_ca->rider_id=$rider_id;
+        //     $_greater_ca->month=Carbon::parse($request->month)->startOfMonth()->format("Y-m-d");
+        //     $_greater_ca->given_date=Carbon::parse($request->given_date)->format("Y-m-d");
+        //     $_greater_ca->type="dr";
+        //     $_greater_ca->save();
 
-            $_greater_ra= new Rider_Account;
-            $_greater_ra->source="Salik";
-            $_greater_ra->salik_id="0";
-            $_greater_ra->amount=$used_salik-$allow_salik;
-            $_greater_ra->rider_id=$rider_id;
-            $_greater_ra->month=Carbon::parse($request->month)->startOfMonth()->format("Y-m-d");
-            $_greater_ra->given_date=Carbon::parse($request->given_date)->format("Y-m-d");
-            $_greater_ra->type="cr_payable";
-            $_greater_ra->save();
+        //     $_greater_ra= new Rider_Account;
+        //     $_greater_ra->source="Salik";
+        //     $_greater_ra->salik_id="0";
+        //     $_greater_ra->amount=$used_salik-$allow_salik;
+        //     $_greater_ra->rider_id=$rider_id;
+        //     $_greater_ra->month=Carbon::parse($request->month)->startOfMonth()->format("Y-m-d");
+        //     $_greater_ra->given_date=Carbon::parse($request->given_date)->format("Y-m-d");
+        //     $_greater_ra->type="cr_payable";
+        //     $_greater_ra->save();
 
-            $_greater_ca= new Company_Account;
-            $_greater_ca->source="Salik Extra";
-            $_greater_ca->salik_id="0";
-            $_greater_ca->amount=$used_salik-$allow_salik;
-            $_greater_ca->rider_id=$rider_id;
-            $_greater_ca->month=Carbon::parse($request->month)->startOfMonth()->format("Y-m-d");
-            $_greater_ca->given_date=Carbon::parse($request->given_date)->format("Y-m-d");
-            $_greater_ca->type="cr";
-            $_greater_ca->save();
-        }
-        else{
+        //     $_greater_ca= new Company_Account;
+        //     $_greater_ca->source="Salik Extra";
+        //     $_greater_ca->salik_id="0";
+        //     $_greater_ca->amount=$used_salik-$allow_salik;
+        //     $_greater_ca->rider_id=$rider_id;
+        //     $_greater_ca->month=Carbon::parse($request->month)->startOfMonth()->format("Y-m-d");
+        //     $_greater_ca->given_date=Carbon::parse($request->given_date)->format("Y-m-d");
+        //     $_greater_ca->type="cr";
+        //     $_greater_ca->save();
+        // }
+        // else{
+            $ca= new Company_Account;
+            $ca->source="Salik";
+            $ca->amount=$used_salik;
+            $ca->salik_id="0";
+            $ca->rider_id=$rider_id;
+            $ca->month=Carbon::parse($request->month)->startOfMonth()->format("Y-m-d");
+            $ca->given_date=Carbon::parse($request->given_date)->format("Y-m-d");
+            $ca->type="cr";
+            $ca->save();
             $ca= new Company_Account;
             $ca->source="Salik";
             $ca->amount=$used_salik;
@@ -686,14 +695,17 @@ class SalikController extends Controller
             $ca->given_date=Carbon::parse($request->given_date)->format("Y-m-d");
             $ca->type="dr";
             $ca->save();
-            // $ca= new Company_Account;
-            // $ca->source="Salik";
-            // $ca->amount=$allow_salik;
-            // $ca->salik_id="0";
-            // $ca->rider_id=$rider_id;
-            // $ca->month=Carbon::parse($request->month)->format("Y-m-d");
-            // $ca->type="dr";
-            // $ca->save();
+
+            $ra= new Rider_Account;
+            $ra->source="Salik";
+            $ra->salik_id="0";
+            $ra->amount=$used_salik;
+            $ra->rider_id=$rider_id;
+            $ra->month=Carbon::parse($request->month)->startOfMonth()->format("Y-m-d");
+            $ra->given_date=Carbon::parse($request->given_date)->format("Y-m-d");
+            $ra->type="dr";
+            $ra->save();
+          
             // if($used_salik<$allow_salik){
             //     $_less_ra= new Rider_Account;
             //     $_less_ra->source="Salik";
@@ -704,7 +716,7 @@ class SalikController extends Controller
             //     $_less_ra->type="cr";
             //     $_less_ra->save();
             // }
-        }
+        // }
           
             
         return redirect(route('admin.salik'));

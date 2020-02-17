@@ -518,6 +518,7 @@
                     <div class="kt-portlet__foot">
                         <div class="kt-form__actions kt-form__actions--right"> 
                             <a href="{{ route('Mobile.mobile_assign_to_rider', $rider->id) }}" class="btn btn-primary btn-sm btn-upper">Assign Mobile</a>&nbsp;
+                            <a href="{{ route('admin.clients.assignMultipleClients', $rider->id) }}" class="btn btn-primary btn-sm btn-upper">Assign Multiple Cients</a>&nbsp;
                         </div>
                     </div>
                 </form>
