@@ -21,19 +21,24 @@
                             <div>
                                 @php
                                     $client_history=App\Model\Client\Client_History::where("rider_id",$rider->id)->where("status","active")->get();
-                                    $is_check=false;
                                 @endphp
-                                {{-- @foreach ($client_history as $item)
-                                   {{$item->client_id}}
-                                @endforeach --}}
-                                <select required class="form-control kt-select2 " id="kt_select2_3" name="clients[]" multiple="multiple">
+                                <select required class="form-control kt-select2 bk-select2 " id="kt_select2_3" name="clients[]" multiple="multiple">
                                 @foreach ($clients as $client)
-                                {{-- @if ($item->client_id==$client->id)
-                                    {{"a"}}
-                                @endif --}}
-                                    <option value="{{ $client->id }}" data-client='{!! json_encode($client) !!}'>
-                                        {{ $client->name }} 
-                                    </option>
+                                    @php
+                                        $is_check=false;
+                                    @endphp
+                                    @foreach ($client_history as $item)
+                                        @if ($item->client_id==$client->id)
+                                            @php
+                                                $is_check=true;
+                                            @endphp
+                                        @endif
+                                    @endforeach
+                                    @if (!$is_check)
+                                        <option value="{{ $client->id }}" data-client='{!! json_encode($client) !!}'>
+                                            {{ $client->name }} 
+                                        </option>
+                                    @endif
                                 @endforeach
                             </select>
                             </div>
