@@ -196,6 +196,18 @@ class SalikController extends Controller
             $ca_obj['updated_at']=Carbon::now();
             array_push($ca_objects, $ca_obj);
 
+            $ca_obj = [];
+            $ca_obj['salik_id']=$distinct_item['transaction_id'];
+            $ca_obj['source']='Salik';
+            $ca_obj['amount']=$amount;
+            $ca_obj['rider_id']=$distinct_item['rider_id'];
+            $ca_obj['type']='dr';
+            $ca_obj['month']=Carbon::parse($distinct_item['trip_date'])->startOfMonth()->format("Y-m-d");
+            $ca_obj['given_date']=Carbon::now()->format("Y-m-d");
+            $ca_obj['created_at']=Carbon::now();
+            $ca_obj['updated_at']=Carbon::now();
+            array_push($ca_objects, $ca_obj);
+
             $ra_obj = [];
             $ra_obj['salik_id']=$distinct_item['transaction_id'];
             $ra_obj['source']='Salik';

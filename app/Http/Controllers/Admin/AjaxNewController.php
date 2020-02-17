@@ -704,7 +704,7 @@ class AjaxNewController extends Controller
                 return '<div>Salary Recieved from Kingriders <button style="display:none;" type="button" id="getting_val" data-update onclick="remaining_pay('.$rider_statement->rider_id.','.$rider_statement->id.','.$ra_found['id'].')" data-toggle="modal" data-target="#remaining_pay_modal" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
             }
             #salary received by commission based client
-            if(strpos($rider_statement->source, 'Weekly Salary')!==false){
+            if(strpos($rider_statement->source, 'Weekly Payout')!==false){
                 $ras = $rider_statements->toArray();
                 $ra_found = Arr::first($ras, function ($item, $key) use ($rider_statement) { 
                     if($item['type']=='skip') return false;

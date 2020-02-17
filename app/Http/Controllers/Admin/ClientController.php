@@ -645,8 +645,10 @@ public function profit_client($id){
                 $objDelete['client_income_id']=$already_income->acc_id; 
                 array_push($ra_delete_data, $objDelete);
             }
-            ## storing the data into client_income table
-            
+            #############################################################
+            ##      storing the data into client_income table          ##
+            #############################################################
+        
             $obj = [];
             $obj['client_id']=$client_id;
             $obj['rider_id']=$rider_id;
@@ -666,7 +668,10 @@ public function profit_client($id){
             $obj['updated_at']=Carbon::now();
             array_push($income_objs, $obj);
 
-            ## storing data into company account and rider acc table
+            #############################################################
+            ##  storing data into company account and rider acc table  ##
+            #############################################################
+
             $week_start = Carbon::parse($obj['week_start'])->format('d M');
             $week_end = Carbon::parse($obj['week_end'])->format('d M');
             $client_name = $client->name;
@@ -682,70 +687,80 @@ public function profit_client($id){
             }
             $salary_amount = $total_payout - $commission;
 
-            # adding payout - to CA
-            $ca_amt = $total_payout;
-            $ca_obj = [];
-            $ca_obj['client_income_id']=$unique_id;
-            $ca_obj['source']=$client_name.' Weekly Payout<br>('.$week_start.' - '.$week_end.') <br>Cash: '.$cash.'<br>Bank: '.$bank;
-            $ca_obj['rider_id']=$rider_id;
-            $ca_obj['amount']=$ca_amt;
-            $ca_obj['month']=$month;
-            $ca_obj['type']='cr';
-            $ca_obj['salary_id']=null;
-            $ca_obj['given_date']=Carbon::now();
-            $ca_obj['created_at']=Carbon::now();
-            $ca_obj['updated_at']=Carbon::now();
-            array_push($ca_objects, $ca_obj);
+            # =======================Flow====================
+            # 1) Payout - RA -cr
+            # 2) cash pay from payout - RA -dr
+            # 3) transfer company commission to CA - RA - dr
+            # 4) receive company commission from RA - CA - cr 
+            # =====================End Flow==================
 
-            # adding commission
-            $ca_amt = round($commission,2);
-            if($ca_amt>0){
-                $ca_obj = [];
-                $ca_obj['client_income_id']=$unique_id;
-                $ca_obj['source']= 'Weekly Commission ('.$week_start.' - '.$week_end.')';
-                $ca_obj['rider_id']=$rider_id;
-                $ca_obj['amount']=$ca_amt;
-                $ca_obj['month']=$month;
-                $ca_obj['type']='pl';
-                $ca_obj['salary_id']=null;
-                $ca_obj['given_date']=Carbon::now();
-                $ca_obj['created_at']=Carbon::now();
-                $ca_obj['updated_at']=Carbon::now();
-                array_push($ca_objects, $ca_obj);
-            }
+            # adding payout - to RA
+            $ra_amt = $total_payout;
+            $ra_obj = [];
+            $ra_obj['client_income_id']=$unique_id;
+            $ra_obj['source']=$client_name.' Weekly Payout<br>('.$week_start.' - '.$week_end.') <br>Cash: '.$cash.'<br>Bank: '.$bank;
+            $ra_obj['rider_id']=$rider_id;
+            $ra_obj['amount']=$ra_amt;
+            $ra_obj['month']=$month;
+            $ra_obj['type']='cr';
+            $ra_obj['payment_status']='pending';
+            $ra_obj['salary_id']=null;
+            $ra_obj['given_date']=Carbon::now();
+            $ra_obj['created_at']=Carbon::now();
+            $ra_obj['updated_at']=Carbon::now();
+            array_push($ra_objects, $ra_obj);
 
-            # generating salary - To CA
-            $ca_amt = round($salary_amount,2);
-            if($ca_amt>0){
-                $ca_obj = [];
-                $ca_obj['client_income_id']=$unique_id;
-                $ca_obj['source']= 'Weekly Salary ('.$week_start.' - '.$week_end.')';
-                $ca_obj['rider_id']=$rider_id;
-                $ca_obj['amount']=$ca_amt;
-                $ca_obj['month']=$month;
-                $ca_obj['type']='dr';
-                $ca_obj['salary_id']=null;
-                $ca_obj['given_date']=Carbon::now();
-                $ca_obj['created_at']=Carbon::now();
-                $ca_obj['updated_at']=Carbon::now();
-                array_push($ca_objects, $ca_obj);
-            }
-
-            # generating salary - To RA
-            $ra_amt = round($salary_amount,2);
+            # auto pay cash amount - To RA
+            $ra_amt = round($cash,2);
             if($ra_amt>0){
                 $ra_obj = [];
                 $ra_obj['client_income_id']=$unique_id;
-                $ra_obj['source']= 'Weekly Salary ('.$week_start.' - '.$week_end.')';
+                $ra_obj['source']= $client_name.' Cash';
                 $ra_obj['rider_id']=$rider_id;
                 $ra_obj['amount']=$ra_amt;
                 $ra_obj['month']=$month;
-                $ra_obj['type']='cr';
+                $ra_obj['type']='dr';
+                $ra_obj['payment_status']='paid';
                 $ra_obj['salary_id']=null;
                 $ra_obj['given_date']=Carbon::now();
                 $ra_obj['created_at']=Carbon::now();
                 $ra_obj['updated_at']=Carbon::now();
                 array_push($ra_objects, $ra_obj);
+            }
+
+            # adding commission - to RA
+            $ra_amt = round($commission,2);
+            if($ra_amt>0){
+                $ra_obj = [];
+                $ra_obj['client_income_id']=$unique_id;
+                $ra_obj['source']= 'Kingrider Weekly Commission <br>('.$week_start.' - '.$week_end.')';
+                $ra_obj['rider_id']=$rider_id;
+                $ra_obj['amount']=$ra_amt;
+                $ra_obj['month']=$month;
+                $ra_obj['type']='dr';
+                $ra_obj['payment_status']='pending';
+                $ra_obj['salary_id']=null;
+                $ra_obj['given_date']=Carbon::now();
+                $ra_obj['created_at']=Carbon::now();
+                $ra_obj['updated_at']=Carbon::now();
+                array_push($ra_objects, $ra_obj);
+            }
+
+            # adding commission - to CA profit
+            $ca_amt = round($commission,2);
+            if($ca_amt>0){
+                $ca_obj = [];
+                $ca_obj['client_income_id']=$unique_id;
+                $ca_obj['source']= 'Weekly Commission ('.$week_start.' - '.$week_end.') <br>Cash: '.$cash.'<br>Bank: '.$bank;
+                $ca_obj['rider_id']=$rider_id;
+                $ca_obj['amount']=$ca_amt;
+                $ca_obj['month']=$month;
+                $ca_obj['type']='cr';
+                $ca_obj['salary_id']=null;
+                $ca_obj['given_date']=Carbon::now();
+                $ca_obj['created_at']=Carbon::now();
+                $ca_obj['updated_at']=Carbon::now();
+                array_push($ca_objects, $ca_obj);
             }
 
             if(isset($already_income)){ 
@@ -861,14 +876,14 @@ public function profit_client($id){
             # storing the salary_id one by one to company accounts
             foreach ($ca_objects as $ca_key=>$ca_value) {
                 # code...
-                if($ca_value['client_income_id']==$salary->settings && strpos($ca_value['source'], 'Weekly Salary')!==false){
+                if($ca_value['client_income_id']==$salary->settings && strpos($ca_value['source'], 'Weekly Payout')!==false){
                     $ca_objects[$ca_key]['salary_id'] = $salary->id;
                 }
             }
             # storing the salary_id one by one to rider accounts
             foreach ($ra_objects as $ra_key=>$ra_value) {
                 # code...
-                if(strpos($ra_value['source'], 'Weekly Salary')!==false){
+                if(strpos($ra_value['source'], 'Weekly Payout')!==false){
                     if($ra_value['client_income_id']==$salary->settings){
                         $ra_objects[$ra_key]['salary_id'] = $salary->id;
                     }

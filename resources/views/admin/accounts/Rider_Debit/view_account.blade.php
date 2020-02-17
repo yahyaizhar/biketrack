@@ -1597,7 +1597,7 @@
 
 
 
-  var basic_alert= '   <div><div class="alert alert-danger fade show" id="alert-text-css" role="alert">  '  + 
+  var basic_alert= '   <div><div class="alert fade show" id="alert-text-css" role="alert">  '  + 
  '                                   <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div>  '  + 
  '                                       <div class="alert-text">A simple danger alert—check it out!</div>  '  + 
  '                                       <div class="alert-close">  '  + 
