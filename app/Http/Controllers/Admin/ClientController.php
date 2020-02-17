@@ -997,6 +997,23 @@ public function client_history_dates(Request $request,$rider_id,$client_history_
         'b'=>$client_history_id,
     ]);
 }
-
-
+public function assignMultipleClients($rider_id){
+    $rider=Rider::find($rider_id);
+    $clients=Client::where("status","1")->get();
+    return view('admin.client.assignMultipleClients',compact('rider','clients'));
+}
+public function insert_multiple_clients(Request $request,$rider_id){
+    $data=$request->client_data;
+    foreach ($data as $value) {
+        $client_histories=new Client_History;
+        $client_histories->client_id=$value['client_id'];
+        $client_histories->rider_id=$rider_id;
+        $client_histories->assign_date=Carbon::parse($value['assign_date'])->format('Y-m-d');
+        $client_histories->deassign_date=Carbon::parse($value['assign_date'])->format('Y-m-d');
+        $client_histories->status="active";
+        $client_histories->active_status="A";
+        $client_histories->save();
+    }
+    return redirect(route('admin.clients.index'));
+}
 }

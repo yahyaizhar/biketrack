@@ -298,6 +298,16 @@ class bikeController extends Controller
             $ca->source='Bike Rent';
             $ca->save();
 
+            $ca=new Company_Account();
+            $ca->type='dr';
+            $ca->amount=$amount_given_by_days;
+            $ca->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+            $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+            $ca->bike_rent_id =$bike_id;
+            $ca->rider_id=$rider_id;
+            $ca->source='Bike Rent';
+            $ca->save();
+
             $ra=new Rider_Account();
             $ra->type='dr';
             $ra->amount=$amount_given_by_days;

@@ -1558,6 +1558,19 @@ public function fuel_expense_insert(Request $r){
                 $ca->source='fuel_expense_vip';
                 $ca->fuel_expense_id=$fuel_expense->id;
                 $ca->save();
+
+                $ca = new \App\Model\Accounts\Company_Account;
+                $ca->type='dr';
+                $ca->amount=$value['amount_given_by_days'];
+                $ca->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+                $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+                $ca->rider_id=$r->rider_id;
+                if(isset($value['rider_id'])){
+                    $ca->rider_id=$value['rider_id'];
+                }
+                $ca->source='fuel_expense_vip';
+                $ca->fuel_expense_id=$fuel_expense->id;
+                $ca->save();
             }
             else{
                 $ca = new \App\Model\Accounts\Company_Account;
@@ -1605,6 +1618,19 @@ public function fuel_expense_insert(Request $r){
 
                 $ca = new \App\Model\Accounts\Company_Account;
                 $ca->type='cr';
+                $ca->amount=$value['amount_given_by_days'];
+                $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
+                $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+                $ca->rider_id=$r->rider_id;
+                if(isset($value['rider_id'])){
+                    $ca->rider_id=$value['rider_id'];
+                }
+                $ca->source='fuel_expense_cash';
+                $ca->fuel_expense_id=$fuel_expense->id;
+                $ca->save();
+
+                $ca = new \App\Model\Accounts\Company_Account;
+                $ca->type='dr';
                 $ca->amount=$value['amount_given_by_days'];
                 $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
                 $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
