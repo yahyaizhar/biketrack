@@ -938,100 +938,124 @@ class AccountsController extends Controller
         $_s_monthlyHours=286;
         $_s_hoursFormula=7.87;
         $_s_maxHours=11;
-        if(isset($feid) && $feid!=null){ // rider belongs to zomato
+        if(isset($feid) && $feid!=null){ // rider belongs to zomato or careem
 
-            $ra_zomatos=Income_zomato::where("rider_id",$rider_id)
-            ->whereMonth("date",$onlyMonth)
-            ->get()->first();  
-
-            if ($pm=='trip_based') {
-                
-                $_s_maxTrips=$client_setting['tb_sm__bonus_trips'];
-                $_s_tripsFormula=$client_setting['tb_sm__trip_amount'];
-                $_s_maxTripsFormula=$client_setting['tb_sm__trips_bonus_amount'];
-                $_s_monthlyHours=286;
-                $_s_hoursFormula=$client_setting['tb_sm__hour_amount'];
-                $_s_maxHours=11; 
-            }
-           
-            
-            if(isset($ra_zomatos)){
-                
-                $absent_app=$ra_zomatos->approve_absents;
-                $absent_approve_hours=$absent_app*$_s_maxHours;
-                $calculated_absent_hours=$absent_approve_hours*$_s_hoursFormula;
-                
-                $absent_count=$ra_zomatos->absents_count;
-                $working_count=$ra_zomatos->working_days;
-
-                $weekly_off=$ra_zomatos->weekly_off;
-                $extra_day=$ra_zomatos->extra_day;
-                
-                $absent_hours=$absent_count*$_s_maxHours;
-                $working_hours=$working_count*$_s_maxHours;
-
-                $calculated_hours =$ra_zomatos->calculated_hours;
-                $calculated_trips = $ra_zomatos->calculated_trips;
-
-                $less_time=$working_hours-$calculated_hours;
-
-                $zomato_hours =$ra_zomatos->log_in_hours_payable;
-                $zomato_trips = $ra_zomatos->trips_payable;
-
-                $hours=$calculated_hours;
-                // $hours_payable=$hours*$_s_hoursFormula;
-
-                $trips = $calculated_trips > $_s_maxTrips?$_s_maxTrips:$calculated_trips;
-
-                ##  temp_coding
-                // if($trips <350) $_s_tripsFormula=2;
-                // else if($trips >=350 && $trips <=399) $_s_tripsFormula=2.5;
-                // else if($trips >=400) $_s_tripsFormula=3;
-
-                // if($trips <250) $_s_hoursFormula=6;
-                ## end temp coding
-
-                $trips_payable = $trips * $_s_tripsFormula;
-
-                $trips_EXTRA = $calculated_trips > $_s_maxTrips?$calculated_trips-$_s_maxTrips:0;
-                $trips_EXTRA_payable = $trips_EXTRA * $_s_maxTripsFormula;
-
-                // $trips_payable+=$trips_EXTRA_payable;
-
-                $payable_hours=round($_s_monthlyHours - $absent_hours - $less_time,2);
-
-                $hours_payable=$payable_hours*$_s_hoursFormula;
-                if($calculated_trips > $_s_maxTrips){
-                    $bonus=50;
-                    if ($ra_zomatos->setting!="") {
-                        $position_setting = json_decode($ra_zomatos->setting, true);
-                        $positions = $position_setting['top_position'];
-                        if ($positions=="1") {
-                            $bonus=150;
-                        }
-                        if ($positions=="2") {
-                            $bonus=125;
-                        }
-                        if ($positions=="3") {
-                            $bonus=100;
-                        } 
-                    }
+            if($pm=='commission_based'){
+                # rider is from commission based
+                $basic_salary = Rider_salary::where('rider_id', $rider_id)
+                ->whereMonth("month",$onlyMonth)
+                ->sum('total_salary');  
+                if($basic_salary>0){
+                    $fixed_salary = $basic_salary;
+                    $ra_salary= $ra_cr;
+                    $ra_recieved=$ra_salary - $ra_payable;
+                    $total_salary_amt = $fixed_salary;
                 }
-                $salary_hours=round($hours_payable,2);
-                $salary_trips=$trips_payable+$trips_EXTRA_payable;
-                $salary_credits=round($ra_cr,2);
-                $ra_salary=$salary_hours +$salary_trips  +$salary_credits ;
-                $ra_recieved=$ra_salary - $ra_payable;
+                else {
+                    ## no salary generated 
+                    return response()->json([
+                        'status'=>0,
+                        'msg'=>'Cannot generate salary. Rider is commission based'
+                    ]);
+                }
+            }
+            else {
+                # rider is from zomato or jeebly - trip based
+                $ra_zomatos=Income_zomato::where("rider_id",$rider_id)
+                ->whereMonth("date",$onlyMonth)
+                ->get()->first();  
 
-                $total_salary_amt = round($hours_payable+$trips_payable+$trips_EXTRA_payable,2);
+                if ($pm=='trip_based') {
+                    
+                    $_s_maxTrips=$client_setting['tb_sm__bonus_trips'];
+                    $_s_tripsFormula=$client_setting['tb_sm__trip_amount'];
+                    $_s_maxTripsFormula=$client_setting['tb_sm__trips_bonus_amount'];
+                    $_s_monthlyHours=286;
+                    $_s_hoursFormula=$client_setting['tb_sm__hour_amount'];
+                    $_s_maxHours=11; 
+                }
+            
+                
+                if(isset($ra_zomatos)){
+                    
+                    $absent_app=$ra_zomatos->approve_absents;
+                    $absent_approve_hours=$absent_app*$_s_maxHours;
+                    $calculated_absent_hours=$absent_approve_hours*$_s_hoursFormula;
+                    
+                    $absent_count=$ra_zomatos->absents_count;
+                    $working_count=$ra_zomatos->working_days;
+
+                    $weekly_off=$ra_zomatos->weekly_off;
+                    $extra_day=$ra_zomatos->extra_day;
+                    
+                    $absent_hours=$absent_count*$_s_maxHours;
+                    $working_hours=$working_count*$_s_maxHours;
+
+                    $calculated_hours =$ra_zomatos->calculated_hours;
+                    $calculated_trips = $ra_zomatos->calculated_trips;
+
+                    $less_time=$working_hours-$calculated_hours;
+
+                    $zomato_hours =$ra_zomatos->log_in_hours_payable;
+                    $zomato_trips = $ra_zomatos->trips_payable;
+
+                    $hours=$calculated_hours;
+                    // $hours_payable=$hours*$_s_hoursFormula;
+
+                    $trips = $calculated_trips > $_s_maxTrips?$_s_maxTrips:$calculated_trips;
+
+                    ##  temp_coding
+                    // if($trips <350) $_s_tripsFormula=2;
+                    // else if($trips >=350 && $trips <=399) $_s_tripsFormula=2.5;
+                    // else if($trips >=400) $_s_tripsFormula=3;
+
+                    // if($trips <250) $_s_hoursFormula=6;
+                    ## end temp coding
+
+                    $trips_payable = $trips * $_s_tripsFormula;
+
+                    $trips_EXTRA = $calculated_trips > $_s_maxTrips?$calculated_trips-$_s_maxTrips:0;
+                    $trips_EXTRA_payable = $trips_EXTRA * $_s_maxTripsFormula;
+
+                    // $trips_payable+=$trips_EXTRA_payable;
+
+                    $payable_hours=round($_s_monthlyHours - $absent_hours - $less_time,2);
+
+                    $hours_payable=$payable_hours*$_s_hoursFormula;
+                    if($calculated_trips > $_s_maxTrips){
+                        $bonus=50;
+                        if ($ra_zomatos->setting!="") {
+                            $position_setting = json_decode($ra_zomatos->setting, true);
+                            $positions = $position_setting['top_position'];
+                            if ($positions=="1") {
+                                $bonus=150;
+                            }
+                            if ($positions=="2") {
+                                $bonus=125;
+                            }
+                            if ($positions=="3") {
+                                $bonus=100;
+                            } 
+                        }
+                    }
+                    $salary_hours=round($hours_payable,2);
+                    $salary_trips=$trips_payable+$trips_EXTRA_payable;
+                    $salary_credits=round($ra_cr,2);
+                    $ra_salary=$salary_hours +$salary_trips  +$salary_credits ;
+                    $ra_recieved=$ra_salary - $ra_payable;
+
+                    $total_salary_amt = round($hours_payable+$trips_payable+$trips_EXTRA_payable,2);
+                }
+                else { 
+                    # no record found in income zomato table --generate error 
+                    return response()->json([
+                        'status'=>0,
+                        'msg'=>'No record found on Zomato Income against this rider.'
+                    ]);
+                }
             }
-            else { 
-                # no record found in income zomato table --generate error 
-                return response()->json([
-                    'status'=>0,
-                    'msg'=>'No record found on Zomato Income against this rider.'
-                ]);
-            }
+
+            
         }
         else { // other clients
             if(isset($rider->rider_type)&&$rider->rider_type=='Employee'){
@@ -1086,6 +1110,10 @@ class AccountsController extends Controller
                     
                 }
                 if($pm=='commission_based'){
+                    return response()->json([
+                        'status'=>0,
+                        'msg'=>'No Captain ID found against this rider.'
+                    ]);
                     $commission_val=isset($client_setting['cb_sm__amount'])?$client_setting['cb_sm__amount']:0;
                     $commission_type=isset($client_setting['cb_sm__type'])?$client_setting['cb_sm__type']:0;
                     $commission_value=$commission_val.($commission_type=='percentage'?'%':' AED');

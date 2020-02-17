@@ -707,6 +707,34 @@ class AjaxNewController extends Controller
                 // updateStatus('.$rider_statement->id.')
                 return '<div>Salary Recieved from Kingriders <button style="display:none;" type="button" id="getting_val" data-update onclick="remaining_pay('.$rider_statement->rider_id.','.$rider_statement->id.','.$ra_found['id'].')" data-toggle="modal" data-target="#remaining_pay_modal" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
             }
+            #salary received by commission based client
+            if(strpos($rider_statement->source, 'Weekly Salary')!==false){
+                $ras = $rider_statements->toArray();
+                $ra_found = Arr::first($ras, function ($item, $key) use ($rider_statement) { 
+                    if($item['type']=='skip') return false;
+                    return $item['salary_id'] == $rider_statement->salary_id 
+                    && $item['type'] == "dr"
+                    && $item['rider_id'] == $rider_statement->rider_id
+                    && $item['source'] == "salary_paid";
+                });
+                if(!isset($ra_found)){
+                    $salary_paid=Rider_salary::where('settings',$rider_statement->client_income_id)->get()->first();
+                    if($salary_paid){
+                        $total=$salary_paid->total_salary;
+                        $gross=$salary_paid->gross_salary;
+                        $rider_id=$rider_statement->rider_id; 
+                        //not found, can pay
+                        return '<div>'.$rider_statement->source.' <button style="display:none;" type="button" id="getting_val" onclick="remaining_pay('.$rider_id.', '.$rider_statement->id.')" data-toggle="modal" data-target="#remaining_pay_modal" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
+                    }
+                    else {
+                        return 'Salary not found';
+                    }
+                    
+                }
+                // updateStatus('.$rider_statement->id.')
+                return '<div>'.$rider_statement->source.' <button style="display:none;" type="button" id="getting_val" data-update onclick="remaining_pay('.$rider_statement->rider_id.','.$rider_statement->id.','.$ra_found['id'].')" data-toggle="modal" data-target="#remaining_pay_modal" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
+
+            }
             if($rider_statement->source == 'salary_paid'){
                 return "Salary Paid";
             }

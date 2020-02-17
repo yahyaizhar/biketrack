@@ -563,6 +563,7 @@ Route::group([
     Route::post('/accounts/income/zomato/import','AccountsController@income_zomato_import')->name('admin.accounts.income_zomato_import'); //ok [Client: zomato import income]
 //zomato income 
 // Client_income
+    /*[Clients - Import careem income]*/Route::post('/import/income/commission','ClientController@import_income')->name('import.income');
     Route::get('/client_income/index','AccountsController@client_income_index')->name('admin.client_income_index'); //ok [Income: add client income]
     Route::get('/client_income/careem_payout','AccountsController@careem_payout_index')->name('admin.careem_payout_index');
     Route::get('/client_income/rider_joining_date/{rider_id}/{month}','AccountsController@rider_joining_date')->name('admin.rider_joining_date'); 

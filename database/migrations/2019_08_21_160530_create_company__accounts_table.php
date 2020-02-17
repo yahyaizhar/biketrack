@@ -25,7 +25,7 @@ class CreateCompanyAccountsTable extends Migration
             $table->integer('bike_fine')->nullable();
             $table->integer('bike_rent_id')->nullable();
             $table->integer('salary_id')->nullable();
-            $table->integer('client_income_id')->nullable();
+            $table->string('client_income_id')->nullable();
             $table->string('income_zomato_id')->nullable(); 
             $table->integer('advance_return_id')->nullable();
             $table->integer('id_charge_id')->nullable();

@@ -17,14 +17,15 @@ class CreateClientIncomesTable extends Migration
             $table->increments('id');
             $table->integer('client_id')->nullable();
             $table->integer('rider_id')->nullable();
+            $table->integer('acc_id')->nullable();
             $table->string('month')->nullable();
             $table->string('given_date')->nullable();
             $table->string('perday_hours')->nullable();
             $table->string('working_days')->nullable();
             $table->string('total_hours')->nullable();
             $table->string('extra_hours')->nullable();
-            $table->string('cash_trips')->nullable();
-            $table->string('bank_trips')->nullable();
+            $table->string('captain_id')->nullable();
+            $table->string('trips')->nullable();
             $table->string('captain_tips')->nullable();
             $table->string('item_bought')->nullable();
             $table->string('item_qty')->nullable();
