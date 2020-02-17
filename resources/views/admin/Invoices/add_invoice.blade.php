@@ -177,10 +177,10 @@
                                     <label>Invoice id:</label>
                                     <input required type="text" class="form-control @if($errors->has('invoice_id')) invalid-field @endif" data-name="invoice_id" name="invoice_id" placeholder="Enter Invoice Id" >
                                 </div>
-                                <div>
+                                <div style="margin-top: 10px;">
                                     <div class="kt-checkbox-inline">
 										<label class="kt-checkbox">
-				                           	<input type="checkbox"> Email 
+				                           	<input type="checkbox" name="show_email_invoice"> Show client email on invoice. 
 				                            <span></span>
 				                        </label>
 				                    </div>
@@ -836,9 +836,16 @@ $(document).ready(function () {
 
         let generate_invoice_HTML=function(invoice){
             var company__details=$('[data-name="company_details"]').val().replace(/(\r\n|\n)/g, "<br/>");
+            
+            var client_email=$('#invoices [name="show_email_invoice"]').is(":checked");
+
             $('.company__details').html(company__details);
             $('.invoice_slip__client_address').text(invoice.client.address);
-            $('.invoice_slip__client_email').text(invoice.client.email);
+            $('.invoice_slip__client_email').hide();
+            if (client_email) {
+                $('.invoice_slip__client_email').show();
+                $('.invoice_slip__client_email').text(invoice.client.email);
+            }
             $('.invoice_slip__client_no').text(invoice.client.phone);
             $('.invoice_slip__client_name').text(invoice.client.name);
             $('.invoice_slip__client_trn').text(invoice.client.trn_no);
