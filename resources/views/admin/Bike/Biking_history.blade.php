@@ -55,9 +55,7 @@
                                             @if ($bike->active_status==='D') 
                                              <button class="btn btn-label-warning btn-sm btn-upper"><span class="label label-warning">Deleted</span></button>
                                             @endif
-                                            @if (Auth::user()->type=='su')
-                                                <button onclick="deleteRecord({{$rider->id}},{{$history->id}})" class="btn btn-label-danger btn-sm btn-upper">Delete Record</button>&nbsp;
-                                            @endif
+                                        {{-- <button class="btn btn-label-success btn-sm btn-upper"><span class="label label-success">{{$bike_id['status']}}</span></button> --}}
                                         </div>
                                     
                 
@@ -171,54 +169,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
 
     <script>
-        var deleteRecord =function(rider_id,history_id){
-            var url = "{{ url('admin/sim_history') }}" + "/" + history_id;
-            swal.fire({
-                title: 'Are you sure?',
-                text: "You want to delete this record?",
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes!'
-            }).then(function(result) {
-                if (result.value) {
-                    $.ajax({
-                        url : url,
-                        type : 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        beforeSend: function() {            
-                            $('.loading').show();
-                        },
-                        complete: function(){
-                            $('.loading').hide();
-                        },
-                        success: function(data){
-                            console.log(data);
-                            swal.fire({
-                                position: 'center',
-                                type: 'success',
-                                title: 'Record deleted successfully.',
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                            window.location.reload();
-                        },
-                        error: function(error){
-                            swal.fire({
-                                position: 'center',
-                                type: 'error',
-                                title: 'Oops...',
-                                text: 'Unable to deleted.',
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                            window.location.reload();
-                        }
-                    });
-                }
-            });
-        }
         function sendSMS(id)
         {
             var rider_id = id;
