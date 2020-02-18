@@ -39,17 +39,17 @@
                                         </a>
                                         <div class="kt-widget__action">
                                             <button onclick="deleteRider({{$client->id}}, {{$rider->id}})" class="btn btn-label-info btn-sm btn-upper">Remove</button>&nbsp;
-                                            <button  class="btn btn-label-info btn-sm btn-upper">No Feid Is assigned</button>&nbsp;
-                                            @isset($client_history->client_rider_id)
-                                                <button  class="btn btn-label-info btn-sm btn-upper">{{$client_history->client_rider_id}}</button>&nbsp;
-                                            @endisset
-                                            
                                         </div>
                                     </div>
                 
                                     <div class="kt-widget__subhead">
                                         <a href="mailto:{{ $client->email }}"><i class="flaticon2-new-email"></i>{{ $client->email }}</a>
                                         <a><i class="flaticon2-calendar-3"></i>{{ $client->phone }} </a>
+                                        @if($client_history->client_rider_id)
+                                                <a  class="text-success">{{$client_history->client_rider_id}}</a>&nbsp;
+                                            @else
+                                                <a  class="text-danger">No Feid Is assigned</a>&nbsp;
+                                            @endif
                                         @php
                                             $mytimestamp = strtotime($client_history->assign_date);
                                             $timestampupdated=strtotime($client_history->deassign_date);
