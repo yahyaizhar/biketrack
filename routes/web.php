@@ -639,6 +639,8 @@ Route::get('/edit/employee/{employee_id}','Auth\EmployeeController@edit_employee
 Route::get('/view/employee/{employee_id}','Auth\EmployeeController@view_employee')->name('Employee.view_employee'); ///only for admin
 Route::post('/update/employee/{employee_id}','Auth\EmployeeController@update_employee')->name('Employee.update_employee'); ///only for admin
 
+Route::delete('/sim_history/{id}', 'SimController@DeleteSimHistory')->name('Sim.DeleteSimHistory');  //ok [Sim: delete transactions]
+
 });
 // end for Admin
 
