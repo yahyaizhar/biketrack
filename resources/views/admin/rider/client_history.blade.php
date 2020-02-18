@@ -46,9 +46,9 @@
                                         <a href="mailto:{{ $client->email }}"><i class="flaticon2-new-email"></i>{{ $client->email }}</a>
                                         <a><i class="flaticon2-calendar-3"></i>{{ $client->phone }} </a>
                                         @if($client_history->client_rider_id)
-                                                <a  class="text-success">{{$client_history->client_rider_id}}</a>&nbsp;
+                                                <a  class="text-success p-0">{{$client_history->client_rider_id}}</a>&nbsp;
                                             @else
-                                                <a  class="text-danger">No Feid Is assigned</a>&nbsp;
+                                                <a  class="text-danger p-0">No Feid Is assigned</a>&nbsp;
                                             @endif
                                         @php
                                             $mytimestamp = strtotime($client_history->assign_date);
