@@ -51,13 +51,14 @@
                                                 <button class="btn btn-label-success btn-sm btn-upper"><span class="label label-success">Active</span></button>
                                             @else
                                                 <button class="btn btn-label-danger btn-sm btn-upper"><span class="label label-danger">Deactive</span></button>
+                                                @if (Auth::user()->type=='su')
+                                                    <button onclick="deleteRecord({{$rider->id}},{{$assign_bike->id}})" class="btn btn-label-danger btn-sm btn-upper">Delete Record</button>&nbsp;
+                                                @endif
                                             @endif
                                             @if ($bike->active_status==='D') 
                                              <button class="btn btn-label-warning btn-sm btn-upper"><span class="label label-warning">Deleted</span></button>
                                             @endif
-                                            @if (Auth::user()->type=='su')
-                                                <button onclick="deleteRecord({{$rider->id}},{{$history->id}})" class="btn btn-label-danger btn-sm btn-upper">Delete Record</button>&nbsp;
-                                            @endif
+                                            
                                         </div>
                                     
                 
@@ -172,7 +173,7 @@
 
     <script>
         var deleteRecord =function(rider_id,history_id){
-            var url = "{{ url('admin/sim_history') }}" + "/" + history_id;
+            var url = "{{ url('admin/bike_history') }}" + "/" + history_id;
             swal.fire({
                 title: 'Are you sure?',
                 text: "You want to delete this record?",

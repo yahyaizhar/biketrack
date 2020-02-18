@@ -130,6 +130,11 @@ class bikeController extends Controller
       return $bike;
       
     }
+    public function DeleteBikeHistory($id)
+    {
+        $bike_history = Assign_bike::find($id);
+        $bike_history->delete();
+    }
     public function bike_edit(Request $request,$id){
       $is_readonly=false;
       $bike_id_array =$request->id;
