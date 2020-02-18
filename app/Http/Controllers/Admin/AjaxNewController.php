@@ -3807,6 +3807,7 @@ class AjaxNewController extends Controller
             $sim_balance_allowed=Company_Account::where("rider_id",$rider_id)
             ->whereMonth("month",$only_month)
             ->whereYear("month",$only_year)
+            ->where("type","dr")
             ->where("source","Sim Transaction")
             ->get();
             $sim=0;
@@ -3952,6 +3953,7 @@ class AjaxNewController extends Controller
             $_salik=Company_Account::where("rider_id",$rider_id)
             ->whereMonth("month",$only_month)
             ->whereYear("month",$only_year)
+            ->where("type","dr")
             ->where("source","Salik")
             ->get();
             $salik=0;

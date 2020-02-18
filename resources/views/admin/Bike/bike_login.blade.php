@@ -26,7 +26,7 @@
                     <div class="kt-portlet__body">
                         <div class="form-group">
                             <label>Owner:</label>
-                            <select class="form-control @if($errors->has('owner')) invalid-field @endif kt-select2" id="kt_select2_3" name="owner" placeholder="Enter Owner" value="{{ old('owner') }}">
+                            <select class="form-control @if($errors->has('owner')) invalid-field @endif kt-select2 bk-select2" id="kt_select2_3" name="owner" placeholder="Enter Owner" value="{{ old('owner') }}">
                                 <option value="rent">Rental Bike</option>
                                 <option value="kr_bike">KR-Bike</option>
                                 <option value="self">Rider Own Bike</option>
@@ -58,7 +58,7 @@
                             <div class="row rider_self_detail">
                                 <div class="col-md-9">
                                     <label>Select Rider:</label>
-                                    <select class="form-control kt-select2 " id="rider_id" name="rider_id" >
+                                    <select class="form-control kt-select2 bk-select2" id="rider_id" name="rider_id" >
                                         <option value="Select Rider">Select Rider</option>
                                         @foreach ($riders as $rider)
                                         <option value="{{ $rider->id }}" 
@@ -74,7 +74,7 @@
                         </div>
                         <div class="form-group">
                             <label>Model(2015):</label>
-                            <select class="form-control @if($errors->has('model')) invalid-field @endif kt-select2" id="kt_select2_3" name="model" placeholder="Enter model" value="{{ old('model') }}">
+                            <select class="form-control @if($errors->has('model')) invalid-field @endif kt-select2 bk-select2" id="kt_select2_3" name="model" placeholder="Enter model" value="{{ old('model') }}">
                                     {{-- <option value="2010">2010</option>
                                     <option value="2011">2011</option>
                                     <option value="2012">2012</option>
@@ -114,7 +114,7 @@
                         <div class="form-group">
                                 <label>Brand(etc Honda):</label>
                                 {{-- <input type="text" class="form-control @if($errors->has('brand')) invalid-field @endif" name="brand" placeholder="Enter Brand (etc Honda)" value="{{ old('brand') }}"> --}}
-                                <select class="form-control @if($errors->has('brand')) invalid-field @endif kt-select2" id="kt_select2_3" name="brand" placeholder="Enter Brand (etc Honda)" required value="{{ old('brand') }}" >
+                                <select class="form-control @if($errors->has('brand')) invalid-field @endif kt-select2 bk-select2" id="kt_select2_3" name="brand" placeholder="Enter Brand (etc Honda)" required value="{{ old('brand') }}" >
                                         <option value="Honda Unicorn">Honda Unicorn</option>
                                         <option value="Pulsar">Pulsar</option>
                                         </select> 
@@ -132,11 +132,12 @@
                             </div>
                             <div class="form-group">
                                 <label>Insurance Company:</label>
-                                <select class="form-control bk-select2 kt-select2" id="insurance_co" name="insurance_co" placeholder="Enter Insurance Company">
+                                <select class="form-control select2-dynamic" id="insurance_co" name="insurance_co" placeholder="Enter Insurance Company">
                                     @foreach ($insurance_co_name as $item)
                                         <option value="{{$item->insurance_co_name}}">{{$item->insurance_co_name}}</option>
                                     @endforeach
                                 </select> 
+                                <span class="form-text text-muted">Enter to save new Insurance company</span>
                             </div>
                             <div class="form-group">
                                 <label>Insurance Issue Date:</label>
@@ -240,34 +241,64 @@
             $('[name="rent_amount"]').val('');
             $('#purchase_price').val('');
           }
-      });
-      $('#kt_select2_3').trigger('change');
-
-      $(document).on("keyup",'.select2-search__field',function(event){
-            var keycode = (event.keyCode ? event.keyCode : event.which);
-            var  selected_option=$('.select2-search__field').val();
-            if($('.select2-results__options').find('.select2-results__message').length >0){ 
-                $('.select2-results__message').text('No results found! Click Enter to save Data');
-            }
-            if (keycode==13) { 
-                $.ajax({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }, 
-                    url:"{{url('admin/get/company/insurance/name/')}}",
-                    method: "POST",
-                    data:{data: selected_option},
-                })
-                .done(function(data) {  
-                    console.log(data);
-                    // window.location.reload();
-                    var option_html= '<option value="'+data.insurance_co_name.insurance_co_name+'">'+data.insurance_co_name.insurance_co_name+'</option>';
-                    $('[name="insurance_co"]').append(option_html);
-                    $('[name="insurance_co"]').select2('close');
-                    $('[name="insurance_co"]').val(data.insurance_co_name.insurance_co_name).trigger("change");
-                });
-            }
         });
+        $('#kt_select2_3').trigger('change'); 
+        $('.select2-dynamic').select2({
+                tags:true,
+                placeholder: 'Select an option'
+            });
+            $('.select2-dynamic').on('change.select2', function(){
+                var _select2 =$(this);
+                var selected = $(this).find(':selected');
+                if(typeof selected.attr('data-select2-tag') !=="undefined" && selected.attr('data-select2-tag')=='true' ){
+                    var formData = new FormData();
+                    formData.append('data', selected.text());
+                    $.ajax({
+                        url:'{{url('admin/get/company/insurance/name/')}}',
+                        type:'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data:formData,
+                        cache:false,
+                        processData:false,
+                        contentType:false,
+                    }).done(function(investor){
+                        selected.removeAttr('data-select2-tag');
+                        selected.val(investor.id);
+                        _select2.trigger('change');
+                        // init_table();
+                        
+                    }).fail(function( jqXHR, textStatus,errorThrown ) {
+                        console.log(jqXHR);
+                    });
+                }
+            })
+    //   $(document).on("keyup",'.select2-search__field',function(event){
+    //         var keycode = (event.keyCode ? event.keyCode : event.which);
+    //         var  selected_option=$('.select2-search__field').val();
+    //         if($('.select2-results__options').find('.select2-results__message').length >0){ 
+    //             $('.select2-results__message').text('No results found! Click Enter to save Data');
+    //         }
+    //         if (keycode==13) { 
+    //             $.ajax({
+    //                 headers: {
+    //                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //                 }, 
+    //                 url:"{{}}",
+    //                 method: "POST",
+    //                 data:{data: selected_option},
+    //             })
+    //             .done(function(data) {  
+    //                 console.log(data);
+    //                 // window.location.reload();
+    //                 var option_html= '<option value="'+data.insurance_co_name.insurance_co_name+'">'+data.insurance_co_name.insurance_co_name+'</option>';
+    //                 $('[name="insurance_co"]').append(option_html);
+    //                 $('[name="insurance_co"]').select2('close');
+    //                 $('[name="insurance_co"]').val(data.insurance_co_name.insurance_co_name).trigger("change");
+    //             });
+    //         }
+    //     });
       $(document).on("change input",'.select2-search__field',function(){
          var  selected_option=$(this).val();
         });

@@ -31,7 +31,7 @@
                             <div class="kt-widget__top">
                                 <div class="kt-widget__content">
                                     <div class="kt-widget__head">
-                                        <a class="kt-widget__username">
+                                    <a class="kt-widget__username" href="{{route('admin.clients.riders',$client->id)}}">
                                             {{ $client->name }}
                                             @if ($client_history->status=="active")
                                                 <i class="flaticon2-correct"></i>                                            
@@ -39,6 +39,11 @@
                                         </a>
                                         <div class="kt-widget__action">
                                             <button onclick="deleteRider({{$client->id}}, {{$rider->id}})" class="btn btn-label-info btn-sm btn-upper">Remove</button>&nbsp;
+                                            <button  class="btn btn-label-info btn-sm btn-upper">No Feid Is assigned</button>&nbsp;
+                                            @isset($client_history->client_rider_id)
+                                                <button  class="btn btn-label-info btn-sm btn-upper">{{$client_history->client_rider_id}}</button>&nbsp;
+                                            @endisset
+                                            
                                         </div>
                                     </div>
                 
@@ -117,6 +122,32 @@
         </div>
     </div>
 </div>
+
+<div>
+    <div class="modal fade" id="unassign_date" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title" id="exampleModalLabel">Unassign Date</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form class="kt-form" id="client_unassign_dates"  enctype="multipart/form-data">
+                    <div class="container">
+                        <div class="form-group">
+                            <label>Unassign Date:</label>
+                            <input  type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control" name="unassign_date" placeholder="Enter Month" value="">
+                        </div>
+                        <div class="modal-footer border-top-0 d-flex justify-content-center">
+                            <button class="upload-button btn btn-success">Unassign Client</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 @section('foot')
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
@@ -124,9 +155,47 @@
     <script>
         function deleteRider(client_id, rider_id)
         {
-            var url = "{{ url('admin/client') }}" + "/" + client_id + "/removeRider/" + rider_id;
-            console.log(url);
-            sendDeleteRequest(url, true);
+            $("#unassign_date").modal("show");
+            $("form#client_unassign_dates").on("submit",function(e){
+                e.preventDefault();
+                var _form = $(this);
+                var _modal = _form.parents('.modal');
+                var url = "{{ url('admin/client') }}" + "/" + client_id + "/removeRider/" + rider_id;
+               $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url : url,
+                    type : 'DELETE',
+                    data: _form.serializeArray(),
+                    success: function(data){
+                        console.log(data);
+                        _modal.modal('hide');
+                        swal.fire({
+                            position: 'center',
+                            type: 'success',
+                            title: 'Record updated successfully.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        window.location.reload();
+                    },
+                        error: function(error){
+                            _modal.modal('hide');
+                            swal.fire({
+                                position: 'center',
+                                type: 'error',
+                                title: 'Oops...',
+                                text: 'Unable to update.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        }
+                    });
+            });
+        // }); 
         }
         function updateDates(rider_id,client_history_id,assign_date,unassign_date){
             $("#client_duration").modal("show");
