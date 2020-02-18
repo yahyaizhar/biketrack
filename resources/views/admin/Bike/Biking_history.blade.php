@@ -59,6 +59,7 @@
                                              <button class="btn btn-label-warning btn-sm btn-upper"><span class="label label-warning">Deleted</span></button>
                                             @endif
                                             
+                                        {{-- <button class="btn btn-label-success btn-sm btn-upper"><span class="label label-success">{{$bike_id['status']}}</span></button> --}}
                                         </div>
                                     
                 
