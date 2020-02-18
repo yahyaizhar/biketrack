@@ -57,9 +57,9 @@
                                             $updated=Carbon\Carbon::parse($client_history->deassign_date)->format('F d, Y');
                                         @endphp 
                                         @if($client_history->status=='active')
-                                            <h6  class="rise-modal" onclick="updateDates({{$rider->id}},{{$client_history->id}},'{{$created}}','{{$updated}}')" style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}}</h6>
+                                    <h6  class="rise-modal" onclick="updateDates({{$rider->id}},{{$client_history->id}},'{{$created}}','{{$updated}}','{{$client_history->status}}')" style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}}</h6>
                                         @else
-                                            <h6 class="rise-modal" onclick="updateDates({{$rider->id}},{{$client_history->id}},'{{$created}}','{{$updated}}')"  style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}} {{'to'}} {{gmdate("d-m-Y", $timestampupdated)}}</h6>
+                                            <h6 class="rise-modal" onclick="updateDates({{$rider->id}},{{$client_history->id}},'{{$created}}','{{$updated}}','{{$client_history->status}}')"  style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}} {{'to'}} {{gmdate("d-m-Y", $timestampupdated)}}</h6>
                                         @endif  
                                     </div>
                 
@@ -109,7 +109,7 @@
                             <label>Started Month:</label>
                             <input  type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control" name="assign_date" placeholder="Enter Month" value="">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" id="unassign_date">
                             <label>Ended Month:</label>
                             <input  type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control" name="unassign_date" placeholder="Enter Month" value="">
                         </div>
@@ -197,12 +197,16 @@
             });
         // }); 
         }
-        function updateDates(rider_id,client_history_id,assign_date,unassign_date){
+        function updateDates(rider_id,client_history_id,assign_date,unassign_date,status){
             $("#client_duration").modal("show");
             $('#client_dates [name="rider_id"]').val(rider_id);
             $('#client_dates [name="client_history_id"]').val(client_history_id);
             $('#client_dates [name="assign_date"]').attr('data-month', assign_date);
             $('#client_dates [name="unassign_date"]').attr('data-month', unassign_date);
+            $("#unassign_date").show();
+            if (status=="active") {
+                $("#unassign_date").hide();
+            }
             biketrack.refresh_global();
             $("form#client_dates").on("submit",function(e){
                 e.preventDefault();
@@ -210,7 +214,7 @@
                 var rider_id=$('#client_dates [name="rider_id"]').val();
                 var client_history_id=$('#client_dates [name="client_history_id"]').val();
                 var _modal = _form.parents('.modal');
-                var url = "{{ url('admin/change_client_dates') }}" + "/" + rider_id + "/history" + "/" + client_history_id;
+                var url = "{{ url('admin/change_client_dates') }}" + "/" + rider_id + "/history" + "/" + client_history_id+"/"+status;
                 swal.fire({
                     title: 'Are you sure?',
                     text: "You want update Dates!",

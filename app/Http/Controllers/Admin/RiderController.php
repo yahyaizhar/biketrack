@@ -824,11 +824,17 @@ class RiderController extends Controller
     return view('admin.rider.rider_spell_time',compact('dates','rider'));
    }
 
-   public function update_client_history_dates(Request $request,$rider_id,$client_history_id){
+   public function update_client_history_dates(Request $request,$rider_id,$client_history_id,$status){
        $client_history=Client_History::find($client_history_id);
        if (isset($client_history)) {
-           $client_history->assign_date=Carbon::parse($request->assign_date)->format('Y-m-d');
-           $client_history->deassign_date=Carbon::parse($request->unassign_date)->format('Y-m-d');
+           if ($status=="active") {
+            $client_history->assign_date=Carbon::parse($request->assign_date)->format('Y-m-d');
+            $client_history->deassign_date=Carbon::parse($request->assign_date)->format('Y-m-d');
+           }
+           else{
+            $client_history->assign_date=Carbon::parse($request->assign_date)->format('Y-m-d');
+            $client_history->deassign_date=Carbon::parse($request->unassign_date)->format('Y-m-d');
+           }
            $client_history->save();
        }
     return response()->json([

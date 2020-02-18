@@ -194,7 +194,7 @@ Route::group([
     Route::post('/rider/{rider}/sendMessage', 'RiderController@sendSMS')->name('admin.rider.sendSMS'); //trash
     /*[rider-active/inactive]*/Route::post('/rider/{rider}/updateStatus', 'RiderController@updateStatus')->name('admin.rider.updateStatus');//ajax_route //active/inactive 
     /*[rider-client history]*/Route::get('/rider/client_history/{id}',"RiderController@client_history")->name('Client.client_history');
-    Route::get('/change_client_dates/{rider_id}/history/{client_history_id}',"RiderController@update_client_history_dates")->name('Client.update_client_history_dates');
+    Route::get('/change_client_dates/{rider_id}/history/{client_history_id}/{status}',"RiderController@update_client_history_dates")->name('Client.update_client_history_dates');
     /*[rider-Duration time]*/Route::get('/rider/spell/time/{id}',"RiderController@Spell_time")->name('Rider.spell_time');
 //  map Routes
     Route::get('/rider/assign-area', 'HomeController@assign_area')->name('admin.assignArea');   ///not_using
@@ -518,7 +518,7 @@ Route::group([
     Route::get('/view/Sim/{id}','SimController@view_assigned_sim')->name('Sim.view_assigned'); //not using
     Route::delete('/sim/{rider_id}/removeSim/{sim_id}', 'SimController@removeSim')->name('Sim.removeSim');  //ok [Sim: view sim history]
     Route::get('/view/{rider_id}/simHistory','SimController@sim_History')->name('Sim.simHistory');  //ok [Rider: view sim history]
-    Route::get('/change/sim/{rider_id}/history/{assign_sim_id}','SimController@sim_dates_History')->name('Sim.sim_dates_History'); //ok[Rider: change sim date history]
+    Route::get('/change/sim/{rider_id}/history/{assign_sim_id}/{status}','SimController@sim_dates_History')->name('Sim.sim_dates_History'); //ok[Rider: change sim date history]
     Route::get('/sim/deactive/{rider_id}/date/{sim_id}','SimController@sim_deactive_date')->name('admin.sim_deactive_date'); //ok [Rider: unassign sim]
     Route::get('/sim/allowed/balance/{rider_id}/update/{sim_id}','SimController@update_allowed_abalance')->name('Sim.update_allowed_abalance'); //ok [Rider: update allow balance]
 // end Sim history section 
