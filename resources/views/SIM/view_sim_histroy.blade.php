@@ -269,8 +269,9 @@ function updateDates(rider_id,assign_sim_id,created,updated){
                                   </a>
         
                                 <div class="kt-widget__action">
-                                  
+                                    @if (Auth::user()->type=='su')
                                     <button onclick="deleteRecord({{$rider->id}},{{$history->id}})" class="btn btn-label-danger btn-sm btn-upper">Delete Record</button>&nbsp;
+                                    @endif
                                 {{-- <button class="btn btn-label-success btn-sm btn-upper"><span class="label label-success">{{$bike_id['status']}}</span></button> --}}
                                  </div>
                             </div>
