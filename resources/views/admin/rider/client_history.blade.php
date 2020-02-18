@@ -38,7 +38,7 @@
                                             @endif
                                         </a>
                                         <div class="kt-widget__action">
-                                            <button onclick="deleteRider({{$client->id}}, {{$rider->id}})" class="btn btn-label-info btn-sm btn-upper">Remove</button>&nbsp;
+                                            <button onclick="deleteRider({{$client->id}}, {{$rider->id}})" class="btn btn-label-info btn-sm btn-upper">Unassign</button>&nbsp;
                                         </div>
                                     </div>
                 

@@ -213,7 +213,7 @@ Route::group([
 // end Riders
 // clients
     /*[clients-change feid]*/Route::post('/update/client/riders/{rider_id}','RiderController@update_ClientRiders')->name('ClientRiders.admin.update');//ajax_route //changing feid on admin.clients.riders route ////ok
-    Route::post('/update/rider_comission','RiderController@update_rider_comission')->name('admin.update_rider_comission');//***
+    Route::post('/update/rider_comission','RiderController@update_rider_comission')->name('admin.update_rider_comission');
     /*[clients-rider performance]*/Route::get('/client/rider/performance','RiderController@RiderPerformance')->name('admin.riderPerformance');////ok
     Route::resource('/clients', 'ClientController', [
         'as' => 'admin'
@@ -222,8 +222,8 @@ Route::group([
 	/*[clients-View Active clients]*/Route::get('/get/active/client','ClientController@get_active_clients')->name('admin.get_active_clients');
     /*[clients-rider history]*/Route::get('/client/{client}/riders', 'ClientController@showRiders')->name('admin.clients.riders');////ok
     /*[Clients-assign rider]*/Route::get('/client/{client}/assignRider', 'ClientController@assignRiders')->name('admin.clients.assignRiders');////ok
-    Route::get('/client/{rider_id}/assign_multiple_clients', 'ClientController@assignMultipleClients')->name('admin.clients.assignMultipleClients');//***
-    Route::post('/client/{rider_id}/insert_multiple_clients','ClientController@insert_multiple_clients')->name('admin.insert_multiple_clients');//*** 
+    Route::get('/client/{rider_id}/assign_multiple_clients', 'ClientController@assignMultipleClients')->name('admin.clients.assignMultipleClients');
+    Route::post('/client/{rider_id}/insert_multiple_clients','ClientController@insert_multiple_clients')->name('admin.insert_multiple_clients');
     /*[Clients-assign rider]*/Route::put('/client/{client}/assignRider', 'ClientController@updateAssignedRiders')->name('admin.clients.assignRiders');//ajax_route ////ok
     /*[Clients-unassign rider]*/Route::delete('/client/{client}/removeRider/{rider}', 'ClientController@removeRiders')->name('admin.clients.removeRiders');//ajax_route ////ok
     /*[Clients-active/inactive]*/Route::post('/client/{client}/updateStatus', 'ClientController@updateStatus')->name('admin.client.updateStatus');//ajax_route ////ok
