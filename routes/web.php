@@ -271,7 +271,7 @@ Route::group([
     /*[bike - edit bike]*/Route::post('/bike/update/{id}','bikeController@bike_update')->name('Bike.bike_update');
     /*[rider - bike history]*/Route::get('/riders/{rider}/history','ClientController@Bike_assigned_to_riders_history')->name('Bike.assignedToRiders_History');
     /*[bike - rider history]*/Route::get('/bike/{bike_id}/history','ClientController@rider_history')->name('bike.rider_history');
-    /*[bike - change assign/unassign dates]*/ Route::get('/change/{rider_id}/history/{bike_id}','ClientController@change_dates_history')->name('admin.change_dates_history');
+    /*[bike - change assign/unassign dates]*/ Route::get('/change/{rider_id}/history/{bike_id}/{bike_status}','ClientController@change_dates_history')->name('admin.change_dates_history');
     /*[bike - View rider bike profile]*/ Route::get('/bike/{bike_id}/profile/{rider_id}','ClientController@bike_profile')->name('bike.bike_profile'); 
     /*[bike - view salik]*/Route::get('view/bike/salik/{id}','SalikController@bike_salik')->name('bike.bike_salik');
     /*[rider - view salik]*/Route::get('view/rider/salik/{id}','SalikController@rider_salik')->name('rider.rider_salik');

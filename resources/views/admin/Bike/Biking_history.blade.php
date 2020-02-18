@@ -8,6 +8,7 @@
         <span class="kt-subheader__separator kt-subheader__separator--v"></span>
 
         <span class="kt-subheader__desc">Bikes History</span>
+    <a href="{{route('bike.bike_assignRiders',$rider->id)}}" class="btn btn-label-success btn-sm btn-upper"><span class="label label-success">Assign Bike</span></a>
         <div class="kt-input-icon kt-input-icon--right kt-subheader__search kt-hidden">
             <input type="text" class="form-control" placeholder="Search order..." id="generalSearch">
             <span class="kt-input-icon__icon kt-input-icon__icon--right">
@@ -38,27 +39,25 @@
                                 </div>
                                 <div class="kt-widget__content">
                                     <div class="kt-widget__head">
+                                        <h4><a href="{{route('Bike.bike_edit_view',$bike->id)}}">{{$bike->brand}}-{{ $bike->model }}</a></h4>
                                         <a class="kt-widget__username">
-                                        <h4>{{$bike->brand}}-{{ $bike->model }}</h4>
-                                        @if ($assign_bike->status==='active') 
-                                        <button class="btn btn-label-success btn-sm btn-upper"><span class="label label-success">Active</span></button>
-                                        @else
-                                        <button class="btn btn-label-danger btn-sm btn-upper"><span class="label label-danger">Deactive</span></button>
-                                        @endif
-                                        @if ($bike->active_status==='D') 
-                                        <button class="btn btn-label-warning btn-sm btn-upper"><span class="label label-warning">Deleted</span></button>
-                                        @endif
-                                        
-                                        
-                                        </a>
-                
-                                        <div class="kt-widget__action">
                                             @if ($assign_bike->status==='active')
-                                            <button onclick="deleteBike({{$rider->id}},{{$assign_bike->id}})" class="btn btn-label-info btn-sm btn-upper">Unassign Bike</button>&nbsp;
+                                                <button onclick="deleteBike({{$rider->id}},{{$assign_bike->id}})" class="btn btn-label-info btn-sm btn-upper">Unassign Bike</button>&nbsp;
+                                            @endif
+                                        </a>
+                                    </div>
+                                        <div class="kt-widget__action">
+                                            @if ($assign_bike->status==='active') 
+                                                <button class="btn btn-label-success btn-sm btn-upper"><span class="label label-success">Active</span></button>
+                                            @else
+                                                <button class="btn btn-label-danger btn-sm btn-upper"><span class="label label-danger">Deactive</span></button>
+                                            @endif
+                                            @if ($bike->active_status==='D') 
+                                             <button class="btn btn-label-warning btn-sm btn-upper"><span class="label label-warning">Deleted</span></button>
                                             @endif
                                         {{-- <button class="btn btn-label-success btn-sm btn-upper"><span class="label label-success">{{$bike_id['status']}}</span></button> --}}
                                         </div>
-                                    </div>
+                                    
                 
                                     <div class="kt-widget__subhead">
                                         <a><i class="flaticon2-calendar-3"></i>{{ $bike->availability }} </a>
@@ -71,9 +70,9 @@
                                         
                                     @endphp 
                                         @if($assign_bike->status=='active')
-                                    <h6  class="rise-modal" onclick="updateDates({{$rider->id}},{{$assign_bike->id}},'{{$created}}','{{$updated}}')" style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}}</h6>
+                                    <h6  class="rise-modal" onclick="updateDates({{$rider->id}},{{$assign_bike->id}},'{{$created}}','{{$updated}}','{{$assign_bike->status}}')" style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}}</h6>
                                     @else
-                                    <h6 class="rise-modal" onclick="updateDates({{$rider->id}},{{$assign_bike->id}},'{{$created}}','{{$updated}}')"  style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}} {{'to'}} {{gmdate("d-m-Y", $timestampupdated)}}</h6>
+                                    <h6 class="rise-modal" onclick="updateDates({{$rider->id}},{{$assign_bike->id}},'{{$created}}','{{$updated}}','{{$assign_bike->status}}')"  style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}} {{'to'}} {{gmdate("d-m-Y", $timestampupdated)}}</h6>
                                     @endif   
                                     </div>
                                 </div>
@@ -101,7 +100,7 @@
                                             <label>Started Month:</label>
                                             <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::parse($assign_bike->bike_assign_date)->format('M d, Y')}}" required readonly class="month_picker form-control" name="bike_assign_date" placeholder="Enter Month" value="">
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group" id="unassign_date">
                                             <label>Ended Month:</label>
                                             <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::parse($assign_bike->bike_unassign_date)->format('M d, Y')}}" required readonly class="month_picker form-control" name="bike_unassign_date" placeholder="Enter Month" value="">
                                         </div>
@@ -192,10 +191,14 @@
                 $(textbox_id).val('');
             }
         }
-        function updateDates(rider_id, assign_bike_id, created ,updated) {
+        function updateDates(rider_id, assign_bike_id, created ,updated,bike_status) {
             $("#bike_id").val(assign_bike_id);
             $("#bike_status").find('[name="bike_assign_date"]').attr('data-month', created);
             $("#bike_status").find('[name="bike_unassign_date"]').attr('data-month', updated);
+            $("#bike_status").find('#unassign_date').show();
+            if (bike_status=="active") {
+                $("#bike_status").find('#unassign_date').hide();
+            }
             biketrack.refresh_global();
             $("#bike_status").modal("show");
         }
@@ -205,7 +208,7 @@
             var rider_id=$("#rider_id").val();
             var assign_bike_id=$("#bike_id").val();
             var _modal = _form.parents('.modal');
-            var url = "{{ url('admin/change') }}" + "/" + rider_id + "/history" + "/" + assign_bike_id;
+            var url = "{{ url('admin/change') }}" + "/" + rider_id + "/history" + "/" + assign_bike_id +"/"+bike_status;
             swal.fire({
                 title: 'Are you sure?',
                 text: "You want update status!",
