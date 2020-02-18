@@ -31,7 +31,7 @@
                             <div class="kt-widget__top">
                                 <div class="kt-widget__content">
                                     <div class="kt-widget__head">
-                                        <a class="kt-widget__username">
+                                    <a class="kt-widget__username" href="{{route('admin.clients.riders',$client->id)}}">
                                             {{ $client->name }}
                                             @if ($client_history->status=="active")
                                                 <i class="flaticon2-correct"></i>                                            
@@ -39,6 +39,11 @@
                                         </a>
                                         <div class="kt-widget__action">
                                             <button onclick="deleteRider({{$client->id}}, {{$rider->id}})" class="btn btn-label-info btn-sm btn-upper">Remove</button>&nbsp;
+                                            <button  class="btn btn-label-info btn-sm btn-upper">No Feid Is assigned</button>&nbsp;
+                                            @isset($client_history->client_rider_id)
+                                                <button  class="btn btn-label-info btn-sm btn-upper">{{$client_history->client_rider_id}}</button>&nbsp;
+                                            @endisset
+                                            
                                         </div>
                                     </div>
                 
