@@ -271,9 +271,11 @@ class ClientController extends Controller
         ->where("status","active")
         ->get()
         ->first();
-        $client_history->status="deactive";
-        $client_history->deassign_date=Carbon::parse($request->unassign_date)->format("Y-m-d");
-        $client_history->save();
+        if (isset($client_history)) {
+            $client_history->status="deactive";
+            $client_history->deassign_date=Carbon::parse($request->unassign_date)->format("Y-m-d");
+            $client_history->save();
+        }
         return response()->json([
             'status' => true
         ]);

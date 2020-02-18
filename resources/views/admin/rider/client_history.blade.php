@@ -38,7 +38,9 @@
                                             @endif
                                         </a>
                                         <div class="kt-widget__action">
-                                            <button onclick="deleteRider({{$client->id}}, {{$rider->id}})" class="btn btn-label-info btn-sm btn-upper">Unassign</button>&nbsp;
+                                            @if($client_history->status=='active')
+                                                <button onclick="deleteRider({{$client->id}}, {{$rider->id}})" class="btn btn-label-info btn-sm btn-upper">Unassign</button>&nbsp;
+                                            @endif
                                         </div>
                                     </div>
                 
@@ -124,7 +126,7 @@
 </div>
 
 <div>
-    <div class="modal fade" id="unassign_date" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="unassign_date_for_client" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header border-bottom-0">
@@ -155,7 +157,7 @@
     <script>
         function deleteRider(client_id, rider_id)
         {
-            $("#unassign_date").modal("show");
+            $("#unassign_date_for_client").modal("show");
             $("form#client_unassign_dates").on("submit",function(e){
                 e.preventDefault();
                 var _form = $(this);

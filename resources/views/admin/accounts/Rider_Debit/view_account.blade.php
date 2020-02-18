@@ -3594,5 +3594,14 @@ function check_salary_status(){
         },
     });
 }
+function set_import_data(){
+    $(".rider_days_detail tbody tr").each(function(i,j){
+        var a=$(this).find("td:eq(2)").text();
+        if((a>=3 && a<=4) || (a>=6.5 && a<=8) ){
+            $(this).find("td:eq(1)").attr("contenteditable",true);
+            $(this).find("td:eq(2)").attr("contenteditable",true);
+        }
+    });
+}
 </script>
 @endsection
