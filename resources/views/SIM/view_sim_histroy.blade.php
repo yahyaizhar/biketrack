@@ -1,70 +1,118 @@
 @extends('admin.layouts.app')
 @section('main-content')
 <script>
-function updateDates(rider_id,assign_sim_id,created,updated){  
-            $("#sim_status").modal("show");
-            $('input[name="rider_id"]').val(rider_id);
-            $('input[name="assign_sim_id"]').val(assign_sim_id);
-            $('#sim_status input[name="created_at"]').attr('data-month', created);
-            $('#sim_status input[name="updated_at"]').attr('data-month', updated);
-            biketrack.refresh_global();
-            $("form#active_sim_status").on("submit",function(e){
-                e.preventDefault();
-                var _form = $(this);
-                var rider_id=$("#rider_id").val();
-                var assign_sim_id=$("#assign_sim_id").val();
-                var _modal = _form.parents('.modal');
-                var url = "{{ url('admin/change/sim') }}" + "/" + rider_id + "/history" + "/" + assign_sim_id;
-                swal.fire({
-                    title: 'Are you sure?',
-                    text: "You want update status!",
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Yes!'
-                }).then(function(result) {
-                    if (result.value) {
-                        $.ajaxSetup({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            }
+    var deleteRecord =function(rider_id,history_id){
+        var url = "{{ url('admin/sim_history') }}" + "/" + history_id;
+        swal.fire({
+            title: 'Are you sure?',
+            text: "You want to delete this record?",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes!'
+        }).then(function(result) {
+            if (result.value) {
+                $.ajax({
+                    url : url,
+                    type : 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    beforeSend: function() {            
+                        $('.loading').show();
+                    },
+                    complete: function(){
+                        $('.loading').hide();
+                    },
+                    success: function(data){
+                        console.log(data);
+                        swal.fire({
+                            position: 'center',
+                            type: 'success',
+                            title: 'Record deleted successfully.',
+                            showConfirmButton: false,
+                            timer: 1500
                         });
-                    $.ajax({
-                        url : url,
-                        type : 'GET',
-                        data: _form.serializeArray(),
-                        beforeSend: function() {            
-                            $('.loading').show();
-                        },
-                        complete: function(){
-                            $('.loading').hide();
-                        },
-                        success: function(data){
-                            console.log(data);
-                            _modal.modal('hide');
-                            swal.fire({
-                                position: 'center',
-                                type: 'success',
-                                title: 'Record updated successfully.',
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                        },
-                        error: function(error){
-                            _modal.modal('hide');
-                            swal.fire({
-                                position: 'center',
-                                type: 'error',
-                                title: 'Oops...',
-                                text: 'Unable to update.',
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                        }
+                        window.location.reload();
+                    },
+                    error: function(error){
+                        swal.fire({
+                            position: 'center',
+                            type: 'error',
+                            title: 'Oops...',
+                            text: 'Unable to deleted.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        window.location.reload();
+                    }
+                });
+            }
+    });
+    }
+function updateDates(rider_id,assign_sim_id,created,updated){  
+    $("#sim_status").modal("show");
+    $('input[name="rider_id"]').val(rider_id);
+    $('input[name="assign_sim_id"]').val(assign_sim_id);
+    $('#sim_status input[name="created_at"]').attr('data-month', created);
+    $('#sim_status input[name="updated_at"]').attr('data-month', updated);
+    biketrack.refresh_global();
+    $("form#active_sim_status").on("submit",function(e){
+        e.preventDefault();
+        var _form = $(this);
+        var rider_id=$("#rider_id").val();
+        var assign_sim_id=$("#assign_sim_id").val();
+        var _modal = _form.parents('.modal');
+        var url = "{{ url('admin/change/sim') }}" + "/" + rider_id + "/history" + "/" + assign_sim_id;
+        swal.fire({
+            title: 'Are you sure?',
+            text: "You want update status!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes!'
+        }).then(function(result) {
+            if (result.value) {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+            $.ajax({
+                url : url,
+                type : 'GET',
+                data: _form.serializeArray(),
+                beforeSend: function() {            
+                    $('.loading').show();
+                },
+                complete: function(){
+                    $('.loading').hide();
+                },
+                success: function(data){
+                    console.log(data);
+                    _modal.modal('hide');
+                    swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Record updated successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                },
+                error: function(error){
+                    _modal.modal('hide');
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Unable to update.',
+                        showConfirmButton: false,
+                        timer: 1500
                     });
                 }
             });
-        }); 
         }
+    });
+}); 
+}
 </script>
 <div class="kt-subheader   kt-grid__item" id="kt_subheader">
     <div class="kt-subheader__main">
@@ -222,7 +270,7 @@ function updateDates(rider_id,assign_sim_id,created,updated){
         
                                 <div class="kt-widget__action">
                                   
-                                    {{-- <button onclick="deleteBike({{$rider->id}},{{$hasSim['id']}})" class="btn btn-label-info btn-sm btn-upper">Remove</button>&nbsp; --}}
+                                    <button onclick="deleteRecord({{$rider->id}},{{$history->id}})" class="btn btn-label-danger btn-sm btn-upper">Delete Record</button>&nbsp;
                                 {{-- <button class="btn btn-label-success btn-sm btn-upper"><span class="label label-success">{{$bike_id['status']}}</span></button> --}}
                                  </div>
                             </div>
