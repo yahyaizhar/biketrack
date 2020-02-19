@@ -935,7 +935,7 @@ class AjaxController extends Controller
             
             $client_rider=$riders->clients()->get()->first();
             if($client_rider){
-            return '<a href="'.route('admin.clients.riders', $client_rider).'">' .$client_rider->name.'</a>';
+            return '<a href="'.route('Client.client_history', $riders->id).'">' .$client_rider->name.'</a>';
         }
         else{
             return "Rider has no client";
@@ -2116,7 +2116,7 @@ class AjaxController extends Controller
                
                $client_rider=$riders->clients()->get()->first();
                if($client_rider){
-               return '<a href="'.route('admin.clients.riders', $client_rider).'">' .$client_rider->name.'</a>';
+               return '<a href="'.route('Client.client_history', $riders->id).'">' .$client_rider->name.'</a>';
            }
            else{
                return "Rider has no client";
