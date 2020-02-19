@@ -49,12 +49,16 @@
             }
     });
     }
-function updateDates(rider_id,assign_sim_id,created,updated){  
+function updateDates(rider_id,assign_sim_id,created,updated,status){  
     $("#sim_status").modal("show");
     $('input[name="rider_id"]').val(rider_id);
     $('input[name="assign_sim_id"]').val(assign_sim_id);
     $('#sim_status input[name="created_at"]').attr('data-month', created);
     $('#sim_status input[name="updated_at"]').attr('data-month', updated);
+    $("#unassign_date").show();
+    if (status=="active") {
+        $("#unassign_date").hide();
+    }
     biketrack.refresh_global();
     $("form#active_sim_status").on("submit",function(e){
         e.preventDefault();
@@ -62,7 +66,7 @@ function updateDates(rider_id,assign_sim_id,created,updated){
         var rider_id=$("#rider_id").val();
         var assign_sim_id=$("#assign_sim_id").val();
         var _modal = _form.parents('.modal');
-        var url = "{{ url('admin/change/sim') }}" + "/" + rider_id + "/history" + "/" + assign_sim_id;
+        var url = "{{ url('admin/change/sim') }}" + "/" + rider_id + "/history" + "/" + assign_sim_id +"/"+status ;
         swal.fire({
             title: 'Are you sure?',
             text: "You want update status!",
@@ -164,19 +168,17 @@ function updateDates(rider_id,assign_sim_id,created,updated){
                         </div>
                         <div class="kt-widget__content">
                             <div class="kt-widget__head">
-                                <a class="kt-widget__username">
-                                  <h4>{{$hasSim['sim_company']}}-{{ $hasSim['sim_number'] }}</h4>
+                                  <h4><a href="{{route('Sim.edit_sim_view',$hasSim['id'])}}">{{$hasSim['sim_company']}}-{{ $hasSim['sim_number'] }}</a></h4>
+                                  <a class="kt-widget__username">
                                   <button class="btn btn-label-success btn-sm btn-upper"><span class="label label-success">{{$history['status']}}</span></button>
                                 {{-- <button class="btn btn-label-info btn-sm btn-upper"><span class="label label-info">{{$history->allowed_balance}}</span></button> --}}
-                                </a>
-        
+                                </a> 
+                            </div>
                                 <div class="kt-widget__action">
                                   
                                     <button onclick="deleteSim({{$rider->id}},{{$hasSim['id']}})" class="btn btn-label-info btn-sm btn-upper">Unassign Sim</button>&nbsp;
                                 {{-- <button class="btn btn-label-success btn-sm btn-upper"><span class="label label-success">sohaib</span></button> --}}
                                  </div>
-                            </div>
-        
                             <div class="kt-widget__subhead">
                                 <a onclick="updateAllowedBalance({{$history->allowed_balance}},{{$rider->id}},{{$history->id}},this)"><i class="flaticon-coins"></i>Allowed Balance:&nbsp;<span class="balance_allowed">{{$history->allowed_balance}}</span></a>
                                 <a>
@@ -191,10 +193,10 @@ function updateDates(rider_id,assign_sim_id,created,updated){
                                 $updated=Carbon\Carbon::parse($history['return_date'])->format('F d, Y');
                               @endphp
                                 @if($history->status=='active')
-                                <h6 style="float:right;color:green;" onclick="updateDates({{$rider->id}},{{$history['id']}},'{{$created}}','{{$updated}}')">{{gmdate("d-m-Y", $mytimestamp)}}</h6> 
+                            <h6 style="float:right;color:green;" onclick="updateDates({{$rider->id}},{{$history['id']}},'{{$created}}','{{$updated}}','{{$history->status}}')">{{gmdate("d-m-Y", $mytimestamp)}}</h6> 
                             
                             @else
-                            <h6 style="float:right;color:green;" onclick="updateDates({{$rider->id}},{{$history['id']}},'{{$created}}','{{$updated}}')">{{gmdate("d-m-Y", $mytimestamp)}} {{'to'}} {{gmdate("d-m-Y", $timestampupdated)}}</h6>
+                            <h6 style="float:right;color:green;" onclick="updateDates({{$rider->id}},{{$history['id']}},'{{$created}}','{{$updated}}','{{$history->status}}')">{{gmdate("d-m-Y", $mytimestamp)}} {{'to'}} {{gmdate("d-m-Y", $timestampupdated)}}</h6>
                             @endif
                             </div>
                         </div>
@@ -259,22 +261,22 @@ function updateDates(rider_id,assign_sim_id,created,updated){
                         </div>
                         <div class="kt-widget__content">
                             <div class="kt-widget__head"> 
+                                <h4><a href="{{route('Sim.edit_sim_view',$hasSim['id'])}}">{{$hasSim['sim_company']}}-{{ $hasSim['sim_number'] }}</a></h4>
                                 <a class="kt-widget__username">
-                                  <h4>{{$hasSim['sim_company']}}-{{ $hasSim['sim_number'] }}</h4>
                                   <button class="btn btn-label-danger btn-sm btn-upper"><span class="label label-danger">{{$history['status']}}</span></button>
                                   {{-- <button class="btn btn-label-info btn-sm btn-upper"><span class="label label-info"></span></button> --}}
                                   @if($hasSim['active_status']=="D")
                                     <button class="btn btn-label-warning btsssn-sm btn-upper"><span class="label label-warning">Deleted</span></button>
                                  @endif
                                   </a>
-        
+                                </div>
                                 <div class="kt-widget__action">
                                     @if (Auth::user()->type=='su')
                                     <button onclick="deleteRecord({{$rider->id}},{{$history->id}})" class="btn btn-label-danger btn-sm btn-upper">Delete Record</button>&nbsp;
                                     @endif
                                 {{-- <button class="btn btn-label-success btn-sm btn-upper"><span class="label label-success">{{$bike_id['status']}}</span></button> --}}
                                  </div>
-                            </div>
+                            
         
                             <div class="kt-widget__subhead">
                                 
@@ -291,10 +293,10 @@ function updateDates(rider_id,assign_sim_id,created,updated){
                                 $updated=Carbon\Carbon::parse($history['return_date'])->format('F d, Y');
                               @endphp
                                 @if($history->status=='active')
-                            <h6 style="float:right;color:green;" onclick="updateDates({{$rider->id}},{{$history['id']}},'{{$created}}','{{$updated}}')">{{gmdate("d-m-Y", $mytimestamp)}}</h6> 
+                            <h6 style="float:right;color:green;" onclick="updateDates({{$rider->id}},{{$history['id']}},'{{$created}}','{{$updated}}','{{$history->status}}')">{{gmdate("d-m-Y", $mytimestamp)}}</h6> 
                             
                             @else
-                            <h6 style="float:right;color:green;" onclick="updateDates({{$rider->id}},{{$history['id']}},'{{$created}}','{{$updated}}')">{{gmdate("d-m-Y", $mytimestamp)}} {{'to'}} {{gmdate("d-m-Y", $timestampupdated)}}</h6>
+                            <h6 style="float:right;color:green;" onclick="updateDates({{$rider->id}},{{$history['id']}},'{{$created}}','{{$updated}}','{{$history->status}}')">{{gmdate("d-m-Y", $mytimestamp)}} {{'to'}} {{gmdate("d-m-Y", $timestampupdated)}}</h6>
                             @endif
                                 
                             </div>
@@ -346,7 +348,7 @@ function updateDates(rider_id,assign_sim_id,created,updated){
                             <label>Started Month:</label>
                             <input  type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control" name="created_at" placeholder="Enter Month" value="">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" id="unassign_date">
                             <label>Ended Month:</label>
                             <input  type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control" name="updated_at" placeholder="Enter Month" value="">
                         </div>

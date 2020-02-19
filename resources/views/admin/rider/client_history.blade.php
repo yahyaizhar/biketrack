@@ -38,7 +38,12 @@
                                             @endif
                                         </a>
                                         <div class="kt-widget__action">
-                                            <button onclick="deleteRider({{$client->id}}, {{$rider->id}})" class="btn btn-label-info btn-sm btn-upper">Remove</button>&nbsp;
+                                            @if($client_history->status=='active')
+                                                <button onclick="deleteRider({{$client->id}}, {{$rider->id}})" class="btn btn-label-info btn-sm btn-upper">Unassign</button>&nbsp;
+                                            @endif
+                                            @if($client_history->status=='deactive')
+                                                <button onclick="deleteRiderHistory({{$client->id}}, {{$rider->id}},{{$client_history->id}})" class="btn btn-label-danger btn-sm btn-upper">Delete Record</button>&nbsp;
+                                            @endif
                                         </div>
                                     </div>
                 
@@ -57,9 +62,9 @@
                                             $updated=Carbon\Carbon::parse($client_history->deassign_date)->format('F d, Y');
                                         @endphp 
                                         @if($client_history->status=='active')
-                                            <h6  class="rise-modal" onclick="updateDates({{$rider->id}},{{$client_history->id}},'{{$created}}','{{$updated}}')" style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}}</h6>
+                                    <h6  class="rise-modal" onclick="updateDates({{$rider->id}},{{$client_history->id}},'{{$created}}','{{$updated}}','{{$client_history->status}}')" style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}}</h6>
                                         @else
-                                            <h6 class="rise-modal" onclick="updateDates({{$rider->id}},{{$client_history->id}},'{{$created}}','{{$updated}}')"  style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}} {{'to'}} {{gmdate("d-m-Y", $timestampupdated)}}</h6>
+                                            <h6 class="rise-modal" onclick="updateDates({{$rider->id}},{{$client_history->id}},'{{$created}}','{{$updated}}','{{$client_history->status}}')"  style="float:right;color:green;">{{gmdate("d-m-Y", $mytimestamp)}} {{'to'}} {{gmdate("d-m-Y", $timestampupdated)}}</h6>
                                         @endif  
                                     </div>
                 
@@ -109,7 +114,7 @@
                             <label>Started Month:</label>
                             <input  type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control" name="assign_date" placeholder="Enter Month" value="">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" id="unassign_date">
                             <label>Ended Month:</label>
                             <input  type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control" name="unassign_date" placeholder="Enter Month" value="">
                         </div>
@@ -124,7 +129,7 @@
 </div>
 
 <div>
-    <div class="modal fade" id="unassign_date" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="unassign_date_for_client" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header border-bottom-0">
@@ -155,7 +160,7 @@
     <script>
         function deleteRider(client_id, rider_id)
         {
-            $("#unassign_date").modal("show");
+            $("#unassign_date_for_client").modal("show");
             $("form#client_unassign_dates").on("submit",function(e){
                 e.preventDefault();
                 var _form = $(this);
@@ -197,12 +202,16 @@
             });
         // }); 
         }
-        function updateDates(rider_id,client_history_id,assign_date,unassign_date){
+        function updateDates(rider_id,client_history_id,assign_date,unassign_date,status){
             $("#client_duration").modal("show");
             $('#client_dates [name="rider_id"]').val(rider_id);
             $('#client_dates [name="client_history_id"]').val(client_history_id);
             $('#client_dates [name="assign_date"]').attr('data-month', assign_date);
             $('#client_dates [name="unassign_date"]').attr('data-month', unassign_date);
+            $("#unassign_date").show();
+            if (status=="active") {
+                $("#unassign_date").hide();
+            }
             biketrack.refresh_global();
             $("form#client_dates").on("submit",function(e){
                 e.preventDefault();
@@ -210,7 +219,7 @@
                 var rider_id=$('#client_dates [name="rider_id"]').val();
                 var client_history_id=$('#client_dates [name="client_history_id"]').val();
                 var _modal = _form.parents('.modal');
-                var url = "{{ url('admin/change_client_dates') }}" + "/" + rider_id + "/history" + "/" + client_history_id;
+                var url = "{{ url('admin/change_client_dates') }}" + "/" + rider_id + "/history" + "/" + client_history_id+"/"+status;
                 swal.fire({
                     title: 'Are you sure?',
                     text: "You want update Dates!",
@@ -261,6 +270,40 @@
                 }
             });
         }); 
+        }
+
+        function deleteRiderHistory(client_id, rider_id,client_history_id){
+            var url = "{{ url('admin/delete/client_rider_history') }}" + "/" + client_id +"/" + rider_id+"/"+client_history_id;
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url : url,
+                type : 'GET',
+                success: function(data){
+                    console.log(data);
+                    swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Record Deleted successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    window.location.reload();
+                },
+                    error: function(error){
+                        swal.fire({
+                            position: 'center',
+                            type: 'error',
+                            title: 'Oops...',
+                            text: 'Unable to Deleted.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+                });
         }
     </script>
 @endsection

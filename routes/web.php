@@ -194,7 +194,7 @@ Route::group([
     Route::post('/rider/{rider}/sendMessage', 'RiderController@sendSMS')->name('admin.rider.sendSMS'); //trash
     /*[rider-active/inactive]*/Route::post('/rider/{rider}/updateStatus', 'RiderController@updateStatus')->name('admin.rider.updateStatus');//ajax_route //active/inactive 
     /*[rider-client history]*/Route::get('/rider/client_history/{id}',"RiderController@client_history")->name('Client.client_history');
-    Route::get('/change_client_dates/{rider_id}/history/{client_history_id}',"RiderController@update_client_history_dates")->name('Client.update_client_history_dates');
+    Route::get('/change_client_dates/{rider_id}/history/{client_history_id}/{status}',"RiderController@update_client_history_dates")->name('Client.update_client_history_dates');
     /*[rider-Duration time]*/Route::get('/rider/spell/time/{id}',"RiderController@Spell_time")->name('Rider.spell_time');
 //  map Routes
     Route::get('/rider/assign-area', 'HomeController@assign_area')->name('admin.assignArea');   ///not_using
@@ -213,7 +213,7 @@ Route::group([
 // end Riders
 // clients
     /*[clients-change feid]*/Route::post('/update/client/riders/{rider_id}','RiderController@update_ClientRiders')->name('ClientRiders.admin.update');//ajax_route //changing feid on admin.clients.riders route ////ok
-    Route::post('/update/rider_comission','RiderController@update_rider_comission')->name('admin.update_rider_comission');//***
+    Route::post('/update/rider_comission','RiderController@update_rider_comission')->name('admin.update_rider_comission');
     /*[clients-rider performance]*/Route::get('/client/rider/performance','RiderController@RiderPerformance')->name('admin.riderPerformance');////ok
     Route::resource('/clients', 'ClientController', [
         'as' => 'admin'
@@ -222,8 +222,8 @@ Route::group([
 	/*[clients-View Active clients]*/Route::get('/get/active/client','ClientController@get_active_clients')->name('admin.get_active_clients');
     /*[clients-rider history]*/Route::get('/client/{client}/riders', 'ClientController@showRiders')->name('admin.clients.riders');////ok
     /*[Clients-assign rider]*/Route::get('/client/{client}/assignRider', 'ClientController@assignRiders')->name('admin.clients.assignRiders');////ok
-    Route::get('/client/{rider_id}/assign_multiple_clients', 'ClientController@assignMultipleClients')->name('admin.clients.assignMultipleClients');//***
-    Route::post('/client/{rider_id}/insert_multiple_clients','ClientController@insert_multiple_clients')->name('admin.insert_multiple_clients');//*** 
+    Route::get('/client/{rider_id}/assign_multiple_clients', 'ClientController@assignMultipleClients')->name('admin.clients.assignMultipleClients');
+    Route::post('/client/{rider_id}/insert_multiple_clients','ClientController@insert_multiple_clients')->name('admin.insert_multiple_clients');
     /*[Clients-assign rider]*/Route::put('/client/{client}/assignRider', 'ClientController@updateAssignedRiders')->name('admin.clients.assignRiders');//ajax_route ////ok
     /*[Clients-unassign rider]*/Route::delete('/client/{client}/removeRider/{rider}', 'ClientController@removeRiders')->name('admin.clients.removeRiders');//ajax_route ////ok
     /*[Clients-active/inactive]*/Route::post('/client/{client}/updateStatus', 'ClientController@updateStatus')->name('admin.client.updateStatus');//ajax_route ////ok
@@ -518,7 +518,7 @@ Route::group([
     Route::get('/view/Sim/{id}','SimController@view_assigned_sim')->name('Sim.view_assigned'); //not using
     Route::delete('/sim/{rider_id}/removeSim/{sim_id}', 'SimController@removeSim')->name('Sim.removeSim');  //ok [Sim: view sim history]
     Route::get('/view/{rider_id}/simHistory','SimController@sim_History')->name('Sim.simHistory');  //ok [Rider: view sim history]
-    Route::get('/change/sim/{rider_id}/history/{assign_sim_id}','SimController@sim_dates_History')->name('Sim.sim_dates_History'); //ok[Rider: change sim date history]
+    Route::get('/change/sim/{rider_id}/history/{assign_sim_id}/{status}','SimController@sim_dates_History')->name('Sim.sim_dates_History'); //ok[Rider: change sim date history]
     Route::get('/sim/deactive/{rider_id}/date/{sim_id}','SimController@sim_deactive_date')->name('admin.sim_deactive_date'); //ok [Rider: unassign sim]
     Route::get('/sim/allowed/balance/{rider_id}/update/{sim_id}','SimController@update_allowed_abalance')->name('Sim.update_allowed_abalance'); //ok [Rider: update allow balance]
 // end Sim history section 
@@ -641,7 +641,7 @@ Route::post('/update/employee/{employee_id}','Auth\EmployeeController@update_emp
 
 Route::delete('/sim_history/{id}', 'SimController@DeleteSimHistory')->name('Sim.DeleteSimHistory');  //ok [Sim: delete sim history]
 Route::delete('/bike_history/{id}', 'bikeController@DeleteBikeHistory')->name('Bike.DeleteBikeHistory');  //ok [Sim: delete bike history]
-
+Route::get('/delete/client_rider_history/{client_id}/{rider_id}/{client_history_id}','ClientController@delete_rider_client_history')->name('admin.delete_rider_client_history');//
 });
 // end for Admin
 
@@ -656,7 +656,7 @@ Route::group([
     Route::get('/403','HomeController@request403')->name('request.403'); ///ok
     Route::get('/add_manual_client_history','HomeController@add_manual_client_history')->name('request.add_manual_client_history'); ///ok
     Route::post('/submit_manual_client_history','HomeController@submit_manual_client_history')->name('request.submit_manual_client_history'); ///ok
-
+   
 });
 																				 
    
