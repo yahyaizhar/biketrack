@@ -641,7 +641,7 @@ Route::post('/update/employee/{employee_id}','Auth\EmployeeController@update_emp
 
 Route::delete('/sim_history/{id}', 'SimController@DeleteSimHistory')->name('Sim.DeleteSimHistory');  //ok [Sim: delete sim history] ***
 Route::delete('/bike_history/{id}', 'bikeController@DeleteBikeHistory')->name('Bike.DeleteBikeHistory');  //ok [Sim: delete bike history] ***
-
+Route::get('/delete/client_rider_history/{client_id}/{rider_id}/{client_history_id}','ClientController@delete_rider_client_history')->name('admin.delete_rider_client_history');//***
 });
 // end for Admin
 
@@ -656,7 +656,7 @@ Route::group([
     Route::get('/403','HomeController@request403')->name('request.403'); ///ok
     Route::get('/add_manual_client_history','HomeController@add_manual_client_history')->name('request.add_manual_client_history'); ///ok
     Route::post('/submit_manual_client_history','HomeController@submit_manual_client_history')->name('request.submit_manual_client_history'); ///ok
-
+   
 });
 																				 
    

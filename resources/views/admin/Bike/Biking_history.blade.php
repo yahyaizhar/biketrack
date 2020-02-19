@@ -39,7 +39,7 @@
                                 </div>
                                 <div class="kt-widget__content">
                                     <div class="kt-widget__head">
-                                        <h4><a href="{{route('Bike.bike_edit_view',$bike->id)}}">{{$bike->brand}}-{{ $bike->model }}</a></h4>
+                                    <h4><a href="{{route('Bike.bike_edit_view',$bike->id)}}">{{$bike->brand}}-{{ $bike->model }}({{$bike->owner}})</a></h4>
                                         <a class="kt-widget__username">
                                             @if ($assign_bike->status==='active')
                                                 <button onclick="deleteBike({{$rider->id}},{{$assign_bike->id}})" class="btn btn-label-info btn-sm btn-upper">Unassign Bike</button>&nbsp;

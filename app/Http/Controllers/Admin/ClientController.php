@@ -1025,4 +1025,15 @@ public function insert_multiple_clients(Request $request,$rider_id){
     }
     return redirect(route('admin.clients.index'));
 }
+public function delete_rider_client_history($client_id,$rider_id,$client_history_id){
+    $client_history=Client_History::find($client_history_id);
+    if(isset($client_history)){
+        $client_history->delete();
+    }
+    return response()->json([
+        'client_id'=>$client_id,
+        'rider_id'=>$rider_id,
+        'client_history_id'=>$client_history_id,
+    ]);
+}
 }

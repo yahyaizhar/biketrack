@@ -41,6 +41,9 @@
                                             @if($client_history->status=='active')
                                                 <button onclick="deleteRider({{$client->id}}, {{$rider->id}})" class="btn btn-label-info btn-sm btn-upper">Unassign</button>&nbsp;
                                             @endif
+                                            @if($client_history->status=='deactive')
+                                                <button onclick="deleteRiderHistory({{$client->id}}, {{$rider->id}},{{$client_history->id}})" class="btn btn-label-danger btn-sm btn-upper">Delete Record</button>&nbsp;
+                                            @endif
                                         </div>
                                     </div>
                 
@@ -267,6 +270,40 @@
                 }
             });
         }); 
+        }
+
+        function deleteRiderHistory(client_id, rider_id,client_history_id){
+            var url = "{{ url('admin/delete/client_rider_history') }}" + "/" + client_id +"/" + rider_id+"/"+client_history_id;
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url : url,
+                type : 'GET',
+                success: function(data){
+                    console.log(data);
+                    swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Record Deleted successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    window.location.reload();
+                },
+                    error: function(error){
+                        swal.fire({
+                            position: 'center',
+                            type: 'error',
+                            title: 'Oops...',
+                            text: 'Unable to Deleted.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+                });
         }
     </script>
 @endsection

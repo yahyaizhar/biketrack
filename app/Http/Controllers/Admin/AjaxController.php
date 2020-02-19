@@ -1109,7 +1109,7 @@ class AjaxController extends Controller
             if ($a) {
                 $bike=bike::where("id",$a->bike_id)->get()->first();
                 
-                return '<a class="text-success" href="'.url('admin/bike/'.$bike['id'].'/profile'.'/'.$riders->id) .'">'.$bike['bike_number'].'</a>';
+                return '<a class="text-success" href="'.url('admin/riders/'.$riders->id.'/history') .'">'.$bike['bike_number'].'</a>';
             }
             else{
                return '<a class="text-danger" href="'.route('bike.bike_assignRiders', $riders->id).'">Assign Bike</a>';
@@ -2286,7 +2286,7 @@ class AjaxController extends Controller
                if ($a) {
                    $bike=bike::where("id",$a->bike_id)->get()->first();
                    
-                   return '<a class="text-success" href="'.url('admin/bike/'.$bike['id'].'/profile'.'/'.$riders->id) .'">'.$bike['bike_number'].'</a>';
+                   return '<a class="text-success" href="'.url('admin/riders/'.$riders->id.'/history') .'">'.$bike['bike_number'].'</a>';
                }
                else{
                 return '<a class="text-danger" href="'.route('bike.bike_assignRiders', $riders->id).'">Assign Bike</a>';
