@@ -3600,9 +3600,9 @@ function check_salary_status(){
             if (status==1) {
                 alert(msg);
             }
-            if (status==2) {
-                alert(msg);
-            }
+            // if (status==2) {
+            //     alert(msg);
+            // }
         },
     });
 }
