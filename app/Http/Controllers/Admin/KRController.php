@@ -342,4 +342,20 @@ class KRController extends Controller
             'day_status'=>$day_status,
         ]);
     }
+    public function change_payout_data(Request $request,$rider_id,$month){
+        $data=$request->data;
+        foreach ($data as $value) {
+            $_date=carbon::parse($value['date'])->format('Y-m-d');
+            $rpbd=Riders_Payouts_By_Days::where("rider_id",$rider_id)->where("date",$_date)->get()->first();
+            if (isset($rpbd)) {
+                $rpbd->login_hours=$value['hours'];
+                $rpbd->trips=$value['trip'];
+                $rpbd->update();
+            }
+        }
+        return response()->json([
+            'rider_id'=>$rider_id,
+            'month'=>$month,
+        ]);
+    }
 }

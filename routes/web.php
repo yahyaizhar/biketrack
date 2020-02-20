@@ -639,9 +639,10 @@ Route::get('/edit/employee/{employee_id}','Auth\EmployeeController@edit_employee
 Route::get('/view/employee/{employee_id}','Auth\EmployeeController@view_employee')->name('Employee.view_employee'); ///only for admin
 Route::post('/update/employee/{employee_id}','Auth\EmployeeController@update_employee')->name('Employee.update_employee'); ///only for admin
 
-Route::delete('/sim_history/{id}', 'SimController@DeleteSimHistory')->name('Sim.DeleteSimHistory');  //ok [Sim: delete sim history] ***
-Route::delete('/bike_history/{id}', 'bikeController@DeleteBikeHistory')->name('Bike.DeleteBikeHistory');  //ok [Sim: delete bike history] ***
-Route::get('/delete/client_rider_history/{client_id}/{rider_id}/{client_history_id}','ClientController@delete_rider_client_history')->name('admin.delete_rider_client_history');//***
+Route::post('/rider/change_payout_data/ajax/{rider_id}/{month}','KRController@change_payout_data')->name('admin.change_payout_data');//***
+Route::delete('/sim_history/{id}', 'SimController@DeleteSimHistory')->name('Sim.DeleteSimHistory');  //ok [Sim: delete sim history]
+Route::delete('/bike_history/{id}', 'bikeController@DeleteBikeHistory')->name('Bike.DeleteBikeHistory');  //ok [Sim: delete bike history] 
+Route::get('/delete/client_rider_history/{client_id}/{rider_id}/{client_history_id}','ClientController@delete_rider_client_history')->name('admin.delete_rider_client_history');
 });
 // end for Admin
 

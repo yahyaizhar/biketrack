@@ -19,6 +19,14 @@
     td .print_class{
         font-size:12px;
     }
+    /* .rider_days_detail td[contenteditable]::after {
+        content: 'Save';
+        color: #fff;
+        background: green;
+        float: right;
+        padding: 0 10px;
+        cursor: pointer;
+    } */
 </style>
 @endsection
 @section('main-content') 
@@ -932,6 +940,9 @@
             <button style="float:right;margin-right: 10px;" onclick="print_data()"  class="btn btn-success btn-elevate btn-icon-sm" id="sync_data" type="button">
                     Print Data
             </button> 
+            <button style="float:left;margin-left:10px;" onclick="get_import_contentable_data()"  class="btn btn-success btn-elevate btn-icon-sm" id="sync_editable_data" type="button">
+                Resync Import Contentable Data
+            </button> 
         </div>
     </div>
 </div>
@@ -1523,6 +1534,7 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script src="{{ asset('js/dataTables.cellEdit.js') }}" type="text/javascript"></script>
 <script>
+    $("#sync_editable_data").hide();
     $(document).on("click","#view-upload-slip",function(){
         $("#view_upload_slip").modal("show");
         $(".show_salary_slip_image").html("");
@@ -3595,12 +3607,49 @@ function check_salary_status(){
     });
 }
 function set_import_data(){
+
     $(".rider_days_detail tbody tr").each(function(i,j){
         var a=$(this).find("td:eq(2)").text();
-        if((a>=3 && a<=4) || (a>=6.5 && a<=8) ){
+        if(a){
             $(this).find("td:eq(1)").attr("contenteditable",true);
             $(this).find("td:eq(2)").attr("contenteditable",true);
+            $("#sync_editable_data").show();
+       }
+    });
+}
+function get_import_contentable_data(){
+    var data=[];
+    $(".rider_days_detail tbody tr").each(function(i,j){
+        var editable_row=$(this).find("td[contenteditable]").text();
+        if (editable_row) {
+            var update_data={};
+            var rp_date=$(this).find("td:eq(0)").text();
+            var rp_trip=$(this).find("td:eq(1)").text();
+            var rp_hour=$(this).find("td:eq(2)").text();
+
+            update_data.hours=rp_hour;
+            update_data.trip=rp_trip;
+            update_data.date=rp_date;
+            data.push(update_data);
         }
+    });
+    console.log(data);
+    var month=biketrack.getUrlParameter('r1d1');
+    var rider_id=biketrack.getUrlParameter('rider_id');
+    var _onlyMonth=new Date(month).format("yyyy-mm-dd");
+    var url ="{{ url('admin/rider/change_payout_data/ajax') }}"+ "/" + rider_id + "/" + _onlyMonth ;
+    $.ajax({
+        url : url,
+        type : 'POST',
+        data : {data:data},
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data){
+            $("#sync_editable_data").hide();
+            console.log(data);
+            window.location.reload();
+        },
     });
 }
 </script>
