@@ -226,7 +226,7 @@ class bikeController extends Controller
     }
     // Bike Rent
     public function create_bike_rent(){
-      $bikes=bike::where('active_status','A')->get();
+      $bikes=bike::all();
       $riders=Rider::where('active_status','A')->get();
       return view('admin.Bike.bike_rent',compact('bikes','riders'));
     }

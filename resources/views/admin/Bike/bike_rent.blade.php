@@ -246,6 +246,7 @@
     '                                    <input readonly type="text" class="form-control" value="'+obj.rider.name+'" >'+
     '                                </div>'+
     '                                <div class="form-group">'+
+    '                                     '+total_absentHTML+
     '                                    <input type="text" class="form-control" value="'+(work_days)+'" name="data['+i+'][work_days_count]">'+
     '                                     <span class="form-text text-muted">'+assign_date.format("DD/MM/YYYY")+' - '+unassign_date.format("DD/MM/YYYY")+'</span>'+
     '                                </div>'+
