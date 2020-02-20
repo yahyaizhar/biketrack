@@ -103,6 +103,11 @@
         $('#kt_select2_3_5').on("change",function(){
             $(".hidden_values").show();
             var month=$(this).val();
+            var month_url=new Date(month).format("yyyy-mm-dd");
+            var data = {
+                month:month_url, 
+            }
+            biketrack.updateURL(data);
             var client=$('[name="client_id"]').val();
             var url = "{{ url('admin/client/month/record') }}"+"/"+month+"/"+client;
             $.ajaxSetup({
@@ -196,6 +201,10 @@
                 }
             });
         });
+        var mon=biketrack.getUrlParameter('month');
+        if (mon!="") {
+            $('#kt_select2_3_5').val(biketrack.getUrlParameter('month')).trigger('change');
+        }
     });
 
 </script>

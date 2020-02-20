@@ -3786,7 +3786,34 @@ class AjaxNewController extends Controller
     }
     public function getGeneratedBillStatus($month,$client_id) 
     {
-        $bills=Client_History::where("client_id",$client_id)->get();
+
+        $bills = collect([]);
+        $client_history=Client_History::all()->toArray(); 
+        $tmps = Arr::where($client_history, function ($item, $key) use ($client_id, $month) {
+            $start_created_at =Carbon::parse($item['assign_date'])->startOfMonth()->format('Y-m-d');
+            $created_at =Carbon::parse($start_created_at);
+    
+            $start_updated_at =Carbon::parse($item['deassign_date'])->endOfMonth()->format('Y-m-d');
+            $updated_at =Carbon::parse($start_updated_at);
+            $req_date =Carbon::parse($month);
+    
+            if($item['status']=='active'){    
+                return $item['client_id']==$client_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+            }
+    
+            return $item['client_id']==$client_id &&
+                ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+        });
+        foreach ($tmps as $tmp) {
+            $mdl = new Client_History;
+            $mdl->rider_id=$tmp['rider_id'];
+            $mdl->client_id=$tmp['client_id'];
+            $mdl->assign_date=$tmp['assign_date'];
+            $mdl->deassign_date=$tmp['deassign_date'];
+            $mdl->client_rider_id=$tmp['client_rider_id'];
+            $bills->push($mdl);
+        }
+
         return DataTables::of($bills)
       
         ->addColumn('rider_id', function($bills){
