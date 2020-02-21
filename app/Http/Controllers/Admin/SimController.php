@@ -799,7 +799,11 @@ public function removeSim($rider_id,$sim_id){
       $sim_history->delete();
   }
   public function sim_dates_History(Request $request,$rider_id,$assign_sim_id,$status){
-      
+    // return response()->json([
+    //     'rider_id' =>$rider_id,
+    //     'assign_sim_id' =>$assign_sim_id,
+    //     'status' =>$status,
+    // ]);
       $assign_sim=Sim_History::where("rider_id",$rider_id)->where("id",$assign_sim_id)->get()->first();
       if (isset($assign_sim)) {
           if ($status=="active") {
