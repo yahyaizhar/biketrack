@@ -970,21 +970,21 @@
                 <tr>
                     <th style="width:15%;text-align:left;">NAME</th>
                     <td class="rider_name" style="width:45%;text-align:left;"></td>
-                    <th style="width:15%;text-align:left;">Designation:</th>
-                    <td style="width:45%;text-align:left;"></td>
+                    {{-- <th style="width:15%;text-align:left;">Designation:</th>
+                    <td style="width:45%;text-align:left;"></td> --}}
                 </tr>
                 <tr>
-                    <th style="width:15%;text-align:left;">EMPLOYEE ID:</th>
+                    <th style="width:15%;text-align:left;">RIDER ID:</th>
                     <td class="employee_id" style="width:45%;text-align:left;"></td>
-                    <th style="width:15%;text-align:left;">WORKPLACE:</th>
-                    <td style="width:45%;text-align:left;"></td>
+                    {{-- <th style="width:15%;text-align:left;">WORKPLACE:</th>
+                    <td style="width:45%;text-align:left;"></td> --}}
                 </tr>
-                <tr>
+                {{-- <tr>
                     <th style="width:15%;text-align:left;">DATE OF JOINING:</th>
                     <td class="today_date" style="width:45%;text-align:left;"></td>
                     <th style="width:15%;text-align:left;"></th>
                     <td style="width:45%;text-align:left;"></td>
-                </tr>
+                </tr> --}}
             </table>
     
         <table style="border-top: unset !important;">
@@ -1034,17 +1034,17 @@
                 <td contenteditable='true' class="advance" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:left;">SALIK PLANTI</td>
+                <td style="width:50%;text-align:left;">SALIK USAGE</td>
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="salik" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:left;">SIM PLANTI</td>
+                <td style="width:50%;text-align:left;">SIM-EXTRA USAGE</td>
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="sim" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:left;">ZOMATO PLANTI</td>
+                <td style="width:50%;text-align:left;">ZOMATO PENALTY</td>
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="zomato" style="width:25%;text-align:end;"></td>
             </tr>
@@ -1053,11 +1053,11 @@
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="dc" style="width:25%;text-align:end;"></td>
             </tr>
-            <tr>
+            {{-- <tr>
                 <td style="width:50%;text-align:left;">MCDONALD DEDUCTION</td>
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="macdonald" style="width:25%;text-align:end;"></td>
-            </tr>
+            </tr> --}}
             <tr>
                 <td style="width:50%;text-align:left;">RTA FINE</td>
                 <td style="width:25%;text-align:end;"></td>
@@ -1079,7 +1079,7 @@
                 <td contenteditable='true' class="mics" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:left;">Others</td>
+                <td style="width:50%;text-align:left;">OTHERS</td>
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="cash_paid" style="width:25%;text-align:end;"></td>
             </tr>
@@ -1104,21 +1104,23 @@
                 <td class="paid_salary" style="width:50%;text-align:center;background-color:#73acac69;"></td>
             </tr>
         </table>
-    <div style=""> 
-        <p style="font-size:12px;line-height: 14px;"><strong>Note: </strong>MR <span id="rider_id_1"></span> received <span class="paid_salary"></span> from King Riders Delivery Services LLC, and MR <span id="rider_id_2"></span> no is not valid for any kind of Gratuity, yearly tickets or any other expenses other than the salary.
-        </p>
-    </div>
-    <div style=" margin-top: 1px;">  
-        <p><strong>Signature:</strong>________________________</p>
-    </div>
-    <div style=" margin-top: 1px;"> 
-        <p><strong>Thumb:</strong>__________________________</p>
-    </div>
-    <div style="text-align:end;"> 
-        <p style="margin-bottom: 3px;"><strong>KING RIDERS DELIVERY SERVICES LLC</strong></p>
-        <p style="margin-bottom: 3px;"><Strong>ACCOUNTANT</Strong></p>
-        <p style="margin-bottom: 3px;"><strong>DANISH MUNIR</strong></p>
-    </div>
+        <div id="not_show_company_info">
+            <div style=""> 
+                <p style="font-size:12px;line-height: 14px;"><strong>Note: </strong>MR <span id="rider_id_1"></span> received <span class="paid_salary"></span> from King Riders Delivery Services LLC, and MR <span id="rider_id_2"></span> no is not valid for any kind of Gratuity, yearly tickets or any other expenses other than the salary.
+                </p>
+            </div>
+            <div style=" margin-top: 1px;">  
+                <p><strong>Signature:</strong>________________________</p>
+            </div>
+            <div style=" margin-top: 1px;"> 
+                <p><strong>Thumb:</strong>__________________________</p>
+            </div>
+            <div style="text-align:end;"> 
+                <p style="margin-bottom: 3px;"><strong>KING RIDERS DELIVERY SERVICES LLC</strong></p>
+                <p style="margin-bottom: 3px;"><Strong>ACCOUNTANT</Strong></p>
+                <p style="margin-bottom: 3px;"><strong>DANISH MUNIR</strong></p>
+            </div>
+        </div>
 </div>
 <div style="display:grid;padding: 15px 50px 0px 50px;" id="print_slip_for_rider2">
         <style type="text/css">
@@ -1140,21 +1142,21 @@
                 <tr>
                     <th style="width:15%;text-align:left;">NAME</th>
                     <td class="rider_name" style="width:45%;text-align:left;"></td>
-                    <th style="width:15%;text-align:left;">Designation:</th>
-                    <td style="width:45%;text-align:left;"></td>
+                    {{-- <th style="width:15%;text-align:left;">Designation:</th>
+                    <td style="width:45%;text-align:left;"></td> --}}
                 </tr>
                 <tr>
-                    <th style="width:15%;text-align:left;">EMPLOYEE ID:</th>
+                    <th style="width:15%;text-align:left;">RIDER ID:</th>
                     <td class="employee_id" style="width:45%;text-align:left;"></td>
-                    <th style="width:15%;text-align:left;">WORKPLACE:</th>
-                    <td style="width:45%;text-align:left;"></td>
+                    {{-- <th style="width:15%;text-align:left;">WORKPLACE:</th>
+                    <td style="width:45%;text-align:left;"></td> --}}
                 </tr>
-                <tr>
+                {{-- <tr>
                     <th style="width:15%;text-align:left;">DATE OF JOINING:</th>
                     <td class="today_date" style="width:45%;text-align:left;"></td>
                     <th style="width:15%;text-align:left;"></th>
                     <td style="width:45%;text-align:left;"></td>
-                </tr>
+                </tr> --}}
             </table>
     
         <table style="border-top: unset !important;">
@@ -1204,17 +1206,17 @@
                 <td contenteditable='true' class="advance" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:left;">SALIK PLANTI</td>
+                <td style="width:50%;text-align:left;">SALIK USAGE</td>
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="salik" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:left;">SIM PLANTI</td>
+                <td style="width:50%;text-align:left;">SIM-EXTRA USAGE</td>
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="sim" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:left;">ZOMATO PLANTI</td>
+                <td style="width:50%;text-align:left;">ZOMATO PENALTY</td>
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="zomato" style="width:25%;text-align:end;"></td>
             </tr>
@@ -1223,11 +1225,11 @@
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="dc" style="width:25%;text-align:end;"></td>
             </tr>
-            <tr>
+            {{-- <tr>
                 <td style="width:50%;text-align:left;">MCDONALD DEDUCTION</td>
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="macdonald" style="width:25%;text-align:end;"></td>
-            </tr>
+            </tr> --}}
             <tr>
                 <td style="width:50%;text-align:left;">RTA FINE</td>
                 <td style="width:25%;text-align:end;"></td>
@@ -1249,7 +1251,7 @@
                 <td contenteditable='true' class="mics" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:left;">Others</td>
+                <td style="width:50%;text-align:left;">OTHERS</td>
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="cash_paid" style="width:25%;text-align:end;"></td>
             </tr>
@@ -2727,6 +2729,10 @@ var detect_billchanges=function(){
                     $('.paid_salary').html(response.salary_paid);
                     $('#rider_id_1').html(response.rider);
                     $('#rider_id_2').html(response.rider);
+                    $("#not_show_company_info").show();
+                    if (response.salary_paid=="0" || response.salary_paid=="") {
+                        $("#not_show_company_info").hide();
+                    }
                     var is_salary_generated=$("#getting_val").length>0;
                    var is_update=$("#getting_val").attr('data-update');
                    is_update=typeof is_update!=="undefined" && is_update!==false;

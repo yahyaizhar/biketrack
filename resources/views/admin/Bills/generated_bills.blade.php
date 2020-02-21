@@ -136,7 +136,7 @@ $("[name='client_id'] , #kt_select2_3_5").on("change",function(){
             { data: 'salary', name: 'salary' },
         ],
         responsive:true,
-        order:[0,'desc'],
+        order:[0,'asc'],
     });
 });
 });

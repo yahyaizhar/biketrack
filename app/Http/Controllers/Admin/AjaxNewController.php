@@ -1028,7 +1028,7 @@ class AjaxNewController extends Controller
             'salik'=>$salik,
             'sim'=>round($sim,2),
             'dc'=>$dc,
-            'macdonald'=>$macdonald,
+            'macdonald'=>0,
             'rta'=>$rta,
             'mobile'=>$mobile,
             'dicipline'=>$dicipline,
@@ -3813,10 +3813,23 @@ class AjaxNewController extends Controller
             $mdl->client_rider_id=$tmp['client_rider_id'];
             $bills->push($mdl);
         }
+        $sim_f=0;
+        $bike_rent_f=0;
+        $bike_fine_f=0;
+        $fuel_f=0;
+        $salik_f=0;
+        $salary_f=0;
+        $flag=new Rider_Account;
+        $flag->rider_id='temp';
+        $bills->push($flag);  
 
+        // $bills=Client_History::where("client_id",$client_id)->get();
         return DataTables::of($bills)
       
         ->addColumn('rider_id', function($bills){
+            if ($bills->rider_id=="temp") {
+                return "Total";
+            }
             $rider_id=$bills->rider_id;
             $rider_found=Rider::where("id", $rider_id)->get();
             if (isset($rider_found)) {
@@ -3827,7 +3840,7 @@ class AjaxNewController extends Controller
             }
             
         })
-        ->addColumn('sim_bill', function($bills) use ($month){
+        ->addColumn('sim_bill', function($bills) use ($month,&$sim_f){
             $rider_id=$bills->rider_id;
             $only_month = Carbon::parse($month)->format('m');
             $only_year = Carbon::parse($month)->format('Y');
@@ -3863,17 +3876,22 @@ class AjaxNewController extends Controller
                 if ($status=="pending") {
                     $sim=$sim-$sim_extra;
                     $sim_rider_paid=$sim_extra;
+                    $sim_f+=$sim+$sim_rider_paid;
                     return "<div style='color:red;'>".$sim."(". $sim_rider_paid.") <span class='flaticon2-delete'></span></div>";
                 }
                 if ($status=="paid") {
                     $sim=$sim-$sim_extra;
                     $sim_rider_paid=$sim_extra;
+                    $sim_f+=$sim+$sim_rider_paid;
                     return "<div  style='color:green;' data-simtrans='".$temp."' data-simextratrans='".$tempextra."'>".$sim."(". $sim_rider_paid.") <span class='flaticon2-correct'></span></div>";
                 }
             }
+            if ($bills->rider_id=="temp") {
+                return '<strong>'.$sim_f.'</strong>';
+            }
             return "0";
         })
-        ->addColumn('bike_rent', function($bills) use ($month){
+        ->addColumn('bike_rent', function($bills) use ($month,&$bike_rent_f){
             $rider_id=$bills->rider_id;
             $rent=0;
             $only_month = Carbon::parse($month)->format('m');
@@ -3889,11 +3907,16 @@ class AjaxNewController extends Controller
            $bike_rent=$bike_rent->first();
             if (isset($bike_rent)) {
                 if ($bike_rent->payment_status=="pending") {
+                    $bike_rent_f+=$rent;
                     return "<div style='color:red;'>".$rent." <span class='flaticon2-delete'></span></div>";
                 }
                 if ($bike_rent->payment_status=="paid") {
+                    $bike_rent_f+=$rent;
                     return "<div  style='color:green;'>".$rent." <span class='flaticon2-correct'></span></div>";
                 }
+            }
+            if ($bills->rider_id=="temp") {
+                return '<strong>'.$bike_rent_f.'</strong>';
             }
             return "0";
         })
@@ -3901,7 +3924,7 @@ class AjaxNewController extends Controller
         //     $rider_id=$bills->id;
         //     return 123;
         // })
-        ->addColumn('bike_fine', function($bills) use ($month){
+        ->addColumn('bike_fine', function($bills) use ($month,&$bike_fine_f){
             $rider_id=$bills->rider_id;
             $only_month = Carbon::parse($month)->format('m');
             $only_year = Carbon::parse($month)->format('Y');
@@ -3930,17 +3953,22 @@ class AjaxNewController extends Controller
                 if (isset($bike_fine_paid)) {
                     if ($status=="paid") {
                         $fine=($bike_fine_paid);
+                        $bike_fine_f+=$fine;
                         return "<div  style='color:green;'>".$fine." <span class='flaticon2-correct'></span></div>";
                     }
                 }
                 if ($status=="pending") {
                     $fine=($bike_fine);
+                    $bike_fine_f+=$fine;
                     return "<div style='color:red;'>".$fine." <span class='flaticon2-delete'></span></div>";
                 }
             }
+            if ($bills->rider_id=="temp") {
+                return '<strong>'.$bike_fine_f.'</strong>';
+            }
             return "0";
         })
-        ->addColumn('fuel', function($bills) use ($month){
+        ->addColumn('fuel', function($bills) use ($month,&$fuel_f){
             $rider_id=$bills->rider_id;
             $only_month = Carbon::parse($month)->format('m');
             $only_year = Carbon::parse($month)->format('Y');
@@ -3965,15 +3993,20 @@ class AjaxNewController extends Controller
                 }
             }
             if ($status=="pending") {
+                $fuel_f+=$fuel;
                 return "<div style='color:red;'>".$fuel." <span class='flaticon2-delete'></span></div>";
             }
             if ( $status=="paid") {
+                $fuel_f+=$fuel;
                 return "<div  style='color:green;'>".$fuel." <span class='flaticon2-correct'></span></div>";
                     
             }
+            if ($bills->rider_id=="temp") {
+                return '<strong>'.$fuel_f.'</strong>';
+            }
             return $fuel;
         })
-        ->addColumn('salik', function($bills) use ($month){
+        ->addColumn('salik', function($bills) use ($month,&$salik_f){
             $rider_id=$bills->rider_id;
             $only_month = Carbon::parse($month)->format('m');
             $only_year = Carbon::parse($month)->format('Y');
@@ -4002,17 +4035,22 @@ class AjaxNewController extends Controller
                 if ($status=="pending") {
                     $_salik=$salik-$salik_extra;
                     $salik_rider_paid=$salik_extra;
+                    $salik_f+=$_salik+$salik_rider_paid;
                     return "<div style='color:red;'>".$_salik."(". $salik_rider_paid.") <span class='flaticon2-delete'></span></div>";
                 }
                 if ($status=="paid") {
                     $_salik=$salik-$salik_extra;
                     $salik_rider_paid=$salik_extra;
+                    $salik_f+=$_salik+$salik_rider_paid;
                     return "<div  style='color:green;'>".$_salik."(". $salik_rider_paid.") <span class='flaticon2-correct'></span></div>";
                 }
             }
+            if ($bills->rider_id=="temp") {
+                return '<strong>'.$salik_f.'</strong>';
+            }
             return "0";
         })
-        ->addColumn('salary', function($bills) use ($month){
+        ->addColumn('salary', function($bills) use ($month,&$salary_f){
             $rider_id=$bills->rider_id;
             $only_month = Carbon::parse($month)->format('m');
             $only_year = Carbon::parse($month)->format('Y');
@@ -4025,11 +4063,15 @@ class AjaxNewController extends Controller
           if (isset($salary)) {
                 if ($salary->payment_status=="pending") { 
                     $salary=$salary->amount;
+                    $salary_f+=$salary;
                     return "<div  style='color:green;'>".$salary." <span class='flaticon2-correct'></span></div>";
                
               }
               
           }
+          if ($bills->rider_id=="temp") {
+            return '<strong>'.$salary_f.'</strong>';
+        }
             return "0";
         })
         ->rawColumns(['rider_id','sim_bill','bike_rent','bike_bill','bike_fine','fuel','salik','salary',])
