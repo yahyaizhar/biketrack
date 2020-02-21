@@ -148,6 +148,7 @@ Route::group([
     Route::get("/accounts/company/debits/get_salary_deduction/{month}/{rider_id}","AccountsController@get_salary_deduction")->name("admin.accounts.get_salary_deduction");
     Route::get("/rider/salarystatus/{month}","AjaxNewController@getSalaryList")->name("rider.getSalaryList");
     Route::get("/account/expense_data/ajax/{month}","AjaxNewController@getExpenseData")->name("account.getExpenseData");
+    Route::get("/rider/expense_loss/ajax/{month}/{source}","AjaxNewController@getExpenseLoss")->name("account.getExpenseLoss");
 });
 // End Ajax Routes
 
@@ -639,10 +640,11 @@ Route::get('/edit/employee/{employee_id}','Auth\EmployeeController@edit_employee
 Route::get('/view/employee/{employee_id}','Auth\EmployeeController@view_employee')->name('Employee.view_employee'); ///only for admin
 Route::post('/update/employee/{employee_id}','Auth\EmployeeController@update_employee')->name('Employee.update_employee'); ///only for admin
 
-Route::post('/rider/change_payout_data/ajax/{rider_id}/{month}','KRController@change_payout_data')->name('admin.change_payout_data');//***
+Route::post('/rider/change_payout_data/ajax/{rider_id}/{month}','KRController@change_payout_data')->name('admin.change_payout_data');//*** This is for us
 Route::delete('/sim_history/{id}', 'SimController@DeleteSimHistory')->name('Sim.DeleteSimHistory');  //ok [Sim: delete sim history]
 Route::delete('/bike_history/{id}', 'bikeController@DeleteBikeHistory')->name('Bike.DeleteBikeHistory');  //ok [Sim: delete bike history] 
 Route::get('/delete/client_rider_history/{client_id}/{rider_id}/{client_history_id}','ClientController@delete_rider_client_history')->name('admin.delete_rider_client_history');
+Route::get('/rider/expenses_loss','BillsController@bills_loss')->name('rider.bills_loss');//***
 });
 // end for Admin
 

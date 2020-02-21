@@ -4663,4 +4663,31 @@ class AjaxNewController extends Controller
         ->rawColumns(['id','source','rider_id','month','given_date','amount'])
         ->make(true);
     }
+
+    public function getExpenseLoss($month,$source)
+    {
+        $rider = Rider::where("active_status","A")
+        ->get();
+        return DataTables::of($rider)
+        ->addColumn('rider_id', function($rider){
+                return '<a  href="'.route('admin.rider.profile', $rider->id).'">'.'KR'.$rider->id.'-'.$rider->name.'</a>';
+        })
+        ->addColumn('company_account', function($rider) use($month,$source){
+            $_onlyMonth=carbon::parse($month)->format('m');
+            $_onlyYear=carbon::parse($month)->format('Y');
+            return 123;
+        })
+        ->addColumn('rider_account', function($rider) use($month,$source){
+            $_onlyMonth=carbon::parse($month)->format('m');
+            $_onlyYear=carbon::parse($month)->format('Y');
+            return 123;
+        })
+        ->addColumn('loss', function($rider) use($month,$source){
+            $_onlyMonth=carbon::parse($month)->format('m');
+            $_onlyYear=carbon::parse($month)->format('Y');
+            return 123;
+        })
+        ->rawColumns(['loss','company_account','rider_id','rider_account'])
+        ->make(true);
+    }
 }

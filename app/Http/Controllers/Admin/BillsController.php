@@ -32,4 +32,7 @@ class BillsController extends Controller
         $clients=Client::all();
         return view('admin.Bills.generated_bills',compact('clients'));
     }
+    public function bills_loss(){
+        return view('admin.Bills.bills_loss');
+    }
 }
