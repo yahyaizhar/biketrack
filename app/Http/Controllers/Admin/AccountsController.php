@@ -3544,6 +3544,7 @@ public function client_income_update(Request $request,$id){
         $string=$r->string;
         $month=$r->month;
         $trace_id=$r->source_id;
+        $feed=[];
 
         if ($model_id=="advance") {
             $trace_table_id='';
@@ -3554,11 +3555,21 @@ public function client_income_update(Request $request,$id){
             }
             $table=$model_name::find($trace_table_id);
             $export_data=Export_data::whereMonth('month',$month)->where($string,$model_id)->where('source_id',$trace_table_id)->get()->first();
-            
+            $obj=[];
+            $obj['model']=get_class($ra);
+            $obj['data']=json_encode($ra);
+            array_push($feed,$obj);
             $ra->delete();
+            $obj=[];
+            $obj['model']=get_class($table);
+            $obj['data']=json_encode($table);
+            array_push($feed,$obj);
             $table->delete();
+            $obj=[];
+            $obj['model']=get_class($export_data);
+            $obj['data']=json_encode($export_data);
+            array_push($feed,$obj);
             $export_data->delete();
-
         }
         else if ($model_id=="fuel_expense_vip" || $model_id=="fuel_expense_cash" || $model_id=="Bike Fine" || $model_id=="Sim Transaction" || $model_id=="Bike Rent" || $model_id=="Salik") {
             $ca=Company_Account::find($id);
