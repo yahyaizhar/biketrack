@@ -643,6 +643,7 @@ class SalikController extends Controller
         $allow_salik=0;
         if(isset($history_found)){
             $bike_histories = $history_found;
+            $unique_id=uniqid();
             $rider = Rider::find($bike_histories->rider_id);
             $rider_id=$rider->id;
             $allow_salik=$rider->Rider_Detail->salik_amount;
@@ -654,7 +655,7 @@ class SalikController extends Controller
             $ed->month = Carbon::parse($request->month)->startOfMonth()->format('Y-m-d');
             $ed->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
             $ed->source="Salik";
-            $ed->source_id='0';
+            $ed->source_id=$unique_id;
             $ed->save();  
             
         // if($used_salik>$allow_salik){
@@ -692,7 +693,7 @@ class SalikController extends Controller
             $ca= new Company_Account;
             $ca->source="Salik";
             $ca->amount=$used_salik;
-            $ca->salik_id="0";
+            $ca->salik_id=$unique_id;
             $ca->rider_id=$rider_id;
             $ca->month=Carbon::parse($request->month)->startOfMonth()->format("Y-m-d");
             $ca->given_date=Carbon::parse($request->given_date)->format("Y-m-d");
@@ -701,7 +702,7 @@ class SalikController extends Controller
             $ca= new Company_Account;
             $ca->source="Salik";
             $ca->amount=$used_salik;
-            $ca->salik_id="0";
+            $ca->salik_id=$unique_id;
             $ca->rider_id=$rider_id;
             $ca->month=Carbon::parse($request->month)->startOfMonth()->format("Y-m-d");
             $ca->given_date=Carbon::parse($request->given_date)->format("Y-m-d");
@@ -710,7 +711,7 @@ class SalikController extends Controller
 
             $ra= new Rider_Account;
             $ra->source="Salik";
-            $ra->salik_id="0";
+            $ra->salik_id=$unique_id;
             $ra->amount=$used_salik;
             $ra->rider_id=$rider_id;
             $ra->month=Carbon::parse($request->month)->startOfMonth()->format("Y-m-d");

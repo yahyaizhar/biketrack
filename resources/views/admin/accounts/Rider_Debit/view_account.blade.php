@@ -3167,7 +3167,7 @@ function editRows($this,id,model_class,model_id,rider_id,string,month){
     });
 
 }
-function deleteRows(id,model_class,model_id,rider_id,string,month){
+function deleteRows(id,model_class,model_id,rider_id,string,month,source_id){
     var url = "{{ url('admin/delete/accounts/rows') }}";
     console.log(url);
     swal.fire({
@@ -3190,6 +3190,7 @@ function deleteRows(id,model_class,model_id,rider_id,string,month){
                 "rider_id":rider_id,
                 "string":string,
                 "month":month,
+                "source_id":source_id, 
             };
             $.ajax({
                 url  :  url,
