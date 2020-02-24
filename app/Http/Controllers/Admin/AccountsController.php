@@ -3567,33 +3567,132 @@ public function client_income_update(Request $request,$id){
         return view('admin.accounts.Bike-Debit.bike_accounts',compact('bikes'));
     }
     public function delete_account_rows(Request $r){
+        // return response()->json([
+        //     'r'=>$r->all(),
+        // ]);
+        $ra='';
+        $export_data='';
+        $table='';
+        $ca='';
+        $ca_e='';
+        $ra_e='';
         $id=$r->id;
         $model_class=$r->model_class;
         $model_id=$r->model_id;
         $rider_id=$r->rider_id;
         $string=$r->string;
         $month=$r->month;
-        if (isset($model_class)) {
-            $alter=$model_class::find($model_id);
-            if (isset($alter)) {
-                $alter->delete();
+        $trace_id=$r->source_id;
+
+        if ($model_id=="advance") {
+            $trace_table_id='';
+            $ra=Rider_Account::find($id);
+            if ($model_id=="advance") {
+                $trace_table_id=$ra->advance_return_id;
+                $model_name='App\Model\Accounts\AdvanceReturn';
             }
-           
-        }
-        $CA=Company_Account::where("rider_id",$rider_id)
-        ->whereMonth("month",$month)
-        ->where($string,$model_id)
-        ->get();
-        foreach ($CA as $ca) {
-            $ca->delete();
-        }
-        $RA=Rider_Account::where("rider_id",$rider_id)
-        ->whereMonth("month",$month)
-        ->where($string,$model_id)
-        ->get();
-        foreach ($RA as $ra) {
+            $table=$model_name::find($trace_table_id);
+            $export_data=Export_data::whereMonth('month',$month)->where($string,$model_id)->where('source_id',$trace_table_id)->get()->first();
+            
             $ra->delete();
+            $table->delete();
+            $export_data->delete();
+
         }
+        else if ($model_id=="fuel_expense_vip" || $model_id=="fuel_expense_cash" || $model_id=="Bike Fine" || $model_id=="Sim Transaction" || $model_id=="Bike Rent" || $model_id=="Salik") {
+            $ca=Company_Account::find($id);
+            if ($model_id=="fuel_expense_vip" || $model_id=="fuel_expense_cash") {
+                $trace_table_id=$ca->fuel_expense_id; 
+                $model_name='App\Model\Accounts\Fuel_Expense';
+                $ca_e='';
+                $ra_e='';
+            }
+            if ($model_id=="Bike Fine") {
+                $trace_table_id=$ca->bike_fine; 
+                $model_name='App\Model\Accounts\Bike_Fine';
+                $ca_e=Company_Account::where("source","Bike Fine Paid")->whereMonth("month",$month)->where("bike_fine",$trace_table_id)->get()->first();
+                $ra_e=Rider_Account::where("source","Bike Fine Paid")->whereMonth("month",$month)->where("bike_fine",$trace_table_id)->get()->first();
+            }
+            if ($model_id=="Sim Transaction") {
+                $trace_table_id=$ca->sim_transaction_id; 
+                $model_name='App\Model\Sim\Sim_Transaction';
+                $ca_e=Company_Account::where("source","Sim extra usage")->whereMonth("month",$month)->where("sim_transaction_id",$trace_table_id)->get()->first();
+                $ra_e=Rider_Account::where("source","Sim extra usage")->whereMonth("month",$month)->where("sim_transaction_id",$trace_table_id)->get()->first();
+            }
+            if ($model_id=="Salik") {
+                $trace_table_id=$ca->salik_id;
+                $model_name='';
+                $type=$ca->type;
+                if ($type=="cr") {
+                    $type_i="dr";
+                }
+                if ($type=="dr") {
+                    $type_i="cr";
+                }
+                $ca_e=Company_Account::where("source","Salik")->where("type",$type_i)->whereMonth("month",$month)->where("salik_id",$trace_table_id)->get()->first();
+                $ra_e=Rider_Account::where("source","Salik")->whereMonth("month",$month)->where("salik_id",$trace_table_id)->get()->first();
+            }
+            if ($model_id=="Bike Rent") {
+                $trace_table_id=$ca->bike_rent_id;
+                $model_name='';
+                $ca_e='';
+                $ra_ex=Rider_Account::where("source","Bike Allowns")->whereMonth("month",$month)->where("bike_rent_id",$trace_table_id)->get()->first();
+                if (isset($ra_ex)) {
+                    $ra_e=$ra_ex;
+                }
+                else{
+                    $ra_e='';
+                }
+            }
+            $ca->delete();
+            if ($model_name!='') {
+                $table=$model_name::find($trace_table_id);
+                $table->delete();
+            }
+            
+            if ($model_id!="Bike Fine") {
+                $export_data=Export_data::whereMonth('month',$month)->where($string,$model_id)->where('source_id',$trace_table_id)->get()->first();
+                $export_data->delete();
+            }
+            if ($ca_e!='') {
+                $ca_e->delete();
+            }
+            if ($ra_e!='') {
+                $ra_e->delete();
+            }
+            
+        }
+        return response()->json([
+            'ra'=>$ra,
+            'ca'=>$ca,
+            'table'=>$table,
+            'export_data'=>$export_data,
+            'ca_e'=>$ca_e,
+            'ra_e'=>$ra_e,
+            
+        ]);
+
+        // if (isset($model_class)) {
+        //     $alter=$model_class::find($model_id);
+        //     if (isset($alter)) {
+        //         $alter->delete();
+        //     }
+           
+        // }
+        // $CA=Company_Account::where("rider_id",$rider_id)
+        // ->whereMonth("month",$month)
+        // ->where($string,$model_id)
+        // ->get();
+        // foreach ($CA as $ca) {
+        //     $ca->delete();
+        // }
+        // $RA=Rider_Account::where("rider_id",$rider_id)
+        // ->whereMonth("month",$month)
+        // ->where($string,$model_id)
+        // ->get();
+        // foreach ($RA as $ra) {
+        //     $ra->delete();
+        // }
     }
     public function assign_client_rider_id($p_id,$feid,$rider_id){
         $ca=Company_Account::where("income_zomato_id",$p_id)->get();

@@ -40,7 +40,6 @@
             </div>
             <div>
                 <select class="form-control bk-select2" id="kt_select2_3_5" name="month_id" >
-                    <option >Select Month</option>
                     @for ($i = 0; $i <= 12; $i++)
                         @php
                             $_m =Carbon\Carbon::now()->startOfMonth()->addMonth(-$i);
@@ -103,6 +102,12 @@ var charges_table;
 $("[name='client_id'] , #kt_select2_3_5").on("change",function(){
     var client_id=$("[name='client_id']").val();
     var month=$("#kt_select2_3_5").val();
+    var month_url=new Date(month).format("yyyy-mm-dd");
+            var data = {
+                month:month_url,
+                client_id:client_id,
+            }
+            biketrack.updateURL(data);
     $("#bills_hidden").show();
     $(function() {
     var url="{!! url('/admin/ajax/generated/rider/bill/status/"+month+"/"+client_id+"') !!}";
@@ -131,12 +136,18 @@ $("[name='client_id'] , #kt_select2_3_5").on("change",function(){
             { data: 'salary', name: 'salary' },
         ],
         responsive:true,
-        order:[0,'desc'],
+        order:[0,'asc'],
     });
 });
 });
-$("[name='client_id'] , #kt_select2_3_5").trigger("change");
 
+var mon=biketrack.getUrlParameter('month');
+var client=biketrack.getUrlParameter('client_id');
+if (mon!="" && client!="" ) {
+    $('#kt_select2_3_5').val(mon).trigger('change.select2');
+}
+    $("[name='client_id']").val(client).trigger("change");
 
+        
 </script>
 @endsection

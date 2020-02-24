@@ -449,15 +449,20 @@ public function deletebikeprofile($rider_id,$bike_id){
 }
 // end bikeController
 public function change_dates_history(Request $request,$rider_id,$assign_bike_id,$bike_status){
+    // return response()->json([
+    //     'rider_id'=>$rider_id,
+    //     'assign_bike_id'=>$assign_bike_id,
+    //     'bike_status'=>$bike_status,
+    // ]);
     $assign_bike=Assign_bike::find($assign_bike_id);
     if (isset($assign_bike)) {
         if ($bike_status=="active") {
-            $assign_bike->bike_assign_date=Carbon::parse($request->bike_assign_date)->format("Y-m-d");
-            $assign_bike->bike_unassign_date=Carbon::parse($request->bike_assign_date)->format("Y-m-d");
+            $assign_bike->bike_assign_date=Carbon::parse($request->assign_date)->format("Y-m-d");
+            $assign_bike->bike_unassign_date=Carbon::parse($request->assign_date)->format("Y-m-d");
         }
         else{
-            $assign_bike->bike_assign_date=Carbon::parse($request->bike_assign_date)->format("Y-m-d");
-            $assign_bike->bike_unassign_date=Carbon::parse($request->bike_unassign_date)->format("Y-m-d"); 
+            $assign_bike->bike_assign_date=Carbon::parse($request->assign_date)->format("Y-m-d");
+            $assign_bike->bike_unassign_date=Carbon::parse($request->unassign_date)->format("Y-m-d"); 
         }
         
         $assign_bike->update();

@@ -247,6 +247,7 @@ class bikeController extends Controller
       $billchanges_feed=[];
       foreach ($data as $item) {
         $rider_id=$r->rider_id;
+        $unique_id=uniqid();
         if(isset($item['rider_id'])){
             $rider_id=$item['rider_id'];
         }
@@ -306,7 +307,7 @@ class bikeController extends Controller
             $ca->amount=$amount_given_by_days;
             $ca->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
             $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
-            $ca->bike_rent_id =$bike_id;
+            $ca->bike_rent_id =$unique_id;
             $ca->rider_id=$rider_id;
             $ca->source='Bike Rent';
             $ca->save();
@@ -316,7 +317,7 @@ class bikeController extends Controller
             $ca->amount=$amount_given_by_days;
             $ca->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
             $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
-            $ca->bike_rent_id =$bike_id;
+            $ca->bike_rent_id =$unique_id;
             $ca->rider_id=$rider_id;
             $ca->source='Bike Rent';
             $ca->save();
@@ -326,7 +327,7 @@ class bikeController extends Controller
             $ra->amount=$amount_given_by_days;
             $ra->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
             $ra->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
-            $ra->bike_rent_id =$bike_id;
+            $ra->bike_rent_id =$unique_id;
             $ra->rider_id=$rider_id;
             $ra->source='Bike Rent';
             $ra->save();
@@ -338,7 +339,7 @@ class bikeController extends Controller
           $ca->amount=$amount_given_by_days;
           $ca->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
           $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
-          $ca->bike_rent_id =$bike_id;
+          $ca->bike_rent_id =$unique_id;
           $ca->rider_id=$rider_id;
           $ca->source='Bike Rent';
           $ca->save();
@@ -350,7 +351,7 @@ class bikeController extends Controller
         $ed->month = Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
         $ed->given_date = Carbon::parse($r->get('given_date'))->format('Y-m-d');
         $ed->source='Bike Rent';
-        $ed->source_id='0';
+        $ed->source_id=$unique_id;
         $ed->payment_status="paid";
         $ed->save();
           
@@ -360,7 +361,7 @@ class bikeController extends Controller
           $ba->amount=$amount_given_by_days;
           $ba->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
           $ba->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
-          $ba->bike_id =$bike_id;
+          $ba->bike_id =$unique_id;
           $ba->rider_id=$rider_id;
           $ba->source='Bike Rent';
           $ba->save();
@@ -371,7 +372,7 @@ class bikeController extends Controller
           $ba->amount=$amount_given_by_days;
           $ba->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
           $ba->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
-          $ba->bike_id =$bike_id;
+          $ba->bike_id =$unique_id;
           $ba->rider_id=$rider_id;
           $ba->source='Bike Rent';
           $ba->save();
@@ -381,7 +382,7 @@ class bikeController extends Controller
           $ba->amount=$amount_given_by_days;
           $ba->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
           $ba->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
-          $ba->bike_id =$bike_id;
+          $ba->bike_id =$unique_id;
           $ba->rider_id=$rider_id;
           $ba->source='Bike Rent paid to rental comapny';
           $ba->save();
@@ -393,7 +394,7 @@ class bikeController extends Controller
             $ra->amount=$amount_given_by_days;
             $ra->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
             $ra->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
-            $ra->bike_rent_id =$bike_id;
+            $ra->bike_rent_id =$unique_id;
             $ra->rider_id=$rider_id;
             $ra->source='Bike Allowns';
             $ra->save();

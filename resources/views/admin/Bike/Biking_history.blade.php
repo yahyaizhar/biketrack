@@ -102,11 +102,11 @@
                                         <input type="hidden" id="bike_id" >
                                         <div class="form-group">
                                             <label>Started Month:</label>
-                                            <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::parse($assign_bike->bike_assign_date)->format('M d, Y')}}" required readonly class="month_picker form-control" name="bike_assign_date" placeholder="Enter Month" value="">
+                                            <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::parse($assign_bike->bike_assign_date)->format('M d, Y')}}" required readonly class="month_picker form-control" name="assign_date" placeholder="Enter Month" value="">
                                         </div>
                                         <div class="form-group" id="unassign_date">
                                             <label>Ended Month:</label>
-                                            <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::parse($assign_bike->bike_unassign_date)->format('M d, Y')}}" required readonly class="month_picker form-control" name="bike_unassign_date" placeholder="Enter Month" value="">
+                                            <input data-rider="{{$rider->id}}" type="text" data-month="{{Carbon\Carbon::parse($assign_bike->bike_unassign_date)->format('M d, Y')}}" required readonly class="month_picker form-control" name="unassign_date" placeholder="Enter Month" value="">
                                         </div>
                                         <div class="modal-footer border-top-0 d-flex justify-content-center">
                                             <button class="upload-button btn btn-success">Submit</button>

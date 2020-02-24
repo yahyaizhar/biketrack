@@ -89,14 +89,14 @@
                                     <td style="width:45%;text-align:left;"></td> --}}
                                 </tr>
                                 <tr>
-                                    <th style="width:15%;text-align:left;">EMPLOYEE ID:</th>
+                                    <th style="width:15%;text-align:left;">RIDER ID:</th>
                                     <td class="employee_id" style="width:45%;text-align:left;"></td>
                                     {{-- <th style="width:15%;text-align:left;">WORKPLACE:</th>
                                     <td style="width:45%;text-align:left;"></td> --}}
                                 </tr>
                                 <tr>
-                                    <th style="width:15%;text-align:left;">DATE OF JOINING:</th>
-                                    <td class="today_date" style="width:45%;text-align:left;"></td>
+                                    {{-- <th style="width:15%;text-align:left;">DATE OF JOINING:</th>
+                                    <td class="today_date" style="width:45%;text-align:left;"></td> --}}
                                     {{-- <th style="width:15%;text-align:left;"></th>
                                     <td style="width:45%;text-align:left;"></td> --}}
                                 </tr>
@@ -149,17 +149,17 @@
                                 <td  class="advance text-danger" style="width:25%;text-align:end;"></td>
                             </tr>
                             <tr>
-                                <td style="width:50%;text-align:left;">SALIK PLANTI</td>
+                                <td style="width:50%;text-align:left;">SALIK USAGE</td>
                                 {{-- <td style="width:25%;text-align:end;"></td> --}}
                                 <td  class="salik text-danger" style="width:25%;text-align:end;"></td>
                             </tr>
                             <tr>
-                                <td style="width:50%;text-align:left;">SIM PLANTI</td>
+                                <td style="width:50%;text-align:left;">SIM-EXTRA USAGE</td>
                                 {{-- <td style="width:25%;text-align:end;"></td> --}}
                                 <td  class="sim text-danger" style="width:25%;text-align:end;"></td>
                             </tr>
                             <tr>
-                                <td style="width:50%;text-align:left;">ZOMATO PLANTI</td>
+                                <td style="width:50%;text-align:left;">ZOMATO PENALTY</td>
                                 {{-- <td style="width:25%;text-align:end;"></td> --}}
                                 <td  class="zomato text-danger" style="width:25%;text-align:end;"></td>
                             </tr>
@@ -168,11 +168,11 @@
                                 {{-- <td style="width:25%;text-align:end;"></td> --}}
                                 <td  class="dc text-danger" style="width:25%;text-align:end;"></td>
                             </tr>
-                            <tr>
+                            {{-- <tr>
                                 <td style="width:50%;text-align:left;">MCDONALD DEDUCTION</td>
-                                {{-- <td style="width:25%;text-align:end;"></td> --}}
+                                <td style="width:25%;text-align:end;"></td>
                                 <td  class="macdonald text-danger" style="width:25%;text-align:end;"></td>
-                            </tr>
+                            </tr> --}}
                             <tr>
                                 <td style="width:50%;text-align:left;">RTA FINE</td>
                                 {{-- <td style="width:25%;text-align:end;"></td> --}}
@@ -194,7 +194,7 @@
                                 <td  class="mics text-danger" style="width:25%;text-align:end;"></td>
                             </tr>
                             <tr>
-                                <td style="width:50%;text-align:left;">Others</td>
+                                <td style="width:50%;text-align:left;">OTHERS</td>
                                 {{-- <td style="width:25%;text-align:end;"></td> --}}
                                 <td  class="cash_paid text-danger" style="width:25%;text-align:end;"></td>
                             </tr>
@@ -391,7 +391,7 @@
                         $('.sim').html(data.sim);
                         $('.zomato').html(data.denial_penalty);
                         $('.dc').html(data.dc);
-                        $('.macdonald').html(data.macdonald);
+                        $('.macdonald').html(0);
                         $('.rta').html(data.rta);
                         $('.mobile').html(data.mobile);
                         $('.discipline').html(data.dicipline);

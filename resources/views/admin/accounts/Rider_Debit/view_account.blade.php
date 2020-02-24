@@ -19,6 +19,14 @@
     td .print_class{
         font-size:12px;
     }
+    /* .rider_days_detail td[contenteditable]::after {
+        content: 'Save';
+        color: #fff;
+        background: green;
+        float: right;
+        padding: 0 10px;
+        cursor: pointer;
+    } */
 </style>
 @endsection
 @section('main-content') 
@@ -932,6 +940,9 @@
             <button style="float:right;margin-right: 10px;" onclick="print_data()"  class="btn btn-success btn-elevate btn-icon-sm" id="sync_data" type="button">
                     Print Data
             </button> 
+            <button style="float:left;margin-left:10px;" onclick="get_import_contentable_data()"  class="btn btn-success btn-elevate btn-icon-sm" id="sync_editable_data" type="button">
+                Resync Import Contentable Data
+            </button> 
         </div>
     </div>
 </div>
@@ -959,21 +970,21 @@
                 <tr>
                     <th style="width:15%;text-align:left;">NAME</th>
                     <td class="rider_name" style="width:45%;text-align:left;"></td>
-                    <th style="width:15%;text-align:left;">Designation:</th>
-                    <td style="width:45%;text-align:left;"></td>
+                    {{-- <th style="width:15%;text-align:left;">Designation:</th>
+                    <td style="width:45%;text-align:left;"></td> --}}
                 </tr>
                 <tr>
-                    <th style="width:15%;text-align:left;">EMPLOYEE ID:</th>
+                    <th style="width:15%;text-align:left;">RIDER ID:</th>
                     <td class="employee_id" style="width:45%;text-align:left;"></td>
-                    <th style="width:15%;text-align:left;">WORKPLACE:</th>
-                    <td style="width:45%;text-align:left;"></td>
+                    {{-- <th style="width:15%;text-align:left;">WORKPLACE:</th>
+                    <td style="width:45%;text-align:left;"></td> --}}
                 </tr>
-                <tr>
+                {{-- <tr>
                     <th style="width:15%;text-align:left;">DATE OF JOINING:</th>
                     <td class="today_date" style="width:45%;text-align:left;"></td>
                     <th style="width:15%;text-align:left;"></th>
                     <td style="width:45%;text-align:left;"></td>
-                </tr>
+                </tr> --}}
             </table>
     
         <table style="border-top: unset !important;">
@@ -1023,17 +1034,17 @@
                 <td contenteditable='true' class="advance" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:left;">SALIK PLANTI</td>
+                <td style="width:50%;text-align:left;">SALIK USAGE</td>
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="salik" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:left;">SIM PLANTI</td>
+                <td style="width:50%;text-align:left;">SIM-EXTRA USAGE</td>
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="sim" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:left;">ZOMATO PLANTI</td>
+                <td style="width:50%;text-align:left;">ZOMATO PENALTY</td>
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="zomato" style="width:25%;text-align:end;"></td>
             </tr>
@@ -1042,11 +1053,11 @@
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="dc" style="width:25%;text-align:end;"></td>
             </tr>
-            <tr>
+            {{-- <tr>
                 <td style="width:50%;text-align:left;">MCDONALD DEDUCTION</td>
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="macdonald" style="width:25%;text-align:end;"></td>
-            </tr>
+            </tr> --}}
             <tr>
                 <td style="width:50%;text-align:left;">RTA FINE</td>
                 <td style="width:25%;text-align:end;"></td>
@@ -1068,7 +1079,7 @@
                 <td contenteditable='true' class="mics" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:left;">Others</td>
+                <td style="width:50%;text-align:left;">OTHERS</td>
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="cash_paid" style="width:25%;text-align:end;"></td>
             </tr>
@@ -1093,21 +1104,23 @@
                 <td class="paid_salary" style="width:50%;text-align:center;background-color:#73acac69;"></td>
             </tr>
         </table>
-    <div style=""> 
-        <p style="font-size:12px;line-height: 14px;"><strong>Note: </strong>MR <span id="rider_id_1"></span> received <span class="paid_salary"></span> from King Riders Delivery Services LLC, and MR <span id="rider_id_2"></span> no is not valid for any kind of Gratuity, yearly tickets or any other expenses other than the salary.
-        </p>
-    </div>
-    <div style=" margin-top: 1px;">  
-        <p><strong>Signature:</strong>________________________</p>
-    </div>
-    <div style=" margin-top: 1px;"> 
-        <p><strong>Thumb:</strong>__________________________</p>
-    </div>
-    <div style="text-align:end;"> 
-        <p style="margin-bottom: 3px;"><strong>KING RIDERS DELIVERY SERVICES LLC</strong></p>
-        <p style="margin-bottom: 3px;"><Strong>ACCOUNTANT</Strong></p>
-        <p style="margin-bottom: 3px;"><strong>DANISH MUNIR</strong></p>
-    </div>
+        <div id="not_show_company_info">
+            <div style=""> 
+                <p style="font-size:12px;line-height: 14px;"><strong>Note: </strong>MR <span id="rider_id_1"></span> received <span class="paid_salary"></span> from King Riders Delivery Services LLC, and MR <span id="rider_id_2"></span> no is not valid for any kind of Gratuity, yearly tickets or any other expenses other than the salary.
+                </p>
+            </div>
+            <div style=" margin-top: 1px;">  
+                <p><strong>Signature:</strong>________________________</p>
+            </div>
+            <div style=" margin-top: 1px;"> 
+                <p><strong>Thumb:</strong>__________________________</p>
+            </div>
+            <div style="text-align:end;"> 
+                <p style="margin-bottom: 3px;"><strong>KING RIDERS DELIVERY SERVICES LLC</strong></p>
+                <p style="margin-bottom: 3px;"><Strong>ACCOUNTANT</Strong></p>
+                <p style="margin-bottom: 3px;"><strong>DANISH MUNIR</strong></p>
+            </div>
+        </div>
 </div>
 <div style="display:grid;padding: 15px 50px 0px 50px;" id="print_slip_for_rider2">
         <style type="text/css">
@@ -1129,21 +1142,21 @@
                 <tr>
                     <th style="width:15%;text-align:left;">NAME</th>
                     <td class="rider_name" style="width:45%;text-align:left;"></td>
-                    <th style="width:15%;text-align:left;">Designation:</th>
-                    <td style="width:45%;text-align:left;"></td>
+                    {{-- <th style="width:15%;text-align:left;">Designation:</th>
+                    <td style="width:45%;text-align:left;"></td> --}}
                 </tr>
                 <tr>
-                    <th style="width:15%;text-align:left;">EMPLOYEE ID:</th>
+                    <th style="width:15%;text-align:left;">RIDER ID:</th>
                     <td class="employee_id" style="width:45%;text-align:left;"></td>
-                    <th style="width:15%;text-align:left;">WORKPLACE:</th>
-                    <td style="width:45%;text-align:left;"></td>
+                    {{-- <th style="width:15%;text-align:left;">WORKPLACE:</th>
+                    <td style="width:45%;text-align:left;"></td> --}}
                 </tr>
-                <tr>
+                {{-- <tr>
                     <th style="width:15%;text-align:left;">DATE OF JOINING:</th>
                     <td class="today_date" style="width:45%;text-align:left;"></td>
                     <th style="width:15%;text-align:left;"></th>
                     <td style="width:45%;text-align:left;"></td>
-                </tr>
+                </tr> --}}
             </table>
     
         <table style="border-top: unset !important;">
@@ -1193,17 +1206,17 @@
                 <td contenteditable='true' class="advance" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:left;">SALIK PLANTI</td>
+                <td style="width:50%;text-align:left;">SALIK USAGE</td>
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="salik" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:left;">SIM PLANTI</td>
+                <td style="width:50%;text-align:left;">SIM-EXTRA USAGE</td>
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="sim" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:left;">ZOMATO PLANTI</td>
+                <td style="width:50%;text-align:left;">ZOMATO PENALTY</td>
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="zomato" style="width:25%;text-align:end;"></td>
             </tr>
@@ -1212,11 +1225,11 @@
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="dc" style="width:25%;text-align:end;"></td>
             </tr>
-            <tr>
+            {{-- <tr>
                 <td style="width:50%;text-align:left;">MCDONALD DEDUCTION</td>
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="macdonald" style="width:25%;text-align:end;"></td>
-            </tr>
+            </tr> --}}
             <tr>
                 <td style="width:50%;text-align:left;">RTA FINE</td>
                 <td style="width:25%;text-align:end;"></td>
@@ -1238,7 +1251,7 @@
                 <td contenteditable='true' class="mics" style="width:25%;text-align:end;"></td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:left;">Others</td>
+                <td style="width:50%;text-align:left;">OTHERS</td>
                 <td style="width:25%;text-align:end;"></td>
                 <td contenteditable='true' class="cash_paid" style="width:25%;text-align:end;"></td>
             </tr>
@@ -1523,6 +1536,7 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script src="{{ asset('js/dataTables.cellEdit.js') }}" type="text/javascript"></script>
 <script>
+    $("#sync_editable_data").hide();
     $(document).on("click","#view-upload-slip",function(){
         $("#view_upload_slip").modal("show");
         $(".show_salary_slip_image").html("");
@@ -2726,6 +2740,10 @@ var detect_billchanges=function(){
                     $('.paid_salary').html(response.salary_paid);
                     $('#rider_id_1').html(response.rider);
                     $('#rider_id_2').html(response.rider);
+                    $("#not_show_company_info").show();
+                    if (response.salary_paid=="0" || response.salary_paid=="") {
+                        $("#not_show_company_info").hide();
+                    }
                     var is_salary_generated=$("#getting_val").length>0;
                    var is_update=$("#getting_val").attr('data-update');
                    is_update=typeof is_update!=="undefined" && is_update!==false;
@@ -3160,7 +3178,7 @@ function editRows($this,id,model_class,model_id,rider_id,string,month){
     });
 
 }
-function deleteRows(id,model_class,model_id,rider_id,string,month){
+function deleteRows(id,model_class,model_id,rider_id,string,month,source_id){
     var url = "{{ url('admin/delete/accounts/rows') }}";
     console.log(url);
     swal.fire({
@@ -3183,6 +3201,7 @@ function deleteRows(id,model_class,model_id,rider_id,string,month){
                 "rider_id":rider_id,
                 "string":string,
                 "month":month,
+                "source_id":source_id, 
             };
             $.ajax({
                 url  :  url,
@@ -3599,19 +3618,56 @@ function check_salary_status(){
             if (status==1) {
                 alert(msg);
             }
-            if (status==2) {
-                alert(msg);
-            }
+            // if (status==2) {
+            //     alert(msg);
+            // }
         },
     });
 }
 function set_import_data(){
+
     $(".rider_days_detail tbody tr").each(function(i,j){
         var a=$(this).find("td:eq(2)").text();
-        if((a>=3 && a<=4) || (a>=6.5 && a<=8) ){
+        if(a){
             $(this).find("td:eq(1)").attr("contenteditable",true);
             $(this).find("td:eq(2)").attr("contenteditable",true);
+            $("#sync_editable_data").show();
+       }
+    });
+}
+function get_import_contentable_data(){
+    var data=[];
+    $(".rider_days_detail tbody tr").each(function(i,j){
+        var editable_row=$(this).find("td[contenteditable]").text();
+        if (editable_row) {
+            var update_data={};
+            var rp_date=$(this).find("td:eq(0)").text();
+            var rp_trip=$(this).find("td:eq(1)").text();
+            var rp_hour=$(this).find("td:eq(2)").text();
+
+            update_data.hours=rp_hour;
+            update_data.trip=rp_trip;
+            update_data.date=rp_date;
+            data.push(update_data);
         }
+    });
+    console.log(data);
+    var month=biketrack.getUrlParameter('r1d1');
+    var rider_id=biketrack.getUrlParameter('rider_id');
+    var _onlyMonth=new Date(month).format("yyyy-mm-dd");
+    var url ="{{ url('admin/rider/change_payout_data/ajax') }}"+ "/" + rider_id + "/" + _onlyMonth ;
+    $.ajax({
+        url : url,
+        type : 'POST',
+        data : {data:data},
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data){
+            $("#sync_editable_data").hide();
+            console.log(data);
+            window.location.reload();
+        },
     });
 }
 </script>
