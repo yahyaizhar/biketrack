@@ -23,6 +23,7 @@ use App\Assign_bike;
 use App\insurance_company;
 use Arr;
 use App\Export_data;
+use App\Model\Accounts\Bill_change;
 use App\Model\Client\Client_History;
 
 class bikeController extends Controller 
@@ -237,6 +238,13 @@ class bikeController extends Controller
       $bike_own='';
       $pm='';
       // return $r->all();
+      #storing any bill details so we can detect changes
+      $bill_changes = new Bill_change;
+      $bill_changes->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+      $bill_changes->type='bike_rent';
+      $bill_changes->amount=$total_amount;
+      $bill_changes->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+      $billchanges_feed=[];
       foreach ($data as $item) {
         $rider_id=$r->rider_id;
         if(isset($item['rider_id'])){
@@ -393,7 +401,25 @@ class bikeController extends Controller
         }
 
         $splitted_amount+=$amount_given_by_days;
+
+        #saving bill data to detect changes
+        $obj_feed=[];
+        $obj_feed['bike_id']=$r->bike_id;
+        if(isset($item['bike_id'])){
+            $obj_feed['bike_id']=$item['bike_id'];
+        }
+        $obj_feed['rider_id']=$r->rider_id;
+        if(isset($item['rider_id'])){
+            $obj_feed['rider_id']=$item['rider_id'];
+        }
+        $obj_feed['work_days']=$item['work_days_count'];
+        $obj_feed['owner']=$item['owner'];
+        $obj_feed['month_days']=$item['total_days'];
+        $obj_feed['bill_amount']=$item['amount_given_by_days'];
+        array_push($billchanges_feed,$obj_feed);
       }
+      $bill_changes->feed=json_encode($billchanges_feed);
+      $bill_changes->save();
       $remaining_amount=$total_amount-$splitted_amount;
 
       if($remaining_amount>0){
@@ -404,6 +430,7 @@ class bikeController extends Controller
         // $ce->rider_id=$r->rider_id;
         $ce->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ce->description="Bike rent remaining amount against ".$bike->bike_number;
+        $ce->type="bike_rent";
         $ce->save();
       }
       return response()->json([

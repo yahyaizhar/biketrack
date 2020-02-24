@@ -147,7 +147,7 @@
     </div>
     <div class="kt-portlet">
         <div class="kt-portlet__body  kt-portlet__body--fit">
-            <div class="row text-center py-3">
+            <div class="row">
                 <div class="kt-portlet__head-toolbar col-md-12">
                     <div class="kt-portlet__head-wrapper">
                         <div class="kt-portlet__head-actions">
@@ -1631,12 +1631,23 @@ var detect_billchanges=function(){
         success: function(data){
             console.log(data);
             if(data.status==1){
-                if (data.changes==0) {
+                if (data.changes.length<=0) {
                     //no changes detected
-                    $('.auto_bills-wrapper').html('<div class="text-success">No changes detected</div>');
+                    $('.auto_bills-wrapper').html('');
                 }
                 else{
-                    $('.auto_bills-wrapper').html('<div class="text-success">'+data.changes+' changes detected in <strong>'+data.msg+'</strong></div>');
+                    //changes found
+                    var _errs='';
+                    data.changes.forEach(function(err,i){
+                        _errs+="<li>"+err+"</li>";
+                    });
+                    var _msg = $(basic_alert);
+                    _msg.find('.alert-text').html("<h4 class='alert-heading'>Some Changes Detected!</h4><ul>"+_errs+"</ul>");
+                    _msg.find('.alert')
+                    .addClass('alert-outline-warning')
+                    .addClass('m-0');
+                    $('.auto_bills-wrapper').html(_msg.html());
+                    // $('.auto_bills-wrapper').html('<div class="text-success">'+data.changes+' changes detected in <strong>'+data.msg+'</strong></div>');
                 }
             }
 

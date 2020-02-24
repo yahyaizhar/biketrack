@@ -33,6 +33,8 @@ use App\Company_investment;
 use App\Company_Tax;
 use App\Model\Zomato\Riders_Payouts_By_Days;
 use App\Export_data;
+use App\Model\Accounts\Bill_change;
+use App\Model\Sim\Sim_History;
 
 
 class AccountsController extends Controller
@@ -977,6 +979,15 @@ class AccountsController extends Controller
             
                 
                 if(isset($ra_zomatos)){
+
+                    if($ra_zomatos->error!=null){
+                        # means there was an error, maybe weekly day cannot be finded
+                        $error = json_decode($ra_zomatos->error,true);
+                        return response()->json([
+                            'status'=>0,
+                            'msg'=>$error['error_message'].' Against this rider.'
+                        ]);
+                    }
                     
                     $absent_app=$ra_zomatos->approve_absents;
                     $absent_approve_hours=$absent_app*$_s_maxHours;
@@ -1480,6 +1491,17 @@ public function fuel_rider_selector($rider_id,$bike_id){
 public function fuel_expense_insert(Request $r){
 
     $data=$r->data;
+    $total_amount=$r->amount;
+    #storing any bill details so we can detect changes
+    $bill_changes = new Bill_change;
+    $bill_changes->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
+    $bill_changes->type='fuel_vip';
+    if ($r->type=='cash') {
+        $bill_changes->type='fuel_cash';
+    }
+    $bill_changes->amount=$total_amount;
+    $bill_changes->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
+    $billchanges_feed=[];
     foreach ($data as $value) {
         $rider_id=$r->rider_id;
         if(isset($value['rider_id'])){
@@ -1672,7 +1694,24 @@ public function fuel_expense_insert(Request $r){
             $ed->source_id=$fuel_expense->id;
             $ed->save();
         } 
+
+        #saving bill data to detect changes
+        $obj_feed=[];
+        $obj_feed['bike_id']=$r->bike_id;
+        if(isset($value['bike_id'])){
+            $obj_feed['bike_id']=$value['bike_id'];
+        }
+        $obj_feed['rider_id']=$r->rider_id;
+        if(isset($value['rider_id'])){
+            $obj_feed['rider_id']=$value['rider_id'];
+        }
+        $obj_feed['work_days']=$value['work_days_count'];
+        $obj_feed['month_days']=$value['total_days'];
+        $obj_feed['bill_amount']=$value['amount_given_by_days'];
+        array_push($billchanges_feed,$obj_feed);
     }
+    $bill_changes->feed=json_encode($billchanges_feed);
+    $bill_changes->save();
     return redirect(route('admin.fuel_expense_view'));
     
 }
@@ -4297,16 +4336,21 @@ public function client_income_update(Request $request,$id){
             'd'=>2
         ]);
     }
-    public function detect_bill_changes(Request $r)
+    public static function detect_bill_changes(Request $r)
     {
         $rider_id=$r->get('rider_id');
         $month = $r->get('month');
         $onlyMonth=Carbon::parse($month)->format('m');
         $onlyYear=Carbon::parse($month)->format('Y');
-        $changes=0;
-        $msg='';
+        $month_start = Carbon::parse($month)->startOfMonth();
+        $month_end = Carbon::parse($month)->endOfMonth();
+        $changes=[];
 
-        $salary_data = $this->get_salary_deduction($r,$month,$rider_id);
+        #===================================================================#
+        #                   check for salary changes
+        #--- we match total salary amount from already generated salary-----
+        #===================================================================#
+        $salary_data = AccountsController::get_salary_deduction($r,$month,$rider_id);
         if(isset($salary_data->original)){
             $generated_salary=$salary_data->original;
             if($generated_salary['status']==1){
@@ -4322,17 +4366,268 @@ public function client_income_update(Request $request,$id){
                 if(isset($already_salary)){
                     //match amount
                     if($already_salary->amount!=$generated_salary['total_salary']){
-                        $changes++;
-                        $msg='Salary';
+                        array_push($changes, 'Salary');
                     }
                 }
             }
         }
+
+        #===================================================================#
+        #                   check for sim bill changes
+        #  we match total working days with already added bill's working days
+        #===================================================================#
+        $sim_recalculated=[];
+
+        # 1) we need to get current days againts each bill
+        $sim_history = Sim_History::with('Rider')->with('Sim')->get()->toArray();
+        $simh_f = Arr::where($sim_history, function ($item, $key) use ($rider_id, $month) {
+            $start_created_at =Carbon::parse($item['given_date'])->startOfMonth()->format('Y-m-d');
+            $created_at =Carbon::parse($start_created_at);
+
+            $start_updated_at =Carbon::parse($item['return_date'])->endOfMonth()->format('Y-m-d');
+            $updated_at =Carbon::parse($start_updated_at);
+            $req_date =Carbon::parse($month);
+            
+            if($item['status']=='active'){
+                return $item['rider_id']==$rider_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+            }
+            return $item['rider_id']==$rider_id &&
+                ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+        });
+        if(isset($simh_f)){
+            #sim found against this rider
+            $previous_unassign_date = null;
+            foreach ($simh_f as $sim_history) {
+                # setting the assign and unassign date
+                $sim_id=$sim_history['sim_id'];
+                $assign_date = Carbon::parse($sim_history['given_date']);
+                $unassign_date = Carbon::parse($sim_history['return_date']);
+                if($assign_date->lessThan($month_start)){ #assign date will be start of month
+                    $assign_date = $month_start;
+                }
+                if($unassign_date->greaterThan($month_end) || $sim_history['status']=='active'){ #unassign date will be end of month
+                    $unassign_date = $month_end;
+                }
+
+                #storing previous unassign date, to check...
+                #if previous iteration unassign date is same as current iteration assign date, 
+                if ($previous_unassign_date!=null) {
+                    # then we'll add 1 day to current iteration assign date
+                    if ($previous_unassign_date->equalTo($assign_date)) {
+                        $assign_date = $assign_date->addDay();
+                    }
+                }
+                $previous_unassign_date = $unassign_date;
+
+                #now we just find total working days by subtracting assign_date and unassign_date +1 for adding first day
+                $working_days = $unassign_date->diffInDays($assign_date)+1;
+
+
+                #-------------------------------------------
+                # now we will get current added working days
+                #-------------------------------------------
+                $paid_bills = Bill_change::whereMonth('month', $onlyMonth)
+                ->whereYear('month', $onlyYear)
+                // ->where('type', 'sim')
+                ->get();
+
+                #now we need to fetch only sim bill from all paid bills
+                $bill_workdays=0;
+                foreach ($paid_bills as $paid_bill) {
+                    if($paid_bill->type=='sim'){ #filters only sim bills
+                        $feed = json_decode($paid_bill->feed,true);
+                        foreach ($feed as $feed_item) {
+                            # match rider_id
+                            if($feed_item['rider_id']==$rider_id && $feed_item['sim_id']==$sim_id){
+                                $bill_workdays=round($feed_item['work_days']);
+                                #check if predicted bill is matched to paid bill
+                                if($bill_workdays!=$working_days){
+                                    array_push($changes, 'Sim bill against '.$sim_history['sim']['sim_number']);
+                                }
+                            }
+                        }
+                    }
+                    
+                    
+                }
+                // if($bill_workdays!=0){
+                //     #check if predicted bill is matched to paid bill
+                //     if($bill_workdays!=$working_days){
+                //         array_push($changes, 'Sim bill against '.$sim_history['sim']['sim_number']);
+                //     }
+
+
+                //     #store it to some array - FOR TESTING
+                //     $obj=[];
+                //     $obj['working_days']=$working_days;
+                //     $obj['bill_workdays']=$bill_workdays;
+                //     $obj['ass_d']=$assign_date;
+                //     $obj['unass_d']=$unassign_date;
+                //     $obj['sim_number']=$sim_history['sim']['sim_number'];
+                //     array_push($sim_recalculated, $obj);
+                // }
+
+                
+            }
+        }
+
+        #===================================================================#
+        #                   check for bike rent changes
+        #  we match total working days with already added bill's working days
+        #===================================================================#
+        // $sim_recalculated=[];
+
+        # 1) we need to get current days againts each bill
+        $bike_history = Assign_bike::with('Rider')->with('bike')->get()->toArray();
+        $bikeh_f = Arr::where($bike_history, function ($item, $key) use ($rider_id, $month) {
+            $start_created_at =Carbon::parse($item['bike_assign_date'])->startOfMonth()->format('Y-m-d');
+            $created_at =Carbon::parse($start_created_at);
+
+            $start_updated_at =Carbon::parse($item['bike_unassign_date'])->endOfMonth()->format('Y-m-d');
+            $updated_at =Carbon::parse($start_updated_at);
+            $req_date =Carbon::parse($month);
+            
+            if($item['status']=='active'){
+                return $item['rider_id']==$rider_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+            }
+            return $item['rider_id']==$rider_id &&
+                ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+        });
+        if(isset($bikeh_f)){
+            #sim found against this rider
+            $previous_unassign_date = null;
+            foreach ($bikeh_f as $bike_history) {
+                # setting the assign and unassign date
+                $bike_id=$bike_history['bike_id'];
+                $bike=$bike_history['bike'];
+                $assign_date = Carbon::parse($bike_history['bike_assign_date']);
+                $unassign_date = Carbon::parse($bike_history['bike_unassign_date']);
+                if($assign_date->lessThan($month_start)){ #assign date will be start of month
+                    $assign_date = $month_start;
+                }
+                if($unassign_date->greaterThan($month_end) || $bike_history['status']=='active'){ #unassign date will be end of month
+                    $unassign_date = $month_end;
+                }
+
+                #storing previous unassign date, to check...
+                #if previous iteration unassign date is same as current iteration assign date, 
+                if ($previous_unassign_date!=null) {
+                    # then we'll add 1 day to current iteration assign date
+                    if ($previous_unassign_date->equalTo($assign_date)) {
+                        $assign_date = $assign_date->addDay();
+                    }
+                }
+                $previous_unassign_date = $unassign_date;
+
+                #now we just find total working days by subtracting assign_date and unassign_date +1 for adding first day
+                $working_days = $unassign_date->diffInDays($assign_date)+1;
+
+
+                #-------------------------------------------
+                # now we will get current added working days
+                #-------------------------------------------
+                $paid_bills = Bill_change::whereMonth('month', $onlyMonth)
+                ->whereYear('month', $onlyYear)
+                // ->where('type', 'sim')
+                ->get();
+
+                #now we need to fetch only sim bill from all paid bills
+                $bill_workdays=0;
+                $fuel_workdays=0;
+                $bill_msg='';
+                foreach ($paid_bills as $paid_bill) {
+                    #filters only bike rents
+                    if($paid_bill->type=='bike_rent'){
+                        $feed = json_decode($paid_bill->feed,true);
+                        foreach ($feed as $feed_item) {
+                            # match rider_id
+                            if($feed_item['rider_id']==$rider_id && $feed_item['bike_id']==$bike_id){
+                                $bill_workdays=round($feed_item['work_days']);
+                                if($bill_workdays!=$working_days){
+                                    array_push($changes, 'Bike rent against '.$bike['bike_number']);
+                                }
+
+                                #check if accurate bike rent 
+                                if($bike['owner']=='self'){
+                                    #rent (alowns) should be 450
+                                    if($paid_bill->amount!=450){
+                                        $bill_msg='Wrong Bike rent! It should be 450';
+                                        array_push($changes, $bill_msg.' against '.$bike['bike_number']);
+                                    }
+                                }
+                                else if($bike['owner']=='kr_bike' || $bike['owner']=='rent'){
+                                    #rent should be 550
+                                    if($paid_bill->amount!=550){
+                                        $bill_msg='Wrong Bike rent! It should be 550';
+                                        array_push($changes, $bill_msg.' against '.$bike['bike_number']);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    #filters only fuels
+                    if($paid_bill->type=='fuel_cash' || $paid_bill->type=='fuel_vip'){
+                        $feed = json_decode($paid_bill->feed,true);
+                        foreach ($feed as $feed_item) {
+                            # match rider_id
+                            if($feed_item['rider_id']==$rider_id && $feed_item['bike_id']==$bike_id){
+                                $fuel_workdays=round($feed_item['work_days']);
+                                #check if predicted bill is matched to paid bill
+                                if($fuel_workdays!=$working_days){
+                                    array_push($changes, 'Fuel against '.$bike['bike_number']);
+                                }
+                            }
+                        }
+                    }
+                }
+                // if($bill_workdays!=0){
+                //     #check if predicted bill is matched to paid bill
+                //     if($bill_workdays!=$working_days){
+                //         array_push($changes, 'Bike rent against '.$bike['bike_number']);
+                //     }
+                //     if($bill_msg!=''){
+                //         #some bill msg was found
+                //         array_push($changes, $bill_msg.' against '.$bike['bike_number']);
+                //     }
+
+
+                //     #store it to some array - FOR TESTING
+                //     $obj=[];
+                //     $obj['working_days']=$working_days;
+                //     $obj['bill_workdays']=$bill_workdays;
+                //     $obj['ass_d']=$assign_date;
+                //     $obj['unass_d']=$unassign_date;
+                //     $obj['bike_number']=$bike['bike_number'];
+                //     array_push($sim_recalculated, $obj);
+                // }
+
+                // if($fuel_workdays!=0){
+                //     #check if predicted bill is matched to paid bill
+                //     if($fuel_workdays!=$working_days){
+                //         array_push($changes, 'Fuel against '.$bike['bike_number']);
+                //     }
+
+
+                //     #store it to some array - FOR TESTING
+                //     $obj=[];
+                //     $obj['working_days']=$working_days;
+                //     $obj['bill_workdays']=$bill_workdays;
+                //     $obj['ass_d']=$assign_date;
+                //     $obj['unass_d']=$unassign_date;
+                //     $obj['bike_number']=$bike['bike_number'];
+                //     array_push($sim_recalculated, $obj);
+                // }
+
+                
+            }
+        }
+        
         return response()->json([
             'status'=>1,
             'changes'=>$changes,
-            'msg'=>$msg,
-            'data'=>$salary_data
+            'data'=>$salary_data,
+            'sim_recalculated'=>$sim_recalculated,
         ]);
     }
     public function rider_salary_status(){

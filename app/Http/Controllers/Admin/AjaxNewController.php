@@ -3789,15 +3789,22 @@ class AjaxNewController extends Controller
         $bills=Client_History::where("client_id",$client_id)->get();
         return DataTables::of($bills)
       
-        ->addColumn('rider_id', function($bills){
+        ->addColumn('rider_id', function($bills) use($month){
             $rider_id=$bills->rider_id;
-            $rider_found=Rider::where("id", $rider_id)->get();
-            if (isset($rider_found)) {
-                foreach ($rider_found as $rider) {
-                    return "KR".$rider->id ." - ". $rider->name;
-                }
-                
+            $rider=Rider::find($rider_id);
+            if(!isset($rider)) return 'no';
+            $r = new Request([
+                'month'=>$month,
+                'rider_id'=>$rider_id,
+            ]);
+                return $r->rider_id;
+            $bill_changes_detected=AccountsController::detect_bill_changes($r);
+            if(isset($bill_changes_detected->original)){
+                $bill_changes=$bill_changes_detected->original;
+                return $bill_changes;
             }
+            
+            return "KR".$rider->id ." - ". $rider->name;
             
         })
         ->addColumn('sim_bill', function($bills) use ($month){
