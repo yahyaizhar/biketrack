@@ -32,6 +32,7 @@ use App\Assign_bike;
 use App\Log_activity;
 use App\Model\Accounts\Absent_detail;
 use App\Model\Zomato\Riders_Payouts_By_Days;
+use App\Deleted_data;
 
 
 class KRController extends Controller
@@ -356,6 +357,49 @@ class KRController extends Controller
         return response()->json([
             'rider_id'=>$rider_id,
             'month'=>$month,
+        ]);
+    }
+    public function view_deleted_data(){
+        return view('admin.accounts.Deleted_Data.data');
+    }
+    public function retreive_data($id){
+        $deleted_data=Deleted_data::find($id);
+        $deleted_data->status="paid";
+        $feed=json_decode($deleted_data->feed,true);
+        
+        foreach ($feed as $item) {
+            $k='';
+            $d_item='';
+            $count=0;
+            $table_name=(new $item['model'])->getTable();
+            $model_data=json_decode($item['data'],true);
+            foreach ($model_data as $data_key => $data_item) {
+                if ($count==count($model_data)-1) {
+                   
+                    $k.='`'.$data_key."`";
+
+                    
+                    if ($data_item=='') $d_item.="NULL";
+                    else $d_item.='\''.$data_item."'";
+                }
+                else{
+                    
+                    $k.='`'.$data_key."`,";
+
+                    
+                    if ($data_item=='') $d_item.="NULL,";
+                    else $d_item.='\''.$data_item."',";
+                }
+                $count = $count + 1;
+            }
+            
+            $insert_data='INSERT INTO '.$table_name.' ('.$k.') VALUES('.$d_item.')';
+            DB::insert($insert_data);
+        }
+        $deleted_data->delete();
+        return response()->json([
+            'status'=>$insert_data,
+            'count'=>$count,
         ]);
     }
 }

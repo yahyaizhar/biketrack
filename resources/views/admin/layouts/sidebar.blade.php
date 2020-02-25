@@ -178,6 +178,15 @@ color: #5d78ff !important;
                                 </a>
                             </li>
                             @endif
+
+                            @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='admin.view_deleted_data';   }); @endphp
+                            @if($is_in_array || $is_admin)
+                            <li class="kt-menu__item @if(strpos(Request::url(), "/rider/deleted_data/view") !== false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                <a route_status="{{$is_in_array['action_name']}}" href="{{ route('admin.view_deleted_data') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Deleted Row Status</span>
+                                </a>
+                            </li>
+                            @endif
+
                          </ul>
                     </div>
                 </li>

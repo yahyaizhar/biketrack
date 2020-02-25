@@ -33,6 +33,7 @@ use App\Company_investment;
 use App\Company_Tax;
 use App\Model\Zomato\Riders_Payouts_By_Days;
 use App\Export_data;
+use App\Deleted_data;
 
 
 class AccountsController extends Controller
@@ -3559,16 +3560,25 @@ public function client_income_update(Request $request,$id){
             $obj['model']=get_class($ra);
             $obj['data']=json_encode($ra);
             array_push($feed,$obj);
-            $ra->delete();
+            
             $obj=[];
             $obj['model']=get_class($table);
             $obj['data']=json_encode($table);
             array_push($feed,$obj);
-            $table->delete();
+            
             $obj=[];
             $obj['model']=get_class($export_data);
             $obj['data']=json_encode($export_data);
             array_push($feed,$obj);
+
+            $del_data=new Deleted_data;
+            $del_data->date=carbon::now()->format('Y-m-d');
+            $del_data->deleted_by=Auth::user()->id;
+            $del_data->feed=json_encode($feed);
+            $del_data->save();
+
+            $ra->delete();
+            $table->delete();
             $export_data->delete();
         }
         else if ($model_id=="fuel_expense_vip" || $model_id=="fuel_expense_cash" || $model_id=="Bike Fine" || $model_id=="Sim Transaction" || $model_id=="Bike Rent" || $model_id=="Salik") {
@@ -3616,14 +3626,52 @@ public function client_income_update(Request $request,$id){
                     $ra_e='';
                 }
             }
-            $ca->delete();
+            $obj=[];
+            $obj['model']=get_class($ca);
+            $obj['data']=json_encode($ca);
+            array_push($feed,$obj);
+            
             if ($model_name!='') {
                 $table=$model_name::find($trace_table_id);
-                $table->delete();
+                $obj=[];
+                $obj['model']=get_class($table);
+                $obj['data']=json_encode($table);
+                array_push($feed,$obj);
+                
             }
             
             if ($model_id!="Bike Fine") {
                 $export_data=Export_data::whereMonth('month',$month)->where($string,$model_id)->where('source_id',$trace_table_id)->get()->first();
+                $obj=[];
+                $obj['model']=get_class($export_data);
+                $obj['data']=json_encode($export_data);
+                array_push($feed,$obj);
+                
+            }
+            if ($ca_e!='') {
+                $obj=[];
+                $obj['model']=get_class($ca_e);
+                $obj['data']=json_encode($ca_e);
+                array_push($feed,$obj);
+            }
+            if ($ra_e!='') {
+                $obj=[];
+                $obj['model']=get_class($ra_e);
+                $obj['data']=json_encode($ra_e);
+                array_push($feed,$obj);
+            }
+            $del_data=new Deleted_data;
+            $del_data->date=carbon::now()->format('Y-m-d');
+            $del_data->deleted_by=Auth::user()->id;
+            $del_data->feed=json_encode($feed);
+            $del_data->save();
+
+
+            $ca->delete();
+            if($model_name!=''){
+                $table->delete();
+            }
+            if ($model_id!="Bike Fine") {
                 $export_data->delete();
             }
             if ($ca_e!='') {
@@ -3635,6 +3683,7 @@ public function client_income_update(Request $request,$id){
             
         }
         return response()->json([
+            'del_data'=>$del_data,
             'ra'=>$ra,
             'ca'=>$ca,
             'table'=>$table,
