@@ -211,7 +211,7 @@ class AjaxNewController extends Controller
         $modelArr = \App\Model\Accounts\Company_Account::
         whereMonth('month', $month)
         ->where("rider_id",$rider_id)
-        ->where("type","cr")
+        ->where("type","dr")
         ->whereNotNull('salik_id')
         ->get();
         $model = $modelArr->first();
