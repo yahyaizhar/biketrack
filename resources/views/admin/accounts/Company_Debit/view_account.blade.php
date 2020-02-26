@@ -510,6 +510,10 @@
                             </span>
                         @endif
                     </div>
+                    <div class="form-group">
+                        <label>Description:</label>
+                        <textarea required type="text" cols="12" rows="6" class="form-control" name="desc" placeholder="Enter Description" value=""></textarea>
+                    </div>
                     <div class="kt-form__actions kt-form__actions--right">
                         <button type="submit" class="btn btn-danger">Add Fine</button>
                     </div>
@@ -1067,8 +1071,6 @@
 
                     var feid=response.feid;
                     $('.rider__feid').text(feid);
-                    
-                    
                 },
                 ajax: url,
                 columns: [

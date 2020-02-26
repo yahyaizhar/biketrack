@@ -2642,6 +2642,7 @@ var detect_billchanges=function(){
             var rider_id=biketrack.getUrlParameter('rider_id');
             $('[name="rider_id"], [name="rider_id_num"]').val(rider_id).trigger("change.select2");
             console.warn(ranges)
+            $('[data-toggle="popover"]').popover('dispose');
             var url="{{ url('admin/accounts/rider/account/') }}"+"/"+ranges;
             table = $('#data-table').DataTable({
                 lengthMenu: [[-1], ["All"]],
@@ -2654,6 +2655,7 @@ var detect_billchanges=function(){
                     'processing': $('.loading').show()
                 },
                 drawCallback:function(data){
+                    $('[data-toggle="popover"]').popover();
                     console.log(data);
                     var api = this.api();
                     var response = table.ajax.json();

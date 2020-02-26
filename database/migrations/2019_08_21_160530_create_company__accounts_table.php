@@ -20,6 +20,7 @@ class CreateCompanyAccountsTable extends Migration
             $table->string('month')->nullable();
             $table->string('given_date')->nullable();
             $table->string('source')->nullable();
+            $table->text('desc')->nullable();
             $table->string('payment_status')->default("pending");
             $table->integer('rider_id')->nullable();
             $table->integer('bike_fine')->nullable();

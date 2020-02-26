@@ -62,6 +62,7 @@ use App\Model\Mobile\MobileHistory;
 use DB;
 use App\Export_data;
 use App\Http\Controllers\Admin\AccountsController;
+use App\Deleted_data;
 
 class AjaxNewController extends Controller
 {
@@ -742,6 +743,28 @@ class AjaxNewController extends Controller
             if($rider_statement->source == 'remaining_salary'){
                 return "Remaining Salary";
             }
+            
+            if ($rider_statement->source == 'advance') {
+                $export_data=Export_data::where("source_id",$rider_statement->advance_return_id)->where("source","advance")->get()->first();
+                if (isset($export_data)) {
+                    return "A".$export_data->id."-".$rider_statement->source;
+                }
+                return $rider_statement->source;
+            }
+            if ($rider_statement->source == 'Discipline Fine') {
+                if ($rider_statement->desc!="") {
+                    $popoverHtml='<button type="button" 
+                                    class="btn btn-outline-info btn-elevate btn-icon btn-sm btn-circle ml-3" 
+                                    data-toggle="popover" 
+                                    data-placement="top" 
+                                    data-html="true" 
+                                    data-content="'.$rider_statement->desc.'">
+                                    <i class="fa fa-exclamation"></i>
+                                    </button>';
+                    return $rider_statement->source . $popoverHtml;
+                }
+                return $rider_statement->source;
+            }
             return $rider_statement->source;
         })
         ->addColumn('cr', function($rider_statement){
@@ -982,10 +1005,10 @@ class AjaxNewController extends Controller
                 //skip edit
                 $editHTML='';
             }
-            // if($model_id=="advance"){
-            //     //skip delete
-            //     $deleteHTML='<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$source_id.'\')"></i>';
-            // }
+            if($model_id=="advance"){
+                //skip delete
+                $deleteHTML='<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$source_id.'\')"></i>';
+            }
             if($rider_statement->bike_rent_id!=null || $rider_statement->sim_transaction_id!=null || $rider_statement->salik_id!=null || $rider_statement->advance_return_id!=null){
                 $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit" onclick="UpdateRows(this,'.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\','.$source_id.')"></i>';
             }
@@ -1277,6 +1300,56 @@ class AjaxNewController extends Controller
                 return $zomato_payout; 
 
             }
+            if ($company_statement->source=="fuel_expense_vip") {
+                $ed=Export_data::where("source_id",$company_statement->fuel_expense_id)
+                ->where("source","fuel_expense_vip")
+                ->get()
+                ->first();
+                if (isset($ed)) {
+                    return "F".$ed->id."-".$company_statement->source;
+                }
+                return $company_statement->source;
+            }
+            if ($company_statement->source=="fuel_expense_cash") {
+                $ed=Export_data::where("source_id",$company_statement->fuel_expense_id)
+                ->where("source","fuel_expense_cash")
+                ->get()
+                ->first();
+                if (isset($ed)) {
+                    return "F".$ed->id."-".$company_statement->source;
+                }
+                return $company_statement->source;
+            }
+            if ($company_statement->source=="Sim Transaction") {
+                $ed=Export_data::where("source_id",$company_statement->sim_transaction_id)
+                ->where("source","Sim Transaction")
+                ->get()
+                ->first();
+                if (isset($ed)) {
+                    return "S".$ed->id."-".$company_statement->source;
+                }
+                return $company_statement->source;
+            }
+            if ($company_statement->source=="Bike Rent") {
+                $ed=Export_data::where("source_id",$company_statement->bike_rent_id)
+                ->where("source","Bike Rent")
+                ->get()
+                ->first();
+                if (isset($ed)) {
+                    return "BR".$ed->id."-".$company_statement->source;
+                }
+                return $company_statement->source;
+            }
+            if ($company_statement->source=="Salik") {
+                $ed=Export_data::where("source_id",$company_statement->salik_id)
+                ->where("source","Salik")
+                ->get()
+                ->first();
+                if (isset($ed)) {
+                    return "S".$ed->id."-".$company_statement->source;
+                }
+                return $company_statement->source;
+            }
             return $company_statement->source;
         })
         ->addColumn('cr', function($company_statements){
@@ -1410,9 +1483,9 @@ class AjaxNewController extends Controller
             if ($model_id=="Sim extra usage" || $model_id=="Salik Extra") {
                 $UpdateHTML='';
             }
-            // if ($model_id=="Sim Transaction" || $model_id=="fuel_expense_cash" || $model_id=="fuel_expense_vip" || $model_id=="Bike Rent" || $model_id=="Salik" || $model_id=="Bike Fine") {
-            //     $deleteHTML='<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$source_id.'\')"></i>';
-            // }
+            if ($model_id=="Sim Transaction" || $model_id=="fuel_expense_cash" || $model_id=="fuel_expense_vip" || $model_id=="Bike Rent" || $model_id=="Salik" || $model_id=="Bike Fine") {
+                $deleteHTML='<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$source_id.'\')"></i>';
+            }
             return $UpdateHTML.$editHTML.$deleteHTML;
 
         })
@@ -4720,6 +4793,50 @@ class AjaxNewController extends Controller
             return 123;
         })
         ->rawColumns(['loss','company_account','rider_id','rider_account'])
+        ->make(true);
+    }
+
+    public function getDeletedData()
+    {
+        $del_data = Deleted_data::all();
+        return DataTables::of($del_data)
+        // ->addColumn('id', function($del_data){
+        //         return $del_data->id;
+        // })
+        ->addColumn('date', function($del_data){
+            return carbon::parse($del_data->date)->format("F d, Y");
+        })
+        ->addColumn('deleted_by', function($del_data){
+            $auth_name=Admin::find($del_data->deleted_by);
+            return $auth_name->name;
+        })
+        ->addColumn('feed', function($del_data){
+            $arr=json_decode($del_data->feed,true);
+            $html='';
+            foreach ($arr as $item) {
+                $data=json_decode($item['data'],true);
+                $html.='<p>
+                            <strong>Model: </strong>
+                            '.$item['model'].'
+                    </p>';
+                // foreach ($data as $key => $value) {
+                //     $html.='<p>
+                //             <strong>'.$key.': </strong>
+                //             '.$value.'
+                //     </p>';
+                // }
+            }
+            return $html;
+        })
+        ->addColumn('status', function($del_data){
+            return $del_data->status;
+        })
+        ->addColumn('actions', function($del_data){
+            $id=$del_data->id;
+            return '<button class="btn btn-danger" onclick="retreive_data('.$id.')">Request for Retreive Data</button>';
+            
+        })
+        ->rawColumns(['id','date','deleted_by','feed','status','actions'])
         ->make(true);
     }
 }

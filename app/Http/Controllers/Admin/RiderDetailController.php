@@ -554,6 +554,7 @@ class RiderDetailController extends Controller
         $ca->given_date=Carbon::parse($request->get('given_date'))->format('Y-m-d');
         $ca->rider_id = $request->rider_id;
         $ca->source='Discipline Fine';
+        $ca->desc=$request->desc;
         $ca->save();
 
         $ra = new \App\Model\Accounts\Rider_Account;
@@ -563,6 +564,7 @@ class RiderDetailController extends Controller
         $ra->given_date=Carbon::parse($request->get('given_date'))->format('Y-m-d');
         $ra->rider_id = $request->rider_id;
         $ra->source='Discipline Fine';
+        $ra->desc=$request->desc;
         $ra->save();
 
         $ed =new Export_data;
