@@ -437,7 +437,7 @@ class AjaxNewController extends Controller
           })
         ->addColumn('action', function($bill){
             $rb = '<i class="flaticon2-time tr-edit" onclick="regenerate_bill(this, \''.$bill->source.'\',\''.$bill->rider_id.'\',\''.$bill->month.'\')"></i>';
-            return $rb;
+            return '';
         })
         // ->with([
         //     'closing_balance' => round($closing_balance,2)
