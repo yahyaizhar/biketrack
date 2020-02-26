@@ -645,6 +645,8 @@ Route::delete('/sim_history/{id}', 'SimController@DeleteSimHistory')->name('Sim.
 Route::delete('/bike_history/{id}', 'bikeController@DeleteBikeHistory')->name('Bike.DeleteBikeHistory');  //ok [Sim: delete bike history] 
 Route::get('/delete/client_rider_history/{client_id}/{rider_id}/{client_history_id}','ClientController@delete_rider_client_history')->name('admin.delete_rider_client_history');
 Route::get('/rider/expenses_loss','BillsController@bills_loss')->name('rider.bills_loss');//***
+Route::PUT('/rider/update_bills','BillsController@get_updatebills')->name('bills.update.get');//***
+// Route::POST('/rider/update_bills','BillsController@post_updatebills')->name('bills.update.post');//***
 });
 // end for Admin
 

@@ -435,8 +435,8 @@ class AjaxNewController extends Controller
             }
           })
         ->addColumn('action', function($bill){
-
-            return '';
+            $rb = '<i class="flaticon2-time tr-edit" onclick="regenerate_bill(this, \''.$bill->source.'\',\''.$bill->rider_id.'\',\''.$bill->month.'\')"></i>';
+            return $rb;
         })
         // ->with([
         //     'closing_balance' => round($closing_balance,2)
@@ -682,6 +682,7 @@ class AjaxNewController extends Controller
         return DataTables::of($rider_statements)
         ->addColumn('date', function($rider_statement){
             if($rider_statement->type=='skip') return '';
+            if($rider_statement->given_date==null || $rider_statement->given_date=='') return 'No given date';
             return Carbon::parse($rider_statement->given_date)->format('M d, Y');
         })
         ->addColumn('desc', function($rider_statement) use ($rider_statements){
@@ -3830,25 +3831,45 @@ class AjaxNewController extends Controller
         // $bills=Client_History::where("client_id",$client_id)->get();
         return DataTables::of($bills)
       
-        ->addColumn('rider_id', function($bills){
+        ->addColumn('rider_id', function($bills) use ($month){
             if ($bills->rider_id=="temp") {
                 return "Total";
             }
+            if(!isset($bills->rider_id))return 'asdasd';
             $rider_id=$bills->rider_id;
             $rider=Rider::find($rider_id);
             if(!isset($rider)) return 'no';
-            $r = new Request([
-                'month'=>$month,
-                'rider_id'=>$rider_id,
-            ]);
-                return $r->rider_id;
-            $bill_changes_detected=AccountsController::detect_bill_changes($r);
+            $reqq = new Request();
+            $reqq->setMethod('POST'); 
+            $reqq->request->add(['month'=>$month]);
+            $reqq->request->add(['rider_id'=>$rider_id]);
+            
+            $popoverHtml='';
+
+            $bill_changes_detected=AccountsController::detect_bill_changes($reqq);
+            // return $bill_changes_detected;
             if(isset($bill_changes_detected->original)){
                 $bill_changes=$bill_changes_detected->original;
-                return $bill_changes;
+                if(isset($bill_changes['changes']) && count($bill_changes['changes'])>0){
+                    $html = '<ul class=\'list-group\'>';
+                    foreach ($bill_changes['changes'] as $bill_change) {
+                        $html.='<li class=\'list-group-item\'>'.$bill_change.'</li>';
+                    }
+                    $html .= '</ul>';
+                    $popoverHtml='<button type="button" 
+                                    class="btn btn-outline-warning btn-elevate btn-icon btn-sm btn-circle" 
+                                    data-toggle="popover" 
+                                    data-placement="top" 
+                                    data-html="true" 
+                                    data-content="'.$html.'">
+                                    <i class="fa fa-exclamation"></i>
+                                    </button>';
+                }
             }
+
+            //
             
-            return "KR".$rider->id ." - ". $rider->name;
+            return "KR".$rider->id ." - ". $rider->name.' '.$popoverHtml;
             
         })
         ->addColumn('sim_bill', function($bills) use ($month,&$sim_f){

@@ -4437,8 +4437,10 @@ public function client_income_update(Request $request,$id){
     }
     public static function detect_bill_changes(Request $r)
     {
+        // return $r->get('rider_id');
         $rider_id=$r->get('rider_id');
         $month = $r->get('month');
+        
         $onlyMonth=Carbon::parse($month)->format('m');
         $onlyYear=Carbon::parse($month)->format('Y');
         $month_start = Carbon::parse($month)->startOfMonth();

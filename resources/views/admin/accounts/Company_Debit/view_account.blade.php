@@ -539,6 +539,56 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="bills_detail_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">  
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title" id="title_rider_expense">Fuel Expense Cash</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="kt-form" enctype="multipart/form-data" id="bills_detail">
+                <div class="modal-body">
+                  <div class="bills_detail_html" style="display:grid;"></div>
+                    <div class="form-group row">
+                        <div class=" col-md-1 mr-4"><strong>#</strong></div>
+                        <div class=" col-md-3 mr-4"><strong>Source</strong></div>
+                        <div class=" col-md-4 mr-4"><strong>Date</strong></div>
+                        <div class=" col-md-2 mr-4"><strong>Amount</strong></div>
+                    </div>
+                    <div class="form-group" id="bills_html">
+                        
+                    </div>
+                    <div class="form-group row">
+                        <div class=" col-md-1 mr-4"><strong></strong></div>
+                        <div class=" col-md-3 mr-4"><strong></strong></div>
+                        <div class=" col-md-4 mr-4"><strong>Total Amount</strong></div>
+                        <div class=" col-md-2 mr-4" id="total_bill_amount_detail"><strong>0.00</strong></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="bill_update_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">  
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title" id="title_rider_expense">Update bill</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="kt-form" enctype="multipart/form-data" id="bills_detail">
+                <div class="modal-body">
+                    <p class="bill_data"></p>
+                  <div class="bills_update_html" style="display:grid;"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 @section('foot')
 <link href="//cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
@@ -551,6 +601,39 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script>
+
+    var regenerate_bill=function(_this,source,rider_id,month){
+        var url = '{{route('bills.update.get')}}';
+        var loading_html = '<div class="d-flex justify-content-center modal_loading" style="padding-bottom: 6rem !important;"><div class="loader"></div></div>';
+        var _Modal = $('#bill_update_model');
+        _Modal.find('.bills_update_html').html(loading_html);
+        _Modal.modal('show');
+        $.ajax({
+            url : url,
+            type : 'PUT',
+            data: {
+                source:source,
+                rider_id:rider_id,
+                month:month
+            },
+            success: function(data){
+                // _Modal.modal('hide');
+                
+            },
+            error: function(error){
+                // _cta.prop('disabled', false).removeClass('btn-icon').html('Submit');
+                // _Modal.modal('hide');
+                swal.fire({
+                    position: 'center',
+                    type: 'error',
+                    title: 'Oops...',
+                    text: 'Unable to update.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        });
+    }
          
          $("#rider_expense_bonus").on('shown.bs.modal', function(){
     var month=biketrack.getUrlParameter('r1d1');
@@ -573,11 +656,6 @@
             var _form = $(this);
             var _modal = _form.parents('.modal');
             var url ="{{ url('admin/rider/expense/bonus/') }}";
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
             $.ajax({
                 url : url,
                 type : 'GET',
@@ -1079,6 +1157,40 @@
         
 
     })
+function BillsDetails(){
+    var month=biketrack.getUrlParameter('r1d1');
+    var rider_id=biketrack.getUrlParameter('rider_id');
+    var _onlyMonth=new Date(month).format("yyyy-mm-dd");
+    var _model = $('#bills_detail_model');
+    $("#bills_html").append("");
+    $("#total_bill_amount_detail").html("");
+    _model.modal('show');
+    var url ="{{ url('admin/rider/bills_details/ajax') }}"+ "/" + rider_id + "/" + _onlyMonth ;
+    $.ajax({
+        url : url,
+        type : 'GET',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data){
+            console.log(data)
+            $("#bills_html").html("");
+            var count=1;
+            data.bills.fuel_cash.forEach(function(item,j){
+                var given_date=new Date(item.given_date).format("mmmm dd,yyyy");
+                var _row_bill_details= '<div class="row mt-5"><div class=" col-md-1 mr-4">'+(count++)+'</div>'+ 
+                                       '<div class=" col-md-3 mr-4">'+item.source+'</div>'+ 
+                                       '<div class=" col-md-4 mr-4">'+given_date+'</div>'+ 
+                                       '<div class=" col-md-2 mr-4">'+item.amount+'</div></div>';                      
+                $("#bills_html").append(_row_bill_details);
+            });
+            $("#total_bill_amount_detail").html("<strong>"+data.bills.fuel_cash_amt+"</strong>");
+            if (data.bills.fuel_cash=='') {
+                $("#bills_html").append("");
+            }
+        },
+    });
+}
 function FineBike(rider_id,bike_fine_id,amount,month,given_date){
     console.log(month)
     var url = "{{ url('admin/accounts/fine/paid/Rider') }}" + "/" + rider_id +"/"+bike_fine_id+"/"+amount+"/"+month+"/"+given_date;

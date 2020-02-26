@@ -102,6 +102,7 @@ var charges_table;
 $("[name='client_id'] , #kt_select2_3_5").on("change",function(){
     var client_id=$("[name='client_id']").val();
     var month=$("#kt_select2_3_5").val();
+    $('[data-toggle="popover"]').popover('dispose')
     var month_url=new Date(month).format("yyyy-mm-dd");
             var data = {
                 month:month_url,
@@ -121,9 +122,10 @@ $("[name='client_id'] , #kt_select2_3_5").on("change",function(){
             'processing': $('.loading').show()
         },
         drawCallback:function(data){
-        $('.total_entries').remove();
-        $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
-    },
+            $('.total_entries').remove();
+            $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
+            $('[data-toggle="popover"]').popover();
+        },
         ajax: url,
         columns: [
             { data: 'rider_id', name: 'rider_id' },

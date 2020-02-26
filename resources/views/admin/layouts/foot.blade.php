@@ -534,7 +534,11 @@ biketrack.send_ajax=function(type,url,data, table, fire_swal=true){
 
 jQuery(function($) {
     biketrack.refresh_global();
-
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
     
     
     var _psbScroll = null;

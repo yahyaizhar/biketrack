@@ -361,7 +361,7 @@ class bikeController extends Controller
           $ba->amount=$amount_given_by_days;
           $ba->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
           $ba->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
-          $ba->bike_id =$unique_id;
+          $ba->bike_id =$bike_id;
           $ba->rider_id=$rider_id;
           $ba->source='Bike Rent';
           $ba->save();
@@ -372,7 +372,7 @@ class bikeController extends Controller
           $ba->amount=$amount_given_by_days;
           $ba->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
           $ba->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
-          $ba->bike_id =$unique_id;
+          $ba->bike_id =$bike_id;
           $ba->rider_id=$rider_id;
           $ba->source='Bike Rent';
           $ba->save();
@@ -382,7 +382,7 @@ class bikeController extends Controller
           $ba->amount=$amount_given_by_days;
           $ba->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
           $ba->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
-          $ba->bike_id =$unique_id;
+          $ba->bike_id =$bike_id;
           $ba->rider_id=$rider_id;
           $ba->source='Bike Rent paid to rental comapny';
           $ba->save();
