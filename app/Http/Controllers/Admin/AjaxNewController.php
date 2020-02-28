@@ -4741,6 +4741,9 @@ class AjaxNewController extends Controller
             if ( $src=="Discipline Fine") {$kr="KF-";}
             if ( $src=="Sim Transaction") {$kr="S-";}
             if ( $src=="Salik") {$kr="S-";}
+            if ( $src=="pay_cash") {$kr="PC-";}
+            if ( $src=="receive_cash") {$kr="RC-";}
+            if ( $src=="Salik") {$kr="S-";}
             if ( strpos($src,'RC@')!==false) {$kr="RC-";} 
             if ( strpos($src,'PC@')!==false) {$kr="PC-";} 
             if ( $src=="salary") {$kr="S-";}
