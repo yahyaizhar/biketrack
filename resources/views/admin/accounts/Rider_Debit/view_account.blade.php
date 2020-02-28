@@ -1352,6 +1352,7 @@
             <form class="kt-form" enctype="multipart/form-data" id="update_rows">
                 <input type="hidden" name="statement_id">
                 <input type="hidden" name="source_id">
+                <input type="hidden" name="source_key">
                 <div class="form-group">
                     <label>Rider:</label>
                     <select required class="form-control kt-select2-general" name="rider_id_update" >
@@ -1377,7 +1378,7 @@
                 </div>
                 <div class="form-group">
                     <label>Description:</label>
-                    <textarea readonly class="form-control" name="source" placeholder="Enter Description"></textarea>
+                    <textarea class="form-control" name="desc" placeholder="Enter Description"></textarea>
                     <span class="form-text text-muted">Please enter Description</span>
                 </div>
                 <div class="form-group">
@@ -3419,7 +3420,7 @@ function show_rider_record(_this){
         }
     });
 }
-function UpdateRows($this,id,model_class,model_id,rider_id,string,month,year,source_id){
+function UpdateRows($this,id,model_class,model_id,rider_id,string,month,year,source_id,source_key){
     
     var _tr = $($this).parents('tr');
     var _row = table.row(_tr).data();
@@ -3427,10 +3428,12 @@ function UpdateRows($this,id,model_class,model_id,rider_id,string,month,year,sou
     var r1d1=biketrack.getUrlParameter('r1d1');
     var rider_id_update=biketrack.getUrlParameter('rider_id');
     var _month=new Date(r1d1).format("mmmm yyyy");
-    _model.find('#update_rows [name="source"]').val(_row.source);
+    var _source = _row.desc==null?_row.source:_row.desc;
+    _model.find('#update_rows [name="desc"]').val(_source);
     _model.find('#update_rows [name="amount"]').val(_row.amount);
     _model.find('#update_rows [name="statement_id"]').val(_row.id);
     _model.find('#update_rows [name="source_id"]').val(source_id);
+    _model.find('#update_rows [name="source_key"]').val(source_key);
     _model.find('#update_rows [name="month_update"]').attr("data-month",_month);
     _model.find('#update_rows [name="rider_id_update"]').val(rider_id_update).trigger("change.select2");
     biketrack.refresh_global();

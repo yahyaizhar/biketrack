@@ -4081,9 +4081,10 @@ public function client_income_update(Request $request,$id){
     }
     public function edit_company_account(Request $r){
        $statement_id=$r->statement_id;
-       $source=$r->source;
+       $desc=$r->desc;
        $amount = $r->amount;
        $company_statement = Company_account::find($statement_id);
+       $company_statement->desc=$desc;
        $company_statement->amount=$amount;
        $company_statement->save();
         return response()->json([
@@ -4092,193 +4093,340 @@ public function client_income_update(Request $request,$id){
     }
 
     public function update_row_company_account(Request $r,$rider_id,$_month,$_year){
-        // $_month=carbon::parse($month)->format("m");
-        // $_year=carbon::parse($year)->format("Y");
-        $_source=$r->source; 
-        if ($_source=="Salik Extra" || $_source=="Salik") {
-            $src="salik_id";
+        $amount=$r->amount;
+        $rider_id_update=$r->rider_id_update;
+        $month=carbon::parse($r->month_update)->startOfMonth()->format("Y-m-d");
+        $statement = Company_Account::find($r->statement_id);
+        if(!isset($statement)){
+            #generate error
+            return response()->json([
+                'status'=>0,
+                'msg'=>'No row found'
+            ]);
         }
-        if ($_source=="Bike Rent") {
-            $src="bike_rent_id"; 
+        if($r->source_id==''){
+            #means there is not linking between tables, so we just edit this row
+            $statement->amount=$amount;
+            $statement->rider_id=$rider_id_update;
+            $statement->month=$month;
+            $statement->desc=$r->desc;
+            $statement->save();
+            return response()->json([
+                'status'=>1
+            ]);
+        }
+
+        #just updating the current description
+        $statement->desc=$r->desc;
+        $statement->update();
+
+        $_source=$statement->source; 
+        $tt_model = ''; 
+        $tt_tomatch='id';
+        $tt_amountKey='amount';
+        $tt_rider_idKey='rider_id';
+        $tt_monthKey='month';
+        $src = $r->source_key;
+        if ($_source=="Salik Extra" || $_source=="Salik") {
+            $tt_model = 'App\Model\Rider\Trip_Detail';
+            $tt_tomatch='transaction_id';
+            $tt_amountKey='amount_aed';
+            $tt_rider_idKey='rider_id';
+            $tt_monthKey='';
         }
         if ($_source=="fuel_expense_vip") {
-            $src="fuel_expense_id";  
+            $tt_model = 'App\Model\Accounts\Fuel_Expense';
         }
-        if ($_source=="fuel_expense_cash") {
-            $src="fuel_expense_id";  
+        if ($_source=="fuel_expense_cash") { 
+            $tt_model = 'App\Model\Accounts\Fuel_Expense';
         }
         if ($_source=="Sim Transaction" || $_source=="Sim extra usage") {
-            $src="sim_transaction_id";  
+            $tt_model = 'App\Model\Sim\Sim_Transaction';
+            $tt_amountKey='bill_amount';
+            $tt_rider_idKey='';
+            $tt_monthKey='month_year';
         }
+        if ($src=="bike_fine") { 
+            $tt_model = 'App\Model\Accounts\Bike_Fine';
+        }
+        
+        
+        
+        #finding and updating third table
+        $third_table=null;
+        if($tt_model!=''){ # we need to check if third table exist
+            $third_table=$tt_model::where($tt_tomatch,$r->source_id)->get()->first();
+            if(isset($third_table)){
+                #update data
+                if($tt_amountKey!='')$third_table[$tt_amountKey]=$amount;
+                if($tt_rider_idKey!='')$third_table[$tt_rider_idKey]=$rider_id_update;
+                if($tt_monthKey!='')$third_table[$tt_monthKey]=$month;
+
+                $third_table->save();
+            }
+        }
+        
+        #updating Company Account
         $ca =Company_Account::where("rider_id",$rider_id)
         ->whereMonth("month",$_month)
         ->whereYear("month",$_year)
         ->where($src,$r->source_id)
         ->get();
-        foreach ($ca as $value) {
-            $amount=$r->amount;
-            $rider_id=$r->rider_id_update;
-            $allowed_balance=105;
-            $month=carbon::parse($r->month_update)->startOfMonth()->format("Y-m-d");
-            if ($value->source=="Salik") {
-                $value->amount=$amount;
-                $value->rider_id=$rider_id;
-                $value->month=$month;
+        $orginal_amount = null;
+        foreach ($ca as $key=>$company_statement) {
+            if($company_statement->id==$statement->id){
+                #this is original
+                $orginal_amount=$company_statement->amount;
             }
-            if ($value->source=="Salik Extra") {
-                $value->amount=($amount)-50;
-                $value->rider_id=$rider_id;
-                $value->month=$month;
+        }
+        foreach ($ca as $key=>$company_statement) {
+            #we need to check if this iteration is original by comparing this id to the id we received for editing
+            if($company_statement->id==$statement->id){
+                #this is original
+                $orginal_amount=$company_statement->amount;
+                $updated_amount=$amount;
             }
-            if ($value->source=="fuel_expense_vip") {
-                $value->amount=$amount;
-                $value->rider_id=$rider_id;
-                $value->month=$month;
+            else {
+                # is this likelihood row, we need to add the difference to this amount
+                if($orginal_amount==null){
+                    #seems like original row couldn't found, we raised an error -and breaks the loop
+                    break;
+                }
+                $likelihood_amount = $amount - $orginal_amount;
+                $updated_amount=$company_statement->amount+$likelihood_amount;
             }
-            if ($value->source=="fuel_expense_cash") {
-                $value->amount=$amount;
-                $value->rider_id=$rider_id;
-                $value->month=$month;
+            if($updated_amount<0)$updated_amount=0;
+            $company_statement->amount=$updated_amount;
+            $company_statement->rider_id=$rider_id_update;
+            $company_statement->month=$month;
+
+            #we need to get rider account linked with this row
+            $alternate_type=$company_statement->type=='dr'?'cr':'dr'; # get the type of rider account, if company account has dr, then rider acc must has cr
+            
+            $rider_statement =Rider_Account::where("rider_id",$rider_id)
+            ->whereMonth("month",$_month)
+            ->whereYear("month",$_year)
+            ->where($src,$r->source_id)
+            ->where('source', $company_statement->source)
+            // ->where('type', $alternate_type) 
+            ->get()
+            ->first();
+            if(isset($rider_statement))
+            {
+                #row found in rider account against this row -we need to update that too
+                $rider_statement->amount=$company_statement->amount;
+                $rider_statement->rider_id=$company_statement->rider_id;
+                $rider_statement->month=$company_statement->month;
+                $rider_statement->save();
+
             }
-            if ($value->source=="Bike Rent") {
-                $value->amount=$amount;
-                $value->rider_id=$rider_id;
-                $value->month=$month;
-            }
-            if ($value->source=="Sim Transaction") {
-                $value->amount=$amount;
-                $value->rider_id=$rider_id;
-                $value->month=$month;
-            }
-            if ($value->source=="Sim extra usage") {
-                $value->amount=($amount)-$allowed_balance;
-                $value->rider_id=$rider_id;
-                $value->month=$month;
-            }
-            $value->save();
+
+            $company_statement->save();
+            $ca[$key]['ra']=$rider_statement;
         }
 
-        $ra =Rider_Account::where("rider_id",$rider_id)
+        #updating export data
+        $export_data=Export_data::whereMonth('month',$_month)
+        ->whereYear("month",$_year)
+        ->where('source',$_source)
+        ->where('source_id',$r->source_id)
+        ->get()
+        ->first();
+        if(isset($export_data)){
+            #update data
+            $export_data->amount=$amount;
+            $export_data->rider_id=$rider_id_update;
+            $export_data->month=$month;
+            $export_data->save();
+        }
+        return response()->json([
+            'status'=>1,
+            'ca'=>$ca,
+            // 'ra'=>$ra,
+            'export_data'=>$export_data,
+            'third_table'=>$third_table,
+        ]);
+    }
+
+    public function update_row_rider_account(Request $r,$rider_id,$_month,$_year){
+        $amount=$r->amount;
+        $rider_id_update=$r->rider_id_update;
+        $month=carbon::parse($r->month_update)->startOfMonth()->format("Y-m-d");
+        $statement = Rider_Account::find($r->statement_id);
+        if(!isset($statement)){
+            #generate error
+            return response()->json([
+                'status'=>0,
+                'msg'=>'No row found'
+            ]);
+        }
+        if($r->source_id==''){
+            #means there is not linking between tables, so we just edit this row
+            $statement->amount=$amount;
+            $statement->rider_id=$rider_id_update;
+            $statement->month=$month;
+            $statement->desc=$r->desc;
+            $statement->save();
+            return response()->json([
+                'status'=>1
+            ]);
+        }
+
+        #just updating the current description
+        $statement->desc=$r->desc;
+        $statement->update();
+
+        $_source=$statement->source; 
+        $tt_model = ''; 
+        $tt_tomatch='id';
+        $tt_amountKey='amount';
+        $tt_rider_idKey='rider_id';
+        $tt_monthKey='month';
+        $src = $r->source_key;
+        if ($_source=="Salik Extra" || $_source=="Salik") {
+            $tt_model = 'App\Model\Rider\Trip_Detail';
+            $tt_tomatch='transaction_id';
+            $tt_amountKey='amount_aed';
+            $tt_rider_idKey='rider_id';
+            $tt_monthKey='';
+        }
+        if ($_source=="fuel_expense_vip") {
+            $tt_model = 'App\Model\Accounts\Fuel_Expense';
+        }
+        if ($_source=="fuel_expense_cash") { 
+            $tt_model = 'App\Model\Accounts\Fuel_Expense';
+        }
+        if ($_source=="Sim Transaction" || $_source=="Sim extra usage") {
+            $tt_model = 'App\Model\Sim\Sim_Transaction';
+            $tt_amountKey='bill_amount';
+            $tt_rider_idKey='';
+            $tt_monthKey='month_year';
+        }
+        if ($src=="bike_fine") { 
+            $tt_model = 'App\Model\Accounts\Bike_Fine';
+        }
+        if ($src=="advance_return_id") { 
+            $tt_model = 'App\Model\Accounts\AdvanceReturn';
+        }
+        if ($src=="Mobile Installment") { 
+            $tt_model = 'App\Model\Mobile\Mobile_Transaction';
+        }
+        
+        
+        
+        #finding and updating third table
+        $third_table=null;
+        if($tt_model!=''){ # we need to check if third table exist
+            $third_table=$tt_model::where($tt_tomatch,$r->source_id)->get()->first();
+            if(isset($third_table)){
+                #update data
+                if($tt_amountKey!='')$third_table[$tt_amountKey]=$amount;
+                if($tt_rider_idKey!='')$third_table[$tt_rider_idKey]=$rider_id_update;
+                if($tt_monthKey!='')$third_table[$tt_monthKey]=$month;
+
+                $third_table->save();
+            }
+        }
+        
+        #updating Company Account
+        $ca =Company_Account::where("rider_id",$rider_id)
         ->whereMonth("month",$_month)
         ->whereYear("month",$_year)
         ->where($src,$r->source_id)
         ->get();
-        foreach ($ra as $value) {
-            if ($value->source=="Salik") {
-                $value->amount=($r->amount)-50;
-                $value->rider_id=$rider_id;
-                $value->month=$month;
+        $orginal_amount = null;
+        foreach ($ca as $key=>$company_statement) {
+            if($key==0){
+                #this is original
+                $orginal_amount=$company_statement->amount;
             }
-            if ($value->source=="Bike Allowns") {
-                $value->amount=$amount;
-                $value->rider_id=$rider_id;
-                $value->month=$month;
-            }
-            if ($value->source=="Sim extra usage") {
-                $value->amount=($amount)-$allowed_balance;
-                $value->rider_id=$rider_id;
-                $value->month=$month;
-            }
-            $value->save();
         }
-         return response()->json([
-             'ca'=>$ca,
-             'ra'=>$ra,
-             '$r'=>$r->all(),
-         ]);
-    }
+        foreach ($ca as $key=>$company_statement) {
+            #we need to check if this iteration is original by comparing this id to the id we received for editing
+            if($key==0){
+                #this is original
+                $orginal_amount=$company_statement->amount;
+                $updated_amount=$amount;
+            }
+            else {
+                # is this likelihood row, we need to add the difference to this amount
+                if($orginal_amount==null){
+                    #seems like original row couldn't found, we raised an error -and breaks the loop
+                    break;
+                }
+                $likelihood_amount = $amount - $orginal_amount;
+                $updated_amount=$company_statement->amount+$likelihood_amount;
+            }
+            if($updated_amount<0)$updated_amount=0;
+            $company_statement->amount=$updated_amount;
+            $company_statement->rider_id=$rider_id_update;
+            $company_statement->month=$month;
 
-    public function update_row_rider_account(Request $r,$rider_id,$_month,$_year){
-        $_source=$r->source; 
-        $ca='';
-        if ($_source=="Salik Extra" || $_source=="Salik") {
-            $src="salik_id";
+            #we need to get rider account linked with this row
+            $alternate_type=$company_statement->type=='dr'?'cr':'dr'; # get the type of rider account, if company account has dr, then rider acc must has cr
+            
+            $rider_statement =Rider_Account::where("rider_id",$rider_id)
+            ->whereMonth("month",$_month)
+            ->whereYear("month",$_year)
+            ->where($src,$r->source_id)
+            ->where('source', $company_statement->source)
+            // ->where('type', $alternate_type) 
+            ->get()
+            ->first();
+            if(isset($rider_statement))
+            {
+                #row found in rider account against this row -we need to update that too
+                $rider_statement->amount=$company_statement->amount;
+                $rider_statement->rider_id=$company_statement->rider_id;
+                $rider_statement->month=$company_statement->month;
+                $rider_statement->save();
+
+            }
+
+            $company_statement->save();
+            $ca[$key]['ra']=$rider_statement;
         }
-        if ($_source=="Bike Rent") {
-            $src="bike_rent_id"; 
-        }
-        if ($_source=="Sim Transaction" || $_source=="Sim extra usage") {
-            $src="sim_transaction_id";  
-        }
-        if ($_source=="advance") {
-            $src='advance_return_id';
-        }
-        if ($_source!="advance") {
-            $ca =Company_Account::where("rider_id",$rider_id)
+
+        #need to check if this row is not linked from company acc
+        if(count($ca)<=0){
+            #no record found in company account, we need to reverse the algorithm
+            $ca =Rider_Account::where("rider_id",$rider_id)
             ->whereMonth("month",$_month)
             ->whereYear("month",$_year)
             ->where($src,$r->source_id)
             ->get();
-            foreach ($ca as $value) {
-                $amount=$r->amount;
-                $rider_id=$r->rider_id_update;
-                $allowed_balance=105;
-                $month=carbon::parse($r->month_update)->startOfMonth()->format("Y-m-d");
-                if ($value->source=="Salik") {
-                    $value->amount=$amount+50;
-                    $value->rider_id=$rider_id;
-                    $value->month=$month;
-                }
-                if ($value->source=="Salik Extra") {
-                    $value->amount=$amount;
-                    $value->rider_id=$rider_id;
-                    $value->month=$month;
-                }
-                if ($value->source=="Bike Rent") {
-                    $value->amount=$amount;
-                    $value->rider_id=$rider_id;
-                    $value->month=$month;
-                }
-                if ($value->source=="Sim Transaction") {
-                    $value->amount=$amount+$allowed_balance;
-                    $value->rider_id=$rider_id;
-                    $value->month=$month;
-                }
-                if ($value->source=="Sim extra usage") {
-                    $value->amount=($amount);
-                    $value->rider_id=$rider_id;
-                    $value->month=$month;
-                }
-                $value->save();
+            $orginal_amount = null;
+            foreach ($ca as $key=>$rider_statement) {
+                $rider_statement->amount=$amount;
+                $rider_statement->rider_id=$rider_id_update;
+                $rider_statement->month=$month;
+                $rider_statement->save();
             }
         }
-        $ra =Rider_Account::where("rider_id",$rider_id)
-        ->whereMonth("month",$_month)
+
+        #updating export data
+        $export_data=Export_data::whereMonth('month',$_month)
         ->whereYear("month",$_year)
-        ->where($src,$r->source_id)
-        ->get();
-        foreach ($ra as $value) {
-            $amount=$r->amount;
-            $rider_id=$r->rider_id_update;
-            $allowed_balance=105;
-            $month=carbon::parse($r->month_update)->startOfMonth()->format("Y-m-d");
-            if ($value->source=="Salik") {
-                $value->amount=($r->amount);
-                $value->rider_id=$rider_id;
-                $value->month=$month;
-            }
-            if ($value->source=="Bike Allowns") {
-                $value->amount=$amount;
-                $value->rider_id=$rider_id;
-                $value->month=$month;
-            }
-            if ($value->source=="Sim extra usage") {
-                $value->amount=$amount;
-                $value->rider_id=$rider_id;
-                $value->month=$month;
-            }
-            if ($value->source=="advance") {
-                $value->amount=$amount;
-                $value->rider_id=$rider_id;
-                $value->month=$month;
-            }
-            $value->save();
+        ->where('source',$_source)
+        ->where('source_id',$r->source_id)
+        ->get()
+        ->first();
+        if(isset($export_data)){
+            #update data
+            $export_data->amount=$amount;
+            $export_data->rider_id=$rider_id_update;
+            $export_data->month=$month;
+            $export_data->save();
         }
-         return response()->json([
-             'ca'=>$ca,
-             'ra'=>$ra,
-             '$r'=>$r->all(),
-         ]);
+        return response()->json([
+            'status'=>1,
+            'ca'=>$ca,
+            // 'ra'=>$ra,
+
+            '_source'=>$tt_model,
+            'export_data'=>$export_data,
+            'third_table'=>$third_table,
+        ]);
     }
 
     public function edit_rider_account(Request $r){
@@ -4923,5 +5071,49 @@ public function client_income_update(Request $request,$id){
 
         // return $rider_salary;
         
+    }
+    // private static function crypto_rand_secure($min, $max)
+    // {
+    //     $range = $max - $min;
+    //     if ($range < 1) return $min; // not so random...
+    //     $log = ceil(log($range, 2));
+    //     $bytes = (int) ($log / 8) + 1; // length in bytes
+    //     $bits = (int) $log + 1; // length in bits
+    //     $filter = (int) (1 << $bits) - 1; // set all lower bits to 1
+    //     do {
+    //         $rnd = hexdec(bin2hex(openssl_random_pseudo_bytes($bytes)));
+    //         $rnd = $rnd & $filter; // discard irrelevant bits
+    //     } while ($rnd > $range);
+    //     return $min + $rnd;
+    // }
+
+    public static function getUniqueId($length)
+    {
+        $token = "";
+        $codeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        $codeAlphabet.= "abcdefghijklmnopqrstuvwxyz";
+        $codeAlphabet.= "0123456789";
+        $max = strlen($codeAlphabet); // edited
+
+        function crypto_rand_secure($min, $max)
+        {
+            $range = $max - $min;
+            if ($range < 1) return $min; // not so random...
+            $log = ceil(log($range, 2));
+            $bytes = (int) ($log / 8) + 1; // length in bytes
+            $bits = (int) $log + 1; // length in bits
+            $filter = (int) (1 << $bits) - 1; // set all lower bits to 1
+            do {
+                $rnd = hexdec(bin2hex(openssl_random_pseudo_bytes($bytes)));
+                $rnd = $rnd & $filter; // discard irrelevant bits
+            } while ($rnd > $range);
+            return $min + $rnd;
+        }
+
+        for ($i=0; $i < $length; $i++) {
+            $token .= $codeAlphabet[crypto_rand_secure(0, $max-1)];
+        }
+
+        return $token;
     }
 }

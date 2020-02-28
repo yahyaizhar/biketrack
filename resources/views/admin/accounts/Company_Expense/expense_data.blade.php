@@ -13,7 +13,7 @@
             display:none;
         }
         </style>
-@endsection
+@endsection 
 @section('main-content')
 @include('admin.includes.message')
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">

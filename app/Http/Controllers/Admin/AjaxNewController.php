@@ -974,23 +974,51 @@ class AjaxNewController extends Controller
             $modelObj=null;
             $model=null;
             $source_id="";
-            if ($model_id=="Salik Extra" || $model_id=="Salik") {
-                $source_id=$rider_statement->salik_id;   
+            $source_key="";
+            #if source_id="" edit button will not be shown
+            if ($rider_statement->salik_id!=null) {
+                $source_id=$rider_statement->salik_id;
+                $source_key="salik_id"; 
             }
-            if ($model_id=="Bike Rent") {
+            if ($rider_statement->bike_rent_id!=null) {
                 $source_id=$rider_statement->bike_rent_id;   
+                $source_key="bike_rent_id";
             }
-            if ($model_id=="fuel_expense_vip") {
+            if ($rider_statement->bike_fine!=null) {
+                $source_id=$rider_statement->bike_fine;  
+                $source_key="bike_fine"; 
+            }
+            if ($rider_statement->advance_return_id!=null) {
+                $source_id=$rider_statement->advance_return_id;  
+                $source_key="advance_return_id"; 
+            }
+            if ($rider_statement->id_charge_id!=null) {
+                $source_id=$rider_statement->id_charge_id;   
+                $source_key="id_charge_id";
+            }
+            if ($rider_statement->client_income_id!=null) {
+                $source_id=$rider_statement->client_income_id;   
+                $source_key="client_income_id";
+            }
+            if ($rider_statement->employee_allownce_id!=null) {
+                $source_id=$rider_statement->employee_allownce_id;  
+                $source_key="employee_allownce_id"; 
+            }
+            if ($rider_statement->fuel_expense_id!=null) {
                 $source_id=$rider_statement->fuel_expense_id;   
+                $source_key="fuel_expense_id";
             }
-            if ($model_id=="fuel_expense_cash") {
-                $source_id=$rider_statement->fuel_expense_id;   
+            if ($rider_statement->sim_transaction_id!=null) {
+                $source_id=$rider_statement->sim_transaction_id; 
+                $source_key="sim_transaction_id";  
             }
-            if ($model_id=="Sim Transaction" || $model_id=="Sim extra usage") {
-                $source_id=$rider_statement->sim_transaction_id;   
+            if ($rider_statement->mobile_installment_id!=null) {
+                $source_id=$rider_statement->mobile_installment_id; 
+                $source_key="mobile_installment_id";  
             }
-            if ($model_id=="advance") {
-                $source_id=$rider_statement->advance_return_id;   
+            if ($rider_statement->kingrider_fine_id!=null) {
+                $source_id=$rider_statement->kingrider_fine_id;  
+                $source_key="kingrider_fine_id"; 
             }
 
 
@@ -1009,10 +1037,16 @@ class AjaxNewController extends Controller
                 //skip delete
                 $deleteHTML='<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$source_id.'\')"></i>';
             }
-            if($rider_statement->bike_rent_id!=null || $rider_statement->sim_transaction_id!=null || $rider_statement->salik_id!=null || $rider_statement->advance_return_id!=null){
-                $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit" onclick="UpdateRows(this,'.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\','.$source_id.')"></i>';
+            if($source_id!=''){
+                $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit" onclick="UpdateRows(this,'.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\')"></i>';
+            }else {
+                # we don't want to trace it, so it will update current row only
+                $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit text-warning" onclick="UpdateRows(this,'.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\')"></i>';
             }
-            return $UpdateHTML.$editHTML.$deleteHTML;
+            if($rider_statement->bike_rent_id!=null || $rider_statement->sim_transaction_id!=null || $rider_statement->salik_id!=null || $rider_statement->advance_return_id!=null){
+                
+            }
+            return $UpdateHTML.$deleteHTML;
             // }
         })
         ->addColumn('cash_paid', function($rider_statement) use (&$cash_paid){
@@ -1200,10 +1234,11 @@ class AjaxNewController extends Controller
             if($company_statements->given_date==null || $company_statements->given_date=='') return 'No given date';
             return Carbon::parse($company_statements->given_date)->format('M d, Y');
         })
-        ->addColumn('desc', function($company_statement)  use ($company_statements){
+        ->addColumn('description', function($company_statement)  use ($company_statements){
             if($company_statement->type=='skip') return '<strong >'.$company_statement->source.'</strong>';
             $ras = $company_statements->toArray();
             $income_zomato =Income_zomato::all()->toArray();
+            $cdesc=$company_statement->desc!=null?$company_statement->desc:$company_statement->source;
             if($company_statement->source == 'Bike Fine'){
                 $ca_found = Arr::first($ras, function ($item, $key) use ($company_statement) { 
                     if($item['type']=='skip') return false;
@@ -1221,9 +1256,6 @@ class AjaxNewController extends Controller
                     return '<div>Fine Paid By Kingriders <button type="button" id="getting_val" onclick="FineBike('.$amount.','.$rider_id.','.$bike_fine_id.',\''.$month.'\',\''.$given_date.'\')" data-toggle="modal" data-target="#bike_fine" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
                 }
                 return "Bike Fine Paid By King Riders";
-            }
-            if($company_statement->source == 'Bike Fine Paid'){
-                return "Bike Fine Paid";
             }
             if($company_statement->source == 'Zomato Payout' || $company_statement->source == 'Jeebly Payout'){
                 $tips_found = Arr::first($ras, function ($item, $key) use ($company_statement) { 
@@ -1287,7 +1319,7 @@ class AjaxNewController extends Controller
                 $AED_hours=$hours*6;
                 $AED_trips=$trips*6.75;
                 $total_zomato_payout=$AED_hours+$AED_trips;
-                $zomato_payout=$company_statement->source.
+                $zomato_payout=$cdesc.
                 "<br>(<strong>Trips: </strong>".$trips. 
                 "<br><strong>Hours: </strong>".$hours. 
                 "<br><strong>AED-Trips: </strong>".$AED_trips.
@@ -1306,9 +1338,9 @@ class AjaxNewController extends Controller
                 ->get()
                 ->first();
                 if (isset($ed)) {
-                    return "F".$ed->id."-".$company_statement->source;
+                    return "F".$ed->id."-".$cdesc;
                 }
-                return $company_statement->source;
+                return $cdesc;
             }
             if ($company_statement->source=="fuel_expense_cash") {
                 $ed=Export_data::where("source_id",$company_statement->fuel_expense_id)
@@ -1316,9 +1348,9 @@ class AjaxNewController extends Controller
                 ->get()
                 ->first();
                 if (isset($ed)) {
-                    return "F".$ed->id."-".$company_statement->source;
+                    return "F".$ed->id."-".$cdesc;
                 }
-                return $company_statement->source;
+                return $cdesc;
             }
             if ($company_statement->source=="Sim Transaction") {
                 $ed=Export_data::where("source_id",$company_statement->sim_transaction_id)
@@ -1326,9 +1358,9 @@ class AjaxNewController extends Controller
                 ->get()
                 ->first();
                 if (isset($ed)) {
-                    return "S".$ed->id."-".$company_statement->source;
+                    return "S".$ed->id."-".$cdesc;
                 }
-                return $company_statement->source;
+                return $cdesc;
             }
             if ($company_statement->source=="Bike Rent") {
                 $ed=Export_data::where("source_id",$company_statement->bike_rent_id)
@@ -1336,9 +1368,9 @@ class AjaxNewController extends Controller
                 ->get()
                 ->first();
                 if (isset($ed)) {
-                    return "BR".$ed->id."-".$company_statement->source;
+                    return "BR".$ed->id."-".$cdesc;
                 }
-                return $company_statement->source;
+                return $cdesc;
             }
             if ($company_statement->source=="Salik") {
                 $ed=Export_data::where("source_id",$company_statement->salik_id)
@@ -1346,11 +1378,11 @@ class AjaxNewController extends Controller
                 ->get()
                 ->first();
                 if (isset($ed)) {
-                    return "S".$ed->id."-".$company_statement->source;
+                    return "S".$ed->id."-".$cdesc;
                 }
-                return $company_statement->source;
+                return $cdesc;
             }
-            return $company_statement->source;
+            return $cdesc;
         })
         ->addColumn('cr', function($company_statements){
             if($company_statements->type=='pl') return 0;
@@ -1394,51 +1426,7 @@ class AjaxNewController extends Controller
         ->addColumn('action', function($company_statements) use (&$running_balance){
             if($company_statements->type=='skip') return '';
             if(Auth::user()->type!='su')return '';
-            $model="";
-            $model_id="";
-            $rider_id="";
-            $month="";
-            $string="";
-            // if($company_statements->sim_transaction_id!=null){
-            //     $model_id=$company_statements->sim_transaction_id;
-            //     $rider_id=$company_statements->rider_id;
-            //     $string="sim_transaction_id";
-            //     $month=Carbon::parse($company_statements->month)->format('m');
-            //     $sim_transaction=new Sim_Transaction();
-            //     $model=get_class($sim_transaction);
-            // }
-            // if($company_statements->fuel_expense_id!=null){
-            //     $model_id=$company_statements->fuel_expense_id;
-            //     $rider_id=$company_statements->rider_id;
-            //     $string="fuel_expense_id";
-            //     $month=Carbon::parse($company_statements->month)->format('m');
-            //     $fuel=new Fuel_Expense();
-            //     $model=get_class($fuel);
-            // }	
-            // if($company_statements->advance_return_id!=null){
-            //     $model_id=$company_statements->advance_return_id;
-            //     $rider_id=$company_statements->rider_id;
-            //     $string="advance_return_id";
-            //     $month=Carbon::parse($company_statements->month)->format('m');
-            //     $advance=new AdvanceReturn();
-            //     $model=get_class($advance);
-            // }
-            // if($company_statements->id_charge_id!=null){
-            //     $model_id=$company_statements->id_charge_id;
-            //     $rider_id=$company_statements->rider_id;
-            //     $string="id_charge_id";
-            //     $month=Carbon::parse($company_statements->month)->format('m');
-            //     $id_charges=new Id_charge();
-            //     $model=get_class($id_charges);
-            // }
-            // if($company_statements->mobile_installment_id!=null){
-            //     $model_id=$company_statements->mobile_installment_id;
-            //     $rider_id=$company_statements->rider_id;
-            //     $string="mobile_installment_id";
-            //     $month=Carbon::parse($company_statements->month)->format('m');
-            //     $mobile_installment=new Mobile_installment();
-            //     $model=get_class($mobile_installment);
-            // }
+            
 
             
            
@@ -1454,21 +1442,56 @@ class AjaxNewController extends Controller
             $modelObj=null;
             $model=null;
             $source_id="";
-            if ($model_id=="Salik Extra" || $model_id=="Salik") {
-                $source_id=$company_statements->salik_id;   
+            $source_key="";
+            #if source_id="" edit button will not be shown
+            if ($company_statements->salik_id!=null) {
+                $source_id=$company_statements->salik_id;
+                $source_key="salik_id"; 
             }
-            if ($model_id=="Bike Rent") {
+            if ($company_statements->bike_rent_id!=null) {
                 $source_id=$company_statements->bike_rent_id;   
+                $source_key="bike_rent_id";
             }
-            if ($model_id=="fuel_expense_vip") {
+            if ($company_statements->bike_fine!=null) {
+                $source_id=$company_statements->bike_fine;  
+                $source_key="bike_fine"; 
+            }
+            if ($company_statements->advance_return_id!=null) {
+                $source_id=$company_statements->advance_return_id;  
+                $source_key="advance_return_id"; 
+            }
+            if ($company_statements->id_charge_id!=null) {
+                $source_id=$company_statements->id_charge_id;   
+                $source_key="id_charge_id";
+            }
+            if ($company_statements->client_income_id!=null) {
+                $source_id=$company_statements->client_income_id;   
+                $source_key="client_income_id";
+            }
+            if ($company_statements->employee_allownce_id!=null) {
+                $source_id=$company_statements->employee_allownce_id;  
+                $source_key="employee_allownce_id"; 
+            }
+            if ($company_statements->fuel_expense_id!=null) {
                 $source_id=$company_statements->fuel_expense_id;   
+                $source_key="fuel_expense_id";
             }
-            if ($model_id=="fuel_expense_cash") {
-                $source_id=$company_statements->fuel_expense_id;   
+            if ($company_statements->sim_transaction_id!=null) {
+                $source_id=$company_statements->sim_transaction_id; 
+                $source_key="sim_transaction_id";  
             }
-            if ($model_id=="Sim Transaction" || $model_id=="Sim extra usage") {
-                $source_id=$company_statements->sim_transaction_id;   
+            if ($company_statements->mobile_installment_id!=null) {
+                $source_id=$company_statements->mobile_installment_id; 
+                $source_key="mobile_installment_id";  
             }
+            if ($company_statements->kingrider_fine_id!=null) {
+                $source_id=$company_statements->kingrider_fine_id;  
+                $source_key="kingrider_fine_id"; 
+            }
+            // if ($company_statements->income_zomato_id!=null) {
+            //     $source_id=$company_statements->income_zomato_id;  
+            //     $source_key="income_zomato_id"; 
+            // }
             $editHTML = '<i class="fa fa-edit tr-edit" onclick="editRows(this,'.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
             $UpdateHTML='';
             $deleteHTML='';
@@ -1477,8 +1500,11 @@ class AjaxNewController extends Controller
                 //skip edit
                 $editHTML='';
             }
-            if($company_statements->fuel_expense_id!=null || $company_statements->bike_rent_id!=null || $company_statements->sim_transaction_id!=null || $company_statements->salik_id!=null || $company_statements->advance_return_id!=null){
-                $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit" onclick="UpdateRows(this,'.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\','.$source_id.')"></i>';
+            if($source_id!=''){
+                $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit" onclick="UpdateRows(this,'.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\')"></i>';
+            }else {
+                # we don't want to trace it, so it will update current row only
+                $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit text-warning" onclick="UpdateRows(this,'.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\')"></i>';
             }
             if ($model_id=="Sim extra usage" || $model_id=="Salik Extra") {
                 $UpdateHTML='';
@@ -1486,7 +1512,7 @@ class AjaxNewController extends Controller
             if ($model_id=="Sim Transaction" || $model_id=="fuel_expense_cash" || $model_id=="fuel_expense_vip" || $model_id=="Bike Rent" || $model_id=="Salik" || $model_id=="Bike Fine") {
                 $deleteHTML='<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$source_id.'\')"></i>';
             }
-            return $UpdateHTML.$editHTML.$deleteHTML;
+            return $UpdateHTML.$deleteHTML;
 
         })
         
@@ -1496,7 +1522,7 @@ class AjaxNewController extends Controller
             'running_static_balance' => $running_static_balance,
             'feid'=>$_feid
         ])
-        ->rawColumns(['desc','date','cr','dr','balance', 'company_profit','action'])
+        ->rawColumns(['description','date','cr','dr','balance', 'company_profit','action'])
         ->make(true);
     }
     
