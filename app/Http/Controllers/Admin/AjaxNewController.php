@@ -975,6 +975,7 @@ class AjaxNewController extends Controller
             $model=null;
             $source_id="";
             $source_key="";
+            $given_date=$rider_statement->given_date;
             #if source_id="" edit button will not be shown
             if ($rider_statement->salik_id!=null) {
                 $source_id=$rider_statement->salik_id;
@@ -1443,6 +1444,7 @@ class AjaxNewController extends Controller
             $model=null;
             $source_id="";
             $source_key="";
+            $given_date=$company_statements->given_date;
             #if source_id="" edit button will not be shown
             if ($company_statements->salik_id!=null) {
                 $source_id=$company_statements->salik_id;
