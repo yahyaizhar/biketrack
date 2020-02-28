@@ -377,7 +377,65 @@ biketrack.refresh_global = function(){
         }
     });
 }
-
+function CallBackNotification(data){
+    var _url=data.url;
+    var _data=data.data;
+    var _type=data.type;
+    var url=_url;
+    $.ajax({
+        url : url,
+        type : 'GET',
+        data : _data,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data){
+            notificationEnd();
+            swal.fire({
+                position: 'center',
+                type: 'success',
+                title: 'Record updated successfully.',
+                showConfirmButton: false,
+                timer: 1500
+            });
+            // window.location.reload();
+        },
+        error: function(error){
+            swal.fire({
+                position: 'center',
+                type: 'error',
+                title: 'Oops...',
+                text: 'Unable to update.',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+    });
+}
+function notificationEnd(id){
+    // console.log(data);
+    var url ="{{ url('admin/read_notification/ajax') }}"+ "/" + id;
+    $.ajax({
+        url : url,
+        type : 'GET',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data){
+            window.location.reload();
+        },
+        error: function(error){
+            swal.fire({
+                position: 'center',
+                type: 'error',
+                title: 'Oops...',
+                text: 'Unable to update.',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+    });
+}
 biketrack.chunk_array=function(array, size) { 
     const chunked_arr = [];
     for (let i = 0; i < array.length; i++) {

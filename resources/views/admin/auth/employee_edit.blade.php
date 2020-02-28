@@ -47,21 +47,30 @@
                 @endif
             </div>
         </div>
-            <div class="col-lg-6 col-md-6 col-sm-12">
-                    <div class="form-group col-md-6 pull-right mtr-15">
-                            <div class="custom-file">
-                                <input type="file" name="logo" class="custom-file-input" id="logo">
-                                <label class="custom-file-label" for="logo">Choose Profile Picture</label>
-                            </div>
-                    </div>    
-                @if($edit_employee->logo)
-                        <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($edit_employee->logo)) }}" alt="image">
-                    @else
-                        <img class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
-                    @endif
-                   
-            </div>
+        <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="form-group col-md-6 pull-right mtr-15">
+                        <div class="custom-file">
+                            <input type="file" name="logo" class="custom-file-input" id="logo">
+                            <label class="custom-file-label" for="logo">Choose Profile Picture</label>
+                        </div>
+                </div>    
+            @if($edit_employee->logo)
+                    <img class="profile-logo img img-thumbnail" src="{{ asset(Storage::url($edit_employee->logo)) }}" alt="image">
+                @else
+                    <img class="profile-logo img img-thumbnail" src="{{ asset('dashboard/assets/media/users/default.jpg') }}" />
+                @endif
         </div>
+        <div class="form-group">
+            <label>Seniour Employee:</label>
+            <select required class="form-control bk-select2 kt-select2-general" name="s_emp_id" >
+                @foreach ($employees as $employee)
+                <option value="{{ $employee->id }}">
+                    {{ $employee->name }}
+                </option>     
+                @endforeach 
+            </select>
+        </div>
+    </div>
             <label class="kt-checkbox">
                     <input id="change-password" name="change_password" type="checkbox" {{ old('change_password') ? 'checked' : '' }}> Change Password
                     <span></span>

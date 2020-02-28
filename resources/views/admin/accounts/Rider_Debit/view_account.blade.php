@@ -3181,8 +3181,9 @@ function editRows($this,id,model_class,model_id,rider_id,string,month){
     });
 
 }
-function deleteRows(id,model_class,model_id,rider_id,string,month,source_id){
-    var url = "{{ url('admin/delete/accounts/rows') }}";
+function deleteRows(id,model_class,model_id,rider_id,string,month,source_id,given_date,year){
+    // var url = "{{ url('admin/delete/accounts/rows') }}";
+    var url = "{{ url('admin/send_notification/delete/rows') }}";
     console.log(url);
     swal.fire({
         title: 'Are you sure?',
@@ -3205,6 +3206,8 @@ function deleteRows(id,model_class,model_id,rider_id,string,month,source_id){
                 "string":string,
                 "month":month,
                 "source_id":source_id, 
+                "given_date":given_date,
+                'year':year,
             };
             $.ajax({
                 url  :  url,

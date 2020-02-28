@@ -325,9 +325,12 @@ Route::group([
     Route::get("/rider/is_bill_pending/ajax/{rider_id}/{month}","AccountsController@is_bill_pending")->name("admin.accounts.is_bill_pending");
     Route::get("/rider/check_salary_status/ajax/{rider_id}/{month}","AccountsController@check_salary_status")->name("admin.accounts.check_salary_status");
     /*[accounts - company account]*/Route::get("/Salary/accounts/company/account","AccountsController@company_account")->name("admin.accounts.company_account");//imp
-    /*[accounts - delete rider account]*/Route::get("/delete/accounts/rows","AccountsController@delete_account_rows")->name("admin.delete_account_rows");//imp
+    /*[accounts - delete rider account]*/Route::get("/delete/accounts/rows/{id}/{status}/{admin_id}","AccountsController@delete_account_rows")->name("admin.delete_account_rows");//imp
+    Route::get("/read_notification/ajax/{id}","KRController@ReadNotification")->name("admin.ReadNotification");//***
     Route::get("/rider/deleted_data/view","KRController@view_deleted_data")->name("admin.view_deleted_data");//***
-    Route::get("/retreive_data/ajax/{id}","KRController@retreive_data")->name("admin.retreive_data");
+    Route::get("/retreive_data/ajax/{id}/{status}/{admin_id}","KRController@retreive_data")->name("admin.retreive_data");//***
+    Route::get("/send_notification/delete/rows","KRController@sendDeleteNotification")->name("admin.sendDeleteNotification");/***
+    Route::get("/send_notification/retreive_data/ajax/{id}","KRController@retreive_notification")->name("admin.retreive_notification");/***
     /*[accounts - bike account]*/Route::get("/Salary/accounts/bike/account","AccountsController@bike_account")->name("admin.accounts.bike_account");
     Route::get('/rider/accounts/{id}/updateStatus','AccountsController@updatePaymentStatus')->name('Rider.updatePaymentStatus');//not_using
     Route::get("/rider/rider_account/ajax/absents_status/{rider_id}/{month}/{rider_payout_date}/{status}","AccountsController@absents_status")->name("Rider.absents_status");

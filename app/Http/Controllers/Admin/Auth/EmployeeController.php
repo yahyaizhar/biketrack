@@ -33,7 +33,8 @@ class EmployeeController extends Controller
     {
         $webroutes = WebRoute::all();
         $dublicate_route = WebRoute::groupBy('category')->having(DB::raw('count(*)'), ">", "1")->select('category')->get();
-        return view('admin.auth.employee_login',compact('webroutes','dublicate_route'));    
+        $employees=Admin::where("type","normal")->get();
+        return view('admin.auth.employee_login',compact('webroutes','dublicate_route','employees'));    
     }
     public function viewEmployee(){
         return view('admin.auth.employee_view');
@@ -46,7 +47,8 @@ class EmployeeController extends Controller
         $webroutes = WebRoute::all();
         $dublicate_route = WebRoute::groupBy('category')->having(DB::raw('count(*)'), ">", "1")->select('category')->get();
         $users=$edit_employee->Role()->get()->toArray();
-        return view('admin.auth.employee_edit',compact('users','edit_employee','webroutes','dublicate_route'));
+        $employees=Admin::where("type","normal")->get();
+        return view('admin.auth.employee_edit',compact('users','edit_employee','webroutes','dublicate_route','employees'));
     }
     public function view_employee($employee_id){
         $edit_employee=Admin::find($employee_id); 
@@ -70,6 +72,7 @@ class EmployeeController extends Controller
         $employee=new Admin();
         $employee->name = $request->name;
         $employee->email = $request->email;
+        $employee->s_emp_id = $request->s_emp_id;
         $employee->password = Hash::make($request->password);
         if($request->hasFile('logo'))
         {
@@ -121,6 +124,7 @@ class EmployeeController extends Controller
         }
         $user->name = $request->name;
         $user->email = $request->email;
+        $user->s_emp_id = $request->s_emp_id;
         if($request->hasFile('logo'))
         {
             if($user->logo)
@@ -134,11 +138,18 @@ class EmployeeController extends Controller
         }
         $user->update();
         
-        $rider=Rider::firstOrCreate([
-            'email'=>$request->email,
-            'name'=>$request->name,
-            'password'=>Hash::make($request->password),
-        ]);
+        // $rider=Rider::firstOrCreate([
+        //     'email'=>$request->email,
+        //     'name'=>$request->name,
+        //     'password'=>Hash::make($request->password),
+        // ]);
+        $rider=new Rider;
+
+        $ar=Rider::where("email",$request->email)->get()->first();
+        if (isset($ar)) {
+            $rider = $ar;
+        }
+
         $rider->name=$request->name;
         $rider->email=$request->email;
         if($request->change_password)
@@ -147,12 +158,18 @@ class EmployeeController extends Controller
         }
         $rider->rider_type="Employee";
         $rider->save();
-        // return $rider;
-        $rider_detail=Rider_detail::firstOrCreate([
-            'rider_id'=>$rider->id
-        ]);;
+
+
+        $rider_detail=new Rider_detail;
+        $rd=Rider_detail::where("rider_id",$rider->id)->get()->first();
+        if (isset($rd)) {
+            $rider_detail = $rd;
+        }
         $rider_detail->rider_id=$rider->id;
         $rider_detail->save();
+        
+        // return $rider;
+        
 
         ////Delete all roles of current employe
         $role=$user->Role()->get();

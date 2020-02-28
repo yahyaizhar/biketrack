@@ -27,12 +27,14 @@ use App\Model\Accounts\Income_zomato;
 use App\Model\Accounts\Bike_Fine;
 use Arr;
 use Batch;
+use App\Model\Admin\Admin;
 use App\Model\Accounts\Company_Account;
 use App\Assign_bike;
 use App\Log_activity;
 use App\Model\Accounts\Absent_detail;
 use App\Model\Zomato\Riders_Payouts_By_Days;
 use App\Deleted_data;
+use App\Notification;
 
 
 class KRController extends Controller
@@ -362,44 +364,183 @@ class KRController extends Controller
     public function view_deleted_data(){
         return view('admin.accounts.Deleted_Data.data');
     }
-    public function retreive_data($id){
-        $deleted_data=Deleted_data::find($id);
-        $deleted_data->status="paid";
-        $feed=json_decode($deleted_data->feed,true);
-        
-        foreach ($feed as $item) {
-            $k='';
-            $d_item='';
-            $count=0;
-            $table_name=(new $item['model'])->getTable();
-            $model_data=json_decode($item['data'],true);
-            foreach ($model_data as $data_key => $data_item) {
-                if ($count==count($model_data)-1) {
-                   
-                    $k.='`'.$data_key."`";
-
-                    
-                    if ($data_item=='') $d_item.="NULL";
-                    else $d_item.='\''.$data_item."'";
-                }
-                else{
-                    
-                    $k.='`'.$data_key."`,";
-
-                    
-                    if ($data_item=='') $d_item.="NULL,";
-                    else $d_item.='\''.$data_item."',";
-                }
-                $count = $count + 1;
-            }
+    public function retreive_data($id,$status,$admin_id){
+        if ($status=="accept") {
+            $deleted_data=Deleted_data::find($id);
+            $deleted_data->status="paid";
+            $feed=json_decode($deleted_data->feed,true);
             
-            $insert_data='INSERT INTO '.$table_name.' ('.$k.') VALUES('.$d_item.')';
-            DB::insert($insert_data);
+            foreach ($feed as $item) {
+                $k='';
+                $d_item='';
+                $count=0;
+                $table_name=(new $item['model'])->getTable();
+                $model_data=json_decode($item['data'],true);
+                foreach ($model_data as $data_key => $data_item) {
+                    if ($count==count($model_data)-1) {
+                    
+                        $k.='`'.$data_key."`";
+
+                        
+                        if ($data_item=='') $d_item.="NULL";
+                        else $d_item.='\''.$data_item."'";
+                    }
+                    else{
+                        
+                        $k.='`'.$data_key."`,";
+
+                        
+                        if ($data_item=='') $d_item.="NULL,";
+                        else $d_item.='\''.$data_item."',";
+                    }
+                    $count = $count + 1;
+                }
+                
+                $insert_data='INSERT INTO '.$table_name.' ('.$k.') VALUES('.$d_item.')';
+                DB::insert($insert_data);
+            }
+            $deleted_data->delete();
+            $emp_name=Auth::user()->name;
+            $notification=new Notification;
+            $notification->date_time=Carbon::now()->format("Y-m-d");
+            $notification->employee_id=$admin_id;
+            $notification->desc=$emp_name." accepted your retreive data request";
+            $notification->action="";
+            // $notification->status="read";
+            $notification->save();
+            return response()->json([
+                'status'=>$insert_data,
+                'count'=>$count,
+            ]);
         }
-        $deleted_data->delete();
+        if ($status=="reject") {
+            $emp_name=Auth::user();
+            $notification=new Notification;
+            $notification->date_time=Carbon::now()->format("Y-m-d");
+            $notification->employee_id=$admin_id;
+            $notification->desc=$emp_name->name." rejected your retreive request";
+            $notification->action="";
+            // $notification->status="read";
+            $notification->save();
+        }
+        
+    }
+    public function retreive_notification($id){
+        $del_data=Deleted_data::find($id);
+        $feed=json_decode($del_data->feed,true);
+        $feed_data=json_decode($feed[0]['data'],true);
+        $given_date=Carbon::parse($feed_data['given_date'])->format("d M, Y");
+        $source=$feed_data['source'];
+        $rider_id=$feed_data['rider_id'];
+
+        $user = Auth::user();
+        if (isset($user->s_emp_id) && $user->s_emp_id!="") {
+            $seniour_emp=$user->s_emp_id;
+            $emp_name=$user->name;
+        }
+        else{
+            $seniour_emp="1";
+            $emp_name="Admin";
+        }
+        $data_accept=[
+            "type"=>"retreive",
+            "data"=>"",
+            "url"=> url('admin/retreive_data/ajax/'). "/" . $id . "/accept/" . Auth::user()->id,
+        ];
+        $data_reject=[
+            "type"=>"retreive",
+            "data"=>"",
+            "url"=> url('admin/retreive_data/ajax/'). "/" . $id . "/reject/" . Auth::user()->id,
+        ];
+        $button_html_accepted="<i style='font-size:20px' class='flaticon2-correct text-success' onclick='CallBackNotification(".json_encode($data_accept).")'></i>";
+        $button_html_rejected="<i style='font-size:20px' class='flaticon-circle text-danger' onclick='CallBackNotification(".json_encode($data_reject).")'></i>";
+        $button=$button_html_accepted.$button_html_rejected;
+        $current_url=url()->current();
+        $action_data = [
+            [
+                'type'=>"url",
+                'value'=>$current_url,    
+            ] ,
+            [
+                'type'=>"button",
+                'value'=>$button,    
+            ] ,  
+        ];
+        $notification=new Notification;
+        $notification->date_time=Carbon::now()->format("Y-m-d");
+        $notification->employee_id=$seniour_emp;
+        $notification->desc=$emp_name." want to retreive ".$source." for KR".$rider_id." on ".$given_date;
+        $notification->action=json_encode($action_data);
+        $notification->save();
+
         return response()->json([
-            'status'=>$insert_data,
-            'count'=>$count,
+            'id'=>$id,
+            'notification'=>$notification,
+        ]);
+    }
+    public function sendDeleteNotification(Request $request){
+        $data=[
+            "id"=>$request->id,
+            "model_class"=>$request->model_class,
+            "model_id"=>$request->model_id,
+            "rider_id"=>$request->rider_id,
+            "string"=>$request->string,
+            "month"=>$request->month,
+            "source_id"=>$request->source_id, 
+            "given_date"=>$request->given_date,
+            "year"=>$request->year,
+        ];
+        $data_accept=[
+            "type"=>"delete",
+            "data"=>$data,
+            "url"=> url('admin/delete/accounts/rows'). "/" . $request->id . "/accept/" . Auth::user()->id,
+        ];
+        $data_reject=[
+            "type"=>"delete",
+            "data"=>$data,
+            "url"=> url('admin/delete/accounts/rows'). "/" . $request->id . "/reject/" . Auth::user()->id,
+        ];
+        $button_html_accepted="<i style='font-size:20px' class='flaticon2-correct text-success' onclick='CallBackNotification(".json_encode($data_accept).")'></i>";
+        $button_html_rejected="<i style='font-size:20px' class='flaticon-circle text-danger' onclick='CallBackNotification(".json_encode($data_reject).")'></i>";
+        $button=$button_html_accepted.$button_html_rejected;
+        $current_url=url()->current();
+        $action_data = [
+            [
+                'type'=>"url",
+                'value'=>$current_url,    
+            ] ,
+            [
+                'type'=>"button",
+                'value'=>$button,    
+            ] ,
+        ];
+        $user = Auth::user();
+        if (isset($user->s_emp_id) && $user->s_emp_id!="") {
+            $seniour_emp=$user->s_emp_id;
+            $emp_name=$user->name;
+        }
+        else{
+            $seniour_emp="1";
+            $emp_name="Admin";
+        }
+        $given_date=Carbon::parse($request->given_date)->format("M d, Y");
+        $notification=new Notification;
+        $notification->date_time=Carbon::now()->format("Y-m-d");
+        $notification->employee_id=$seniour_emp;
+        $notification->desc=$emp_name." want to delete ".$request->model_id." for KR".$request->rider_id." on ".$given_date;
+        $notification->action=json_encode($action_data);
+        $notification->save();
+        return response()->json([
+            'notification'=>$notification,
+            'r'=>$request->all(),
+        ]);
+    }
+    public function ReadNotification($id){
+        $notification=Notification::find($id);
+        $notification->status="read";
+        $notification->save();
+        return response()->json([
+            'id'=>$id,
         ]);
     }
 }

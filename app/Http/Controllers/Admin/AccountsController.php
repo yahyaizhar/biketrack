@@ -36,6 +36,7 @@ use App\Export_data;
 use App\Model\Accounts\Bill_change;
 use App\Model\Sim\Sim_History;
 use App\Deleted_data;
+use App\Notification;
 
 
 class AccountsController extends Controller
@@ -3567,10 +3568,14 @@ public function client_income_update(Request $request,$id){
         $bikes =bike::all();
         return view('admin.accounts.Bike-Debit.bike_accounts',compact('bikes'));
     }
-    public function delete_account_rows(Request $r){
+    public function delete_account_rows(Request $r,$id,$status,$admin_id){
         // return response()->json([
         //     'r'=>$r->all(),
+        //     'id'=>$id,
+        //     'status'=>$status,
+        //     'admin_id'=>$admin_id,
         // ]);
+        if ($status=="accept") {
         $ra='';
         $export_data='';
         $table='';
@@ -3619,8 +3624,17 @@ public function client_income_update(Request $request,$id){
             $ra->delete();
             $table->delete();
             $export_data->delete();
+
+            $emp_name=Auth::user();
+            $notification=new Notification;
+            $notification->date_time=Carbon::now()->format("Y-m-d");
+            $notification->employee_id=$admin_id;
+            $notification->desc=$emp_name->name." accepted your deleted request";
+            $notification->action="";
+            $notification->save();
         }
         else if ($model_id=="fuel_expense_vip" || $model_id=="fuel_expense_cash" || $model_id=="Bike Fine" || $model_id=="Sim Transaction" || $model_id=="Bike Rent" || $model_id=="Salik") {
+            if ($id!="") {
             $ca=Company_Account::find($id);
             if ($model_id=="fuel_expense_vip" || $model_id=="fuel_expense_cash") {
                 $trace_table_id=$ca->fuel_expense_id; 
@@ -3673,18 +3687,21 @@ public function client_income_update(Request $request,$id){
             if ($model_name!='') {
                 $table=$model_name::find($trace_table_id);
                 $obj=[];
-                $obj['model']=get_class($table);
-                $obj['data']=json_encode($table);
-                array_push($feed,$obj);
-                
+                if (isset($table)) {
+                    $obj['model']=get_class($table);
+                    $obj['data']=json_encode($table);
+                    array_push($feed,$obj);
+                }
             }
-            
             if ($model_id!="Bike Fine") {
                 $export_data=Export_data::whereMonth('month',$month)->where($string,$model_id)->where('source_id',$trace_table_id)->get()->first();
                 $obj=[];
-                $obj['model']=get_class($export_data);
-                $obj['data']=json_encode($export_data);
-                array_push($feed,$obj);
+                if (isset($export_data)) {
+                    $obj['model']=get_class($export_data);
+                    $obj['data']=json_encode($export_data);
+                    array_push($feed,$obj);
+                }
+                
                 
             }
             if ($ca_e!='') {
@@ -3708,10 +3725,14 @@ public function client_income_update(Request $request,$id){
 
             $ca->delete();
             if($model_name!=''){
-                $table->delete();
+                if (isset($table)) {
+                    $table->delete();
+                }
             }
             if ($model_id!="Bike Fine") {
-                $export_data->delete();
+                if (isset($export_data)) {
+                    $export_data->delete();
+                }
             }
             if ($ca_e!='') {
                 $ca_e->delete();
@@ -3719,7 +3740,14 @@ public function client_income_update(Request $request,$id){
             if ($ra_e!='') {
                 $ra_e->delete();
             }
-            
+            $emp_name=Auth::user();
+            $notification=new Notification;
+            $notification->date_time=Carbon::now()->format("Y-m-d");
+            $notification->employee_id=$admin_id;
+            $notification->desc=$emp_name->name." accepted your deleted request";
+            $notification->action="";
+            $notification->save();
+        }
         }
         return response()->json([
             'del_data'=>$del_data,
@@ -3731,7 +3759,16 @@ public function client_income_update(Request $request,$id){
             'ra_e'=>$ra_e,
             
         ]);
-
+        }
+        if ($status=="reject") {
+            $emp_name=Auth::user();
+            $notification=new Notification;
+            $notification->date_time=Carbon::now()->format("Y-m-d");
+            $notification->employee_id=$admin_id;
+            $notification->desc=$emp_name->name." rejected your deleted request";
+            $notification->action="";
+            $notification->save();
+        }
         // if (isset($model_class)) {
         //     $alter=$model_class::find($model_id);
         //     if (isset($alter)) {

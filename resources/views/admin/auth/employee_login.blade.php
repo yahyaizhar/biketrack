@@ -57,6 +57,16 @@
                 <label>Password:</label>
                 <input type="password" class="form-control" name="password_confirmation" placeholder="Confirm your password" required>
             </div>
+            <div class="form-group">
+                <label>Seniour Employee:</label>
+                <select required class="form-control bk-select2 kt-select2-general" name="s_emp_id" >
+                    @foreach ($employees as $employee)
+                    <option value="{{ $employee->id }}">
+                        {{ $employee->name }}
+                    </option>     
+                    @endforeach 
+                </select>
+            </div>
             <div class="row">
                 <div class="col-lg-6 col-md-6">
                     <div class="form-group">

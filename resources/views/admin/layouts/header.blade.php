@@ -15,6 +15,64 @@
 
     <!-- begin:: Header Topbar -->
     <div class="kt-header__topbar">
+        <div class="kt-header__topbar-item dropdown">
+            <div class="kt-header__topbar-wrapper" data-toggle="dropdown" data-offset="30px,0px" aria-expanded="false">
+                <span class="kt-header__topbar-icon">
+                    <i class="flaticon2-bell-alarm-symbol"></i>
+                    <span class="kt-badge kt-badge--dot kt-badge--notify kt-badge--sm kt-badge--brand"></span>
+                </span>
+            </div>
+            <div class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-lg" style="">
+                    <div class="kt-head" style="background-image: url({{ asset('dashboard/assets/media/misc/bg-1.jpg') }})">
+                        <h3 class="kt-head__title"style="color:white;">User Notifications</h3>
+                        <div class="kt-head__sub" style="background-color:white; marin-top:12px;padding:4px;">
+                            <span class="kt-head__desc">{{count($notifications)}} unread notifications</span>
+                        </div>
+                    </div>
+                    <div class="kt-notification kt-margin-t-30 kt-margin-b-20 kt-scroll ps ps--active-y" data-scroll="true" data-height="270" data-mobile-height="220" style="height: 270px; overflow: hidden;">
+                        @foreach ($notifications as $item)
+                            <a  class="kt-notification__item">
+                                {{-- <div class="kt-notification__item-icon">
+                                    <i class="flaticon2-line-chart kt-font-success"></i>
+                                </div> --}}
+                                <div class="kt-notification__item-details">
+                                    <div class="kt-notification__item-title">
+                                        {{$item->status}}
+                                        <span style="float:right;" onclick="notificationEnd({{$item->id}})"><i class="flaticon-cancel"></i></span>
+                                    </div>
+                                    <div class="kt-notification__item-title">
+                                        {{$item->desc}}
+                                    </div>
+                                    <div class="kt-notification__item-time">
+                                        {{carbon\carbon::parse($item->date_time)->diffForHumans(carbon\carbon::now()->format("Y-m-d"))}}
+                                        @if ($item->action!=null && $item->status=="unread")
+                                            <div style="float:right;">
+                                                @php
+                                                $button='';
+                                                    foreach($item->action as $v){
+                                                        $btn=$v['type'];
+                                                        if ($btn=="button") {
+                                                            $button=$v['value'];
+                                                        }
+                                                    }
+                                                @endphp 
+                                                {!!$button!!}
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </a>
+                        @endforeach
+                        <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
+                            <div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div>
+                        </div>
+                        <div class="ps__rail-y" style="top: 0px; right: 0px; height: 270px;">
+                            <div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 81px;"></div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    {{-- </div> --}}
 
 
         <!--begin: User Bar -->
