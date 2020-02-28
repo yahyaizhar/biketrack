@@ -24,7 +24,7 @@
                     <i class="kt-font-brand fa fa-hotel"></i>
                 </span>
                 <h3 class="kt-portlet__head-title">
-                    Deleted Rows 
+                    Deleted Rows
                 </h3>
             </div>
             <div class="kt-portlet__head-toolbar">
@@ -83,7 +83,8 @@ $(function() {
     });
 });
 function retreive_data(id){
-    var url ="{{ url('admin/retreive_data/ajax/') }}"+ "/" + id;
+    // var url ="{{ url('admin/retreive_data/ajax/') }}"+ "/" + id;
+    var url ="{{ url('admin/send_notification/retreive_data/ajax') }}"+ "/" + id;
     $.ajax({
         url : url,
         type : 'GET',
@@ -98,6 +99,7 @@ function retreive_data(id){
                 showConfirmButton: false,
                 timer: 1500
             });
+            
             window.location.reload();
         },
         error: function(error){

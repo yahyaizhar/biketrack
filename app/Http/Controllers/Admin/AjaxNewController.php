@@ -974,6 +974,7 @@ class AjaxNewController extends Controller
             $modelObj=null;
             $model=null;
             $source_id="";
+            $given_date=$rider_statement->given_date;
             if ($model_id=="Salik Extra" || $model_id=="Salik") {
                 $source_id=$rider_statement->salik_id;   
             }
@@ -1007,7 +1008,7 @@ class AjaxNewController extends Controller
             }
             if($model_id=="advance"){
                 //skip delete
-                $deleteHTML='<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$source_id.'\')"></i>';
+                $deleteHTML='<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$source_id.'\',\''.$given_date.'\',\''.$year.'\')"></i>';
             }
             if($rider_statement->bike_rent_id!=null || $rider_statement->sim_transaction_id!=null || $rider_statement->salik_id!=null || $rider_statement->advance_return_id!=null){
                 $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit" onclick="UpdateRows(this,'.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\','.$source_id.')"></i>';
@@ -1454,6 +1455,7 @@ class AjaxNewController extends Controller
             $modelObj=null;
             $model=null;
             $source_id="";
+            $given_date=$company_statements->given_date;
             if ($model_id=="Salik Extra" || $model_id=="Salik") {
                 $source_id=$company_statements->salik_id;   
             }
@@ -1484,7 +1486,7 @@ class AjaxNewController extends Controller
                 $UpdateHTML='';
             }
             if ($model_id=="Sim Transaction" || $model_id=="fuel_expense_cash" || $model_id=="fuel_expense_vip" || $model_id=="Bike Rent" || $model_id=="Salik" || $model_id=="Bike Fine") {
-                $deleteHTML='<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$source_id.'\')"></i>';
+                $deleteHTML='<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$source_id.'\',\''.$given_date.'\',\''.$year.'\')"></i>';
             }
             return $UpdateHTML.$editHTML.$deleteHTML;
 
