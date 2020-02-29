@@ -526,7 +526,7 @@ class RiderDetailController extends Controller
         $ca->rider_id = $request->rider_id;
         $ca->source='400 Trips Acheivement Bonus';
         $ca->kingrider_fine_id=$unique_id;
-        $ra->desc='Bonus';
+        $ca->desc='Bonus';
         $ca->save();
 
         $ra = new \App\Model\Accounts\Rider_Account;
