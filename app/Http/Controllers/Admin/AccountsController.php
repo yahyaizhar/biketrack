@@ -4285,7 +4285,26 @@ public function client_income_update(Request $request,$id){
         ]);
     }
 
-    public function update_row_rider_account(Request $r,$rider_id,$_month,$_year){
+    public function update_row_rider_account(Request $r,$statement_id,$status,$admin_id){
+        return response()->json([
+            'r'=>$r->all(), 
+        ]);
+        if ($status=="accept") {
+            $notification=new Notification;
+            $notification->date_time=Carbon::now()->format("Y-m-d");
+            $notification->employee_id=$admin_id;
+            $notification->desc=$emp_name." want to update ".$request->source." for KR".$request->rider_id_update." on ".Carbon::parse($request->given_date)->format("M d, Y");
+            $notification->action=json_encode($action_data);
+            $notification->save();
+        }
+        if ($status=="reject") {
+            $notification=new Notification;
+            $notification->date_time=Carbon::now()->format("Y-m-d");
+            $notification->employee_id=$admin_id;
+            $notification->desc=$emp_name." want to update ".$request->source." for KR".$request->rider_id_update." on ".Carbon::parse($request->given_date)->format("M d, Y");
+            $notification->action=json_encode($action_data);
+            $notification->save();
+        }
         $amount=$r->amount;
         $rider_id_update=$r->rider_id_update;
         $month=carbon::parse($r->month_update)->startOfMonth()->format("Y-m-d");
@@ -4348,8 +4367,6 @@ public function client_income_update(Request $request,$id){
         if ($src=="Mobile Installment") { 
             $tt_model = 'App\Model\Mobile\Mobile_Transaction';
         }
-        
-        
         
         #finding and updating third table
         $third_table=null;

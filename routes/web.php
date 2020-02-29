@@ -329,7 +329,8 @@ Route::group([
     Route::get("/read_notification/ajax/{id}","KRController@ReadNotification")->name("admin.ReadNotification");//***
     Route::get("/rider/deleted_data/view","KRController@view_deleted_data")->name("admin.view_deleted_data");//***
     Route::get("/retreive_data/ajax/{id}/{status}/{admin_id}","KRController@retreive_data")->name("admin.retreive_data");//***
-    Route::get("/send_notification/delete/rows","KRController@sendDeleteNotification")->name("admin.sendDeleteNotification");/***
+    Route::get("/send_notification/delete/rows","KRController@sendDeleteNotification")->name("admin.sendDeleteNotification");/***/
+    Route::post("/accounts/send_notification/update_row/","KRController@sendUpdateNotification")->name("admin.sendUpdateNotification");/***/
     Route::get("/send_notification/retreive_data/ajax/{id}","KRController@retreive_notification")->name("admin.retreive_notification");/***
     /*[accounts - bike account]*/Route::get("/Salary/accounts/bike/account","AccountsController@bike_account")->name("admin.accounts.bike_account");
     Route::get('/rider/accounts/{id}/updateStatus','AccountsController@updatePaymentStatus')->name('Rider.updatePaymentStatus');//not_using
@@ -613,7 +614,7 @@ Route::group([
 
    Route::put('accounts/company/edit', 'AccountsController@edit_company_account')->name('admin.accounts.edit_company'); //[Accounts - Edit company account]
    Route::put('accounts/company/update_row/{rider_id}/{month}/{year}', 'AccountsController@update_row_company_account')->name('admin.accounts.update_row_company_account');
-   Route::put('accounts/rider/update_row/{rider_id}/{month}/{year}', 'AccountsController@update_row_rider_account')->name('admin.accounts.update_row_rider_account');
+   Route::get('accounts/rider/update_row/{statement_id}/{status}/{admin_id}', 'AccountsController@update_row_rider_account')->name('admin.accounts.update_row_rider_account');
    Route::put('accounts/rider/edit', 'AccountsController@edit_rider_account')->name('admin.accounts.edit_rider'); //[Accounts - Edit rider account]
    Route::get('/sim/bill/image/{rider_id}/{month}/{type}','SimController@SimBIllImage')->name('Sim.SimBIllImage');//[Accounts-Sim Bill Image] .
    

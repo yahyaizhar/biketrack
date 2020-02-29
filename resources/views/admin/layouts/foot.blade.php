@@ -390,7 +390,7 @@ function CallBackNotification(data){
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         success: function(data){
-            notificationEnd();
+            // notificationEnd();
             swal.fire({
                 position: 'center',
                 type: 'success',

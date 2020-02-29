@@ -1039,10 +1039,10 @@ class AjaxNewController extends Controller
                 $deleteHTML='<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$source_id.'\',\''.$given_date.'\',\''.$year.'\')"></i>';
             }
             if($source_id!=''){
-                $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit" onclick="UpdateRows(this,'.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\')"></i>';
+                $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit" onclick="UpdateRows(this,'.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\',\''.$given_date.'\')"></i>';
             }else {
                 # we don't want to trace it, so it will update current row only
-                $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit text-warning" onclick="UpdateRows(this,'.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\')"></i>';
+                $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit text-warning" onclick="UpdateRows(this,'.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\',\''.$given_date.'\')"></i>';
             }
             if($rider_statement->bike_rent_id!=null || $rider_statement->sim_transaction_id!=null || $rider_statement->salik_id!=null || $rider_statement->advance_return_id!=null){
                 
@@ -1503,10 +1503,10 @@ class AjaxNewController extends Controller
                 $editHTML='';
             }
             if($source_id!=''){
-                $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit" onclick="UpdateRows(this,'.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\')"></i>';
+                $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit" onclick="UpdateRows(this,'.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\',\''.$given_date.'\')"></i>';
             }else {
                 # we don't want to trace it, so it will update current row only
-                $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit text-warning" onclick="UpdateRows(this,'.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\')"></i>';
+                $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit text-warning" onclick="UpdateRows(this,'.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\',\''.$given_date.'\')"></i>';
             }
             if ($model_id=="Sim extra usage" || $model_id=="Salik Extra") {
                 $UpdateHTML='';

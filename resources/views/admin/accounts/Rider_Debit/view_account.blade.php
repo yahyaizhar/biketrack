@@ -3423,8 +3423,7 @@ function show_rider_record(_this){
         }
     });
 }
-function UpdateRows($this,id,model_class,model_id,rider_id,string,month,year,source_id,source_key){
-    
+function UpdateRows($this,id,model_class,model_id,rider_id,string,month,year,source_id,source_key,given_date){
     var _tr = $($this).parents('tr');
     var _row = table.row(_tr).data();
     var _model = $('#update_row_model');
@@ -3447,13 +3446,22 @@ function UpdateRows($this,id,model_class,model_id,rider_id,string,month,year,sou
 
     _model.find('form').off('submit').on('submit', function(e){
         e.preventDefault();
-        var url ="{{ url('admin/accounts/rider/update_row/') }}"+ "/" + bk_rider_id + "/" + bk_month + "/" + bk_year ;
+        // var url ="{{ url('admin/accounts/rider/update_row/') }}"+ "/" + bk_rider_id + "/" + bk_month + "/" + bk_year ;
+        var url ="{{ url('admin/accounts/send_notification/update_row/') }}" ;
+        var data=new FormData(this);
+        data.append('rider_id',bk_rider_id);
+        data.append('bk_month',bk_month);
+        data.append('bk_year',bk_year);
+        data.append('given_date',given_date);
+        data.append('source',model_id);
         var _form = $(this);
         var _submitBtn = _form.find('[type="submit"]');
         $.ajax({
             url : url,
-            type : 'PUT',
-            data:_form.serializeArray(),
+            type : 'POST',
+            data:data,
+            processData: false,
+            contentType: false,
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
@@ -3470,7 +3478,7 @@ function UpdateRows($this,id,model_class,model_id,rider_id,string,month,year,sou
                 swal.fire({
                     position: 'center',
                     type: 'success',
-                    title: 'Record updated successfully.',
+                    title: 'Record update request sent successfully.',
                     showConfirmButton: false,
                     timer: 1500
                 });
