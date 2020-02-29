@@ -397,7 +397,7 @@ class KRController extends Controller
                 }
                 
                 $insert_data='INSERT INTO '.$table_name.' ('.$k.') VALUES('.$d_item.')';
-                // DB::insert($insert_data);
+                DB::insert($insert_data);
             }
             $deleted_data->delete();
             $emp_name=Auth::user()->name;
@@ -422,6 +422,9 @@ class KRController extends Controller
             $notification->action="";
             // $notification->status="read";
             $notification->save();
+            return response()->json([
+                'notification'=>$notification,
+            ]);
         }
         
     }

@@ -59,7 +59,8 @@
             </div>
             <div class="form-group">
                 <label>Seniour Employee:</label>
-                <select required class="form-control bk-select2 kt-select2-general" name="s_emp_id" >
+                <select class="form-control bk-select2 kt-select2-general" name="s_emp_id" >
+                    <option value="">Select Seniour Employee</option>
                     @foreach ($employees as $employee)
                     <option value="{{ $employee->id }}">
                         {{ $employee->name }}

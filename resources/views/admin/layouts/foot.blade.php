@@ -391,7 +391,7 @@ function CallBackNotification($this,data){
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         success: function(data){
-            // notificationEnd(noti_id);
+            notificationEnd(noti_id);
             swal.fire({
                 position: 'center',
                 type: 'success',
