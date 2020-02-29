@@ -551,6 +551,65 @@ class KRController extends Controller
             'r'=>$request->all(),
         ]);
     }
+    public function sendUpdateNotification(Request $request){
+        $data=[
+            "statement_id"=>$request->statement_id,
+            "source_key"=>$request->source_key,
+            "source_id"=>$request->source_id,
+            "rider_id_update"=>$request->rider_id_update,
+            "desc"=>$request->desc,
+            "month_update"=>$request->month_update,
+            "given_date"=>$request->given_date,
+            "source"=>$request->source,
+            "bk_month"=>$request->bk_month,
+            "bk_year"=>$request->bk_year,
+            "rider_id"=>$request->rider_id,
+        ];
+        $data_accept=[
+            "type"=>"update",
+            "data"=>$data,
+            "url"=> url('admin/accounts/rider/update_row/'). "/" . $request->statement_id . "/accept/" . Auth::user()->id,
+        ];
+        $data_reject=[
+            "type"=>"update",
+            "data"=>$data,
+            "url"=> url('admin/accounts/rider/update_row/'). "/" . $request->statement_id . "/reject/" . Auth::user()->id,
+        ];
+        $button_html_accepted="<i style='font-size:20px' class='flaticon2-correct text-success' onclick='CallBackNotification(".json_encode($data_accept).")'></i>";
+        $button_html_rejected="<i style='font-size:20px' class='flaticon-circle text-danger' onclick='CallBackNotification(".json_encode($data_reject).")'></i>";
+        $button=$button_html_accepted.$button_html_rejected;
+        $current_url=url()->current();
+        $action_data = [
+            [
+                'type'=>"url",
+                'value'=>$current_url,    
+            ] ,
+            [
+                'type'=>"button",
+                'value'=>$button,    
+            ] ,
+        ];
+        $user = Auth::user();
+        if (isset($user->s_emp_id) && $user->s_emp_id!="") {
+            $seniour_emp=$user->s_emp_id;
+            $emp_name=$user->name;
+        }
+        else{
+            $seniour_emp="1";
+            $emp_name="Admin";
+        }
+        $given_date=Carbon::parse($request->given_date)->format("M d, Y");
+        $notification=new Notification;
+        $notification->date_time=Carbon::now()->format("Y-m-d");
+        $notification->employee_id=$seniour_emp;
+        $notification->desc=$emp_name." want to update ".$request->source." for KR".$request->rider_id_update." on ".Carbon::parse($request->given_date)->format("M d, Y");
+        $notification->action=json_encode($action_data);
+        $notification->save();
+        return response()->json([
+            'notification'=>$notification,
+            'r'=>$request->all(),
+        ]);
+    }
     public function ReadNotification($id){
         $notification=Notification::find($id);
         $notification->status="read";
