@@ -396,7 +396,8 @@ class bikeController extends Controller
             $ra->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
             $ra->bike_rent_id =$unique_id;
             $ra->rider_id=$rider_id;
-            $ra->source='Bike Allowns';
+            $ra->source='Bike Rent';
+            $ra->desc='Bike Allowns';
             $ra->save();
           }
         }

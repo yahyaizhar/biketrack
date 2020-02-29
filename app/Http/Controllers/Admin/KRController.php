@@ -538,25 +538,17 @@ class KRController extends Controller
         }
         else{
             # no senior person found, so just delete the data
-
-            $seniour_emp="1";
-            $emp_name="Admin";
-
-            $data = $data;
-            $ch = curl_init('admin/delete/accounts/rows'. "/" . $request->id . "/reject/" . Auth::user()->id."/".$request->statement_type);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
-            curl_setopt($ch, CURLOPT_POSTFIELDS,http_build_query($data));
-
-            $response = curl_exec($ch);
-
-            if (!$response) 
-            {
-                // return false;
+            $url = '/admin/delete/accounts/rows'. "/" . $request->id . "/reject/" . Auth::user()->id."/".$request->statement_type;
+            $req = new Request;
+            foreach ($data as $key => $item) {
+                # code...
+                $req->merge([$key=>$item]);
             }
+            $response = \App\Http\Controllers\Admin\AccountsController::delete_account_rows($req,$request->id,'accept',Auth::user()->id,$request->statement_type);
             return response()->json([
                 'status'=>0,
-                'r'=>$response,
+                'response'=>$response,
+                'url'=>$req->all()
             ]);
         }
         $given_date=Carbon::parse($request->given_date)->format("M d, Y");
@@ -631,8 +623,24 @@ class KRController extends Controller
             $emp_name=$user->name;
         }
         else{
-            $seniour_emp="1";
-            $emp_name="Admin";
+            # no senior person found, so just delete the data
+            $req = new Request;
+            foreach ($data as $key => $item) {
+                # code...
+                $req->merge([$key=>$item]);
+            }
+            if($request->statement_type=='rider__accounts'){
+                $response = \App\Http\Controllers\Admin\AccountsController::update_row_rider_account($req,$request->statement_id,'accept',Auth::user()->id);
+            }
+            else {
+                $response = \App\Http\Controllers\Admin\AccountsController::update_row_company_account($req,$request->statement_id,'accept',Auth::user()->id);
+            }
+            
+            return response()->json([
+                'status'=>0,
+                'response'=>$response,
+                'url'=>$req->all()
+            ]);
         }
         $given_date=Carbon::parse($request->given_date)->format("M d, Y");
         $notification=new Notification;

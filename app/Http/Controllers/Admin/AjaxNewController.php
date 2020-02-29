@@ -553,7 +553,10 @@ class AjaxNewController extends Controller
         $bike_allowns=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
-        ->where('source','Bike Allowns')
+        ->where(function($q) {
+            $q->where('source', "Bike Allowns")
+            ->orWhere('source', 'Bike Rent');
+        })
         ->sum('amount');
         $bike_fine=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
@@ -1036,18 +1039,13 @@ class AjaxNewController extends Controller
                 //skip edit
                 $editHTML='';
             }
-            if($model_id=="advance"){
-                //skip delete
-                $deleteHTML='<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$source_id.'\',\''.$given_date.'\',\''.$year.'\')"></i>';
-            }
             if($source_id!=''){
                 $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit" onclick="UpdateRows(this,'.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\',\''.$given_date.'\')"></i>';
+                $deleteHTML='<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\',\''.$given_date.'\')"></i>';
             }else {
                 # we don't want to trace it, so it will update current row only
                 $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit text-warning" onclick="UpdateRows(this,'.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\',\''.$given_date.'\')"></i>';
-            }
-            if($rider_statement->bike_rent_id!=null || $rider_statement->sim_transaction_id!=null || $rider_statement->salik_id!=null || $rider_statement->advance_return_id!=null){
-                
+                $deleteHTML='<i class="fa fa-trash-alt tr-remove text-warning" onclick="deleteRows('.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\',\''.$given_date.'\')"></i>';
             }
             return $UpdateHTML.$deleteHTML;
             // }
@@ -2409,9 +2407,12 @@ class AjaxNewController extends Controller
         ->addColumn('bike_allowns', function($rider) use ($month){
             $onlyMonth=Carbon::parse($month)->format('m');
             $onlyYear=Carbon::parse($month)->format('Y');
-            $bike_allowns=Rider_Account::where('source',"Bike Allowns")
+            $bike_allowns=Rider_Account::where(function($q) {
+                $q->where('source', "Bike Allowns")
+                ->orWhere('source', 'Bike Rent');
+            })
             ->where('rider_id',$rider->id)
-                ->whereMonth('month',$onlyMonth)
+            ->whereMonth('month',$onlyMonth)
             ->whereYear('month',$onlyYear)
             ->get()
             ->sum('amount');
@@ -2859,7 +2860,10 @@ class AjaxNewController extends Controller
     ->addColumn('bike_allowns', function($rider) use ($month){
        $onlyMonth=Carbon::parse($month)->format('m');
        $onlyYear=Carbon::parse($month)->format('Y');
-        $bike_allowns=Rider_Account::where('source',"Bike Allowns")
+        $bike_allowns=Rider_Account::where(function($q) {
+            $q->where('source', "Bike Allowns")
+            ->orWhere('source', 'Bike Rent');
+        })
         ->where('rider_id',$rider->id)
         ->whereMonth('month',$onlyMonth)
         ->whereYear('month',$onlyYear)

@@ -3907,7 +3907,7 @@ public function client_income_update(Request $request,$id){
         ]);
     }
 
-    public function update_row_company_account(Request $r,$statement_id,$status,$admin_id){
+    public static function update_row_company_account(Request $r,$statement_id,$status,$admin_id){
         // return response()->json([
         //     'r'=>$r->all(), 
         // ]);
@@ -4097,7 +4097,7 @@ public function client_income_update(Request $request,$id){
         }
     }
 
-    public function update_row_rider_account(Request $r,$statement_id,$status,$admin_id){
+    public static function update_row_rider_account(Request $r,$statement_id,$status,$admin_id){
         // return response()->json([
         //     'r'=>$r->all(), 
         // ]);
@@ -4309,7 +4309,7 @@ public function client_income_update(Request $request,$id){
             $notification->save();
         }
     }
-    public function delete_account_rows(Request $r,$id,$status,$admin_id,$statement_type){
+    public static function delete_account_rows(Request $r,$id,$status,$admin_id,$statement_type){
         // return response()->json([
         //     'r'=>$r->all(),
         //     'id'=>$id,
@@ -4327,7 +4327,7 @@ public function client_income_update(Request $request,$id){
             else $statement = Company_Account::find($r->id);
             
             if(!isset($statement)){
-                #generate error
+                # it seems like row has been already deleted -generate error
                 return response()->json([
                     'status'=>0,
                     'msg'=>'No row found'
@@ -4343,7 +4343,7 @@ public function client_income_update(Request $request,$id){
 
                 $del_data=new Deleted_data;
                 $del_data->date=Carbon::now()->format('Y-m-d');
-                $del_data->deleted_by=Auth::user()->id;
+                $del_data->deleted_by=$admin_id;
                 $del_data->feed=json_encode($feed);
                 $del_data->save();
 
@@ -4478,7 +4478,7 @@ public function client_income_update(Request $request,$id){
             #saving what we deleted to this table so we can retieve it later
             $del_data=new Deleted_data;
             $del_data->date=Carbon::now()->format('Y-m-d');
-            $del_data->deleted_by=Auth::user()->id;
+            $del_data->deleted_by=$admin_id;
             $del_data->feed=json_encode($feed);
             $del_data->save();
 

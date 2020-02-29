@@ -3181,7 +3181,7 @@ function editRows($this,id,model_class,model_id,rider_id,string,month){
     });
 
 }
-function deleteRows(id,model_class,model_id,rider_id,string,month,source_id,given_date,year){
+function deleteRows(id,model_class,model_id,rider_id,string,month,year,source_id,source_key,given_date){
     // var url = "{{ url('admin/delete/accounts/rows') }}";
     var url = "{{ url('admin/send_notification/delete/rows') }}";
     console.log(url);
@@ -3205,9 +3205,11 @@ function deleteRows(id,model_class,model_id,rider_id,string,month,source_id,give
                 "rider_id":rider_id,
                 "string":string,
                 "month":month,
-                "source_id":source_id, 
+                "year":year,
+                "source_id":source_id,
+                "source_key":source_key,
                 "given_date":given_date,
-                'year':year,
+                'statement_type':'rider__accounts'
             };
             $.ajax({
                 url  :  url,
