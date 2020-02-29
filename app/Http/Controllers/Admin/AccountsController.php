@@ -4431,7 +4431,7 @@ public function client_income_update(Request $request,$id){
                     $obj['model']=get_class($rider_statement);
                     $obj['data']=json_encode($rider_statement);
                     array_push($feed,$obj);
-                    $ca[$key]['ra']=$rider_statement;
+                    // $ca[$key]['ra']=$rider_statement;
                     $rider_statement->delete();
 
                 }
