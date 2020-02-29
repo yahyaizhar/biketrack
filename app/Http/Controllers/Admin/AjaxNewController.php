@@ -800,7 +800,7 @@ class AjaxNewController extends Controller
         })
         ->addColumn('action', function($rider_statement) use (&$running_balance){
             if($rider_statement->type=='skip') return '';
-            if(Auth::user()->type!='su')return '';
+            // if(Auth::user()->type!='su')return '';
             $model="";
             $model_id="";
             $rider_id="";
@@ -1426,7 +1426,7 @@ class AjaxNewController extends Controller
         })
         ->addColumn('action', function($company_statements) use (&$running_balance){
             if($company_statements->type=='skip') return '';
-            if(Auth::user()->type!='su')return '';
+            // if(Auth::user()->type!='su')return '';
             
 
             

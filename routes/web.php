@@ -326,7 +326,7 @@ Route::group([
     Route::get("/rider/check_salary_status/ajax/{rider_id}/{month}","AccountsController@check_salary_status")->name("admin.accounts.check_salary_status");
     /*[accounts - company account]*/Route::get("/Salary/accounts/company/account","AccountsController@company_account")->name("admin.accounts.company_account");//imp
     /*[accounts - delete rider account]*/Route::get("/delete/accounts/rows/{id}/{status}/{admin_id}/{statement_type}","AccountsController@delete_account_rows")->name("admin.delete_account_rows");//imp
-    Route::get("/read_notification/ajax/{id}","KRController@ReadNotification")->name("admin.ReadNotification");//***
+    
     Route::get("/rider/deleted_data/view","KRController@view_deleted_data")->name("admin.view_deleted_data");//***
     Route::get("/retreive_data/ajax/{id}/{status}/{admin_id}","KRController@retreive_data")->name("admin.retreive_data");//***
     Route::get("/send_notification/delete/rows","KRController@sendDeleteNotification")->name("admin.sendDeleteNotification");/***/
@@ -613,8 +613,8 @@ Route::group([
    Route::post('/view/upload/salary_slip/{month}/{rider_id}','RiderDetailController@view_upload_salary_slip')->name('rider.view_upload_salary_slip');//[Accounts-Upload salary Slip] .
 
    Route::put('accounts/company/edit', 'AccountsController@edit_company_account')->name('admin.accounts.edit_company'); //[Accounts - Edit company account]
-   Route::put('accounts/company/update_row/{rider_id}/{month}/{year}', 'AccountsController@update_row_company_account')->name('admin.accounts.update_row_company_account');
-   Route::get('accounts/rider/update_row/{statement_id}/{status}/{admin_id}', 'AccountsController@update_row_rider_account')->name('admin.accounts.update_row_rider_account');
+   Route::get('accounts/company/update_row/{statement_id}/{status}/{admin_id}', 'AccountsController@update_row_company_account')->name('admin.accounts.update_row_company_account');//** */
+   Route::get('accounts/rider/update_row/{statement_id}/{status}/{admin_id}', 'AccountsController@update_row_rider_account')->name('admin.accounts.update_row_rider_account');//** */
    Route::put('accounts/rider/edit', 'AccountsController@edit_rider_account')->name('admin.accounts.edit_rider'); //[Accounts - Edit rider account]
    Route::get('/sim/bill/image/{rider_id}/{month}/{type}','SimController@SimBIllImage')->name('Sim.SimBIllImage');//[Accounts-Sim Bill Image] .
    
@@ -668,6 +668,7 @@ Route::group([
     Route::get('/add_manual_client_history','HomeController@add_manual_client_history')->name('request.add_manual_client_history'); ///ok
     Route::post('/submit_manual_client_history','HomeController@submit_manual_client_history')->name('request.submit_manual_client_history'); ///ok
    
+    Route::get("/read_notification/ajax/{id}","KRController@ReadNotification")->name("admin.ReadNotification");
 });
 																				 
    
@@ -685,6 +686,8 @@ Route::group([
 
     Route::post('/newcomer/store','GuestController@newComer_add')->name('guest.newComer_add');  //ok
     Route::post('/newcomer/status_check','GuestController@newComer_status')->name('guest.newComer_status');  //ok
+
+    
     
     // end Guest routes
 });
@@ -705,4 +708,5 @@ Route::group([
     Route::get('/employee/employee_account','Auth\EmployeeController@viewEmployeeAccount')->name('employee.viewEmployeeAccount');
     Route::get('/employee/allownces','Auth\EmployeeController@employee_allownces')->name('employee.employee_allownces');
     Route::post('/employee/add_allownces','Auth\EmployeeController@insert_employee_allowns')->name('employee.insert_employee_allowns');
+    
 });

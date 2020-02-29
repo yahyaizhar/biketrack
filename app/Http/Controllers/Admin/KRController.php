@@ -532,12 +532,32 @@ class KRController extends Controller
         ];
         $user = Auth::user();
         if (isset($user->s_emp_id) && $user->s_emp_id!="") {
+            #some senior person found, we need an approval from them
             $seniour_emp=$user->s_emp_id;
             $emp_name=$user->name;
         }
         else{
+            # no senior person found, so just delete the data
+
             $seniour_emp="1";
             $emp_name="Admin";
+
+            $data = $data;
+            $ch = curl_init('admin/delete/accounts/rows'. "/" . $request->id . "/reject/" . Auth::user()->id."/".$request->statement_type);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+            curl_setopt($ch, CURLOPT_POSTFIELDS,http_build_query($data));
+
+            $response = curl_exec($ch);
+
+            if (!$response) 
+            {
+                // return false;
+            }
+            return response()->json([
+                'status'=>0,
+                'r'=>$response,
+            ]);
         }
         $given_date=Carbon::parse($request->given_date)->format("M d, Y");
         $notification=new Notification;
@@ -551,11 +571,25 @@ class KRController extends Controller
             'r'=>$request->all(),
         ]);
     }
+    public static function curlGet($url)
+    {
+        $ch = curl_init();  
+    
+        curl_setopt($ch,CURLOPT_URL,$url);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+    //  curl_setopt($ch,CURLOPT_HEADER, false); 
+    
+        $output=curl_exec($ch);
+    
+        curl_close($ch);
+        return $output;
+    }
     public function sendUpdateNotification(Request $request){
         $data=[
             "statement_id"=>$request->statement_id,
             "source_key"=>$request->source_key,
             "source_id"=>$request->source_id,
+            "amount"=>$request->amount,
             "rider_id_update"=>$request->rider_id_update,
             "desc"=>$request->desc,
             "month_update"=>$request->month_update,
@@ -565,18 +599,20 @@ class KRController extends Controller
             "bk_year"=>$request->bk_year,
             "rider_id"=>$request->rider_id,
         ];
+        $account_type='company';
+        if($request->statement_type=='rider__accounts')$account_type='rider';
         $data_accept=[
             "type"=>"update",
             "data"=>$data,
-            "url"=> url('admin/accounts/rider/update_row/'). "/" . $request->statement_id . "/accept/" . Auth::user()->id,
+            "url"=> 'admin/accounts/'.$account_type.'/update_row/' . $request->statement_id . "/accept/" . Auth::user()->id,
         ];
         $data_reject=[
             "type"=>"update",
             "data"=>$data,
-            "url"=> url('admin/accounts/rider/update_row/'). "/" . $request->statement_id . "/reject/" . Auth::user()->id,
+            "url"=> 'admin/accounts/'.$account_type.'/update_row/' . $request->statement_id . "/reject/" . Auth::user()->id,
         ];
-        $button_html_accepted="<i style='font-size:20px' class='flaticon2-correct text-success' onclick='CallBackNotification(".json_encode($data_accept).")'></i>";
-        $button_html_rejected="<i style='font-size:20px' class='flaticon-circle text-danger' onclick='CallBackNotification(".json_encode($data_reject).")'></i>";
+        $button_html_accepted="<i style='font-size:20px' class='flaticon2-correct text-success' onclick='CallBackNotification(this,".json_encode($data_accept).")'></i>";
+        $button_html_rejected="<i style='font-size:20px' class='flaticon-circle text-danger' onclick='CallBackNotification(this,".json_encode($data_reject).")'></i>";
         $button=$button_html_accepted.$button_html_rejected;
         $current_url=url()->current();
         $action_data = [

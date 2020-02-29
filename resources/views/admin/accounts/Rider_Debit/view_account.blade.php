@@ -3454,6 +3454,7 @@ function UpdateRows($this,id,model_class,model_id,rider_id,string,month,year,sou
         data.append('bk_year',bk_year);
         data.append('given_date',given_date);
         data.append('source',model_id);
+        data.append('statement_type','rider__accounts');
         var _form = $(this);
         var _submitBtn = _form.find('[type="submit"]');
         $.ajax({
