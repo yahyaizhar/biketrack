@@ -63,6 +63,8 @@ use DB;
 use App\Export_data;
 use App\Http\Controllers\Admin\AccountsController;
 use App\Deleted_data;
+use App\Model\Sim\Sim_History;
+
 
 class AjaxNewController extends Controller
 {
@@ -4801,29 +4803,66 @@ class AjaxNewController extends Controller
     }
 
     public function getExpenseLoss($month,$source)
-    {
-        $rider = Rider::where("active_status","A")
-        ->get();
-        return DataTables::of($rider)
-        ->addColumn('rider_id', function($rider){
-                return '<a  href="'.route('admin.rider.profile', $rider->id).'">'.'KR'.$rider->id.'-'.$rider->name.'</a>';
+    {   
+        if ($source=="sim") { 
+            $bill= Sim::where("active_status","A")->get();
+        }
+        if ($source=="bike") {
+            $bill = bike::where("active_status","A")->get();
+        }
+        return DataTables::of($bill)
+        ->addColumn('bill_source', function($bill) use($month,$source){
+            if ($source=="sim") { 
+                return $bill->sim_number.'-'.$bill->sim_company;
+            }
+            if ($source=="bike") {
+                return $bill->brand.'-'.$bill->bike_number;
+            }
         })
-        ->addColumn('company_account', function($rider) use($month,$source){
+        ->addColumn('company_account', function($bill) use($month,$source){
+            $_onlyMonth=carbon::parse($month)->format('m');
+            $_onlyYear=carbon::parse($month)->format('Y');
+            if ($source=="sim") { 
+                $sim_id=$bill->id;
+                $sim_history = Sim_History::with('Rider')->with('Sim')->get()->toArray();
+                $simh_f = Arr::where($sim_history, function ($item, $key) use ($sim_id, $month) {
+                    $start_created_at =Carbon::parse($item['given_date'])->startOfMonth()->format('Y-m-d');
+                    $created_at =Carbon::parse($start_created_at);
+
+                    $start_updated_at =Carbon::parse($item['return_date'])->endOfMonth()->format('Y-m-d');
+                    $updated_at =Carbon::parse($start_updated_at);
+                    $req_date =Carbon::parse($month);
+                    
+                    if($item['status']=='active'){
+                        return $item['sim_id']==$sim_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+                    }
+                    return $item['sim_id']==$sim_id &&
+                        ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+                });
+                if (isset($simh_f)) {
+                    $sim_h="";
+                    foreach ($simh_f as $sim_history) {
+                         $sim_h.=$sim_history['rider_id'];
+                    }
+                    return $sim_h;
+                }
+                return "0";
+            }
+            if ($source=="bike") {
+                return 123;
+            }
+        })
+        ->addColumn('rider_account', function($bill) use($month,$source){
             $_onlyMonth=carbon::parse($month)->format('m');
             $_onlyYear=carbon::parse($month)->format('Y');
             return 123;
         })
-        ->addColumn('rider_account', function($rider) use($month,$source){
+        ->addColumn('loss', function($bill) use($month,$source){
             $_onlyMonth=carbon::parse($month)->format('m');
             $_onlyYear=carbon::parse($month)->format('Y');
             return 123;
         })
-        ->addColumn('loss', function($rider) use($month,$source){
-            $_onlyMonth=carbon::parse($month)->format('m');
-            $_onlyYear=carbon::parse($month)->format('Y');
-            return 123;
-        })
-        ->rawColumns(['loss','company_account','rider_id','rider_account'])
+        ->rawColumns(['loss','company_account','rider_id','bill_source'])
         ->make(true);
     }
 

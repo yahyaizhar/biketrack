@@ -50,12 +50,8 @@
                     <div class="form-group">
                         <label>Filter by Bill</label>
                         <select class="form-control bk-select2" id="bill_detail" name="bill_detail" >
-                            <option value="Bike Rent">Bike Rent</option>
-                            <option value="fuel_expense_vip">Fuel Expense Vip</option>
-                            <option value="fuel_expense_cash">Fuel Expense cash</option>
-                            <option value="Bike Fine">Bike Fine</option>
-                            <option value="Sim Transaction">Sim Transaction</option>
-                            <option value="Salik">Salik</option>
+                            <option value="sim">Sim</option>
+                            <option value="bike">Bike</option>
                         </select> 
                     </div>
                 </div>
@@ -63,7 +59,7 @@
             <table class="table table-striped- table-hover table-checkable table-condensed" id="expense_loss_status">
                 <thead>
                     <tr>
-                        <th>Rider</th>
+                        <th>Bill Source</th>
                         <th>Company Account</th>
                         <th>Rider Account</th>
                         <th>Loss</th>                       
@@ -115,9 +111,9 @@ var init_table=function(){
         $('.total_entries').remove();
         $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
     },
-       ajax: "{{ url('admin/rider/expense_loss/ajax/') }}" + "/" + _month+ " / "+ _source,
+       ajax: "{{ url('admin/rider/expense_loss/ajax/') }}" + "/" + _month+ "/" + _source,
         columns: [
-            { data: 'rider_id', name: 'rider_id' },
+            { data: 'bill_source', name: 'bill_source' },
             {data:  'company_account',  name: 'company_account'},
             { data: 'rider_account', name: 'rider_account' },            
             { data: 'loss', name: 'loss' },
@@ -126,5 +122,8 @@ var init_table=function(){
         order:[0,'desc'],
     });
 }
+$('[name="bill_detail"]').on("change",function(){
+    $('[name="month_year"]').trigger("change");
+})
 </script>
 @endsection
