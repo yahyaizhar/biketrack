@@ -377,11 +377,12 @@ biketrack.refresh_global = function(){
         }
     });
 }
-function CallBackNotification(data){
-    var _url=data.url;
+function CallBackNotification($this,data){
+    var _url=window.location.origin+'/'+data.url;
     var _data=data.data;
     var _type=data.type;
     var url=_url;
+    var noti_id = $($this).parents('.action__wrapper').attr('data-id');
     $.ajax({
         url : url,
         type : 'GET',
@@ -390,7 +391,7 @@ function CallBackNotification(data){
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         success: function(data){
-            notificationEnd();
+            notificationEnd(noti_id);
             swal.fire({
                 position: 'center',
                 type: 'success',

@@ -1504,16 +1504,17 @@ class AjaxNewController extends Controller
             }
             if($source_id!=''){
                 $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit" onclick="UpdateRows(this,'.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\')"></i>';
+                $deleteHTML='<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\',\''.$given_date.'\')"></i>';
             }else {
                 # we don't want to trace it, so it will update current row only
                 $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit text-warning" onclick="UpdateRows(this,'.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\')"></i>';
+                $deleteHTML='<i class="fa fa-trash-alt tr-remove text-warning" onclick="deleteRows('.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\',\''.$given_date.'\')"></i>';
             }
             if ($model_id=="Sim extra usage" || $model_id=="Salik Extra") {
                 $UpdateHTML='';
+                $deleteHTML='';
             }
-            if ($model_id=="Sim Transaction" || $model_id=="fuel_expense_cash" || $model_id=="fuel_expense_vip" || $model_id=="Bike Rent" || $model_id=="Salik" || $model_id=="Bike Fine") {
-                $deleteHTML='<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$source_id.'\',\''.$given_date.'\',\''.$year.'\')"></i>';
-            }
+            
             return $UpdateHTML.$deleteHTML;
 
         })

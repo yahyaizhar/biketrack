@@ -382,7 +382,7 @@ class KRController extends Controller
                         $k.='`'.$data_key."`";
 
                         
-                        if ($data_item=='') $d_item.="NULL";
+                        if ($data_item=='' || $data_item==null || $data_item=='null') $d_item.="NULL";
                         else $d_item.='\''.$data_item."'";
                     }
                     else{
@@ -390,14 +390,14 @@ class KRController extends Controller
                         $k.='`'.$data_key."`,";
 
                         
-                        if ($data_item=='') $d_item.="NULL,";
+                        if ($data_item=='' || $data_item==null || $data_item=='null') $d_item.="NULL,";
                         else $d_item.='\''.$data_item."',";
                     }
                     $count = $count + 1;
                 }
                 
                 $insert_data='INSERT INTO '.$table_name.' ('.$k.') VALUES('.$d_item.')';
-                DB::insert($insert_data);
+                // DB::insert($insert_data);
             }
             $deleted_data->delete();
             $emp_name=Auth::user()->name;
@@ -428,7 +428,21 @@ class KRController extends Controller
     public function retreive_notification($id){
         $del_data=Deleted_data::find($id);
         $feed=json_decode($del_data->feed,true);
-        $feed_data=json_decode($feed[0]['data'],true);
+        foreach ($feed as $key => $feed_item) {
+            # fetching data for generating meaningful description
+            if(strpos($feed_item['model'],'Company_Account') !== false || strpos($feed_item['model'],'Rider_Account') !== false){
+                # if company account or rider account was founded (one of them must be there)
+                $feed_data=json_decode($feed_item['data'],true);
+            }
+        }
+        
+        if(!isset($feed_data)){
+            # well, no company account or rider account found? that was unexpencted -we just throw the error
+            return response()->json([
+                'status'=>0,
+                'msg'=>'No Company Account or Rider Account found!',
+            ]);
+        }
         $given_date=Carbon::parse($feed_data['given_date'])->format("d M, Y");
         $source=$feed_data['source'];
         $rider_id=$feed_data['rider_id'];
@@ -445,15 +459,15 @@ class KRController extends Controller
         $data_accept=[
             "type"=>"retreive",
             "data"=>"",
-            "url"=> url('admin/retreive_data/ajax/'). "/" . $id . "/accept/" . Auth::user()->id,
+            "url"=> 'admin/retreive_data/ajax/'. $id . "/accept/" . Auth::user()->id,
         ];
         $data_reject=[
             "type"=>"retreive",
             "data"=>"",
-            "url"=> url('admin/retreive_data/ajax/'). "/" . $id . "/reject/" . Auth::user()->id,
+            "url"=> 'admin/retreive_data/ajax/'. $id . "/reject/" . Auth::user()->id,
         ];
-        $button_html_accepted="<i style='font-size:20px' class='flaticon2-correct text-success' onclick='CallBackNotification(".json_encode($data_accept).")'></i>";
-        $button_html_rejected="<i style='font-size:20px' class='flaticon-circle text-danger' onclick='CallBackNotification(".json_encode($data_reject).")'></i>";
+        $button_html_accepted="<i style='font-size:20px' class='flaticon2-correct text-success' onclick='CallBackNotification(this,".json_encode($data_accept).")'></i>";
+        $button_html_rejected="<i style='font-size:20px' class='flaticon-circle text-danger' onclick='CallBackNotification(this,".json_encode($data_reject).")'></i>";
         $button=$button_html_accepted.$button_html_rejected;
         $current_url=url()->current();
         $action_data = [
@@ -474,6 +488,7 @@ class KRController extends Controller
         $notification->save();
 
         return response()->json([
+            'status'=>1,
             'id'=>$id,
             'notification'=>$notification,
         ]);
@@ -486,22 +501,23 @@ class KRController extends Controller
             "rider_id"=>$request->rider_id,
             "string"=>$request->string,
             "month"=>$request->month,
-            "source_id"=>$request->source_id, 
-            "given_date"=>$request->given_date,
             "year"=>$request->year,
+            "source_id"=>$request->source_id,
+            "source_key"=>$request->source_key,
+            "given_date"=>$request->given_date,
         ];
         $data_accept=[
             "type"=>"delete",
             "data"=>$data,
-            "url"=> url('admin/delete/accounts/rows'). "/" . $request->id . "/accept/" . Auth::user()->id,
+            "url"=> 'admin/delete/accounts/rows'. "/" . $request->id . "/accept/" . Auth::user()->id."/".$request->statement_type,
         ];
         $data_reject=[
             "type"=>"delete",
             "data"=>$data,
-            "url"=> url('admin/delete/accounts/rows'). "/" . $request->id . "/reject/" . Auth::user()->id,
+            "url"=> 'admin/delete/accounts/rows'. "/" . $request->id . "/reject/" . Auth::user()->id."/".$request->statement_type,
         ];
-        $button_html_accepted="<i style='font-size:20px' class='flaticon2-correct text-success' onclick='CallBackNotification(".json_encode($data_accept).")'></i>";
-        $button_html_rejected="<i style='font-size:20px' class='flaticon-circle text-danger' onclick='CallBackNotification(".json_encode($data_reject).")'></i>";
+        $button_html_accepted="<i style='font-size:20px' class='flaticon2-correct text-success' onclick='CallBackNotification(this,".json_encode($data_accept).")'></i>";
+        $button_html_rejected="<i style='font-size:20px' class='flaticon-circle text-danger' onclick='CallBackNotification(this,".json_encode($data_reject).")'></i>";
         $button=$button_html_accepted.$button_html_rejected;
         $current_url=url()->current();
         $action_data = [

@@ -46,7 +46,7 @@
                                     <div class="kt-notification__item-time">
                                         {{carbon\carbon::parse($item->date_time)->diffForHumans(carbon\carbon::now()->format("Y-m-d"))}}
                                         @if ($item->action!=null && $item->status=="unread")
-                                            <div style="float:right;">
+                                            <div style="float:right;" class="action__wrapper" data-id="{{$item->id}}">
                                                 @php
                                                 $button='';
                                                     foreach($item->action as $v){
