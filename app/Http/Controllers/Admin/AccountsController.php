@@ -3568,229 +3568,7 @@ public function client_income_update(Request $request,$id){
         $bikes =bike::all();
         return view('admin.accounts.Bike-Debit.bike_accounts',compact('bikes'));
     }
-    public function delete_account_rows(Request $r,$id,$status,$admin_id){
-        // return response()->json([
-        //     'r'=>$r->all(),
-        //     'id'=>$id,
-        //     'status'=>$status,
-        //     'admin_id'=>$admin_id,
-        // ]);
-        if ($status=="accept") {
-        $ra='';
-        $export_data='';
-        $table='';
-        $ca='';
-        $ca_e='';
-        $ra_e='';
-        $id=$r->id;
-        $model_class=$r->model_class;
-        $model_id=$r->model_id;
-        $rider_id=$r->rider_id;
-        $string=$r->string;
-        $month=$r->month;
-        $trace_id=$r->source_id;
-        $feed=[];
-
-        if ($model_id=="advance") {
-            $trace_table_id='';
-            $ra=Rider_Account::find($id);
-            if ($model_id=="advance") {
-                $trace_table_id=$ra->advance_return_id;
-                $model_name='App\Model\Accounts\AdvanceReturn';
-            }
-            $table=$model_name::find($trace_table_id);
-            $export_data=Export_data::whereMonth('month',$month)->where($string,$model_id)->where('source_id',$trace_table_id)->get()->first();
-            $obj=[];
-            $obj['model']=get_class($ra);
-            $obj['data']=json_encode($ra);
-            array_push($feed,$obj);
-            
-            $obj=[];
-            $obj['model']=get_class($table);
-            $obj['data']=json_encode($table);
-            array_push($feed,$obj);
-            
-            $obj=[];
-            $obj['model']=get_class($export_data);
-            $obj['data']=json_encode($export_data);
-            array_push($feed,$obj);
-
-            $del_data=new Deleted_data;
-            $del_data->date=carbon::now()->format('Y-m-d');
-            $del_data->deleted_by=Auth::user()->id;
-            $del_data->feed=json_encode($feed);
-            $del_data->save();
-
-            $ra->delete();
-            $table->delete();
-            $export_data->delete();
-
-            $emp_name=Auth::user();
-            $notification=new Notification;
-            $notification->date_time=Carbon::now()->format("Y-m-d");
-            $notification->employee_id=$admin_id;
-            $notification->desc=$emp_name->name." accepted your deleted request";
-            $notification->action="";
-            $notification->save();
-        }
-        else if ($model_id=="fuel_expense_vip" || $model_id=="fuel_expense_cash" || $model_id=="Bike Fine" || $model_id=="Sim Transaction" || $model_id=="Bike Rent" || $model_id=="Salik") {
-            if ($id!="") {
-            $ca=Company_Account::find($id);
-            if ($model_id=="fuel_expense_vip" || $model_id=="fuel_expense_cash") {
-                $trace_table_id=$ca->fuel_expense_id; 
-                $model_name='App\Model\Accounts\Fuel_Expense';
-                $ca_e='';
-                $ra_e='';
-            }
-            if ($model_id=="Bike Fine") {
-                $trace_table_id=$ca->bike_fine; 
-                $model_name='App\Model\Accounts\Bike_Fine';
-                $ca_e=Company_Account::where("source","Bike Fine Paid")->whereMonth("month",$month)->where("bike_fine",$trace_table_id)->get()->first();
-                $ra_e=Rider_Account::where("source","Bike Fine Paid")->whereMonth("month",$month)->where("bike_fine",$trace_table_id)->get()->first();
-            }
-            if ($model_id=="Sim Transaction") {
-                $trace_table_id=$ca->sim_transaction_id; 
-                $model_name='App\Model\Sim\Sim_Transaction';
-                $ca_e=Company_Account::where("source","Sim extra usage")->whereMonth("month",$month)->where("sim_transaction_id",$trace_table_id)->get()->first();
-                $ra_e=Rider_Account::where("source","Sim extra usage")->whereMonth("month",$month)->where("sim_transaction_id",$trace_table_id)->get()->first();
-            }
-            if ($model_id=="Salik") {
-                $trace_table_id=$ca->salik_id;
-                $model_name='';
-                $type=$ca->type;
-                if ($type=="cr") {
-                    $type_i="dr";
-                }
-                if ($type=="dr") {
-                    $type_i="cr";
-                }
-                $ca_e=Company_Account::where("source","Salik")->where("type",$type_i)->whereMonth("month",$month)->where("salik_id",$trace_table_id)->get()->first();
-                $ra_e=Rider_Account::where("source","Salik")->whereMonth("month",$month)->where("salik_id",$trace_table_id)->get()->first();
-            }
-            if ($model_id=="Bike Rent") {
-                $trace_table_id=$ca->bike_rent_id;
-                $model_name='';
-                $ca_e='';
-                $ra_ex=Rider_Account::where("source","Bike Allowns")->whereMonth("month",$month)->where("bike_rent_id",$trace_table_id)->get()->first();
-                if (isset($ra_ex)) {
-                    $ra_e=$ra_ex;
-                }
-                else{
-                    $ra_e='';
-                }
-            }
-            $obj=[];
-            $obj['model']=get_class($ca);
-            $obj['data']=json_encode($ca);
-            array_push($feed,$obj);
-            
-            if ($model_name!='') {
-                $table=$model_name::find($trace_table_id);
-                $obj=[];
-                if (isset($table)) {
-                    $obj['model']=get_class($table);
-                    $obj['data']=json_encode($table);
-                    array_push($feed,$obj);
-                }
-            }
-            if ($model_id!="Bike Fine") {
-                $export_data=Export_data::whereMonth('month',$month)->where($string,$model_id)->where('source_id',$trace_table_id)->get()->first();
-                $obj=[];
-                if (isset($export_data)) {
-                    $obj['model']=get_class($export_data);
-                    $obj['data']=json_encode($export_data);
-                    array_push($feed,$obj);
-                }
-                
-                
-            }
-            if ($ca_e!='') {
-                $obj=[];
-                $obj['model']=get_class($ca_e);
-                $obj['data']=json_encode($ca_e);
-                array_push($feed,$obj);
-            }
-            if ($ra_e!='') {
-                $obj=[];
-                $obj['model']=get_class($ra_e);
-                $obj['data']=json_encode($ra_e);
-                array_push($feed,$obj);
-            }
-            $del_data=new Deleted_data;
-            $del_data->date=carbon::now()->format('Y-m-d');
-            $del_data->deleted_by=Auth::user()->id;
-            $del_data->feed=json_encode($feed);
-            $del_data->save();
-
-
-            $ca->delete();
-            if($model_name!=''){
-                if (isset($table)) {
-                    $table->delete();
-                }
-            }
-            if ($model_id!="Bike Fine") {
-                if (isset($export_data)) {
-                    $export_data->delete();
-                }
-            }
-            if ($ca_e!='') {
-                $ca_e->delete();
-            }
-            if ($ra_e!='') {
-                $ra_e->delete();
-            }
-            $emp_name=Auth::user();
-            $notification=new Notification;
-            $notification->date_time=Carbon::now()->format("Y-m-d");
-            $notification->employee_id=$admin_id;
-            $notification->desc=$emp_name->name." accepted your deleted request";
-            $notification->action="";
-            $notification->save();
-        }
-        }
-        return response()->json([
-            'del_data'=>$del_data,
-            'ra'=>$ra,
-            'ca'=>$ca,
-            'table'=>$table,
-            'export_data'=>$export_data,
-            'ca_e'=>$ca_e,
-            'ra_e'=>$ra_e,
-            
-        ]);
-        }
-        if ($status=="reject") {
-            $emp_name=Auth::user();
-            $notification=new Notification;
-            $notification->date_time=Carbon::now()->format("Y-m-d");
-            $notification->employee_id=$admin_id;
-            $notification->desc=$emp_name->name." rejected your deleted request";
-            $notification->action="";
-            $notification->save();
-        }
-        // if (isset($model_class)) {
-        //     $alter=$model_class::find($model_id);
-        //     if (isset($alter)) {
-        //         $alter->delete();
-        //     }
-           
-        // }
-        // $CA=Company_Account::where("rider_id",$rider_id)
-        // ->whereMonth("month",$month)
-        // ->where($string,$model_id)
-        // ->get();
-        // foreach ($CA as $ca) {
-        //     $ca->delete();
-        // }
-        // $RA=Rider_Account::where("rider_id",$rider_id)
-        // ->whereMonth("month",$month)
-        // ->where($string,$model_id)
-        // ->get();
-        // foreach ($RA as $ra) {
-        //     $ra->delete();
-        // }
-    }
+    
     public function assign_client_rider_id($p_id,$feid,$rider_id){
         $ca=Company_Account::where("income_zomato_id",$p_id)->get();
         foreach ($ca as $value) {
@@ -4481,6 +4259,227 @@ public function client_income_update(Request $request,$id){
             'export_data'=>$export_data,
             'third_table'=>$third_table,
         ]);
+    }
+    public function delete_account_rows(Request $r,$id,$status,$admin_id,$statement_type){
+        // return response()->json([
+        //     'r'=>$r->all(),
+        //     'id'=>$id,
+        //     'status'=>$status,
+        //     'admin_id'=>$admin_id,
+        // ]);
+        
+        if ($status=="accept") {
+            $_month=$r->month;
+            $_year=$r->year;
+            $rider_id=$r->rider_id;
+            $feed=[];
+            
+            if($statement_type=='rider__accounts') $statement = Rider_Account::find($r->id);
+            else $statement = Company_Account::find($r->id);
+            
+            if(!isset($statement)){
+                #generate error
+                return response()->json([
+                    'status'=>0,
+                    'msg'=>'No row found'
+                ]);
+            }
+            if($r->source_id==''){
+                #means there is not linking between tables, so we just delete this row
+                $obj=[];
+                $obj['model']=get_class($statement);
+                $obj['data']=json_encode($statement);
+                array_push($feed,$obj);
+                $statement->delete();
+
+                $del_data=new Deleted_data;
+                $del_data->date=Carbon::now()->format('Y-m-d');
+                $del_data->deleted_by=Auth::user()->id;
+                $del_data->feed=json_encode($feed);
+                $del_data->save();
+
+                $login_user=Auth::user();
+                $notification=new Notification;
+                $notification->date_time=Carbon::now()->format("Y-m-d");
+                $notification->employee_id=$admin_id;
+                $notification->desc=$login_user->name." accepted your deleted request";
+                $notification->action="";
+                $notification->save();
+                return response()->json([
+                    'status'=>1,
+                    'del_data'=>$del_data
+                ]);
+            }
+
+            $_source=$statement->source; 
+            $tt_model = ''; 
+            $tt_tomatch='id';
+            $src = $r->source_key;
+            if ($_source=="Salik Extra" || $_source=="Salik") {
+                $tt_model = 'App\Model\Rider\Trip_Detail';
+                $tt_tomatch='transaction_id';
+            }
+            if ($_source=="fuel_expense_vip") {
+                $tt_model = 'App\Model\Accounts\Fuel_Expense';
+            }
+            if ($_source=="fuel_expense_cash") { 
+                $tt_model = 'App\Model\Accounts\Fuel_Expense';
+            }
+            if ($_source=="Sim Transaction" || $_source=="Sim extra usage") {
+                $tt_model = 'App\Model\Sim\Sim_Transaction';
+            }
+            if ($src=="bike_fine") { 
+                $tt_model = 'App\Model\Accounts\Bike_Fine';
+            }
+            if ($src=="advance_return_id") { 
+                $tt_model = 'App\Model\Accounts\AdvanceReturn';
+            }
+            if ($src=="Mobile Installment") { 
+                $tt_model = 'App\Model\Mobile\Mobile_Transaction';
+            }
+            
+            
+            
+            #finding and updating third table
+            $third_table=null;
+            if($tt_model!=''){ # we need to check if third table exist
+                $third_table=$tt_model::where($tt_tomatch,$r->source_id)->get()->first();
+                if(isset($third_table)){
+                    #delete data
+                    $obj=[];
+                    $obj['model']=get_class($third_table);
+                    $obj['data']=json_encode($third_table);
+                    array_push($feed,$obj);
+                    $third_table->delete();
+                }
+            }
+            
+            #updating Company Account
+            $ca =Company_Account::where("rider_id",$rider_id)
+            ->whereMonth("month",$_month)
+            ->whereYear("month",$_year)
+            ->where($src,$r->source_id)
+            ->get();
+            foreach ($ca as $key=>$company_statement) {
+                #we need to check if this iteration is original by comparing this id to the id we received for deleting
+                
+
+                #we need to get rider account linked with this row
+                $alternate_type=$company_statement->type=='dr'?'cr':'dr'; # get the type of rider account, if company account has dr, then rider acc must has cr
+                
+                $rider_statement =Rider_Account::where("rider_id",$rider_id)
+                ->whereMonth("month",$_month)
+                ->whereYear("month",$_year)
+                ->where($src,$r->source_id)
+                ->where('source', $company_statement->source)
+                // ->where('type', $alternate_type) 
+                ->get()
+                ->first();
+                if(isset($rider_statement))
+                {
+                    #row found in rider account against this row -we need to delete that too
+                    $obj=[];
+                    $obj['model']=get_class($rider_statement);
+                    $obj['data']=json_encode($rider_statement);
+                    array_push($feed,$obj);
+                    $ca[$key]['ra']=$rider_statement;
+                    $rider_statement->delete();
+
+                }
+                $obj=[];
+                $obj['model']=get_class($company_statement);
+                $obj['data']=json_encode($company_statement);
+                array_push($feed,$obj);
+                $company_statement->delete();
+            }
+
+            #need to check if this row is not linked from company acc
+            if(count($ca)<=0){
+                #no record found in company account, we need to reverse the algorithm
+                $ca =Rider_Account::where("rider_id",$rider_id)
+                ->whereMonth("month",$_month)
+                ->whereYear("month",$_year)
+                ->where($src,$r->source_id)
+                ->get();
+                foreach ($ca as $key=>$rider_statement) {
+                    $obj=[];
+                    $obj['model']=get_class($rider_statement);
+                    $obj['data']=json_encode($rider_statement);
+                    array_push($feed,$obj);
+                    $rider_statement->delete();
+                }
+            }
+
+            #updating export data
+            $export_data=Export_data::whereMonth('month',$_month)
+            ->whereYear("month",$_year)
+            ->where('source',$_source)
+            ->where('source_id',$r->source_id)
+            ->get()
+            ->first();
+            if(isset($export_data)){
+                #delete data
+                $obj=[];
+                $obj['model']=get_class($export_data);
+                $obj['data']=json_encode($export_data);
+                array_push($feed,$obj);
+                $export_data->delete();
+            }
+            
+            #saving what we deleted to this table so we can retieve it later
+            $del_data=new Deleted_data;
+            $del_data->date=Carbon::now()->format('Y-m-d');
+            $del_data->deleted_by=Auth::user()->id;
+            $del_data->feed=json_encode($feed);
+            $del_data->save();
+
+            $login_user=Auth::user();
+            $notification=new Notification;
+            $notification->date_time=Carbon::now()->format("Y-m-d");
+            $notification->employee_id=$admin_id;
+            $notification->desc=$login_user->name." accepted your deleted request";
+            $notification->action="";
+            $notification->save();
+            
+            return response()->json([
+                'status'=>1,
+                'ca'=>$ca,
+                // 'ra'=>$ra,
+                'del_data'=>$del_data,
+                'export_data'=>$export_data,
+                'third_table'=>$third_table,
+            ]);
+        }
+        elseif ($status=="reject") {
+            $emp_name=Auth::user();
+            $notification=new Notification;
+            $notification->date_time=Carbon::now()->format("Y-m-d");
+            $notification->employee_id=$admin_id;
+            $notification->desc=$emp_name->name." rejected your deleted request";
+            $notification->action="";
+            $notification->save();
+        }
+        // if (isset($model_class)) {
+        //     $alter=$model_class::find($model_id);
+        //     if (isset($alter)) {
+        //         $alter->delete();
+        //     }
+           
+        // }
+        // $CA=Company_Account::where("rider_id",$rider_id)
+        // ->whereMonth("month",$month)
+        // ->where($string,$model_id)
+        // ->get();
+        // foreach ($CA as $ca) {
+        //     $ca->delete();
+        // }
+        // $RA=Rider_Account::where("rider_id",$rider_id)
+        // ->whereMonth("month",$month)
+        // ->where($string,$model_id)
+        // ->get();
+        // foreach ($RA as $ra) {
+        //     $ra->delete();
+        // }
     }
 
     public function edit_rider_account(Request $r){

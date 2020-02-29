@@ -184,41 +184,124 @@ class SalikController extends Controller
             }
             $amount = $distinct_item['amount_aed'];
             $add_amount = 0;
-            $ca_obj = [];
-            $ca_obj['salik_id']=$distinct_item['transaction_id'];
-            $ca_obj['source']='Salik';
-            $ca_obj['amount']=$amount;
-            $ca_obj['rider_id']=$distinct_item['rider_id'];
-            $ca_obj['type']='cr';
-            $ca_obj['month']=Carbon::parse($distinct_item['trip_date'])->startOfMonth()->format("Y-m-d");
-            $ca_obj['given_date']=Carbon::now()->format("Y-m-d");
-            $ca_obj['created_at']=Carbon::now();
-            $ca_obj['updated_at']=Carbon::now();
-            array_push($ca_objects, $ca_obj);
 
-            $ca_obj = [];
-            $ca_obj['salik_id']=$distinct_item['transaction_id'];
-            $ca_obj['source']='Salik';
-            $ca_obj['amount']=$amount;
-            $ca_obj['rider_id']=$distinct_item['rider_id'];
-            $ca_obj['type']='dr';
-            $ca_obj['month']=Carbon::parse($distinct_item['trip_date'])->startOfMonth()->format("Y-m-d");
-            $ca_obj['given_date']=Carbon::now()->format("Y-m-d");
-            $ca_obj['created_at']=Carbon::now();
-            $ca_obj['updated_at']=Carbon::now();
-            array_push($ca_objects, $ca_obj);
+            $execute_previous_algo=false; #use this to import salik that deduct only extra salik from rider account
 
-            $ra_obj = [];
-            $ra_obj['salik_id']=$distinct_item['transaction_id'];
-            $ra_obj['source']='Salik';
-            $ra_obj['amount']=$amount;
-            $ra_obj['rider_id']=$distinct_item['rider_id'];
-            $ra_obj['type']='cr_payable';
-            $ra_obj['month']=Carbon::parse($distinct_item['trip_date'])->startOfMonth()->format("Y-m-d");
-            $ra_obj['given_date']=Carbon::now()->format("Y-m-d");
-            $ra_obj['created_at']=Carbon::now();
-            $ra_obj['updated_at']=Carbon::now();
-            array_push($ra_objects, $ra_obj);
+            if($execute_previous_algo){
+                # old algo, where we deduct only extra salik from rider account
+                if($amount > $max_salik){
+                    $ca_obj = [];
+                    $ca_obj['salik_id']=$distinct_item['transaction_id'];
+                    $ca_obj['source']='Salik';
+                    $ca_obj['amount']=$amount;
+                    $ca_obj['rider_id']=$distinct_item['rider_id'];
+                    $ca_obj['type']='dr';
+                    $ca_obj['month']=Carbon::parse($distinct_item['trip_date'])->format("Y-m-d");
+                    $ca_obj['created_at']=Carbon::now();
+			        $ca_obj['given_date']=Carbon::now()->format("Y-m-d");
+                    $ca_obj['updated_at']=Carbon::now();
+                    array_push($ca_objects, $ca_obj);
+    
+                    $ra_obj = [];
+                    $ra_obj['salik_id']=$distinct_item['transaction_id'];
+                    $ra_obj['source']='Salik';
+                    $ra_obj['amount']=$amount-$max_salik;
+                    $ra_obj['rider_id']=$distinct_item['rider_id'];
+                    $ra_obj['type']='cr_payable';
+                    $ra_obj['month']=Carbon::parse($distinct_item['trip_date'])->format("Y-m-d");
+                    $ra_obj['created_at']=Carbon::now();
+			        $ra_obj['given_date']=Carbon::now()->format("Y-m-d");
+                    $ra_obj['updated_at']=Carbon::now();
+                    array_push($ra_objects, $ra_obj);
+    
+                    $ca_obj = [];
+                    $ca_obj['salik_id']=$distinct_item['transaction_id'];
+                    $ca_obj['source']='Salik Extra';
+                    $ca_obj['amount']=$amount-$max_salik;
+                    $ca_obj['rider_id']=$distinct_item['rider_id'];
+                    $ca_obj['type']='cr';
+                    $ca_obj['month']=Carbon::parse($distinct_item['trip_date'])->format("Y-m-d");
+                    $ca_obj['created_at']=Carbon::now();
+		            $ca_obj['given_date']=Carbon::now()->format("Y-m-d");
+                    $ca_obj['updated_at']=Carbon::now();
+                    array_push($ca_objects, $ca_obj);
+                    
+                }
+                else{
+                    $ca_obj = [];
+                    $ca_obj['salik_id']=$distinct_item['transaction_id'];
+                    $ca_obj['source']='Salik';
+                    $ca_obj['amount']=$amount;
+                    $ca_obj['rider_id']=$distinct_item['rider_id'];
+                    $ca_obj['type']='dr';
+                    $ca_obj['month']=Carbon::parse($distinct_item['trip_date'])->format("Y-m-d");
+                    $ca_obj['created_at']=Carbon::now();
+		            $ca_obj['given_date']=Carbon::now()->format("Y-m-d");
+                    $ca_obj['updated_at']=Carbon::now();
+                    array_push($ca_objects, $ca_obj);
+                    // $ca_obj = [];
+                    // $ca_obj['salik_id']=$distinct_item['transaction_id'];
+                    // $ca_obj['source']='Salik';
+                    // $ca_obj['amount']=$max_salik;
+                    // $ca_obj['rider_id']=$distinct_item['rider_id'];
+                    // $ca_obj['type']='dr';
+                    // $ca_obj['month']=Carbon::parse($distinct_item['trip_date'])->format("Y-m-d");
+                    // $ca_obj['created_at']=Carbon::now();
+                    // $ca_obj['updated_at']=Carbon::now();
+                    // array_push($ca_objects, $ca_obj);
+                    // if($amount<$max_salik){
+                    //     $ra_obj = [];
+                    //     $ra_obj['salik_id']=$distinct_item['transaction_id'];
+                    //     $ra_obj['source']='Salik';
+                    //     $ra_obj['amount']=$max_salik-$amount;
+                    //     $ra_obj['rider_id']=$distinct_item['rider_id'];
+                    //     $ra_obj['type']='cr';
+                    //     $ra_obj['month']=Carbon::parse($distinct_item['trip_date'])->format("Y-m-d");
+                    //     $ra_obj['created_at']=Carbon::now();
+                    //     $ra_obj['updated_at']=Carbon::now();
+                    //     array_push($ra_objects, $ra_obj);
+                    // }
+                }
+            }
+            else {
+                # new algo, where we deduct all salik from rider account
+                $ca_obj = [];
+                $ca_obj['salik_id']=$distinct_item['transaction_id'];
+                $ca_obj['source']='Salik';
+                $ca_obj['amount']=$amount;
+                $ca_obj['rider_id']=$distinct_item['rider_id'];
+                $ca_obj['type']='cr';
+                $ca_obj['month']=Carbon::parse($distinct_item['trip_date'])->startOfMonth()->format("Y-m-d");
+                $ca_obj['given_date']=Carbon::now()->format("Y-m-d");
+                $ca_obj['created_at']=Carbon::now();
+                $ca_obj['updated_at']=Carbon::now();
+                array_push($ca_objects, $ca_obj);
+
+                $ca_obj = [];
+                $ca_obj['salik_id']=$distinct_item['transaction_id'];
+                $ca_obj['source']='Salik';
+                $ca_obj['amount']=$amount;
+                $ca_obj['rider_id']=$distinct_item['rider_id'];
+                $ca_obj['type']='dr';
+                $ca_obj['month']=Carbon::parse($distinct_item['trip_date'])->startOfMonth()->format("Y-m-d");
+                $ca_obj['given_date']=Carbon::now()->format("Y-m-d");
+                $ca_obj['created_at']=Carbon::now();
+                $ca_obj['updated_at']=Carbon::now();
+                array_push($ca_objects, $ca_obj);
+
+                $ra_obj = [];
+                $ra_obj['salik_id']=$distinct_item['transaction_id'];
+                $ra_obj['source']='Salik';
+                $ra_obj['amount']=$amount;
+                $ra_obj['rider_id']=$distinct_item['rider_id'];
+                $ra_obj['type']='cr_payable';
+                $ra_obj['month']=Carbon::parse($distinct_item['trip_date'])->startOfMonth()->format("Y-m-d");
+                $ra_obj['given_date']=Carbon::now()->format("Y-m-d");
+                $ra_obj['created_at']=Carbon::now();
+                $ra_obj['updated_at']=Carbon::now();
+                array_push($ra_objects, $ra_obj);
+            }
+
             
         }
 
