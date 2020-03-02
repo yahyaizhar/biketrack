@@ -19,6 +19,8 @@ class CreateNotificationsTable extends Migration
             $table->integer('employee_id')->nullable();
             $table->text('desc')->nullable();
             $table->text('action')->nullable();
+            $table->string('source_id')->nullable();
+            $table->string('source_type')->nullable();
             $table->string('status')->default("unread");
             $table->timestamps();
         });
