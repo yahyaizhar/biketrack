@@ -39,7 +39,7 @@
                                 </div> --}}
                                 <div class="kt-notification__item-details">
                                     <div class="kt-notification__item-title">
-                                        {{$item->status}}
+                                        {{-- {{$item->status}} --}}
                                         <span style="float:right;" onclick="notificationEnd({{$item->id}})"><i class="flaticon-cancel"></i></span>
                                     </div>
                                     <div class="kt-notification__item-title">
