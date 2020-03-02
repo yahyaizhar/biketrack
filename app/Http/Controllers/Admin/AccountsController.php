@@ -3935,12 +3935,14 @@ public function client_income_update(Request $request,$id){
                 $statement->save();
 
                 $login_user=Auth::user();
-                $notification=new Notification;
-                $notification->date_time=Carbon::now()->format("Y-m-d");
-                $notification->employee_id=$admin_id;
-                $notification->desc=$login_user->name." accepted your edit request";
-                $notification->action="";
-                $notification->save();
+                if($login_user->type!='su'){ #filter admin
+                    $notification=new Notification;
+                    $notification->date_time=Carbon::now()->format("Y-m-d");
+                    $notification->employee_id=$admin_id;
+                    $notification->desc=$login_user->name." accepted your edit request";
+                    $notification->action="";
+                    $notification->save();
+                }
                 return response()->json([
                     'status'=>1
                 ]);
@@ -4056,6 +4058,7 @@ public function client_income_update(Request $request,$id){
             }
 
             #updating export data
+            $_source=$_source=='Sim extra usage'?'Sim Transaction':$_source; #hack for when we have source=Sim extra usage
             $export_data=Export_data::whereMonth('month',$_month)
             ->whereYear("month",$_year)
             ->where('source',$_source)
@@ -4071,12 +4074,14 @@ public function client_income_update(Request $request,$id){
             }
 
             $login_user=Auth::user();
-            $notification=new Notification;
-            $notification->date_time=Carbon::now()->format("Y-m-d");
-            $notification->employee_id=$admin_id;
-            $notification->desc=$login_user->name." accepted your edit request";
-            $notification->action="";
-            $notification->save();
+            if($login_user->type!='su'){ #filter admin
+                $notification=new Notification;
+                $notification->date_time=Carbon::now()->format("Y-m-d");
+                $notification->employee_id=$admin_id;
+                $notification->desc=$login_user->name." accepted your edit request";
+                $notification->action="";
+                $notification->save();
+            }
             return response()->json([
                 'status'=>1,
                 'ca'=>$ca,
@@ -4125,12 +4130,14 @@ public function client_income_update(Request $request,$id){
                 $statement->save();
 
                 $login_user=Auth::user();
-                $notification=new Notification;
-                $notification->date_time=Carbon::now()->format("Y-m-d");
-                $notification->employee_id=$admin_id;
-                $notification->desc=$login_user->name." accepted your edit request";
-                $notification->action="";
-                $notification->save();
+                if($login_user->type!='su'){ #filter admin
+                    $notification=new Notification;
+                    $notification->date_time=Carbon::now()->format("Y-m-d");
+                    $notification->employee_id=$admin_id;
+                    $notification->desc=$login_user->name." accepted your edit request";
+                    $notification->action="";
+                    $notification->save();
+                }
                 return response()->json([
                     'status'=>1
                 ]);
@@ -4267,6 +4274,7 @@ public function client_income_update(Request $request,$id){
             }
 
             #updating export data
+            $_source=$_source=='Sim extra usage'?'Sim Transaction':$_source; #hack for when we have source=Sim extra usage
             $export_data=Export_data::whereMonth('month',$_month)
             ->whereYear("month",$_year)
             ->where('source',$_source)
@@ -4282,12 +4290,14 @@ public function client_income_update(Request $request,$id){
             }
 
             $login_user=Auth::user();
-            $notification=new Notification;
-            $notification->date_time=Carbon::now()->format("Y-m-d");
-            $notification->employee_id=$admin_id;
-            $notification->desc=$login_user->name." accepted your edit request";
-            $notification->action="";
-            $notification->save();
+            if($login_user->type!='su'){ #filter admin
+                $notification=new Notification;
+                $notification->date_time=Carbon::now()->format("Y-m-d");
+                $notification->employee_id=$admin_id;
+                $notification->desc=$login_user->name." accepted your edit request";
+                $notification->action="";
+                $notification->save();
+            }
             return response()->json([
                 'status'=>1,
                 'ca'=>$ca,
@@ -4348,12 +4358,14 @@ public function client_income_update(Request $request,$id){
                 $del_data->save();
 
                 $login_user=Auth::user();
-                $notification=new Notification;
-                $notification->date_time=Carbon::now()->format("Y-m-d");
-                $notification->employee_id=$admin_id;
-                $notification->desc=$login_user->name." accepted your deleted request";
-                $notification->action="";
-                $notification->save();
+                if($login_user->type!='su'){
+                    $notification=new Notification;
+                    $notification->date_time=Carbon::now()->format("Y-m-d");
+                    $notification->employee_id=$admin_id;
+                    $notification->desc=$login_user->name." accepted your deleted request";
+                    $notification->action="";
+                    $notification->save();
+                }
                 return response()->json([
                     'status'=>1,
                     'del_data'=>$del_data
@@ -4402,6 +4414,9 @@ public function client_income_update(Request $request,$id){
                     $third_table->delete();
                 }
             }
+
+            #an array to get ra
+            $ra=[];
             
             #updating Company Account
             $ca =Company_Account::where("rider_id",$rider_id)
@@ -4431,6 +4446,7 @@ public function client_income_update(Request $request,$id){
                     $obj['model']=get_class($rider_statement);
                     $obj['data']=json_encode($rider_statement);
                     array_push($feed,$obj);
+                    // array_push($ra,$rider_statement);
                     // $ca[$key]['ra']=$rider_statement;
                     $rider_statement->delete();
 
@@ -4460,6 +4476,7 @@ public function client_income_update(Request $request,$id){
             }
 
             #updating export data
+            $_source=$_source=='Sim extra usage'?'Sim Transaction':$_source; #hack for when we have source=Sim extra usage
             $export_data=Export_data::whereMonth('month',$_month)
             ->whereYear("month",$_year)
             ->where('source',$_source)
@@ -4483,12 +4500,14 @@ public function client_income_update(Request $request,$id){
             $del_data->save();
 
             $login_user=Auth::user();
-            $notification=new Notification;
-            $notification->date_time=Carbon::now()->format("Y-m-d");
-            $notification->employee_id=$admin_id;
-            $notification->desc=$login_user->name." accepted your deleted request";
-            $notification->action="";
-            $notification->save();
+            if($login_user->type!='su'){ #filter admin
+                $notification=new Notification;
+                $notification->date_time=Carbon::now()->format("Y-m-d");
+                $notification->employee_id=$admin_id;
+                $notification->desc=$login_user->name." accepted your deleted request";
+                $notification->action="";
+                $notification->save();
+            }
             
             return response()->json([
                 'status'=>1,

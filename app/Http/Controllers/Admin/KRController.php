@@ -401,13 +401,15 @@ class KRController extends Controller
             }
             $deleted_data->delete();
             $emp_name=Auth::user()->name;
-            $notification=new Notification;
-            $notification->date_time=Carbon::now()->format("Y-m-d");
-            $notification->employee_id=$admin_id;
-            $notification->desc=$emp_name." accepted your retreive data request";
-            $notification->action="";
-            // $notification->status="read";
-            $notification->save();
+            if(Auth::user()->type!='su'){
+                $notification=new Notification;
+                $notification->date_time=Carbon::now()->format("Y-m-d");
+                $notification->employee_id=$admin_id;
+                $notification->desc=$emp_name." accepted your retreive data request";
+                $notification->action="";
+                // $notification->status="read";
+                $notification->save();
+            }
             return response()->json([
                 'status'=>$insert_data,
                 'count'=>$count,
@@ -456,8 +458,13 @@ class KRController extends Controller
             $emp_name=$user->name;
         }
         else{
-            $seniour_emp="1";
-            $emp_name="Admin";
+            # no senior person found, so just delete the data
+            $url = 'admin/retreive_data/ajax/'. $id . "/accept/" . Auth::user()->id;
+            $response = $this->retreive_data($id,'accept',Auth::user()->id);
+            return response()->json([
+                'status'=>1,
+                'response'=>$response
+            ]);
         }
         $data_accept=[
             "type"=>"retreive",
@@ -489,6 +496,9 @@ class KRController extends Controller
         $notification->desc=$emp_name." want to retreive ".$source." for KR".$rider_id." on ".$given_date;
         $notification->action=json_encode($action_data);
         $notification->save();
+
+        $del_data->status="request_send";
+        $del_data->save();
 
         return response()->json([
             'status'=>1,

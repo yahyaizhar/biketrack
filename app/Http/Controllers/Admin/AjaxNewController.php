@@ -1047,6 +1047,9 @@ class AjaxNewController extends Controller
                 $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit text-warning" onclick="UpdateRows(this,'.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\',\''.$given_date.'\')"></i>';
                 $deleteHTML='<i class="fa fa-trash-alt tr-remove text-warning" onclick="deleteRows('.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\',\''.$given_date.'\')"></i>';
             }
+            if ($model_id=="Sim extra usage" || $model_id=="Salik Extra") {
+                $UpdateHTML='';
+            }
             return $UpdateHTML.$deleteHTML;
             // }
         })
@@ -4908,7 +4911,10 @@ class AjaxNewController extends Controller
         })
         ->addColumn('actions', function($del_data){
             $id=$del_data->id;
-            return '<button class="btn btn-danger" onclick="retreive_data('.$id.')">Request for Retreive Data</button>';
+            if($del_data->status!='request_send'){
+                return '<button class="btn btn-danger" onclick="retreive_data('.$id.')">Request for Retreive Data</button>';
+            }
+            return '<label class="text-warning">Request Already sent</label>'; 
             
         })
         ->rawColumns(['id','date','deleted_by','feed','status','actions'])
