@@ -55,9 +55,9 @@
                                                     <button onclick="deleteRecord({{$rider->id}},{{$assign_bike->id}})" class="btn btn-label-danger btn-sm btn-upper">Delete Record</button>&nbsp;
                                                 @endif
                                             @endif
-                                            @if ($bike->active_status==='D') 
+                                            {{-- @if ($bike->active_status==='D') 
                                              <button class="btn btn-label-warning btn-sm btn-upper"><span class="label label-warning">Deleted</span></button>
-                                            @endif
+                                            @endif --}}
                                             
                                         {{-- <button class="btn btn-label-success btn-sm btn-upper"><span class="label label-success">{{$bike_id['status']}}</span></button> --}}
                                         </div>

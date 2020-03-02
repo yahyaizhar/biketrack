@@ -19,7 +19,9 @@
             <div class="kt-header__topbar-wrapper" data-toggle="dropdown" data-offset="30px,0px" aria-expanded="false">
                 <span class="kt-header__topbar-icon">
                     <i class="flaticon2-bell-alarm-symbol"></i>
+                    @if (count($notifications)>1)
                     <span class="kt-badge kt-badge--dot kt-badge--notify kt-badge--sm kt-badge--brand"></span>
+                    @endif
                 </span>
             </div>
             <div class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-lg" style="">
