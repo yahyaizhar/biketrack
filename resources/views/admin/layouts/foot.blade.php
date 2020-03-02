@@ -423,7 +423,7 @@ function notificationEnd(id){
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         success: function(data){
-            window.location.reload();
+            // window.location.reload();
         },
         error: function(error){
             swal.fire({

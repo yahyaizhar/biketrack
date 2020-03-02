@@ -3941,6 +3941,8 @@ public function client_income_update(Request $request,$id){
                     $notification->employee_id=$admin_id;
                     $notification->desc=$login_user->name." accepted your edit request";
                     $notification->action="";
+                    $notification->source_id=$r->source_id;
+                    $notification->source_type=$r->source_key;
                     $notification->save();
                 }
                 return response()->json([
@@ -4080,6 +4082,8 @@ public function client_income_update(Request $request,$id){
                 $notification->employee_id=$admin_id;
                 $notification->desc=$login_user->name." accepted your edit request";
                 $notification->action="";
+                $notification->source_id=$r->source_id;
+                $notification->source_type=$r->source_key;
                 $notification->save();
             }
             return response()->json([
@@ -4098,6 +4102,8 @@ public function client_income_update(Request $request,$id){
             $notification->employee_id=$admin_id;
             $notification->desc=$login_user->name." rejected your edit request";
             $notification->action="";
+            $notification->source_id=$r->source_id;
+            $notification->source_type=$r->source_key;
             $notification->save();
         }
     }
@@ -4136,6 +4142,8 @@ public function client_income_update(Request $request,$id){
                     $notification->employee_id=$admin_id;
                     $notification->desc=$login_user->name." accepted your edit request";
                     $notification->action="";
+                    $notification->source_id=$r->source_id;
+                    $notification->source_type=$r->source_key;
                     $notification->save();
                 }
                 return response()->json([
@@ -4296,6 +4304,8 @@ public function client_income_update(Request $request,$id){
                 $notification->employee_id=$admin_id;
                 $notification->desc=$login_user->name." accepted your edit request";
                 $notification->action="";
+                $notification->source_id=$r->source_id;
+                $notification->source_type=$r->source_key;
                 $notification->save();
             }
             return response()->json([
@@ -4316,6 +4326,8 @@ public function client_income_update(Request $request,$id){
             $notification->employee_id=$admin_id;
             $notification->desc=$login_user->name." rejected your edit request";
             $notification->action="";
+            $notification->source_id=$r->source_id;
+            $notification->source_type=$r->source_key;
             $notification->save();
         }
     }
@@ -4364,6 +4376,8 @@ public function client_income_update(Request $request,$id){
                     $notification->employee_id=$admin_id;
                     $notification->desc=$login_user->name." accepted your deleted request";
                     $notification->action="";
+                    $notification->source_id=$r->source_id;
+                    $notification->source_type=$r->source_key;
                     $notification->save();
                 }
                 return response()->json([
@@ -4506,6 +4520,8 @@ public function client_income_update(Request $request,$id){
                 $notification->employee_id=$admin_id;
                 $notification->desc=$login_user->name." accepted your deleted request";
                 $notification->action="";
+                $notification->source_id=$r->source_id;
+                $notification->source_type=$r->source_key;
                 $notification->save();
             }
             
@@ -4525,6 +4541,8 @@ public function client_income_update(Request $request,$id){
             $notification->employee_id=$admin_id;
             $notification->desc=$emp_name->name." rejected your deleted request";
             $notification->action="";
+            $notification->source_id=$r->source_id;
+            $notification->source_type=$r->source_key;
             $notification->save();
         }
         // if (isset($model_class)) {

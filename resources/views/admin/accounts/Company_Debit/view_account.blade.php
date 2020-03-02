@@ -1352,7 +1352,7 @@ function deleteRows(id,model_class,model_id,rider_id,string,month,year,source_id
     console.log(url);
     swal.fire({
         title: 'Are you sure?',
-        text: "You want to delete!",
+        text: "Do you want to delete! Just wait for your seniour response.",
         type: 'warning', 
         showCancelButton: true,
         confirmButtonText: 'Yes!'
@@ -1390,7 +1390,7 @@ function deleteRows(id,model_class,model_id,rider_id,string,month,year,source_id
                     swal.fire({
                         position: 'center',
                         type: 'success',
-                        title: 'Record Deleted successfully.',
+                        title: 'Record Deleted notification sent to your seniour successfully.',
                         showConfirmButton: false,
                         timer: 1500
                     });

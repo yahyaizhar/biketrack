@@ -450,6 +450,7 @@ class KRController extends Controller
         }
         $given_date=Carbon::parse($feed_data['given_date'])->format("d M, Y");
         $source=$feed_data['source'];
+        $source_id=$feed_data['id'];
         $rider_id=$feed_data['rider_id'];
 
         $user = Auth::user();
@@ -570,6 +571,8 @@ class KRController extends Controller
         $notification->employee_id=$seniour_emp;
         $notification->desc=$emp_name." want to delete ".$request->model_id." for KR".$request->rider_id." on ".$given_date;
         $notification->action=json_encode($action_data);
+        $notification->source_id=$request->id;
+        $notification->source_type=$request->source_key;
         $notification->save();
         return response()->json([
             'notification'=>$notification,
@@ -661,6 +664,8 @@ class KRController extends Controller
         $notification->employee_id=$seniour_emp;
         $notification->desc=$emp_name." want to update ".$request->source." for KR".$request->rider_id_update." on ".Carbon::parse($request->given_date)->format("M d, Y");
         $notification->action=json_encode($action_data);
+        $notification->source_id=$request->statement_id;
+        $notification->source_type=$request->source_key;
         $notification->save();
         return response()->json([
             'notification'=>$notification,

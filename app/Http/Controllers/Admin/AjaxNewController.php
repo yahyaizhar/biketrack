@@ -587,7 +587,10 @@ class AjaxNewController extends Controller
         $salik=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
         ->whereDate('month', '<=',$to)
-        ->where('source','Salik')
+        ->where(function($q) {
+            $q->where('source', "Salik")
+            ->orWhere('source', 'Salik Extra');
+        })
         ->sum('amount');
         $sim=\App\Model\Accounts\Rider_Account::where("rider_id",$ranges['rider_id'])
         ->whereDate('month', '>=',$from)
@@ -4891,18 +4894,30 @@ class AjaxNewController extends Controller
         ->addColumn('feed', function($del_data){
             $arr=json_decode($del_data->feed,true);
             $html='';
+            
             foreach ($arr as $item) {
+                $html_data='';
                 $data=json_decode($item['data'],true);
+                 foreach ($data as $key => $value) {
+                     if ($value!=null ||$value!="") {
+                        $html_data.='<p><strong>'.$key.': </strong>'.$value.'</p>';
+                     }
+                }
+                $popoverHtml='<button type="button" 
+                    class="btn btn-outline-warning btn-elevate btn-icon btn-sm btn-circle" 
+                    data-toggle="popover" 
+                    data-trigger="focus" 
+                    data-placement="top" 
+                    data-html="true" 
+                    data-content="'.$html_data.'">
+                    <i class="la la-question"></i>
+                    </button>';
+               
                 $html.='<p>
                             <strong>Model: </strong>
-                            '.$item['model'].'
+                            '.$item['model'].' '.$popoverHtml.'
                     </p>';
-                // foreach ($data as $key => $value) {
-                //     $html.='<p>
-                //             <strong>'.$key.': </strong>
-                //             '.$value.'
-                //     </p>';
-                // }
+               
             }
             return $html;
         })

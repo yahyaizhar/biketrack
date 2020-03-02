@@ -57,6 +57,7 @@
 <script>
 var deleted_data_table;
 $(function() {
+    $('[data-toggle="popover"]').popover('dispose');
     deleted_data_table = $('#deleted_data-table').DataTable({
         lengthMenu: [[-1], ["All"]],
         processing: true,
@@ -68,6 +69,7 @@ $(function() {
         drawCallback:function(data){
         $('.total_entries').remove();
         $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
+        $('[data-toggle="popover"]').popover();
     },
         ajax: "{!! route('account.getDeletedData') !!}",
         columns: [
@@ -95,7 +97,7 @@ function retreive_data(id){
             swal.fire({
                 position: 'center',
                 type: 'success',
-                title: 'Record updated successfully.',
+                title: 'Data is retreived successfully.',
                 showConfirmButton: false,
                 timer: 1500
             });
