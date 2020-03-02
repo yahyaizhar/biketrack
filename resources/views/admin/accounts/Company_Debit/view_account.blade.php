@@ -1352,7 +1352,7 @@ function deleteRows(id,model_class,model_id,rider_id,string,month,year,source_id
     console.log(url);
     swal.fire({
         title: 'Are you sure?',
-        text: "Do you want to delete! Just wait for your seniour response.",
+        text: "Do you want to delete! Just wait for your senior response.",
         type: 'warning', 
         showCancelButton: true,
         confirmButtonText: 'Yes!'
@@ -1387,10 +1387,21 @@ function deleteRows(id,model_class,model_id,rider_id,string,month,year,source_id
                     $('.loading').hide();
                 },
                 success: function(data){
+                    if(data.status==0){
+                        //error returned
+                        swal.fire({
+                            position: 'center',
+                            type: 'error',
+                            title: 'Oops...',
+                            text: data.msg,
+                            showConfirmButton: true,
+                        });
+                        return;
+                    }
                     swal.fire({
                         position: 'center',
                         type: 'success',
-                        title: 'Record Deleted notification sent to your seniour successfully.',
+                        title: 'Record Deleted notification sent to your senior successfully.',
                         showConfirmButton: false,
                         timer: 1500
                     });
