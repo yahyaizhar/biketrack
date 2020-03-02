@@ -28,6 +28,7 @@ use App\Model\Accounts\Bike_Fine;
 use Arr;
 use Batch;
 use App\Model\Admin\Admin;
+use App\Export_data;
 use App\Model\Accounts\Company_Account;
 use App\Assign_bike;
 use App\Log_activity;
@@ -89,6 +90,17 @@ class KRController extends Controller
         $ca->source='Bike Fine';
         $ca->bike_fine=$bf->id;
         $ca->save();
+
+        $ed =new Export_data;
+        $ed->type='cr';
+        $ed->rider_id=$r->rider_id;
+        $ed->amount=$r->amount;
+        $ed->month = Carbon::parse($r->month)->startOfMonth()->format('Y-m-d');
+        $ed->given_date = Carbon::parse($r->given_date)->format('Y-m-d');
+        $ed->source="Bike Fine";
+        $ed->source_id=$bf->id;
+        $ed->payment_status="paid";
+        $ed->save();
 
         return redirect(route('admin.BF_view'));
     }
@@ -153,6 +165,17 @@ class KRController extends Controller
         $ra->bike_fine=$bf->id;
         $ra->payment_status='pending';
         $ra->save();
+
+        $ed =Export_data::where("source","Bike Fine")->where("source_id",$id)->get()->first();
+        $ed->type='cr';
+        $ed->rider_id=$r->rider_id;
+        $ed->amount=$r->amount;
+        $ed->month = Carbon::parse($r->month)->startOfMonth()->format('Y-m-d');
+        $ed->given_date = Carbon::parse($r->given_date)->format('Y-m-d');
+        $ed->source="Bike Fine";
+        $ed->source_id=$bf->id;
+        $ed->payment_status="paid";
+        $ed->save();
             
         return redirect(route('admin.BF_edit_view',$bf->id));
     }
