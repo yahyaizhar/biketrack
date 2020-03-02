@@ -1516,6 +1516,17 @@ function UpdateRows($this,id,model_class,model_id,rider_id,string,month,year,sou
                 _model.modal('hide');
             },
             success: function(data){
+                if(data.status==0){
+                    //error returned
+                    swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Oops...',
+                        text: data.msg,
+                        showConfirmButton: true,
+                    });
+                    return;
+                }
                 swal.fire({
                     position: 'center',
                     type: 'success',
