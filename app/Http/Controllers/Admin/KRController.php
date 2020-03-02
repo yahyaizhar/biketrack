@@ -566,6 +566,17 @@ class KRController extends Controller
             ]);
         }
         $given_date=Carbon::parse($request->given_date)->format("M d, Y");
+        $already_notified = Notification::where('source_id',$request->id)
+        ->where('source_type',$request->source_key)
+        ->get()
+        ->first();
+        if(isset($already_notified)){
+            #notifications is already sended
+            return response()->json([
+                'status'=>0,
+                'msg'=>'Notification already sent',
+            ]);
+        }
         $notification=new Notification;
         $notification->date_time=Carbon::now()->format("Y-m-d");
         $notification->employee_id=$seniour_emp;
@@ -659,6 +670,19 @@ class KRController extends Controller
             ]);
         }
         $given_date=Carbon::parse($request->given_date)->format("M d, Y");
+
+        $already_notified = Notification::where('source_id',$request->statement_id)
+        ->where('source_type',$request->source_key)
+        ->get()
+        ->first();
+        if(isset($already_notified)){
+            #notifications is already sended
+            return response()->json([
+                'status'=>0,
+                'msg'=>'Notification already sent',
+            ]);
+        }
+
         $notification=new Notification;
         $notification->date_time=Carbon::now()->format("Y-m-d");
         $notification->employee_id=$seniour_emp;
@@ -668,6 +692,7 @@ class KRController extends Controller
         $notification->source_type=$request->source_key;
         $notification->save();
         return response()->json([
+            'status'=>1,
             'notification'=>$notification,
             'r'=>$request->all(),
         ]);
