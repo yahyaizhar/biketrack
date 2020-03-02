@@ -568,6 +568,7 @@ class KRController extends Controller
         $given_date=Carbon::parse($request->given_date)->format("M d, Y");
         $already_notified = Notification::where('source_id',$request->id)
         ->where('source_type',$request->source_key)
+        ->where('status','unread')
         ->get()
         ->first();
         if(isset($already_notified)){
@@ -673,6 +674,7 @@ class KRController extends Controller
 
         $already_notified = Notification::where('source_id',$request->statement_id)
         ->where('source_type',$request->source_key)
+        ->where('status','unread')
         ->get()
         ->first();
         if(isset($already_notified)){
