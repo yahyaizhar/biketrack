@@ -134,7 +134,7 @@
                                 <label>Customer:</label>
                                 <select class="form-control bk-select2 kt-select2" id="kt_select2_3" data-non-readonly data-name="client_id" name="client_id" required>
                                 @foreach ($clients as $client)
-                                <option value="{{ $client->id }}" data-info='{!!json_encode($client)!!}'    >
+                                <option value="{{ $client->id }}" data-info='{!!str_replace("'", "", json_encode($client))!!}'    >
                                         {{ $client->name }}
                                     </option>     
                                 @endforeach 

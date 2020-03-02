@@ -43,10 +43,12 @@ class SalikController extends Controller
         $trip_objects=[];
         $ca_objects=[];
         $ra_objects=[];
+        $export_objects=[];
 
         $delete_data=[];
         $ca_delete_data=[];
         $ra_delete_data=[];
+        $export_delete_data=[];
 
         $zp = Trip_Detail::all(); // r1
         $company_accounts=[];
@@ -85,9 +87,14 @@ class SalikController extends Controller
                 $objDelete = [];
                 $objDelete['salik_id']=$zp_found->transaction_id; 
                 array_push($ra_delete_data, $objDelete);
+
+                //export_data
+                $objDelete = [];
+                $objDelete['source_id']=$zp_found->transaction_id; 
+                array_push($export_delete_data, $objDelete);
             }
             $obj = [];
-            $obj['import_id']=$unique_id;
+            $obj['import_id']=$unique_id; 
             $obj['rider_id']=$rider_id;
             $obj['transaction_id']=isset($item['transaction_id'])?$item['transaction_id']:null;
             $obj['toll_gate']=isset($item['toll_gate'])?$item['toll_gate']:null;
@@ -302,7 +309,27 @@ class SalikController extends Controller
                 array_push($ra_objects, $ra_obj);
             }
 
-            
+            $ed_obj = [];
+            $ed_obj['salik_id']=$distinct_item['transaction_id'];
+            $ed_obj['source']='Salik';
+            $ed_obj['amount']=$amount;
+            $ed_obj['rider_id']=$distinct_item['rider_id'];
+            $ed_obj['type']='dr';
+            $ed_obj['month']=Carbon::parse($distinct_item['trip_date'])->startOfMonth()->format("Y-m-d");
+            $ed_obj['given_date']=Carbon::now()->format("Y-m-d");
+            $ed_obj['created_at']=Carbon::now();
+            $ed_obj['updated_at']=Carbon::now();
+            array_push($ed_objects, $ed_obj);
+
+            $ed =new Export_data;
+            $ed->type='dr';
+            $ed->rider_id=$rider_id;
+            $ed->amount=$used_salik;
+            $ed->month = Carbon::parse($request->month)->startOfMonth()->format('Y-m-d');
+            $ed->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
+            $ed->source="Salik";
+            $ed->source_id=$unique_id;
+            $ed->save();
         }
 
 

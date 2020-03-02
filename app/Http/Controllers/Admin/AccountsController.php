@@ -4061,6 +4061,7 @@ public function client_income_update(Request $request,$id){
 
             #updating export data
             $_source=$_source=='Sim extra usage'?'Sim Transaction':$_source; #hack for when we have source=Sim extra usage
+            $_source=$_source=='Bike Fine Paid'?'Bike Fine':$_source; #hack for when we have source=Bike Fine Paid
             $export_data=Export_data::whereMonth('month',$_month)
             ->whereYear("month",$_year)
             ->where('source',$_source)
@@ -4283,6 +4284,7 @@ public function client_income_update(Request $request,$id){
 
             #updating export data
             $_source=$_source=='Sim extra usage'?'Sim Transaction':$_source; #hack for when we have source=Sim extra usage
+            $_source=$_source=='Bike Fine Paid'?'Bike Fine':$_source; #hack for when we have source=Bike Fine Paid
             $export_data=Export_data::whereMonth('month',$_month)
             ->whereYear("month",$_year)
             ->where('source',$_source)
@@ -4491,6 +4493,7 @@ public function client_income_update(Request $request,$id){
 
             #updating export data
             $_source=$_source=='Sim extra usage'?'Sim Transaction':$_source; #hack for when we have source=Sim extra usage
+            $_source=$_source=='Bike Fine Paid'?'Bike Fine':$_source; #hack for when we have source=Bike Fine Paid
             $export_data=Export_data::whereMonth('month',$_month)
             ->whereYear("month",$_year)
             ->where('source',$_source)

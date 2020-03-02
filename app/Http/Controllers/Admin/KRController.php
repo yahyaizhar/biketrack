@@ -443,7 +443,7 @@ class KRController extends Controller
         
         if(!isset($feed_data)){
             # well, no company account or rider account found? that was unexpencted -we just throw the error
-            return response()->json([
+            return response()->json([ 
                 'status'=>0,
                 'msg'=>'No Company Account or Rider Account found!',
             ]);
@@ -560,7 +560,7 @@ class KRController extends Controller
             }
             $response = \App\Http\Controllers\Admin\AccountsController::delete_account_rows($req,$request->id,'accept',Auth::user()->id,$request->statement_type);
             return response()->json([
-                'status'=>0,
+                'status'=>1,
                 'response'=>$response,
                 'url'=>$req->all()
             ]);
@@ -665,7 +665,7 @@ class KRController extends Controller
             }
             
             return response()->json([
-                'status'=>0,
+                'status'=>1,
                 'response'=>$response,
                 'url'=>$req->all()
             ]);
