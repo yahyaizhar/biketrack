@@ -1050,8 +1050,15 @@ class AjaxNewController extends Controller
                 $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit text-warning" onclick="UpdateRows(this,'.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\',\''.$given_date.'\')"></i>';
                 $deleteHTML='<i class="fa fa-trash-alt tr-remove text-warning" onclick="deleteRows('.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\',\''.$given_date.'\')"></i>';
             }
-            if ($model_id=="Sim extra usage" || $model_id=="Salik Extra") {
+            #enter filter conditions here
+            if ($model_id=="Sim extra usage" 
+            || $model_id=="Salik Extra" 
+            || $model_id=="salary"
+            || $rider_statement->income_zomato_id!=null) {
                 $UpdateHTML='';
+            }
+            if ($model_id=="salary" || $rider_statement->income_zomato_id!=null) {
+                $deleteHTML='';
             }
             return $UpdateHTML.$deleteHTML;
             // }
@@ -1518,6 +1525,15 @@ class AjaxNewController extends Controller
             }
             if ($model_id=="Sim extra usage" || $model_id=="Salik Extra") {
                 $UpdateHTML='';
+                $deleteHTML='';
+            }
+            #enter filter conditions here
+            if ($model_id=="Sim extra usage" || $model_id=="Salik Extra" 
+            || $model_id=="salary"|| $company_statements->income_zomato_id!=null) {
+                $UpdateHTML='';
+            }
+            if ($model_id=="Sim extra usage" || $model_id=="Salik Extra" 
+             || $model_id=="salary" || $company_statements->income_zomato_id!=null) {
                 $deleteHTML='';
             }
             

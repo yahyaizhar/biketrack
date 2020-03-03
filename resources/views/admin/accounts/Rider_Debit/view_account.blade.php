@@ -195,7 +195,7 @@
                         &nbsp; --}}
                         <a href="" data-ajax="{{ route('Rider.update_remaining_salary') }}" id="update_remaining_pay" class=" btn btn-success btn-elevate btn-icon-sm">
                             <i class="la la-money"></i>
-                            Pay Remaining Salary
+                            Update Salary
                         </a>
                         
                         &nbsp;
@@ -2750,12 +2750,13 @@ var detect_billchanges=function(){
                     var is_salary_generated=$("#getting_val").length>0;
                    var is_update=$("#getting_val").attr('data-update');
                    is_update=typeof is_update!=="undefined" && is_update!==false;
-
+                   $("#update_remaining_pay").hide(); 
                     if (is_salary_generated) {
                         $("#to_pay").show();
                         $("#to_pay").html('<i class="fa fa-dollar-sign"></i> Pay Salary');
                         if(is_update){
                             //update salary
+                            $("#to_pay").hide();
                             $("#to_pay").html('<i class="fa fa-dollar-sign"></i> Update Salary');
                             $("#update_remaining_pay").show(); 
                         }
@@ -2764,7 +2765,6 @@ var detect_billchanges=function(){
                     }
                     else{
                         $("#to_pay").hide();
-                        $("#update_remaining_pay").hide(); 
                     }
                     
                     $("#for_days_payouts").trigger("click");
