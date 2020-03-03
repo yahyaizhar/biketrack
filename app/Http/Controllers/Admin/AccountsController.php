@@ -28,6 +28,7 @@ use App\Model\Accounts\Income_zomato;
 use Arr;
 use Batch;
 use App\Model\Accounts\Company_Account;
+use App\Model\Accounts\Company_Expense;
 use App\Assign_bike;
 use App\Company_investment;
 use App\Company_Tax;
@@ -1491,10 +1492,10 @@ public function fuel_rider_selector($rider_id,$bike_id){
     ]);
 }
 public function fuel_expense_insert(Request $r){
-
     $data=$r->data;
     $total_amount=$r->amount;
     #storing any bill details so we can detect changes
+    $splitted_amount=0;
     $bill_changes = new Bill_change;
     $bill_changes->month=Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
     $bill_changes->type='fuel_vip';
@@ -1624,6 +1625,8 @@ public function fuel_expense_insert(Request $r){
             $ed->given_date = Carbon::parse($r->get('given_date'))->format('Y-m-d');
             $ed->source='fuel_expense_vip';
             $ed->source_id=$fuel_expense->id;
+            $ed->bill_id=$r->bike_id;
+            $ed->bill_acc="bike";
             $ed->save();
         }else if($fuel_expense->type=="cash"){
             if ($pm=="commission_based") {
@@ -1694,11 +1697,13 @@ public function fuel_expense_insert(Request $r){
             $ed->given_date = Carbon::parse($r->get('given_date'))->format('Y-m-d');
             $ed->source='fuel_expense_cash';
             $ed->source_id=$fuel_expense->id;
+            $ed->bill_id=$r->bike_id;
+            $ed->bill_acc="bike";
             $ed->save();
         } 
-
+        $splitted_amount+=$value['amount_given_by_days'];
         #saving bill data to detect changes
-        $obj_feed=[];
+        $obj_feed=[]; 
         $obj_feed['bike_id']=$r->bike_id;
         if(isset($value['bike_id'])){
             $obj_feed['bike_id']=$value['bike_id'];
@@ -1714,6 +1719,28 @@ public function fuel_expense_insert(Request $r){
     }
     $bill_changes->feed=json_encode($billchanges_feed);
     $bill_changes->save();
+
+    $remaining_amount=$total_amount-$splitted_amount;
+      if($remaining_amount>0){
+        //add this as company expense
+        $bike = bike::find($r->bike_id);
+        $ce=new Company_Expense();
+        $ce->amount=$remaining_amount;
+        // $ce->rider_id=$r->rider_id;
+        $ce->month = Carbon::parse($r->get('month'))->format('Y-m-d');
+        $ce->description="Bike rent remaining amount against ".$bike->bike_number;
+        $ce->type="bike_rent";
+        $ce->bill_id=$r->bike_id;
+        $ce->bill_acc="bike";
+        $ce->save();
+      }
+      return response()->json([
+        'ca'=>$ca,
+        'amount'=>$splitted_amount,
+        'total_amount'=>$r->amount,
+        'remaining_amount'=>$remaining_amount,
+        'ce'=>$ce,
+    ]);
     return redirect(route('admin.fuel_expense_view'));
     
 }

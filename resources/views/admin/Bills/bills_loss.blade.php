@@ -24,7 +24,7 @@
                     <i class="kt-font-brand fa fa-hotel"></i>
                 </span>
                 <h3 class="kt-portlet__head-title">
-                    Rider Expense Loss
+                    Bike Expense Sheet
                 </h3>
             </div>
             <div class="kt-portlet__head-toolbar">
@@ -47,10 +47,10 @@
                 <div class="col-md-3">
                 </div>
                 <div class="col-md-3">
-                    <div class="form-group">
+                    <div class="form-group" style="display:none;">
                         <label>Filter by Bill</label>
                         <select class="form-control bk-select2" id="bill_detail" name="bill_detail" >
-                            <option value="sim">Sim</option>
+                            {{-- <option value="sim">Sim</option> --}}
                             <option value="bike">Bike</option>
                         </select> 
                     </div>
@@ -60,6 +60,7 @@
                 <thead>
                     <tr>
                         <th>Bill Source</th>
+                        <th>Bill Amount</th>
                         <th>Company Account</th>
                         <th>Rider Account</th>
                         <th>Loss</th>                       
@@ -114,6 +115,7 @@ var init_table=function(){
        ajax: "{{ url('admin/rider/expense_loss/ajax/') }}" + "/" + _month+ "/" + _source,
         columns: [
             { data: 'bill_source', name: 'bill_source' },
+            { data: 'bill_amount', name: 'bill_amount' },
             {data:  'company_account',  name: 'company_account'},
             { data: 'rider_account', name: 'rider_account' },            
             { data: 'loss', name: 'loss' },

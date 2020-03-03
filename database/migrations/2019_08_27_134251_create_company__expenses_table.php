@@ -23,6 +23,8 @@ class CreateCompanyExpensesTable extends Migration
             $table->string('paid_by')->nullable();
             $table->string('bill_picture')->nullable();
             $table->string('account_no')->nullable();
+            $table->string('bill_id')->nullable();
+            $table->string('bill_acc')->nullable();
             $table->string('active_status')->default("A");
             $table->timestamps();
         });

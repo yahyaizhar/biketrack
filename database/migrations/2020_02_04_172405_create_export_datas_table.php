@@ -23,6 +23,8 @@ class CreateExportDatasTable extends Migration
             $table->string('payment_status')->default("pending");
             $table->integer('rider_id')->nullable();
             $table->integer('source_id')->nullable();
+            $table->string('bill_id')->nullable();
+            $table->string('bill_acc')->nullable();
             $table->string('status')->default("1");
             $table->string('active_status')->default("A");
             $table->timestamps();
