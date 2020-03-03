@@ -545,7 +545,7 @@
     </div>
 </div>
 <div class="modal fade" id="bills_detail_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">  
             <div class="modal-header border-bottom-0">
                 <h5 class="modal-title" id="title_rider_expense">Fuel Expense Cash</h5>
@@ -1181,8 +1181,9 @@ function BillsDetails(){
             var count=1;
             data.bills.fuel_cash.forEach(function(item,j){
                 var given_date=new Date(item.given_date).format("mmmm dd,yyyy");
+                var export_key = typeof item.export_key!=="undefined"?item.export_key:'';
                 var _row_bill_details= '<div class="row mt-5"><div class=" col-md-1 mr-4">'+(count++)+'</div>'+ 
-                                       '<div class=" col-md-3 mr-4">'+item.source+'</div>'+ 
+                                       '<div class=" col-md-3 mr-4">'+export_key+'-'+item.source+'</div>'+ 
                                        '<div class=" col-md-4 mr-4">'+given_date+'</div>'+ 
                                        '<div class=" col-md-2 mr-4">'+item.amount+'</div></div>';                      
                 $("#bills_html").append(_row_bill_details);

@@ -393,10 +393,7 @@ class AjaxNewController extends Controller
         })
         ->addColumn('bill', function($bill){
             if (isset($bill->source)) {
-                if($bill->source=="fuel_expense_cash"){
-                    $_rowFuel='<a id="bill_detail" type="button" onclick="BillsDetails()">'.$bill->source.'</a>';
-                    return $_rowFuel;
-                }
+                
                 return $bill->source;
             }
             
@@ -419,6 +416,17 @@ class AjaxNewController extends Controller
                         $sim_transaction_id=$bill->sim_transaction_id;
                         return '<div>Pending <button style="margin-right: 5px;" type="button" onclick="updateStatusBills('.$rider_id.',\''.$month.'\',\''.$type.'\',\''.$month_given.'\')" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button><button class="btn btn-sm btn-success" type="button" onclick="SimBillsImage('.$rider_id.',\''.$month.'\',\''.$type.'\')">View Sim Bill Image</button></div>';
                     }
+                    if($bill->source=="fuel_expense_cash"){
+                        $_rowFuel='<button id="bill_detail" class="ml-1 btn btn-sm btn-brand" type="button" onclick="BillsDetails()">
+                            <i class="fa fa-eye"></i> View
+                        </button>';
+                        return '<div>Pending 
+                            <button style="margin-right: 5px;" type="button" onclick="updateStatusBills('.$rider_id.',\''.$month.'\',\''.$type.'\',\''.$month_given.'\')" class="btn btn-sm btn-brand">
+                            <i class="fa fa-dollar-sign"></i> Pay
+                            </button>
+                            '.$_rowFuel.'
+                            </div>';
+                    }
                     return '<div>Pending <button type="button" onclick="updateStatusBills('.$rider_id.',\''.$month.'\',\''.$type.'\',\''.$month_given.'\')" class="btn btn-sm btn-brand"><i class="fa fa-dollar-sign"></i> Pay</button></div>';
                     
                 }
@@ -432,7 +440,14 @@ class AjaxNewController extends Controller
                         $sim_transaction_id=$bill->sim_transaction_id;
                         return ucfirst($bill->payment_status).' <i class="flaticon2-correct text-success h5"></i><button class="btn btn-sm btn-success" type="button" onclick="SimBillsImage('.$rider_id.',\''.$month.'\',\''.$type.'\')">View Sim Bill Image</button>';
                     }
+                    if($bill->source=="fuel_expense_cash"){
+                        $_rowFuel='<button id="bill_detail" class="ml-1 btn btn-sm btn-brand" type="button" onclick="BillsDetails()">
+                            <i class="fa fa-eye"></i> View
+                        </button>';
+                        return ucfirst($bill->payment_status).' <i class="flaticon2-correct text-success h5"></i>'.$_rowFuel;
+                    }
                 }
+                
                 return ucfirst($bill->payment_status).' <i class="flaticon2-correct text-success h5"></i>';
             
             }
@@ -694,8 +709,10 @@ class AjaxNewController extends Controller
             if($rider_statement->given_date==null || $rider_statement->given_date=='') return 'No given date';
             return Carbon::parse($rider_statement->given_date)->format('M d, Y');
         })
-        ->addColumn('desc', function($rider_statement) use ($rider_statements){
+        ->addColumn('description', function($rider_statement) use ($rider_statements){
             if($rider_statement->type=='skip') return '<strong >'.$rider_statement->source.'</strong>';
+
+            $rdesc=$rider_statement->desc!=null?$rider_statement->desc:$rider_statement->source;
 
             if($rider_statement->source == 'salary'){
                 $ras = $rider_statements->toArray();
@@ -755,9 +772,9 @@ class AjaxNewController extends Controller
             if ($rider_statement->source == 'advance') {
                 $export_data=Export_data::where("source_id",$rider_statement->advance_return_id)->where("source","advance")->get()->first();
                 if (isset($export_data)) {
-                    return "A".$export_data->id."-".$rider_statement->source;
+                    return "A".$export_data->id."-".$rdesc;
                 }
-                return $rider_statement->source;
+                return $rdesc;
             }
             if ($rider_statement->source == 'Discipline Fine') {
                 if ($rider_statement->desc!="") {
@@ -773,7 +790,7 @@ class AjaxNewController extends Controller
                 }
                 return $rider_statement->source;
             }
-            return $rider_statement->source;
+            return $rdesc;
         })
         ->addColumn('cr', function($rider_statement){
             if($rider_statement->type=='skip') return '';
@@ -1111,7 +1128,7 @@ class AjaxNewController extends Controller
             'salary_slip'=>$salary_slip,
         ])
     
-        ->rawColumns(['action','closing_balance','cash_paid','desc','date','cr','dr','balance'])
+        ->rawColumns(['action','closing_balance','cash_paid','description','date','cr','dr','balance'])
         ->make(true);
     }
     public function getCompanyAccounts($ranges)
