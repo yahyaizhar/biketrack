@@ -327,11 +327,8 @@ Route::group([
     /*[accounts - company account]*/Route::get("/Salary/accounts/company/account","AccountsController@company_account")->name("admin.accounts.company_account");//imp
     /*[accounts - delete rider account]*/Route::get("/delete/accounts/rows/{id}/{status}/{admin_id}/{statement_type}","AccountsController@delete_account_rows")->name("admin.delete_account_rows");//imp
     
-    Route::get("/rider/deleted_data/view","KRController@view_deleted_data")->name("admin.view_deleted_data");//***
-    Route::get("/retreive_data/ajax/{id}/{status}/{admin_id}","KRController@retreive_data")->name("admin.retreive_data");//***
-    Route::get("/send_notification/delete/rows","KRController@sendDeleteNotification")->name("admin.sendDeleteNotification");/***/
-    Route::post("/accounts/send_notification/update_row/","KRController@sendUpdateNotification")->name("admin.sendUpdateNotification");/***/
-    Route::get("/send_notification/retreive_data/ajax/{id}","KRController@retreive_notification")->name("admin.retreive_notification");/***
+    Route::get("/rider/deleted_data/view","KRController@view_deleted_data")->name("admin.view_deleted_data");
+    Route::get("/retreive_data/ajax/{id}/{status}/{admin_id}","KRController@retreive_data")->name("admin.retreive_data");
     /*[accounts - bike account]*/Route::get("/Salary/accounts/bike/account","AccountsController@bike_account")->name("admin.accounts.bike_account");
     Route::get('/rider/accounts/{id}/updateStatus','AccountsController@updatePaymentStatus')->name('Rider.updatePaymentStatus');//not_using
     Route::get("/rider/rider_account/ajax/absents_status/{rider_id}/{month}/{rider_payout_date}/{status}","AccountsController@absents_status")->name("Rider.absents_status");
@@ -613,8 +610,8 @@ Route::group([
    Route::post('/view/upload/salary_slip/{month}/{rider_id}','RiderDetailController@view_upload_salary_slip')->name('rider.view_upload_salary_slip');//[Accounts-Upload salary Slip] .
 
    Route::put('accounts/company/edit', 'AccountsController@edit_company_account')->name('admin.accounts.edit_company'); //[Accounts - Edit company account]
-   Route::get('accounts/company/update_row/{statement_id}/{status}/{admin_id}', 'AccountsController@update_row_company_account')->name('admin.accounts.update_row_company_account');//** */
-   Route::get('accounts/rider/update_row/{statement_id}/{status}/{admin_id}', 'AccountsController@update_row_rider_account')->name('admin.accounts.update_row_rider_account');//** */
+   Route::get('accounts/company/update_row/{statement_id}/{status}/{admin_id}', 'AccountsController@update_row_company_account')->name('admin.accounts.update_row_company_account');
+   Route::get('accounts/rider/update_row/{statement_id}/{status}/{admin_id}', 'AccountsController@update_row_rider_account')->name('admin.accounts.update_row_rider_account');
    Route::put('accounts/rider/edit', 'AccountsController@edit_rider_account')->name('admin.accounts.edit_rider'); //[Accounts - Edit rider account]
    Route::get('/sim/bill/image/{rider_id}/{month}/{type}','SimController@SimBIllImage')->name('Sim.SimBIllImage');//[Accounts-Sim Bill Image] .
    
@@ -646,7 +643,7 @@ Route::get('/edit/employee/{employee_id}','Auth\EmployeeController@edit_employee
 Route::get('/view/employee/{employee_id}','Auth\EmployeeController@view_employee')->name('Employee.view_employee'); ///only for admin
 Route::post('/update/employee/{employee_id}','Auth\EmployeeController@update_employee')->name('Employee.update_employee'); ///only for admin
 
-Route::post('/rider/change_payout_data/ajax/{rider_id}/{month}','KRController@change_payout_data')->name('admin.change_payout_data');//*** This is for us
+Route::post('/rider/change_payout_data/ajax/{rider_id}/{month}','KRController@change_payout_data')->name('admin.change_payout_data');// This is for us
 Route::delete('/sim_history/{id}', 'SimController@DeleteSimHistory')->name('Sim.DeleteSimHistory');  //ok [Sim: delete sim history]
 Route::delete('/bike_history/{id}', 'bikeController@DeleteBikeHistory')->name('Bike.DeleteBikeHistory');  //ok [Sim: delete bike history] 
 Route::get('/delete/client_rider_history/{client_id}/{rider_id}/{client_history_id}','ClientController@delete_rider_client_history')->name('admin.delete_rider_client_history');
@@ -669,6 +666,9 @@ Route::group([
     Route::post('/submit_manual_client_history','HomeController@submit_manual_client_history')->name('request.submit_manual_client_history'); ///ok
    
     Route::get("/read_notification/ajax/{id}","KRController@ReadNotification")->name("admin.ReadNotification");
+    Route::get("/send_notification/delete/rows","KRController@sendDeleteNotification")->name("admin.sendDeleteNotification");
+    Route::post("/accounts/send_notification/update_row/","KRController@sendUpdateNotification")->name("admin.sendUpdateNotification");
+    Route::get("/send_notification/retreive_data/ajax/{id}","KRController@retreive_notification")->name("admin.retreive_notification");
 });
 																				 
    

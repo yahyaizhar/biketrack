@@ -3557,11 +3557,27 @@ public function client_income_update(Request $request,$id){
         //returns Builder
         $fuel_both=Company_Account::where("rider_id",$rider_id)
         ->whereMonth('month',$onlyMonth)
-        ->whereYear('month',$onlyYear);
-        // ->whereNotNull("fuel_expense_id");
+        ->whereYear('month',$onlyYear)
+        ->whereNotNull("fuel_expense_id");
         if(isset($fuel_both)){
             $fuel_single_cash=$fuel_both->where("source","fuel_expense_cash")->get();
             $fuel_single_vip=$fuel_both->where("source","fuel_expense_vip")->get();
+
+            #appending export data id
+            foreach ($fuel_single_cash as $key => $value) {
+                $export_data=Export_data::where("source_id",$value->fuel_expense_id)->where("source","fuel_expense_cash")->get()->first();
+                if (isset($export_data)) {
+                    $fuel_single_cash[$key]['export_key']='FC'.$export_data->id;
+                    $fuel_single_cash[$key]['export_id']=$export_data->id;
+                }
+            }
+            foreach ($fuel_single_vip as $key => $value) {
+                $export_data=Export_data::where("source_id",$value->fuel_expense_id)->where("source","fuel_expense_vip")->get()->first();
+                if (isset($export_data)) {
+                    $fuel_single_cash[$key]['export_key']='FE'.$export_data->id;
+                    $fuel_single_cash[$key]['export_id']=$export_data->id;
+                }
+            }
         }
 
         return array(

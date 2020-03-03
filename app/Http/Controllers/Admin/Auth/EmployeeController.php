@@ -33,7 +33,7 @@ class EmployeeController extends Controller
     {
         $webroutes = WebRoute::all();
         $dublicate_route = WebRoute::groupBy('category')->having(DB::raw('count(*)'), ">", "1")->select('category')->get();
-        $employees=Admin::where("type","normal")->get();
+        $employees=Admin::all();
         return view('admin.auth.employee_login',compact('webroutes','dublicate_route','employees'));    
     }
     public function viewEmployee(){
@@ -47,7 +47,7 @@ class EmployeeController extends Controller
         $webroutes = WebRoute::all();
         $dublicate_route = WebRoute::groupBy('category')->having(DB::raw('count(*)'), ">", "1")->select('category')->get();
         $users=$edit_employee->Role()->get()->toArray();
-        $employees=Admin::where("type","normal")->get();
+        $employees=Admin::all();
         return view('admin.auth.employee_edit',compact('users','edit_employee','webroutes','dublicate_route','employees'));
     }
     public function view_employee($employee_id){

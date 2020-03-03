@@ -193,10 +193,6 @@
                              Mobile Charges
                         </a>
                         &nbsp; --}}
-                        <a href="" data-ajax="{{ route('Rider.update_remaining_salary') }}" id="update_remaining_pay" class=" btn btn-success btn-elevate btn-icon-sm">
-                            <i class="la la-money"></i>
-                            Pay Remaining Salary
-                        </a>
                         
                         &nbsp;
                         <a href="" data-ajax="{{ route('MobileInstallment.create') }}" class=" btn btn-success btn-elevate btn-icon-sm">
@@ -774,7 +770,7 @@
                     </button>
                 </div>
                 <div>
-                    <button style="float:right;margin-right: 10px;" class="btn btn-warning btn-elevate btn-icon-sm" id="for_print" type="button" onclick="rider_full_detail();">
+                    <button style="float:right;margin-right: 10px;" class="btn btn-warning btn-elevate btn-icon-sm  @if(Auth::user()->type!='su') d-none @endif" id="for_print" type="button" onclick="rider_full_detail();">
                         Print Rider Slip
                     </button>
                 </div>
@@ -784,7 +780,7 @@
                     </button>
                 </div>
                 <div>
-                    <button style="float:right;margin-right: 10px;" class="btn btn-info btn-elevate btn-icon-sm" id="for_days_payouts" type="button">
+                    <button style="float:right;margin-right: 10px;" class="btn btn-info btn-elevate btn-icon-sm @if(Auth::user()->type!='su') d-none @endif" id="for_days_payouts" type="button">
                         Rider Payout detail
                     </button>
                 </div>
@@ -792,6 +788,10 @@
                     <button style="float:right;margin-right: 10px;" data-toggle="modal" class="btn btn-success btn-elevate btn-icon-sm" id="to_pay" type="button">
                         <i class="fa fa-dollar-sign"></i> Pay Salary
                     </button>
+                    <a href="" style="float:right;margin-right: 10px;" data-ajax="{{ route('Rider.update_remaining_salary') }}" id="update_remaining_pay" class=" btn btn-success btn-elevate btn-icon-sm">
+                        <i class="la la-money"></i>
+                        Update Salary
+                    </a>
                 </div>
             </div>
         </tfoot>
@@ -875,6 +875,7 @@
         </div>
         <div id="rider_payout_hidden">
             <div class="kt-portlet__body">
+                @if(Auth::user()->type=='su')
                 <div class="attendance__msg-container" style="">
                     {{-- <div class="attendance__msg"></div> --}}
                     <div class="attendance__sync-data">
@@ -900,6 +901,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
             </div>
             <div class="kt-portlet__body" id="rider_days_detail">
                     <style type="text/css">
@@ -1487,7 +1489,7 @@
 </div>
 
 <div class="modal fade" id="bills_detail_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">  
             <div class="modal-header border-bottom-0">
                 <h5 class="modal-title" id="title_rider_expense">Fuel Expense Cash</h5>
@@ -2106,7 +2108,7 @@ var detect_billchanges=function(){
         });
         $("#for_edit").on("click",function(){
             $('.print_slip_editable').show();
-            $(".days_payout").hide();
+            // $(".days_payout").hide();
         });
 
         $('form#visa_charges').on('submit', function(e){
@@ -2651,6 +2653,7 @@ var detect_billchanges=function(){
                 ordering: false,
                 processing: true,
                 serverSide: true,
+                dom:'<"float-right"f>tr',
                 'language': { 
                     'loadingRecords': '&nbsp;',
                     'processing': $('.loading').show()
@@ -2750,12 +2753,13 @@ var detect_billchanges=function(){
                     var is_salary_generated=$("#getting_val").length>0;
                    var is_update=$("#getting_val").attr('data-update');
                    is_update=typeof is_update!=="undefined" && is_update!==false;
-
+                   $("#update_remaining_pay").hide(); 
                     if (is_salary_generated) {
                         $("#to_pay").show();
                         $("#to_pay").html('<i class="fa fa-dollar-sign"></i> Pay Salary');
                         if(is_update){
                             //update salary
+                            $("#to_pay").hide();
                             $("#to_pay").html('<i class="fa fa-dollar-sign"></i> Update Salary');
                             $("#update_remaining_pay").show(); 
                         }
@@ -2764,7 +2768,6 @@ var detect_billchanges=function(){
                     }
                     else{
                         $("#to_pay").hide();
-                        $("#update_remaining_pay").hide(); 
                     }
                     
                     $("#for_days_payouts").trigger("click");
@@ -2774,7 +2777,7 @@ var detect_billchanges=function(){
                 ajax: url,
                 columns: [
                     { data: 'date', name: 'date' },            
-                    { data: 'desc', name: 'desc' },
+                    { data: 'description', name: 'description' },
                     { data: 'cr', name: 'cr' },
                     { data: 'dr', name: 'dr' },
                     { data: 'cash_paid', name: 'cash_paid' },
@@ -3565,8 +3568,9 @@ function BillsDetails(){
             var count=1;
             data.bills.fuel_cash.forEach(function(item,j){
                 var given_date=new Date(item.given_date).format("mmmm dd,yyyy");
+                var export_key = typeof item.export_key!=="undefined"?item.export_key:'';
                 var _row_bill_details= '<div class="row mt-5"><div class=" col-md-1 mr-4">'+(count++)+'</div>'+ 
-                                       '<div class=" col-md-3 mr-4">'+item.source+'</div>'+ 
+                                       '<div class=" col-md-3 mr-4">'+export_key+'-'+item.source+'</div>'+ 
                                        '<div class=" col-md-4 mr-4">'+given_date+'</div>'+ 
                                        '<div class=" col-md-2 mr-4">'+item.amount+'</div></div>';                      
                 $("#bills_html").append(_row_bill_details);
