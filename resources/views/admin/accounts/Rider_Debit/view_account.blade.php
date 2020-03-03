@@ -193,10 +193,6 @@
                              Mobile Charges
                         </a>
                         &nbsp; --}}
-                        <a href="" data-ajax="{{ route('Rider.update_remaining_salary') }}" id="update_remaining_pay" class=" btn btn-success btn-elevate btn-icon-sm">
-                            <i class="la la-money"></i>
-                            Update Salary
-                        </a>
                         
                         &nbsp;
                         <a href="" data-ajax="{{ route('MobileInstallment.create') }}" class=" btn btn-success btn-elevate btn-icon-sm">
@@ -774,7 +770,7 @@
                     </button>
                 </div>
                 <div>
-                    <button style="float:right;margin-right: 10px;" class="btn btn-warning btn-elevate btn-icon-sm" id="for_print" type="button" onclick="rider_full_detail();">
+                    <button style="float:right;margin-right: 10px;" class="btn btn-warning btn-elevate btn-icon-sm  @if(Auth::user()->type!='su') d-none @endif" id="for_print" type="button" onclick="rider_full_detail();">
                         Print Rider Slip
                     </button>
                 </div>
@@ -784,7 +780,7 @@
                     </button>
                 </div>
                 <div>
-                    <button style="float:right;margin-right: 10px;" class="btn btn-info btn-elevate btn-icon-sm" id="for_days_payouts" type="button">
+                    <button style="float:right;margin-right: 10px;" class="btn btn-info btn-elevate btn-icon-sm @if(Auth::user()->type!='su') d-none @endif" id="for_days_payouts" type="button">
                         Rider Payout detail
                     </button>
                 </div>
@@ -792,6 +788,10 @@
                     <button style="float:right;margin-right: 10px;" data-toggle="modal" class="btn btn-success btn-elevate btn-icon-sm" id="to_pay" type="button">
                         <i class="fa fa-dollar-sign"></i> Pay Salary
                     </button>
+                    <a href="" style="float:right;margin-right: 10px;" data-ajax="{{ route('Rider.update_remaining_salary') }}" id="update_remaining_pay" class=" btn btn-success btn-elevate btn-icon-sm">
+                        <i class="la la-money"></i>
+                        Update Salary
+                    </a>
                 </div>
             </div>
         </tfoot>
@@ -875,6 +875,7 @@
         </div>
         <div id="rider_payout_hidden">
             <div class="kt-portlet__body">
+                @if(Auth::user()->type=='su')
                 <div class="attendance__msg-container" style="">
                     {{-- <div class="attendance__msg"></div> --}}
                     <div class="attendance__sync-data">
@@ -900,6 +901,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
             </div>
             <div class="kt-portlet__body" id="rider_days_detail">
                     <style type="text/css">
@@ -2106,7 +2108,7 @@ var detect_billchanges=function(){
         });
         $("#for_edit").on("click",function(){
             $('.print_slip_editable').show();
-            $(".days_payout").hide();
+            // $(".days_payout").hide();
         });
 
         $('form#visa_charges').on('submit', function(e){
