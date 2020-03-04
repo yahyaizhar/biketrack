@@ -5103,6 +5103,10 @@ public function client_income_update(Request $request,$id){
     public function expense_data(){
         return view('admin.accounts.Company_Expense.expense_data');
     }
+    public function daily_ledger(){
+        $riders=Rider::where("active_status","A")->get();
+        return view('admin.accounts.Company_Expense.daily_ledger',compact('riders'));
+    }
     public function bills_details_for_riders($rider_id,$month){
         $bills=$this->calculate_bills($month,$rider_id);
         return response()->json([

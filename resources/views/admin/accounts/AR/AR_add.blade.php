@@ -38,7 +38,7 @@
 
                         <div class="form-group">
                             <label>Rider:</label>
-                            <select required class="form-control kt-select2-general" name="rider_id" >
+                            <select required class="form-control bk-select2" name="rider_id" >
                                 @foreach ($riders as $rider)
                                 <option value="{{ $rider->id }}">
                                     {{ $rider->name }}
@@ -85,12 +85,6 @@
                             @endif
                         </div>
                         <input type="hidden" name="payment_status" value="pending">
-                        <div class="form-group">
-                            <label>Status:</label>
-                            <div>
-                                <input data-switch="true" name="status" id="status" type="checkbox" checked="checked" data-on-text="Enabled" data-handle-width="70" data-off-text="Disabled" data-on-color="brand">
-                            </div>
-                        </div>
                     </div>
                     
                     <div class="kt-portlet__foot">
@@ -118,7 +112,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.min.js"></script>
  
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script>
+<script data-ajax>
   $(document).ready(function(){
     //   $('#datepicker').datepicker({dateFormat: 'yy-mm-dd'}); 
       $('#datepicker').fdatepicker({format: 'dd-mm-yyyy'}); 
