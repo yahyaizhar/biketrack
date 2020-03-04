@@ -4871,35 +4871,40 @@ class AjaxNewController extends Controller
                 return 123;
             }
             if ($source=="bike") {
-                $ed=Export_data::whereMonth("month",$_onlyMonth)->whereYear("month",$_onlyYear)->where("bill_id",$bill->id)->where("source","Bike Rent")->get();
-                $rider_id='';
-                $bill_id='';
-                $html='';
-                $total_amount=0;
-                $a=0;
-                if (isset($ed->bill_id)) {
-                    $bill_id=$ed->bill_id;
+                if ($bill->rent_amount=='' || $bill->rent_amount==null) {
+                    return 0;
                 }
-                if (isset($ed)) {
-                    foreach ($ed as $value) {
-                        $bill_id=$value->bill_id;
-                    }
-                }
-                    $paid_bills = Bill_change::whereMonth('month', $_onlyMonth)
-                        ->whereYear('month', $_onlyYear)
-                        ->where('type', 'bike_rent')
-                        ->get();
-                        foreach ($paid_bills as $key => $item) {
-                            $feed = json_decode($item->feed,true);
-                            foreach ($feed as $feed_item) {
-                                if($feed_item['bike_id']==$bill->id){
-                                    $total_amount=$item->amount;
-                                }
-                            }
-                            $a=$total_amount;
-                        }
-                     }
-            return $a;
+                return $bill->rent_amount;
+            }
+            //     $ed=Export_data::whereMonth("month",$_onlyMonth)->whereYear("month",$_onlyYear)->where("bill_id",$bill->id)->where("source","Bike Rent")->get();
+            //     $rider_id='';
+            //     $bill_id='';
+            //     $html='';
+            //     $total_amount=0;
+            //     $a=0;
+            //     if (isset($ed->bill_id)) {
+            //         $bill_id=$ed->bill_id;
+            //     }
+            //     if (isset($ed)) {
+            //         foreach ($ed as $value) {
+            //             $bill_id=$value->bill_id;
+            //         }
+            //     }
+            //         $paid_bills = Bill_change::whereMonth('month', $_onlyMonth)
+            //             ->whereYear('month', $_onlyYear)
+            //             ->where('type', 'bike_rent')
+            //             ->get();
+            //             foreach ($paid_bills as $key => $item) {
+            //                 $feed = json_decode($item->feed,true);
+            //                 foreach ($feed as $feed_item) {
+            //                     if($feed_item['bike_id']==$bill->id){
+            //                         $total_amount=$item->amount;
+            //                     }
+            //                 }
+            //                 $a=$total_amount;
+            //             }
+            //          }
+            // return $a;
         })
         ->addColumn('company_account', function($bill) use($month,$source){
             $_onlyMonth=carbon::parse($month)->format('m');
