@@ -4847,6 +4847,417 @@ class AjaxNewController extends Controller
         ->make(true);
     }
 
+    public function getDailyLedger($date,$filter_by)
+    {
+        switch ($filter_by) {
+            case 'day':
+                # match given date...
+                $export_data = Export_data::where("active_status","A")
+                ->whereDate("given_date",$date);
+
+                $ce = Company_Expense::where("active_status","A")
+                ->where('paid_by', 'cash')
+                ->whereDate("given_date",$date);
+                break;
+            case 'month':
+                # match month...
+                $_onlyMonth=carbon::parse($date)->format('m');
+                $_onlyYear=carbon::parse($date)->format('Y');
+                $export_data = Export_data::where("active_status","A")
+                ->whereMonth("month",$_onlyMonth)
+                ->whereYear("month",$_onlyYear);
+
+                $ce = Company_Expense::where("active_status","A")
+                ->where('paid_by', 'cash')
+                ->whereMonth("month",$_onlyMonth)
+                ->whereYear("month",$_onlyYear);
+                break;
+            case 'year':
+                # match year...
+                $_onlyYear=carbon::parse($date)->format('Y');
+                $export_data = Export_data::where("active_status","A")
+                ->whereYear("month",$_onlyYear);
+
+                $ce = Company_Expense::where("active_status","A")
+                ->where('paid_by', 'cash')
+                ->whereYear("month",$_onlyYear);
+                
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+
+        #filtering only cash payments
+        $export_data=$export_data
+        ->where('source', '!=', 'fuel_expense_vip')
+        ->where('source', '!=', 'Visa Charges')
+        ->where('source', '!=', 'Discipline Fine')
+        ->where('source', '!=', 'Bike Rent')
+        ->where('source', '!=', 'Sim Transaction')
+        ->where('source', '!=', 'Salik')
+        ->get();
+
+        $ce=$ce->get();
+
+        #we merge the both export data and company expense collection
+
+        foreach ($ce as $key => $expense) {
+            $ed = new Export_data;
+            $ed->id=$expense->id;
+            $ed->amount=$expense->amount;
+            $ed->month=$expense->month;
+            $ed->given_date=$expense->given_date;
+            $ed->source=$expense->description;
+            $ed->rider_id=null;
+            $ed->status='expense';
+            $export_data->push($ed); 
+        }
+
+        return DataTables::of($export_data)
+        ->addColumn('id', function($export_data){ #not using
+            $src=$export_data->source;
+            $kr='O-';
+            if ( $src=="advance") {$kr="A-";}
+            if ( $src=="Bonus") {$kr="B-";}
+            if ( $src=="Mobile Installment") {$kr="MI-";}
+            if ( $src=="Visa Charges") {$kr="VC-";}
+            if ( $src=="fuel_expense_vip") {$kr="F-";}
+            if ( $src=="fuel_expense_cash") {$kr="F-";} 
+            if ( $src=="Bike Rent") {$kr="BR-";}
+            if ( $src=="Discipline Fine") {$kr="KF-";}
+            if ( $src=="Sim Transaction") {$kr="S-";}
+            if ( $src=="Salik") {$kr="S-";}
+            if ( $src=="pay_cash") {$kr="PC-";}
+            if ( $src=="receive_cash") {$kr="RC-";}
+            if ( $src=="Salik") {$kr="S-";}
+            if ( strpos($src,'RC@')!==false) {$kr="RC-";} 
+            if ( strpos($src,'PC@')!==false) {$kr="PC-";} 
+            if ( $src=="salary") {$kr="S-";}
+            if ( $export_data->status=="expense") {$kr="EX-";}
+            return $kr.$export_data->id;
+        })
+        ->addColumn('source', function($export_data){#not using
+            $source=$export_data->source;
+            if ( strpos($source,'RC@')!==false || strpos($source,'PC@')!==false) $source=explode('@',$source)[1];
+            return $source;
+        })
+        ->addColumn('rider', function($export_data){#using this to show id|source|rider_id
+            $rider=Rider::find($export_data->rider_id);
+            $rider_name='';
+            if (isset($rider)) {
+                $rider_name= '<a  href="'.route('admin.rider.profile', $rider->id).'">'.$rider->id.'-'.$rider->name.'</a>';
+            }
+
+            $source=$export_data->source;
+            if ( strpos($source,'RC@')!==false || strpos($source,'PC@')!==false) $source=explode('@',$source)[1];
+
+            $src=$export_data->source;
+            $kr='O-';
+            if ( $src=="advance") {$kr="A-";}
+            if ( $src=="Bonus") {$kr="B-";}
+            if ( $src=="Mobile Installment") {$kr="MI-";}
+            if ( $src=="Visa Charges") {$kr="VC-";}
+            if ( $src=="fuel_expense_vip") {$kr="F-";}
+            if ( $src=="fuel_expense_cash") {$kr="F-";} 
+            if ( $src=="Bike Rent") {$kr="BR-";}
+            if ( $src=="Discipline Fine") {$kr="KF-";}
+            if ( $src=="Sim Transaction") {$kr="S-";}
+            if ( $src=="Salik") {$kr="S-";}
+            if ( $src=="pay_cash") {$kr="PC-";}
+            if ( $src=="receive_cash") {$kr="RC-";}
+            if ( $src=="Salik") {$kr="S-";}
+            if ( strpos($src,'RC@')!==false) {$kr="RC-";} 
+            if ( strpos($src,'PC@')!==false) {$kr="PC-";} 
+            if ( $export_data->status=="expense") {$kr="EX-";}
+            if ( $src=="salary") {$kr="S-";}
+
+            $source=' | '.$source;
+            $rider_name=$rider_name!=''?' | '.$rider_name:'';
+
+            return $kr.$export_data->id.$source.$rider_name;
+        })
+        ->addColumn('paid_by', function($export_data){
+            #we need to match subject id and class to logs and get paid id from there
+            $subject_type=get_class($export_data);
+            $subject_id=$export_data->id;
+            if ( $export_data->status=="expense" ){
+                # data is from company expense
+                $subject_type=get_class(new Company_Expense);
+                $subject_id=$export_data->id;
+            }
+            $log = Log_activity::orderByDesc('created_at')->where('subject_type', $subject_type)
+            ->where('subject_id', $subject_id)
+            ->where('description', 'created')
+            ->get()
+            ->first();
+
+            #get the causer name
+            if(isset($log)){
+                $causer = Admin::find($log->causer_id);
+                if(isset($causer)){
+                    return $causer->name;
+                }
+            }
+            
+            return 'No record found';
+        })
+        ->addColumn('month', function($export_data){
+            return carbon::parse($export_data->month)->format('F Y');
+        })
+        ->addColumn('given_date', function($export_data){
+            return carbon::parse($export_data->given_date)->format('F d,Y');
+        })
+        ->addColumn('amount', function($export_data){
+            return $export_data->amount;
+        })
+        ->addColumn('action', function($export_data){
+            $ex_source = $export_data->source;
+            $ex_source_id = $export_data->source_id;
+            $ex_rider_id=$export_data->rider_id;
+            $ex_month = Carbon::parse($export_data->month)->format('Y-m-d');
+            $onlyMonth=Carbon::parse($ex_month)->format('m');
+            $onlyYear=Carbon::parse($ex_month)->format('Y');
+
+            $ex_source_key='';
+            switch ($ex_source) {
+                case 'Bike Rent':
+                    $ex_source_key="bike_rent_id";
+                    break;
+                case 'Sim Transaction':
+                    $ex_source_key="sim_transaction_id";
+                    break;
+                case 'Discipline Fine':
+                case 'Visa Charges':
+                case 'receive_cash':
+                case 'pay_cash':
+                case 'Bonus':
+                    $ex_source_key="kingrider_fine_id";
+                    break; 
+                case 'advance':
+                    $ex_source_key="advance_return_id";
+                    break;
+                case 'fuel_expense_cash':
+                    $ex_source_key="fuel_expense_id";
+                    break;
+                case 'Mobile Installment':
+                    $ex_source_key="mobile_installment_id";
+                    break;
+                    
+                default:
+                    # code...
+                    break;
+            }
+
+            if($ex_source_key=='') return '';
+
+            $company_statements=Company_Account::where('rider_id', $ex_rider_id)
+            ->whereMonth('month',$onlyMonth)
+            ->whereYear('month',$onlyYear)
+            ->where($ex_source_key, $ex_source_id)
+            ->get()
+            ->first();
+
+            if(isset($company_statements)){
+                #means data found in company account
+                $model_id=addslashes($company_statements->source);
+                $rider_id=$company_statements->rider_id;
+                $string="source";
+                $month=Carbon::parse($company_statements->month)->format('m');
+                $year=Carbon::parse($company_statements->month)->format('Y');
+                $modelObj=null;
+                $model=null;
+                $source_id="";
+                $source_key="";
+                $given_date=$company_statements->given_date;
+                #if source_id="" edit button will not be shown
+                if ($company_statements->salik_id!=null) {
+                    $source_id=$company_statements->salik_id;
+                    $source_key="salik_id"; 
+                }
+                if ($company_statements->bike_rent_id!=null) {
+                    $source_id=$company_statements->bike_rent_id;   
+                    $source_key="bike_rent_id";
+                }
+                if ($company_statements->bike_fine!=null) {
+                    $source_id=$company_statements->bike_fine;  
+                    $source_key="bike_fine"; 
+                }
+                if ($company_statements->advance_return_id!=null) {
+                    $source_id=$company_statements->advance_return_id;  
+                    $source_key="advance_return_id"; 
+                }
+                if ($company_statements->id_charge_id!=null) {
+                    $source_id=$company_statements->id_charge_id;   
+                    $source_key="id_charge_id";
+                }
+                if ($company_statements->client_income_id!=null) {
+                    $source_id=$company_statements->client_income_id;   
+                    $source_key="client_income_id";
+                }
+                if ($company_statements->employee_allownce_id!=null) {
+                    $source_id=$company_statements->employee_allownce_id;  
+                    $source_key="employee_allownce_id"; 
+                }
+                if ($company_statements->fuel_expense_id!=null) {
+                    $source_id=$company_statements->fuel_expense_id;   
+                    $source_key="fuel_expense_id";
+                }
+                if ($company_statements->sim_transaction_id!=null) {
+                    $source_id=$company_statements->sim_transaction_id; 
+                    $source_key="sim_transaction_id";  
+                }
+                if ($company_statements->mobile_installment_id!=null) {
+                    $source_id=$company_statements->mobile_installment_id; 
+                    $source_key="mobile_installment_id";  
+                }
+                if ($company_statements->kingrider_fine_id!=null) {
+                    $source_id=$company_statements->kingrider_fine_id;  
+                    $source_key="kingrider_fine_id"; 
+                }
+                // if ($company_statements->income_zomato_id!=null) {
+                //     $source_id=$company_statements->income_zomato_id;  
+                //     $source_key="income_zomato_id"; 
+                // }
+                $editHTML = '<i class="fa fa-edit tr-edit" onclick="editRows(this,'.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
+                $UpdateHTML='';
+                $deleteHTML='';
+
+                if($company_statements->salary_id!=null || $company_statements->sim_transaction_id!=null || $company_statements->bike_rent_id!=null|| $company_statements->salik_id!=null){
+                    //skip edit
+                    $editHTML='';
+                }
+                if($source_id!=''){
+                    $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit" onclick="UpdateRows(this,'.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\',\''.$given_date.'\', \'company__accounts\')"></i>';
+                    $deleteHTML='<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\',\''.$given_date.'\', \'company__accounts\')"></i>';
+                }else {
+                    # we don't want to trace it, so it will update current row only
+                    $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit text-warning" onclick="UpdateRows(this,'.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\',\''.$given_date.'\', \'company__accounts\')"></i>';
+                    $deleteHTML='<i class="fa fa-trash-alt tr-remove text-warning" onclick="deleteRows('.$company_statements->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\',\''.$given_date.'\', \'company__accounts\')"></i>';
+                }
+                if ($model_id=="Sim extra usage" || $model_id=="Salik Extra") {
+                    $UpdateHTML='';
+                    $deleteHTML='';
+                }
+                #enter filter conditions here
+                if ($model_id=="Sim extra usage" || $model_id=="Salik Extra" 
+                || $model_id=="salary"|| $company_statements->income_zomato_id!=null) {
+                    $UpdateHTML='';
+                }
+                if ($model_id=="Sim extra usage" || $model_id=="Salik Extra" 
+                || $model_id=="salary" || $company_statements->income_zomato_id!=null) {
+                    $deleteHTML='';
+                }
+                
+                return $UpdateHTML.$deleteHTML;
+            }
+            else {
+                # we will look into rider account
+                $rider_statement=Rider_Account::where('rider_id', $ex_rider_id)
+                ->whereMonth('month',$onlyMonth)
+                ->whereYear('month',$onlyYear)
+                ->where($ex_source_key, $ex_source_id)
+                ->get()
+                ->first();
+                if(isset($rider_statement)){
+                    #means data found in rider account
+                    $model_id=$rider_statement->source;
+                    $rider_id=$rider_statement->rider_id;
+                    $string="source";
+                    $month=Carbon::parse($rider_statement->month)->format('m');
+                    $year=Carbon::parse($rider_statement->month)->format('Y');
+                    $modelObj=null;
+                    $model=null;
+                    $source_id="";
+                    $source_key="";
+                    $given_date=$rider_statement->given_date;
+                    #if source_id="" edit button will not be shown
+                    if ($rider_statement->salik_id!=null) {
+                        $source_id=$rider_statement->salik_id;
+                        $source_key="salik_id"; 
+                    }
+                    if ($rider_statement->bike_rent_id!=null) {
+                        $source_id=$rider_statement->bike_rent_id;   
+                        $source_key="bike_rent_id";
+                    }
+                    if ($rider_statement->bike_fine!=null) {
+                        $source_id=$rider_statement->bike_fine;  
+                        $source_key="bike_fine"; 
+                    }
+                    if ($rider_statement->advance_return_id!=null) {
+                        $source_id=$rider_statement->advance_return_id;  
+                        $source_key="advance_return_id"; 
+                    }
+                    if ($rider_statement->id_charge_id!=null) {
+                        $source_id=$rider_statement->id_charge_id;   
+                        $source_key="id_charge_id";
+                    }
+                    if ($rider_statement->client_income_id!=null) {
+                        $source_id=$rider_statement->client_income_id;   
+                        $source_key="client_income_id";
+                    }
+                    if ($rider_statement->employee_allownce_id!=null) {
+                        $source_id=$rider_statement->employee_allownce_id;  
+                        $source_key="employee_allownce_id"; 
+                    }
+                    if ($rider_statement->fuel_expense_id!=null) {
+                        $source_id=$rider_statement->fuel_expense_id;   
+                        $source_key="fuel_expense_id";
+                    }
+                    if ($rider_statement->sim_transaction_id!=null) {
+                        $source_id=$rider_statement->sim_transaction_id; 
+                        $source_key="sim_transaction_id";  
+                    }
+                    if ($rider_statement->mobile_installment_id!=null) {
+                        $source_id=$rider_statement->mobile_installment_id; 
+                        $source_key="mobile_installment_id";  
+                    }
+                    if ($rider_statement->kingrider_fine_id!=null) {
+                        $source_id=$rider_statement->kingrider_fine_id;  
+                        $source_key="kingrider_fine_id"; 
+                    }
+
+
+                    $editHTML = '<i class="fa fa-edit tr-edit" onclick="editRows(this,'.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\')"></i>';
+                    $UpdateHTML='';
+                    $deleteHTML='';
+                    /**
+                     * Skip
+                     * -Salary row
+                     */
+                    if($rider_statement->salary_id!=null){
+                        //skip edit
+                        $editHTML='';
+                    }
+                    if($source_id!=''){
+                        $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit" onclick="UpdateRows(this,'.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\',\''.$given_date.'\', \'rider__accounts\')"></i>';
+                        $deleteHTML='<i class="fa fa-trash-alt tr-remove" onclick="deleteRows('.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\',\''.$given_date.'\', \'rider__accounts\')"></i>';
+                    }else {
+                        # we don't want to trace it, so it will update current row only
+                        $UpdateHTML = '<i class="fa fa-pencil-alt tr-edit text-warning" onclick="UpdateRows(this,'.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\',\''.$given_date.'\', \'rider__accounts\')"></i>';
+                        $deleteHTML='<i class="fa fa-trash-alt tr-remove text-warning" onclick="deleteRows('.$rider_statement->id.',\''.$model.'\',\''.$model_id.'\','.$rider_id.',\''.$string.'\',\''.$month.'\',\''.$year.'\',\''.$source_id.'\',\''.$source_key.'\',\''.$given_date.'\', \'rider__accounts\')"></i>';
+                    }
+                    #enter filter conditions here
+                    if ($model_id=="Sim extra usage" 
+                    || $model_id=="Salik Extra" 
+                    || $model_id=="salary"
+                    || $rider_statement->income_zomato_id!=null) {
+                        $UpdateHTML='';
+                    }
+                    if ($model_id=="salary" || $rider_statement->income_zomato_id!=null) {
+                        $deleteHTML='';
+                    }
+                    return $UpdateHTML.$deleteHTML;
+                }
+            }
+
+            return $company_statements;
+        })
+        ->rawColumns(['id','source','rider','month','given_date','amount', 'paid_by','action'])
+        ->make(true);
+    }
+
     public function getExpenseLoss($month,$source)
     {   
         if ($source=="sim") { 

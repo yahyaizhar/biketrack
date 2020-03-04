@@ -1181,9 +1181,9 @@ function BillsDetails(){
             var count=1;
             data.bills.fuel_cash.forEach(function(item,j){
                 var given_date=new Date(item.given_date).format("mmmm dd,yyyy");
-                var export_key = typeof item.export_key!=="undefined"?item.export_key:'';
+                var export_key = typeof item.export_key!=="undefined"?item.export_key+'-':'';
                 var _row_bill_details= '<div class="row mt-5"><div class=" col-md-1 mr-4">'+(count++)+'</div>'+ 
-                                       '<div class=" col-md-3 mr-4">'+export_key+'-'+item.source+'</div>'+ 
+                                       '<div class=" col-md-3 mr-4">'+export_key+item.source+'</div>'+ 
                                        '<div class=" col-md-4 mr-4">'+given_date+'</div>'+ 
                                        '<div class=" col-md-2 mr-4">'+item.amount+'</div></div>';                      
                 $("#bills_html").append(_row_bill_details);

@@ -18,8 +18,8 @@
                         <div class="form-group">
                             <label>Type:</label>
                             <select required class="form-control @if($errors->has('model')) invalid-field @endif bk-select2" name="type">
-                                <option value="vip_tag">VIP-Tag</option>
                                 <option value="cash">Cash</option>
+                                <option value="vip_tag">VIP-Tag</option>
                             </select> 
                             @if ($errors->has('type'))
                                 <span class="invalid-response" role="alert">
