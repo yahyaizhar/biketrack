@@ -66,6 +66,15 @@
                         <th>Company Loss</th>                       
                     </tr>
                 </thead>
+                <tbody></tbody>
+                <tfoot>
+                    <tr>
+                        <th>Total:</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
@@ -122,10 +131,64 @@ var init_table=function(){
         ],
         responsive:true,
         order:[0,'desc'],
+        footerCallback: function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+ 
+            // Remove the formatting to get integer data for summation
+            var intVal = function ( i ) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '')*1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+ 
+            // Total over all pages
+            total = api
+                .column( 3 )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            
+            //source count
+            var totalcount=0;
+            var _temp = api
+            .column( 2 )
+            .data()
+            .reduce( function (a, b) {
+                return totalcount++;
+            }, 0 );
+            // Total over this page
+            pageTotal = api
+                .column( 3, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return (intVal(a) + intVal(b)).toFixed(2);
+                }, 0 );
+
+            var pageTotal1 = api
+            .column( 1, { page: 'current'} )
+            .data()
+            .reduce( function (a, b) {
+                return (intVal(a) + intVal(b)).toFixed(2);
+            }, 0 );
+                console.log('pageTotal', pageTotal);
+ 
+            // Update footer
+            $( api.column( 3 ).footer() ).html(
+                pageTotal
+            );
+            $( api.column( 1 ).footer() ).html(
+                pageTotal1
+            );
+            $( api.column( 2 ).footer() ).html(
+                totalcount
+            );
+        }
     });
 }
 $('[name="bill_detail"]').on("change",function(){
     $('[name="month_year"]').trigger("change");
-})
+}) 
 </script>
 @endsection
