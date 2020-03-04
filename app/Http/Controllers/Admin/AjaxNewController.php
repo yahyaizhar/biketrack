@@ -5008,7 +5008,7 @@ class AjaxNewController extends Controller
                         if ($ce==450 || $ce==550) {
                             return $bill->rent_amount-$ce;
                         }
-                        return $html;
+                        return round($html,2);
                     }
                     return round($ce,2);
                 }
