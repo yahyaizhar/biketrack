@@ -59,11 +59,11 @@
             <table class="table table-striped- table-hover table-checkable table-condensed" id="expense_loss_status">
                 <thead>
                     <tr>
-                        <th>Bill Source</th>
-                        <th>Bill Amount</th>
-                        <th>Company Account</th>
-                        <th>Rider Account</th>
-                        <th>Loss</th>                       
+                        <th>Bike Detail</th>
+                        <th>Rent Amount</th>
+                        <th>Rent paid by Company</th>
+                        <th>Rent paid by Rider</th>
+                        <th>Company Loss</th>                       
                     </tr>
                 </thead>
             </table>

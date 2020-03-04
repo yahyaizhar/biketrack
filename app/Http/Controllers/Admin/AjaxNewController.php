@@ -4905,10 +4905,31 @@ class AjaxNewController extends Controller
             $_onlyMonth=carbon::parse($month)->format('m');
             $_onlyYear=carbon::parse($month)->format('Y');
             if ($source=="sim") { 
-                return "Sim";
+                $ed=Export_data::whereMonth("month",$_onlyMonth)->whereYear("month",$_onlyYear)->where("source","Sim Transaction")->where("bill_id",$bill->id)->get();
+                $html='';
+                $html_not_found='<span style="color: #fa8484;">No row is found against this Sim.</span>';
+                if (isset($ed)) {
+                    foreach ($ed as $key => $value) {
+                        $ca=Company_Account::whereMonth("month",$_onlyMonth)
+                        ->whereYear("month",$_onlyYear)
+                        ->where("source",$value->source)
+                        ->where("sim_transaction_id",$value->source_id)
+                        ->get();
+                        foreach ($ca as $item) {
+                            if (isset($item->rider_id)) {
+                                $rider=Rider::find($item->rider_id);
+                                $rider_name=$rider->name;
+                                $html.='<p>
+                                        <strong>'.$rider_name.'</strong>: 
+                                        '.$item->amount.' 
+                                    </p>';
+                            }
+                        }
+                    }
+                }
             }
             if ($source=="bike") {
-                $ed=Export_data::whereMonth("month",$_onlyMonth)->whereYear("month",$_onlyYear)->where("bill_id",$bill->id)->get();
+                $ed=Export_data::whereMonth("month",$_onlyMonth)->whereYear("month",$_onlyYear)->where("bill_id",$bill->id)->where("source","Bike Rent")->get();
                 $html='';
                 $html_not_found='<span style="color: #fa8484;">No row is found against this bike.</span>';
                 if (isset($ed)) {
