@@ -41,7 +41,12 @@ margin-left: 10px;
                     <div class="kt-portlet__head-actions">
                         {{-- <input class="btn btn-success" type="button" onclick="export_data()" value="Export Riders Data"> --}}
                         &nbsp;
-                        <input class="btn btn-success" type="button" onclick="export_data()" value="Export Riders Data">
+                        @php
+                            $type_match=Auth::user()->type;
+                        @endphp
+                         @if ($type_match=="su")
+                         <input class="btn btn-success" type="button" onclick="export_data()" value="Export Riders Data">
+                         @endif
                         &nbsp;
                         <div class="checkbox checkbox-danger btn btn-default btn-elevate btn-icon-sm">
                             <input id="check_id" class="checkbox checkbox-danger" type="checkbox">

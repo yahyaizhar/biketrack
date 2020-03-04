@@ -27,7 +27,12 @@
                 <h3 class="kt-portlet__head-title">
                     Rider Ranges ADT
                 </h3>
-                <input style="margin-right:10px;" class="btn btn-primary" type="button" onclick="export_data()" value="Export Zomato Data">
+                @php
+                    $type_match=Auth::user()->type;
+                @endphp
+                @if ($type_match=="su")
+                    <input style="margin-right:10px;" class="btn btn-primary" type="button" onclick="export_data()" value="Export Zomato Data">
+                @endif
             <div class="form-group" style="display:contents;">
                 <div class="kt-radio-inline">
                     <label class="kt-radio">

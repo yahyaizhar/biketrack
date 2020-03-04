@@ -4879,9 +4879,10 @@ class AjaxNewController extends Controller
             $_onlyYear=carbon::parse($month)->format('Y');
             if ($source=="bike") {
                 $ed=Export_data::whereMonth("month",$_onlyMonth)->whereYear("month",$_onlyYear)->where("bill_id",$bill->id)->where("source","Bike Rent")->get();
-                $html='';
-                $html_not_found='<span style="color: #fa8484;">No row is found against this bike.</span>';
-                if (isset($ed)) {
+                // return $ed; 
+                if (count($ed)>0) {
+                    $html='';
+                    $html_not_found='<span style="color: #fa8484;">No row is found against this bike.</span>';
                     foreach ($ed as $key => $value) {
                         $ca=Company_Account::whereMonth("month",$_onlyMonth)
                         ->whereYear("month",$_onlyYear)
@@ -4901,7 +4902,8 @@ class AjaxNewController extends Controller
                     }
                 }
                 else{
-                    // find history
+                    $html='';
+                    $amount='';
                     $bike_history = Assign_bike::with('Rider')->with('bike')->get()->toArray();
                     $bike_id=$bill->id;
                     $bikeh_f = Arr::where($bike_history, function ($item, $key) use ($bike_id, $month) {
@@ -4919,12 +4921,34 @@ class AjaxNewController extends Controller
                             ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
                     });
                     if (isset($bikeh_f)) {
-                        return $bikeh_f;
+                        foreach ($bikeh_f as $bike_h) {
+                            $rider_id=$bike_h['rider_id'];
+                            $ca=Company_Account::whereMonth("month",$_onlyMonth)
+                            ->whereYear("month",$_onlyYear)
+                            ->where("rider_id",$rider_id)
+                            ->where("source","Bike Rent")
+                            ->where("type","dr")
+                            ->get();
+                            foreach ($ca as $ca_item) {
+                                $amount=$ca_item->amount;
+                                $rider_id_ca=$ca_item->rider_id;
+                                $rider=Rider::find($rider_id_ca);
+                                $rider_name=$rider->name;
+                                $html.='<p>
+                                        <strong>'.$rider_name.'</strong>: 
+                                        '.$amount.' 
+                                    </p>';
+                            }
+                            if ($html!='') {
+                                return $html;
+                            }
+                            return '<span style="color: #fa8484;">No row is found against this bike.</span>';
+                        }
                     }
                 }
             }
             if ($html=='') {
-                return $html_not_found;
+                return '<span style="color: #fa8484;">No row is found against this bike.</span>';
             }
             return $html;
         })
