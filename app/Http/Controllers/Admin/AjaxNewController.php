@@ -4959,7 +4959,7 @@ class AjaxNewController extends Controller
                                 $rider_id_ca=$ca_item->rider_id;
                                 $rider=Rider::find($rider_id_ca);
                                 $rider_name=$rider->name;
-                                $html.='<p>
+                                $html.='<p data-amount="'.$amount.'">
                                         <strong>'.$rider_name.'</strong>: 
                                         '.$amount.' 
                                     </p>';

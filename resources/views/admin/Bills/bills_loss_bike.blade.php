@@ -172,7 +172,25 @@ var init_table=function(){
             .reduce( function (a, b) {
                 return (intVal(a) + intVal(b)).toFixed(2);
             }, 0 );
-                console.log('pageTotal', pageTotal);
+                console.log('pageTotal', pageTotal1);
+
+                var pageTotal2 = api
+            .column( 2, { page: 'current'} )
+            .data()
+            .reduce( function (a, b) {
+                var t_amount=0;
+                var data=expense_loss_table.ajax.json().data;
+                data.forEach(function(i,j){
+                if(i.company_account!='<span style="color: #fa8484;">No row is found against this bike.</span>'){
+                var data_amount=i.company_account.split("=")[1].split(">")[0];
+                var amount=parseFloat($.parseJSON(data_amount));
+                t_amount+=amount
+                }
+                })
+                return t_amount.toFixed(2);
+                // return (intVal(a) + intVal(b)).toFixed(2);
+            }, 0 );
+                console.log('pageTotal2', pageTotal2);
  
             // Update footer
             $( api.column( 3 ).footer() ).html(
@@ -182,7 +200,7 @@ var init_table=function(){
                 pageTotal1
             );
             $( api.column( 2 ).footer() ).html(
-                totalcount
+                pageTotal2
             );
         }
     });
