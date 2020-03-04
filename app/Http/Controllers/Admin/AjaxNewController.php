@@ -4853,7 +4853,32 @@ class AjaxNewController extends Controller
             $bill= Sim::where("active_status","A")->get();
         }
         if ($source=="bike") {
-            $bill = bike::where("active_status","A")->get();
+            $bill = collect([]);
+            $bike_history = Assign_bike::with('Rider')->with('bike')->get()->toArray();
+            $bikeh_f = Arr::where($bike_history, function ($item, $key) use ($month) {
+                $start_created_at =Carbon::parse($item['bike_assign_date'])->startOfMonth()->format('Y-m-d');
+                $created_at =Carbon::parse($start_created_at);
+
+                $start_updated_at =Carbon::parse($item['bike_unassign_date'])->endOfMonth()->format('Y-m-d');
+                $updated_at =Carbon::parse($start_updated_at);
+                $req_date =Carbon::parse($month);
+                
+                if($item['status']=='active'){
+                    return ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+                }
+                return ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+            });
+            foreach ($bikeh_f as $tmp) {
+                $mdl = new bike;
+                $mdl->id=$tmp['bike']['id'];
+                $mdl->owner=$tmp['bike']['owner'];
+                $mdl->brand=$tmp['bike']['brand'];
+                $mdl->bike_number=$tmp['bike']['bike_number'];
+                $mdl->rent_amount=$tmp['bike']['rent_amount'];
+                $bill->push($mdl);
+            }
+            
+                // $bill = bike::where("active_status","A")->get();
         }
         return DataTables::of($bill)
         ->addColumn('bill_source', function($bill) use($month,$source){
