@@ -4867,72 +4867,16 @@ class AjaxNewController extends Controller
         ->addColumn('bill_amount', function($bill) use($month,$source){
             $_onlyMonth=carbon::parse($month)->format('m');
             $_onlyYear=carbon::parse($month)->format('Y');
-            if ($source=="sim") { 
-                return 123;
-            }
             if ($source=="bike") {
                 if ($bill->rent_amount=='' || $bill->rent_amount==null) {
                     return 0;
                 }
                 return $bill->rent_amount;
             }
-            //     $ed=Export_data::whereMonth("month",$_onlyMonth)->whereYear("month",$_onlyYear)->where("bill_id",$bill->id)->where("source","Bike Rent")->get();
-            //     $rider_id='';
-            //     $bill_id='';
-            //     $html='';
-            //     $total_amount=0;
-            //     $a=0;
-            //     if (isset($ed->bill_id)) {
-            //         $bill_id=$ed->bill_id;
-            //     }
-            //     if (isset($ed)) {
-            //         foreach ($ed as $value) {
-            //             $bill_id=$value->bill_id;
-            //         }
-            //     }
-            //         $paid_bills = Bill_change::whereMonth('month', $_onlyMonth)
-            //             ->whereYear('month', $_onlyYear)
-            //             ->where('type', 'bike_rent')
-            //             ->get();
-            //             foreach ($paid_bills as $key => $item) {
-            //                 $feed = json_decode($item->feed,true);
-            //                 foreach ($feed as $feed_item) {
-            //                     if($feed_item['bike_id']==$bill->id){
-            //                         $total_amount=$item->amount;
-            //                     }
-            //                 }
-            //                 $a=$total_amount;
-            //             }
-            //          }
-            // return $a;
         })
         ->addColumn('company_account', function($bill) use($month,$source){
             $_onlyMonth=carbon::parse($month)->format('m');
             $_onlyYear=carbon::parse($month)->format('Y');
-            if ($source=="sim") { 
-                $ed=Export_data::whereMonth("month",$_onlyMonth)->whereYear("month",$_onlyYear)->where("source","Sim Transaction")->where("bill_id",$bill->id)->get();
-                $html='';
-                $html_not_found='<span style="color: #fa8484;">No row is found against this Sim.</span>';
-                if (isset($ed)) {
-                    foreach ($ed as $key => $value) {
-                        $ca=Company_Account::whereMonth("month",$_onlyMonth)
-                        ->whereYear("month",$_onlyYear)
-                        ->where("source",$value->source)
-                        ->where("sim_transaction_id",$value->source_id)
-                        ->get();
-                        foreach ($ca as $item) {
-                            if (isset($item->rider_id)) {
-                                $rider=Rider::find($item->rider_id);
-                                $rider_name=$rider->name;
-                                $html.='<p>
-                                        <strong>'.$rider_name.'</strong>: 
-                                        '.$item->amount.' 
-                                    </p>';
-                            }
-                        }
-                    }
-                }
-            }
             if ($source=="bike") {
                 $ed=Export_data::whereMonth("month",$_onlyMonth)->whereYear("month",$_onlyYear)->where("bill_id",$bill->id)->where("source","Bike Rent")->get();
                 $html='';
@@ -4956,6 +4900,28 @@ class AjaxNewController extends Controller
                         }
                     }
                 }
+                else{
+                    // find history
+                    $bike_history = Assign_bike::with('Rider')->with('bike')->get()->toArray();
+                    $bike_id=$bill->id;
+                    $bikeh_f = Arr::where($bike_history, function ($item, $key) use ($bike_id, $month) {
+                        $start_created_at =Carbon::parse($item['bike_assign_date'])->startOfMonth()->format('Y-m-d');
+                        $created_at =Carbon::parse($start_created_at);
+
+                        $start_updated_at =Carbon::parse($item['bike_unassign_date'])->endOfMonth()->format('Y-m-d');
+                        $updated_at =Carbon::parse($start_updated_at);
+                        $req_date =Carbon::parse($month);
+                        
+                        if($item['status']=='active'){
+                            return $item['bike_id']==$bike_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+                        }
+                        return $item['bike_id']==$bike_id &&
+                            ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+                    });
+                    if (isset($bikeh_f)) {
+                        return $bikeh_f;
+                    }
+                }
             }
             if ($html=='') {
                 return $html_not_found;
@@ -4965,9 +4931,6 @@ class AjaxNewController extends Controller
         ->addColumn('rider_account', function($bill) use($month,$source){
             $_onlyMonth=carbon::parse($month)->format('m');
             $_onlyYear=carbon::parse($month)->format('Y');
-            if ($source=="sim") { 
-                return "Sim";
-            }
             if ($source=="bike") {
                 $ed=Export_data::whereMonth("month",$_onlyMonth)->whereYear("month",$_onlyYear)->where("bill_id",$bill->id)->where("source","Bike Rent")->get();
                 $html='';
@@ -5002,9 +4965,6 @@ class AjaxNewController extends Controller
         ->addColumn('loss', function($bill) use($month,$source){
             $_onlyMonth=carbon::parse($month)->format('m');
             $_onlyYear=carbon::parse($month)->format('Y');
-            if ($source=="sim") { 
-                return "Sim";
-            }
             if ($source=="bike") {
                 $ce=Company_Expense::whereMonth("month",$_onlyMonth)
                 ->whereYear("month",$_onlyYear)
