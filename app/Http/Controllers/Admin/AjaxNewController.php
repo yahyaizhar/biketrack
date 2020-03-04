@@ -4895,6 +4895,7 @@ class AjaxNewController extends Controller
         ->where('source', '!=', 'Visa Charges')
         ->where('source', '!=', 'Discipline Fine')
         ->where('source', '!=', 'Bike Rent')
+        ->where('source', '!=', 'Sim Transaction')
         ->get();
 
         $ce=$ce->get();
