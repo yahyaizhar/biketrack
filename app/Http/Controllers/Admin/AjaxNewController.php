@@ -5435,10 +5435,10 @@ class AjaxNewController extends Controller
                     ->sum('amount');
                     if ($ce!=0) {
                         if ($bill->owner=="self") {
-                            $html=$bill->rent_amount-(450-$ce);
+                            $html=$bill->rent_amount-($ce);
                         }
                         if ($bill->owner=="rent" || $bill->owner=="kr_bike"){
-                            $html=$bill->rent_amount-(550-$ce);
+                            $html=$bill->rent_amount-($ce);
                         }
                         
                         if ($ce==450 || $ce==550) {
@@ -5482,10 +5482,10 @@ class AjaxNewController extends Controller
                             }
                             if ($amount!=0) {
                                 if ($bill->owner=="self") {
-                                    $html=$bill->rent_amount-(450-$amount);
+                                    $html=$bill->rent_amount-($amount);
                                 }
                                 if ($bill->owner=="rent" || $bill->owner=="kr_bike"){
-                                    $html=$bill->rent_amount-(550-$amount);
+                                    $html=$bill->rent_amount-($amount);
                                 }
                                 
                                 if ($amount==450 || $amount==550) {
