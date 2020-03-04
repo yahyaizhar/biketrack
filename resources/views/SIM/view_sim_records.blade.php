@@ -33,8 +33,14 @@
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
+                        @php
+                            $type_match=Auth::user()->type;
+                        @endphp
+                        @if ($type_match=="su")
+                            <input class="btn btn-success" type="button" onclick="export_data()" value="Export Sim Data">
+                        @endif
                         {{-- <button class="btn btn-danger btn-elevate btn-icon-sm" id="bulk_delete">Delete Selected</button> --}}
-                        <input class="btn btn-success" type="button" onclick="export_data()" value="Export Sim Data">
+                        
                         &nbsp;
                         <a href="{{ route('Sim.new_sim') }}" class="btn btn-brand btn-elevate btn-icon-sm">
                             <i class="la la-plus"></i>

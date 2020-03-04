@@ -39,7 +39,15 @@ margin-left: 10px;
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
-                        <input class="btn btn-success" type="button" onclick="export_data()" value="Export Riders Data">
+                        <a href="{{ route('admin.riders.index') }}" class="btn btn-brand btn-elevate btn-icon-sm">
+                            All Riders
+                        </a>
+                        @php
+                            $type_match=Auth::user()->type;
+                        @endphp
+                        @if ($type_match=="su")
+                            <input class="btn btn-success" type="button" onclick="export_data()" value="Export Riders Data">
+                        @endif
                         &nbsp;
                         <div class="checkbox checkbox-danger btn btn-default btn-elevate btn-icon-sm">
                             <input id="check_id" class="checkbox checkbox-danger" type="checkbox">

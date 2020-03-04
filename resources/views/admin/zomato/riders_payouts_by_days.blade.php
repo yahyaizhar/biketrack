@@ -41,7 +41,12 @@
                         </div>
                         &nbsp;
                         <a style="padding:8.45px 13px;" href="" data-toggle="modal" data-target="#import_data"  class="btn btn-label-success btn-sm btn-upper">Import Zomato Time Sheet</a>&nbsp;
-                        <input class="btn btn-primary" type="button" onclick="export_data()" value="Export Zomato Time Sheet">
+                        @php
+                            $type_match=Auth::user()->type;
+                        @endphp
+                        @if ($type_match=="su")
+                            <input class="btn btn-primary" type="button" onclick="export_data()" value="Export Zomato Time Sheet">
+                        @endif
                     </div>
                 </div>
             </div>

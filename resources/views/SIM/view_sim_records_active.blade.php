@@ -33,6 +33,10 @@
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
+                        <a href="{{ route('Sim.view_records') }}" class="btn btn-brand btn-elevate btn-icon-sm">
+                            All Sims
+                        </a>
+                        &nbsp;
                         {{-- <button class="btn btn-danger btn-elevate btn-icon-sm" id="bulk_delete">Delete Selected</button> --}}
                         <div style="float:left;" class="filter_record_status">
                             <select class="form-control">
@@ -40,7 +44,12 @@
                                 <option value="free">Free Sims</option>
                             </select>
                         </div>
-                        <input class="btn btn-success" type="button" onclick="export_data()" value="Export Sim Data">
+                        @php
+                            $type_match=Auth::user()->type;
+                        @endphp
+                        @if ($type_match=="su")
+                            <input class="btn btn-success" type="button" onclick="export_data()" value="Export Sim Data">
+                        @endif
 
                         &nbsp;
                         <a href="{{ route('Sim.new_sim') }}" class="btn btn-brand btn-elevate btn-icon-sm">

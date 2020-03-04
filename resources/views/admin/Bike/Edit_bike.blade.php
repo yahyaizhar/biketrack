@@ -76,17 +76,13 @@
                                     <label>Model(2015):</label>
                                     {{-- <input type="text" class="form-control @if($errors->has('model')) invalid-field @endif" name="model" placeholder="Model" value="{{ $bike->model }}"> --}}
                                     <select disabled class="form-control @if($errors->has('model')) invalid-field @endif kt-select2" id="kt_select2_3" name="model" placeholder="Enter model" >
-                                            <option @if ($bike->model=="2010") selected @endif value="2010">2010</option>
-                                            <option @if ($bike->model=="2011") selected @endif value="2011">2011</option>
-                                            <option @if ($bike->model=="2012") selected @endif value="2012">2012</option>
-                                            <option @if ($bike->model=="2013") selected @endif value="2013">2013</option>
-                                            <option @if ($bike->model=="2014") selected @endif value="2014">2014</option>
-                                            <option @if ($bike->model=="2015") selected @endif value="2015">2015</option>
-                                            <option @if ($bike->model=="2016") selected @endif value="2016">2016</option>
-                                            <option @if ($bike->model=="2017") selected @endif value="2017">2017</option>
-                                            <option @if ($bike->model=="2018") selected @endif value="2018">2018</option>
-                                            <option @if ($bike->model=="2019") selected @endif value="2019">2019</option>
-                                            </select>
+                                        @for ($i = 0; $i <= 20; $i++)
+                                        @php
+                                        $_m =Carbon\Carbon::now()->addYear(-$i); 
+                                        @endphp
+                                        <option value="{{$_m->format('Y')}}">{{$_m->format('Y')}}</option> 
+                                        @endfor 
+                                    </select>
                                     @if ($errors->has('model'))
                                         <span class="invalid-response" role="alert">
                                             <strong>

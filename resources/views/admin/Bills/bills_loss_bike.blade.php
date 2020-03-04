@@ -24,7 +24,7 @@
                     <i class="kt-font-brand fa fa-hotel"></i>
                 </span>
                 <h3 class="kt-portlet__head-title">
-                    Rider Expense Loss
+                    Bike Expense Sheet
                 </h3>
             </div>
             <div class="kt-portlet__head-toolbar">
@@ -47,10 +47,10 @@
                 <div class="col-md-3">
                 </div>
                 <div class="col-md-3">
-                    <div class="form-group">
+                    <div class="form-group" style="display:none;">
                         <label>Filter by Bill</label>
                         <select class="form-control bk-select2" id="bill_detail" name="bill_detail" >
-                            <option value="sim">Sim</option>
+                            {{-- <option value="sim">Sim</option> --}}
                             <option value="bike">Bike</option>
                         </select> 
                     </div>
@@ -59,12 +59,22 @@
             <table class="table table-striped- table-hover table-checkable table-condensed" id="expense_loss_status">
                 <thead>
                     <tr>
-                        <th>Bill Source</th>
-                        <th>Company Account</th>
-                        <th>Rider Account</th>
-                        <th>Loss</th>                       
+                        <th>Bike Detail</th>
+                        <th>Rent Amount</th>
+                        <th>Rent paid by Company</th>
+                        {{-- <th>Rent paid by Rider</th> --}}
+                        <th>Company Loss</th>                       
                     </tr>
                 </thead>
+                <tbody></tbody>
+                <tfoot>
+                    <tr>
+                        <th>Total:</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
@@ -114,16 +124,71 @@ var init_table=function(){
        ajax: "{{ url('admin/rider/expense_loss/ajax/') }}" + "/" + _month+ "/" + _source,
         columns: [
             { data: 'bill_source', name: 'bill_source' },
+            { data: 'bill_amount', name: 'bill_amount' },
             {data:  'company_account',  name: 'company_account'},
-            { data: 'rider_account', name: 'rider_account' },            
+            // { data: 'rider_account', name: 'rider_account' },            
             { data: 'loss', name: 'loss' },
         ],
         responsive:true,
         order:[0,'desc'],
+        footerCallback: function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+ 
+            // Remove the formatting to get integer data for summation
+            var intVal = function ( i ) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '')*1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+ 
+            // Total over all pages
+            total = api
+                .column( 3 )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            
+            //source count
+            var totalcount=0;
+            var _temp = api
+            .column( 2 )
+            .data()
+            .reduce( function (a, b) {
+                return totalcount++;
+            }, 0 );
+            // Total over this page
+            pageTotal = api
+                .column( 3, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return (intVal(a) + intVal(b)).toFixed(2);
+                }, 0 );
+
+            var pageTotal1 = api
+            .column( 1, { page: 'current'} )
+            .data()
+            .reduce( function (a, b) {
+                return (intVal(a) + intVal(b)).toFixed(2);
+            }, 0 );
+                console.log('pageTotal', pageTotal);
+ 
+            // Update footer
+            $( api.column( 3 ).footer() ).html(
+                pageTotal
+            );
+            $( api.column( 1 ).footer() ).html(
+                pageTotal1
+            );
+            $( api.column( 2 ).footer() ).html(
+                totalcount
+            );
+        }
     });
 }
 $('[name="bill_detail"]').on("change",function(){
     $('[name="month_year"]').trigger("change");
-})
+}) 
 </script>
 @endsection

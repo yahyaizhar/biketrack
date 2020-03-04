@@ -353,6 +353,8 @@ class bikeController extends Controller
         $ed->source='Bike Rent';
         $ed->source_id=$unique_id;
         $ed->payment_status="paid";
+        $ed->bill_id=$r->bike_id;
+        $ed->bill_acc="bike";
         $ed->save();
           
         if ($bike_own=="kr_bike") {
@@ -433,6 +435,8 @@ class bikeController extends Controller
         $ce->month = Carbon::parse($r->get('month'))->format('Y-m-d');
         $ce->description="Bike rent remaining amount against ".$bike->bike_number;
         $ce->type="bike_rent";
+        $ce->bill_id=$r->bike_id;
+        $ce->bill_acc="bike";
         $ce->save();
       }
       return response()->json([

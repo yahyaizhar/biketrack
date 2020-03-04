@@ -649,7 +649,8 @@ Route::post('/rider/change_payout_data/ajax/{rider_id}/{month}','KRController@ch
 Route::delete('/sim_history/{id}', 'SimController@DeleteSimHistory')->name('Sim.DeleteSimHistory');  //ok [Sim: delete sim history]
 Route::delete('/bike_history/{id}', 'bikeController@DeleteBikeHistory')->name('Bike.DeleteBikeHistory');  //ok [Sim: delete bike history] 
 Route::get('/delete/client_rider_history/{client_id}/{rider_id}/{client_history_id}','ClientController@delete_rider_client_history')->name('admin.delete_rider_client_history');
-Route::get('/rider/expenses_loss','BillsController@bills_loss')->name('rider.bills_loss');//***
+Route::get('/bike/expense_sheet','BillsController@bills_loss_bike')->name('rider.bills_loss_bike');//***
+Route::get('/sim/expense_sheet','BillsController@bills_loss_sim')->name('rider.bills_loss_sim');//***
 Route::PUT('/rider/update_bills','BillsController@get_updatebills')->name('bills.update.get');//***
 // Route::POST('/rider/update_bills','BillsController@post_updatebills')->name('bills.update.post');//***
 });
