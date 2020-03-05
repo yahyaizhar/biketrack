@@ -5541,10 +5541,10 @@ class AjaxNewController extends Controller
                             $t_month_days=Carbon::parse($month)->daysInMonth;
 
                             $orig_amount=(($working_days-$absent)/$t_month_days)*$bill->rent_amount;
-                            $html.='<p>
-                            <strong></strong>: 
-                            '.$absent.'-'.$working_days.'-'.$bill->rent_amount.'
-                        </p>';
+                        //     $html.='<p>
+                        //     <strong></strong>: 
+                        //     '.$absent.'-'.$working_days.'-'.$bill->rent_amount.'
+                        // </p>';
                             $ca=Company_Account::whereMonth("month",$_onlyMonth)
                             ->whereYear("month",$_onlyYear)
                             ->where("rider_id",$rider_id)
@@ -5566,14 +5566,14 @@ class AjaxNewController extends Controller
                                 //     </p>';
                                 $old_amount=round($old_amount,2);
                                 $orig_amount=round($orig_amount,2);
-                                $html.='<p>
-                                        <strong>'.$rider_name.'1</strong>: 
-                                        '.$old_amount.'-'.$orig_amount.'----'.($old_amount==$orig_amount).' 
-                                    </p>';
+                                // $html.='<p>
+                                //         <strong>'.$rider_name.'1</strong>: 
+                                //         '.$old_amount.'-'.$orig_amount.'----'.($old_amount==$orig_amount).' 
+                                //     </p>';
                                 if($old_amount==$orig_amount){
                                     $amount_found=true;
                                     $html.='<p>
-                                        <strong>'.$rider_name.'2</strong>: 
+                                        <strong>'.$rider_name.'</strong>: 
                                         '.$old_amount.' 
                                     </p>';
                                    
@@ -5582,7 +5582,7 @@ class AjaxNewController extends Controller
                             if(!$amount_found){
                                 $html.='<p>
                                     <strong>'.$rider_name.'</strong>: 
-                                    '.$old_amount.' Update bike rent amount to '.$orig_amount.'
+                                    Update bike rent amount to '.$orig_amount.'
                                 </p>'; 
                             }
                         }
