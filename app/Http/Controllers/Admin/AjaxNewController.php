@@ -5529,12 +5529,12 @@ class AjaxNewController extends Controller
                             ->first();
                             if (isset($abent_count)) {
                                 $absent=$abent_count->abents_count;
-                                return $absent;
+                                // return $absent;
                             }
                             
                             $t_month_days=Carbon::parse($month)->daysInMonth;
 
-                            $orig_amount=($working_days/$t_month_days)*$bill->rent_amount;
+                            $orig_amount=(($working_days-$absent)/$t_month_days)*$bill->rent_amount;
                         //     $html.='<p>
                         //     <strong></strong>: 
                         //     '.$orig_amount.' 
