@@ -5521,7 +5521,7 @@ class AjaxNewController extends Controller
                             
                             $t_month_days=Carbon::parse($month)->daysInMonth;
 
-                            $orig_amount+=($working_days/$t_month_days)*$bill->rent_amount;
+                            $orig_amount=($working_days/$t_month_days)*$bill->rent_amount;
                             $html.='<p>
                             <strong></strong>: 
                             '.$orig_amount.' 
@@ -5538,14 +5538,23 @@ class AjaxNewController extends Controller
                                 $rider_id_ca=$ca_item->rider_id;
                                 $rider=Rider::find($rider_id_ca);
                                 $rider_name=$rider->name;
-                                $old_amount+=$amount;
+                                $old_amount=$amount;
                                 $html.='<p>
                                         <strong>'.$rider_name.'</strong>: 
                                         '.$amount.' 
                                     </p>';
+                                $old_amount=round($old_amount,2);
+                                $orig_amount=round($orig_amount,2);
+                                if($old_amount==$orig_amount){
+                                    $html.='<p>
+                                        <strong>'.$rider_name.'</strong>: 
+                                        rider 
+                                    </p>';
+                                }
                             }
                             
                         }
+
                         if ($html!='') {
                             return $html;
                         }
