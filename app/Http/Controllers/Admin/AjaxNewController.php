@@ -5522,10 +5522,10 @@ class AjaxNewController extends Controller
                             $t_month_days=Carbon::parse($month)->daysInMonth;
 
                             $orig_amount=($working_days/$t_month_days)*$bill->rent_amount;
-                            $html.='<p>
-                            <strong></strong>: 
-                            '.$orig_amount.' 
-                        </p>';
+                        //     $html.='<p>
+                        //     <strong></strong>: 
+                        //     '.$orig_amount.' 
+                        // </p>';
                             $rider_id=$bike_h['rider_id'];
                             $ca=Company_Account::whereMonth("month",$_onlyMonth)
                             ->whereYear("month",$_onlyYear)
@@ -5539,24 +5539,26 @@ class AjaxNewController extends Controller
                                 $rider=Rider::find($rider_id_ca);
                                 $rider_name=$rider->name;
                                 $old_amount=$amount;
-                                $html.='<p>
-                                        <strong>'.$rider_name.'</strong>: 
-                                        '.$amount.' 
-                                    </p>';
+                                // $html.='<p>
+                                //         <strong>'.$rider_name.'</strong>: 
+                                //         '.$amount.' 
+                                //     </p>';
                                 $old_amount=round($old_amount,2);
                                 $orig_amount=round($orig_amount,2);
                                 if($old_amount==$orig_amount){
                                     $html.='<p>
                                         <strong>'.$rider_name.'</strong>: 
-                                        rider 
+                                        '.$old_amount.' 
                                     </p>';
+                                    return $html;
                                 }
                             }
                             
                         }
 
-                        if ($html!='') {
-                            return $html;
+                        if ($html=='') {
+                            #no amount found
+                            return '<span style="color: #fa8484;">Update bike rent.</span>';
                         }
                         return '<span style="color: #fa8484;">No row is found against this bike.</span>';
                     }
