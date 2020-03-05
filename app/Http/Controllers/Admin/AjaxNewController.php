@@ -5528,8 +5528,8 @@ class AjaxNewController extends Controller
                             ->get()
                             ->first();
                             if (isset($abent_count)) {
-                                $absent=$abent_count->abents_count;
-                                // return $absent;
+                                $absent=$absent_count->absents_count;
+                                return $absent;
                             }
                             
                             $t_month_days=Carbon::parse($month)->daysInMonth;
