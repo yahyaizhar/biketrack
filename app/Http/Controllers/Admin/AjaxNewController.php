@@ -5528,7 +5528,9 @@ class AjaxNewController extends Controller
                             ->get()
                             ->first();
                             if (isset($absent_count)) {
-                                $absent=$absent_count->absents_count;
+                                if ($bill->owner=="self") {
+                                    $absent=$absent_count->absents_count;   
+                                }
                             }
                             
                             $t_month_days=Carbon::parse($month)->daysInMonth;
