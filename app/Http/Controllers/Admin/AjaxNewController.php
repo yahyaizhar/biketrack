@@ -5563,7 +5563,7 @@ class AjaxNewController extends Controller
                                 $orig_amount=round($orig_amount,2);
                                 $html.='<p>
                                         <strong>'.$rider_name.'1</strong>: 
-                                        '.$old_amount.' 
+                                        '.$old_amount.'-'.$orig_amount.' 
                                     </p>';
                                 if($old_amount==$orig_amount){
                                     $amount_found=true;
