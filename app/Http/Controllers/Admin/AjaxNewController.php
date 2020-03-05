@@ -5695,7 +5695,7 @@ class AjaxNewController extends Controller
                             }
                             if ($amount!=0) {
                                 if ($bill->owner=="self") {
-                                    $html=$bill->rent_amount-($amount);
+                                    $html=0;
                                 }
                                 if ($bill->owner=="rent" || $bill->owner=="kr_bike"){
                                     $html=$bill->rent_amount-($amount);
