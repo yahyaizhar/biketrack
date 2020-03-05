@@ -5492,6 +5492,8 @@ class AjaxNewController extends Controller
                     });
                     if (isset($bikeh_f)) {
                         $previous_unassign_date = null;
+                        $orig_amount=0;
+                        $old_amount=0;
                         foreach ($bikeh_f as $bike_h) {
                             $bike_id=$bike_h['bike_id'];
                             $bike=$bike_h['bike'];
@@ -5519,33 +5521,35 @@ class AjaxNewController extends Controller
                             
                             $t_month_days=Carbon::parse($month)->daysInMonth;
 
-                            $amount=($working_days/$t_month_days)*$bill->rent_amount;
+                            $orig_amount+=($working_days/$t_month_days)*$bill->rent_amount;
                             $html.='<p>
                             <strong></strong>: 
-                            '.$amount.' 
+                            '.$orig_amount.' 
                         </p>';
-                            // $rider_id=$bike_h['rider_id'];
-                            // $ca=Company_Account::whereMonth("month",$_onlyMonth)
-                            // ->whereYear("month",$_onlyYear)
-                            // ->where("rider_id",$rider_id)
-                            // ->where("source","Bike Rent")
-                            // ->where("type","dr")
-                            // ->get();
-                            // foreach ($ca as $ca_item) {
-                            //     $amount=$ca_item->amount;
-                            //     $rider_id_ca=$ca_item->rider_id;
-                            //     $rider=Rider::find($rider_id_ca);
-                            //     $rider_name=$rider->name;
-                            //     $html.='<p>
-                            //             <strong>'.$rider_name.'</strong>: 
-                            //             '.$amount.' 
-                            //         </p>';
-                            // }
-                            if ($html!='') {
-                                return $html;
+                            $rider_id=$bike_h['rider_id'];
+                            $ca=Company_Account::whereMonth("month",$_onlyMonth)
+                            ->whereYear("month",$_onlyYear)
+                            ->where("rider_id",$rider_id)
+                            ->where("source","Bike Rent")
+                            ->where("type","dr")
+                            ->get();
+                            foreach ($ca as $ca_item) {
+                                $amount=$ca_item->amount;
+                                $rider_id_ca=$ca_item->rider_id;
+                                $rider=Rider::find($rider_id_ca);
+                                $rider_name=$rider->name;
+                                $old_amount+=$amount;
+                                $html.='<p>
+                                        <strong>'.$rider_name.'</strong>: 
+                                        '.$amount.' 
+                                    </p>';
                             }
-                            return '<span style="color: #fa8484;">No row is found against this bike.</span>';
+                            
                         }
+                        if ($html!='') {
+                            return $html;
+                        }
+                        return '<span style="color: #fa8484;">No row is found against this bike.</span>';
                     }
                 }
             }
