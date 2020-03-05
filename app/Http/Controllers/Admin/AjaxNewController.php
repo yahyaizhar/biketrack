@@ -5538,7 +5538,7 @@ class AjaxNewController extends Controller
                             $orig_amount=(($working_days-$absent)/$t_month_days)*$bill->rent_amount;
                             $html.='<p>
                             <strong></strong>: 
-                            '.$orig_amount.' 
+                            '.$absent.'-'.$working_days.'-'.$bill->rent_amount.'
                         </p>';
                             $ca=Company_Account::whereMonth("month",$_onlyMonth)
                             ->whereYear("month",$_onlyYear)
