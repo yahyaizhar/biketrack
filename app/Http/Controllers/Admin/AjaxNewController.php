@@ -5280,6 +5280,12 @@ class AjaxNewController extends Controller
                 return ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
             });
             foreach ($bikeh_f as $tmp) {
+                $bike_found = Arr::first($bill, function ($item, $key) use ($tmp) { 
+                    return $item->bike_id==$tmp['bike_id'];
+                });
+                if (isset($bike_found)) {
+                    continue;
+                }
                 $mdl = new bike;
                 $mdl->id=$tmp['bike']['id'];
                 $mdl->owner=$tmp['bike']['owner'];
@@ -5303,6 +5309,9 @@ class AjaxNewController extends Controller
         ->addColumn('bill_amount', function($bill) use($month,$source){
             $_onlyMonth=carbon::parse($month)->format('m');
             $_onlyYear=carbon::parse($month)->format('Y');
+            if ($source=="sim") { 
+                return 123;
+            }
             if ($source=="bike") {
                 if ($bill->rent_amount=='' || $bill->rent_amount==null) {
                     return 0;
@@ -5311,6 +5320,9 @@ class AjaxNewController extends Controller
             }
         })
         ->addColumn('company_account', function($bill) use($month,$source){
+            if ($source=="sim") { 
+                return 123;
+            }
             $_onlyMonth=carbon::parse($month)->format('m');
             $_onlyYear=carbon::parse($month)->format('Y');
             if ($source=="bike") {
@@ -5391,6 +5403,9 @@ class AjaxNewController extends Controller
         ->addColumn('bills_amount', function($bill) use($month,$source){
             $_onlyMonth=carbon::parse($month)->format('m');
             $_onlyYear=carbon::parse($month)->format('Y');
+            if ($source=="sim") { 
+                return 123;
+            }
             if ($source=="bike") {
                 $ed=Export_data::whereMonth("month",$_onlyMonth)->whereYear("month",$_onlyYear)->where("bill_id",$bill->id)->where("source","Bike Rent")->get();
                 // return $ed; 
@@ -5463,6 +5478,9 @@ class AjaxNewController extends Controller
         ->addColumn('rider_account', function($bill) use($month,$source){
             $_onlyMonth=carbon::parse($month)->format('m');
             $_onlyYear=carbon::parse($month)->format('Y');
+            if ($source=="sim") { 
+                return 123;
+            }
             if ($source=="bike") {
                 $ed=Export_data::whereMonth("month",$_onlyMonth)->whereYear("month",$_onlyYear)->where("bill_id",$bill->id)->where("source","Bike Rent")->get();
                 $html='';
@@ -5497,6 +5515,9 @@ class AjaxNewController extends Controller
         ->addColumn('loss', function($bill) use($month,$source){
             $_onlyMonth=carbon::parse($month)->format('m');
             $_onlyYear=carbon::parse($month)->format('Y');
+            if ($source=="sim") { 
+                return 123;
+            }
             if ($source=="bike") {
                 $ed=Export_data::whereMonth("month",$_onlyMonth)->whereYear("month",$_onlyYear)->where("bill_id",$bill->id)->where("source","Bike Rent")->get();
                 if (count($ed)>0) {
