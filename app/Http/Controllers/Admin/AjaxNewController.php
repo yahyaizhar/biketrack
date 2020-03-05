@@ -5527,7 +5527,7 @@ class AjaxNewController extends Controller
                             ->where("rider_id",$rider_id)
                             ->get()
                             ->first();
-                            if (isset($abent_count)) {
+                            if (isset($absent_count)) {
                                 $absent=$absent_count->absents_count;
                                 return $absent;
                             }
