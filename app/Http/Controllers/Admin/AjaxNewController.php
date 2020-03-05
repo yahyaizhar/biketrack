@@ -5579,7 +5579,7 @@ class AjaxNewController extends Controller
                                    
                                 }
                             }
-                            if(!$amount_found){
+                            if(!$amount_found && $orig_amount>0){
                                 $html.='<p>
                                     <strong>'.$rider_name.'</strong>: 
                                     Update bike rent amount to '.$orig_amount.'
