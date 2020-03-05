@@ -5521,7 +5521,7 @@ class AjaxNewController extends Controller
             
                             #now we just find total working days by subtracting assign_date and unassign_date +1 for adding first day
                             $working_days = $unassign_date->diffInDays($assign_date)+1;
-
+                            $absent=0;
                             $absent_count=Income_zomato::whereMonth("date",$_onlyMonth)
                             ->whereYear("date",$_onlyYear)
                             ->where("rider_id",$rider_id)
