@@ -5562,23 +5562,23 @@ class AjaxNewController extends Controller
                                 $old_amount=round($old_amount,2);
                                 $orig_amount=round($orig_amount,2);
                                 $html.='<p>
+                                        <strong>'.$rider_name.'1</strong>: 
+                                        '.$old_amount.' 
+                                    </p>';
+                                if($old_amount==$orig_amount){
+                                    $amount_found=true;
+                                    $html.='<p>
                                         <strong>'.$rider_name.'</strong>: 
                                         '.$old_amount.' 
                                     </p>';
-                                // if($old_amount==$orig_amount){
-                                //     $amount_found=true;
-                                //     $html.='<p>
-                                //         <strong>'.$rider_name.'</strong>: 
-                                //         '.$old_amount.' 
-                                //     </p>';
                                    
-                                // }
+                                }
                             }
                             if(!$amount_found){
-                                // $html.='<p>
-                                //     <strong>'.$rider_name.'</strong>: 
-                                //     '.$old_amount.' Update bike rent amount to '.$orig_amount.'
-                                // </p>'; 
+                                $html.='<p>
+                                    <strong>'.$rider_name.'</strong>: 
+                                    '.$old_amount.' Update bike rent amount to '.$orig_amount.'
+                                </p>'; 
                             }
                         }
 
