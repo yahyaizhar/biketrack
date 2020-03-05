@@ -5495,6 +5495,7 @@ class AjaxNewController extends Controller
                         $orig_amount=0;
                         $old_amount=0;
                         foreach ($bikeh_f as $bike_h) {
+                            $rider_id=$bike_h['rider_id'];
                             $bike_id=$bike_h['bike_id'];
                             $bike=$bike_h['bike'];
                             $assign_date = Carbon::parse($bike_h['bike_assign_date']);
@@ -5515,9 +5516,21 @@ class AjaxNewController extends Controller
                                 }
                             }
                             $previous_unassign_date = $unassign_date;
+
+                            
             
                             #now we just find total working days by subtracting assign_date and unassign_date +1 for adding first day
                             $working_days = $unassign_date->diffInDays($assign_date)+1;
+
+                            $absent_count=Income_zomato::whereMonth("date",$_onlyMonth)
+                            ->whereYear("date",$_onlyYear)
+                            ->where("rider_id",$rider_id)
+                            ->get()
+                            ->first();
+                            if (isset($abent_count)) {
+                                $absent=$abent_count->abents_count;
+                                return $absent;
+                            }
                             
                             $t_month_days=Carbon::parse($month)->daysInMonth;
 
@@ -5526,7 +5539,6 @@ class AjaxNewController extends Controller
                         //     <strong></strong>: 
                         //     '.$orig_amount.' 
                         // </p>';
-                            $rider_id=$bike_h['rider_id'];
                             $ca=Company_Account::whereMonth("month",$_onlyMonth)
                             ->whereYear("month",$_onlyYear)
                             ->where("rider_id",$rider_id)
