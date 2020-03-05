@@ -5310,11 +5310,131 @@ class AjaxNewController extends Controller
             $_onlyMonth=carbon::parse($month)->format('m');
             $_onlyYear=carbon::parse($month)->format('Y');
             if ($source=="sim") { 
-                return 123;
+                $e_amount=0;
+                $c_amount=0;
+                $total_amount=0;
+                $sim_trans=Sim_Transaction::whereMonth("month_year",$_onlyMonth)->whereYear("month_year",$_onlyYear)->where("sim_id",$bill->id)->get();
+                if (isset($sim_trans)) {
+                    foreach ($sim_trans as $sim_val) {
+                        $ed=Export_data::whereMonth("month",$_onlyMonth)->whereYear("month",$_onlyYear)->where("bill_id",$sim_val->id)->where("source","Sim Transaction")->get();
+                        if (count($ed)>0) {
+                            foreach ($ed as $value) {
+                                $e_amount+=$value->amount;
+                            }
+                            $ce=Company_Expense::whereMonth("month",$_onlyMonth)->whereYear("month",$_onlyYear)->where("bill_id",$sim_val->id)->where("type","sim_bill")->get();
+                            if (count($ce)>0) {
+                                foreach ($ce as $item) {
+                                    $c_amount+=$item->amount;
+                                }
+                            }
+                            $total_amount=$e_amount+$c_amount;
+                        }
+                        else{
+                            $total_amount=0;
+                            $sim_history = Sim_History::with('Rider')->with('Sim')->get()->toArray();
+                            $sim_id=$bill->id;
+                            $simh_f = Arr::where($sim_history, function ($item, $key) use ($sim_id, $month) {
+                                $start_created_at =Carbon::parse($item['given_date'])->startOfMonth()->format('Y-m-d');
+                                $created_at =Carbon::parse($start_created_at);
+
+                                $start_updated_at =Carbon::parse($item['return_date'])->endOfMonth()->format('Y-m-d');
+                                $updated_at =Carbon::parse($start_updated_at);
+                                $req_date =Carbon::parse($month);
+                                
+                                if($item['status']=='active'){
+                                    return $item['sim_id']==$sim_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+                                }
+                                return $item['sim_id']==$sim_id &&
+                                    ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+                            });
+                            if (isset($simh_f)) {
+                                foreach ($simh_f as $sim_h) {
+                                    $rider_id=$sim_h['rider_id'];
+                                    $ca=Company_Account::whereMonth("month",$_onlyMonth)
+                                    ->whereYear("month",$_onlyYear)
+                                    ->where("rider_id",$rider_id)
+                                    ->where("source","Sim Transaction")
+                                    ->get();
+                                    foreach ($ca as $ca_item) {
+                                        $amount=$ca_item->amount;
+                                        $total_amount+=$amount;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                return $total_amount;
             }
             if ($source=="bike") {
-                if ($bill->rent_amount=='' || $bill->rent_amount==null) {
-                    return 0;
+                // if ($bill->rent_amount=='' || $bill->rent_amount==null) {
+                //     return 0;
+                // }
+                if ($bill->owner=="self") {
+                    $ed=Export_data::whereMonth("month",$_onlyMonth)->whereYear("month",$_onlyYear)->where("bill_id",$bill->id)->where("source","Bike Rent")->get();
+                // return $ed; 
+                if (count($ed)>0) {
+                    $html=0;
+                    $html_not_found='0';
+                    foreach ($ed as $key => $value) {
+                        $ca=Company_Account::whereMonth("month",$_onlyMonth)
+                        ->whereYear("month",$_onlyYear)
+                        ->where("source",$value->source)
+                        ->where("bike_rent_id",$value->source_id)
+                        ->get();
+                        foreach ($ca as $item) {
+                            if (isset($item->rider_id)) {
+                                $rider=Rider::find($item->rider_id);
+                                $rider_name=$rider->name;
+                                $html+=$item->amount;
+                            }
+                        }
+                    }
+                }
+                else{
+                    $html=0;
+                    $amount=0;
+                    $bike_history = Assign_bike::with('Rider')->with('bike')->get()->toArray();
+                    $bike_id=$bill->id;
+                    $bikeh_f = Arr::where($bike_history, function ($item, $key) use ($bike_id, $month) {
+                        $start_created_at =Carbon::parse($item['bike_assign_date'])->startOfMonth()->format('Y-m-d');
+                        $created_at =Carbon::parse($start_created_at);
+
+                        $start_updated_at =Carbon::parse($item['bike_unassign_date'])->endOfMonth()->format('Y-m-d');
+                        $updated_at =Carbon::parse($start_updated_at);
+                        $req_date =Carbon::parse($month);
+                        
+                        if($item['status']=='active'){
+                            return $item['bike_id']==$bike_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+                        }
+                        return $item['bike_id']==$bike_id &&
+                            ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+                    });
+                    if (isset($bikeh_f)) {
+                        foreach ($bikeh_f as $bike_h) {
+                            $rider_id=$bike_h['rider_id'];
+                            $ca=Company_Account::whereMonth("month",$_onlyMonth)
+                            ->whereYear("month",$_onlyYear)
+                            ->where("rider_id",$rider_id)
+                            ->where("source","Bike Rent")
+                            ->where("type","dr")
+                            ->get();
+                            foreach ($ca as $ca_item) {
+                                $amount=$ca_item->amount;
+                                $rider_id_ca=$ca_item->rider_id;
+                                $rider=Rider::find($rider_id_ca);
+                                $rider_name=$rider->name;
+                                $html+=$amount;
+                            }
+                            if ($html!=0) {
+                                return $html;
+                            }
+                            return '0';
+                        }
+                    }
+                }
+                return $html; 
                 }
                 return $bill->rent_amount;
             }
@@ -5528,7 +5648,7 @@ class AjaxNewController extends Controller
                     ->sum('amount');
                     if ($ce!=0) {
                         if ($bill->owner=="self") {
-                            $html=$bill->rent_amount-($ce);
+                            $html=0;
                         }
                         if ($bill->owner=="rent" || $bill->owner=="kr_bike"){
                             $html=$bill->rent_amount-($ce);
