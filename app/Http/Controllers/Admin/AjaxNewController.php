@@ -5281,7 +5281,7 @@ class AjaxNewController extends Controller
             });
             foreach ($bikeh_f as $tmp) {
                 $bike_found = Arr::first($bill, function ($item, $key) use ($tmp) { 
-                    return $item->bike_id==$tmp['bike_id'];
+                    return $item->id==$tmp['bike_id'];
                 });
                 if (isset($bike_found)) {
                     continue;
