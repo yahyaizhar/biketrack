@@ -5710,11 +5710,6 @@ class AjaxNewController extends Controller
                             return round($amount,2);
                         }
                     }
-                    else { 
-                        if($bill->owner=="rent" || $bill->owner=="kr_bike") {
-                            return $bill->rent_amount;
-                        }
-                    }
                 }
                 
             }
