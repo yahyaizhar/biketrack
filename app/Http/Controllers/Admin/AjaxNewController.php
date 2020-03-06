@@ -5826,11 +5826,7 @@ class AjaxNewController extends Controller
                             $html=0;
                         }
                         if ($bill->owner=="rent" || $bill->owner=="kr_bike"){
-                            $html=$bill->rent_amount-($ce);
-                        }
-                        
-                        if ($ce==450 || $ce==550) {
-                            return $bill->rent_amount-$ce;
+                            $html=$ce;
                         }
                         return round($html,2);
                     }
@@ -5939,7 +5935,7 @@ class AjaxNewController extends Controller
                                 }
                             }
                             
-                            return round($html,2).'--'.$loss_amount;
+                            return round($html,2);
                     }
                 }
                 
