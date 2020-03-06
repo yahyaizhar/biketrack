@@ -5815,6 +5815,7 @@ class AjaxNewController extends Controller
                         $previous_unassign_date = null;
                         $orig_amount=0;
                         $old_amount=0;
+                        $loss_amount=0;
                         foreach ($bikeh_f as $bike_h) {
                             $rider_id=$bike_h['rider_id'];
                             $bike_id=$bike_h['bike_id'];
@@ -5874,22 +5875,22 @@ class AjaxNewController extends Controller
                                 $orig_amount=round($orig_amount,2);
                                 if($old_amount==$orig_amount){
                                     $amount_found=true;
-                                    $amount+=$old_amount;
+                                    $html.=$old_amount;
                                 }
                             }
-                            if ($amount!=0) {
-                                    if ($bill->owner=="self") {
-                                        $html=0;
-                                    }
-                                    if ($bill->owner=="rent" || $bill->owner=="kr_bike"){
-                                        $html=$bill->rent_amount-($amount);
-                                    }
+                            // if ($amount!=0) {
+                            //         if ($bill->owner=="self") {
+                            //             $html=0;
+                            //         }
+                            //         if ($bill->owner=="rent" || $bill->owner=="kr_bike"){
+                            //             $html=$bill->rent_amount-($amount);
+                            //         }
                                     
-                                    if ($amount==450 || $amount==550) {
-                                        return $bill->rent_amount-$amount;
-                                    }
-                                    return round($html,2);
-                                }
+                            //         if ($amount==450 || $amount==550) {
+                            //             return $bill->rent_amount-$amount;
+                            //         }
+                            //         return round($html,2);
+                            //     }
                             if(!$amount_found && $orig_amount>0){
                                 $html=0; 
                             }
