@@ -5395,6 +5395,8 @@ class AjaxNewController extends Controller
                 else{
                     $html=0;
                     $amount=0;
+                    $month_start = Carbon::parse($month)->startOfMonth();
+                    $month_end = Carbon::parse($month)->endOfMonth();
                     $bike_history = Assign_bike::with('Rider')->with('bike')->get()->toArray();
                     $bike_id=$bill->id;
                     $bikeh_f = Arr::where($bike_history, function ($item, $key) use ($bike_id, $month) {
