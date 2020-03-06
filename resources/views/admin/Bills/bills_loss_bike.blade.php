@@ -126,7 +126,7 @@ var init_table=function(){
             { data: 'bill_source', name: 'bill_source' },
             { data: 'bill_amount', name: 'bill_amount' },
             {data:  'company_account',  name: 'company_account'},
-            // { data: 'rider_account', name: 'rider_account' },            
+            { data: 'bills_amount', name: 'bills_amount' },            
             { data: 'loss', name: 'loss' },
         ],
         responsive:true,
