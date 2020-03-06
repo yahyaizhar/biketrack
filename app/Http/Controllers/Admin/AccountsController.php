@@ -1628,6 +1628,67 @@ public function fuel_expense_insert(Request $r){
             $ed->bill_id=$r->bike_id;
             $ed->bill_acc="bike";
             $ed->save();
+
+            #we need to send the notification if it is coming from daily ledger page
+            if(isset($r->send_noti)){
+                #send the noti
+                $data=[
+                    "export_id"=>$ed->id,
+                    'status'=>'accept'
+                ];
+                $data_accept=[
+                    "type"=>"update",
+                    "data"=>$data,
+                    "url"=> 'admin/account/dailyledger/noticallback',
+                ];
+                $data=[
+                    "export_id"=>$ed->id,
+                    'status'=>'reject'
+                ];
+                $data_reject=[
+                    "type"=>"update",
+                    "data"=>$data,
+                    "url"=> 'admin/account/dailyledger/noticallback',
+                ];
+                $button_html_accepted="<i style='font-size:20px' class='flaticon2-correct text-success btn_label--hover' onclick='CallBackNotification(this,".json_encode($data_accept).")'></i>";
+                $button_html_rejected="<i style='font-size:20px' class='flaticon-circle text-danger btn_label--hover' onclick='CallBackNotification(this,".json_encode($data_reject).")'></i>";
+                $button=$button_html_accepted.$button_html_rejected;
+                $current_url=url('account.daily_ledger');
+                $action_data = [
+                    [
+                        'type'=>"url",
+                        'value'=>$current_url,    
+                    ] ,
+                    [
+                        'type'=>"button",
+                        'value'=>$button,    
+                    ] ,
+                ];
+                $user = Auth::user();
+                if (isset($user->s_emp_id) && $user->s_emp_id!="") {
+                    $seniour_emp=$user->s_emp_id;
+                    $emp_name=$user->name;
+
+                    $given_date=Carbon::parse($ed->given_date)->format("M d, Y");
+
+                    $notification=new Notification;
+                    $notification->date_time=Carbon::now()->format("Y-m-d");
+                    $notification->employee_id=$seniour_emp;
+                    $notification->desc='skip_this_notification';
+                    $notification->action=json_encode($action_data);
+                    $notification->source_id=$ed->id;
+                    $notification->source_type='fuel_expense_cash';
+                    $notification->action_status='pending_new';
+                    $notification->feed=json_encode($ed);
+                    $notification->save();
+                    return response()->json([
+                        'status'=>$notification
+                    ]);
+                }
+                return response()->json([
+                    'status'=>1
+                ]);
+            }
         }else if($fuel_expense->type=="cash"){
             if ($pm=="commission_based") {
                 $ra = new \App\Model\Accounts\Rider_Account;
@@ -1700,6 +1761,67 @@ public function fuel_expense_insert(Request $r){
             $ed->bill_id=$r->bike_id;
             $ed->bill_acc="bike";
             $ed->save();
+
+            #we need to send the notification if it is coming from daily ledger page
+            if(isset($r->send_noti)){
+                #send the noti
+                $data=[
+                    "export_id"=>$ed->id,
+                    'status'=>'accept'
+                ];
+                $data_accept=[
+                    "type"=>"update",
+                    "data"=>$data,
+                    "url"=> 'admin/account/dailyledger/noticallback',
+                ];
+                $data=[
+                    "export_id"=>$ed->id,
+                    'status'=>'reject'
+                ];
+                $data_reject=[
+                    "type"=>"update",
+                    "data"=>$data,
+                    "url"=> 'admin/account/dailyledger/noticallback',
+                ];
+                $button_html_accepted="<i style='font-size:20px' class='flaticon2-correct text-success btn_label--hover' onclick='CallBackNotification(this,".json_encode($data_accept).")'></i>";
+                $button_html_rejected="<i style='font-size:20px' class='flaticon-circle text-danger btn_label--hover' onclick='CallBackNotification(this,".json_encode($data_reject).")'></i>";
+                $button=$button_html_accepted.$button_html_rejected;
+                $current_url=url('account.daily_ledger');
+                $action_data = [
+                    [
+                        'type'=>"url",
+                        'value'=>$current_url,    
+                    ] ,
+                    [
+                        'type'=>"button",
+                        'value'=>$button,    
+                    ] ,
+                ];
+                $user = Auth::user();
+                if (isset($user->s_emp_id) && $user->s_emp_id!="") {
+                    $seniour_emp=$user->s_emp_id;
+                    $emp_name=$user->name;
+
+                    $given_date=Carbon::parse($ed->given_date)->format("M d, Y");
+
+                    $notification=new Notification;
+                    $notification->date_time=Carbon::now()->format("Y-m-d");
+                    $notification->employee_id=$seniour_emp;
+                    $notification->desc='skip_this_notification';
+                    $notification->action=json_encode($action_data);
+                    $notification->source_id=$ed->id;
+                    $notification->source_type='fuel_expense_cash';
+                    $notification->action_status='pending_new';
+                    $notification->feed=json_encode($ed);
+                    $notification->save();
+                    return response()->json([
+                        'status'=>$notification
+                    ]);
+                }
+                return response()->json([
+                    'status'=>1
+                ]);
+            }
         } 
         $splitted_amount+=$value['amount_given_by_days'];
         #saving bill data to detect changes
@@ -1734,6 +1856,9 @@ public function fuel_expense_insert(Request $r){
         $ce->bill_acc="bike";
         $ce->save();
       }
+
+
+        
       return response()->json([
         'ca'=>$ca,
         'amount'=>$splitted_amount,
@@ -3979,14 +4104,47 @@ public function client_income_update(Request $request,$id){
 
                 $login_user=Auth::user();
                 if($login_user->type!='su'){ #filter admin
-                    $notification=new Notification;
-                    $notification->date_time=Carbon::now()->format("Y-m-d");
-                    $notification->employee_id=$admin_id;
-                    $notification->desc=$login_user->name." accepted your edit request";
-                    $notification->action="";
-                    $notification->source_id=$r->source_id;
-                    $notification->source_type=$r->source_key;
-                    $notification->save();
+
+                    if(isset($r->dl_notifid)){
+                        #means it is coming from daily ledger, we change the way we generate the notificaiton
+                        $notification=Notification::find($r->dl_notifid);
+                        if(isset($notification)){
+                            if($notification->action_status=='pending_new'){
+                                #we need to update the notification
+                                $notification->feed=json_encode($statement);
+                                $notification->update();
+                            }
+                            elseif($notification->action_status=='rejected'){
+                                #we need to create new notification
+                                if(isset($export_data)){
+                                    $notification_new=new Notification;
+                                    $notification_new->date_time=Carbon::now()->format("Y-m-d");
+                                    $notification_new->employee_id=$notification->employee_id;
+                                    $notification_new->desc=$notification->desc;
+                                    $notification_new->action=$notification->action;
+                                    $notification_new->source_id=$export_data->id;
+                                    $notification_new->source_type=$notification->source_type;
+                                    $notification_new->action_status='pending';
+                                    $notification_new->feed=json_encode($export_data);
+                                    $notification_new->save();
+                                }
+                            }
+                            #add accept case here if needed
+                        }
+                        
+                    }
+                    else {
+                        $notification=new Notification;
+                        $notification->date_time=Carbon::now()->format("Y-m-d");
+                        $notification->employee_id=$admin_id;
+                        $notification->desc=$login_user->name." accepted your edit request";
+                        $notification->action="";
+                        $notification->source_id=$r->source_id;
+                        $notification->source_type=$r->source_key;
+                        $notification->save(); 
+                    }
+
+                    
                 }
                 return response()->json([
                     'status'=>1
@@ -4121,14 +4279,46 @@ public function client_income_update(Request $request,$id){
 
             $login_user=Auth::user();
             if($login_user->type!='su'){ #filter admin
-                $notification=new Notification;
-                $notification->date_time=Carbon::now()->format("Y-m-d");
-                $notification->employee_id=$admin_id;
-                $notification->desc=$login_user->name." accepted your edit request";
-                $notification->action="";
-                $notification->source_id=$r->source_id;
-                $notification->source_type=$r->source_key;
-                $notification->save();
+                if(isset($r->dl_notifid)){
+                    #means it is coming from daily ledger, we change the way we generate the notificaiton
+                    $notification=Notification::find($r->dl_notifid);
+                    if(isset($notification)){
+                        if($notification->action_status=='pending_new'){
+                            #we need to update the notification
+                            if(isset($export_data)){
+                                $notification->feed=json_encode($export_data);
+                                $notification->update();
+                            }
+                        }
+                        elseif($notification->action_status=='rejected'){
+                            #we need to create new notification
+                            if(isset($export_data)){
+                                $notification_new=new Notification;
+                                $notification_new->date_time=Carbon::now()->format("Y-m-d");
+                                $notification_new->employee_id=$notification->employee_id;
+                                $notification_new->desc=$notification->desc;
+                                $notification_new->action=$notification->action;
+                                $notification_new->source_id=$export_data->id;
+                                $notification_new->source_type=$notification->source_type;
+                                $notification_new->action_status='pending';
+                                $notification_new->feed=json_encode($export_data);
+                                $notification_new->save();
+                            }
+                        }
+                        #add accept case here if needed
+                    }
+                    
+                }
+                else {
+                    $notification=new Notification;
+                    $notification->date_time=Carbon::now()->format("Y-m-d");
+                    $notification->employee_id=$admin_id;
+                    $notification->desc=$login_user->name." accepted your edit request";
+                    $notification->action="";
+                    $notification->source_id=$r->source_id;
+                    $notification->source_type=$r->source_key;
+                    $notification->save();
+                }
             }
             return response()->json([
                 'status'=>1,
@@ -4181,14 +4371,44 @@ public function client_income_update(Request $request,$id){
 
                 $login_user=Auth::user();
                 if($login_user->type!='su'){ #filter admin
-                    $notification=new Notification;
-                    $notification->date_time=Carbon::now()->format("Y-m-d");
-                    $notification->employee_id=$admin_id;
-                    $notification->desc=$login_user->name." accepted your edit request";
-                    $notification->action="";
-                    $notification->source_id=$r->source_id;
-                    $notification->source_type=$r->source_key;
-                    $notification->save();
+                    if(isset($r->dl_notifid)){
+                        #means it is coming from daily ledger, we change the way we generate the notificaiton
+                        $notification=Notification::find($r->dl_notifid);
+                        if(isset($notification)){
+                            if($notification->action_status=='pending_new'){
+                                #we need to update the notification
+                                $notification->feed=json_encode($statement);
+                                $notification->update();
+                            }
+                            elseif($notification->action_status=='rejected'){
+                                #we need to create new notification
+                                if(isset($export_data)){
+                                    $notification_new=new Notification;
+                                    $notification_new->date_time=Carbon::now()->format("Y-m-d");
+                                    $notification_new->employee_id=$notification->employee_id;
+                                    $notification_new->desc=$notification->desc;
+                                    $notification_new->action=$notification->action;
+                                    $notification_new->source_id=$export_data->id;
+                                    $notification_new->source_type=$notification->source_type;
+                                    $notification_new->action_status='pending';
+                                    $notification_new->feed=json_encode($export_data);
+                                    $notification_new->save();
+                                }
+                            }
+                            #add accept case here if needed
+                        }
+                        
+                    }
+                    else {
+                        $notification=new Notification;
+                        $notification->date_time=Carbon::now()->format("Y-m-d");
+                        $notification->employee_id=$admin_id;
+                        $notification->desc=$login_user->name." accepted your edit request";
+                        $notification->action="";
+                        $notification->source_id=$r->source_id;
+                        $notification->source_type=$r->source_key;
+                        $notification->save();
+                    }
                 }
                 return response()->json([
                     'status'=>1
@@ -4344,14 +4564,46 @@ public function client_income_update(Request $request,$id){
 
             $login_user=Auth::user();
             if($login_user->type!='su'){ #filter admin
-                $notification=new Notification;
-                $notification->date_time=Carbon::now()->format("Y-m-d");
-                $notification->employee_id=$admin_id;
-                $notification->desc=$login_user->name." accepted your edit request";
-                $notification->action="";
-                $notification->source_id=$r->source_id;
-                $notification->source_type=$r->source_key;
-                $notification->save();
+                if(isset($r->dl_notifid)){
+                    #means it is coming from daily ledger, we change the way we generate the notificaiton
+                    $notification=Notification::find($r->dl_notifid);
+                    if(isset($notification)){
+                        if($notification->action_status=='pending_new' || $notification->action_status=='pending'){
+                            #we need to update the notification
+                            if(isset($export_data)){
+                                $notification->feed=json_encode($export_data);
+                                $notification->update();
+                            }
+                        }
+                        elseif($notification->action_status=='rejected'){
+                            #we need to create new notification
+                            if(isset($export_data)){
+                                $notification_new=new Notification;
+                                $notification_new->date_time=Carbon::now()->format("Y-m-d");
+                                $notification_new->employee_id=$notification->employee_id;
+                                $notification_new->desc=$notification->desc;
+                                $notification_new->action=$notification->action;
+                                $notification_new->source_id=$export_data->id;
+                                $notification_new->source_type=$notification->source_type;
+                                $notification_new->action_status='pending';
+                                $notification_new->feed=json_encode($export_data);
+                                $notification_new->save();
+                            }
+                        }
+                        #add accept case here if needed
+                    }
+                    
+                }
+                else {
+                    $notification=new Notification;
+                    $notification->date_time=Carbon::now()->format("Y-m-d");
+                    $notification->employee_id=$admin_id;
+                    $notification->desc=$login_user->name." accepted your edit request";
+                    $notification->action="";
+                    $notification->source_id=$r->source_id;
+                    $notification->source_type=$r->source_key;
+                    $notification->save();
+                }
             }
             return response()->json([
                 'status'=>1,
@@ -4612,6 +4864,36 @@ public function client_income_update(Request $request,$id){
         // foreach ($RA as $ra) {
         //     $ra->delete();
         // }
+    }
+    public function dailyledger_noticallback(Request $r)
+    {
+        #called only when new row is added.
+        $export_id = $r->get('export_id');
+        $noti_id = $r->get('noti_id');
+        $status = $r->get('status');
+        $update_status='accepted';
+        if($status=='reject'){
+            $update_status='rejected';
+        }
+        $notification = Notification::find($noti_id);
+        if(!$notification){
+            #wrong noti id
+            return response()->json([
+                'status'=>0,
+                'msg'=>'No notification found against this id',
+                'data'=>$r->all()
+            ]);
+        }
+        #just update the status of notification
+        $notification->action_status=$update_status;
+        $notification->status='read';
+        $notification->update();
+        
+        return response()->json([
+            'status'=>1,
+            'data'=>$r->all(),
+            'response'=>$notification
+        ]);
     }
 
     public function edit_rider_account(Request $r){

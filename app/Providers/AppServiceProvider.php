@@ -32,7 +32,10 @@ class AppServiceProvider extends ServiceProvider
             if(Auth::check()){
                 $user_id=Auth::user()->id;
                 $notifications=[];
-                $notification=\App\Notification::where("employee_id",$user_id)->where("status","unread")->get();
+                $notification=\App\Notification::where("employee_id",$user_id)
+                ->where("status","unread")
+                ->where("desc",'!=',"skip_this_notification")
+                ->get();
                 $count_notification=$notification->count();
                 foreach ($notification as $noti) {
                     $noti->action =json_decode($noti->action,true);

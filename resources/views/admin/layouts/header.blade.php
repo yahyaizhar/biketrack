@@ -33,6 +33,9 @@
                     </div>
                     <div class="kt-notification kt-margin-t-30 kt-margin-b-20 kt-scroll ps ps--active-y" data-scroll="true" data-height="270" data-mobile-height="220" style="height: 270px; overflow: hidden;">
                         @foreach ($notifications as $item)
+                        @if ($item->desc=='skip_this_notification')
+                            @continue
+                        @endif
                             <a  class="kt-notification__item">
                                 {{-- <div class="kt-notification__item-icon">
                                     <i class="flaticon2-line-chart kt-font-success"></i>

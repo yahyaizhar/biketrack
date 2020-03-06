@@ -181,3 +181,9 @@ tr.shown td.details-control {
 .custom_approval_comer_model table tr th {
     border: 1px solid #abaaaa !important;
 }
+.btn_label--hover:hover{
+    opacity: .7;
+}
+.btn_label--hover{
+    cursor: pointer;
+}

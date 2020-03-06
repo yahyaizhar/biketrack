@@ -880,6 +880,13 @@ color: #5d78ff !important;
                                     </a>
                                 </li>
                                 @endif
+                                @php $is_in_array = Arr::first($users, function ($item) { return $item['action_name']=='account.daily_ledger';   }); @endphp
+                                @if($is_in_array || $is_admin)
+                                <li class="kt-menu__item @if(strpos(Request::url(), "/account/dailyledger") !== false && strpos(Request::url(), "admin/account/dailyledger") != false) kt-menu__item--active @endif  " aria-haspopup="true">
+                                    <a route_status="{{$is_in_array['action_name']}}" href="{{ route('account.daily_ledger') }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Daily Ledger</span>
+                                    </a>
+                                </li>
+                                @endif
                              </ul> 
                         </div>
                     </li>

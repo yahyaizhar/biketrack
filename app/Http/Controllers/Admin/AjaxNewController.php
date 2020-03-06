@@ -65,6 +65,7 @@ use App\Export_data;
 use App\Http\Controllers\Admin\AccountsController;
 use App\Deleted_data;
 use App\Model\Sim\Sim_History;
+use App\Notification;
 
 
 class AjaxNewController extends Controller
@@ -5009,8 +5010,116 @@ class AjaxNewController extends Controller
         ->addColumn('given_date', function($export_data){
             return carbon::parse($export_data->given_date)->format('F d,Y');
         })
-        ->addColumn('amount', function($export_data){
+        ->addColumn('amountRAW', function($export_data){
             return $export_data->amount;
+        })
+        ->addColumn('amount', function($export_data){
+
+            $ex_source = $export_data->source;
+            $ex_source_id = $export_data->source_id;
+            $ex_rider_id=$export_data->rider_id;
+            $ex_month = Carbon::parse($export_data->month)->format('Y-m-d');
+            $onlyMonth=Carbon::parse($ex_month)->format('m');
+            $onlyYear=Carbon::parse($ex_month)->format('Y');
+
+            $ex_source_key='';
+            switch ($ex_source) {
+                case 'Bike Rent':
+                    $ex_source_key="bike_rent_id";
+                    break;
+                case 'Sim Transaction':
+                    $ex_source_key="sim_transaction_id";
+                    break;
+                case 'Discipline Fine':
+                case 'Visa Charges':
+                case 'receive_cash':
+                case 'pay_cash':
+                case 'Bonus':
+                    $ex_source_key="kingrider_fine_id";
+                    break; 
+                case 'advance':
+                    $ex_source_key="advance_return_id";
+                    break;
+                case 'fuel_expense_cash':
+                    $ex_source_key="fuel_expense_cash";
+                    break;
+                case 'Mobile Installment':
+                    $ex_source_key="mobile_installment_id";
+                    break;
+                    
+                default:
+                    # code...
+                    break;
+            }
+
+            $noti = Notification::orderByDesc('created_at')->where('source_id',$export_data->id)
+            ->where('source_type',$ex_source_key)
+            // ->where('status','unread')
+            // ->where(function($q){
+            //     $q->where('action_status', "pending_new")
+            //     ->orWhere('action_status', 'pending');
+            // })
+            ->get()
+            ->first();
+            $extra='';
+            if(isset($noti)){
+                #notifications found
+
+                if($noti->action_status=='pending_new' || $noti->action_status=='pending'){
+                    #can edit without approval
+                    $data_accept=[
+                        "type"=>"POST",
+                        "data"=>[
+                            "export_id"=>$export_data->id,
+                            "noti_id"=>$noti->id,
+                            'status'=>'accept'
+                        ],
+                        "url"=> 'admin/account/dailyledger/noticallback',
+                    ];
+                    $data_reject=[
+                        "type"=>"POST",
+                        "data"=>[
+                            "export_id"=>$export_data->id,
+                            "noti_id"=>$noti->id,
+                            'status'=>'reject'
+                        ],
+                        "url"=> 'admin/account/dailyledger/noticallback',
+                    ];
+                    $ApproveHTML = '<i class="flaticon2-check-mark text-success btn_label--hover mx-1" onclick=\'CallBackNotification(this,'.json_encode($data_accept).', false,notificationCallback)\'></i>';
+                    $RejectHTML='<i class="flaticon2-cross tr-remove" onclick=\'CallBackNotification(this,'.json_encode($data_reject).', false,notificationCallback)\'></i>';
+                    $extra='<div class="d-inline" data-noti="'.$noti->id.'">
+                        '.$ApproveHTML.$RejectHTML.'
+                        </div>';
+                }
+                else if($noti->action_status=='rejected'){
+                    #can edit without approval
+                    $ApproveHTML = '<i class="flaticon2-check-mark text-success mx-1" ></i>';
+                    $RejectHTML='<i class="flaticon2-cross text-danger"></i>';
+                    $extra='<div class="d-inline" data-noti="'.$noti->id.'">
+                        '.$RejectHTML.'
+                        </div>';
+                }
+                else if($noti->action_status=='accepted'){
+                    #can edit without approval
+                    $ApproveHTML = '<i class="flaticon2-check-mark text-success mx-1" ></i>';
+                    $RejectHTML='<i class="flaticon2-cross text-danger"></i>';
+                    $extra='<div class="d-inline" data-noti="'.$noti->id.'">
+                        '.$ApproveHTML.'
+                        </div>';
+                }
+                
+                $senior_id = $noti->employee_id;
+                if($senior_id!=Auth::user()->id){
+                    #login user is employee
+                    if($noti->action_status=='pending_new' || $noti->action_status=='pending'){
+                    $extra='<div class="text-danger" data-noti="'.$noti->id.'">
+                            (In review)
+                            </div>';
+                    }
+                }
+            }
+
+            return $export_data->amount.$extra;
         })
         ->addColumn('action', function($export_data){
             $ex_source = $export_data->source;
@@ -5051,6 +5160,29 @@ class AjaxNewController extends Controller
             }
 
             if($ex_source_key=='') return '';
+
+            $nex_source_key=$ex_source_key;
+            if($nex_source_key=='fuel_expense_id') $nex_source_key='fuel_expense_cash';
+            $noti = Notification::orderByDesc('created_at')->where('source_id',$export_data->id)
+            ->where('source_type',$nex_source_key)
+            // ->where('status','unread')
+            // ->where(function($q){
+            //     $q->where('action_status', "pending_new")
+            //     ->orWhere('action_status', 'pending');
+            // })
+            ->get()
+            ->first();
+
+            $noti_id='';
+            $noti_action_status='';
+            if(isset($noti)){
+                $noti_id=$noti->id;
+                $senior_id = $noti->employee_id;
+                if($senior_id!=Auth::user()->id){
+                    #login user is employee
+                    $noti_action_status=$noti->action_status;
+                }
+            }
 
             $company_statements=Company_Account::where('rider_id', $ex_rider_id)
             ->whereMonth('month',$onlyMonth)
@@ -5149,8 +5281,10 @@ class AjaxNewController extends Controller
                 || $model_id=="salary" || $company_statements->income_zomato_id!=null) {
                     $deleteHTML='';
                 }
-                
-                return $UpdateHTML.$deleteHTML;
+                if($noti_action_status=='accepted'){
+                    $deleteHTML='';
+                }
+                return '<span class="noti__id" data-noti="'.$noti_id.'" ></span>'.$UpdateHTML.$deleteHTML;
             }
             else {
                 # we will look into rider account
@@ -5248,13 +5382,16 @@ class AjaxNewController extends Controller
                     if ($model_id=="salary" || $rider_statement->income_zomato_id!=null) {
                         $deleteHTML='';
                     }
-                    return $UpdateHTML.$deleteHTML;
+                    if($noti_action_status=='accepted'){
+                        $deleteHTML='';
+                    }
+                    return '<span class="noti__id" data-noti="'.$noti_id.'" ></span>'.$UpdateHTML.$deleteHTML;
                 }
             }
 
             return $company_statements;
         })
-        ->rawColumns(['id','source','rider','month','given_date','amount', 'paid_by','action'])
+        ->rawColumns(['id','source','rider','month','given_date','amount','amountRAW', 'paid_by','action'])
         ->make(true);
     }
 

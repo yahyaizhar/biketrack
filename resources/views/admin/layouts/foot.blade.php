@@ -378,6 +378,16 @@ biketrack.refresh_global = function(){
     });
 }
 function CallBackNotification($this,data){
+    var noti_end = true;
+    var callback=null;
+    if(typeof arguments[2]!=="undefined"){
+        noti_end = arguments[2];
+    }
+    if(typeof arguments[3]!=="undefined"){
+        callback = arguments[3];
+    }
+    console.log('noti_end', noti_end);
+    
     var _url=window.location.origin+'/'+data.url;
     var _data=data.data;
     var _type=data.type;
@@ -391,7 +401,8 @@ function CallBackNotification($this,data){
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         success: function(data){
-            notificationEnd(noti_id);
+            if(noti_end) notificationEnd(noti_id);
+            if(typeof callback ==="function") callback(data,false);
             swal.fire({
                 position: 'center',
                 type: 'success',
@@ -400,8 +411,10 @@ function CallBackNotification($this,data){
                 timer: 1500
             });
             // window.location.reload();
+            
         },
         error: function(error){
+            if(typeof callback ==="function") callback(data,true);
             swal.fire({
                 position: 'center',
                 type: 'error',
@@ -410,6 +423,7 @@ function CallBackNotification($this,data){
                 showConfirmButton: false,
                 timer: 1500
             });
+            
         }
     });
 }

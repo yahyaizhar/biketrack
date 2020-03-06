@@ -614,13 +614,12 @@ class KRController extends Controller
             'r'=>$request->all(),
         ]);
     }
-    public static function curlGet($url)
-    {
+    public static function curlGet($url){
         $ch = curl_init();  
     
         curl_setopt($ch,CURLOPT_URL,$url);
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-    //  curl_setopt($ch,CURLOPT_HEADER, false); 
+        //  curl_setopt($ch,CURLOPT_HEADER, false); 
     
         $output=curl_exec($ch);
     
@@ -672,6 +671,41 @@ class KRController extends Controller
         if (isset($user->s_emp_id) && $user->s_emp_id!="") {
             $seniour_emp=$user->s_emp_id;
             $emp_name=$user->name;
+
+            #check if it is from daily ledger
+            if(isset($request->from)){
+                if($request->from=='daily_ledger'){
+                    #we need to check if current row is in review, if yes we just edit the row. (without approval)
+                    if(isset($request->noti_id)){
+                        $noti_id = $request->noti_id;
+                        $_notif = Notification::find($noti_id);
+                        if(isset($_notif)){
+                            #check if noti is in review for the first time
+                            if($_notif->action_status!='accepted'){
+                                #just let him edit the row
+                                $req = new Request;
+                                foreach ($data as $key => $item) {
+                                    $req->merge([$key=>$item]);
+                                }
+                                $req->merge(['dl_notifid'=>$noti_id]); #because we do not need to generate the notification when we edit the row
+                                if($request->statement_type=='rider__accounts'){
+                                    $response = \App\Http\Controllers\Admin\AccountsController::update_row_rider_account($req,$request->statement_id,'accept',Auth::user()->id);
+                                }
+                                else {
+                                    $response = \App\Http\Controllers\Admin\AccountsController::update_row_company_account($req,$request->statement_id,'accept',Auth::user()->id);
+                                }
+                                
+                                return response()->json([
+                                    'status'=>1,
+                                    'response'=>$response,
+                                    'url'=>$req->all()
+                                ]);
+                            }
+                        }
+                    }
+                }
+            }
+
         }
         else{
             # no senior person found, so just delete the data

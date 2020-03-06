@@ -87,10 +87,15 @@
                             @endif
                         </div>
                         <div class="form-group">
-                                <label>Paid by:</label>
-                            <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " name="paid_by" style="width: 13px !important;" value="cash" required=""><h6 class="title" style="margin-top: 10px; margin-left: 10px; cursor: pointer;">Cash</h6></div>
-                            <div style="display: flex;margin-left:20px;"> <input type="radio" class="form-control " name="paid_by" style="width: 13px !important;" value="bank" required=""><h6 class="title" style="margin-top: 10px; margin-left: 10px; cursor: pointer;">Bank</h6></div>
-                        
+                            <label>Paid by:</label>
+                            <div style="display: flex;margin-left:20px;"> 
+                                <input type="radio" class="form-control " checked name="paid_by" style="width: 13px !important;" value="cash" required="">
+                                <h6 class="title" style="margin-top: 10px; margin-left: 10px; cursor: pointer;">Cash</h6>
+                            </div>
+                            <div style="display: flex;margin-left:20px;"> 
+                                <input type="radio" class="form-control " name="paid_by" style="width: 13px !important;" value="bank" required="">
+                                <h6 class="title" style="margin-top: 10px; margin-left: 10px; cursor: pointer;">Bank</h6>
+                            </div>
                         </div>
                         <div class="form-group account_namecheck" style="display:none;">
                             <label for="account_no">Account name</label>
@@ -142,7 +147,7 @@
  
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-<script>
+<script data-ajax>
 $(function(){
     $('.kt-select2').select2({
         placeholder: "Select an rider",

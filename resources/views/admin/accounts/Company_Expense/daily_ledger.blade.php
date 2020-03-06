@@ -30,6 +30,12 @@
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-wrapper">
                     <div class="kt-portlet__head-actions">
+                            
+                        <a href="" data-ajax="{{ route('admin.CE_index') }}" class=" btn btn-success btn-elevate btn-icon-sm">
+                            <i class="fa fa-money-bill"></i>
+                            Company Expense
+                        </a>
+                        &nbsp;
                         <a href="" data-ajax="{{ route('admin.AR_index') }}" class=" btn btn-success btn-elevate btn-icon-sm">
                             <i class="fa fa-money-bill"></i>
                             Pay advance cash
@@ -127,7 +133,7 @@
                 <input type="hidden" name="source_key">
                 <div class="form-group">
                     <label>Rider:</label>
-                    <select required class="form-control kt-select2-general" name="rider_id_update" >
+                    <select required class="form-control bk-select2" name="rider_id_update" >
                         @foreach ($riders as $rider)
                         <option value="{{ $rider->id }}">
                             {{ $rider->name }}
@@ -187,6 +193,7 @@ $(function() {
     $('[name="month_year"]').on("change",function(){
         var month=$(this).val();
         console.log('month',this);
+        $(this).attr('data-month', new Date(month).format("yyyy-mm-dd"));
         
         var _filterBy=$('[name="filter_by"]').val();
         var push_state={
@@ -198,6 +205,7 @@ $(function() {
     });
     var is_check_month=biketrack.getUrlParameter('month');
     if (is_check_month!='') {
+        $('[name="month_year"]').attr('data-month', new Date(is_check_month).format('yyyy-mm-dd'));
         $('[name="month_year"]').fdatepicker('update', new Date(is_check_month));
     }
     var q_filter=biketrack.getUrlParameter('filter_by');
@@ -245,8 +253,10 @@ $(function() {
                 if($ajax_script.length==0) alert('Cannot find ajax script in this form');
                 $('body').append('<script data-ajax>'+$ajax_script.eq(0).html()+'<\/script>');
 
+                //we need to add extra hidden input so we can send notification
+                _quickViewModal.find('form').prepend(' <input type="hidden" name="send_noti" value="1"> ')
                 
-                    biketrack.refresh_global();
+                biketrack.refresh_global();
                 //add event handler to submit form in modal
                 _quickViewModal.find('form').off('submit').on('submit', function(e){
                     e.preventDefault();
@@ -374,6 +384,7 @@ var init_table=function(){
 }
 function UpdateRows($this,id,model_class,model_id,rider_id,string,month,year,source_id,source_key,given_date,stype){
     var _tr = $($this).parents('tr');
+    var _notiId = _tr.find('.noti__id').eq(0).attr('data-noti');
     var _row = expense_table.row(_tr).data();
     var _model = $('#update_row_model');
     var r1d1=_row.month;
@@ -381,7 +392,7 @@ function UpdateRows($this,id,model_class,model_id,rider_id,string,month,year,sou
     var _month=new Date(r1d1).format("mmmm yyyy");
     var _source = _row.desc==null?_row.source:_row.desc;
     _model.find('#update_rows [name="desc"]').val(_source);
-    _model.find('#update_rows [name="amount"]').val(_row.amount);
+    _model.find('#update_rows [name="amount"]').val(_row.amountRAW);
     _model.find('#update_rows [name="statement_id"]').val(id);
     _model.find('#update_rows [name="source_id"]').val(source_id);
     _model.find('#update_rows [name="source_key"]').val(source_key);
@@ -403,6 +414,8 @@ function UpdateRows($this,id,model_class,model_id,rider_id,string,month,year,sou
         data.append('given_date',given_date);
         data.append('source',model_id);
         data.append('statement_type',stype);
+        data.append('from','daily_ledger');
+        data.append('noti_id',_notiId);
         var _form = $(this);
         var _submitBtn = _form.find('[type="submit"]');
         $.ajax({
@@ -486,7 +499,8 @@ function deleteRows(id,model_class,model_id,rider_id,string,month,year,source_id
                 "source_id":source_id,
                 "source_key":source_key,
                 "given_date":given_date,
-                'statement_type':stype
+                'statement_type':stype,
+                'from':'daily_ledger'
             };
             $.ajax({
                 url  :  url,
@@ -533,6 +547,14 @@ function deleteRows(id,model_class,model_id,rider_id,string,month,year,source_id
         }
     });
     
+}
+
+function notificationCallback(data,isErr){
+    if(isErr){
+        alert("Error occured, see console for debugging.");
+        // return;
+    }
+    expense_table.ajax.reload(null, false);
 }
 </script>
 @endsection
