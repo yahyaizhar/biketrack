@@ -62,7 +62,7 @@
                         <th>Bike Detail</th>
                         <th>Rent Amount</th>
                         <th>Rent paid by Company</th>
-                        <th>Rent paid by Rider</th>
+                        {{-- <th>Rent paid by Rider</th> --}}
                         <th>Company Loss</th>                       
                     </tr>
                 </thead>
@@ -126,7 +126,7 @@ var init_table=function(){
             { data: 'bill_source', name: 'bill_source' },
             { data: 'bill_amount', name: 'bill_amount' },
             {data:  'company_account',  name: 'company_account'},
-            { data: 'bills_amount', name: 'bills_amount' },            
+            // { data: 'rider_account', name: 'rider_account' },            
             { data: 'loss', name: 'loss' },
         ],
         responsive:true,
