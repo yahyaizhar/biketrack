@@ -5606,7 +5606,7 @@ class AjaxNewController extends Controller
                             ->where("source","Bike Rent")
                             ->where("type","dr")
                             ->get();
-
+                            if (isset($ca)) {
                             $rider=Rider::find($rider_id);
                             $rider_name=$rider->name;
 
@@ -5631,6 +5631,10 @@ class AjaxNewController extends Controller
                                     <strong>'.$rider_name.'</strong>: 
                                     Update bike rent amount to '.$orig_amount.'
                                 </p>'; 
+                            }
+                            }
+                            else{
+                                return '<span style="color: #fa8484;">No row is found against this bike.</span>';
                             }
                         }
 
@@ -5756,11 +5760,8 @@ class AjaxNewController extends Controller
                                 $old_amount=round($old_amount,2);
                                 $orig_amount=round($orig_amount,2);
                                 if($old_amount==$orig_amount){
-                                    if ($ca_item->type=='dr') {
                                         $amount_found=true;
                                         $html+=$old_amount;
-                                    }
-                                    
                                 }
                             }
                             if(!$amount_found && $orig_amount>0){
