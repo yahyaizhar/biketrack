@@ -5921,7 +5921,7 @@ class AjaxNewController extends Controller
                                 $orig_amount=round($orig_amount,2);
                                 if($old_amount==$orig_amount){
                                     $amount_found=true;
-                                    $loss_amount.=$old_amount;
+                                    $loss_amount+=$old_amount;
                                 }
                             }
                             
