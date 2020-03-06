@@ -21,6 +21,8 @@ class CreateNotificationsTable extends Migration
             $table->text('action')->nullable();
             $table->string('source_id')->nullable();
             $table->string('source_type')->nullable();
+            $table->string('action_status')->nullable();
+            $table->text('feed')->nullable();
             $table->string('status')->default("unread");
             $table->timestamps();
         });
