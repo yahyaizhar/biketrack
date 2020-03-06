@@ -5891,9 +5891,7 @@ class AjaxNewController extends Controller
                             //         }
                             //         return round($html,2);
                             //     }
-                            if(!$amount_found && $orig_amount>0){
-                                $html=0; 
-                            }
+                            
                         }
 
                         if ($html=='') {
@@ -5914,6 +5912,9 @@ class AjaxNewController extends Controller
                             }
                             return round($html,2);
                         }
+                        // if(!$amount_found && $orig_amount>0){
+                        //     $html=0; 
+                        // }
                             // foreach ($ca as $ca_item) {
                             //     $amount+=$ca_item->amount;
                             //     // $html=$amount;
