@@ -5757,14 +5757,24 @@ class AjaxNewController extends Controller
                                 if($old_amount==$orig_amount){
                                     $amount_found=true;
                                     $html=$old_amount;
-                                   
                                 }
                             }
+                            if(!$amount_found && $orig_amount>0){
+                                $html=0; 
+                            }
+                        }
+
+                        if ($html=='') {
+                            return  '0';
+                        }
+                        else{
+                            return $html;
+                        }
                         }
                         return $html;
                     }
                 }
-            }
+            // }
             if ($html==0) {
                 return '0';
             }
