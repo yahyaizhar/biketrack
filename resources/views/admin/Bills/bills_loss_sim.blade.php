@@ -111,8 +111,8 @@ var init_table=function(){
         drawCallback:function(data){
         $('.total_entries').remove();
         $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
-    },
-       ajax: "{{ url('admin/rider/expense_loss/ajax/') }}" + "/" + _month+ "/" + _source,
+    }, 
+       ajax: "{{ url('admin/rider/sim/expense_loss/ajax/') }}" + "/" + _month+ "/" + _source,
         columns: [
             { data: 'bill_source', name: 'bill_source' },
             { data: 'bill_amount', name: 'bill_amount' },

@@ -293,7 +293,7 @@ public function store_simTransaction(Request $request){
             $filepath = Storage::putfile('public/uploads/riders/sim_bill_image', $request->file('sim_bill_image'));
             $sim_trans->sim_bill_image = $filepath;
         }
-        // $sim_trans->save();
+        $sim_trans->save();
 
         $sim=$sim_trans->Sim;
     
@@ -346,7 +346,7 @@ public function store_simTransaction(Request $request){
             $ca->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
             $ca->source="Sim Transaction"; 
             $ca->amount=$value['bill_amount_given_by_days'];
-            // $ca->save();
+            $ca->save();
 
             $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
                 'sim_transaction_id'=>$sim_trans->id,
@@ -362,7 +362,7 @@ public function store_simTransaction(Request $request){
             $ca->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
             $ca->source="Sim Transaction"; 
             $ca->amount=$value['bill_amount_given_by_days'];
-            // $ca->save();
+            $ca->save();
             
             $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
                 'sim_transaction_id'=>$sim_trans->id,
@@ -377,7 +377,7 @@ public function store_simTransaction(Request $request){
             $ra->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
             $ra->source="Sim Transaction"; 
             $ra->amount=$value['bill_amount_given_by_days'];
-            // $ra->save();
+            $ra->save();
             // return response()->json([
             //     'status'=>1,
             //     'ca'=>$ca,
@@ -401,7 +401,7 @@ public function store_simTransaction(Request $request){
             $ca->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
             $ca->source="Sim Transaction"; 
             $ca->amount=$value['bill_amount_given_by_days'];
-            // $ca->save();
+            $ca->save();
         }
         $ed =new Export_data;
         $ed->type='dr';
@@ -414,9 +414,9 @@ public function store_simTransaction(Request $request){
         $ed->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
         $ed->source="Sim Transaction"; 
         $ed->source_id=$sim_trans->id;
-        $ed->bill_id=$request->bike_id;
+        $ed->bill_id=$sim_trans->id;
         $ed->bill_acc="sim";
-        // $ed->save();
+        $ed->save();
         if ($pm!="commission_based") {
             if($extra>0){
                 $ra = \App\Model\Accounts\Rider_Account::firstOrCreate([
@@ -432,7 +432,7 @@ public function store_simTransaction(Request $request){
                 $ra->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
                 $ra->source="Sim extra usage"; 
                 $ra->amount=round($extra,2);
-                // $ra->save();
+                $ra->save();
                 
                 $ca = \App\Model\Accounts\Company_Account::firstOrCreate([
                     'sim_transaction_id'=>$sim_trans->id,
@@ -448,7 +448,7 @@ public function store_simTransaction(Request $request){
                 $ca->given_date = Carbon::parse($request->given_date)->format('Y-m-d');
                 $ca->source="Sim extra usage";
                 $ca->amount=round($extra,2);
-                // $ca->save();
+                $ca->save();
             }
         }
         $splitted_amount+=$value['bill_amount_given_by_days'];
@@ -472,7 +472,7 @@ public function store_simTransaction(Request $request){
         array_push($billchanges_feed,$obj_feed);
     }
     $bill_changes->feed=json_encode($billchanges_feed);
-    // $bill_changes->save();
+    $bill_changes->save();
     $remaining_amount=$total_amount-$splitted_amount;
 
     if($remaining_amount>0){
@@ -483,7 +483,9 @@ public function store_simTransaction(Request $request){
         $ce->month = Carbon::parse($request->get('month'))->format('Y-m-d');
         $ce->description="Sim Bill remaining amount";
         $ce->type="sim_bill";
-        // $ce->save();
+        $ce->bill_id=$sim_trans->id;
+        $ce->bill_acc="sim";
+        $ce->save();
     }
     return response()->json([
         'status' => 1,
