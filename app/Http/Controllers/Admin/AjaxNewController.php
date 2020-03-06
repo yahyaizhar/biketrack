@@ -5762,8 +5762,7 @@ class AjaxNewController extends Controller
                                 }
                             }
                         }
-                        return $html;
-                        // }
+                        // return $html;
                     }
                 }
             }
