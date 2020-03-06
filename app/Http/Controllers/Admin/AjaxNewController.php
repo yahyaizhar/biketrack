@@ -5671,8 +5671,7 @@ class AjaxNewController extends Controller
                             if (isset($item->rider_id)) {
                                 $rider=Rider::find($item->rider_id);
                                 $rider_name=$rider->name;
-                                // $html+=$item->amount;
-                                $html=0;
+                                $html+=$item->amount;
                             }
                         }
                     }
