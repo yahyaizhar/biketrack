@@ -5939,7 +5939,7 @@ class AjaxNewController extends Controller
                                 }
                             }
                             
-                            return round($html,2);
+                            return round($html,2).'--'.$loss_amount;
                     }
                 }
                 
