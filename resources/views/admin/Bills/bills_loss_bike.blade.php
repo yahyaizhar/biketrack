@@ -62,7 +62,7 @@
                         <th>Bike Detail</th>
                         <th>Rent Amount</th>
                         <th>Rent paid by Company</th>
-                        {{-- <th>Rent paid by Rider</th> --}}
+                        <th>Rent paid by Rider</th>
                         <th>Company Loss</th>                       
                     </tr>
                 </thead>
