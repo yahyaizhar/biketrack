@@ -5751,7 +5751,6 @@ class AjaxNewController extends Controller
                             $amount_found=false;
                             foreach ($ca as $ca_item) {
                                 $amount=$ca_item->amount;
-                                
                                 $old_amount=$amount;
                                 $old_amount=round($old_amount,2);
                                 $orig_amount=round($orig_amount,2);
@@ -5762,7 +5761,7 @@ class AjaxNewController extends Controller
                                 }
                             }
                         }
-                        // return $html;
+                        return $html;
                     }
                 }
             }
