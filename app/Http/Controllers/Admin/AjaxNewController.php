@@ -5749,14 +5749,18 @@ class AjaxNewController extends Controller
                             ->get();
 
                             $amount_found=false;
+                            $html=0;
                             foreach ($ca as $ca_item) {
                                 $amount=$ca_item->amount;
                                 $old_amount=$amount;
                                 $old_amount=round($old_amount,2);
                                 $orig_amount=round($orig_amount,2);
                                 if($old_amount==$orig_amount){
-                                    $amount_found=true;
-                                    $html+=$old_amount;
+                                    if ($ca_item->type=='dr') {
+                                        $amount_found=true;
+                                        $html+=$old_amount;
+                                    }
+                                    
                                 }
                             }
                             if(!$amount_found && $orig_amount>0){
