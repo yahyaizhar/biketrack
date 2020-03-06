@@ -5894,11 +5894,15 @@ class AjaxNewController extends Controller
                             
                         }
 
-                        if ($html=='') {
-                            return '0';
+                        if(!$amount_found && $orig_amount>0){
+                            $html=0; 
                         }
-                        else{
-                            if ($loss_amount!=0) {
+
+                        // if ($html=='') {
+                        //     return '0';
+                        // }
+                        // else{
+                            if ($loss_amount>0) {
                                 if ($bill->owner=="self") {
                                     $html=0;
                                 }
@@ -5906,15 +5910,14 @@ class AjaxNewController extends Controller
                                     $html=$bill->rent_amount-($loss_amount);
                                 }
                                 
-                                if ($loss_amount==450 || $loss_amount==550) {
-                                    return $bill->rent_amount-$loss_amount;
-                                }
+                                // if ($loss_amount==450 || $loss_amount==550) {
+                                //     return $bill->rent_amount-$loss_amount;
+                                // }
                             }
-                            return round($html,2);
-                        }
-                        // if(!$amount_found && $orig_amount>0){
-                        //     $html=0; 
+                            
+                            return $html;
                         // }
+                        
                             // foreach ($ca as $ca_item) {
                             //     $amount+=$ca_item->amount;
                             //     // $html=$amount;
