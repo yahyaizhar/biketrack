@@ -77,6 +77,34 @@
                     </tr>
                 </tfoot>
             </table>
+            <div>
+                <table class="table table-striped- table-hover table-checkable table-condensed" id="count_bikes">
+                    <thead>
+                        <tr>
+                            <th>Total Bike Rent By Categories</th>
+                            <th>Number of Bikes</th>
+                            <th>Total Rent amount about each type of bikes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>Self Bikes</th>
+                            <td id="s_bikes"></td>
+                            <td id="s_rents"></td>
+                        </tr>
+                        <tr>
+                            <th>KR Bikes</th>
+                            <td id="kr_bikes"></td>
+                            <td id="kr_rents"></td>
+                        </tr>
+                        <tr>
+                            <th>Rent Bikes</th>
+                            <td id="r_bikes"></td>
+                            <td id="r_rents"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -105,7 +133,7 @@ $(function() {
     }
     $('[name="month_year"]').trigger("change");
 });
-});
+}); 
 var init_table=function(){
     var _month=$('[name="month_year"]').val();
     var _source=$('[name="bill_detail"]').val();
@@ -173,7 +201,7 @@ var init_table=function(){
             .reduce( function (a, b) {
                 return (intVal(a) + intVal(b)).toFixed(2);
             }, 0 );
-                console.log('pageTotal', pageTotal1);
+                // console.log('pageTotal', pageTotal1);
 
                 var pageTotal2 = api
             .column( 2, { page: 'current'} )
@@ -183,14 +211,56 @@ var init_table=function(){
                 var data=expense_loss_table.ajax.json().data;
                 data.forEach(function(i,j){
                     t_amount+=parseFloat(i.bills_amount);
-                console.log(t_amount)
+                // console.log(t_amount)
                 })
                 return t_amount.toFixed(2);
                 // return '38462.89';
                 // return (intVal(a) + intVal(b)).toFixed(2);
             }, 0 );
-                console.log('pageTotal2', pageTotal2);
+                // console.log('pageTotal2', pageTotal2);
  
+                var bike_rent = api
+            // .column( 1, { page: 'current'} )
+            .data()
+            .reduce( function (a, b) {
+                var self=0;
+                var self_amount=0;
+                var kr=0;
+                var kr_amount=0;
+                var rent=0;
+                var rent_amount=0;
+                $('#s_bikes').html('');
+                $('#s_rents').html('');
+                $('#kr_bikes').html('');
+                $('#kr_rents').html('');
+                $('#r_bikes').html('');
+                $('#r_rents').html('');
+                var data=expense_loss_table.ajax.json().data;
+                data.forEach(function(i,j){
+                if (i.owner=="self") {
+                    self+=1;
+                    self_amount+=parseFloat(i.bill_amount)||0;
+                }
+                if (i.owner=="kr_bike") {
+                    kr+=1;
+                    kr_amount+=parseFloat(i.rent_amount)||0;
+                }
+                if (i.owner=="rent") {
+                    rent+=1;
+                    rent_amount+=parseFloat(i.rent_amount)||0;
+                }
+                })
+                $('#s_bikes').html(self);
+                $('#s_rents').html(self_amount);
+                $('#kr_bikes').html(kr);
+                $('#kr_rents').html(kr_amount);
+                $('#r_bikes').html(rent);
+                $('#r_rents').html(rent_amount);
+                // console.log(self+"="+self_amount+"--"+kr+"="+kr_amount+"--"+rent+"="+rent_amount)
+                return 1233;
+            }, 0 );
+                // console.log('bike_rent', bike_rent);
+
             // Update footer
             $( api.column( 3 ).footer() ).html(
                 pageTotal

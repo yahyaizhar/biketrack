@@ -5259,10 +5259,7 @@ class AjaxNewController extends Controller
     }
     
     public function getExpenseLoss($month,$source)
-    {   
-        if ($source=="sim") { 
-            $bill= Sim::where("active_status","A")->get();
-        }
+    { 
         if ($source=="bike") {
             $bill = collect([]);
             $bike_history = Assign_bike::with('Rider')->with('bike')->get()->toArray();
@@ -5292,6 +5289,8 @@ class AjaxNewController extends Controller
                 $mdl->brand=$tmp['bike']['brand'];
                 $mdl->bike_number=$tmp['bike']['bike_number'];
                 $mdl->rent_amount=$tmp['bike']['rent_amount'];
+                $mdl->rental_company=$tmp['bike']['rental_company'];
+                $mdl->contract_start=$tmp['bike']['contract_start'];
                 $bill->push($mdl);
             }
             
@@ -5303,70 +5302,15 @@ class AjaxNewController extends Controller
                 return $bill->sim_number.'-'.$bill->sim_company;
             }
             if ($source=="bike") {
+                if ($bill->owner=="rent") {
+                    return $bill->rental_company.'-'.$bill->owner.'-'.$bill->brand.'-'.$bill->bike_number;
+                }
                 return $bill->owner.'-'.$bill->brand.'-'.$bill->bike_number;
             }
         })
         ->addColumn('bill_amount', function($bill) use($month,$source){
             $_onlyMonth=carbon::parse($month)->format('m');
             $_onlyYear=carbon::parse($month)->format('Y');
-            if ($source=="sim") { 
-                $e_amount=0;
-                $c_amount=0;
-                $total_amount=0;
-                $sim_trans=Sim_Transaction::whereMonth("month_year",$_onlyMonth)->whereYear("month_year",$_onlyYear)->where("sim_id",$bill->id)->get();
-                if (isset($sim_trans)) {
-                    foreach ($sim_trans as $sim_val) {
-                        $ed=Export_data::whereMonth("month",$_onlyMonth)->whereYear("month",$_onlyYear)->where("bill_id",$sim_val->id)->where("source","Sim Transaction")->get();
-                        if (count($ed)>0) {
-                            foreach ($ed as $value) {
-                                $e_amount+=$value->amount;
-                            }
-                            $ce=Company_Expense::whereMonth("month",$_onlyMonth)->whereYear("month",$_onlyYear)->where("bill_id",$sim_val->id)->where("type","sim_bill")->get();
-                            if (count($ce)>0) {
-                                foreach ($ce as $item) {
-                                    $c_amount+=$item->amount;
-                                }
-                            }
-                            $total_amount=$e_amount+$c_amount;
-                        }
-                        else{
-                            $total_amount=0;
-                            $sim_history = Sim_History::with('Rider')->with('Sim')->get()->toArray();
-                            $sim_id=$bill->id;
-                            $simh_f = Arr::where($sim_history, function ($item, $key) use ($sim_id, $month) {
-                                $start_created_at =Carbon::parse($item['given_date'])->startOfMonth()->format('Y-m-d');
-                                $created_at =Carbon::parse($start_created_at);
-
-                                $start_updated_at =Carbon::parse($item['return_date'])->endOfMonth()->format('Y-m-d');
-                                $updated_at =Carbon::parse($start_updated_at);
-                                $req_date =Carbon::parse($month);
-                                
-                                if($item['status']=='active'){
-                                    return $item['sim_id']==$sim_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
-                                }
-                                return $item['sim_id']==$sim_id &&
-                                    ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
-                            });
-                            if (isset($simh_f)) {
-                                foreach ($simh_f as $sim_h) {
-                                    $rider_id=$sim_h['rider_id'];
-                                    $ca=Company_Account::whereMonth("month",$_onlyMonth)
-                                    ->whereYear("month",$_onlyYear)
-                                    ->where("rider_id",$rider_id)
-                                    ->where("source","Sim Transaction")
-                                    ->get();
-                                    foreach ($ca as $ca_item) {
-                                        $amount=$ca_item->amount;
-                                        $total_amount+=$amount;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                
-                return $total_amount;
-            }
             if ($source=="bike") {
                 // if ($bill->rent_amount=='' || $bill->rent_amount==null) {
                 //     return 0;
@@ -5495,6 +5439,32 @@ class AjaxNewController extends Controller
                         }
                     }
                 }
+                // if ($bill->owner=="rent") {
+                //     if ($bill->contract_start!="" || $bill->contract_start!=null) {
+                //         $month_start = Carbon::parse($month)->startOfMonth();
+                //         $month_end = Carbon::parse($month)->endOfMonth();
+                //         $con_start=Carbon::parse($bill->contract_start);
+                //         $con_end=Carbon::parse($bill->contract_end);
+                //         $days_in_month=Carbon::parse($month)->daysInMonth;
+
+                //         if($con_start->lessThan($month_start)){ #assign date will be start of month
+                //             $con_start = $month_start;
+                //         }
+                //         if($con_end->greaterThan($month_end)){ #unassign date will be end of month
+                //             $con_end = $month_end;
+                //         }
+
+                //         $con_start=Carbon::parse($con_start)->format('Y-m-d');
+                //         $con_end=Carbon::parse($con_end)->format('Y-m-d');
+                //         $contract_days=$con_end->diffInDays($con_start)+1;
+                //     }
+                //     else{
+                //         $contract_days='Update contract date for this bike';
+                //     }
+                        
+                //     return $contract_days.'--'.$con_start.'--'.$con_end;
+                //     return $bill->rent_amount."--".+$days_in_month;
+                // }
                 return $bill->rent_amount;
             }
         })
@@ -5992,7 +5962,7 @@ class AjaxNewController extends Controller
         ->rawColumns(['loss','company_account','bills_amount','bill_amount','bill_source','rider_account'])
         ->make(true);
     }
-
+ 
     public function getSimExpenseLoss($month,$source)
     {   
         if ($source=="sim") { 

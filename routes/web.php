@@ -152,7 +152,7 @@ Route::group([
     Route::get("/rider/bike/expense_loss/ajax/{month}/{source}","AjaxNewController@getExpenseLoss")->name("account.getExpenseLoss");
     Route::get("/rider/sim/expense_loss/ajax/{month}/{source}","AjaxNewController@getSimExpenseLoss")->name("account.getExpenseLoss");
     Route::get("/rider/deleted_data/ajax","AjaxNewController@getDeletedData")->name("account.getDeletedData");
-});
+}); 
 // End Ajax Routes
 
 // Client Side
