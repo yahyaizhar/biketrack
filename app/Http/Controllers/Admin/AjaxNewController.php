@@ -5606,7 +5606,7 @@ class AjaxNewController extends Controller
                             ->where("source","Bike Rent")
                             ->where("type","dr")
                             ->get();
-                            if (isset($ca)) {
+                            if (count($ca)>0) {
                             $rider=Rider::find($rider_id);
                             $rider_name=$rider->name;
 
@@ -5753,7 +5753,7 @@ class AjaxNewController extends Controller
                             ->get();
 
                             $amount_found=false;
-                            $html=0;
+                            // $html=0;
                             foreach ($ca as $ca_item) {
                                 $amount=$ca_item->amount;
                                 $old_amount=$amount;
