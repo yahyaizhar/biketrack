@@ -62,7 +62,7 @@
                         <th>Bike Detail</th>
                         <th>Rent Amount</th>
                         <th>Rent paid by Company</th>
-                        <th>Rent paid by Rider</th>
+                        {{-- <th>Rent paid by Rider</th> --}}
                         <th>Company Loss</th>                       
                     </tr>
                 </thead>
@@ -73,7 +73,7 @@
                         <th></th>
                         <th></th>
                         <th></th>
-                        <th></th>
+                        {{-- <th></th> --}}
                     </tr>
                 </tfoot>
             </table>
@@ -122,12 +122,12 @@ var init_table=function(){
         $('.total_entries').remove();
         $('.dataTables_length').append('<div class="total_entries">'+$('.dataTables_info').html()+'</div>');
     },
-       ajax: "{{ url('admin/rider/expense_loss/ajax/') }}" + "/" + _month+ "/" + _source,
+       ajax: "{{ url('admin/rider/bike/expense_loss/ajax/') }}" + "/" + _month+ "/" + _source,
         columns: [
             { data: 'bill_source', name: 'bill_source' },
             { data: 'bill_amount', name: 'bill_amount' },
             {data:  'company_account',  name: 'company_account'},
-            { data: 'bills_amount', name: 'bills_amount' },            
+            // { data: 'bills_amount', name: 'bills_amount' },            
             { data: 'loss', name: 'loss' },
         ],
         responsive:true,

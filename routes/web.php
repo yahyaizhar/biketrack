@@ -149,7 +149,8 @@ Route::group([
     Route::get("/rider/salarystatus/{month}","AjaxNewController@getSalaryList")->name("rider.getSalaryList");
     Route::get("/account/expense_data/ajax/{month}","AjaxNewController@getExpenseData")->name("account.getExpenseData");
     Route::get("/account/daily_ledger/ajax/{date}/{filter_by}","AjaxNewController@getDailyLedger")->name("account.getDailyLedger");
-    Route::get("/rider/expense_loss/ajax/{month}/{source}","AjaxNewController@getExpenseLoss")->name("account.getExpenseLoss");
+    Route::get("/rider/bike/expense_loss/ajax/{month}/{source}","AjaxNewController@getExpenseLoss")->name("account.getExpenseLoss");
+    Route::get("/rider/sim/expense_loss/ajax/{month}/{source}","AjaxNewController@getSimExpenseLoss")->name("account.getExpenseLoss");
     Route::get("/rider/deleted_data/ajax","AjaxNewController@getDeletedData")->name("account.getDeletedData");
 });
 // End Ajax Routes

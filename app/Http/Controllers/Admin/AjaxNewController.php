@@ -5257,7 +5257,7 @@ class AjaxNewController extends Controller
         ->rawColumns(['id','source','rider','month','given_date','amount', 'paid_by','action'])
         ->make(true);
     }
-
+    
     public function getExpenseLoss($month,$source)
     {   
         if ($source=="sim") { 
@@ -5745,6 +5745,38 @@ class AjaxNewController extends Controller
 
                             $orig_amount=(($working_days-$absent)/$t_month_days)*$bill->rent_amount;
                             
+                            // $client_history = Client_History::all(); 
+                            // $history_found = Arr::first($client_history, function ($item, $key) use ($rider_id, $month) {
+                            //     $start_created_at =Carbon::parse($item->assign_date)->startOfMonth()->format('Y-m-d');
+                            //     $created_at =Carbon::parse($start_created_at);
+
+                            //     $start_updated_at =Carbon::parse($item->deassign_date)->endOfMonth()->format('Y-m-d');
+                            //     $updated_at =Carbon::parse($start_updated_at);
+                            //     $req_date =Carbon::parse($month);
+
+                            //     if($item->status=='active'){    
+                            //         return $item->rider_id==$rider_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+                            //     }
+
+                            //     return $item->rider_id==$rider_id &&
+                            //         ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+                            // });
+
+                            // $client=null;
+                            // $client_setting=[];
+                            // $pm='';
+                            // if (isset($history_found)) {
+                            //     $client=Client::find($history_found->client_id);
+                            //     if($client->salary_methods==null){
+                            //         # no salary method was found against this client
+                            //         return response()->json([
+                            //             'status'=>0,
+                            //             'msg'=>'No salary method is found under client '.$client->name
+                            //         ]);
+                            //     }
+                            //     $client_setting = json_decode($client->salary_methods, true);
+                            //     $pm = $client_setting['salary_method'];
+                            // }
                             $ca=Company_Account::whereMonth("month",$_onlyMonth)
                             ->whereYear("month",$_onlyYear)
                             ->where("rider_id",$rider_id)
@@ -5961,6 +5993,55 @@ class AjaxNewController extends Controller
         ->make(true);
     }
 
+    public function getSimExpenseLoss($month,$source)
+    {   
+        if ($source=="sim") { 
+            $bill= Sim::where("active_status","A")->get();
+        }
+        return DataTables::of($bill)
+        ->addColumn('bill_source', function($bill) use($month,$source){
+            if ($source=="sim") { 
+                return $bill->sim_number.'-'.$bill->sim_company;
+            }
+        })
+        ->addColumn('bill_amount', function($bill) use($month,$source){
+            $_onlyMonth=carbon::parse($month)->format('m');
+            $_onlyYear=carbon::parse($month)->format('Y');
+            if ($source=="sim") { 
+                return 123;
+            }
+        })
+        ->addColumn('company_account', function($bill) use($month,$source){
+            $_onlyMonth=carbon::parse($month)->format('m');
+            $_onlyYear=carbon::parse($month)->format('Y');
+            if ($source=="sim") { 
+                return 123;
+            }
+        })
+        ->addColumn('bills_amount', function($bill) use($month,$source){
+            $_onlyMonth=carbon::parse($month)->format('m');
+            $_onlyYear=carbon::parse($month)->format('Y');
+            if ($source=="sim") { 
+                return 123;
+            }
+        })
+        ->addColumn('rider_account', function($bill) use($month,$source){
+            $_onlyMonth=carbon::parse($month)->format('m');
+            $_onlyYear=carbon::parse($month)->format('Y');
+            if ($source=="sim") { 
+                return 123;
+            }
+        })
+        ->addColumn('loss', function($bill) use($month,$source){
+            $_onlyMonth=carbon::parse($month)->format('m');
+            $_onlyYear=carbon::parse($month)->format('Y');
+            if ($source=="sim") { 
+                return 123;
+            }
+        })
+        ->rawColumns(['loss','company_account','bills_amount','bill_amount','bill_source','rider_account'])
+        ->make(true);
+    }
     public function getDeletedData()
     {
         $del_data = Deleted_data::all();
