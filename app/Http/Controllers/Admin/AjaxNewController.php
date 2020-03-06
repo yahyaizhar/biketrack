@@ -5679,6 +5679,8 @@ class AjaxNewController extends Controller
                 else{
                     $html=0;
                     $amount=0;
+                    $month_start = Carbon::parse($month)->startOfMonth();
+                    $month_end = Carbon::parse($month)->endOfMonth();
                     $bike_history = Assign_bike::with('Rider')->with('bike')->get()->toArray();
                     $bike_id=$bill->id;
                     $bikeh_f = Arr::where($bike_history, function ($item, $key) use ($bike_id, $month) {
@@ -5696,26 +5698,72 @@ class AjaxNewController extends Controller
                             ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
                     });
                     if (isset($bikeh_f)) {
+                        $previous_unassign_date = null;
+                        $orig_amount=0;
+                        $old_amount=0;
                         foreach ($bikeh_f as $bike_h) {
                             $rider_id=$bike_h['rider_id'];
+                            $bike_id=$bike_h['bike_id'];
+                            $bike=$bike_h['bike'];
+                            $assign_date = Carbon::parse($bike_h['bike_assign_date']);
+                            $unassign_date = Carbon::parse($bike_h['bike_unassign_date']);
+                            if($assign_date->lessThan($month_start)){ #assign date will be start of month
+                                $assign_date = $month_start;
+                            }
+                            if($unassign_date->greaterThan($month_end) || $bike_h['status']=='active'){ #unassign date will be end of month
+                                $unassign_date = $month_end;
+                            } 
+                            if ($previous_unassign_date!=null) {
+                                if ($previous_unassign_date->equalTo($assign_date)) {
+                                    $assign_date = $assign_date->addDay();
+                                }
+                            }
+                            $previous_unassign_date = $unassign_date;
+                            $working_days = $unassign_date->diffInDays($assign_date)+1;
+                            $absent=0;
+                            $income_zomato=Income_zomato::whereMonth("date",$_onlyMonth)
+                            ->whereYear("date",$_onlyYear)
+                            ->where("rider_id",$rider_id)
+                            ->get()
+                            ->first();
+                            if (isset($income_zomato)) {
+                                if ($bill->owner=="self") {
+                                    $time_sheet_count = $income_zomato->time_sheet()
+                                    ->whereDate('date', '>=', Carbon::parse($assign_date)->format('Y-m-d'))
+                                    ->whereDate('date', '<=', Carbon::parse($unassign_date)->format('Y-m-d'))
+                                    ->where('off_days_status', 'absent')
+                                    ->count();
+                                    $absent=$time_sheet_count;   
+                                }
+                            }
+                            
+                            $t_month_days=Carbon::parse($month)->daysInMonth;
+
+                            $orig_amount=(($working_days-$absent)/$t_month_days)*$bill->rent_amount;
+                            
                             $ca=Company_Account::whereMonth("month",$_onlyMonth)
                             ->whereYear("month",$_onlyYear)
                             ->where("rider_id",$rider_id)
                             ->where("source","Bike Rent")
                             ->where("type","dr")
                             ->get();
+
+                            $amount_found=false;
                             foreach ($ca as $ca_item) {
                                 $amount=$ca_item->amount;
-                                $rider_id_ca=$ca_item->rider_id;
-                                $rider=Rider::find($rider_id_ca);
-                                $rider_name=$rider->name;
-                                $html+=$amount;
+                                
+                                $old_amount=$amount;
+                                $old_amount=round($old_amount,2);
+                                $orig_amount=round($orig_amount,2);
+                                if($old_amount==$orig_amount){
+                                    $amount_found=true;
+                                    $html+=$old_amount;
+                                   
+                                }
                             }
-                            if ($html!=0) {
-                                return $html;
-                            }
-                            return '0';
                         }
+                        return $html;
+                        // }
                     }
                 }
             }
