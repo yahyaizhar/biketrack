@@ -5875,7 +5875,7 @@ class AjaxNewController extends Controller
                                 $orig_amount=round($orig_amount,2);
                                 if($old_amount==$orig_amount){
                                     $amount_found=true;
-                                    $html+=$old_amount;
+                                    $loss_amount+=$old_amount;
                                 }
                             }
                             // if ($amount!=0) {
@@ -5900,7 +5900,19 @@ class AjaxNewController extends Controller
                             return '0';
                         }
                         else{
-                            return $html;
+                            if ($loss_amount!=0) {
+                                if ($bill->owner=="self") {
+                                    $html=0;
+                                }
+                                if ($bill->owner=="rent" || $bill->owner=="kr_bike"){
+                                    $html=$bill->rent_amount-($loss_amount);
+                                }
+                                
+                                if ($loss_amount==450 || $loss_amount==550) {
+                                    return $bill->rent_amount-$loss_amount;
+                                }
+                            }
+                            return round($html,2);
                         }
                             // foreach ($ca as $ca_item) {
                             //     $amount+=$ca_item->amount;
