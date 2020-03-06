@@ -5393,7 +5393,7 @@ class AjaxNewController extends Controller
                     }
                 }
                 else{
-                    $html=0;
+                    $html='';
                     $amount=0;
                     $month_start = Carbon::parse($month)->startOfMonth();
                     $month_end = Carbon::parse($month)->endOfMonth();
