@@ -4864,14 +4864,16 @@ class AjaxNewController extends Controller
                 # match month...
                 $_onlyMonth=carbon::parse($date)->format('m');
                 $_onlyYear=carbon::parse($date)->format('Y');
+                $startMonth = Carbon::parse($date)->startOfMonth()->format('Y-m-d');
+                $endMonth = Carbon::parse($date)->endOfMonth()->format('Y-m-d');
                 $export_data = Export_data::where("active_status","A")
-                ->whereMonth("month",$_onlyMonth)
-                ->whereYear("month",$_onlyYear);
+                ->whereDate("given_date",'>=',$startMonth)
+                ->whereDate("given_date",'<=',$endMonth);
 
                 $ce = Company_Expense::where("active_status","A")
                 ->where('paid_by', 'cash')
-                ->whereMonth("month",$_onlyMonth)
-                ->whereYear("month",$_onlyYear);
+                ->whereDate("given_date",'>=',$startMonth)
+                ->whereDate("given_date",'<=',$endMonth);
                 break;
             case 'year':
                 # match year...
@@ -4898,6 +4900,7 @@ class AjaxNewController extends Controller
         ->where('source', '!=', 'Bike Rent')
         ->where('source', '!=', 'Sim Transaction')
         ->where('source', '!=', 'Salik')
+        ->where('source', '!=', 'Bonus')
         ->get();
 
         $ce=$ce->get();
@@ -4951,8 +4954,80 @@ class AjaxNewController extends Controller
                 $rider_name= '<a  href="'.route('admin.rider.profile', $rider->id).'">'.$rider->id.'-'.$rider->name.'</a>';
             }
 
+
+            $ex_source = $export_data->source;
+            $ex_source_id = $export_data->source_id;
+            $ex_rider_id=$export_data->rider_id;
+            $ex_month = Carbon::parse($export_data->month)->format('Y-m-d');
+            $onlyMonth=Carbon::parse($ex_month)->format('m');
+            $onlyYear=Carbon::parse($ex_month)->format('Y');
+
             $source=$export_data->source;
             if ( strpos($source,'RC@')!==false || strpos($source,'PC@')!==false) $source=explode('@',$source)[1];
+
+
+            $ex_source_key='';
+            switch ($ex_source) {
+                case 'Bike Rent':
+                    $ex_source_key="bike_rent_id";
+                    break;
+                case 'Sim Transaction':
+                    $ex_source_key="sim_transaction_id";
+                    break;
+                case 'Discipline Fine':
+                case 'Visa Charges':
+                case 'receive_cash':
+                case 'pay_cash':
+                case 'Bonus':
+                    $ex_source_key="kingrider_fine_id";
+                    break; 
+                case 'advance':
+                    $ex_source_key="advance_return_id";
+                    break;
+                case 'fuel_expense_cash':
+                    $ex_source_key="fuel_expense_id";
+                    break;
+                case 'Mobile Installment':
+                    $ex_source_key="mobile_installment_id";
+                    break;
+                    
+                default:
+                    # code...
+                    break;
+            }
+
+            if($ex_source_key=='') return '';
+
+            $company_statement=Company_Account::where('rider_id', $ex_rider_id)
+            // ->whereMonth('month',$onlyMonth)
+            // ->whereYear('month',$onlyYear)
+            ->where($ex_source_key, $ex_source_id)
+            ->get()
+            ->first();
+
+            $desc='';
+
+            if(isset($company_statement)){
+                if($source!=$company_statement->desc)
+                    $desc='| '.$company_statement->desc; 
+            }
+            else {
+                # lets find on rider account
+                $rider_statement=Rider_Account::where('rider_id', $ex_rider_id)
+                // ->whereMonth('month',$onlyMonth)
+                // ->whereYear('month',$onlyYear)
+                ->where($ex_source_key, $ex_source_id)
+                ->get()
+                ->first();
+                if(isset($rider_statement)){
+                    if($source!=$rider_statement->desc)
+                        $desc='| '.$rider_statement->desc;
+                }
+            }
+
+            
+
+
 
             $src=$export_data->source;
             $kr='O-';
@@ -4966,15 +5041,15 @@ class AjaxNewController extends Controller
             if ( $src=="Discipline Fine") {$kr="KF-";}
             if ( $src=="Sim Transaction") {$kr="S-";}
             if ( $src=="Salik") {$kr="S-";}
-            if ( $src=="pay_cash") {$kr="PC-";}
+            if ( $src=="pay_cash") {$kr="CP-";}
             if ( $src=="receive_cash") {$kr="RC-";}
             if ( $src=="Salik") {$kr="S-";}
             if ( strpos($src,'RC@')!==false) {$kr="RC-";} 
-            if ( strpos($src,'PC@')!==false) {$kr="PC-";} 
+            if ( strpos($src,'PC@')!==false) {$kr="CP-";} 
             if ( $export_data->status=="expense") {$kr="EX-";}
             if ( $src=="salary") {$kr="S-";}
 
-            $source=' | '.$source;
+            $source=' | '.$source.$desc;
             $rider_name=$rider_name!=''?' | '.$rider_name:'';
 
             return $kr.$export_data->id.$source.$rider_name;
@@ -5062,59 +5137,110 @@ class AjaxNewController extends Controller
             ->get()
             ->first();
             $extra='';
+            $is_senior=false;
             if(isset($noti)){
                 #notifications found
 
-                if($noti->action_status=='pending_new' || $noti->action_status=='pending'){
-                    #can edit without approval
-                    $data_accept=[
-                        "type"=>"POST",
-                        "data"=>[
-                            "export_id"=>$export_data->id,
-                            "noti_id"=>$noti->id,
-                            'status'=>'accept'
-                        ],
-                        "url"=> 'admin/account/dailyledger/noticallback',
-                    ];
-                    $data_reject=[
-                        "type"=>"POST",
-                        "data"=>[
-                            "export_id"=>$export_data->id,
-                            "noti_id"=>$noti->id,
-                            'status'=>'reject'
-                        ],
-                        "url"=> 'admin/account/dailyledger/noticallback',
-                    ];
-                    $ApproveHTML = '<i class="flaticon2-check-mark text-success btn_label--hover mx-1" onclick=\'CallBackNotification(this,'.json_encode($data_accept).', false,notificationCallback)\'></i>';
-                    $RejectHTML='<i class="flaticon2-cross tr-remove" onclick=\'CallBackNotification(this,'.json_encode($data_reject).', false,notificationCallback)\'></i>';
-                    $extra='<div class="d-inline" data-noti="'.$noti->id.'">
-                        '.$ApproveHTML.$RejectHTML.'
-                        </div>';
-                }
-                else if($noti->action_status=='rejected'){
-                    #can edit without approval
-                    $ApproveHTML = '<i class="flaticon2-check-mark text-success mx-1" ></i>';
-                    $RejectHTML='<i class="flaticon2-cross text-danger"></i>';
-                    $extra='<div class="d-inline" data-noti="'.$noti->id.'">
-                        '.$RejectHTML.'
-                        </div>';
-                }
-                else if($noti->action_status=='accepted'){
-                    #can edit without approval
-                    $ApproveHTML = '<i class="flaticon2-check-mark text-success mx-1" ></i>';
-                    $RejectHTML='<i class="flaticon2-cross text-danger"></i>';
-                    $extra='<div class="d-inline" data-noti="'.$noti->id.'">
-                        '.$ApproveHTML.'
-                        </div>';
-                }
-                
                 $senior_id = $noti->employee_id;
-                if($senior_id!=Auth::user()->id){
+                $user_senior = Auth::user()->s_emp_id;
+                if($senior_id==$user_senior){
                     #login user is employee
                     if($noti->action_status=='pending_new' || $noti->action_status=='pending'){
                     $extra='<div class="text-danger" data-noti="'.$noti->id.'">
                             (In review)
                             </div>';
+                    }
+                    else if($noti->action_status=='rejected'){
+                        #can edit without approval
+                        $ApproveHTML = '<i class="flaticon2-check-mark text-success mx-1" ></i>';
+                        $RejectHTML='<i class="flaticon2-cross text-danger"></i>';
+                        $extra='<div class="d-inline" data-noti="'.$noti->id.'">
+                            '.$RejectHTML.'
+                            </div>';
+                    }
+                    else if($noti->action_status=='accepted'){
+                        #can edit without approval
+                        $ApproveHTML = '<i class="flaticon2-check-mark text-success mx-1" ></i>';
+                        $RejectHTML='<i class="flaticon2-cross text-danger"></i>';
+                        $extra='<div class="d-inline" data-noti="'.$noti->id.'">
+                            '.$ApproveHTML.'
+                            </div>';
+                    }
+                }
+                elseif ($senior_id==Auth::user()->id) {
+                    # he is the senior
+                    $is_senior=true;
+                    if($noti->action_status=='pending_new' || $noti->action_status=='pending'){
+                        #can edit without approval
+                        $data_accept=[
+                            "type"=>"POST",
+                            "data"=>[
+                                "export_id"=>$export_data->id,
+                                "noti_id"=>$noti->id,
+                                'status'=>'accept'
+                            ],
+                            "url"=> 'admin/account/dailyledger/noticallback',
+                        ];
+                        $data_reject=[
+                            "type"=>"POST",
+                            "data"=>[
+                                "export_id"=>$export_data->id,
+                                "noti_id"=>$noti->id,
+                                'status'=>'reject'
+                            ],
+                            "url"=> 'admin/account/dailyledger/noticallback',
+                        ];
+                        $ApproveHTML = '<i class="flaticon2-check-mark text-success btn_label--hover mx-1" onclick=\'CallBackNotification(this,'.json_encode($data_accept).', false,notificationCallback)\'></i>';
+                        $RejectHTML='<i class="flaticon2-cross tr-remove" onclick=\'CallBackNotification(this,'.json_encode($data_reject).', false,notificationCallback)\'></i>';
+                        $extra='<div class="d-inline" data-noti="'.$noti->id.'">
+                            '.$ApproveHTML.$RejectHTML.'
+                            </div>';
+                    }
+                    else if($noti->action_status=='rejected'){
+                        #can edit without approval
+                        $ApproveHTML = '<i class="flaticon2-check-mark text-success mx-1" ></i>';
+                        $RejectHTML='<i class="flaticon2-cross text-danger"></i>';
+                        $extra='<div class="d-inline" data-noti="'.$noti->id.'">
+                            '.$RejectHTML.'
+                            </div>';
+                    }
+                    else if($noti->action_status=='accepted'){
+                        #can edit without approval
+                        $ApproveHTML = '<i class="flaticon2-check-mark text-success mx-1" ></i>';
+                        $RejectHTML='<i class="flaticon2-cross text-danger"></i>';
+                        $extra='<div class="d-inline" data-noti="'.$noti->id.'">
+                            '.$ApproveHTML.'
+                            </div>';
+                    }
+
+                }
+                else {
+                    # he is someone else
+                    // $extra='';
+                }
+            }
+
+            #we need to match subject id and class to logs and get paid id from there
+            $subject_type=get_class($export_data);
+            $subject_id=$export_data->id;
+            if ( $export_data->status=="expense" ){
+                # data is from company expense
+                $subject_type=get_class(new Company_Expense);
+                $subject_id=$export_data->id;
+            }
+            $log = Log_activity::orderByDesc('created_at')->where('subject_type', $subject_type)
+            ->where('subject_id', $subject_id)
+            ->where('description', 'created')
+            ->get()
+            ->first();
+
+            #get the causer name
+            if(isset($log)){
+                $causer = Admin::find($log->causer_id);
+                if(isset($causer)){
+                    if($causer->id !== Auth::user()->id && Auth::user()->type!='su' && !$is_senior){
+                        #record is created by someone else
+                        $extra='';
                     }
                 }
             }
@@ -5181,6 +5307,31 @@ class AjaxNewController extends Controller
                 if($senior_id!=Auth::user()->id){
                     #login user is employee
                     $noti_action_status=$noti->action_status;
+                }
+            }
+
+            #we need to match subject id and class to logs and get paid id from there
+            $subject_type=get_class($export_data);
+            $subject_id=$export_data->id;
+            if ( $export_data->status=="expense" ){
+                # data is from company expense
+                $subject_type=get_class(new Company_Expense);
+                $subject_id=$export_data->id;
+            }
+            $log = Log_activity::orderByDesc('created_at')->where('subject_type', $subject_type)
+            ->where('subject_id', $subject_id)
+            ->where('description', 'created')
+            ->get()
+            ->first();
+
+            #get the causer name
+            if(isset($log)){
+                $causer = Admin::find($log->causer_id);
+                if(isset($causer)){
+                    if($causer->id !== Auth::user()->id && Auth::user()->type!='su'){
+                        #record is created by someone else
+                        return'';
+                    }
                 }
             }
 
@@ -5284,6 +5435,7 @@ class AjaxNewController extends Controller
                 if($noti_action_status=='accepted'){
                     $deleteHTML='';
                 }
+                
                 return '<span class="noti__id" data-noti="'.$noti_id.'" ></span>'.$UpdateHTML.$deleteHTML;
             }
             else {

@@ -315,6 +315,7 @@
                 <form class="kt-form" enctype="multipart/form-data" id="cash_paid">
                     <div class="modal-body">
                         <input type="hidden" name="cash_rider_id">
+                        <input type="hidden" name="send_noti" value="yes">
                         {{-- <div class="form-group">
                             <label>Rider Cash Paid Date:</label>
                             <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('month')) invalid-field @endif" name="month" placeholder="Enter Month" value="">
