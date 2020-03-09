@@ -121,7 +121,7 @@ class AjaxNewController extends Controller
         return DataTables::of($income_zomatos)
         
         ->addColumn('rider_name', function($income_zomato){
-            $client_rider=Client_Rider::where("client_rider_id",$income_zomato->feid)->get()->first();
+            $client_rider=Client_History::where("client_rider_id",$income_zomato->feid)->get()->first();
             $rider=Rider::find($client_rider['rider_id']);
             
             if(isset($rider)){
