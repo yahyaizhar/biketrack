@@ -1494,6 +1494,7 @@ public function fuel_rider_selector($rider_id,$bike_id){
 public function fuel_expense_insert(Request $r){
     $data=$r->data;
     $total_amount=$r->amount;
+    if($total_amount=='') $total_amount=0;
     #storing any bill details so we can detect changes
     $splitted_amount=0;
     $bill_changes = new Bill_change;
@@ -1534,7 +1535,7 @@ public function fuel_expense_insert(Request $r){
             $c_setting=json_decode($client->setting,true);
             $pm=$c_setting['payout_method'];
         }
-        if($value['amount_given_by_days']<=0) continue;
+        if($value['amount_given_by_days']<=0 || $value['amount_given_by_days']=='') continue;
         $fuel_expense=new Fuel_Expense();
         $fuel_expense->amount=$value['amount_given_by_days'];
         $fuel_expense->type=$r->type;
@@ -1626,6 +1627,9 @@ public function fuel_expense_insert(Request $r){
             $ed->source='fuel_expense_vip';
             $ed->source_id=$fuel_expense->id;
             $ed->bill_id=$r->bike_id;
+            if(isset($value['bike_id'])){
+                $ed->bill_id=$value['bike_id'];     
+            }
             $ed->bill_acc="bike";
             $ed->save();
 
@@ -1759,6 +1763,9 @@ public function fuel_expense_insert(Request $r){
             $ed->source='fuel_expense_cash';
             $ed->source_id=$fuel_expense->id;
             $ed->bill_id=$r->bike_id;
+            if(isset($value['bike_id'])){
+                $ed->bill_id=$value['bike_id'];     
+            }
             $ed->bill_acc="bike";
             $ed->save();
 
@@ -1839,11 +1846,13 @@ public function fuel_expense_insert(Request $r){
         $obj_feed['bill_amount']=$value['amount_given_by_days'];
         array_push($billchanges_feed,$obj_feed);
     }
-    $bill_changes->feed=json_encode($billchanges_feed);
-    $bill_changes->save();
+    if(count($billchanges_feed)>0){
+        $bill_changes->feed=json_encode($billchanges_feed);
+        $bill_changes->save();
+    }
 
     $remaining_amount=$total_amount-$splitted_amount;
-      if($remaining_amount>0){
+      if($remaining_amount>0 && $total_amount>0){
         //add this as company expense
         $bike = bike::find($r->bike_id);
         $ce=new Company_Expense();

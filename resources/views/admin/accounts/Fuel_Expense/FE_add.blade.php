@@ -115,6 +115,12 @@
 <script data-ajax>
 
   $(document).ready(function(){
+    //   $('#fuel_expense [name="type"]').on('change', function(){
+    //     if($(this).val()=='cash'){
+    //         $('#fuel_expense [name="amount"]').val(0);
+    //     }
+    //   });
+      $('#fuel_expense [name="amount"]').val(0); 
     $('#fuel_expense [name="month"],#fuel_expense [name="bike_id"]').on('change', function(){
         var _month = $('#fuel_expense [name="month"]').val();
         
