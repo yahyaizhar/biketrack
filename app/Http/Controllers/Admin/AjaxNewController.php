@@ -5575,6 +5575,7 @@ class AjaxNewController extends Controller
                 $mdl->rent_amount=$tmp['bike']['rent_amount'];
                 $mdl->rental_company=$tmp['bike']['rental_company'];
                 $mdl->contract_start=$tmp['bike']['contract_start'];
+                $mdl->bike_allowns=$tmp['bike']['bike_allowns'];
                 $bill->push($mdl);
             }
             
@@ -5582,9 +5583,6 @@ class AjaxNewController extends Controller
         }
         return DataTables::of($bill)
         ->addColumn('bill_source', function($bill) use($month,$source){
-            if ($source=="sim") { 
-                return $bill->sim_number.'-'.$bill->sim_company;
-            }
             if ($source=="bike") {
                 if ($bill->owner=="rent") {
                     return $bill->rental_company.'-'.$bill->owner.'-'.$bill->brand.'-'.$bill->bike_number;
@@ -5670,6 +5668,7 @@ class AjaxNewController extends Controller
                             ->where("rider_id",$rider_id)
                             ->get()
                             ->first();
+                            $total_rent=$bill->rent_amount;
                             if (isset($income_zomato)) {
                                 if ($bill->owner=="self") {
                                     $time_sheet_count = $income_zomato->time_sheet()
@@ -5678,12 +5677,13 @@ class AjaxNewController extends Controller
                                     ->where('off_days_status', 'absent')
                                     ->count();
                                     $absent=$time_sheet_count;   
+                                    $total_rent=$bill->bike_allowns;
                                 }
                             }
                             
                             $t_month_days=Carbon::parse($month)->daysInMonth;
 
-                            $orig_amount=(($working_days-$absent)/$t_month_days)*$bill->rent_amount;
+                            $orig_amount=(($working_days-$absent)/$t_month_days)* $total_rent;
                             $ca=Company_Account::whereMonth("month",$_onlyMonth)
                             ->whereYear("month",$_onlyYear)
                             ->where("rider_id",$rider_id)
@@ -5730,32 +5730,27 @@ class AjaxNewController extends Controller
                 //         $con_start=Carbon::parse($bill->contract_start);
                 //         $con_end=Carbon::parse($bill->contract_end);
                 //         $days_in_month=Carbon::parse($month)->daysInMonth;
-
                 //         if($con_start->lessThan($month_start)){ #assign date will be start of month
                 //             $con_start = $month_start;
                 //         }
                 //         if($con_end->greaterThan($month_end)){ #unassign date will be end of month
                 //             $con_end = $month_end;
                 //         }
-
-                //         $con_start=Carbon::parse($con_start)->format('Y-m-d');
-                //         $con_end=Carbon::parse($con_end)->format('Y-m-d');
-                //         $contract_days=$con_end->diffInDays($con_start)+1;
+                //         $_con_start=Carbon::parse($con_start);
+                //         $_con_end=Carbon::parse($con_end);
+                //         $contract_days=$_con_end->diffInDays($_con_start)+1;
+                //         $rent_amount= ($contract_days/$days_in_month)* $bill->rent_amount;
+                //         return round($rent_amount,2);
                 //     }
                 //     else{
                 //         $contract_days='Update contract date for this bike';
                 //     }
-                        
-                //     return $contract_days.'--'.$con_start.'--'.$con_end;
-                //     return $bill->rent_amount."--".+$days_in_month;
+                //     return $bill->rent_amount;
                 // }
                 return $bill->rent_amount;
             }
         })
         ->addColumn('company_account', function($bill) use($month,$source){
-            if ($source=="sim") { 
-                return 123;
-            }
             $_onlyMonth=carbon::parse($month)->format('m');
             $_onlyYear=carbon::parse($month)->format('Y');
             if ($source=="bike") {
@@ -5840,6 +5835,7 @@ class AjaxNewController extends Controller
                             ->where("rider_id",$rider_id)
                             ->get()
                             ->first();
+                            $total_rent=$bill->rent_amount;
                             if (isset($income_zomato)) {
                                 if ($bill->owner=="self") {
                                     $time_sheet_count = $income_zomato->time_sheet()
@@ -5847,13 +5843,14 @@ class AjaxNewController extends Controller
                                     ->whereDate('date', '<=', Carbon::parse($unassign_date)->format('Y-m-d'))
                                     ->where('off_days_status', 'absent')
                                     ->count();
-                                    $absent=$time_sheet_count;   
+                                    $absent=$time_sheet_count;  
+                                    $total_rent= $bill->bike_allowns;
                                 }
                             }
                             
                             $t_month_days=Carbon::parse($month)->daysInMonth;
-
-                            $orig_amount=(($working_days-$absent)/$t_month_days)*$bill->rent_amount;
+                            
+                            $orig_amount=(($working_days-$absent)/$t_month_days)*$total_rent;
                             $ca=Company_Account::whereMonth("month",$_onlyMonth)
                             ->whereYear("month",$_onlyYear)
                             ->where("rider_id",$rider_id)
@@ -5891,7 +5888,6 @@ class AjaxNewController extends Controller
                                 return '<span style="color: #fa8484;">No row is found against this bike.</span>';
                             }
                         }
-
                         if ($html=='') {
                             return '<span style="color: #fa8484;">Update bike rent.</span>';
                         }
@@ -5910,9 +5906,6 @@ class AjaxNewController extends Controller
         ->addColumn('bills_amount', function($bill) use($month,$source){
             $_onlyMonth=carbon::parse($month)->format('m');
             $_onlyYear=carbon::parse($month)->format('Y');
-            if ($source=="sim") { 
-                return 123;
-            }
             if ($source=="bike") {
                 $ed=Export_data::whereMonth("month",$_onlyMonth)->whereYear("month",$_onlyYear)->where("bill_id",$bill->id)->where("source","Bike Rent")->get();
                 // return $ed; 
@@ -5984,6 +5977,7 @@ class AjaxNewController extends Controller
                             ->where("rider_id",$rider_id)
                             ->get()
                             ->first();
+                            $total_rent=$bill->rent_amount;
                             if (isset($income_zomato)) {
                                 if ($bill->owner=="self") {
                                     $time_sheet_count = $income_zomato->time_sheet()
@@ -5991,13 +5985,14 @@ class AjaxNewController extends Controller
                                     ->whereDate('date', '<=', Carbon::parse($unassign_date)->format('Y-m-d'))
                                     ->where('off_days_status', 'absent')
                                     ->count();
-                                    $absent=$time_sheet_count;   
+                                    $absent=$time_sheet_count;  
+                                    $total_rent=$bill->bike_allowns; 
                                 }
                             }
                             
                             $t_month_days=Carbon::parse($month)->daysInMonth;
-
-                            $orig_amount=(($working_days-$absent)/$t_month_days)*$bill->rent_amount;
+                            
+                            $orig_amount=(($working_days-$absent)/$t_month_days)*$total_rent;
                             
                             // $client_history = Client_History::all(); 
                             // $history_found = Arr::first($client_history, function ($item, $key) use ($rider_id, $month) {
@@ -6188,6 +6183,7 @@ class AjaxNewController extends Controller
                             ->where("rider_id",$rider_id)
                             ->get()
                             ->first();
+                            $total_rent=$bill->rent_amount;
                             if (isset($income_zomato)) {
                                 if ($bill->owner=="self") {
                                     $time_sheet_count = $income_zomato->time_sheet()
@@ -6195,13 +6191,14 @@ class AjaxNewController extends Controller
                                     ->whereDate('date', '<=', Carbon::parse($unassign_date)->format('Y-m-d'))
                                     ->where('off_days_status', 'absent')
                                     ->count();
-                                    $absent=$time_sheet_count;   
+                                    $absent=$time_sheet_count;
+                                    $total_rent=$bill->bike_allowns;   
                                 }
                             }
                             
                             $t_month_days=Carbon::parse($month)->daysInMonth;
 
-                            $orig_amount=(($working_days-$absent)/$t_month_days)*$bill->rent_amount;
+                            $orig_amount=(($working_days-$absent)/$t_month_days)*$total_rent;
                             $ca=Company_Account::whereMonth("month",$_onlyMonth)
                             ->whereYear("month",$_onlyYear)
                             ->where("rider_id",$rider_id)
@@ -6250,7 +6247,40 @@ class AjaxNewController extends Controller
     public function getSimExpenseLoss($month,$source)
     {   
         if ($source=="sim") { 
-            $bill= Sim::where("active_status","A")->get();
+            $bill = collect([]);
+            $sim_history = Sim_History::with('Rider')->with('Sim')->get()->toArray();
+            $history_found = Arr::where($sim_history, function ($item, $key) use ($month) {
+                $start_created_at =Carbon::parse($item['given_date'])->startOfMonth()->format('Y-m-d');
+                $created_at =Carbon::parse($start_created_at);
+
+                $start_updated_at =Carbon::parse($item['return_date'])->endOfMonth()->format('Y-m-d');
+                $updated_at =Carbon::parse($start_updated_at);
+                $req_date =Carbon::parse($month);
+                
+                if($item['status']=='active'){
+                    return ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+                }
+                return ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+            });
+            foreach ($history_found as $tmp) {
+                $sim_found = Arr::first($bill, function ($item, $key) use ($tmp) { 
+                    return $item->id==$tmp['sim_id'];
+                });
+                if (isset($sim_found)) {
+                    continue;
+                }
+                $mdl = new Sim;
+                $mdl->id=$tmp['sim']['id'];
+                $mdl->sim_number=$tmp['sim']['sim_number'];
+                $mdl->sim_company=$tmp['sim']['sim_company'];
+                $mdl->allowed_balance=$tmp['allowed_balance'];
+                // $mdl->rent_amount=$tmp['sim']['rent_amount'];
+                // $mdl->rental_company=$tmp['sim']['rental_company'];
+                // $mdl->contract_start=$tmp['sim']['contract_start'];
+                // $mdl->bike_allowns=$tmp['sim']['bike_allowns'];
+                $bill->push($mdl);
+            }
+            // $bill= Sim::where("active_status","A")->get();
         }
         return DataTables::of($bill)
         ->addColumn('bill_source', function($bill) use($month,$source){
@@ -6261,15 +6291,77 @@ class AjaxNewController extends Controller
         ->addColumn('bill_amount', function($bill) use($month,$source){
             $_onlyMonth=carbon::parse($month)->format('m');
             $_onlyYear=carbon::parse($month)->format('Y');
-            if ($source=="sim") { 
-                return 123;
+            if ($source=="sim") {
+                if ($bill->allowed_balance!=0 || $bill->allowed_balance>0) {
+                    return $bill->allowed_balance;
+                } 
+                return ' <span style="color: #fa8484;">Update Sim Allowed Balance</span>';
             }
-        })
+        }) 
         ->addColumn('company_account', function($bill) use($month,$source){
             $_onlyMonth=carbon::parse($month)->format('m');
             $_onlyYear=carbon::parse($month)->format('Y');
             if ($source=="sim") { 
-                return 123;
+                $html='';
+                $amount='';
+                $month_start = Carbon::parse($month)->startOfMonth();
+                $month_end = Carbon::parse($month)->endOfMonth();
+                $sim_history = Sim_History::with('Rider')->with('Sim')->get()->toArray();
+                $sim_id=$bill->id;
+                $simh_f = Arr::where($sim_history, function ($item, $key) use ($sim_id, $month) {
+                    $start_created_at =Carbon::parse($item['given_date'])->startOfMonth()->format('Y-m-d');
+                    $created_at =Carbon::parse($start_created_at);
+
+                    $start_updated_at =Carbon::parse($item['return_date'])->endOfMonth()->format('Y-m-d');
+                    $updated_at =Carbon::parse($start_updated_at);
+                    $req_date =Carbon::parse($month);
+                    
+                    if($item['status']=='active'){
+                        return $item['sim_id']==$sim_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+                    }
+                    return $item['sim_id']==$sim_id &&
+                        ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+                });
+                if (isset($simh_f)) {
+                    $previous_unassign_date = null;
+                    $orig_amount=0;
+                    $old_amount=0;
+                    foreach ($simh_f as $sim_h) {
+                        $rider_id=$sim_h['rider_id'];
+                        $sim_id=$sim_h['sim_id'];
+                        
+                        $ca=Company_Account::whereMonth("month",$_onlyMonth)
+                        ->whereYear("month",$_onlyYear)
+                        ->where("rider_id",$rider_id)
+                        ->where("source","Sim Transaction")
+                        ->where("type","dr")
+                        ->get();
+                        if (count($ca)>0) {
+                        $rider=Rider::find($rider_id);
+                        $rider_name=$rider->name;
+
+                        $amount_found=false;
+                        foreach ($ca as $ca_item) {
+                            $trans_id=$ca_item->sim_transaction_id;
+                            $sim_trans=Sim_Transaction::find($trans_id);
+                            if(isset($sim_trans)){
+                                $sim_extra=$sim_trans->extra_usage_amount;
+                                $bill_amount=$sim_trans->bill_amount;
+                                $total_bill=$bill_amount-$sim_extra;
+
+                                $html.='<p>
+                                <strong>'.$rider_name.'</strong>: 
+                                    '.$total_bill.'
+                                </p>';
+                            }   
+                        }
+                        return $html;
+                        }
+                        else{
+                            return '<span style="color: #fa8484;">No row is found against this Sim.</span>';
+                        }
+                    }
+                }
             }
         })
         ->addColumn('bills_amount', function($bill) use($month,$source){
@@ -6283,14 +6375,73 @@ class AjaxNewController extends Controller
             $_onlyMonth=carbon::parse($month)->format('m');
             $_onlyYear=carbon::parse($month)->format('Y');
             if ($source=="sim") { 
-                return 123;
+                $html='';
+                $amount='';
+                $month_start = Carbon::parse($month)->startOfMonth();
+                $month_end = Carbon::parse($month)->endOfMonth();
+                $sim_history = Sim_History::with('Rider')->with('Sim')->get()->toArray();
+                $sim_id=$bill->id;
+                $simh_f = Arr::where($sim_history, function ($item, $key) use ($sim_id, $month) {
+                    $start_created_at =Carbon::parse($item['given_date'])->startOfMonth()->format('Y-m-d');
+                    $created_at =Carbon::parse($start_created_at);
+
+                    $start_updated_at =Carbon::parse($item['return_date'])->endOfMonth()->format('Y-m-d');
+                    $updated_at =Carbon::parse($start_updated_at);
+                    $req_date =Carbon::parse($month);
+                    
+                    if($item['status']=='active'){
+                        return $item['sim_id']==$sim_id && ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at));
+                    }
+                    return $item['sim_id']==$sim_id &&
+                        ($req_date->isSameMonth($created_at) || $req_date->greaterThanOrEqualTo($created_at)) && ($req_date->isSameMonth($updated_at) || $req_date->lessThanOrEqualTo($updated_at));
+                });
+                if (isset($simh_f)) {
+                    $previous_unassign_date = null;
+                    $orig_amount=0;
+                    $old_amount=0;
+                    foreach ($simh_f as $sim_h) {
+                        $rider_id=$sim_h['rider_id'];
+                        $sim_id=$sim_h['sim_id'];
+                        
+                        $ca=Company_Account::whereMonth("month",$_onlyMonth)
+                        ->whereYear("month",$_onlyYear)
+                        ->where("rider_id",$rider_id)
+                        ->where("source","Sim Transaction")
+                        ->where("type","dr")
+                        ->get();
+                        if (count($ca)>0) {
+                        $rider=Rider::find($rider_id);
+                        $rider_name=$rider->name;
+
+                        $amount_found=false;
+                        foreach ($ca as $ca_item) {
+                            $trans_id=$ca_item->sim_transaction_id;
+                            $sim_trans=Sim_Transaction::find($trans_id);
+                            if(isset($sim_trans)){
+                                $sim_extra=$sim_trans->extra_usage_amount;
+                                $bill_amount=$sim_trans->bill_amount;
+                                $total_bill=$bill_amount-$sim_extra;
+
+                                $html.='<p>
+                                <strong>'.$rider_name.'</strong>: 
+                                    '.$sim_extra.'
+                                </p>';
+                            }   
+                        }
+                        return $html;
+                        }
+                        else{
+                            return '<span style="color: #fa8484;">No row is found against this Sim.</span>';
+                        }
+                    }
+                }
             }
         })
         ->addColumn('loss', function($bill) use($month,$source){
             $_onlyMonth=carbon::parse($month)->format('m');
             $_onlyYear=carbon::parse($month)->format('Y');
             if ($source=="sim") { 
-                return 123;
+                return 0;
             }
         })
         ->rawColumns(['loss','company_account','bills_amount','bill_amount','bill_source','rider_account'])
