@@ -272,6 +272,7 @@ public function store_simTransaction(Request $request){
         $sim_trans=new Sim_Transaction();
         $sim_trans->month_year=Carbon::parse($request->month_year)->startOfMonth()->format('Y-m-d');
         $sim_trans->bill_amount=$value['bill_amount_given_by_days'];
+        $sim_trans->total_amount=$request->amount;
         $sim_trans->sim_id=$request->sim_id;
         if(isset($value['sim_id'])){
             $sim_trans->sim_id=$value['sim_id'];
