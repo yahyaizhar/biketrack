@@ -47,7 +47,7 @@
                             <select class="form-control bk-select2 kt-select2-general" name="rider_id" >
                                 @foreach ($riders as $rider)
                                 <option value="{{ $rider->id }}">
-                                    {{ $rider->name }}
+                                    KR{{ $rider->id }}-{{ $rider->name }}
                                 </option>     
                                 @endforeach 
                             </select>

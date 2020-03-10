@@ -41,7 +41,7 @@
                             <select required class="form-control bk-select2" name="rider_id" >
                                 @foreach ($riders as $rider)
                                 <option value="{{ $rider->id }}">
-                                    {{ $rider->name }}
+                                        KR{{ $rider->id }}-{{ $rider->name }}
                                 </option>     
                                 @endforeach 
                             </select>
@@ -83,6 +83,11 @@
                                     </strong>
                                 </span>
                             @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Description:</label>
+                            <textarea class="form-control" name="desc" placeholder="Enter Description"></textarea>
+                            <span class="form-text text-muted">Please enter Description</span>
                         </div>
                         <input type="hidden" name="payment_status" value="pending">
                     </div>

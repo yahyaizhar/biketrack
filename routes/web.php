@@ -245,8 +245,8 @@ Route::group([
     /*[clients- View all clients salary sheet]*/Route::get("/all_clients/salarysheet","AccountsController@all_clients_salary_sheet_export")->name("admin.all_clients_salary_sheet_export");
     Route::get("/rider/salarystatus/","AccountsController@rider_salary_status")->name("rider.rider_salary_status");
     Route::get("/account/expense_data/","AccountsController@expense_data")->name("account.expense_data");
-    Route::get("/account/dailyledger","AccountsController@daily_ledger")->name("account.daily_ledger");//*** */
-    Route::post("/account/dailyledger/noticallback","AccountsController@dailyledger_noticallback")->name("account.dailyledger_noticallback");//*** */
+    Route::get("/account/dailyledger","AccountsController@daily_ledger")->name("account.daily_ledger");
+    Route::get("/account/dailyledger/noticallback","AccountsController@dailyledger_noticallback")->name("account.dailyledger_noticallback");
     /*[rider- View attendance data]*/Route::get('/zomato/riders/payout/by/days','AccountsController@view_riders_payouts_days')->name('zomato.view_riders_payouts_days');
     /*[rider- Import attendance data]*/Route::post('/import/riders/payouts/days','AccountsController@import_rider_daysPayouts')->name('import.import_rider_daysPayouts');
     /*[rider- view attendance]*/Route::get("/rider/hours/trips/details/{month}/{rider_id}","AccountsController@hours_trips_details")->name('attendance.get_attendance_ajax');

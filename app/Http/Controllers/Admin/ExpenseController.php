@@ -420,6 +420,7 @@ public function AR_store(Request $r){
         $ra->given_date = Carbon::parse($r->get('given_date'))->format('Y-m-d');
         if($ar->type=="advance"){$ra->source='advance';}
         else if($ar->type=="return"){$ra->source='loan';}
+        $ra->desc=$r->get('desc');
         $ra->advance_return_id=$ar->id;
         $ra->payment_status="paid";
         $ra->save();

@@ -32,6 +32,7 @@ use App\Model\Rider\Trip_Detail;
 use App\Model\Accounts\Rider_salary;
 use App\Export_data;
 use App\Model\Invoice\Invoice;
+use App\Notification;
 
 class RiderDetailController extends Controller
 {
@@ -613,8 +614,69 @@ class RiderDetailController extends Controller
         $ed->source_id=$unique_id;
         $ed->payment_status="paid";
         $ed->save();
+
+        #we need to send the notification if it is coming from daily ledger page
+        if(isset($r->send_noti)){
+            #send the noti
+            $data=[
+                "export_id"=>$ed->id,
+                'status'=>'accept'
+            ];
+            $data_accept=[
+                "type"=>"update",
+                "data"=>$data,
+                "url"=> 'admin/account/dailyledger/noticallback',
+            ];
+            $data=[
+                "export_id"=>$ed->id,
+                'status'=>'reject'
+            ];
+            $data_reject=[
+                "type"=>"update",
+                "data"=>$data,
+                "url"=> 'admin/account/dailyledger/noticallback',
+            ];
+            $button_html_accepted="<i style='font-size:20px' class='flaticon2-correct text-success btn_label--hover' onclick='CallBackNotification(this,".json_encode($data_accept).")'></i>";
+            $button_html_rejected="<i style='font-size:20px' class='flaticon-circle text-danger btn_label--hover' onclick='CallBackNotification(this,".json_encode($data_reject).")'></i>";
+            $button=$button_html_accepted.$button_html_rejected;
+            $current_url=url('account.daily_ledger');
+            $action_data = [
+                [
+                    'type'=>"url",
+                    'value'=>$current_url,    
+                ] ,
+                [
+                    'type'=>"button",
+                    'value'=>$button,    
+                ] ,
+            ];
+            $user = Auth::user();
+            if (isset($user->s_emp_id) && $user->s_emp_id!="") {
+                $seniour_emp=$user->s_emp_id;
+                $emp_name=$user->name;
+
+                $given_date=Carbon::parse($ed->given_date)->format("M d, Y");
+    
+                $notification=new Notification;
+                $notification->date_time=Carbon::now()->format("Y-m-d");
+                $notification->employee_id=$seniour_emp;
+                $notification->desc='skip_this_notification';
+                $notification->action=json_encode($action_data);
+                $notification->source_id=$ed->id;
+                $notification->source_type='kingrider_fine_id';
+                $notification->action_status='pending_new';
+                $notification->feed=json_encode($ed);
+                $notification->save();
+                return response()->json([
+                    'status'=>$notification
+                ]);
+            }
+            return response()->json([
+                'status'=>1
+            ]);
+        }
      
-}
+    }
 public function cash_debit_rider(Request $r){
     $unique_id=\App\Http\Controllers\Admin\AccountsController::getUniqueId(15);
 

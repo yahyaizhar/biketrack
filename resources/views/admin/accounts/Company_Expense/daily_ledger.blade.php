@@ -86,12 +86,14 @@
                         <th>Paid By</th>
                         <th>Amount</th>
                         <th></th>
+                        <th></th>
                         {{-- <th>Payment Status</th>                         --}}
                     </tr>
                 </thead>
                 <tfoot>
                     <tr>
                         <th>Total:</th>
+                        <th></th>
                         <th></th>
                         <th></th>
                         <th></th>
@@ -223,6 +225,7 @@ $(function() {
         var loading_html = '<div class="d-flex justify-content-center modal_loading"><i class="la la-spinner fa-spin display-3"></i></div>';
         var _quickViewModal = $('#quick_view');
         var selected_month=new Date(biketrack.getUrlParameter("month")).format('mmmm yyyy');
+        var filter_by=biketrack.getUrlParameter("filter_by");
         console.log(selected_month);
         _quickViewModal.find('.modal-body').html(loading_html);
         _quickViewModal.modal('show');
@@ -241,6 +244,11 @@ $(function() {
                 _quickViewModal.find('.modal-body').html(_targetForm);
                 _quickViewModal.find('[name="month"]').attr('data-month',selected_month);
                 _quickViewModal.find('[name="month_year"]').attr('data-month',selected_month);
+                if(filter_by && filter_by=='day'){
+                    var selected_date=new Date(biketrack.getUrlParameter("month")).format('mmmm dd, yyyy');
+                    _quickViewModal.find('[name="given_date"]').attr('data-month',selected_date);
+                }
+                
                 // var rider_id = $('#gb_rider_id').val();
                 // if(_quickViewModal.find('[name="rider_id"]').length){
                 //     _quickViewModal.find('[name="rider_id"]').val(rider_id).trigger('change.select2');
@@ -331,6 +339,7 @@ var init_table=function(){
             { data: 'rider', name: 'rider' },
             { data: 'paid_by', name: 'paid_by' },
             { data: 'amount', name: 'amount' },
+            { data: 'amountRAW', name: 'amountRAW', visible:false,searchable:true },
             { data: 'action', name: 'action' },
             // { data: 'payment_status', name: 'payment_status' },
         ],
@@ -349,7 +358,7 @@ var init_table=function(){
  
             // Total over all pages
             total = api
-                .column( 3 )
+                .column( 4 )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
@@ -365,7 +374,7 @@ var init_table=function(){
             }, 0 );
             // Total over this page
             pageTotal = api
-                .column( 3, { page: 'current'} )
+                .column( 4, { page: 'current'} )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
