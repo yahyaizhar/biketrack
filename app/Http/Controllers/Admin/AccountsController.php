@@ -4086,6 +4086,7 @@ public function client_income_update(Request $request,$id){
             $amount=$r->amount;
             $rider_id_update=$r->rider_id_update;
             $month=carbon::parse($r->month_update)->startOfMonth()->format("Y-m-d");
+            $given_date=carbon::parse($r->given_date)->format("Y-m-d");
             $statement = Company_Account::find($r->statement_id);
             if(!isset($statement)){
                 #generate error
@@ -4099,6 +4100,7 @@ public function client_income_update(Request $request,$id){
                 $statement->amount=$amount;
                 $statement->rider_id=$rider_id_update;
                 $statement->month=$month;
+                $statement->given_date=$given_date;
                 $statement->desc=$r->desc;
                 $statement->save();
 
@@ -4234,6 +4236,7 @@ public function client_income_update(Request $request,$id){
                 $company_statement->amount=$updated_amount;
                 $company_statement->rider_id=$rider_id_update;
                 $company_statement->month=$month;
+                $company_statement->given_date=$given_date;
 
                 #we need to get rider account linked with this row
                 $alternate_type=$company_statement->type=='dr'?'cr':'dr'; # get the type of rider account, if company account has dr, then rider acc must has cr
@@ -4252,6 +4255,7 @@ public function client_income_update(Request $request,$id){
                     $rider_statement->amount=$company_statement->amount;
                     $rider_statement->rider_id=$company_statement->rider_id;
                     $rider_statement->month=$company_statement->month;
+                    $rider_statement->given_date=$company_statement->given_date;
                     $rider_statement->save();
 
                 }
@@ -4274,6 +4278,7 @@ public function client_income_update(Request $request,$id){
                 $export_data->amount=$amount;
                 $export_data->rider_id=$rider_id_update;
                 $export_data->month=$month;
+                $export_data->given_date=$given_date;
                 $export_data->save();
             }
 

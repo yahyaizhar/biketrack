@@ -157,10 +157,24 @@
                     @endif
                 </div>
                 <div class="form-group">
+                    <label>Given Date:</label>
+                    <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Month" value="">
+                    @if ($errors->has('given_date'))
+                        <span class="invalid-response" role="alert">
+                            <strong>
+                                {{ $errors->first('given_date') }}
+                            </strong>
+                        </span>
+                    @else
+                        <span class="form-text text-muted">Please enter Month</span>
+                    @endif
+                </div>
+                <div class="form-group">
                     <label>Description:</label>
                     <textarea class="form-control" name="desc" placeholder="Enter Description"></textarea>
                     <span class="form-text text-muted">Please enter Description</span>
                 </div>
+
                 <div class="form-group">
                     <label>Amount:</label>
                     <input type="number" step="0.01" required class="form-control" name="amount" placeholder="Enter Amount" value="0">
@@ -399,6 +413,7 @@ function UpdateRows($this,id,model_class,model_id,rider_id,string,month,year,sou
     var r1d1=_row.month;
     var rider_id_update=_row.rider_id;
     var _month=new Date(r1d1).format("mmmm yyyy");
+    var _givenDate=new Date(_row.given_date).format("mm dd, yyyy");
     var _source = _row.desc==null?_row.source:_row.desc;
     _model.find('#update_rows [name="desc"]').val(_source);
     _model.find('#update_rows [name="amount"]').val(_row.amountRAW);
@@ -406,6 +421,8 @@ function UpdateRows($this,id,model_class,model_id,rider_id,string,month,year,sou
     _model.find('#update_rows [name="source_id"]').val(source_id);
     _model.find('#update_rows [name="source_key"]').val(source_key);
     _model.find('#update_rows [name="month_update"]').attr("data-month",_month);
+    _model.find('#update_rows [name="given_date"]').attr("data-month",_givenDate);
+    
     _model.find('#update_rows [name="rider_id_update"]').val(rider_id_update).trigger("change.select2");
     biketrack.refresh_global();
     var bk_rider_id=rider_id;
@@ -420,7 +437,6 @@ function UpdateRows($this,id,model_class,model_id,rider_id,string,month,year,sou
         data.append('rider_id',bk_rider_id);
         data.append('bk_month',bk_month);
         data.append('bk_year',bk_year);
-        data.append('given_date',given_date);
         data.append('source',model_id);
         data.append('statement_type',stype);
         data.append('from','daily_ledger');

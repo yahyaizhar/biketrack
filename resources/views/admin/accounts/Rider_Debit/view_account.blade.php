@@ -1343,61 +1343,75 @@
     </div>
 </div>
 <div class="modal fade" id="update_row_model" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-        <div class="modal-header border-bottom-0">
-            <h5 class="modal-title">Update Company Account</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title">Update Company Account</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="kt-form" enctype="multipart/form-data" id="update_rows">
+                    <input type="hidden" name="statement_id">
+                    <input type="hidden" name="source_id">
+                    <input type="hidden" name="source_key">
+                    <div class="form-group">
+                        <label>Rider:</label>
+                        <select required class="form-control bk-select2" name="rider_id_update" >
+                            @foreach ($riders as $rider)
+                            <option value="{{ $rider->id }}">
+                                {{ $rider->name }}
+                            </option>     
+                            @endforeach 
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Month:</label>
+                        <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month_update" placeholder="Enter Month" value="">
+                        @if ($errors->has('month'))
+                            <span class="invalid-response" role="alert">
+                                <strong>
+                                    {{ $errors->first('month') }}
+                                </strong>
+                            </span>
+                        @else
+                            <span class="form-text text-muted">Please enter Month</span>
+                        @endif
+                    </div>
+                    <div class="form-group">
+                        <label>Given Date:</label>
+                        <input type="text" data-month="{{Carbon\Carbon::now()->format('M d, Y')}}" required readonly class="month_picker form-control @if($errors->has('given_date')) invalid-field @endif" name="given_date" placeholder="Enter Month" value="">
+                        @if ($errors->has('given_date'))
+                            <span class="invalid-response" role="alert">
+                                <strong>
+                                    {{ $errors->first('given_date') }}
+                                </strong>
+                            </span>
+                        @else
+                            <span class="form-text text-muted">Please enter Month</span>
+                        @endif
+                    </div>
+                    <div class="form-group">
+                        <label>Description:</label>
+                        <textarea class="form-control" name="desc" placeholder="Enter Description"></textarea>
+                        <span class="form-text text-muted">Please enter Description</span>
+                    </div>
+    
+                    <div class="form-group">
+                        <label>Amount:</label>
+                        <input type="number" step="0.01" required class="form-control" name="amount" placeholder="Enter Amount" value="0">
+                        <span class="form-text text-muted">Please enter Amount</span>
+                    </div>
+    
+                    <div class="kt-form__actions kt-form__actions--right">
+                        <button type="submit" class="btn btn-success">Save</button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div class="modal-body">
-            <form class="kt-form" enctype="multipart/form-data" id="update_rows">
-                <input type="hidden" name="statement_id">
-                <input type="hidden" name="source_id">
-                <input type="hidden" name="source_key">
-                <div class="form-group">
-                    <label>Rider:</label>
-                    <select required class="form-control kt-select2-general" name="rider_id_update" >
-                        @foreach ($riders as $rider)
-                        <option value="{{ $rider->id }}">
-                            {{ $rider->name }}
-                        </option>     
-                        @endforeach 
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Month:</label>
-                    <input type="text" data-month="{{Carbon\Carbon::now()->format('F Y')}}" required readonly class="month_picker_only form-control @if($errors->has('month')) invalid-field @endif" name="month_update" placeholder="Enter Month" value="">
-                    @if ($errors->has('month'))
-                        <span class="invalid-response" role="alert">
-                            <strong>
-                                {{ $errors->first('month') }}
-                            </strong>
-                        </span>
-                    @else
-                        <span class="form-text text-muted">Please enter Month</span>
-                    @endif
-                </div>
-                <div class="form-group">
-                    <label>Description:</label>
-                    <textarea class="form-control" name="desc" placeholder="Enter Description"></textarea>
-                    <span class="form-text text-muted">Please enter Description</span>
-                </div>
-                <div class="form-group">
-                    <label>Amount:</label>
-                    <input type="number" step="0.01" required class="form-control" name="amount" placeholder="Enter Amount" value="0">
-                    <span class="form-text text-muted">Please enter Amount</span>
-                </div>
-
-                <div class="kt-form__actions kt-form__actions--right">
-                    <button type="submit" class="btn btn-success">Save</button>
-                </div>
-            </form>
         </div>
     </div>
-    </div>
-</div>
 <div class="modal fade" id="view_upload_slip" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -3446,7 +3460,8 @@ function UpdateRows($this,id,model_class,model_id,rider_id,string,month,year,sou
     var _model = $('#update_row_model');
     var r1d1=biketrack.getUrlParameter('r1d1');
     var rider_id_update=biketrack.getUrlParameter('rider_id');
-    var _month=new Date(r1d1).format("mmmm yyyy");
+    var _month=new Date(_row.month).format("mmmm yyyy");
+    var _givenDate=new Date(_row.given_date).format("mm dd, yyyy");
     var _source = _row.desc==null?_row.source:_row.desc;
     _model.find('#update_rows [name="desc"]').val(_source);
     _model.find('#update_rows [name="amount"]').val(_row.amount);
@@ -3454,6 +3469,7 @@ function UpdateRows($this,id,model_class,model_id,rider_id,string,month,year,sou
     _model.find('#update_rows [name="source_id"]').val(source_id);
     _model.find('#update_rows [name="source_key"]').val(source_key);
     _model.find('#update_rows [name="month_update"]').attr("data-month",_month);
+    _model.find('#update_rows [name="given_date"]').attr("data-month",_givenDate);
     _model.find('#update_rows [name="rider_id_update"]').val(rider_id_update).trigger("change.select2");
     biketrack.refresh_global();
     var bk_rider_id=rider_id;
@@ -3469,7 +3485,6 @@ function UpdateRows($this,id,model_class,model_id,rider_id,string,month,year,sou
         data.append('rider_id',bk_rider_id);
         data.append('bk_month',bk_month);
         data.append('bk_year',bk_year);
-        data.append('given_date',given_date);
         data.append('source',model_id);
         data.append('statement_type','rider__accounts');
         var _form = $(this);

@@ -4995,39 +4995,34 @@ class AjaxNewController extends Controller
                     # code...
                     break;
             }
-
-            if($ex_source_key=='') return '';
-
-            $company_statement=Company_Account::where('rider_id', $ex_rider_id)
-            // ->whereMonth('month',$onlyMonth)
-            // ->whereYear('month',$onlyYear)
-            ->where($ex_source_key, $ex_source_id)
-            ->get()
-            ->first();
-
             $desc='';
+            if($ex_source_key!=''){
 
-            if(isset($company_statement)){
-                if($source!=$company_statement->desc)
-                    $desc='| '.$company_statement->desc; 
-            }
-            else {
-                # lets find on rider account
-                $rider_statement=Rider_Account::where('rider_id', $ex_rider_id)
+                $company_statement=Company_Account::where('rider_id', $ex_rider_id)
                 // ->whereMonth('month',$onlyMonth)
                 // ->whereYear('month',$onlyYear)
                 ->where($ex_source_key, $ex_source_id)
                 ->get()
                 ->first();
-                if(isset($rider_statement)){
-                    if($source!=$rider_statement->desc)
-                        $desc='| '.$rider_statement->desc;
+
+                if(isset($company_statement)){
+                    if($source!=$company_statement->desc)
+                        $desc='| '.$company_statement->desc; 
+                }
+                else {
+                    # lets find on rider account
+                    $rider_statement=Rider_Account::where('rider_id', $ex_rider_id)
+                    // ->whereMonth('month',$onlyMonth)
+                    // ->whereYear('month',$onlyYear)
+                    ->where($ex_source_key, $ex_source_id)
+                    ->get()
+                    ->first();
+                    if(isset($rider_statement)){
+                        if($source!=$rider_statement->desc)
+                            $desc='| '.$rider_statement->desc;
+                    }
                 }
             }
-
-            
-
-
 
             $src=$export_data->source;
             $kr='O-';
