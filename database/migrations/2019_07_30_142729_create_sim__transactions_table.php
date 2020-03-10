@@ -17,6 +17,7 @@ class CreateSimTransactionsTable extends Migration
             $table->increments('id');
             $table->integer('sim_id')->nullable();
             $table->string('month_year')->nullable();
+            $table->string('total_amount')->nullable();
             $table->string('bill_amount')->nullable();
             $table->string('extra_usage_amount')->nullable();
             $table->string('extra_usage_payment_status')->nullable();
