@@ -695,7 +695,7 @@ class SalikController extends Controller
 
     /* ===Get sim according to rider and rider according to sim=== */
     public function get_active_sims_ajax_salik($_id, $date,$according_to){
-        $sim_history = Sim_History::with('Rider')->with('Sim')->get()->toArray();;
+        $sim_history = Sim_History::with('Rider')->with('Sim')->get()->toArray();
         $sim_histories = null;
         $history_found = Arr::where($sim_history, function ($item, $key) use ($_id, $date,$according_to) {
             $start_created_at =Carbon::parse($item['given_date'])->startOfMonth()->format('Y-m-d');
