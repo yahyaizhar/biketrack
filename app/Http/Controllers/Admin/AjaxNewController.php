@@ -6379,7 +6379,7 @@ class AjaxNewController extends Controller
                 if ($bill->allowed_balance!=0 || $bill->allowed_balance>0) {
                     return $bill->allowed_balance;
                 } 
-                return ' <span style="color: #fa8484;">Update Sim Allowed Balance</span>';
+                return '0';
             }
         }) 
         ->addColumn('company_account', function($bill) use($month,$source){
