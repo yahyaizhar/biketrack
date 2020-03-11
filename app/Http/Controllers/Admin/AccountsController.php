@@ -1844,151 +1844,15 @@ public function fuel_expense_insert(Request $r){
                         $notification->action_status='pending_new';
                         $notification->feed=json_encode($ed);
                         $notification->save();
-                        return response()->json([
-                            'status'=>$notification
-                        ]);
+                        // return response()->json([
+                        //     'status'=>$notification
+                        // ]);
                     }
-                    return response()->json([
-                        'status'=>1
-                    ]);
+                    // return response()->json([
+                    //     'status'=>1
+                    // ]);
                 }
-            }else if($fuel_expense->type=="cash"){
-                if ($pm=="commission_based") {
-                    $ra = new \App\Model\Accounts\Rider_Account;
-                    $ra->type='dr';
-                    $ra->amount=$value['amount_given_by_days'];
-                    $ra->month=Carbon::parse($r->get('month'))->format('Y-m-d');
-                    $ra->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
-                    $ra->rider_id=$r->rider_id;
-                    if(isset($value['rider_id'])){
-                        $ra->rider_id=$value['rider_id'];
-                    }
-                    $ra->source='fuel_expense_cash';
-                    $ra->fuel_expense_id=$fuel_expense->id;
-                    $ra->save();
-    
-                    $ca = new \App\Model\Accounts\Company_Account;
-                    $ca->type='cr';
-                    $ca->amount=$value['amount_given_by_days'];
-                    $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
-                    $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
-                    $ca->rider_id=$r->rider_id;
-                    if(isset($value['rider_id'])){
-                        $ca->rider_id=$value['rider_id'];
-                    }
-                    $ca->source='fuel_expense_cash';
-                    $ca->fuel_expense_id=$fuel_expense->id;
-                    $ca->save();
-    
-                    $ca = new \App\Model\Accounts\Company_Account;
-                    $ca->type='dr';
-                    $ca->amount=$value['amount_given_by_days'];
-                    $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
-                    $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
-                    $ca->rider_id=$r->rider_id;
-                    if(isset($value['rider_id'])){
-                        $ca->rider_id=$value['rider_id'];
-                    }
-                    $ca->source='fuel_expense_cash';
-                    $ca->fuel_expense_id=$fuel_expense->id;
-                    $ca->save();
-                }
-                else{
-                    $ca = new \App\Model\Accounts\Company_Account;
-                    $ca->type='dr';
-                    $ca->amount=$value['amount_given_by_days'];
-                    $ca->month=Carbon::parse($r->get('month'))->format('Y-m-d');
-                    $ca->given_date=Carbon::parse($r->get('given_date'))->format('Y-m-d');
-                    $ca->rider_id=$r->rider_id;
-                    if(isset($value['rider_id'])){
-                        $ca->rider_id=$value['rider_id'];
-                    }
-                    $ca->source='fuel_expense_cash';
-                    $ca->fuel_expense_id=$fuel_expense->id;
-                    $ca->save();
-                }
-                $ed =Export_data::firstOrCreate([
-                    'source'=>"fuel_expense_cash",
-                    'source_id'=>$fuel_expense->id,
-                ]);
-                $ed->type='dr';
-                $ed->rider_id=$r->rider_id;
-                if(isset($value['rider_id'])){
-                    $ed->rider_id=$value['rider_id'];
-                }
-                $ed->amount=$value['amount_given_by_days'];
-                $ed->month = Carbon::parse($r->get('month'))->startOfMonth()->format('Y-m-d');
-                $ed->given_date = Carbon::parse($r->get('given_date'))->format('Y-m-d');
-                $ed->source='fuel_expense_cash';
-                $ed->source_id=$fuel_expense->id;
-                $ed->bill_id=$r->bike_id;
-                if(isset($value['bike_id'])){
-                    $ed->bill_id=$value['bike_id'];     
-                }
-                $ed->bill_acc="bike";
-                $ed->save();
-    
-                #we need to send the notification if it is coming from daily ledger page
-                if(isset($r->send_noti)){
-                    #send the noti
-                    $data=[
-                        "export_id"=>$ed->id,
-                        'status'=>'accept'
-                    ];
-                    $data_accept=[
-                        "type"=>"update",
-                        "data"=>$data,
-                        "url"=> 'admin/account/dailyledger/noticallback',
-                    ];
-                    $data=[
-                        "export_id"=>$ed->id,
-                        'status'=>'reject'
-                    ];
-                    $data_reject=[
-                        "type"=>"update",
-                        "data"=>$data,
-                        "url"=> 'admin/account/dailyledger/noticallback',
-                    ];
-                    $button_html_accepted="<i style='font-size:20px' class='flaticon2-correct text-success btn_label--hover' onclick='CallBackNotification(this,".json_encode($data_accept).")'></i>";
-                    $button_html_rejected="<i style='font-size:20px' class='flaticon-circle text-danger btn_label--hover' onclick='CallBackNotification(this,".json_encode($data_reject).")'></i>";
-                    $button=$button_html_accepted.$button_html_rejected;
-                    $current_url=url('account.daily_ledger');
-                    $action_data = [
-                        [
-                            'type'=>"url",
-                            'value'=>$current_url,    
-                        ] ,
-                        [
-                            'type'=>"button",
-                            'value'=>$button,    
-                        ] ,
-                    ];
-                    $user = Auth::user();
-                    if (isset($user->s_emp_id) && $user->s_emp_id!="") {
-                        $seniour_emp=$user->s_emp_id;
-                        $emp_name=$user->name;
-    
-                        $given_date=Carbon::parse($ed->given_date)->format("M d, Y");
-    
-                        $notification=new Notification;
-                        $notification->date_time=Carbon::now()->format("Y-m-d");
-                        $notification->employee_id=$seniour_emp;
-                        $notification->desc='skip_this_notification';
-                        $notification->action=json_encode($action_data);
-                        $notification->source_id=$ed->id;
-                        $notification->source_type='fuel_expense_cash';
-                        $notification->action_status='pending_new';
-                        $notification->feed=json_encode($ed);
-                        $notification->save();
-                        return response()->json([
-                            'status'=>$notification
-                        ]);
-                    }
-                    return response()->json([
-                        'status'=>1
-                    ]);
-                }
-            } 
+            }
             $splitted_amount+=$value['amount_given_by_days'];
             #saving bill data to detect changes
             $obj_feed=[]; 
