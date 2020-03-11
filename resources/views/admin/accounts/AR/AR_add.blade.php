@@ -20,11 +20,11 @@
                 <form class="kt-form" action="{{ route('admin.AR_store') }}" method="POST" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="kt-portlet__body">
-                        <div class="form-group">
+                        <div class="form-group d-none">
                             <label>Advance & Return  Type:</label>
                             {{-- <input  autocomplete="off" list="model" class="form-control @if($errors->has('model')) invalid-field @endif" name="model"  > --}}
                             <select required  class="form-control @if($errors->has('type')) invalid-field @endif kt-select2-general" name="type">
-                                <option value="advance">Advance</option>
+                                <option value="advance" selected>Advance</option>
                                 <option value="return">Return</option>
                             </select> 
                             @if ($errors->has('type'))

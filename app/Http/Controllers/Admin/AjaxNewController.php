@@ -4809,8 +4809,8 @@ class AjaxNewController extends Controller
             if ( $src=="Bonus") {$kr="B-";}
             if ( $src=="Mobile Installment") {$kr="MI-";}
             if ( $src=="Visa Charges") {$kr="VC-";}
-            if ( $src=="fuel_expense_vip") {$kr="F-";}
-            if ( $src=="fuel_expense_cash") {$kr="F-";} 
+            if ( $src=="fuel_expense_vip") {$kr="FV-";}
+            if ( $src=="fuel_expense_cash") {$kr="FC-";} 
             if ( $src=="Bike Rent") {$kr="BR-";}
             if ( $src=="Discipline Fine") {$kr="KF-";}
             if ( $src=="Sim Transaction") {$kr="S-";}
@@ -4927,8 +4927,8 @@ class AjaxNewController extends Controller
             if ( $src=="Bonus") {$kr="B-";}
             if ( $src=="Mobile Installment") {$kr="MI-";}
             if ( $src=="Visa Charges") {$kr="VC-";}
-            if ( $src=="fuel_expense_vip") {$kr="F-";}
-            if ( $src=="fuel_expense_cash") {$kr="F-";} 
+            if ( $src=="fuel_expense_vip") {$kr="FV-";}
+            if ( $src=="fuel_expense_cash") {$kr="FC-";} 
             if ( $src=="Bike Rent") {$kr="BR-";}
             if ( $src=="Discipline Fine") {$kr="KF-";}
             if ( $src=="Sim Transaction") {$kr="S-";}
@@ -5030,8 +5030,8 @@ class AjaxNewController extends Controller
             if ( $src=="Bonus") {$kr="B-";}
             if ( $src=="Mobile Installment") {$kr="MI-";}
             if ( $src=="Visa Charges") {$kr="VC-";}
-            if ( $src=="fuel_expense_vip") {$kr="F-";}
-            if ( $src=="fuel_expense_cash") {$kr="F-";} 
+            if ( $src=="fuel_expense_vip") {$kr="FV-";}
+            if ( $src=="fuel_expense_cash") {$kr="FC-";} 
             if ( $src=="Bike Rent") {$kr="BR-";}
             if ( $src=="Discipline Fine") {$kr="KF-";}
             if ( $src=="Sim Transaction") {$kr="S-";}

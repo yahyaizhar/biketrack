@@ -206,12 +206,12 @@
                              MICS Charges
                         </a>  
                         &nbsp;
-                        <a style="" href="" class="btn btn-info btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_paid" >
+                        {{-- <a style="" href="" class="btn btn-info btn-elevate btn-icon-sm" data-toggle="modal" data-target="#cash_paid" >
                             <i class="la la-money"></i>
                                  Pay Cash To Rider
                         </a>
-                        &nbsp;
-                        <a style="" href="" class="btn btn-danger btn-elevate btn-icon-sm" data-toggle="modal" data-target="#advance" >
+                        &nbsp; --}}
+                        <a href="" data-ajax="{{ route('admin.AR_index') }}" class="btn btn-danger btn-elevate btn-icon-sm">
                             <i class="la la-money"></i>
                                 Advance
                         </a>

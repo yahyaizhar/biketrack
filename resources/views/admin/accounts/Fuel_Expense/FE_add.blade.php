@@ -57,7 +57,7 @@
                         </div>
                         <div class="form-group bike_id">
                             <label>Bike:</label>
-                            <select required class="form-control bk-select2" name="bike_id" >
+                            <select required class="form-control bk-select2" name="bike_id" data-name="bike_id">
                                 @foreach ($bikes as $bike)
                                 <option value="{{ $bike->id }}">
                                     {{ $bike->brand }}-{{$bike->bike_number}}
@@ -65,7 +65,7 @@
                                 @endforeach 
                             </select>
                         </div>
-                        <div class="row bike_that_assigned_in_month">
+                        <div class="bike_that_assigned_in_month">
                             
                         </div>
                         <div class="form-group">
@@ -115,14 +115,9 @@
 <script data-ajax>
 
   $(document).ready(function(){
-    //   $('#fuel_expense [name="type"]').on('change', function(){
-    //     if($(this).val()=='cash'){
-    //         $('#fuel_expense [name="bike_id"]').prop('disabled', true).trigger('change.select2');
-    //     }
-    //     else{
-    //         $('#fuel_expense [name="bike_id"]').prop('disabled', false).trigger('change.select2');
-    //     }
-    //   });
+      $('#fuel_expense [name="type"]').on('change', function(){
+        $('#fuel_expense [name="rider_id"]').trigger('change');
+      });
       $('#fuel_expense [name="amount"]').val(0); 
     //   $('#fuel_expense [name="type"]').trigger('change');
     $('#fuel_expense [name="month"],#fuel_expense [name="bike_id"]').on('change', function(){
@@ -158,9 +153,13 @@
 
     var split_objects=function(histories, _month, according_to){
         $('#fuel_expense .split__object-container').remove();
+        $('#fuel_expense .bike_that_assigned_in_month').html('');
+        $('#fuel_expense [type="submit"]').prop('disabled', false);
         if(Object.keys(histories).length>0){
             $('#fuel_expense [name="bike_id"]').parents('.form-group').after('<div class="split__object-container"></div>');
             var previous_unassigned_date=null;
+            $('#fuel_expense [data-name="bike_id"]').removeAttr('name').parent().hide();
+            
             if($('#fuel_expense [name="type"]').val()=='cash'){
                 // return;
                 var _bikeoptionsHTML='';
@@ -189,18 +188,26 @@
                     
                     console.warn(work_days);
                     if(according_to=="bike"){
-                        _bikeoptionsHTML+='<option value="'+obj.bike.id+'">'+
+                        _bikeoptionsHTML += '<label class="kt-radio kt-radio--bold kt-radio--brand">'+
+                                            '   <input type="radio" required name="bike_id" value="'+obj.bike.id+'">'+
                                             obj.bike.brand+'-'+obj.bike.bike_number+
-                                        '</option> '; 
+                                            '   <span></span>'+
+                                            '</label>';
                         
                     }
                 });
-                if(_bikeoptionsHTML==''){
-                    //means no bike found
+                if(_bikeoptionsHTML!=''){
+                    _bikeoptionsHTML='<div class="kt-radio-list">'+_bikeoptionsHTML+'</div>';
                 }
-                $('#fuel_expense [name="bike_id"]').html(_bikeoptionsHTML);
+                
+                $('#fuel_expense .bike_that_assigned_in_month').html(_bikeoptionsHTML);
+                if(Object.keys(histories).length==1){
+                    //select the first and the only bike
+                    $('#fuel_expense .bike_that_assigned_in_month :radio[name="bike_id"]').prop('checked', true); 
+                }
             }
             else{
+                $('#fuel_expense [data-name="bike_id"]').attr("name", "bike_id").parent().show();
                 Object.keys(histories).forEach(function(x ,i){
                     var obj = histories[x];
                     var days_in_month=moment(_month, "YYYY-MM-DD").daysInMonth();
@@ -269,6 +276,10 @@
             }
             
 
+        }
+        else{
+            //no data found
+            $('#fuel_expense [type="submit"]').prop('disabled', true);
         }
     }
     $("#fuel_expense [name='amount']").on("change input",function(){
