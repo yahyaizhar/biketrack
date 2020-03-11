@@ -252,7 +252,12 @@ $(function() {
         _self.find('[type="submit"]').prop('disabled',true);
         var loading_html = '<div class="d-flex justify-content-center modal_loading"><i class="la la-spinner fa-spin display-3"></i></div>';
         var _quickViewModal = $('#quick_view');
-        var selected_month=new Date(biketrack.getUrlParameter("month")).format('mmmm yyyy');
+        var is_check_month=biketrack.getUrlParameter('month');
+        var selected_month=new Date(Date.now()).format('mmmm yyyy'); 
+        if (is_check_month!='') {
+            selected_month=new Date(biketrack.getUrlParameter("month")).format('mmmm yyyy'); 
+        }
+        
         var filter_by=biketrack.getUrlParameter("filter_by");
         console.log(selected_month);
         _quickViewModal.find('.modal-body').html(loading_html);
@@ -377,7 +382,8 @@ var init_table=function(){
             // { data: 'payment_status', name: 'payment_status' },
         ],
         responsive:true,
-        order:[0,'desc'],
+        order:[],
+        // ordering: false,
         footerCallback: function ( row, data, start, end, display ) {
             var api = this.api(), data;
  
