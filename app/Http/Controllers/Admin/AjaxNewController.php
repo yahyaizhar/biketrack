@@ -4851,6 +4851,18 @@ class AjaxNewController extends Controller
     public function getDailyLedger($date,$filter_by)
     {
         switch ($filter_by) {
+            case 'last_50':
+                # get last 50 rows...
+                $export_data = Export_data::orderByDesc('created_at')
+                ->where("active_status","A");
+                // ->take(50);
+
+                $ce = Company_Expense::orderByDesc('created_at')
+                ->where("active_status","A")
+                ->where('paid_by', 'cash');
+                // ->take(50);
+
+                break;
             case 'day':
                 # match given date...
                 $export_data = Export_data::where("active_status","A")
@@ -4917,6 +4929,10 @@ class AjaxNewController extends Controller
             $ed->rider_id=null;
             $ed->status='expense';
             $export_data->push($ed); 
+        }
+
+        if($filter_by=='last_50'){
+            $export_data=$export_data->take(50);
         }
 
         return DataTables::of($export_data)

@@ -57,7 +57,7 @@
                         <select name="filter_by" id="filter_by" class="form-control">
                             <option value="day" data-target="#day_picker-wrapper" selected>Day</option>
                             <option value="month" data-target="#month_picker-wrapper">Month</option>
-                            {{-- <option value="year">Year</option> --}}
+                            <option value="last_50" data-target="">Last 50 entries</option>
                         </select>
                     </div>
                 </div>
@@ -80,7 +80,7 @@
                 <thead>
                     <tr>
                         <th>Given Date</th>
-                        {{-- <th>ID</th> --}}
+                        <th>Month</th>
                         <th>Source</th>
                         {{-- <th>Rider</th> --}}
                         <th>Paid By</th>
@@ -93,6 +93,7 @@
                 <tfoot>
                     <tr>
                         <th>Total:</th>
+                        <th></th>
                         <th></th>
                         <th></th>
                         <th></th>
@@ -205,13 +206,26 @@ $(function() {
         $(_target)
         .show()
         .find('[name="month_year"]').trigger("change");
+
+        if(_target==''){
+            $('[name="month_year"]:first').trigger('change');
+        }
     });
     $('[name="month_year"]').on("change",function(){
         var month=$(this).val();
         console.log('month',this);
+        var _filterBy=$('[name="filter_by"]').val();
+        if(_filterBy=='last_50'){
+            var push_state={
+                filter_by:_filterBy,
+            }
+            biketrack.updateURL(push_state);
+            init_table();
+            return;
+        }
+
         $(this).attr('data-month', new Date(month).format("yyyy-mm-dd"));
         
-        var _filterBy=$('[name="filter_by"]').val();
         var push_state={
             month:new Date(month).format("yyyy-mm-dd"),
             filter_by:_filterBy,
@@ -330,8 +344,12 @@ $(function() {
 });
 
 var init_table=function(){
-    var _month=new Date($('[name="month_year"]:visible').val()).format("yyyy-mm-dd");
     var _filterBy=$('[name="filter_by"]').val();
+    var _month=new Date(Date.now()).format("yyyy-mm-dd");
+    if(_filterBy!='last_50'){
+        _month=new Date($('[name="month_year"]:visible').val()).format("yyyy-mm-dd");
+    }
+    
     expense_table = $('#expense-table').DataTable({
         lengthMenu: [[-1], ["All"]],
         processing: true,
@@ -348,6 +366,7 @@ var init_table=function(){
         ajax: "{{ url('admin/account/daily_ledger/ajax') }}" + "/" + _month+"/"+_filterBy,
         columns: [
             { data: 'given_date', name: 'given_date' },
+            { data: 'month', name: 'month' },
             // { data: 'id', name: 'id' },
             // { data: 'source', name: 'source' },
             { data: 'rider', name: 'rider' },
