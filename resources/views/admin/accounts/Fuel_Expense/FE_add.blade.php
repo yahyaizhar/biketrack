@@ -117,12 +117,22 @@
   $(document).ready(function(){
     //   $('#fuel_expense [name="type"]').on('change', function(){
     //     if($(this).val()=='cash'){
-    //         $('#fuel_expense [name="amount"]').val(0);
+    //         $('#fuel_expense [name="bike_id"]').prop('disabled', true).trigger('change.select2');
+    //     }
+    //     else{
+    //         $('#fuel_expense [name="bike_id"]').prop('disabled', false).trigger('change.select2');
     //     }
     //   });
       $('#fuel_expense [name="amount"]').val(0); 
+    //   $('#fuel_expense [name="type"]').trigger('change');
     $('#fuel_expense [name="month"],#fuel_expense [name="bike_id"]').on('change', function(){
         var _month = $('#fuel_expense [name="month"]').val();
+
+        if($('#fuel_expense [name="type"]').val()=='cash'){
+            if($(this).attr('name')=='bike_id') return;
+            $('#fuel_expense [name="rider_id"]').trigger('change');
+            return;
+        }
         
         if(_month=='')return;
         _month = new Date(_month).format('yyyy-mm-dd');
@@ -151,71 +161,113 @@
         if(Object.keys(histories).length>0){
             $('#fuel_expense [name="bike_id"]').parents('.form-group').after('<div class="split__object-container"></div>');
             var previous_unassigned_date=null;
-            Object.keys(histories).forEach(function(x ,i){
-                var obj = histories[x];
-                var days_in_month=moment(_month, "YYYY-MM-DD").daysInMonth();
-                var start  = moment(_month, "YYYY-MM-DD").startOf('month');
-                var end    = moment(_month, "YYYY-MM-DD").endOf('month');
-                var assign_date = moment(obj.bike_assign_date, "YYYY-MM-DD").min(start).max(end);
-                var unassign_date = moment(obj.bike_unassign_date, "YYYY-MM-DD").min(start).max(end);
-    // debugger;
-                if(previous_unassigned_date!=null){
-                    var _differPrevious = previous_unassigned_date.diff(assign_date, 'days');
-                    if(_differPrevious==0){
-                        //dates are same
-                        assign_date = assign_date.add(1, 'days');
-                    }
-                }
-                previous_unassigned_date=unassign_date;
-                if(obj.status=="active"){ // unassign_date will be last of the month
-                    unassign_date = end;
-                }
-                
-                var work_days = unassign_date.diff(assign_date, 'days')+1;
-                console.log('assign_date', assign_date.format("YYYY-MM-DD"), 'unassign_date', unassign_date.format("YYYY-MM-DD"));
-                
-                console.warn(work_days);
-                var append_bike='';
-                if(according_to=="bike"){
-                    append_bike='<div class="split--calculated__div" >'+
-    '                                <div class="form-group">'+
-    '                                    <input type="hidden" name="data['+i+'][bike_id]" value="'+obj.bike.id+'"> <input type="hidden" name="data['+i+'][type]" value="'+according_to+'">'+
-    '                                    <input readonly type="text" class="form-control" value="'+obj.bike.brand+'-'+obj.bike.bike_number+'">'+
-    '                                </div>'+
-    '                                <div class="form-group">'+
-    '                                    <input type="text" class="form-control" value="'+(work_days)+'" name="data['+i+'][work_days_count]">'+
-    '                                     <span class="form-text text-muted">'+assign_date.format("DD/MM/YYYY")+' - '+unassign_date.format("DD/MM/YYYY")+'</span>'+
-    '                                </div>'+
-    '                                <div class="form-group">'+
-    '                                    <input readonly type="text" class="form-control" value="'+days_in_month+'" name="data['+i+'][total_days]">'+
-    '                                </div>'+
-    '                                <div class="form-group">'+
-    '                                    <input type="text" class="form-control" value="" name="data['+i+'][amount_given_by_days]">'+
-    '                                </div>'+
-    '                            </div>'; 
-                }
-                else{
-                    append_bike='<div class="split--calculated__div" >'+
-    '                                <div class="form-group">'+
-    '                                   <input type="hidden" name="data['+i+'][rider_id]" value="'+obj.rider.id+'"> <input type="hidden" name="data['+i+'][type]" value="'+according_to+'">'+
-    '                                    <input readonly type="text" class="form-control" value="'+obj.rider.name+'" >'+
-    '                                </div>'+
-    '                                <div class="form-group">'+
-    '                                    <input type="text" class="form-control" value="'+(work_days)+'" name="data['+i+'][work_days_count]">'+
-    '                                     <span class="form-text text-muted">'+assign_date.format("DD/MM/YYYY")+' - '+unassign_date.format("DD/MM/YYYY")+'</span>'+
-    '                                </div>'+
-    '                                <div class="form-group">'+
-    '                                    <input readonly type="text" class="form-control" value="'+days_in_month+'" name="data['+i+'][total_days]">'+
-    '                                </div>'+
-    '                                <div class="form-group">'+
-    '                                    <input type="text" class="form-control" value="" name="data['+i+'][amount_given_by_days]">'+
-    '                                </div>'+
-    '                            </div>';   
-                }
+            if($('#fuel_expense [name="type"]').val()=='cash'){
+                // return;
+                var _bikeoptionsHTML='';
+                Object.keys(histories).forEach(function(x ,i){
+                    var obj = histories[x];
+                    var days_in_month=moment(_month, "YYYY-MM-DD").daysInMonth();
+                    var start  = moment(_month, "YYYY-MM-DD").startOf('month');
+                    var end    = moment(_month, "YYYY-MM-DD").endOf('month');
+                    var assign_date = moment(obj.bike_assign_date, "YYYY-MM-DD").min(start).max(end);
+                    var unassign_date = moment(obj.bike_unassign_date, "YYYY-MM-DD").min(start).max(end);
 
-                
-                $('#fuel_expense .split__object-container').append(append_bike);
-            });
+                    if(previous_unassigned_date!=null){
+                        var _differPrevious = previous_unassigned_date.diff(assign_date, 'days');
+                        if(_differPrevious==0){
+                            //dates are same
+                            assign_date = assign_date.add(1, 'days');
+                        }
+                    }
+                    previous_unassigned_date=unassign_date;
+                    if(obj.status=="active"){ // unassign_date will be last of the month
+                        unassign_date = end;
+                    }
+                    
+                    var work_days = unassign_date.diff(assign_date, 'days')+1;
+                    console.log('assign_date', assign_date.format("YYYY-MM-DD"), 'unassign_date', unassign_date.format("YYYY-MM-DD"));
+                    
+                    console.warn(work_days);
+                    if(according_to=="bike"){
+                        _bikeoptionsHTML+='<option value="'+obj.bike.id+'">'+
+                                            obj.bike.brand+'-'+obj.bike.bike_number+
+                                        '</option> '; 
+                        
+                    }
+                });
+                if(_bikeoptionsHTML==''){
+                    //means no bike found
+                }
+                $('#fuel_expense [name="bike_id"]').html(_bikeoptionsHTML);
+            }
+            else{
+                Object.keys(histories).forEach(function(x ,i){
+                    var obj = histories[x];
+                    var days_in_month=moment(_month, "YYYY-MM-DD").daysInMonth();
+                    var start  = moment(_month, "YYYY-MM-DD").startOf('month');
+                    var end    = moment(_month, "YYYY-MM-DD").endOf('month');
+                    var assign_date = moment(obj.bike_assign_date, "YYYY-MM-DD").min(start).max(end);
+                    var unassign_date = moment(obj.bike_unassign_date, "YYYY-MM-DD").min(start).max(end);
+
+                    if(previous_unassigned_date!=null){
+                        var _differPrevious = previous_unassigned_date.diff(assign_date, 'days');
+                        if(_differPrevious==0){
+                            //dates are same
+                            assign_date = assign_date.add(1, 'days');
+                        }
+                    }
+                    previous_unassigned_date=unassign_date;
+                    if(obj.status=="active"){ // unassign_date will be last of the month
+                        unassign_date = end;
+                    }
+                    
+                    var work_days = unassign_date.diff(assign_date, 'days')+1;
+                    console.log('assign_date', assign_date.format("YYYY-MM-DD"), 'unassign_date', unassign_date.format("YYYY-MM-DD"));
+                    
+                    console.warn(work_days);
+                    var append_bike='';
+                    if(according_to=="bike"){
+                        append_bike='<div class="split--calculated__div" >'+
+                            '<div class="form-group">'+
+                            '   <input type="hidden" name="data['+i+'][bike_id]" value="'+obj.bike.id+'"> <input type="hidden" name="data['+i+'][type]" value="'+according_to+'">'+
+                            '   <input readonly type="text" class="form-control" value="'+obj.bike.brand+'-'+obj.bike.bike_number+'">'+
+                            '</div>'+
+                            '<div class="form-group">'+
+                            '   <input type="text" class="form-control" value="'+(work_days)+'" name="data['+i+'][work_days_count]">'+
+                            '   <span class="form-text text-muted">'+assign_date.format("DD/MM/YYYY")+' - '+unassign_date.format("DD/MM/YYYY")+'</span>'+
+                            '</div>'+
+                            '<div class="form-group">'+
+                            '   <input readonly type="text" class="form-control" value="'+days_in_month+'" name="data['+i+'][total_days]">'+
+                            '</div>'+
+                            '<div class="form-group">'+
+                            '   <input type="text" class="form-control" value="" name="data['+i+'][amount_given_by_days]">'+
+                            '</div>'+
+                            '</div>'; 
+                    }
+                    else{
+                        append_bike='<div class="split--calculated__div" >'+
+                            '                                <div class="form-group">'+
+                            '                                   <input type="hidden" name="data['+i+'][rider_id]" value="'+obj.rider.id+'"> <input type="hidden" name="data['+i+'][type]" value="'+according_to+'">'+
+                            '                                    <input readonly type="text" class="form-control" value="'+obj.rider.name+'" >'+
+                            '                                </div>'+
+                            '                                <div class="form-group">'+
+                            '                                    <input type="text" class="form-control" value="'+(work_days)+'" name="data['+i+'][work_days_count]">'+
+                            '                                     <span class="form-text text-muted">'+assign_date.format("DD/MM/YYYY")+' - '+unassign_date.format("DD/MM/YYYY")+'</span>'+
+                            '                                </div>'+
+                            '                                <div class="form-group">'+
+                            '                                    <input readonly type="text" class="form-control" value="'+days_in_month+'" name="data['+i+'][total_days]">'+
+                            '                                </div>'+
+                            '                                <div class="form-group">'+
+                            '                                    <input type="text" class="form-control" value="" name="data['+i+'][amount_given_by_days]">'+
+                            '                                </div>'+
+                            '                            </div>';   
+                    }
+
+                    
+                    $('#fuel_expense .split__object-container').append(append_bike);
+                });
+            }
+            
 
         }
     }
@@ -255,6 +307,8 @@
     var _gb_rider_id = $('#gb_rider_id').val();
     if(typeof _gb_rider_id !== "undefined"){
         $('#fuel_expense [name="rider_id"]').val(_gb_rider_id).trigger('change');
+    }else{
+        $('#fuel_expense [name="rider_id"]').trigger('change');
     }
   });
 
