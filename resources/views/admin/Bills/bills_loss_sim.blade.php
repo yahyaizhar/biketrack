@@ -65,6 +65,16 @@
                         <th>Rider Account</th>
                         <th>Loss</th>                       
                     </tr>
+                    <tbody></tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Total:</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
                 </thead>
             </table>
         </div>
@@ -122,6 +132,83 @@ var init_table=function(){
         ],
         responsive:true,
         order:[0,'desc'],
+        footerCallback: function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+ 
+            // Remove the formatting to get integer data for summation
+            var intVal = function ( i ) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '')*1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+            // Total over all pages
+            total = api
+                .column( 3 )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            
+            //source count
+            var totalcount=0;
+            var _temp = api
+            .column( 2 )
+            .data()
+            .reduce( function (a, b) {
+                return totalcount++;
+            }, 0 );
+            // Total over this page
+            var bill_amount = api
+            .column( 1, { page: 'current'} )
+            .data()
+            .reduce( function (a, b) {
+                return (intVal(a) + intVal(b)).toFixed(2);
+            }, 0 );
+
+                var loss_amount = api
+            .column( 4, { page: 'current'} )
+            .data()
+            .reduce( function (a, b) {
+                return (intVal(a) + intVal(b)).toFixed(2);
+            }, 0 );
+
+                var company_paid = api
+            .column( 2, { page: 'current'} )
+            .data()
+            .reduce( function (a, b) {
+                var t_amount=0;
+                var data=expense_loss_table.ajax.json().data;
+                data.forEach(function(i,j){
+                    t_amount+=parseFloat(i.company_bills_amount);
+                })
+                return t_amount.toFixed(2);
+            }, 0 );
+            var rider_paid = api
+            .column( 3, { page: 'current'} )
+            .data()
+            .reduce( function (a, b) {
+                var t_amount=0;
+                var data=expense_loss_table.ajax.json().data;
+                data.forEach(function(i,j){
+                    t_amount+=parseFloat(i.rider_bills_amount);
+                })
+                return t_amount.toFixed(2);
+            }, 0 );
+            // Update footer
+            $( api.column( 1 ).footer() ).html(
+                bill_amount
+            );
+            $( api.column(4).footer()).html(
+                loss_amount
+            );
+            $( api.column(2).footer()).html(
+                company_paid
+            );
+            $( api.column(3).footer()).html(
+                rider_paid
+            );
+        }
     });
 }
 $('[name="bill_detail"]').on("change",function(){
